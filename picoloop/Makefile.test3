@@ -1,0 +1,17 @@
+CC=g++
+CFLAGS=-c -DLINUX -I. -LSDL/lib -g
+LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf
+SOURCES=RtAudio.cpp Oscillator.cpp ADSR.cpp SineOscillator.cpp SawOscillator.cpp NoiseOscillator.cpp FuzzyPulseOscillator.cpp Wave.cpp Synth.cpp Instrument.cpp AudioMixer.cpp  AudioEngine.cpp PatternElement.cpp Pattern.cpp WaveTest3.cpp 
+OBJECTS=$(SOURCES:.cpp=.o)
+EXECUTABLE=WaveTest3
+
+all: $(SOURCES) $(EXECUTABLE)
+
+$(EXECUTABLE): $(OBJECTS)
+	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
+
+.cpp.o:
+	$(CC) $(CFLAGS) $< -o $@
+
+clean:
+	-rm -f $(OBJECTS) $(EXECUTABLE)

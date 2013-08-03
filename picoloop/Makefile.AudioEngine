@@ -1,0 +1,14 @@
+CC=g++
+CFLAGS=-c -DLINUX -I. -LSDL/lib -g
+LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf
+SOURCES=AudioEngine.cpp
+OBJECTS=$(SOURCES:.cpp=.o)
+
+all: $(OBJECTS)
+
+
+.cpp.o:
+	$(CC) $(CFLAGS) -c $< -o $@
+
+clean:
+	-rm -f $(OBJECTS) $(EXECUTABLE)
