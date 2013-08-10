@@ -12,7 +12,7 @@ public:
   PatternElement();
   bool   setNote(int Note);
   int    getNote();
-  //  float  getNoteFreq();
+  float  getNoteFreq();
   bool   setTrig(bool Trig);
   bool   getTrig();
   bool   setChannel(int Channel);

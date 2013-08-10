@@ -11,6 +11,7 @@ AudioEngine::AudioEngine()
 
   FORMAT=RTAUDIO_SINT16;
   bufferFrames = 512;
+  bufferFrames = BUFFER_FRAME;
 
   rtAudioOutputParams.deviceId=dac.getDefaultOutputDevice();
   rtAudioOutputParams.firstChannel=0;
@@ -25,6 +26,12 @@ AudioEngine::AudioEngine()
   */
   //AM=new AudioMixer;
   nbCallback=0;
+  debug_audio=1;
+  if (debug_audio) 
+    {
+      fd = fopen("audioout","w+");
+    }
+
 }
 
 int AudioEngine::getNbCallback()
@@ -188,9 +195,10 @@ int AudioEngine::callback( void *outputBuffer,
 			   RtAudioStreamStatus status, 
 			   void *user_data )
 {
-  printf("AudioEngine::calback nBufferFrame=%d nbCallback=%d\n",nBufferFrames,nbCallback);
+  //printf("AudioEngine::calback nBufferFrame=%d nbCallback=%d\n",nBufferFrames,nbCallback);
   typedef unsigned int MY_TYPE;
   MY_TYPE *buffer = (MY_TYPE *) outputBuffer;
+  
 
   
   for (int i=0;i<nBufferFrames-1;i++)
@@ -198,12 +206,20 @@ int AudioEngine::callback( void *outputBuffer,
       //int tick = S.tick();
       int tick = AM.tick();
       //      printf("%d\n",tick);
+      if (debug_audio)
+	{
+	  fwrite(&tick,1,sizeof(int),fd);
+	  printf("%d\t",tick);
+	}
+
       buffer[i]=  tick;
 
       //buffer[i+1]=tick;
       //buffer[i+1]=0;
       i++;
     }
+  //if (debug_audio)
+  //fwrite(buffer,sizeof(MY_TYPE)*nBufferFrames,sizeof(MY_TYPE),fd);
 
   return nbCallback++;  
 }

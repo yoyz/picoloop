@@ -12,5 +12,6 @@
 #define SCREEN_HEIGHT	240
 #define SCREEN_DEPTH	16
 
+#define FPU 0
 
 #endif

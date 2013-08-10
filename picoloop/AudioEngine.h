@@ -20,6 +20,8 @@ using namespace std;
   implement the main callback which produce the stream 
  */
 
+#define BUFFER_FRAME 512
+#define DEFAULT_FREQ 44100
 
 class AudioEngine
 {
@@ -69,6 +71,8 @@ class AudioEngine
   //  SineOscillator S;
   AudioMixer AM;
   int nbCallback;
+  FILE * fd;
+  int debug_audio;
 };
 
 #endif
