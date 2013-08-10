@@ -21,8 +21,10 @@ int quit;
 
 char * filename;
 
-int len=1024*1024;
-Sint16 buffer[1024*1024];
+int len=0;
+Sint16 * file_buffer=0;
+Sint16 * vector_buffer=0;
+int filesize_octet=0;
 
 SDL_Surface *screen=NULL;
 
@@ -32,19 +34,10 @@ bool up=false;
 bool down=false;
 bool pageup=false;
 bool pagedown=false;
+bool ctrl=false;
 
-typedef struct
-{
-  double fs;	/* sampling freq */
-  double Ts;	/* sampling period */
-  double phi;	/* global phase (for fondamental oscillator) */
-  
-  double f;	/* fundamental freq */
-  double coefs[NCOEF];	/* current oscillator coeficients */
-	
-  SDL_AudioSpec as,as2;	/* SDL audio stuff */
-	
-} Synth;
+
+
 
 
 
@@ -79,6 +72,7 @@ void load_raw(char * filepath)
   struct stat fileStat;
   FILE * fd;
 
+
   if(stat(filepath,&fileStat) < 0)    
   
   printf("Information for %s\n",filepath);
@@ -99,17 +93,24 @@ void load_raw(char * filepath)
   printf( (fileStat.st_mode & S_IWOTH) ? "w" : "-");
   printf( (fileStat.st_mode & S_IXOTH) ? "x" : "-");
   printf("\n\n");
-  
+
+  filesize_octet=fileStat.st_size;
+  file_buffer=(Sint16*)malloc(sizeof(short)*filesize_octet);
+  vector_buffer=(Sint16*)malloc(sizeof(Sint16)*SCREEN_WIDTH);
+  len=filesize_octet/2;
+
+
   for (int i=0;i<len;i++)
     {
-      buffer[i]=0;
+      file_buffer[i]=0;
     }
 
   fd=fopen(filepath,"r");
   for (int i=0;i<len;i++)
     {
-      fread(buffer+i,sizeof(Sint16),1,fd);
+      fread(file_buffer+i,sizeof(Sint16),1,fd);
     }
+
   fclose(fd);  
 }
 
@@ -117,34 +118,32 @@ void load_raw(char * filepath)
 void handle_key()
 {
   SDL_Event event;
-
-  /* Events */
-  //  SDL_WaitEvent(&event);
-
-  //  while ( SDL_PollEvent(&event) )  
-  //SDL_WaitEvent(&event);
-  //  if (SDL_PollEvent(&event)==1)
-  //if (SDL_PollEvent(&event))
-  //  int current_sdl_time  = 0;
-  
-  //  current_sdl_time = SDL_GetTicks();
   if (SDL_PollEvent(&event))
     {
-      //  while (SDL_WaitEvent(&event))
-      //    {
       printf("loop %d\n",loop);
       loop++;
+
+      //printf("[%d %d %d %d]\n",SDL_KEYUP,SDL_KEYDOWN,event.type,event.key.keysym.sym);
       switch (event.type)
 	{
 	case SDL_QUIT:
 	  printf("Exiting...\n");
 	  quit = 1;
+	  free(file_buffer);
 	  exit(0);
-	  break;
+	  break; 	  
 	  
 	case SDL_KEYUP:
 	  switch (event.key.keysym.sym)
 	    {
+	    case SDLK_LCTRL:
+	      ctrl=false;
+	      break;
+
+	    case SDLK_RCTRL:
+	      ctrl=false;
+	      break;
+
 	    case SDLK_LEFT:
 	      left=false;
 	      break;
@@ -169,16 +168,11 @@ void handle_key()
 	      pagedown=false;
 	      break;
 
-
 	    default:
 	      break;
 	    }
 	  break;
 	  
-	  
-	  
-
-      
 	case SDL_KEYDOWN:
 	  switch (event.key.keysym.sym)
 	    {
@@ -188,6 +182,14 @@ void handle_key()
 	      exit(0);
 	      break;
 	      
+	    case SDLK_LCTRL:
+	      ctrl=true;
+	      break;
+
+	    case SDLK_RCTRL:
+	      ctrl=true;
+	      break;
+
 	    case SDLK_LEFT:
 	      left=true;
 	      break;
@@ -216,6 +218,7 @@ void handle_key()
 	      break;
 	      
 	    }
+
 	  break;
 
 	}
@@ -243,14 +246,25 @@ void handle_key()
 
   if(left)
     {
-      offset=offset-10;
+      //offset=offset-10;
+      if (!ctrl) 
+	offset=offset-10;
+      else
+	offset=offset-SCREEN_WIDTH;
+
       if (offset <=0) offset=0;
       redraw=true;
       printf("key left\n");            
     }
+
   if (right)
     {
-      offset=offset+10;
+
+      if (!ctrl) 
+	offset=offset+10;
+      else
+	offset=offset+SCREEN_WIDTH;
+
       redraw=true;
       printf("key right\n");      
     }
@@ -271,7 +285,6 @@ void handle_key()
       printf("key pgdown %f\n",zoom);
     }
 
-
   //No user activity => sleeping a while to keep cpu cool
   //it keep cpu under 100% usage
   if ((up || down || left || right || pagedown || pageup)==false)
@@ -286,51 +299,61 @@ void handle_key()
     }
 }
 
+void prepare_vector_buffer()
+{
+  Sint16 y_value;
+  int j;
+  for (int i = 0; i < SCREEN_WIDTH-1 ; i++)
+    {
+      j=(i+offset)*zoom;             // j       => offset and zoomX from index i
+      y_value=file_buffer[j]/divide; // y_value => zoomY from value j	  	  
+      vector_buffer[i]=y_value;
+    }
+}
 
 void draw_screen()
 {
+  SDL_Rect rect;
+  short color;
+
+  // rect.x rect.y rect.w rect.h
+  // int x the x location of the rectangle's upper left corner
+  // int y the y location of the rectangle's upper left corner
+  // int w the width of the rectangle
+  // int h the height of the rectangle
+
   //Blank screen
-  SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 0, 0, 0));         
-       
+  SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 0, 0, 0));               
+
   for (int i = 0; i < SCREEN_WIDTH-1 ; i++)
     {
-      int j;
-      Sint16 y_value;
-      Sint16 y_value_positive;
-      SDL_Rect rect;
-      j=(i+offset)*zoom;        // j       => offset and zoomX from index i
-      y_value=buffer[j]/divide; // y_value => zoomY from value j
-	  
-	  
-      y_value_positive=(buffer[j]/128) % 255;
-      if (y_value_positive < 0) y_value_positive=y_value_positive*-1;
-      
-      //printf("buf[i]=%d\n",buffer[i]);
       rect.x = i;
-	  //rect.y=240;	 
-	  
-      if (y_value>=0) rect.y = y_m-y_value;
-      if (y_value<0)  rect.y = y_m;
-      
       rect.w = 1;
-      if (buffer[j]<0) rect.h=-1*y_value;
-      if (buffer[j]>0) rect.h=y_value;
-      
-	  // Create a vertical colored line
-      SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, y_value_positive, 0, 128));
+
+      if (vector_buffer[i]>0)
+	{
+	  rect.y=((SCREEN_HEIGHT/2)-vector_buffer[i]);
+	  rect.h=vector_buffer[i];
+	}
+      else
+	{
+	  rect.y=((SCREEN_HEIGHT/2));
+	  rect.h=vector_buffer[i]*-1;	  
+	}
+
+      // Create a vertical colored line
+      color=vector_buffer[i];
+      SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, color, 0, 128));      
     }
   
   SDL_Flip(screen);
-  redraw=false;
-  
+  redraw=false;  
 }
 
 
 
 int main(int argc,char ** argv)
-{	
-  
-  
+{	  
   if (argc!=2) { printf("arg please\n"); exit(1); }
   
   struct stat fileStat;
@@ -350,6 +373,7 @@ int main(int argc,char ** argv)
     {
       if (redraw==true)
 	{	  
+	  prepare_vector_buffer();
 	  draw_screen();
 	}
       else 
@@ -358,26 +382,6 @@ int main(int argc,char ** argv)
 	}
     }
 
-  
-  //free(synth);
   return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
