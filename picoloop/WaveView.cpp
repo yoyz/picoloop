@@ -246,9 +246,9 @@ void handle_key()
 
   if(left)
     {
-      //offset=offset-10;
+      offset=offset--;
       if (!ctrl) 
-	offset=offset-10;
+	offset=offset-(10*zoom);
       else
 	offset=offset-SCREEN_WIDTH;
 
@@ -259,9 +259,9 @@ void handle_key()
 
   if (right)
     {
-
+      offset=offset++;
       if (!ctrl) 
-	offset=offset+10;
+	offset=offset+(10*zoom);
       else
 	offset=offset+SCREEN_WIDTH;
 
@@ -302,11 +302,25 @@ void handle_key()
 void prepare_vector_buffer()
 {
   Sint16 y_value;
-  int j;
+  Sint32 j;
+  Sint32 last_j;
+  Sint32 average;
   for (int i = 0; i < SCREEN_WIDTH-1 ; i++)
     {
+      last_j=j;
+      /*
       j=(i+offset)*zoom;             // j       => offset and zoomX from index i
       y_value=file_buffer[j]/divide; // y_value => zoomY from value j	  	  
+      vector_buffer[i]=y_value;
+      */
+      j=offset+i*zoom;
+      if (j<=filesize_octet*2)
+	{
+	  //if (zoom>1.0)
+	  y_value=file_buffer[j]/divide;
+	}
+      else
+	y_value=0;
       vector_buffer[i]=y_value;
     }
 }
