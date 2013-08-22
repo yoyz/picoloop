@@ -54,7 +54,7 @@ void init_video()
   screen = SDL_SetVideoMode(SCREEN_WIDTH, 
 			    SCREEN_HEIGHT, 
 			    SCREEN_DEPTH,			
-			    SDL_SWSURFACE|SDL_DOUBLEBUF);
+			    SDL_SWSURFACE|SDL_DOUBLEBUF|SDL_HWACCEL|SDL_FULLSCREEN);
   
   if (screen == NULL)
     {
@@ -304,23 +304,38 @@ void prepare_vector_buffer()
   Sint16 y_value;
   Sint32 j;
   Sint32 last_j;
-  Sint32 average;
+  Sint32 idx=0;
+  Sint64 average=0;
+  Sint64 counter=0;
   for (int i = 0; i < SCREEN_WIDTH-1 ; i++)
     {
       last_j=j;
-      /*
-      j=(i+offset)*zoom;             // j       => offset and zoomX from index i
-      y_value=file_buffer[j]/divide; // y_value => zoomY from value j	  	  
-      vector_buffer[i]=y_value;
-      */
       j=offset+i*zoom;
       if (j<=filesize_octet*2)
 	{
-	  //if (zoom>1.0)
-	  y_value=file_buffer[j]/divide;
-	}
+	  //	  if (zoom<=1.0)
+	    y_value=file_buffer[j]/divide;
+	    /*
+	  else
+	    {
+	      average=0;
+	      counter=0;
+	      for (idx=j;idx<offset+(i+1)*zoom;idx++)
+		{
+		  average=average+file_buffer[idx];
+		  counter++;
+		  idx++;
+
+		  }
+	      printf("%d %d\n",counter,average);
+	      vector_buffer[i]=(average/counter)/divide;
+	      continue;
+	    }
+	    */
+ 	}
       else
 	y_value=0;
+
       vector_buffer[i]=y_value;
     }
 }
@@ -361,6 +376,7 @@ void draw_screen()
     }
   
   SDL_Flip(screen);
+  SDL_Delay(1);
   redraw=false;  
 }
 
