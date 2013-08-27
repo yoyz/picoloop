@@ -24,12 +24,14 @@ Sint16 FuzzyPulseOscillator::tick()
   float  f;
   Uint16 u;
   Sint16 s;
-  int debug=1;
+  int debug=0;
   int detect_phase=0;
   int period=0;
 
   // // // // 1/freq*44100 = > pas de + - + - 
   
+  if (frequency==0) return(0);
+
   if (sample_num==0) srand(frequency);
   sample_num++;
 
@@ -38,7 +40,7 @@ Sint16 FuzzyPulseOscillator::tick()
   s=rand();
   if (s<0) s=s*-1;
   
-  printf("s:%d\n",s);
+  //printf("s:%d\n",s);
 
   //detect_phase=sample_num % ( frequency*2);
   
@@ -55,9 +57,10 @@ Sint16 FuzzyPulseOscillator::tick()
   else
     {  new_phase=1;  }
 
-
+  /*
   if (old_phase != new_phase) 
     srand(frequency);
+  */
 
   if (debug) 
     printf("s:%d phase:%d\n",s,new_phase);
@@ -72,7 +75,7 @@ Sint16 FuzzyPulseOscillator::tick()
   f=f*s*new_phase;
   //s=f;
 
-  if (debug) printf("%d\n",s);
+  if (debug) printf("s:%d\n",s);
   last_tick=s;
   old_phase=new_phase;
   return s;
