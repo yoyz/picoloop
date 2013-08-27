@@ -196,7 +196,7 @@ int AudioEngine::callback( void *outputBuffer,
 			   void *user_data )
 {
   //printf("AudioEngine::calback nBufferFrame=%d nbCallback=%d\n",nBufferFrames,nbCallback);
-  typedef unsigned int MY_TYPE;
+  typedef Sint16 MY_TYPE;
   MY_TYPE *buffer = (MY_TYPE *) outputBuffer;
   
 
@@ -208,11 +208,13 @@ int AudioEngine::callback( void *outputBuffer,
       //      printf("%d\n",tick);
       if (debug_audio)
 	{
-	  fwrite(&tick,1,sizeof(int),fd);
-	  printf("%d\t",tick);
+	  fwrite(&tick,1,sizeof(Sint16),fd);
+	  fwrite(&tick,1,sizeof(Sint16),fd);
+	  //printf("%d\t",tick);
 	}
 
-      buffer[i]=  tick;
+      buffer[2*i]=    tick;
+      buffer[2*i+1]=  tick;
 
       //buffer[i+1]=tick;
       //buffer[i+1]=0;
