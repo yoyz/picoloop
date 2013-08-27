@@ -1,7 +1,7 @@
 CC=g++
 CFLAGS=-c -DLINUX -I. -LSDL/lib -ggdb
 LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf -lpthread  RtAudio.o 
-SOURCES=Wave.cpp Synth.cpp Instrument.cpp Machine.cpp Track.cpp AudioMixer.cpp AudioEngine.cpp PatternElement.cpp Pattern.cpp PatternPlayer.cpp Oscillator.cpp SineOscillator.cpp SawOscillator.cpp 
+SOURCES=Wave.cpp Synth.cpp Instrument.cpp Machine.cpp Track.cpp AudioMixer.cpp AudioEngine.cpp PatternElement.cpp Pattern.cpp PatternPlayer.cpp Oscillator.cpp SineOscillator.cpp SawOscillator.cpp  FuzzyPulseOscillator.cpp 
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=PatternPlayer
 

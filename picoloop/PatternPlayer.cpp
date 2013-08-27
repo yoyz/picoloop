@@ -37,8 +37,8 @@ int seq()
   int nbcb=0;      // current nb audio callback 
   int last_nbcb=0; // nb audio callback from last step
   int nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*tempo);
-
-
+  
+  m.setSawOsc();
 
   //  am=ae.getAudioMixer();
   //  return 0;
@@ -47,9 +47,18 @@ int seq()
       nbcb=ae.getNbCallback();
       if (nbcb-last_nbcb>nb_cb_ch_step)
 	{
-	  step++;
+	  
+	  if (step%3==0) { m.setSineOsc(); }
+	  if (step%3==1) { m.setSawOsc(); }
+	  if (step%3==2) { m.setFuzzyPulseOsc(); }
+	  
+	  //m.setSawOsc(); 
+	  //m.setFuzzyPulseOsc();
+	  //m.setSineOsc();
+	  
 	  if (step==16) { step=0; }
 	  printf("STEP:%d\n",step);	  
+
 	  //printf("loop\n");    
 	  last_nbcb=nbcb;
 	  if (P.getPatternElement(step).getTrig()==true)
@@ -67,7 +76,7 @@ int seq()
 	      printf("m.setSynthFreq(0);\n");
 	      m.setSynthFreq(0);
 	    }
-	  
+	  step++;  
 	}
       //am.setSynthFreq(880);
       //am.setSynthFreq(880);
