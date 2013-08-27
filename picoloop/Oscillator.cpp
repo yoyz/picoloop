@@ -4,7 +4,8 @@ using namespace std;
 
 Oscillator::Oscillator()
 {
-  
+  frequency=0;
+  amplitude=0;
 }
 
 Oscillator::~Oscillator()
