@@ -1,9 +1,9 @@
 using namespace std;
 
-//#include "Oscillator.h"
+#include "Oscillator.h"
 #include "SineOscillator.h"
-//#include "SawOscillator.h"
-//#include "FuzzyPulseOscillator.h"
+#include "SawOscillator.h"
+#include "FuzzyPulseOscillator.h"
 
 
 #ifndef __MACHINE____
@@ -18,21 +18,30 @@ class Machine
   void setSynthFreq(int sfreq);
   void setSineOsc();
   void setSawOsc();
+  void setFuzzyPulseOsc();
 
   int tick();
 
 
-  
+  Oscillator * S;
   //SineOscillator SINEOSC;
-  //SawOscillator SAWOSC;
+  SawOscillator SAWOSC;
   //  Oscillator S;
   //  SineOscillator S;
-  // SineOscillator SINEOSC;
-  //  SineOscillator S;
-  SineOscillator S;
-  //  FuzzyPulseOscillator  S;
+  SineOscillator SINEOSC;
+   //SineOscillator S;
+  //SineOscillator S;
+  FuzzyPulseOscillator  FUZZYPULSEOSC;
   int freq;
-  
+  int current;
+  /*
+  enum OSC 
+  { 
+    NOOSC,
+    SINE,
+    SAW,
+  };
+  */
 
 };
 
