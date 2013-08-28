@@ -1,16 +1,20 @@
 using namespace std;
 
-#include "PatternPlayer.h"
-#include "AudioEngine.h"
-#include "Wave.h"
 #include <stdio.h>
 #include <unistd.h>
 #include <iostream>
 #include "Note.h"
+#include "PatternReader.h"
+#include "PatternPlayer.h"
+#include "AudioEngine.h"
+#include "Wave.h"
 
 AudioEngine ae;
-Pattern P;
-PatternElement PE;
+Pattern P0;
+Pattern P1;
+PatternElement PE0;
+PatternElement PE1;
+
 Wave cowbell;
 //Synth beeper;
 Instrument inst;
@@ -30,15 +34,27 @@ void openaudio()
 int seq()
 {
   AudioMixer & am=ae.getAudioMixer();
-  Track & t=ae.getAudioMixer().getTrack();
-  Machine & m=ae.getAudioMixer().getTrack().getMachine();
+  Track & t0=ae.getAudioMixer().getTrack(0);
+  Machine & m0=ae.getAudioMixer().getTrack(0).getMachine();
+
+  Track & t1=ae.getAudioMixer().getTrack(1);
+  Machine & m1=ae.getAudioMixer().getTrack(1).getMachine();
+
+
   int tempo=60;
   int step=0;      // current step
   int nbcb=0;      // current nb audio callback 
   int last_nbcb=0; // nb audio callback from last step
   int nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*tempo);
   
-  m.setSawOsc();
+  //m0.setSawOsc();
+  //m1.setSawOsc();
+  m1.setSineOsc();
+  //m0.setSawOsc();
+  m0.setFuzzyPulseOsc();
+  //m1.setSawOsc();
+  //m0.setSawOsc();
+  //m1.setSawOsc();
 
   //  am=ae.getAudioMixer();
   //  return 0;
@@ -48,34 +64,54 @@ int seq()
       if (nbcb-last_nbcb>nb_cb_ch_step)
 	{
 	  
-	  if (step%3==0) { m.setSineOsc(); }
-	  if (step%3==1) { m.setSawOsc(); }
-	  if (step%3==2) { m.setFuzzyPulseOsc(); }
+	  //if (step%3==0) { m.setSineOsc(); }
+	  //if (step%3==1) { m.setSawOsc(); }
+	  //if (step%3==2) { m.setFuzzyPulseOsc(); }
 	  
-	  //m.setSawOsc(); 
+	  //m0.setSawOsc(); 
+	  //m1.setSawOsc(); 
 	  //m.setFuzzyPulseOsc();
-	  //m.setSineOsc();
+	  //m0.setSineOsc();
+	  //m1.setSineOsc();
 	  
 	  if (step==16) { step=0; }
 	  printf("STEP:%d\n",step);	  
 
 	  //printf("loop\n");    
 	  last_nbcb=nbcb;
-	  if (P.getPatternElement(step).getTrig()==true)
+	  if (P0.getPatternElement(step).getTrig()==true)
 	    {
-	      float f=P.getPatternElement(step).getNoteFreq();
+	      float f=P0.getPatternElement(step).getNoteFreq();
 	      int   i=f;
 		
-	      printf("%f %d \n",P.getPatternElement(step).getNoteFreq(),i);
-	      m.setSynthFreq(i);
+	      printf("%f %d \n",P0.getPatternElement(step).getNoteFreq(),i);
+	      m0.setSynthFreq(i);
 	      //m.setSynthFreq(1200);
 	    }
 	  else
 	    {
 	      //m.setSynthFreq(800);
 	      printf("m.setSynthFreq(0);\n");
-	      m.setSynthFreq(0);
+	      m0.setSynthFreq(0);
 	    }
+
+	  if (P1.getPatternElement(step).getTrig()==true)
+	    {
+	      float f=P1.getPatternElement(step).getNoteFreq();
+	      int   i=f;
+		
+	      printf("%f %d \n",P1.getPatternElement(step).getNoteFreq(),i);
+	      m1.setSynthFreq(i);
+	      //m.setSynthFreq(1200);
+	    }
+	  else
+	    {
+	      //m.setSynthFreq(800);
+	      printf("m.setSynthFreq(0);\n");
+	      m1.setSynthFreq(0);
+	    }
+
+
 	  step++;  
 	}
       //am.setSynthFreq(880);
@@ -104,34 +140,63 @@ int seq()
 
 void setPattern()
 {
-  P.setPatternSize(16);
+  PatternReader PR;
+  PR.setFileName("data.pic");
+  PR.readPatternData(1,1,P0);
+  PR.readPatternData(1,2,P1);
+
+  /*
+  P0.setPatternSize(16);
   //PE = P.getPatternElement(0);
-  P.getPatternElement(0).setNote(41);
-  P.getPatternElement(0).setTrig(true);
+  P0.getPatternElement(0).setNote(C3);
+  P0.getPatternElement(0).setTrig(true);
 
-  P.getPatternElement(1).setNote(72);
-  P.getPatternElement(1).setTrig(true);
+  P0.getPatternElement(1).setNote(F3);
+  P0.getPatternElement(1).setTrig(true);
 
+  P0.getPatternElement(3).setNote(A3P);
+  P0.getPatternElement(3).setTrig(true);
 
-  P.getPatternElement(3).setNote(51);
-  P.getPatternElement(3).setTrig(true);
+  P0.getPatternElement(5).setNote(D3P);
+  P0.getPatternElement(5).setTrig(true);
 
-  P.getPatternElement(5).setNote(62);
-  P.getPatternElement(5).setTrig(true);
+  P0.getPatternElement(8).setTrig(true);
+  P0.getPatternElement(8).setNote(G3);
 
+  P0.getPatternElement(9).setTrig(true);
+  P0.getPatternElement(9).setNote(C3);
 
-  P.getPatternElement(8).setTrig(true);
-  P.getPatternElement(8).setNote(69);
+  P0.getPatternElement(13).setTrig(true);
+  P0.getPatternElement(13).setNote(D4P);
 
-  P.getPatternElement(9).setTrig(true);
-  P.getPatternElement(9).setNote(48);
+  P0.print();
+  printf("\n");
 
-  P.getPatternElement(13).setTrig(true);
-  P.getPatternElement(13).setNote(38);
+  P1.setPatternSize(16);
+  //PE = P.getPatternElement(0);
+  P1.getPatternElement(0).setNote(C4);
+  P1.getPatternElement(0).setTrig(true);
 
+  P1.getPatternElement(1).setNote(G4P);
+  P1.getPatternElement(1).setTrig(true);
 
+  P1.getPatternElement(3).setNote(D5P);
+  P1.getPatternElement(3).setTrig(true);
 
-  P.print();
+  P1.getPatternElement(5).setNote(C4);
+  P1.getPatternElement(5).setTrig(true);
+
+  P1.getPatternElement(8).setNote(D4P);
+  P1.getPatternElement(8).setTrig(true);
+
+  P1.getPatternElement(9).setNote(C4);
+  P1.getPatternElement(9).setTrig(true);
+
+  P1.getPatternElement(13).setNote(D3P);
+  P1.getPatternElement(13).setTrig(true);
+
+  P1.print();
+  */
 }
 
 int main()
