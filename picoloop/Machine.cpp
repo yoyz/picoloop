@@ -5,6 +5,7 @@ Machine::Machine()
   S = &SINEOSC;
   S->setFreq(0);
   S->setAmplitude(127);
+  printf("&S:%d\n",S);
 }
 
 void Machine::setSynthFreq(int sfreq)
@@ -45,5 +46,7 @@ void Machine::setFuzzyPulseOsc()
 
 int Machine::tick()
 {
+  //printf("&S:%d\n",S);
+  //exit(0);
   return S->tick();
 }
