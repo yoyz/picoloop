@@ -1,0 +1,17 @@
+CC=g++
+CFLAGS=-c -DLINUX -I. -LSDL/lib -ggdb
+LDFLAGS=
+SOURCES=PatternReaderTester.cpp PatternReader.cpp PatternElement.cpp Pattern.cpp
+OBJECTS=$(SOURCES:.cpp=.o)
+EXECUTABLE=PatternReader
+
+all: $(SOURCES) $(EXECUTABLE)
+
+$(EXECUTABLE): $(OBJECTS)
+	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
+
+.cpp.o:
+	$(CC) $(CFLAGS) $< -o $@
+
+clean:
+	-rm -f $(OBJECTS) $(EXECUTABLE)
