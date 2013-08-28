@@ -8,9 +8,12 @@ class AudioMixer
 {
  public:
   AudioMixer();
-  Track & getTrack();
-  Track T;
-  int  tick();
+  Track & getTrack(int numTrack);
+  Sint16  tick();
+ private:
+  Track T0;
+  Track T1;
+
 };
 
 
