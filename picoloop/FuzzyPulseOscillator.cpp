@@ -21,9 +21,10 @@ FuzzyPulseOscillator::~FuzzyPulseOscillator()
 
 Sint16 FuzzyPulseOscillator::tick()
 {
-  float  f;
+  float  f=0.0;
   Uint16 u;
   Sint16 s;
+  Sint16 randomize;
   int debug=0;
   int detect_phase=0;
   int period=0;
@@ -32,12 +33,17 @@ Sint16 FuzzyPulseOscillator::tick()
   
   if (frequency==0) return(0);
 
-  if (sample_num==0) srand(frequency);
+  //if (sample_num==0) srand(frequency);
+  if (sample_num==0) srand(2);
+  randomize=(((Sint16)(rand())) >> 4);
   sample_num++;
 
+  
   if (debug) printf("Sint16 NoiseOscillator::tick()\n");
 
-  s=rand();
+  //s=rand()*4;
+  //s=amplitude*127+rand();
+  s=amplitude*96+randomize;
   if (s<0) s=s*-1;
   
   //printf("s:%d\n",s);
