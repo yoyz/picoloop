@@ -20,7 +20,7 @@ class Pattern
   PatternElement & getPatternElement(int patternElementNumber);
   bool setPatternElement(int PatternElementNumber,PatternElement PEin);
   void print();
-  int getNumberOfElement();
+  int getSize();
 
   void setLeftVolume(int left);
   void setRightVolume(int right);
