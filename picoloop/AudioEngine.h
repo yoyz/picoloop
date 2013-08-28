@@ -20,7 +20,7 @@ using namespace std;
   implement the main callback which produce the stream 
  */
 
-#define BUFFER_FRAME 512
+#define BUFFER_FRAME 8192
 #define DEFAULT_FREQ 44100
 
 class AudioEngine
