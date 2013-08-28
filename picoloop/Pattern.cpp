@@ -15,9 +15,19 @@ PatternElement & Pattern::getPatternElement(int patternElementNumber)
   return pevector[patternElementNumber];
 }
 
+bool Pattern::setPatternElement(int PatternElementNumber,PatternElement PEin)
+{
+  pevector[PatternElementNumber]=PEin;
+}
+
 void Pattern::setPatternSize(int patternSize)
 {
   size=patternSize;
+}
+
+int Pattern::getSize()
+{
+  return size;
 }
 
 void Pattern::setLeftVolume(int left)
@@ -35,6 +45,8 @@ int Pattern::getLeftVolume()
 {
   return leftVolume;
 }
+
+
 
 int Pattern::getRightVolume()
 {
