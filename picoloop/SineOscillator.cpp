@@ -3,11 +3,12 @@
 using namespace std;
 
 
-SineOscillator::SineOscillator()
+SineOscillator::SineOscillator() 
 {
   frequency=440;
   amplitude=127;
   sample_num=0;
+  printf("SineOscillator::SineOscillator()\n");
 }
 
 SineOscillator::~SineOscillator()
@@ -22,8 +23,9 @@ Sint16 SineOscillator::tick()
   Uint16 u;
   Sint16 s;
   int debug=0;
-  sample_num++;
   if (debug) printf("Sint16 SineOscillator::tick()\n");
+  sample_num++;
+
   //f=(sin((sample_num/3.14159)/22)*10000);  
   //f=(sin(((sample_num/3.14159)/22)/440*freq)*amp*210
 
