@@ -1,17 +1,20 @@
 #include "Machine.h"
 
-Machine::Machine()
+
+Machine::Machine() : sineosc(), sawosc(), fuzzypulseosc(), adsr()
 {
-  S = &SINEOSC;
-  S->setFreq(0);
-  S->setAmplitude(127);
-  printf("&S:%d\n",S);
+  s = &sineosc;
+  s->setFreq(0);
+  s->setAmplitude(127);
+  adsr.setOscillator(s);
+  //  printf("&S:%d\n",S);
 }
 
 void Machine::setSynthFreq(int sfreq)
 {
   freq=sfreq;
-  S->setFreq(sfreq);
+  s->setFreq(sfreq);
+  adsr.setOscillator(s);
 }
 
 
@@ -23,30 +26,43 @@ void Machine::setOscillator(SineOscillator NS)
 }
 */
 
+ADSR & Machine::getADSR()
+{
+  return adsr;
+}
+
+
+Oscillator * Machine::getOscillator()
+{
+  return s;
+}
 
 void Machine::setSineOsc()
 {
-  S=&SINEOSC;
-  S->setFreq(freq);
+  s=&sineosc;
+  s->setFreq(freq);
+  adsr.setOscillator(s);
 }
 
 
 void Machine::setSawOsc()
 {
-  S=&SAWOSC;
-  S->setFreq(freq);
+  s=&sawosc;
+  s->setFreq(freq);
+  adsr.setOscillator(s);
 }
 
 void Machine::setFuzzyPulseOsc()
 {
-  S=&FUZZYPULSEOSC;
-  S->setFreq(freq);
+  s=&fuzzypulseosc;
+  s->setFreq(freq);
+  adsr.setOscillator(s);
 }
 
 
 int Machine::tick()
 {
-  //printf("&S:%d\n",S);
-  //exit(0);
-  return S->tick();
+  if (&s==0) { printf("sine:%d\n",sineosc.tick()); exit(0);  }
+  //  return s->tick();
+  return adsr.tick();
 }

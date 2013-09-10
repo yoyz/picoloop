@@ -4,7 +4,7 @@ using namespace std;
 #include "SineOscillator.h"
 #include "SawOscillator.h"
 #include "FuzzyPulseOscillator.h"
-
+#include "ADSR.h"
 
 #ifndef __MACHINE____
 #define __MACHINE____
@@ -20,18 +20,24 @@ class Machine
   void setSawOsc();
   void setFuzzyPulseOsc();
 
+  ADSR & getADSR();
+  Oscillator * getOscillator();
+
   int tick();
 
 
-  Oscillator * S;
+
+  Oscillator          * s;
+  SawOscillator         sawosc;
+  SineOscillator        sineosc;
+  FuzzyPulseOscillator  fuzzypulseosc;
+  ADSR                  adsr;
   //SineOscillator SINEOSC;
-  SawOscillator SAWOSC;
   //  Oscillator S;
   //  SineOscillator S;
-  SineOscillator SINEOSC;
    //SineOscillator S;
   //SineOscillator S;
-  FuzzyPulseOscillator  FUZZYPULSEOSC;
+
   int freq;
   int current;
   /*
