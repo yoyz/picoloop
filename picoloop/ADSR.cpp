@@ -10,7 +10,7 @@ ADSR::ADSR()
   attack=0;
   decay=127;
   sustain=0;
-  release=8;
+  release=2;
   sample_num=-1;
   playing=1;
 }
@@ -42,7 +42,7 @@ void ADSR::setRelease(int rls)
 
 void ADSR::setOscillator(Oscillator * osc)
 {
-  oscillator=osc; 
+  S=osc; 
 }
 
 int ADSR::getPlaying()
@@ -50,7 +50,7 @@ int ADSR::getPlaying()
   return playing;
 }
 
-void ADSR::processSample()
+void ADSR::reset()
 {
   sample_num=0;
   ca=attack;
@@ -69,16 +69,18 @@ int ADSR::getSize()
 
 Sint16 ADSR::tick()
 {
+  //  return S->tick();
+
   Sint16 s;
   float f1;
   float f2;
-  int debug=0;
+  int debug=1;
   int index_inverse=0;
-  if (debug) fprintf(stderr,"begin Sint16 ADSR::tick()\n");
-  if (sample_num<0)  this->processSample();
+  //if (debug) fprintf(stderr,"begin Sint16 ADSR::tick()\n");
+  if (sample_num<=0)  { this->reset(); S->reset(); }
   sample_num++;
 
-  s=oscillator->tick();
+  s=S->tick();
 
 
   
@@ -87,11 +89,11 @@ Sint16 ADSR::tick()
   index_inverse=size-sample_num;
   if (index_inverse<=0) { return 0; }
   f2=f1*((float)(index_inverse)/(size));
-  //printf("size:%d sample_num:%d s:%d f1:%f f2:%f\n",size,sample_num,s,f1,f2);
+  //  printf("size:%d sample_num:%d s:%d f1:%f f2:%f\n",size,sample_num,s,f1,f2);
 
   s=f2;
 
-  if (debug) fprintf(stderr,"end Sint16 ADSR::tick()\n");
+  //if (debug) fprintf(stderr,"end Sint16 ADSR::tick()\n");
   return s;  
 }
 

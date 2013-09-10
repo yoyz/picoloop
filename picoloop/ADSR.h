@@ -14,6 +14,7 @@ class ADSR
  public:
   ADSR();
   ~ADSR();
+  void setInput(Oscillator * S);
   void setAttack(int atk);
   void setDecay(int dc);
   void setSustain(int sust);
@@ -21,7 +22,7 @@ class ADSR
   void setOscillator(Oscillator * osc);
   int  getPlaying();
   Sint16 tick();
-  void processSample();  
+  void reset();  
   int getSize();
 
  private:
@@ -32,7 +33,7 @@ class ADSR
   int sustain;
   int release;
   int sample_num;
-  Oscillator * oscillator;
+  Oscillator * S;
 
   int ca;
   int cd;
