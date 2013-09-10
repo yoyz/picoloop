@@ -3,17 +3,24 @@ using namespace std;
 #include <stdio.h>
 #include <unistd.h>
 #include <iostream>
+#include <string.h>
 #include "Note.h"
 #include "PatternReader.h"
 #include "PatternPlayer.h"
 #include "AudioEngine.h"
 #include "Wave.h"
+#include "MonoMixer.h"
 
 AudioEngine ae;
+
 Pattern P0;
 Pattern P1;
+
 PatternElement PE0;
 PatternElement PE1;
+
+//MonoMixer MM0;
+//MonoMixer MM1;
 
 Wave cowbell;
 //Synth beeper;
@@ -33,26 +40,54 @@ void openaudio()
 
 int seq()
 {
-  AudioMixer & am=ae.getAudioMixer();
-  Track & t0=ae.getAudioMixer().getTrack(0);
-  Machine & m0=ae.getAudioMixer().getTrack(0).getMachine();
-
-  Track & t1=ae.getAudioMixer().getTrack(1);
-  Machine & m1=ae.getAudioMixer().getTrack(1).getMachine();
-
+  Machine m0;
+  Machine m1;
 
   int tempo=60;
   int step=0;      // current step
   int nbcb=0;      // current nb audio callback 
   int last_nbcb=0; // nb audio callback from last step
-  int nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*tempo);
-  
-  //m0.setSawOsc();
-  //m1.setSawOsc();
-  m1.setSineOsc();
+  int nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*tempo); // Weird ?
+
+
+
+
+  AudioMixer & am=ae.getAudioMixer();
+  //Track & t0=ae.getAudioMixer().getTrack(0);
+
+  //  m0.setSawOsc();
   //m0.setSawOsc();
   m0.setFuzzyPulseOsc();
+  //  m1.setSawOsc();
+
+  //  m0.setSineOsc();
   //m1.setSawOsc();
+    m1.setSineOsc();
+
+  m0.setSynthFreq(0);
+  m1.setSynthFreq(0);
+
+  //Track     & t0=ae.getAudioMixer().getTrack(0);
+  MonoMixer & mm0=ae.getAudioMixer().getTrack(0).getMonoMixer();
+  MonoMixer & mm1=ae.getAudioMixer().getTrack(1).getMonoMixer();
+
+  mm0.setInput(&m0);
+  mm1.setInput(&m1);
+
+  ae.startAudio();
+  //Machine & m0=ae.getAudioMixer().getTrack(0).getMachine();
+
+  //  Track & t1=ae.getAudioMixer().getTrack(1);
+  //  Machine & m1=ae.getAudioMixer().getTrack(1).getMachine();
+
+
+  
+  //m0.setSawOsc();
+  //  m1.setSineOsc();
+  //m0.setSawOsc();
+  //  m0.setFuzzyPulseOsc();
+  //  m1.setSawOsc();
+  //m1.setSineOsc();
   //m0.setSawOsc();
   //m1.setSawOsc();
 
@@ -86,6 +121,8 @@ int seq()
 		
 	      printf("%f %d \n",P0.getPatternElement(step).getNoteFreq(),i);
 	      m0.setSynthFreq(i);
+	      m0.getADSR().reset();
+	      m0.getOscillator()->reset();
 	      //m.setSynthFreq(1200);
 	    }
 	  else
@@ -102,6 +139,8 @@ int seq()
 		
 	      printf("%f %d \n",P1.getPatternElement(step).getNoteFreq(),i);
 	      m1.setSynthFreq(i);
+	      m1.getADSR().reset();
+	      m1.getOscillator()->reset();
 	      //m.setSynthFreq(1200);
 	    }
 	  else
@@ -141,7 +180,9 @@ int seq()
 void setPattern()
 {
   PatternReader PR;
-  PR.setFileName("data.pic");
+  string fileName="data.pic";
+  //PR.setFileName("data.pic");
+  PR.setFileName(fileName);
   PR.readPatternData(1,1,P0);
   PR.readPatternData(1,2,P1);
 
@@ -201,7 +242,9 @@ void setPattern()
 
 int main()
 {
-  cowbell.loadWave("808-cowbell.wav");
+  //string wave="808-cowbell.wav";
+  char * str="808-cowbell.wav";
+  cowbell.loadWave(str);
   setPattern();
   openaudio();
   seq();
