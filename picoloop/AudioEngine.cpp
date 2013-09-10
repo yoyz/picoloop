@@ -1,7 +1,7 @@
 #include "AudioEngine.h"
 #include "SineOscillator.h"
 
-AudioEngine::AudioEngine()
+AudioEngine::AudioEngine() : inst(), AM()
 {
   freq=DEFAULTFREQ;
   samples=DEFAULTSAMPLES;
@@ -10,8 +10,8 @@ AudioEngine::AudioEngine()
   tick=0;
 
   FORMAT=RTAUDIO_SINT16;
-  bufferFrames = 512;
-  bufferFrames = BUFFER_FRAME;
+  bufferFrames = 512;          // Weird ?
+  bufferFrames = BUFFER_FRAME; // Weird ?
 
   rtAudioOutputParams.deviceId=dac.getDefaultOutputDevice();
   rtAudioOutputParams.firstChannel=0;
@@ -204,7 +204,8 @@ int AudioEngine::callback( void *outputBuffer,
   for (int i=0;i<nBufferFrames-1;i++)
     {
       //int tick = S.tick();
-      int tick = AM.tick();
+      //      int tick = AM.tick();
+      Sint16 tick = AM.tick();
       //      printf("%d\n",tick);
       if (debug_audio)
 	{
@@ -213,8 +214,8 @@ int AudioEngine::callback( void *outputBuffer,
 	  //printf("%d\t",tick);
 	}
 
-      buffer[2*i]=    tick;
-      buffer[2*i+1]=  tick;
+      buffer[(2*i)]=    tick;
+      buffer[(2*i)+1]=  tick;
 
       //buffer[i+1]=tick;
       //buffer[i+1]=0;
@@ -258,6 +259,12 @@ void AudioEngine::callback()
 */
 
 
+int AudioEngine::startAudio()
+{
+  dac.startStream();
+}
+
+
 int AudioEngine::openAudio()
 {
   //int FORMAT=RTAUDIO_SINT16;
@@ -282,7 +289,8 @@ int AudioEngine::openAudio()
 			(void *)this, 
 			&rtAudioStreamOptions );
 	
-	dac.startStream();  
+	//dac.startStream();  
+	
       }
     return 0;
 }

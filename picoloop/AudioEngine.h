@@ -20,7 +20,9 @@ using namespace std;
   implement the main callback which produce the stream 
  */
 
-#define BUFFER_FRAME 8192
+//#define BUFFER_FRAME 8192
+//#define BUFFER_FRAME 512
+#define BUFFER_FRAME DEFAULTSAMPLES
 #define DEFAULT_FREQ 44100
 
 class AudioEngine
@@ -32,6 +34,7 @@ class AudioEngine
 
   int probeDevice();
 
+  int  startAudio();
   int  openAudio();
   int  closeAudio();
   void setTick(int t);
@@ -51,28 +54,30 @@ class AudioEngine
   int  getNbCallback();
   
  private:
-  int freq;
-  int samples;
-  int channels;
-  int polyphony;
+  int          freq;
+  int          samples;
+  int          channels;
+  int          polyphony;
 
-  int defaultFreq;
-  int defaultSamples;
-  int defaultChannels;
-  int defaultPolyphony;
+  int          defaultFreq;
+  int          defaultSamples;
+  int          defaultChannels;
+  int          defaultPolyphony;
   unsigned int bufferFrames;
+
+  int          FORMAT;
+  int          tick;
+  Instrument   inst;
+  //  SineOscillator S;
+  AudioMixer   AM;
+  int          nbCallback;
+  FILE       * fd;
+  int          debug_audio;
+
   RtAudio dac;
   RtAudio::StreamParameters rtAudioOutputParams;
   RtAudio::StreamOptions    rtAudioStreamOptions;
 
-  int FORMAT;
-  int tick;
-  Instrument inst;
-  //  SineOscillator S;
-  AudioMixer AM;
-  int nbCallback;
-  FILE * fd;
-  int debug_audio;
 };
 
 #endif
