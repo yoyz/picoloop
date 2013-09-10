@@ -6,21 +6,23 @@ using namespace std;
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include "Pattern.h"
+#include <string.h>
 #include <vector>
+#include "Pattern.h"
+
 
 class PatternReader
 {
  public:
   PatternReader();
 
-  void setFileName(char * filename);
+  void setFileName(string filename);
   bool readPatternData(int PatternNumber,int TrackNumber, Pattern & P);
   bool writePattern(int PatternNumber,int TrackNumber,Pattern & P);
 
  private:
   FILE * fd;
-  char * fn;
+  string fn;
 };
 
 #endif

@@ -6,7 +6,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
-#include <string.h>
+
 #include "PatternReader.h"
 
 using namespace std;
@@ -29,7 +29,7 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
   line=(char*)malloc(1024);
 
   //check if file name can be open
-  fd=fopen(fn,"r+");
+  fd=fopen(fn.c_str(),"r+");
 
   while (match==0 && retcode==true)
     {
@@ -113,7 +113,7 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
   line2=(char*)malloc(1024);
   bool found=false;
   
-  fd=fopen(fn,"r+");
+  fd=fopen(fn.c_str(),"r+");
   
   while (retcode==true)
     {
@@ -167,7 +167,7 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
   sprintf(line,"\n");
   data.insert(data.end(),line);
 
-  fd=fopen(fn,"w");
+  fd=fopen(fn.c_str(),"w");
   for (int i=0; i< data.size();i++)
     {
       fprintf(fd,"%s",data[i].c_str());
@@ -184,7 +184,7 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
 
 
 
-void PatternReader::setFileName(char * filename)
+void PatternReader::setFileName(string filename)
 {
   fn=filename;
 }
