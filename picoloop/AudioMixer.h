@@ -1,14 +1,17 @@
 using namespace std;
 
+#include "Track.h"
+
 #ifndef __AUDIOMIXER____
 #define __AUDIOMIXER____
-#include "Track.h"
+
 
 class AudioMixer
 {
  public:
   AudioMixer();
   Track & getTrack(int numTrack);
+  Sint16 twoChannel(Sint16 a,Sint16 b);
   Sint16  tick();
  private:
   Track T0;
