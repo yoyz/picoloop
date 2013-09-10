@@ -18,7 +18,7 @@ class Oscillator
   ~Oscillator();
   void   setAmplitude(int amp);
   void   setFreq(int freq);
-
+  void   reset();
   //virtual Sint16 tick();
   
   virtual Sint16 tick()
@@ -31,14 +31,14 @@ class Oscillator
   }
   
 
- protected:
-  int length;
+
   //Sint16* buffer;
   Sint16 last_tick;
-  int amplitude;
-  int frequency;
-  int bit;
-  int sample_num;
+  int    length;
+  int    amplitude;
+  int    frequency;
+  int    bit;
+  int    sample_num;
 
    
 };

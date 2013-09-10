@@ -6,6 +6,8 @@ Oscillator::Oscillator()
 {
   frequency=0;
   amplitude=0;
+  sample_num=0;
+  last_tick=0;
 }
 
 Oscillator::~Oscillator()
@@ -13,12 +15,19 @@ Oscillator::~Oscillator()
   
 }
 
+void Oscillator::reset()
+{
+  if (sample_num>0)
+    sample_num=0;
+}
+
+
 void Oscillator::setFreq(int freq)
 {
   if (freq < 0)          freq=1;
   else if (freq > 20000) freq=20000;
-  else                   frequency=freq;
-
+  frequency=freq;
+  
   //  printf("setFreq:%d\n",freq);
 }
 
@@ -34,13 +43,3 @@ void Oscillator::setAmplitude(int amp)
 }
 
 
-
-/*
-virtual Sint16 Oscillator::tick()
-{
-  Sint16 trash;
-  printf("Sint16 Oscillator::tick() freq:%d amp:%d\n",frequency,amplitude);
-  //  exit(0);
-  return trash;
-}
-*/
