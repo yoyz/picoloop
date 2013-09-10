@@ -1,18 +1,22 @@
 using namespace std;
 
+#include "MonoMixer.h"
+
 #ifndef __TRACK____
 #define __TRACK____
-#include "Machine.h"
+//#include "Machine.h"
+
 
 class Track
 {
  public:
   Track();
 
-  Machine M;
-  
+  //  Machine M;
+  MonoMixer MM;
   int tick();
-  Machine & getMachine();
+  //Machine & getMachine();
+  MonoMixer & getMonoMixer();
 
 };
 
