@@ -10,6 +10,10 @@ PatternElement::PatternElement()
   Note=0;
   Trig=false;
   Channel=0;
+  attack=0;
+  decay=127;
+  sustain=127;
+  release=8;
 }
 
 int PatternElement::getNote()
@@ -124,6 +128,51 @@ float PatternElement::getNoteFreq()
 
   return note_hertz[PatternElement::Note];
 }
+
+int PatternElement::getAttack()
+{
+  return attack;
+}
+
+void PatternElement::setAttack(int atk)
+{
+  attack=atk;
+}
+
+int PatternElement::getDecay()
+{
+  return decay;
+}
+
+void PatternElement::setDecay(int dcy)
+{
+  decay=dcy;
+}
+
+
+int PatternElement::getSustain()
+{
+  return sustain;
+}
+
+void PatternElement::setSustain(int sus)
+{
+  sustain=sus;
+}
+
+
+int PatternElement::getRelease()
+{
+  return release;
+}
+
+void PatternElement::setRelease(int rls)
+{
+  release=rls;
+}
+
+
+
 bool PatternElement::setNote(int N)
 {
   Note=N;

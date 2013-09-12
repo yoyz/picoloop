@@ -15,6 +15,18 @@ public:
   float  getNoteFreq();
   bool   setTrig(bool Trig);
   bool   getTrig();
+
+  int    getAttack();
+  void   setAttack(int atk);
+  int    getDecay();
+  void   setDecay(int dc);
+  int    getSustain();
+  void   setSustain(int sus);
+  int    getRelease();
+  void   setRelease(int rls);
+
+  
+
   bool   setChannel(int Channel);
   bool   setKeyValue(string key, string value);
   string getValueOfKey(string key);
@@ -25,6 +37,11 @@ private:
   int Note;
   bool Trig;
   int Channel;
+
+  int attack;
+  int decay;
+  int sustain;
+  int release;
   
 };
 
