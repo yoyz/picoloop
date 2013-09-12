@@ -50,6 +50,8 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
     }
 
   P.setPatternSize(PatSize);
+
+
   
   fgets(line,512,fd);
   //match('Pattern 1 Track 1 Param Note 41 0 52 0 22 0 12 0 21 11 14 12 43 12 54')
@@ -71,6 +73,8 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
       else
 	retcode=false;
 
+
+
   fgets(line,512,fd);
   //match('Pattern 1 Track 1 Param Trig 0  0 1  0 0  0 1  0 0  1  0  0  1  0  0')
   sscanf(line,
@@ -87,6 +91,98 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
       {
 	Pe=P.getPatternElement(i);      
 	Pe.setTrig(t[i]);
+	P.setPatternElement(i,Pe);      
+      }
+  else
+    retcode=false;
+
+
+
+  fgets(line,512,fd);
+  //match('Pattern 1 Track 1 Param Attack 0  0 1  0 0  0 1  0 0  1  0  0  1  0  0')
+  sscanf(line,
+	 "Pattern %d Track %d Param Attack %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
+	 &PatNum,&TrackNum,
+	 &t[0], &t[1], &t[2], &t[3],
+	 &t[4], &t[5], &t[6], &t[7],
+	 &t[8], &t[9], &t[10],&t[11],
+	 &t[12],&t[13],&t[14],&t[15]);
+
+  if (PatNum    ==PatternNumber &&
+      TrackNum  ==TrackNumber)
+    for (i=0;i<PatSize;i++)
+      {
+	Pe=P.getPatternElement(i);      
+	Pe.setAttack(t[i]);
+	P.setPatternElement(i,Pe);      
+      }
+  else
+    retcode=false;
+
+
+
+  fgets(line,512,fd);
+  //match('Pattern 1 Track 1 Param Decay 0  0 1  0 0  0 1  0 0  1  0  0  1  0  0')
+  sscanf(line,
+	 "Pattern %d Track %d Param Decay %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
+	 &PatNum,&TrackNum,
+	 &t[0], &t[1], &t[2], &t[3],
+	 &t[4], &t[5], &t[6], &t[7],
+	 &t[8], &t[9], &t[10],&t[11],
+	 &t[12],&t[13],&t[14],&t[15]);
+
+  if (PatNum    ==PatternNumber &&
+      TrackNum  ==TrackNumber)
+    for (i=0;i<PatSize;i++)
+      {
+	Pe=P.getPatternElement(i);      
+	Pe.setDecay(t[i]);
+	P.setPatternElement(i,Pe);      
+      }
+  else
+    retcode=false;
+
+
+
+
+  fgets(line,512,fd);
+  //match('Pattern 1 Track 1 Param Sustain 0  0 1  0 0  0 1  0 0  1  0  0  1  0  0')
+  sscanf(line,
+	 "Pattern %d Track %d Param Sustain %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
+	 &PatNum,&TrackNum,
+	 &t[0], &t[1], &t[2], &t[3],
+	 &t[4], &t[5], &t[6], &t[7],
+	 &t[8], &t[9], &t[10],&t[11],
+	 &t[12],&t[13],&t[14],&t[15]);
+
+  if (PatNum    ==PatternNumber &&
+      TrackNum  ==TrackNumber)
+    for (i=0;i<PatSize;i++)
+      {
+	Pe=P.getPatternElement(i);      
+	Pe.setSustain(t[i]);
+	P.setPatternElement(i,Pe);      
+      }
+  else
+    retcode=false;
+
+
+  fgets(line,512,fd);
+  //match('Pattern 1 Track 1 Param Release 0  0 1  0 0  0 1  0 0  1  0  0  1  0  0')
+  sscanf(line,
+	 "Pattern %d Track %d Param Release %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
+	 &PatNum,&TrackNum,
+	 &t[0], &t[1], &t[2], &t[3],
+	 &t[4], &t[5], &t[6], &t[7],
+	 &t[8], &t[9], &t[10],&t[11],
+	 &t[12],&t[13],&t[14],&t[15]);
+
+  if (PatNum    ==PatternNumber &&
+      TrackNum  ==TrackNumber)
+    for (i=0;i<PatSize;i++)
+      {
+	Pe=P.getPatternElement(i);      
+	Pe.setRelease(t[i]);
 	P.setPatternElement(i,Pe);      
       }
   else
@@ -161,6 +257,44 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
 	sprintf(line,"Pattern %d Track %d Param Trig ",PatternNumber,TrackNumber);
       sprintf(line+strlen(line),"%d ",P.getPatternElement(i).getTrig());
     }
+
+  for (int i=0; i< P.getSize();i++)
+    {
+      if (i==0)
+	sprintf(line,"Pattern %d Track %d Param Attack ",PatternNumber,TrackNumber);
+      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).getAttack());
+    }
+  sprintf(line+strlen(line),"\n");
+  data.insert(data.end(),line);
+
+  for (int i=0; i< P.getSize();i++)
+    {
+      if (i==0)
+	sprintf(line,"Pattern %d Track %d Param Decay ",PatternNumber,TrackNumber);
+      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).getDecay());
+    }
+  sprintf(line+strlen(line),"\n");
+  data.insert(data.end(),line);
+
+  for (int i=0; i< P.getSize();i++)
+    {
+      if (i==0)
+	sprintf(line,"Pattern %d Track %d Param Sustain ",PatternNumber,TrackNumber);
+      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).getSustain());
+    }
+  sprintf(line+strlen(line),"\n");
+  data.insert(data.end(),line);
+
+  for (int i=0; i< P.getSize();i++)
+    {
+      if (i==0)
+	sprintf(line,"Pattern %d Track %d Param Release ",PatternNumber,TrackNumber);
+      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).getRelease());
+    }
+  sprintf(line+strlen(line),"\n");
+  data.insert(data.end(),line);
+
+
   sprintf(line+strlen(line),"\n");
   data.insert(data.end(),line);
 
