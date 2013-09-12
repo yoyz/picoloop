@@ -2,36 +2,35 @@
 #include <unistd.h>
 
 SDL_GUI sg;
-int boxSize=30;
-int boxOffset=20;
 
 int main()
 {
+  int i;
+  int j;
   sg.initVideo();
-  
-  sg.box(boxOffset+(0*boxSize),   boxOffset,boxSize,boxSize,0xAECD15);
-  sg.box(boxOffset+(1*boxSize)+10,boxOffset,boxSize,boxSize,0xAECD15);
-  sg.box(boxOffset+(2*boxSize)+20,boxOffset,boxSize,boxSize,0xAECD15);
-  sg.box(boxOffset+(3*boxSize)+30,boxOffset,boxSize,boxSize,0xAECD15);
-
-  sg.box(boxOffset+(0*boxSize),   boxOffset+(1*boxSize+10),boxSize,boxSize,0xAECD15);
-  sg.box(boxOffset+(1*boxSize)+10,boxOffset+(1*boxSize+10),boxSize,boxSize,0xAECD15);
-  sg.box(boxOffset+(2*boxSize)+20,boxOffset+(1*boxSize+10),boxSize,boxSize,0xAECD15);
-  sg.box(boxOffset+(3*boxSize)+30,boxOffset+(1*boxSize+10),boxSize,boxSize,0xAECD15);
-
-  sg.box(boxOffset+(0*boxSize),   boxOffset+(2*boxSize+20),boxSize,boxSize,0xAECD15);
-  sg.box(boxOffset+(1*boxSize)+10,boxOffset+(2*boxSize+20),boxSize,boxSize,0xAECD15);
-  sg.box(boxOffset+(2*boxSize)+20,boxOffset+(2*boxSize+20),boxSize,boxSize,0xAECD15);
-  sg.box(boxOffset+(3*boxSize)+30,boxOffset+(2*boxSize+20),boxSize,boxSize,0xAECD15);
-
-  sg.box(boxOffset+(0*boxSize),   boxOffset+(3*boxSize+30),boxSize,boxSize,0xAECD15);
-  sg.box(boxOffset+(1*boxSize)+10,boxOffset+(3*boxSize+30),boxSize,boxSize,0xAECD15);
-  sg.box(boxOffset+(2*boxSize)+20,boxOffset+(3*boxSize+30),boxSize,boxSize,0xAECD15);
-  sg.box(boxOffset+(3*boxSize)+30,boxOffset+(3*boxSize+30),boxSize,boxSize,0xAECD15);
-
+  sg.openFont();
+  /*
+  */
+  for (i=0;i<16;i++)
+    {
+      sg.drawBoxNumber(i,0xAECD15);
+    }
   sg.refresh();
+  for (j=0;j<1;j++)
+    for (i=0;i<16;i++)
+      {
+	sg.drawBoxNumber(i,0x045c15);
+	if (i > 0)  sg.drawBoxNumber(i-1,0xAECD15);
+	if (i == 0) sg.drawBoxNumber(15,0xAECD15);
+	sg.refresh();
+	usleep(100000);
+	//printf("%d\n",i);
+	sg.guiText(20,24,"C4");
+      }
 
-  sleep(3);
+  
+
+  sleep(1);
   sg.closeVideo();
   return(0);
 
