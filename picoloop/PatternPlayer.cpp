@@ -66,10 +66,17 @@ int release=0;
 void display_board()
 {
   int i;
+  char str[8];
+  
   for (i=0;i<16;i++)
     {
       sg.drawBoxNumber(i,0xAECD15);
+      //sg.drawTextNumber(i,"AB\nCD");
+      sprintf(str,"%d\n%d",P0.getPatternElement(i).getRelease(),P0.getPatternElement(i).getAttack());
+      sg.drawTextNumber(i,str);
+      
     }
+
   sg.refresh();
 }
 
@@ -246,10 +253,11 @@ void handle_key()
       printf("key pgdown \n");
     }
 
-  if (s_key) { attack=-1;  }
-  if (z_key) { attack=1;   }
-  if (e_key) { release=-1; }
-  if (d_key) { release=1;  }
+  if (s_key) { attack=-2;  }
+  if (z_key) { attack=2;   }
+
+  if (e_key) { release=2; }
+  if (d_key) { release=-2;  }
 
 
 
@@ -305,8 +313,8 @@ int seq()
   //Track & t0=ae.getAudioMixer().getTrack(0);
 
   //  m0.setSawOsc();
-  //m0.setSawOsc();
-  m0.setFuzzyPulseOsc();
+  m0.setSawOsc();
+  //m0.setFuzzyPulseOsc();
   //  m1.setSawOsc();
 
   //  m0.setSineOsc();
@@ -363,7 +371,7 @@ int seq()
 	      //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
 	      P0.getPatternElement(cursor).setRelease(P0.getPatternElement(cursor).getRelease()+release);
 	      release=0;
-	      printf("[release:%d %d]\n",m0.getADSR().getRelease(),P0.getPatternElement(cursor).getRelease()+release);
+	      printf("[release:%d]\n",P0.getPatternElement(cursor).getRelease()+release);
 
 	    }
 
@@ -383,8 +391,9 @@ int seq()
 	  if (step==16) { step=0; }
 	  printf("STEP:%d\n",step);	  
 
-	  display_board();
+
 	  //GRAPHICS
+	  display_board();
 	  sg.drawBoxNumber(step,0x045c15);
 	  //if (step > 0)  sg.drawBoxNumber(step-1,0xAECD15);
 	  //	  if (step == 0) sg.drawBoxNumber(15,0xAECD15);
@@ -452,7 +461,7 @@ int seq()
       //t.setSynthFreq(880);
       //m.setSynthFreq(880);
       //printf("loop\n");
-      usleep(10);
+      //usleep(10);
       //t.setSynthFreq(1660);
       //am.setSynthFreq(1660);
       //ae.getAudioMixer().setSynthFreq(880);
