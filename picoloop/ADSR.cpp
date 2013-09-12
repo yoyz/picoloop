@@ -30,7 +30,7 @@ void ADSR::setDecay(int dc)
   decay=dc;
 }
 
-void ADSR::setSustain(int sust)
+void  ADSR::setSustain(int sust)
 {
   sustain=sust;
 }
@@ -39,6 +39,28 @@ void ADSR::setRelease(int rls)
 {
   release=rls;
 }
+
+
+int ADSR::getAttack()
+{
+  return attack;
+}
+
+int ADSR::getDecay()
+{
+  return decay;
+}
+
+int ADSR::getSustain()
+{
+  return sustain;
+}
+
+int ADSR::getRelease()
+{
+  return release;
+}
+
 
 void ADSR::setOscillator(Oscillator * osc)
 {

@@ -15,10 +15,17 @@ class ADSR
   ADSR();
   ~ADSR();
   void setInput(Oscillator * S);
+
   void setAttack(int atk);
   void setDecay(int dc);
   void setSustain(int sust);
   void setRelease(int rls);
+
+  int getAttack();
+  int getDecay();
+  int getSustain();
+  int getRelease();
+
   void setOscillator(Oscillator * osc);
   int  getPlaying();
   Sint16 tick();
