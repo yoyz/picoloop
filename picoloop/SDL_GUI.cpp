@@ -96,6 +96,34 @@ void SDL_GUI::box(int x, int y, int w, int h, Uint32 c)
 
 }
 
+void SDL_GUI::drawTextNumber(int n,char * str)
+{
+  switch(n)
+    {
+    case 0:  this->guiText(boxOffset+(0*boxSize),boxOffset,str); break;
+    case 1:  this->guiText(boxOffset+(1*boxSize)+10,boxOffset,str); break;
+    case 2:  this->guiText(boxOffset+(2*boxSize)+20,boxOffset,str); break;
+    case 3:  this->guiText(boxOffset+(3*boxSize)+30,boxOffset,str); break;
+
+    case 4:  this->guiText(boxOffset+(0*boxSize),   boxOffset+(1*boxSize+10),str); break;
+    case 5:  this->guiText(boxOffset+(1*boxSize)+10,boxOffset+(1*boxSize+10),str); break;
+    case 6:  this->guiText(boxOffset+(2*boxSize)+20,boxOffset+(1*boxSize+10),str); break;
+    case 7:  this->guiText(boxOffset+(3*boxSize)+30,boxOffset+(1*boxSize+10),str); break;
+
+    case 8:  this->guiText(boxOffset+(0*boxSize),   boxOffset+(2*boxSize+20),str); break;
+    case 9:  this->guiText(boxOffset+(1*boxSize)+10,boxOffset+(2*boxSize+20),str); break;
+    case 10: this->guiText(boxOffset+(2*boxSize)+20,boxOffset+(2*boxSize+20),str); break;
+    case 11: this->guiText(boxOffset+(3*boxSize)+30,boxOffset+(2*boxSize+20),str); break;
+      
+    case 12: this->guiText(boxOffset+(0*boxSize),   boxOffset+(3*boxSize+30),str); break;
+    case 13: this->guiText(boxOffset+(1*boxSize)+10,boxOffset+(3*boxSize+30),str); break;
+    case 14: this->guiText(boxOffset+(2*boxSize)+20,boxOffset+(3*boxSize+30),str); break;
+    case 15: this->guiText(boxOffset+(3*boxSize)+30,boxOffset+(3*boxSize+30),str); break;
+
+    }
+}
+
+
 void SDL_GUI::drawBoxNumber(int n, Uint32 c)
 {
   //sg.box(boxOffset+(0*boxSize),   boxOffset,boxSize,boxSize,0xAECD15);
