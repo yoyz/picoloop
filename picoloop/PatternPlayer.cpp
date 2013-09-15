@@ -43,6 +43,7 @@ bool z_key=false; //C+
 bool s_key=false; //D
 bool e_key=false; //D+
 bool d_key=false; //E
+bool r_key=false; //NULL
 bool f_key=false; //F
 bool t_key=false; //F+
 bool g_key=false; //G
@@ -57,24 +58,72 @@ bool l_key=false; //D
 bool p_key=false; //D+
 bool m_key=false; //E
 
+int start_key=0; 
+int state_start_key=0; 
 
 int cursor=0;
-
+int note=0;
 int attack=0;
 int release=0;
+
+int step=0;      // current step
+int menu=0;
+int menu_cursor=0;
 
 void display_board()
 {
   int i;
   char str[8];
-  
+   
   for (i=0;i<16;i++)
+    { sg.drawBoxNumber(i,0xAECD15); }
+    
+
+  // Attack/Release
+  if (menu_cursor==0)
     {
-      sg.drawBoxNumber(i,0xAECD15);
-      //sg.drawTextNumber(i,"AB\nCD");
-      sprintf(str,"%d\n%d",P0.getPatternElement(i).getRelease(),P0.getPatternElement(i).getAttack());
-      sg.drawTextNumber(i,str);
+      for (i=0;i<16;i++)
+	{
+	  if (P0.getPatternElement(i).getTrig())
+	    sg.drawBoxNumber(i,0x0EDC15);
+	  sg.smallBoxNumber(i,P0.getPatternElement(i).getRelease(),0,0x442233);
+	  sg.smallBoxNumber(i,0,P0.getPatternElement(i).getAttack(),0x662233);      
+	}
+      sg.drawBoxNumber(cursor,0x1545CD);
+      sg.smallBoxNumber(cursor,P0.getPatternElement(cursor).getRelease(),0,0x442233);
+      sg.smallBoxNumber(cursor,0,P0.getPatternElement(cursor).getAttack(),0x662233); 
       
+      sg.drawBoxNumber(step,0x045c15);  
+      sg.smallBoxNumber(step,P0.getPatternElement(step).getRelease(),0,0x442233);
+      sg.smallBoxNumber(step,0,P0.getPatternElement(step).getAttack(),0x662233); 
+    }
+
+
+  // Note
+  if (menu_cursor==1)
+    {
+
+      for (i=0;i<16;i++)
+	{
+	  if (P0.getPatternElement(i).getTrig())
+	    sg.drawBoxNumber(i,0x0EDC15);
+	  sg.smallBoxNumber(i,
+			    (P0.getPatternElement(i).getNote()%12)*10,
+			    (P0.getPatternElement(i).getNote()/12)*10,
+			    0x442233);
+	}      
+
+      sg.drawBoxNumber(cursor,0x1545CD);
+      sg.drawBoxNumber(step,0x045c15);  
+      
+      sg.smallBoxNumber(cursor,
+			(P0.getPatternElement(cursor).getNote()%12)*10,
+			(P0.getPatternElement(cursor).getNote()/12)*10,
+			0x442233);
+      sg.smallBoxNumber(step,  
+			(P0.getPatternElement(step).getNote()%12)*10,
+			(P0.getPatternElement(step).getNote()/12)*10,
+			0x442233);
     }
 
   sg.refresh();
@@ -127,6 +176,7 @@ void handle_key()
 	    case SDLK_s:           s_key=false;     break;
 	    case SDLK_e:           e_key=false;     break;
 	    case SDLK_d:           d_key=false;     break;
+	    case SDLK_r:           r_key=false;     break;
 	    case SDLK_f:           f_key=false;     break;
 	    case SDLK_t:           t_key=false;     break;
 	    case SDLK_g:           g_key=false;     break;
@@ -140,7 +190,7 @@ void handle_key()
 	    case SDLK_p:           m_key=false;     break;
 	    case SDLK_m:           m_key=false;     break;
 	      
-	      
+	    case SDLK_RETURN:     start_key=2; break;
 	      
 	    default:
 	      break;
@@ -170,6 +220,7 @@ void handle_key()
 	    case SDLK_s:           s_key=true;     break;
 	    case SDLK_e:           e_key=true;     break;
 	    case SDLK_d:           d_key=true;     break;
+	    case SDLK_r:           r_key=true;     break;
 	    case SDLK_f:           f_key=true;     break;
 	    case SDLK_t:           t_key=true;     break;
 	    case SDLK_g:           g_key=true;     break;
@@ -183,7 +234,8 @@ void handle_key()
 	    case SDLK_p:           m_key=true;     break;
 	    case SDLK_m:           m_key=true;     break;
 	      
-	      
+	    case SDLK_RETURN:      start_key=1; break;
+
 	    default:
 	      break;
 	      
@@ -196,79 +248,84 @@ void handle_key()
     }
   
   //printf("No new event\n");
+
+  if (start_key==2) 
+    {
+      if (menu==0) menu=1; 
+      else if (menu==1) menu=0;
+    }
+
+
+  if (menu==1)
+    {
+      if(left_key)
+	{
+	  menu_cursor--;
+	  if (menu_cursor<0) menu_cursor=4;
+	  printf("[menu_cursor:%d]\n",menu_cursor);
+	  printf("key left\n");            
+	}      
+
+      if(right_key)
+	{
+	  menu_cursor++;
+	  if (menu_cursor>4) menu_cursor=0;
+	  printf("[menu_cursor:%d]\n",menu_cursor);
+	  printf("key right\n");            
+	}      
+
+    }
+
   
-  
-  if(up)
+  if (menu==0)
     {
-      cursor=cursor-4;
-      if (cursor < 0) cursor=cursor +16;
-      printf("key down\n");
+      if(up)
+	{
+	  cursor=cursor-4;
+	  if (cursor < 0) cursor=cursor +16;
+	  printf("key down\n");
+	}
+
+      if(down)
+	{
+	  cursor=( cursor+4 ) %16;
+	  //if (cursor > 15) cursor=cursor-12;
+	  printf("[cursor:%d]\n",cursor);
+	  printf("key down\n");
+	}
+      
+      if(left_key)
+	{
+	  cursor--;
+	  if (cursor<0) cursor=15;
+	  printf("[cursor:%d]\n",cursor);
+	  printf("key left\n");            
+	}
+      
+      if (right_key)
+	{
+	  cursor++;
+	  if (cursor>15) cursor=0;
+	  printf("key right\n");      
+	}
     }
+  if(pageup) { printf("key pgup \n");        }
 
-  if(down)
-    {
-      cursor=( cursor+4 ) %16;
-      //if (cursor > 15) cursor=cursor-12;
-      printf("[cursor:%d]\n",cursor);
-      printf("key down\n");
-    }
-
-  if(left_key)
-    {
-      bool moved=false;
-      /*
-      if (cursor=0)     { cursor=3;  moved=true;   }
-      if (cursor=4)     { cursor=7;  moved=true;   }
-      if (cursor=8)     { cursor=11;  moved=true;   }
-      if (cursor=12)    { cursor=15; moved=true;   }
-      if (moved==false) { cursor++;  }
-      */
-      cursor--;
-      if (cursor<0) cursor=15;
-      printf("[cursor:%d]\n",cursor);
-      printf("key left\n");            
-    }
-
-  if (right_key)
-    {
-      bool moved=false;
-      /*
-      if (cursor=3)     { cursor=0;  moved=true;   }
-      if (cursor=7)     { cursor=4;  moved=true;   }
-      if (cursor=11)    { cursor=8;  moved=true;   }
-      if (cursor=15)    { cursor=12; moved=true;   }
-      if (moved==false) { cursor++;  }
-      */
-      cursor++;
-      printf("key right\n");      
-    }
-
-  if(pageup)
-    {
-      printf("key pgup \n");      
-    }
-
-  if(pagedown)
-    {
-      printf("key pgdown \n");
-    }
-
-  if (s_key) { attack=-2;  }
-  if (z_key) { attack=2;   }
-
-  if (e_key) { release=2; }
-  if (d_key) { release=-2;  }
+  if(pagedown) { printf("key pgdown \n");    }
 
 
 
-  /*
-  if (k_key)
-    {
-            printf("key z\n");
-	    //Machine    & m0=ae.getAudioMixer().getTrack(0).getMachine();
-	    m0.setSynthFreq(880);
-    }
-  */
+  if (s_key) { attack=-4;  }
+  if (z_key) { attack=4;   }
+
+  if (e_key) { release=4; }
+  if (d_key) { release=-4;  }
+
+  if (r_key) { note=1;   }
+  if (f_key) { note=-1;  }
+
+
+
 
   //No user activity => sleeping a while to keep cpu cool
   //it keep cpu under 100% usage
@@ -283,13 +340,15 @@ void handle_key()
        k_key    
        )==false)
   {
-    //      printf("sleeping 100ms");
-    //      SDL_Delay(100);
+    int delay=40;
+    //    printf("sleeping %dms\n",delay);
+    SDL_Delay(delay);
   }
   else
     {
-      //printf("sleeping 10ms");
-      //SDL_Delay(120);
+      int delay=10;
+      //printf("sleeping %dms\n",delay);
+      SDL_Delay(delay);
     }
 }
 
@@ -301,11 +360,11 @@ int seq()
   Machine m1;
 
   int tempo=60;
-  int step=0;      // current step
+
   int nbcb=0;      // current nb audio callback 
   int last_nbcb=0; // nb audio callback from last step
   int nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*tempo); // Weird ?
-
+  int debug=1;
 
 
 
@@ -313,8 +372,8 @@ int seq()
   //Track & t0=ae.getAudioMixer().getTrack(0);
 
   //  m0.setSawOsc();
-  m0.setSawOsc();
-  //m0.setFuzzyPulseOsc();
+  //m0.setSawOsc();
+  m0.setFuzzyPulseOsc();
   //  m1.setSawOsc();
 
   //  m0.setSineOsc();
@@ -353,17 +412,40 @@ int seq()
   while (true)
     {
       nbcb=ae.getNbCallback();
+
+      //if (nbcb>last_nbcb)
+      //{
+	  handle_key();
+	  SDL_Delay(40);
+	  //GRAPHICS
+	  display_board();
+	  
+	  //if (step > 0)  sg.drawBoxNumber(step-1,0xAECD15);
+	  //	  if (step == 0) sg.drawBoxNumber(15,0xAECD15);
+	  //sg.drawBoxNumber(cursor,0x1545CD);
+	  //sg.refresh();
+	  //GRAPHICS
+
+	  //	}
+
       if (nbcb-last_nbcb>nb_cb_ch_step)
 	{
 	  //printf("[cursor:%d]\n",cursor);
-	  handle_key();
+
+	  if (note!=0)
+	    { 
+	      P0.getPatternElement(cursor).setNote(P0.getPatternElement(cursor).getNote()+note);
+	      note=0;
+	    }
+
 
 	  if (attack!=0)
 	    {
 	      //m0.getADSR().setAttack(m0.getADSR().getAttack()+attack);
 	      P0.getPatternElement(cursor).setAttack(P0.getPatternElement(cursor).getAttack()+attack);
 	      attack=0;
-	      printf("[attack:%d]\n",m0.getADSR().getAttack());
+	      if (debug)
+		printf("[attack:%d]\n",m0.getADSR().getAttack());
 	    }
 
 	  if (release!=0)
@@ -371,7 +453,8 @@ int seq()
 	      //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
 	      P0.getPatternElement(cursor).setRelease(P0.getPatternElement(cursor).getRelease()+release);
 	      release=0;
-	      printf("[release:%d]\n",P0.getPatternElement(cursor).getRelease()+release);
+	      if (debug)
+		printf("[release:%d]\n",P0.getPatternElement(cursor).getRelease()+release);
 
 	    }
 
@@ -389,18 +472,10 @@ int seq()
 
 
 	  if (step==16) { step=0; }
-	  printf("STEP:%d\n",step);	  
+	  if (debug)
+	    printf("STEP:%d\n",step);	  
 
 
-	  //GRAPHICS
-	  display_board();
-	  sg.drawBoxNumber(step,0x045c15);
-	  //if (step > 0)  sg.drawBoxNumber(step-1,0xAECD15);
-	  //	  if (step == 0) sg.drawBoxNumber(15,0xAECD15);
-
-	  sg.drawBoxNumber(cursor,0x1545CD);
-	  sg.refresh();
-	  //GRAPHICS
 	  
 
 	  //printf("loop\n");    
@@ -444,38 +519,14 @@ int seq()
 	  else
 	    {
 	      //m.setSynthFreq(800);
-	      printf("m.setSynthFreq(0);\n");
-	      m1.setSynthFreq(0);
+	      //printf("m.setSynthFreq(0);\n");
+	      //m1.setSynthFreq(0);
 	    }
 
 	  step++;  
 	}
 
-      //Keyboard
-      
-      //Keyboard
 
-      //am.setSynthFreq(880);
-      //am.setSynthFreq(880);
-      //ae.getAudioMixer().setSynthFreq(440);
-      //t.setSynthFreq(880);
-      //m.setSynthFreq(880);
-      //printf("loop\n");
-      //usleep(10);
-      //t.setSynthFreq(1660);
-      //am.setSynthFreq(1660);
-      //ae.getAudioMixer().setSynthFreq(880);
-      //sleep(2);
-      /*
-	ae.setSynthFreq(880);      
-	sleep(1);
-	ae.setSynthFreq(660);      
-	sleep(1); 
-	ae.setSynthFreq(440);
-	sleep(1);
-	ae.setSynthFreq(220);      
-	sleep(1);
-      */
     }
 }
 
@@ -488,58 +539,7 @@ void setPattern()
   PR.readPatternData(1,1,P0);
   //  PR.readPatternData(1,2,P1);
 
-  /*
-  P0.setPatternSize(16);
-  //PE = P.getPatternElement(0);
-  P0.getPatternElement(0).setNote(C3);
-  P0.getPatternElement(0).setTrig(true);
 
-  P0.getPatternElement(1).setNote(F3);
-  P0.getPatternElement(1).setTrig(true);
-
-  P0.getPatternElement(3).setNote(A3P);
-  P0.getPatternElement(3).setTrig(true);
-
-  P0.getPatternElement(5).setNote(D3P);
-  P0.getPatternElement(5).setTrig(true);
-
-  P0.getPatternElement(8).setTrig(true);
-  P0.getPatternElement(8).setNote(G3);
-
-  P0.getPatternElement(9).setTrig(true);
-  P0.getPatternElement(9).setNote(C3);
-
-  P0.getPatternElement(13).setTrig(true);
-  P0.getPatternElement(13).setNote(D4P);
-
-  P0.print();
-  printf("\n");
-
-  P1.setPatternSize(16);
-  //PE = P.getPatternElement(0);
-  P1.getPatternElement(0).setNote(C4);
-  P1.getPatternElement(0).setTrig(true);
-
-  P1.getPatternElement(1).setNote(G4P);
-  P1.getPatternElement(1).setTrig(true);
-
-  P1.getPatternElement(3).setNote(D5P);
-  P1.getPatternElement(3).setTrig(true);
-
-  P1.getPatternElement(5).setNote(C4);
-  P1.getPatternElement(5).setTrig(true);
-
-  P1.getPatternElement(8).setNote(D4P);
-  P1.getPatternElement(8).setTrig(true);
-
-  P1.getPatternElement(9).setNote(C4);
-  P1.getPatternElement(9).setTrig(true);
-
-  P1.getPatternElement(13).setNote(D3P);
-  P1.getPatternElement(13).setTrig(true);
-
-  P1.print();
-  */
 }
 
 
@@ -550,7 +550,8 @@ int main()
   cowbell.loadWave(str);
   setPattern();
   sg.initVideo();
-  //SDL_EnableKeyRepeat(25, );
+  //handle_key();
+  SDL_EnableKeyRepeat(500,500);
   sg.openFont();
   display_board();
 
