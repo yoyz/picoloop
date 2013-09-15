@@ -80,7 +80,7 @@ void ADSR::reset()
   cs=sustain;
   cr=release;
   //fseconds=(float)release/16+(float(attack/16);
-  fseconds=(float)release/16;
+  fseconds=(float)release/128;
   size=fseconds*44100;
 }
 
