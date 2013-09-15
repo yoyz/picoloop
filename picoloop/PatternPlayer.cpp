@@ -14,11 +14,15 @@ using namespace std;
 
 AudioEngine ae;
 
-Pattern P0;
-Pattern P1;
+#define TRACK_MAX 2
+vector <Pattern> P(TRACK_MAX);  
+vector <Machine> M(TRACK_MAX);
 
-PatternElement PE0;
-PatternElement PE1;
+//Pattern P0;
+//Pattern P1;
+
+//PatternElement PE0;
+//PatternElement PE1;
 
 SDL_GUI sg;
 
@@ -29,7 +33,7 @@ Wave cowbell;
 //Synth beeper;
 Instrument inst;
 
-int quit;
+
 bool left_key=false;
 bool right_key=false;
 bool up=false;
@@ -58,17 +62,18 @@ bool l_key=false; //D
 bool p_key=false; //D+
 bool m_key=false; //E
 
-int start_key=0; 
-int state_start_key=0; 
-
-int cursor=0;
+int quit=0;                // do we need to quit ?
+int cursor=0;              // cursor position in the sequencer
 int note=0;
 int attack=0;
 int release=0;
 
-int step=0;      // current step
-int menu=0;
-int menu_cursor=0;
+int start_key=0;        // start key pressed ?
+int step=0;             // current step in the sequencer
+int menu=0;             // menu mode
+int menu_cursor=0;      // index of menu
+int ct=0;               // current_track
+
 
 void display_board()
 {
@@ -84,18 +89,18 @@ void display_board()
     {
       for (i=0;i<16;i++)
 	{
-	  if (P0.getPatternElement(i).getTrig())
+	  if (P[ct].getPatternElement(i).getTrig())
 	    sg.drawBoxNumber(i,0x0EDC15);
-	  sg.smallBoxNumber(i,P0.getPatternElement(i).getRelease(),0,0x442233);
-	  sg.smallBoxNumber(i,0,P0.getPatternElement(i).getAttack(),0x662233);      
+	  sg.smallBoxNumber(i,P[ct].getPatternElement(i).getRelease(),0,0x442233);
+	  sg.smallBoxNumber(i,0,P[ct].getPatternElement(i).getAttack(),0x662233);      
 	}
       sg.drawBoxNumber(cursor,0x1545CD);
-      sg.smallBoxNumber(cursor,P0.getPatternElement(cursor).getRelease(),0,0x442233);
-      sg.smallBoxNumber(cursor,0,P0.getPatternElement(cursor).getAttack(),0x662233); 
+      sg.smallBoxNumber(cursor,P[ct].getPatternElement(cursor).getRelease(),0,0x442233);
+      sg.smallBoxNumber(cursor,0,P[ct].getPatternElement(cursor).getAttack(),0x662233); 
       
       sg.drawBoxNumber(step,0x045c15);  
-      sg.smallBoxNumber(step,P0.getPatternElement(step).getRelease(),0,0x442233);
-      sg.smallBoxNumber(step,0,P0.getPatternElement(step).getAttack(),0x662233); 
+      sg.smallBoxNumber(step,P[ct].getPatternElement(step).getRelease(),0,0x442233);
+      sg.smallBoxNumber(step,0,P[ct].getPatternElement(step).getAttack(),0x662233); 
     }
 
 
@@ -105,11 +110,11 @@ void display_board()
 
       for (i=0;i<16;i++)
 	{
-	  if (P0.getPatternElement(i).getTrig())
+	  if (P[ct].getPatternElement(i).getTrig())
 	    sg.drawBoxNumber(i,0x0EDC15);
 	  sg.smallBoxNumber(i,
-			    (P0.getPatternElement(i).getNote()%12)*10,
-			    (P0.getPatternElement(i).getNote()/12)*10,
+			    (P[ct].getPatternElement(i).getNote()%12)*10,
+			    (P[ct].getPatternElement(i).getNote()/12)*10,
 			    0x442233);
 	}      
 
@@ -117,12 +122,12 @@ void display_board()
       sg.drawBoxNumber(step,0x045c15);  
       
       sg.smallBoxNumber(cursor,
-			(P0.getPatternElement(cursor).getNote()%12)*10,
-			(P0.getPatternElement(cursor).getNote()/12)*10,
+			(P[ct].getPatternElement(cursor).getNote()%12)*10,
+			(P[ct].getPatternElement(cursor).getNote()/12)*10,
 			0x442233);
       sg.smallBoxNumber(step,  
-			(P0.getPatternElement(step).getNote()%12)*10,
-			(P0.getPatternElement(step).getNote()/12)*10,
+			(P[ct].getPatternElement(step).getNote()%12)*10,
+			(P[ct].getPatternElement(step).getNote()/12)*10,
 			0x442233);
     }
 
@@ -251,8 +256,8 @@ void handle_key()
 
   if (start_key==2) 
     {
-      if (menu==0) menu=1; 
-      else if (menu==1) menu=0;
+      if (menu==0)        { menu=1;  start_key=0; }
+	else if (menu==1) { menu=0;  start_key=0; }
     }
 
 
@@ -272,8 +277,21 @@ void handle_key()
 	  if (menu_cursor>4) menu_cursor=0;
 	  printf("[menu_cursor:%d]\n",menu_cursor);
 	  printf("key right\n");            
-	}      
+	}
 
+      if(up)
+	{
+	  ct++;
+	  if (ct >= TRACK_MAX) ct=0;
+	  printf("key up\n");
+	}
+
+      if(down)
+	{
+	  ct--;
+	  if (ct<0) ct=TRACK_MAX-1;
+	  printf("key down\n");
+	}
     }
 
   
@@ -356,8 +374,8 @@ void handle_key()
 
 int seq()
 {
-  Machine m0;
-  Machine m1;
+  //  Machine m0;
+  //  Machine m1;
 
   int tempo=60;
 
@@ -365,7 +383,7 @@ int seq()
   int last_nbcb=0; // nb audio callback from last step
   int nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*tempo); // Weird ?
   int debug=1;
-
+  int t=0; // index of track
 
 
   AudioMixer & am=ae.getAudioMixer();
@@ -373,22 +391,23 @@ int seq()
 
   //  m0.setSawOsc();
   //m0.setSawOsc();
-  m0.setFuzzyPulseOsc();
+  M[0].setFuzzyPulseOsc();
+  M[1].setSineOsc();
   //  m1.setSawOsc();
 
   //  m0.setSineOsc();
   //m1.setSawOsc();
-    m1.setSineOsc();
 
-  m0.setSynthFreq(0);
-  m1.setSynthFreq(0);
+
+  M[0].setSynthFreq(0);
+  M[1].setSynthFreq(0);
 
   //Track     & t0=ae.getAudioMixer().getTrack(0);
   MonoMixer & mm0=ae.getAudioMixer().getTrack(0).getMonoMixer();
   MonoMixer & mm1=ae.getAudioMixer().getTrack(1).getMonoMixer();
 
-  mm0.setInput(&m0);
-  mm1.setInput(&m1);
+  mm0.setInput(&M[0]);
+  mm1.setInput(&M[1]);
 
   ae.startAudio();
   //Machine & m0=ae.getAudioMixer().getTrack(0).getMachine();
@@ -434,7 +453,7 @@ int seq()
 
 	  if (note!=0)
 	    { 
-	      P0.getPatternElement(cursor).setNote(P0.getPatternElement(cursor).getNote()+note);
+	      P[ct].getPatternElement(cursor).setNote(P[ct].getPatternElement(cursor).getNote()+note);
 	      note=0;
 	    }
 
@@ -442,19 +461,19 @@ int seq()
 	  if (attack!=0)
 	    {
 	      //m0.getADSR().setAttack(m0.getADSR().getAttack()+attack);
-	      P0.getPatternElement(cursor).setAttack(P0.getPatternElement(cursor).getAttack()+attack);
+	      P[ct].getPatternElement(cursor).setAttack(P[ct].getPatternElement(cursor).getAttack()+attack);
 	      attack=0;
 	      if (debug)
-		printf("[attack:%d]\n",m0.getADSR().getAttack());
+		printf("[attack:%d]\n",M[ct].getADSR().getAttack());
 	    }
 
 	  if (release!=0)
 	    {
 	      //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
-	      P0.getPatternElement(cursor).setRelease(P0.getPatternElement(cursor).getRelease()+release);
+	      P[ct].getPatternElement(cursor).setRelease(P[ct].getPatternElement(cursor).getRelease()+release);
 	      release=0;
 	      if (debug)
-		printf("[release:%d]\n",P0.getPatternElement(cursor).getRelease()+release);
+		printf("[release:%d]\n",P[ct].getPatternElement(cursor).getRelease()+release);
 
 	    }
 
@@ -480,49 +499,54 @@ int seq()
 
 	  //printf("loop\n");    
 	  last_nbcb=nbcb;
-	  if (P0.getPatternElement(step).getTrig()==true)
+	  
+	  for (t=0;t<TRACK_MAX;t++)
 	    {
-	      float f=P0.getPatternElement(step).getNoteFreq();
-	      int   i=f;
-	      
-	      //printf("%f %d \n",P0.getPatternElement(step).getNoteFreq(),i);
-	      m0.setSynthFreq(i);
-	      m0.getADSR().reset();
-	      //              m0.getADSR().setAttack(P0.getPatternElement(step).getAttack());
-	      //	      m0.getADSR().setDecay(P0.getPatternElement(step).getDecay());
-	      //	      m0.getADSR().setSustain(P0.getPatternElement(step).getSustain());
-	      m0.getADSR().setRelease(P0.getPatternElement(step).getRelease());
+	      if (P[0].getPatternElement(step).getTrig()==true)
+		{
+		  float f=P[t].getPatternElement(step).getNoteFreq();
+		  int   i=f;
+		  
+		  //printf("%f %d \n",P0.getPatternElement(step).getNoteFreq(),i);
+		  M[t].setSynthFreq(i);
+		  M[t].getADSR().reset();
+		  //              m0.getADSR().setAttack(P0.getPatternElement(step).getAttack());
+		  //	      m0.getADSR().setDecay(P0.getPatternElement(step).getDecay());
+		  //	      m0.getADSR().setSustain(P0.getPatternElement(step).getSustain());
+		  M[t].getADSR().setRelease(P[t].getPatternElement(step).getRelease());
+		  
+		  
+		  //m0.getADSR().get();
+		  M[t].getOscillator()->reset();
+		  //m.setSynthFreq(1200);
+		}
+	      else
+		{
+		  //m.setSynthFreq(800);
+		  //printf("m.setSynthFreq(0);\n");
+		  //m0.setSynthFreq(0);
+		}
 
-
-	      //m0.getADSR().get();
-	      m0.getOscillator()->reset();
-	      //m.setSynthFreq(1200);
-	    }
-	  else
-	    {
-	      //m.setSynthFreq(800);
-	      //printf("m.setSynthFreq(0);\n");
-	      //m0.setSynthFreq(0);
-	    }
-
-	  if (P1.getPatternElement(step).getTrig()==true)
-	    {
-	      float f=P1.getPatternElement(step).getNoteFreq();
-	      int   i=f;
+	      /*
+		if (P[ct].getPatternElement(step).getTrig()==true)
+		{
+		float f=P[1].getPatternElement(step).getNoteFreq();
+		int   i=f;
 		
-	      //printf("%f %d \n",P1.getPatternElement(step).getNoteFreq(),i);
-	      m1.setSynthFreq(i);
-	      m1.getADSR().reset();
-	      m1.getOscillator()->reset();
-	      //m.setSynthFreq(1200);
-	    }
-	  else
-	    {
-	      //m.setSynthFreq(800);
-	      //printf("m.setSynthFreq(0);\n");
-	      //m1.setSynthFreq(0);
-	    }
-
+		//printf("%f %d \n",P1.getPatternElement(step).getNoteFreq(),i);
+		m1.setSynthFreq(i);
+		m1.getADSR().reset();
+		m1.getOscillator()->reset();
+		//m.setSynthFreq(1200);
+		}
+		else
+		{
+		//m.setSynthFreq(800);
+		//printf("m.setSynthFreq(0);\n");
+		//m1.setSynthFreq(0);
+		}
+	      */
+	    }	
 	  step++;  
 	}
 
@@ -530,17 +554,19 @@ int seq()
     }
 }
 
-void setPattern()
+void loadPattern()
 {
   PatternReader PR;
   string fileName="data.pic";
   //PR.setFileName("data.pic");
   PR.setFileName(fileName);
-  PR.readPatternData(1,1,P0);
-  //  PR.readPatternData(1,2,P1);
+  PR.readPatternData(1,1,P[0]);
+  PR.readPatternData(1,2,P[1]);
 
-
+  //  P[1].print();
+  //exit(0);
 }
+
 
 
 int main()
@@ -548,7 +574,7 @@ int main()
   //string wave="808-cowbell.wav";
   char * str="808-cowbell.wav";
   cowbell.loadWave(str);
-  setPattern();
+  loadPattern();
   sg.initVideo();
   //handle_key();
   SDL_EnableKeyRepeat(500,500);
