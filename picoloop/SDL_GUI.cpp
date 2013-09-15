@@ -61,6 +61,45 @@ void SDL_GUI::drawBox(int x, int y, int color)
 
 
 
+
+void SDL_GUI::smallBoxNumber(int n,int x,int y,Uint32 c)
+{
+  switch(n)
+    {
+      //case 0: this->box(boxOffset+(0*boxSize)+((x*((boxSize*100)/(x+1)))/100),boxOffset,boxSize/4,boxSize/4,c); break;
+      //case 0: this->box(boxOffset+(0*boxSize)+((4*x)/boxSize),boxOffset,boxSize/4,boxSize/4,c); break;
+    case 0:  this->box(boxOffset+(0*boxSize)+0+ ((4*x)/boxSize),boxOffset+(0*boxSize+0)+((4*y)/boxSize),boxSize/4,boxSize/4,c); break;
+    case 1:  this->box(boxOffset+(1*boxSize)+10+((4*x)/boxSize),boxOffset+(0*boxSize+0)+((4*y)/boxSize),boxSize/4,boxSize/4,c); break;
+    case 2:  this->box(boxOffset+(2*boxSize)+20+((4*x)/boxSize),boxOffset+(0*boxSize+0)+((4*y)/boxSize),boxSize/4,boxSize/4,c); break;
+    case 3:  this->box(boxOffset+(3*boxSize)+30+((4*x)/boxSize),boxOffset+(0*boxSize+0)+((4*y)/boxSize),boxSize/4,boxSize/4,c); break;
+
+    case 4:  this->box(boxOffset+(0*boxSize)+0+ ((4*x)/boxSize),boxOffset+(1*boxSize+10)+((4*y)/boxSize),boxSize/4,boxSize/4,c); break;
+    case 5:  this->box(boxOffset+(1*boxSize)+10+((4*x)/boxSize),boxOffset+(1*boxSize+10)+((4*y)/boxSize),boxSize/4,boxSize/4,c); break;
+    case 6:  this->box(boxOffset+(2*boxSize)+20+((4*x)/boxSize),boxOffset+(1*boxSize+10)+((4*y)/boxSize),boxSize/4,boxSize/4,c); break;
+    case 7:  this->box(boxOffset+(3*boxSize)+30+((4*x)/boxSize),boxOffset+(1*boxSize+10)+((4*y)/boxSize),boxSize/4,boxSize/4,c); break;
+
+    case 8:  this->box(boxOffset+(0*boxSize)+0+ ((4*x)/boxSize),boxOffset+(2*boxSize+20)+((4*y)/boxSize),boxSize/4,boxSize/4,c); break;
+    case 9:  this->box(boxOffset+(1*boxSize)+10+((4*x)/boxSize),boxOffset+(2*boxSize+20)+((4*y)/boxSize),boxSize/4,boxSize/4,c); break;
+    case 10: this->box(boxOffset+(2*boxSize)+20+((4*x)/boxSize),boxOffset+(2*boxSize+20)+((4*y)/boxSize),boxSize/4,boxSize/4,c); break;
+    case 11: this->box(boxOffset+(3*boxSize)+30+((4*x)/boxSize),boxOffset+(2*boxSize+20)+((4*y)/boxSize),boxSize/4,boxSize/4,c); break;
+
+    case 12: this->box(boxOffset+(0*boxSize)+0+ ((4*x)/boxSize),boxOffset+(3*boxSize+30)+((4*y)/boxSize),boxSize/4,boxSize/4,c); break;
+    case 13: this->box(boxOffset+(1*boxSize)+10+((4*x)/boxSize),boxOffset+(3*boxSize+30)+((4*y)/boxSize),boxSize/4,boxSize/4,c); break;
+    case 14: this->box(boxOffset+(2*boxSize)+20+((4*x)/boxSize),boxOffset+(3*boxSize+30)+((4*y)/boxSize),boxSize/4,boxSize/4,c); break;
+    case 15: this->box(boxOffset+(3*boxSize)+30+((4*x)/boxSize),boxOffset+(3*boxSize+30)+((4*y)/boxSize),boxSize/4,boxSize/4,c); break;
+
+
+    }
+  
+}
+
+
+void SDL_GUI::smallBox(int x,int y,Uint32 c)
+{
+  this->box(x,y,boxSize/4,boxSize/4,c);
+}
+
+
 void SDL_GUI::box(int x, int y, int w, int h, Uint32 c)
 {
 	SDL_Rect r;
@@ -130,10 +169,10 @@ void SDL_GUI::drawBoxNumber(int n, Uint32 c)
 
   switch (n)
     {
-    case 0:  this->box(boxOffset+(0*boxSize),   boxOffset,boxSize,boxSize,c); break;
-    case 1:  this->box(boxOffset+(1*boxSize)+10,boxOffset,boxSize,boxSize,c); break;
-    case 2:  this->box(boxOffset+(2*boxSize)+20,boxOffset,boxSize,boxSize,c); break;
-    case 3:  this->box(boxOffset+(3*boxSize)+30,boxOffset,boxSize,boxSize,c); break;
+    case 0:  this->box(boxOffset+(0*boxSize),   boxOffset+(0*boxSize)+0,boxSize,boxSize,c); break;
+    case 1:  this->box(boxOffset+(1*boxSize)+10,boxOffset+(0*boxSize)+0,boxSize,boxSize,c); break;
+    case 2:  this->box(boxOffset+(2*boxSize)+20,boxOffset+(0*boxSize)+0,boxSize,boxSize,c); break;
+    case 3:  this->box(boxOffset+(3*boxSize)+30,boxOffset+(0*boxSize)+0,boxSize,boxSize,c); break;
 
     case 4:  this->box(boxOffset+(0*boxSize),   boxOffset+(1*boxSize+10),boxSize,boxSize,c); break;
     case 5:  this->box(boxOffset+(1*boxSize)+10,boxOffset+(1*boxSize+10),boxSize,boxSize,c); break;
