@@ -42,6 +42,9 @@ bool pageup=false;
 bool pagedown=false;
 bool ctrl=false;
 
+bool lalt_key=false;
+bool lctrl_key=false;
+
 bool q_key=false; //C
 bool z_key=false; //C+
 bool s_key=false; //D
@@ -68,12 +71,13 @@ int note=0;
 int attack=0;
 int release=0;
 
+
 int start_key=0;        // start key pressed ?
 int step=0;             // current step in the sequencer
 int menu=0;             // menu mode
 int menu_cursor=0;      // index of menu
 int ct=0;               // current_track
-
+int invert_trig=0;
 
 void display_board()
 {
@@ -111,7 +115,7 @@ void display_board()
       for (i=0;i<16;i++)
 	{
 	  if (P[ct].getPatternElement(i).getTrig())
-	    sg.drawBoxNumber(i,0x0EDC15);
+	    sg.drawBoxNumber(i,0x46DC65);
 	  sg.smallBoxNumber(i,
 			    (P[ct].getPatternElement(i).getNote()%12)*10,
 			    (P[ct].getPatternElement(i).getNote()/12)*10,
@@ -167,7 +171,7 @@ void handle_key()
 	case SDL_KEYUP:
 	  switch (event.key.keysym.sym)
 	    {
-	    case SDLK_LCTRL:       ctrl=false;      break;
+
 	    case SDLK_RCTRL:       ctrl=false;      break;
 	    case SDLK_LEFT:        left_key=false;  break;	     
 	    case SDLK_RIGHT:       right_key=false; break;	      
@@ -175,6 +179,9 @@ void handle_key()
 	    case SDLK_DOWN:        down=false;      break;
 	    case SDLK_PAGEUP:      pageup=false;    break;	      
 	    case SDLK_PAGEDOWN:    pagedown=false;  break;
+
+	    case SDLK_LALT:        lalt_key=false;  break;
+	    case SDLK_LCTRL:       lctrl_key=false; break;
 	      
 	    case SDLK_q:           q_key=false;     break;
 	    case SDLK_z:           z_key=false;     break;
@@ -211,7 +218,7 @@ void handle_key()
 	      exit(0);
 	      break;
 	      
-	    case SDLK_LCTRL:       ctrl=true;      break;
+
 	    case SDLK_RCTRL:       ctrl=true;      break;
 	    case SDLK_LEFT:        left_key=true;  break;	      
 	    case SDLK_RIGHT:       right_key=true; break;	      
@@ -219,7 +226,11 @@ void handle_key()
 	    case SDLK_DOWN:        down=true;      break;
 	    case SDLK_PAGEUP:      pageup=true;    break;	      
 	    case SDLK_PAGEDOWN:    pagedown=true;  break;
-	      
+
+	    case SDLK_LALT:        lalt_key=true;  break;
+	    case SDLK_LCTRL:       lctrl_key=true; break;
+
+
 	    case SDLK_q:           q_key=true;     break;
 	    case SDLK_z:           z_key=true;     break;
 	    case SDLK_s:           s_key=true;     break;
@@ -297,14 +308,14 @@ void handle_key()
   
   if (menu==0)
     {
-      if(up)
+      if(up && ! lctrl_key)
 	{
 	  cursor=cursor-4;
 	  if (cursor < 0) cursor=cursor +16;
 	  printf("key down\n");
 	}
 
-      if(down)
+      if(down && ! lctrl_key)
 	{
 	  cursor=( cursor+4 ) %16;
 	  //if (cursor > 15) cursor=cursor-12;
@@ -312,7 +323,7 @@ void handle_key()
 	  printf("key down\n");
 	}
       
-      if(left_key)
+      if(left_key && ! lctrl_key)
 	{
 	  cursor--;
 	  if (cursor<0) cursor=15;
@@ -320,27 +331,57 @@ void handle_key()
 	  printf("key left\n");            
 	}
       
-      if (right_key)
+      if (right_key && ! lctrl_key)
 	{
 	  cursor++;
 	  if (cursor>15) cursor=0;
 	  printf("key right\n");      
 	}
     }
-  if(pageup) { printf("key pgup \n");        }
 
+  
+  if (menu==0 && menu_cursor==0)
+    {
+      if (lalt_key)
+	{
+	  invert_trig=1;
+	  printf("key lalt\n");      
+	}
+
+      if (right_key && lctrl_key) { release=4;  }
+      if (left_key  && lctrl_key) { release=-4; }
+      if (up        && lctrl_key) { attack=4;   }
+      if (down      && lctrl_key) { attack=-4;  }
+    }  
+
+  if (menu==0 && menu_cursor==1)
+    {
+      if (lalt_key)
+	{
+	  invert_trig=1;
+	  printf("key lalt\n");      
+	}
+      
+      if (left_key  && lctrl_key) { note=-1; }
+      if (right_key && lctrl_key) { note=1;  }
+      if (up        && lctrl_key) { note=12;   }
+      if (down      && lctrl_key) { note=-12;  }
+    }  
+
+  
+  if(pageup) { printf("key pgup \n");        }
   if(pagedown) { printf("key pgdown \n");    }
 
 
 
-  if (s_key) { attack=-4;  }
-  if (z_key) { attack=4;   }
+  //  if (s_key) { attack=-4;  }
+  //  if (z_key) { attack=4;   }
 
-  if (e_key) { release=4; }
-  if (d_key) { release=-4;  }
+  // if (e_key) { release=4; }
+  //  if (d_key) { release=-4;  }
 
-  if (r_key) { note=1;   }
-  if (f_key) { note=-1;  }
+  //  if (r_key) { note=1;   }
+  //  if (f_key) { note=-1;  }
 
 
 
@@ -474,7 +515,12 @@ int seq()
 	      release=0;
 	      if (debug)
 		printf("[release:%d]\n",P[ct].getPatternElement(cursor).getRelease()+release);
+	    }
 
+	  if (invert_trig)
+	    {
+	       P[ct].getPatternElement(cursor).setTrig(! P[ct].getPatternElement(cursor).getTrig());
+	       invert_trig=0;
 	    }
 
 	  //if (step%3==0) { m.setSineOsc(); }
@@ -502,7 +548,7 @@ int seq()
 	  
 	  for (t=0;t<TRACK_MAX;t++)
 	    {
-	      if (P[0].getPatternElement(step).getTrig()==true)
+	      if (P[t].getPatternElement(step).getTrig()==true)
 		{
 		  float f=P[t].getPatternElement(step).getNoteFreq();
 		  int   i=f;
