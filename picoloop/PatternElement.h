@@ -34,6 +34,7 @@ public:
   string getStr();
   void   print();
 private:
+  int    checkSevenBitBoundarie(int val);
   int Note;
   bool Trig;
   int Channel;
