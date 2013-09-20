@@ -129,6 +129,15 @@ float PatternElement::getNoteFreq()
   return note_hertz[PatternElement::Note];
 }
 
+int PatternElement::checkSevenBitBoundarie(int val)
+{
+  if (val < 0)
+    return 0;
+  if (val > 127)
+    return 127;
+  return val;
+}
+
 int PatternElement::getAttack()
 {
   return attack;
@@ -136,7 +145,8 @@ int PatternElement::getAttack()
 
 void PatternElement::setAttack(int atk)
 {
-  attack=atk;
+  attack=this->checkSevenBitBoundarie(atk);
+  
 }
 
 int PatternElement::getDecay()
@@ -146,7 +156,7 @@ int PatternElement::getDecay()
 
 void PatternElement::setDecay(int dcy)
 {
-  decay=dcy;
+  decay=this->checkSevenBitBoundarie(dcy);
 }
 
 
@@ -157,7 +167,7 @@ int PatternElement::getSustain()
 
 void PatternElement::setSustain(int sus)
 {
-  sustain=sus;
+  sustain=this->checkSevenBitBoundarie(sus);
 }
 
 
@@ -168,14 +178,14 @@ int PatternElement::getRelease()
 
 void PatternElement::setRelease(int rls)
 {
-  release=rls;
+  release=this->checkSevenBitBoundarie(rls);
 }
 
 
 
 bool PatternElement::setNote(int N)
 {
-  Note=N;
+  Note=this->checkSevenBitBoundarie(N);
 }
 
 bool PatternElement::setTrig(bool T)
