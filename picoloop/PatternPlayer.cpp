@@ -15,6 +15,14 @@ using namespace std;
 AudioEngine ae;
 
 #define TRACK_MAX 2
+
+#define BOX_COLOR        0xAECD15
+#define NOTE_COLOR       0x46DC65
+#define CURSOR_COLOR     0x1545CD
+#define STEP_COLOR       0x045c15
+#define TRIG_COLOR       0x0EDC15
+#define SMALLBOX_COLOR   0x442233
+
 vector <Pattern> P(TRACK_MAX);  
 vector <Machine> M(TRACK_MAX);
 
@@ -83,9 +91,10 @@ void display_board()
 {
   int i;
   char str[8];
-   
+
+  //Draw all box default color   
   for (i=0;i<16;i++)
-    { sg.drawBoxNumber(i,0xAECD15); }
+    { sg.drawBoxNumber(i,BOX_COLOR); }
      
 
   // Attack/Release
@@ -93,46 +102,51 @@ void display_board()
     {
       for (i=0;i<16;i++)
 	{
+	  //Draw trigged box trig color   
 	  if (P[ct].getPatternElement(i).getTrig())
-	    sg.drawBoxNumber(i,0x0EDC15);
-	  sg.smallBoxNumber(i,P[ct].getPatternElement(i).getRelease(),0,0x442233);
-	  sg.smallBoxNumber(i,0,P[ct].getPatternElement(i).getAttack(),0x662233);      
+	    sg.drawBoxNumber(i,TRIG_COLOR);
+	  //AdsR
+	  sg.smallBoxNumber(i,P[ct].getPatternElement(i).getRelease(),0,SMALLBOX_COLOR);
+	  sg.smallBoxNumber(i,0,P[ct].getPatternElement(i).getAttack(),SMALLBOX_COLOR);      
 	}
-      sg.drawBoxNumber(cursor,0x1545CD);
-      sg.smallBoxNumber(cursor,P[ct].getPatternElement(cursor).getRelease(),0,0x442233);
-      sg.smallBoxNumber(cursor,0,P[ct].getPatternElement(cursor).getAttack(),0x662233); 
+      //Cursor & step postion
+      sg.drawBoxNumber(cursor,CURSOR_COLOR);
+      sg.smallBoxNumber(cursor,P[ct].getPatternElement(cursor).getRelease(),0,SMALLBOX_COLOR);
+      sg.smallBoxNumber(cursor,0,P[ct].getPatternElement(cursor).getAttack(),SMALLBOX_COLOR); 
       
-      sg.drawBoxNumber(step,0x045c15);  
-      sg.smallBoxNumber(step,P[ct].getPatternElement(step).getRelease(),0,0x442233);
-      sg.smallBoxNumber(step,0,P[ct].getPatternElement(step).getAttack(),0x662233); 
+      sg.drawBoxNumber(step,STEP_COLOR);  
+      sg.smallBoxNumber(step,P[ct].getPatternElement(step).getRelease(),0,SMALLBOX_COLOR);
+      sg.smallBoxNumber(step,0,P[ct].getPatternElement(step).getAttack(),SMALLBOX_COLOR); 
     }
 
 
   // Note
   if (menu_cursor==1)
     {
-
+      
       for (i=0;i<16;i++)
 	{
+	  //Draw trig note color
 	  if (P[ct].getPatternElement(i).getTrig())
-	    sg.drawBoxNumber(i,0x46DC65);
+	    sg.drawBoxNumber(i,NOTE_COLOR);
+
 	  sg.smallBoxNumber(i,
 			    (P[ct].getPatternElement(i).getNote()%12)*10,
 			    (P[ct].getPatternElement(i).getNote()/12)*10,
-			    0x442233);
+			    SMALLBOX_COLOR);
 	}      
-
-      sg.drawBoxNumber(cursor,0x1545CD);
-      sg.drawBoxNumber(step,0x045c15);  
+      //Cursor & Step postion
+      sg.drawBoxNumber(cursor,CURSOR_COLOR);
+      sg.drawBoxNumber(step,STEP_COLOR);  
       
       sg.smallBoxNumber(cursor,
 			(P[ct].getPatternElement(cursor).getNote()%12)*10,
 			(P[ct].getPatternElement(cursor).getNote()/12)*10,
-			0x442233);
+			SMALLBOX_COLOR);
       sg.smallBoxNumber(step,  
 			(P[ct].getPatternElement(step).getNote()%12)*10,
 			(P[ct].getPatternElement(step).getNote()/12)*10,
-			0x442233);
+			SMALLBOX_COLOR);
     }
 
   sg.refresh();
@@ -144,10 +158,11 @@ void openaudio()
   //beeper.initialize(1000,440);
   //inst.setSynth();
   //inst.assignSynth(beeper);
-  ae.set_instrument(inst);
-  printf("Before\n");
+  //  ae.set_instrument(inst);
+  //  printf("Before\n");
+  printf("openAudio output\n");
   ae.openAudio();
-  printf("After\n");
+  //  printf("After\n");
 }
 
 
@@ -449,26 +464,10 @@ int seq()
 
   mm0.setInput(&M[0]);
   mm1.setInput(&M[1]);
-
+  printf("openAudio start streaming\n");
   ae.startAudio();
-  //Machine & m0=ae.getAudioMixer().getTrack(0).getMachine();
-
-  //  Track & t1=ae.getAudioMixer().getTrack(1);
-  //  Machine & m1=ae.getAudioMixer().getTrack(1).getMachine();
-
 
   
-  //m0.setSawOsc();
-  //  m1.setSineOsc();
-  //m0.setSawOsc();
-  //  m0.setFuzzyPulseOsc();
-  //  m1.setSawOsc();
-  //m1.setSineOsc();
-  //m0.setSawOsc();
-  //m1.setSawOsc();
-
-  //  am=ae.getAudioMixer();
-  //  return 0;
   while (true)
     {
       nbcb=ae.getNbCallback();
@@ -521,26 +520,13 @@ int seq()
 	    {
 	       P[ct].getPatternElement(cursor).setTrig(! P[ct].getPatternElement(cursor).getTrig());
 	       invert_trig=0;
-	    }
-
-	  //if (step%3==0) { m.setSineOsc(); }
-	  //if (step%3==1) { m.setSawOsc(); }
-	  //if (step%3==2) { m.setFuzzyPulseOsc(); }
-	  
-	  //m0.setSawOsc(); 
-	  //m1.setSawOsc(); 
-	  //m.setFuzzyPulseOsc();
-	  //m0.setSineOsc();
-	  //m1.setSineOsc();
-	  
+	    }	  
 
 
 
 	  if (step==16) { step=0; }
 	  if (debug)
 	    printf("STEP:%d\n",step);	  
-
-
 	  
 
 	  //printf("loop\n");    
@@ -553,12 +539,10 @@ int seq()
 		  float f=P[t].getPatternElement(step).getNoteFreq();
 		  int   i=f;
 		  
-		  //printf("%f %d \n",P0.getPatternElement(step).getNoteFreq(),i);
+
 		  M[t].setSynthFreq(i);
 		  M[t].getADSR().reset();
-		  //              m0.getADSR().setAttack(P0.getPatternElement(step).getAttack());
-		  //	      m0.getADSR().setDecay(P0.getPatternElement(step).getDecay());
-		  //	      m0.getADSR().setSustain(P0.getPatternElement(step).getSustain());
+;
 		  M[t].getADSR().setRelease(P[t].getPatternElement(step).getRelease());
 		  
 		  
@@ -573,30 +557,9 @@ int seq()
 		  //m0.setSynthFreq(0);
 		}
 
-	      /*
-		if (P[ct].getPatternElement(step).getTrig()==true)
-		{
-		float f=P[1].getPatternElement(step).getNoteFreq();
-		int   i=f;
-		
-		//printf("%f %d \n",P1.getPatternElement(step).getNoteFreq(),i);
-		m1.setSynthFreq(i);
-		m1.getADSR().reset();
-		m1.getOscillator()->reset();
-		//m.setSynthFreq(1200);
-		}
-		else
-		{
-		//m.setSynthFreq(800);
-		//printf("m.setSynthFreq(0);\n");
-		//m1.setSynthFreq(0);
-		}
-	      */
 	    }	
 	  step++;  
 	}
-
-
     }
 }
 
