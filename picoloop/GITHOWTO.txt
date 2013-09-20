@@ -1,0 +1,96 @@
+My daily GIT workflow
+By BARTEK | Published: NOVEMBER 24, 2010
+I haven't been posting anything that is iPhone development related for a long time. I am a bit busy with my full time .NET contract at the moment which means few time for Obj-C development. But a few weeks (or months?) ago, when I was much more involved in iPhone development I decided to move my SVN repository to Git. So far I am very happy about it and I would like to share with you my daily Git workflow and why I started to love it from day one!
+Why Git?
+Git is different than any CVS-based revision control system. It's a distributed revision control system which means that you can have version controlling capabilities (along with ability to share your code with your teammates) without a need for a central server. Every Git working folder is your local, full-fledged repository containing the whole code history which means that you no longer depend on a network access or a central server. What does it mean in practice? Let's see.
+
+Git basics
+Starting with git is very easy. I was using SVN before so I had to migrate my revision history to Git using git svn command. I found this tutorial helpful with one remark - instead of git-svn I had to type git svn because the first didn't work for me. To start from scratch and add existing project to Git I go to project folder and type the following:
+
+git init
+git add .
+git commit -m "Initial commit"
+From now on, all my source code is controlled by Git and my repository is stored in project's .git folder (locally!). I can check it by executing:
+
+git log
+which shows my code history. I also use gitx to see it in a nice Mac OSX GUI or use Git extensions if I am on Windows.
+
+To see which files has changed during your last commit I type:
+
+git status
+To commit my changes I do the following:
+
+git add .
+git commit -m "Commit message"
+or if I don't have any new files:
+
+git commit -a -m "Commit message"
+which will commit all modified files shown by git status.
+
+To discard all the changes that I made in my working folder I type:
+
+git reset --hard
+which turns a working folder to a state from my last commit. If I need to discard my last commit I type:
+
+git reset --hard HEAD~1
+To discard only some of the files I can type:
+
+git checkout -- file
+Remote repositories
+You can freely share your code with your teammates without a need for a central server and Git allows you to push & pull your changes between different computers. I prefer to have a central server, and for this purpose I have setup a Git bare repository on my webfaction account and I am so far very happy about it. To push my changes to remote I need to do the following:
+
+git push origin master
+To pull the changes from a server I do:
+
+git pull origin master
+Branching
+The power of Git is in its branching. In fact Git encourages you to branch very often - it's a very cheap operation and merging of a branch is very easy. I do a branch for every feature, major issue, every release / hotfix and I also maintain master / develop branches as remote branches. It allows me to have a development not interrupted by a release process and also have a possibility to implement hotfixes on production release.
+
+To start a branch I do the following:
+
+git checkout -b feature1
+When I am done with implementation of a feature I need to merge it into develop branch and after that I am safe to delete a feature branch:
+
+git checkout develop
+git merge feature1
+git branch -d feature1
+Git will always try to do a fast-forward merge here. If I need to preserve a history of my feature branch (to have a possibility to see which individual commits create a feature) I force Git not to do a fast-forward merge with a -no-ff option:
+
+git merge --no-ff feature1
+Release management with Git
+When I am ready to release a new version I do a branch, update a version, do some minor fixes (if necessary) and then merge into master branch and tag:
+
+git checkout -b release-1.0.0.0 develop
+// update version
+git commit -a -m "Updated version to 1.0.0.0"
+// do some fixes if necessary
+git commit -a -m "Fixes"
+git checkout master
+git merge --no-ff release-1.0.0.0
+git tag v1.0.0.0
+I also have a develop branch so I need to merge it into this branch as well and then I can safely remove a release branch:
+
+git checkout develop
+git merge --no-ff release-1.0.0.0
+git branch -d release-1.0.0.0
+Hotfixes (if something bad happened on production and I don't want to do a new release from develop) are created from master branch (which contains only production releases!):
+
+git checkout -b hotfix-1.0.0.1 master
+// update version
+git commit -a -m "Updated version to 1.0.0.1"
+// do a fix
+and merged into master and develop branches in a similar way as releases:
+
+git checkout master
+git merge --no-ff hotfix-1.0.0.1
+git tag v1.0.0.1
+git checkout develop
+git merge --no-ff hotfix-1.0.0.1
+git branch -d hotfix-1.0.0.1
+The last thing I do is updating a central repository:
+
+git push
+git push --tags
+And that's it. I hope you find this short tutorial helpful. If you need more detailed information about things I missed here I suggest reading git tutorials on official Git webpage.
+
+Be Sociable, Share!
