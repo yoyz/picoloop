@@ -86,7 +86,7 @@ void display_board()
    
   for (i=0;i<16;i++)
     { sg.drawBoxNumber(i,0xAECD15); }
-    
+     
 
   // Attack/Release
   if (menu_cursor==0)
