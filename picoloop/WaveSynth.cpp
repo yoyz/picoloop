@@ -31,6 +31,8 @@ Sint16 * file_buffer=0;
 Sint16 * vector_buffer=0;
 int filesize_octet=0;
 
+int octave=25;
+
 SDL_Surface *screen=NULL;
 
 bool left_key=false;
@@ -45,10 +47,12 @@ bool q_key=false; //C
 bool z_key=false; //C+
 bool s_key=false; //D
 bool e_key=false; //D+
+
 bool d_key=false; //E
 bool f_key=false; //F
 bool t_key=false; //F+
 bool g_key=false; //G
+
 bool y_key=false; //G+
 bool h_key=false; //A
 bool u_key=false; //A+
@@ -63,7 +67,7 @@ bool m_key=false; //E
 Machine m0;
 Machine m1;
 
-
+PatternElement PE;
 //printf("Before\n");
 //ae.openAudio();
 
@@ -98,7 +102,8 @@ void openaudio()
   //  m1.setSawOsc();
 
   m0.setSynthFreq(0);
-  m1.setSynthFreq(0);
+  //  m1.setSynthFreq(0);
+  m0.getADSR().setRelease(90);
 
   MonoMixer & mm0=ae.getAudioMixer().getTrack(0).getMonoMixer();
   MonoMixer & mm1=ae.getAudioMixer().getTrack(1).getMonoMixer();
@@ -179,6 +184,7 @@ void handle_key()
 	case SDL_KEYUP:
 	  switch (event.key.keysym.sym)
 	    {
+	      printf("key release\n");
 	    case SDLK_LCTRL:       ctrl=false;      break;
 	    case SDLK_RCTRL:       ctrl=false;      break;
 	    case SDLK_LEFT:        left_key=false;  break;	     
@@ -192,14 +198,17 @@ void handle_key()
 	    case SDLK_z:           z_key=false;     break;
 	    case SDLK_s:           s_key=false;     break;
 	    case SDLK_e:           e_key=false;     break;
+
 	    case SDLK_d:           d_key=false;     break;
 	    case SDLK_f:           f_key=false;     break;
 	    case SDLK_t:           t_key=false;     break;
 	    case SDLK_g:           g_key=false;     break;
+
 	    case SDLK_y:           y_key=false;     break;
 	    case SDLK_h:           h_key=false;     break;
 	    case SDLK_u:           u_key=false;     break;
 	    case SDLK_j:           j_key=false;     break;
+
 	    case SDLK_k:           k_key=false;     break;
 	    case SDLK_o:           o_key=false;     break;
 	    case SDLK_l:           l_key=false;     break;
@@ -216,6 +225,7 @@ void handle_key()
 	case SDL_KEYDOWN:
 	  switch (event.key.keysym.sym)
 	    {
+	      printf("key down\n");
 	    case SDLK_ESCAPE:
 	      printf("Exiting...\n");
 	      quit = 1;
@@ -235,18 +245,21 @@ void handle_key()
 	    case SDLK_z:           z_key=true;     break;
 	    case SDLK_s:           s_key=true;     break;
 	    case SDLK_e:           e_key=true;     break;
+
 	    case SDLK_d:           d_key=true;     break;
 	    case SDLK_f:           f_key=true;     break;
 	    case SDLK_t:           t_key=true;     break;
 	    case SDLK_g:           g_key=true;     break;
+
 	    case SDLK_y:           y_key=true;     break;
 	    case SDLK_h:           h_key=true;     break;
 	    case SDLK_u:           u_key=true;     break;
 	    case SDLK_j:           j_key=true;     break;
+
 	    case SDLK_k:           k_key=true;     break;
 	    case SDLK_o:           o_key=true;     break;
 	    case SDLK_l:           l_key=true;     break;
-	    case SDLK_p:           m_key=true;     break;
+	    case SDLK_p:           p_key=true;     break;
 	    case SDLK_m:           m_key=true;     break;
 
 	      
@@ -268,6 +281,7 @@ void handle_key()
     {
     if (divide<=32) divide=32;
     divide=divide/1.1;
+    octave=octave+12;
     redraw=true;
     printf("key up\n");
     }
@@ -276,6 +290,7 @@ void handle_key()
     {
       if (divide>=4096) divide=4096;
       divide=divide*1.1;
+      octave=octave-12;
       redraw=true;
       printf("key down\n");
     }
@@ -321,25 +336,24 @@ void handle_key()
       printf("key pgdown %f\n",zoom);
     }
 
-  if (q_key) { printf("key q\n"); m0.setSynthFreq(110); m0.getADSR().reset(); }
-  if (z_key) { printf("key z\n"); m0.setSynthFreq(116); m0.getADSR().reset(); }
-  if (s_key) { printf("key s\n"); m0.setSynthFreq(123); m0.getADSR().reset(); }
-  if (e_key) { printf("key e\n"); m0.setSynthFreq(130); m0.getADSR().reset(); }
-  if (d_key) { printf("key d\n"); m0.setSynthFreq(138); m0.getADSR().reset(); }
-  if (f_key) { printf("key f\n"); m0.setSynthFreq(146); m0.getADSR().reset(); }
-  if (t_key) { printf("key t\n"); m0.setSynthFreq(155); m0.getADSR().reset(); }
-  if (g_key) { printf("key g\n"); m0.setSynthFreq(164); m0.getADSR().reset(); }
-  if (y_key) { printf("key y\n"); m0.setSynthFreq(174); m0.getADSR().reset(); }
-  if (h_key) { printf("key h\n"); m0.setSynthFreq(184); m0.getADSR().reset(); }
-  if (u_key) { printf("key u\n"); m0.setSynthFreq(195); m0.getADSR().reset(); }
-  if (j_key) { printf("key j\n"); m0.setSynthFreq(207); m0.getADSR().reset(); }
+  if (q_key) { printf("key q\n"); PE.setNote(0+octave);  }
+  if (z_key) { printf("key z\n"); PE.setNote(1+octave);  }
+  if (s_key) { printf("key s\n"); PE.setNote(2+octave);  }
+  if (e_key) { printf("key e\n"); PE.setNote(3+octave);  }
+  if (d_key) { printf("key d\n"); PE.setNote(4+octave);  }
+  if (f_key) { printf("key f\n"); PE.setNote(5+octave);  }
+  if (t_key) { printf("key t\n"); PE.setNote(6+octave);  }
+  if (g_key) { printf("key g\n"); PE.setNote(7+octave);  }
+  if (y_key) { printf("key y\n"); PE.setNote(8+octave);  }
+  if (h_key) { printf("key h\n"); PE.setNote(9+octave);  }
+  if (u_key) { printf("key u\n"); PE.setNote(10+octave);  }
+  if (j_key) { printf("key j\n"); PE.setNote(11+octave);  }
 
-
-  if (k_key) { printf("key k\n"); m0.setSynthFreq(220); m0.getADSR().reset(); }
-  if (o_key) { printf("key o\n"); m0.setSynthFreq(233); m0.getADSR().reset(); }
-  if (l_key) { printf("key l\n"); m0.setSynthFreq(246); m0.getADSR().reset(); }
-  if (p_key) { printf("key p\n"); m0.setSynthFreq(261); m0.getADSR().reset(); }
-  if (m_key) { printf("key m\n"); m0.setSynthFreq(277); m0.getADSR().reset(); }
+  if (k_key) { printf("key k\n"); PE.setNote(12+octave);  }
+  if (o_key) { printf("key o\n"); PE.setNote(13+octave);  }
+  if (l_key) { printf("key l\n"); PE.setNote(14+octave);  }
+  if (p_key) { printf("key p\n"); PE.setNote(15+octave);  }
+  if (m_key) { printf("key m\n"); PE.setNote(16+octave);  }
 
   /*
   if (k_key)
@@ -354,23 +368,50 @@ void handle_key()
   //it keep cpu under 100% usage
   if ((up       || 
        down     || 
-       left     || 
-       right    || 
+       left_key || 
+       right_key|| 
        pagedown || 
        pageup   ||
        q_key    ||
        z_key    ||
-       k_key    
+       s_key    ||
+       e_key    ||
+       d_key    ||
+       f_key    ||
+       t_key    ||
+       g_key    ||
+       y_key    ||
+       j_key    ||
+       u_key    ||
+       j_key    ||
+       k_key    ||
+       o_key    ||
+       l_key    ||
+       p_key    ||
+       m_key    
        )==false)
     {
-      printf("sleeping 100ms");
-      //      SDL_Delay(100);
+      printf("no key so sleeping 100ms\n");
+      SDL_Delay(100);
+
     }
   else
     {
-      printf("sleeping 10ms");
-      SDL_Delay(10);
+      printf("%d%d%d%d %d%d%d%d %d%d%d%d %d%d%d%d %d\n",
+	     q_key,z_key,s_key,e_key,
+	     d_key,f_key,t_key,g_key,
+	     y_key,h_key,u_key,j_key,
+	     k_key,o_key,l_key,p_key,
+	     m_key
+	     );
+
+      m0.setSynthFreq(PE.getNoteFreq());
+      m0.getADSR().reset();
+
+      printf("key pressed sleeping 10ms\n");
+      SDL_Delay(100);
     }
+
 }
 
 void prepare_vector_buffer()
@@ -461,7 +502,9 @@ int main(int argc,char ** argv)
   //if (argc!=2) { printf("arg please\n"); exit(1); }
   file_buffer=(Sint16*)malloc(sizeof(short)*DEFAULTSAMPLES);
   vector_buffer=(Sint16*)malloc(sizeof(Sint16)*SCREEN_WIDTH);
-  
+
+  PE.setNote(32);
+
   struct stat fileStat;
   //  if(stat(argv[1],&fileStat) < 0)    
   //return 1;
