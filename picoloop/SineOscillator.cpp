@@ -9,6 +9,13 @@ SineOscillator::SineOscillator()
   amplitude=127;
   sample_num=0;
   printf("SineOscillator::SineOscillator()\n");
+  if(1)
+    {
+      //printf("Malloc sine\n");
+      //table = (Sint16*)malloc(sizeof(Sint16)*8192);
+      table=NULL;
+    }
+  table_fill=0;
 }
 
 SineOscillator::~SineOscillator()
@@ -23,6 +30,10 @@ Sint16 SineOscillator::tick()
   Uint16 u;
   Sint16 s;
   int debug=0;
+  if (frequency==0) return(0);
+  if (table==NULL)
+    table=(Sint16*)malloc(sizeof(Sint16)*32768);
+
   if (debug) printf("Sint16 SineOscillator::tick()\n");
   sample_num++;
 
@@ -36,6 +47,15 @@ Sint16 SineOscillator::tick()
   // sin(XXX) => -1 <=> 1
   // note 440Hz
   //f=(sin(((sample_num/3.14159)/22)/440*frequency));
+
+
+  if (sample_num % (int)(44100/frequency) <table_fill)
+    {
+      //    printf("hit\n");
+      return table[sample_num % (int)(44100/frequency)];
+    }
+
+
   f=sin((2*3.14159*sample_num*frequency)/44100);
 
   if (debug) printf("%f\n",f);
@@ -54,6 +74,11 @@ Sint16 SineOscillator::tick()
   //if (sample_num % 16 == 0) { u = u & 0xCF0F; }
 
   s=u;
+
+  table_fill=sample_num;
+  table[table_fill]=s;
+  //printf("table_fill : %d\n",table_fill);
+
   if (debug) printf("%d\n\n",u);
   //if (sample_num % 32 != 0) { return last_tick; }
   last_tick=u;

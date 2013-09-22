@@ -39,7 +39,7 @@ class Oscillator
   int    frequency;
   int    bit;
   int    sample_num;
-
+  int    table_fill;
    
 };
 

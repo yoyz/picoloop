@@ -18,16 +18,21 @@ Oscillator::~Oscillator()
 void Oscillator::reset()
 {
   if (sample_num>0)
-    sample_num=0;
+    {
+      sample_num=0;
+    }
 }
 
 
 void Oscillator::setFreq(int freq)
 {
+  if (freq==frequency)
+    return;
+
   if (freq < 0)          freq=1;
   else if (freq > 20000) freq=20000;
   frequency=freq;
-  
+  table_fill=0;
   //  printf("setFreq:%d\n",freq);
 }
 

@@ -10,7 +10,7 @@ using namespace std;
 
 #ifndef __SINEOSCILLATOR__
 #define __SINEOSCILLATOR__
-
+ 
 class SineOscillator : public Oscillator
 {
  public:
@@ -19,8 +19,10 @@ class SineOscillator : public Oscillator
   //  void   setFreq(int freq);
   //  void   setAmplitude(int amplitude);
   Sint16 tick();
-
-  
+  Sint16 * table;
+  //  int    table_fill;
+ 
+ 
 };
 
 #endif
