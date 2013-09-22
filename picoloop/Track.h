@@ -16,7 +16,7 @@ class Track
   MonoMixer MM;
   int tick();
   //Machine & getMachine();
-  MonoMixer & getMonoMixer();
+  MonoMixer * getMonoMixer();
 
 };
 
