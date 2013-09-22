@@ -87,10 +87,13 @@ int menu_cursor=0;      // index of menu
 int ct=0;               // current_track
 int invert_trig=0;
 
+int dirty_graphic=1;
+
 void display_board()
 {
   int i;
   char str[8];
+  dirty_graphic=0;
 
   //Draw all box default color   
   for (i=0;i<16;i++)
@@ -295,6 +298,7 @@ void handle_key()
 	  if (menu_cursor<0) menu_cursor=4;
 	  printf("[menu_cursor:%d]\n",menu_cursor);
 	  printf("key left\n");            
+	  dirty_graphic=1;
 	}      
 
       if(right_key)
@@ -303,6 +307,7 @@ void handle_key()
 	  if (menu_cursor>4) menu_cursor=0;
 	  printf("[menu_cursor:%d]\n",menu_cursor);
 	  printf("key right\n");            
+	  dirty_graphic=1;
 	}
 
       if(up)
@@ -310,6 +315,7 @@ void handle_key()
 	  ct++;
 	  if (ct >= TRACK_MAX) ct=0;
 	  printf("key up\n");
+	  dirty_graphic=1;
 	}
 
       if(down)
@@ -317,6 +323,7 @@ void handle_key()
 	  ct--;
 	  if (ct<0) ct=TRACK_MAX-1;
 	  printf("key down\n");
+	  dirty_graphic=1;
 	}
     }
 
@@ -328,6 +335,7 @@ void handle_key()
 	  cursor=cursor-4;
 	  if (cursor < 0) cursor=cursor +16;
 	  printf("key down\n");
+	  dirty_graphic=1;
 	}
 
       if(down && ! lctrl_key)
@@ -336,6 +344,7 @@ void handle_key()
 	  //if (cursor > 15) cursor=cursor-12;
 	  printf("[cursor:%d]\n",cursor);
 	  printf("key down\n");
+	  dirty_graphic=1;
 	}
       
       if(left_key && ! lctrl_key)
@@ -344,6 +353,7 @@ void handle_key()
 	  if (cursor<0) cursor=15;
 	  printf("[cursor:%d]\n",cursor);
 	  printf("key left\n");            
+	  dirty_graphic=1;
 	}
       
       if (right_key && ! lctrl_key)
@@ -351,6 +361,7 @@ void handle_key()
 	  cursor++;
 	  if (cursor>15) cursor=0;
 	  printf("key right\n");      
+	  dirty_graphic=1;
 	}
     }
 
@@ -361,12 +372,13 @@ void handle_key()
 	{
 	  invert_trig=1;
 	  printf("key lalt\n");      
+	  dirty_graphic=1;
 	}
 
-      if (right_key && lctrl_key) { release=4;  }
-      if (left_key  && lctrl_key) { release=-4; }
-      if (up        && lctrl_key) { attack=4;   }
-      if (down      && lctrl_key) { attack=-4;  }
+      if (right_key && lctrl_key) { release=4; 	  dirty_graphic=1; }
+      if (left_key  && lctrl_key) { release=-4; 	  dirty_graphic=1; }
+      if (up        && lctrl_key) { attack=4;  	  dirty_graphic=1; }
+      if (down      && lctrl_key) { attack=-4; 	  dirty_graphic=1; }
     }  
 
   if (menu==0 && menu_cursor==1)
@@ -375,12 +387,13 @@ void handle_key()
 	{
 	  invert_trig=1;
 	  printf("key lalt\n");      
+	  dirty_graphic=1;
 	}
       
-      if (left_key  && lctrl_key) { note=-1; }
-      if (right_key && lctrl_key) { note=1;  }
-      if (up        && lctrl_key) { note=12;   }
-      if (down      && lctrl_key) { note=-12;  }
+      if (left_key  && lctrl_key) { note=-1; 	  dirty_graphic=1;}
+      if (right_key && lctrl_key) { note=1;  	  dirty_graphic=1;}
+      if (up        && lctrl_key) { note=12;   	  dirty_graphic=1;}
+      if (down      && lctrl_key) { note=-12;  	  dirty_graphic=1;}
     }  
 
   
@@ -436,8 +449,9 @@ int seq()
   int tempo=60;
 
   int nbcb=0;      // current nb audio callback 
-  int last_nbcb=0; // nb audio callback from last step
+  int last_nbcb=0;
   int nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*tempo); // Weird ?
+  int last_nbcb_ch_step=0; // nb audio callback from last step
   int debug=1;
   int t=0; // index of track
 
@@ -446,8 +460,8 @@ int seq()
   //Track & t0=ae.getAudioMixer().getTrack(0);
 
   //  m0.setSawOsc();
-  //m0.setSawOsc();
-  M[0].setFuzzyPulseOsc();
+  M[0].setSawOsc();
+  //M[0].setFuzzyPulseOsc();
   M[1].setSineOsc();
   //  m1.setSawOsc();
 
@@ -472,13 +486,19 @@ int seq()
     {
       nbcb=ae.getNbCallback();
 
+      if (nbcb>last_nbcb)
+	{
+	  //ae.processBuffer();
+	  last_nbcb=nbcb;
+	}
       //if (nbcb>last_nbcb)
       //{
 	  handle_key();
-	  SDL_Delay(40);
+
 	  //GRAPHICS
-	  display_board();
-	  
+	  if (	  dirty_graphic)
+	    display_board();
+	  //SDL_Delay(40);	  
 	  //if (step > 0)  sg.drawBoxNumber(step-1,0xAECD15);
 	  //	  if (step == 0) sg.drawBoxNumber(15,0xAECD15);
 	  //sg.drawBoxNumber(cursor,0x1545CD);
@@ -487,9 +507,16 @@ int seq()
 
 	  //	}
 
-      if (nbcb-last_nbcb>nb_cb_ch_step)
+      if (nbcb-last_nbcb_ch_step>nb_cb_ch_step)
 	{
+	  dirty_graphic=1;
+	  display_board();
 	  //printf("[cursor:%d]\n",cursor);
+
+	  //printf("loop\n");    
+	  last_nbcb_ch_step=nbcb;
+	  step++;  
+
 
 	  if (note!=0)
 	    { 
@@ -529,8 +556,6 @@ int seq()
 	    printf("STEP:%d\n",step);	  
 	  
 
-	  //printf("loop\n");    
-	  last_nbcb=nbcb;
 	  
 	  for (t=0;t<TRACK_MAX;t++)
 	    {
@@ -558,7 +583,7 @@ int seq()
 		}
 
 	    }	
-	  step++;  
+
 	}
     }
 }

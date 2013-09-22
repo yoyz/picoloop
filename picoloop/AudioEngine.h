@@ -52,6 +52,8 @@ class AudioEngine
   void set_instrument(Instrument inst);
   void setSynthFreq(int sfreq);
   int  getNbCallback();
+
+  void processBuffer();
   
  private:
   int          freq;
@@ -73,7 +75,7 @@ class AudioEngine
   int          nbCallback;
   FILE       * fd;
   int          debug_audio;
-
+  Sint16     * buffer_out;
   RtAudio dac;
   RtAudio::StreamParameters rtAudioOutputParams;
   RtAudio::StreamOptions    rtAudioStreamOptions;

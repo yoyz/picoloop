@@ -31,12 +31,20 @@ AudioEngine::AudioEngine() : inst(), AM()
     {
       fd = fopen("audioout","w+");
     }
-
+  buffer_out=(Sint16*)malloc(sizeof(Sint16)*BUFFER_FRAME);
 }
 
 int AudioEngine::getNbCallback()
 {
   return nbCallback;
+}
+
+void AudioEngine::processBuffer()
+{
+  for (int i=0;i<BUFFER_FRAME-1;i++)
+    {
+      buffer_out[i]=AM.tick();      
+    }
 }
 
 /*
@@ -199,13 +207,14 @@ int AudioEngine::callback( void *outputBuffer,
   typedef Sint16 MY_TYPE;
   MY_TYPE *buffer = (MY_TYPE *) outputBuffer;
   
-
+  this->processBuffer();
   
   for (int i=0;i<nBufferFrames-1;i++)
     {
       //int tick = S.tick();
       //      int tick = AM.tick();
-      Sint16 tick = AM.tick();
+      //Sint16 tick = AM.tick();
+      tick=buffer_out[i];
       //      printf("%d\n",tick);
       if (debug_audio)
 	{
