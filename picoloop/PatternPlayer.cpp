@@ -26,6 +26,8 @@ AudioEngine ae;
 vector <Pattern> P(TRACK_MAX);  
 vector <Machine> M(TRACK_MAX);
 
+
+
 //Pattern P0;
 //Pattern P1;
 
@@ -286,7 +288,7 @@ void handle_key()
   if (start_key==2) 
     {
       if (menu==0)        { menu=1;  start_key=0; }
-	else if (menu==1) { menu=0;  start_key=0; }
+      else if (menu==1)   { menu=0;  start_key=0; }
     }
 
 
@@ -462,16 +464,23 @@ int seq()
   //  m0.setSawOsc();
   //M[0].setSawOsc();
   //M[0].setFuzzyPulseOsc();
-  M[0].setSineOsc();
-  M[1].setSineOsc();
+
+  for (t=0;t<TRACK_MAX;t++)
+    {
+      M[t].setSynthFreq(0);
+      M[t].setSineOsc();
+    }
+  M[1].setSawOsc();
+  //  M[0].setSineOsc();
+  //  M[1].setSineOsc();
   //  m1.setSawOsc();
 
   //  m0.setSineOsc();
   //m1.setSawOsc();
 
 
-  M[0].setSynthFreq(0);
-  M[1].setSynthFreq(0);
+  //  M[0].setSynthFreq(0);
+  //  M[1].setSynthFreq(0);
 
   //Track     & t0=ae.getAudioMixer().getTrack(0);
   MonoMixer & mm0=ae.getAudioMixer().getTrack(0).getMonoMixer();
@@ -599,7 +608,7 @@ void loadPattern()
   //PR.setFileName("data.pic");
   PR.setFileName(fileName);
   for (i=0;i<TRACK_MAX;i++)
-    PR.readPatternData(i+1,i+1,P[i]);
+    PR.readPatternData(1,i+1,P[i]);
 
   /*
   PR.readPatternData(1,1,P[0]);
