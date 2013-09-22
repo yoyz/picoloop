@@ -23,9 +23,9 @@ AudioEngine ae;
 #define TRIG_COLOR       0x0EDC15
 #define SMALLBOX_COLOR   0x442233
 
-vector <Pattern> P(TRACK_MAX);  
-vector <Machine> M(TRACK_MAX);
-
+vector <Pattern>     P(TRACK_MAX);  
+vector <Machine>     M(TRACK_MAX);
+vector <MonoMixer *> MM(TRACK_MAX);
 
 
 //Pattern P0;
@@ -435,7 +435,7 @@ void handle_key()
     }
   else
     {
-      int delay=50;
+      int delay=20;
       printf("sleeping %dms\n",delay);
       SDL_Delay(delay);
     }
@@ -483,13 +483,20 @@ int seq()
   //  M[1].setSynthFreq(0);
 
   //Track     & t0=ae.getAudioMixer().getTrack(0);
-  MonoMixer & mm0=ae.getAudioMixer().getTrack(0).getMonoMixer();
-  MonoMixer & mm1=ae.getAudioMixer().getTrack(1).getMonoMixer();
-
+  //  MonoMixer & mm0=ae.getAudioMixer().getTrack(0).getMonoMixer();
+  //  MonoMixer & mm1=ae.getAudioMixer().getTrack(1).getMonoMixer();
+  for (t=0;t<TRACK_MAX;t++)
+    {
+      MM[t]=ae.getAudioMixer().getTrack(t).getMonoMixer();
+      MM[t]->setInput(&M[t]);
+      MM[t]->setAmplitude(64);
+    }
+  /*
   mm0.setInput(&M[0]);
   mm0.setAmplitude(64);
   mm1.setInput(&M[1]);
   mm1.setAmplitude(64);
+  */
   printf("openAudio start streaming\n");
   ae.startAudio();
 
@@ -578,8 +585,7 @@ int seq()
 		  
 
 		  M[t].setSynthFreq(i);
-		  M[t].getADSR().reset();
-;
+		  M[t].getADSR().reset();;
 		  M[t].getADSR().setRelease(P[t].getPatternElement(step).getRelease());
 		  
 		  
