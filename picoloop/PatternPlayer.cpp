@@ -489,7 +489,7 @@ int seq()
     {
       MM[t]=ae.getAudioMixer().getTrack(t).getMonoMixer();
       MM[t]->setInput(&M[t]);
-      MM[t]->setAmplitude(64);
+      MM[t]->setAmplitude(32);
     }
   /*
   mm0.setInput(&M[0]);
@@ -586,8 +586,7 @@ int seq()
 
 		  M[t].setSynthFreq(i);
 		  M[t].getADSR().reset();;
-		  M[t].getADSR().setRelease(P[t].getPatternElement(step).getRelease());
-		  
+		  M[t].getADSR().setRelease(P[t].getPatternElement(step).getRelease());		  
 		  
 		  //m0.getADSR().get();
 		  M[t].getOscillator()->reset();

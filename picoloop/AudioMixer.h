@@ -14,8 +14,9 @@ class AudioMixer
   Sint16 twoChannel(Sint16 a,Sint16 b);
   Sint16  tick();
  private:
-  Track T0;
-  Track T1;
+  //Track T0;
+  //Track T1;
+  vector <Track> T;
 
 };
 
