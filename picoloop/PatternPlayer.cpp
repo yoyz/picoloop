@@ -14,7 +14,7 @@ using namespace std;
 
 AudioEngine ae;
 
-#define TRACK_MAX 2
+
 
 #define BOX_COLOR        0xAECD15
 #define NOTE_COLOR       0x46DC65
@@ -426,15 +426,15 @@ void handle_key()
        z_key    ||
        k_key    
        )==false)
-  {
-    int delay=40;
-    //    printf("sleeping %dms\n",delay);
-    SDL_Delay(delay);
-  }
+    {
+      int delay=20;
+      printf("sleeping %dms\n",delay);
+      SDL_Delay(delay);
+    }
   else
     {
-      int delay=10;
-      //printf("sleeping %dms\n",delay);
+      int delay=50;
+      printf("sleeping %dms\n",delay);
       SDL_Delay(delay);
     }
 }
@@ -460,8 +460,9 @@ int seq()
   //Track & t0=ae.getAudioMixer().getTrack(0);
 
   //  m0.setSawOsc();
-  M[0].setSawOsc();
+  //M[0].setSawOsc();
   //M[0].setFuzzyPulseOsc();
+  M[0].setSineOsc();
   M[1].setSineOsc();
   //  m1.setSawOsc();
 
@@ -477,7 +478,9 @@ int seq()
   MonoMixer & mm1=ae.getAudioMixer().getTrack(1).getMonoMixer();
 
   mm0.setInput(&M[0]);
+  mm0.setAmplitude(64);
   mm1.setInput(&M[1]);
+  mm1.setAmplitude(64);
   printf("openAudio start streaming\n");
   ae.startAudio();
 
@@ -590,13 +593,18 @@ int seq()
 
 void loadPattern()
 {
+  int i;
   PatternReader PR;
   string fileName="data.pic";
   //PR.setFileName("data.pic");
   PR.setFileName(fileName);
+  for (i=0;i<TRACK_MAX;i++)
+    PR.readPatternData(i+1,i+1,P[i]);
+
+  /*
   PR.readPatternData(1,1,P[0]);
   PR.readPatternData(1,2,P[1]);
-
+  */
   //  P[1].print();
   //exit(0);
 }
