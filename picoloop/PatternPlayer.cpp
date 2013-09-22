@@ -27,7 +27,7 @@ vector <Pattern>     P(TRACK_MAX);
 vector <Machine>     M(TRACK_MAX);
 vector <MonoMixer *> MM(TRACK_MAX);
 
-
+PatternReader PR;
 //Pattern P0;
 //Pattern P1;
 
@@ -43,6 +43,8 @@ Wave cowbell;
 //Synth beeper;
 Instrument inst;
 
+int save=false;
+int load=false;
 
 bool left_key=false;
 bool right_key=false;
@@ -332,6 +334,11 @@ void handle_key()
   
   if (menu==0)
     {
+      if (s_key)
+	  save=true;
+      if (l_key)
+	load=true;
+      
       if(up && ! lctrl_key)
 	{
 	  cursor=cursor-4;
@@ -435,7 +442,7 @@ void handle_key()
     }
   else
     {
-      int delay=20;
+      int delay=40;
       printf("sleeping %dms\n",delay);
       SDL_Delay(delay);
     }
@@ -536,6 +543,17 @@ int seq()
 	  last_nbcb_ch_step=nbcb;
 	  step++;  
 
+	  if (save)
+	    {
+	      PR.writePattern(1,ct+1,P[ct]);
+	      save=false;
+	    }
+
+	  if (load)
+	    {
+	      PR.readPatternData(1,ct+1,P[ct]);
+	      load=false;
+	    }
 
 	  if (note!=0)
 	    { 
@@ -608,7 +626,7 @@ int seq()
 void loadPattern()
 {
   int i;
-  PatternReader PR;
+
   string fileName="data.pic";
   //PR.setFileName("data.pic");
   PR.setFileName(fileName);
