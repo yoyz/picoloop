@@ -257,6 +257,8 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
 	sprintf(line,"Pattern %d Track %d Param Trig ",PatternNumber,TrackNumber);
       sprintf(line+strlen(line),"%d ",P.getPatternElement(i).getTrig());
     }
+  sprintf(line+strlen(line),"\n");
+  data.insert(data.end(),line);
 
   for (int i=0; i< P.getSize();i++)
     {
@@ -295,7 +297,7 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
   data.insert(data.end(),line);
 
 
-  sprintf(line+strlen(line),"\n");
+  sprintf(line,"\n");
   data.insert(data.end(),line);
 
   sprintf(line,"\n");
