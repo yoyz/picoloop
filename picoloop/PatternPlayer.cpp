@@ -494,7 +494,7 @@ int seq()
   //  MonoMixer & mm1=ae.getAudioMixer().getTrack(1).getMonoMixer();
   for (t=0;t<TRACK_MAX;t++)
     {
-      MM[t]=ae.getAudioMixer().getTrack(t).getMonoMixer();
+      MM[t]=&ae.getAudioMixer().getTrack(t).getMonoMixer();
       MM[t]->setInput(&M[t]);
       MM[t]->setAmplitude(32);
     }
