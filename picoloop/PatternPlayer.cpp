@@ -14,7 +14,7 @@ using namespace std;
 
 AudioEngine ae;
 
-
+#define KEY_REPEAT_INTERVAL 400
 
 #define BOX_COLOR        0xAECD15
 #define NOTE_COLOR       0x46DC65
@@ -46,36 +46,36 @@ Instrument inst;
 int save=false;
 int load=false;
 
-bool left_key=false;
-bool right_key=false;
-bool up=false;
-bool down=false;
-bool pageup=false;
-bool pagedown=false;
-bool ctrl=false;
+int left_key=0;
+int right_key=0;
+int up_key=0;
+int down_key=0;
+int pageup_key=0;
+int pagedown_key=0;
+int ctrl_key=0;
 
-bool lalt_key=false;
-bool lctrl_key=false;
+int lalt_key=0;
+int lctrl_key=0;
 
-bool q_key=false; //C
-bool z_key=false; //C+
-bool s_key=false; //D
-bool e_key=false; //D+
-bool d_key=false; //E
-bool r_key=false; //NULL
-bool f_key=false; //F
-bool t_key=false; //F+
-bool g_key=false; //G
-bool y_key=false; //G+
-bool h_key=false; //A
-bool u_key=false; //A+
-bool j_key=false; //B
+int q_key=0; //C
+int z_key=0; //C+
+int s_key=0; //D
+int e_key=0; //D+
+int d_key=0; //E
+int r_key=0; //NULL
+int f_key=0; //F
+int t_key=0; //F+
+int g_key=0; //G
+int y_key=0; //G+
+int h_key=0; //A
+int u_key=0; //A+
+int j_key=0; //B
 
-bool k_key=false; //C
-bool o_key=false; //C+
-bool l_key=false; //D
-bool p_key=false; //D+
-bool m_key=false; //E
+int k_key=0; //C
+int o_key=0; //C+
+int l_key=0; //D
+int p_key=0; //D+
+int m_key=0; //E
 
 int quit=0;                // do we need to quit ?
 int cursor=0;              // cursor position in the sequencer
@@ -194,35 +194,39 @@ void handle_key()
 	  switch (event.key.keysym.sym)
 	    {
 
-	    case SDLK_RCTRL:       ctrl=false;      break;
-	    case SDLK_LEFT:        left_key=false;  break;	     
-	    case SDLK_RIGHT:       right_key=false; break;	      
-	    case SDLK_UP:          up=false;        break;	      
-	    case SDLK_DOWN:        down=false;      break;
-	    case SDLK_PAGEUP:      pageup=false;    break;	      
-	    case SDLK_PAGEDOWN:    pagedown=false;  break;
 
-	    case SDLK_LALT:        lalt_key=false;  break;
-	    case SDLK_LCTRL:       lctrl_key=false; break;
+	    case SDLK_LEFT:        left_key=0;      break;	     
+	    case SDLK_RIGHT:       right_key=0;     break;	      
+	    case SDLK_UP:          up_key=0;        break;	      
+	    case SDLK_DOWN:        down_key=0;      break;
+
+
+	    case SDLK_RCTRL:       ctrl_key=false;      break;
+	    case SDLK_PAGEUP:      pageup_key=false;    break;	      
+
+	    case SDLK_LALT:        lalt_key=false;      break;
+	    case SDLK_LCTRL:       lctrl_key=false;     break;
+
+	    case SDLK_PAGEDOWN:    pagedown_key=false;  break;
 	      
-	    case SDLK_q:           q_key=false;     break;
-	    case SDLK_z:           z_key=false;     break;
-	    case SDLK_s:           s_key=false;     break;
-	    case SDLK_e:           e_key=false;     break;
-	    case SDLK_d:           d_key=false;     break;
-	    case SDLK_r:           r_key=false;     break;
-	    case SDLK_f:           f_key=false;     break;
-	    case SDLK_t:           t_key=false;     break;
-	    case SDLK_g:           g_key=false;     break;
-	    case SDLK_y:           y_key=false;     break;
-	    case SDLK_h:           h_key=false;     break;
-	    case SDLK_u:           u_key=false;     break;
-	    case SDLK_j:           j_key=false;     break;
-	    case SDLK_k:           k_key=false;     break;
-	    case SDLK_o:           o_key=false;     break;
-	    case SDLK_l:           l_key=false;     break;
-	    case SDLK_p:           m_key=false;     break;
-	    case SDLK_m:           m_key=false;     break;
+	    case SDLK_q:           q_key=false;        break;
+	    case SDLK_z:           z_key=false;        break;
+	    case SDLK_s:           s_key=false;        break;
+	    case SDLK_e:           e_key=false;        break;
+	    case SDLK_d:           d_key=false;        break;
+	    case SDLK_r:           r_key=false;        break;
+	    case SDLK_f:           f_key=false;        break;
+	    case SDLK_t:           t_key=false;        break;
+	    case SDLK_g:           g_key=false;        break;
+	    case SDLK_y:           y_key=false;        break;
+	    case SDLK_h:           h_key=false;        break;
+	    case SDLK_u:           u_key=false;        break;
+	    case SDLK_j:           j_key=false;        break;
+	    case SDLK_k:           k_key=false;        break;
+	    case SDLK_o:           o_key=false;        break;
+	    case SDLK_l:           l_key=false;        break;
+	    case SDLK_p:           m_key=false;        break;
+	    case SDLK_m:           m_key=false;        break;
 	      
 	    case SDLK_RETURN:     start_key=2; break;
 	      
@@ -241,38 +245,40 @@ void handle_key()
 	      break;
 	      
 
-	    case SDLK_RCTRL:       ctrl=true;      break;
-	    case SDLK_LEFT:        left_key=true;  break;	      
-	    case SDLK_RIGHT:       right_key=true; break;	      
-	    case SDLK_UP:          up=true;        break;	      
-	    case SDLK_DOWN:        down=true;      break;
-	    case SDLK_PAGEUP:      pageup=true;    break;	      
-	    case SDLK_PAGEDOWN:    pagedown=true;  break;
 
-	    case SDLK_LALT:        lalt_key=true;  break;
-	    case SDLK_LCTRL:       lctrl_key=true; break;
+	    case SDLK_LEFT:        left_key++;         break;	      
+	    case SDLK_RIGHT:       right_key++;        break;	      
+	    case SDLK_UP:          up_key++;           break;	      
+	    case SDLK_DOWN:        down_key++;         break;
+
+	    case SDLK_PAGEUP:      pageup_key=true;    break;	      
+	    case SDLK_PAGEDOWN:    pagedown_key=true;  break;
+
+	    case SDLK_RCTRL:       ctrl_key=true;      break;
+	    case SDLK_LALT:        lalt_key=true;      break;
+	    case SDLK_LCTRL:       lctrl_key=true;     break;
 
 
-	    case SDLK_q:           q_key=true;     break;
-	    case SDLK_z:           z_key=true;     break;
-	    case SDLK_s:           s_key=true;     break;
-	    case SDLK_e:           e_key=true;     break;
-	    case SDLK_d:           d_key=true;     break;
-	    case SDLK_r:           r_key=true;     break;
-	    case SDLK_f:           f_key=true;     break;
-	    case SDLK_t:           t_key=true;     break;
-	    case SDLK_g:           g_key=true;     break;
-	    case SDLK_y:           y_key=true;     break;
-	    case SDLK_h:           h_key=true;     break;
-	    case SDLK_u:           u_key=true;     break;
-	    case SDLK_j:           j_key=true;     break;
-	    case SDLK_k:           k_key=true;     break;
-	    case SDLK_o:           o_key=true;     break;
-	    case SDLK_l:           l_key=true;     break;
-	    case SDLK_p:           m_key=true;     break;
-	    case SDLK_m:           m_key=true;     break;
+	    case SDLK_q:           q_key=true;         break;
+	    case SDLK_z:           z_key=true;         break;
+	    case SDLK_s:           s_key=true;         break;
+	    case SDLK_e:           e_key=true;         break;
+	    case SDLK_d:           d_key=true;         break;
+	    case SDLK_r:           r_key=true;         break;
+	    case SDLK_f:           f_key=true;         break;
+	    case SDLK_t:           t_key=true;         break;
+	    case SDLK_g:           g_key=true;         break;
+	    case SDLK_y:           y_key=true;         break;
+	    case SDLK_h:           h_key=true;         break;
+	    case SDLK_u:           u_key=true;         break;
+	    case SDLK_j:           j_key=true;         break;
+	    case SDLK_k:           k_key=true;         break;
+	    case SDLK_o:           o_key=true;         break;
+	    case SDLK_l:           l_key=true;         break;
+	    case SDLK_p:           m_key=true;         break;
+	    case SDLK_m:           m_key=true;         break;
 	      
-	    case SDLK_RETURN:      start_key=1; break;
+	    case SDLK_RETURN:      start_key=1;        break;
 
 	    default:
 	      break;
@@ -314,7 +320,7 @@ void handle_key()
 	  dirty_graphic=1;
 	}
 
-      if(up)
+      if(up_key)
 	{
 	  ct++;
 	  if (ct >= TRACK_MAX) ct=0;
@@ -322,7 +328,7 @@ void handle_key()
 	  dirty_graphic=1;
 	}
 
-      if(down)
+      if(down_key)
 	{
 	  ct--;
 	  if (ct<0) ct=TRACK_MAX-1;
@@ -339,20 +345,21 @@ void handle_key()
       if (l_key)
 	load=true;
       
-      if(up && ! lctrl_key)
+      if(up_key && ! lctrl_key)
 	{
 	  cursor=cursor-4;
 	  if (cursor < 0) cursor=cursor +16;
-	  printf("key down\n");
+	  printf("key down : up \n");
 	  dirty_graphic=1;
+	  //up_key=1;
 	}
 
-      if(down && ! lctrl_key)
+      if(down_key && ! lctrl_key)
 	{
 	  cursor=( cursor+4 ) %16;
 	  //if (cursor > 15) cursor=cursor-12;
 	  printf("[cursor:%d]\n",cursor);
-	  printf("key down\n");
+	  printf("key down : down\n");
 	  dirty_graphic=1;
 	}
       
@@ -384,10 +391,10 @@ void handle_key()
 	  dirty_graphic=1;
 	}
 
-      if (right_key && lctrl_key) { release=4; 	  dirty_graphic=1; }
-      if (left_key  && lctrl_key) { release=-4; 	  dirty_graphic=1; }
-      if (up        && lctrl_key) { attack=4;  	  dirty_graphic=1; }
-      if (down      && lctrl_key) { attack=-4; 	  dirty_graphic=1; }
+      if (left_key      && lctrl_key) { release=-4; 	  dirty_graphic=1; }
+      if (right_key     && lctrl_key) { release=4; 	  dirty_graphic=1; }
+      if (up_key        && lctrl_key) { attack=4;  	  dirty_graphic=1; }
+      if (down_key      && lctrl_key) { attack=-4; 	  dirty_graphic=1; }
     }  
 
   if (menu==0 && menu_cursor==1)
@@ -401,13 +408,13 @@ void handle_key()
       
       if (left_key  && lctrl_key) { note=-1; 	  dirty_graphic=1;}
       if (right_key && lctrl_key) { note=1;  	  dirty_graphic=1;}
-      if (up        && lctrl_key) { note=12;   	  dirty_graphic=1;}
-      if (down      && lctrl_key) { note=-12;  	  dirty_graphic=1;}
+      if (up_key    && lctrl_key) { note=12;   	  dirty_graphic=1;}
+      if (down_key  && lctrl_key) { note=-12;  	  dirty_graphic=1;}
     }  
 
   
-  if(pageup) { printf("key pgup \n");        }
-  if(pagedown) { printf("key pgdown \n");    }
+  if(pageup_key)   { printf("key pgup \n");        }
+  if(pagedown_key) { printf("key pgdown \n");    }
 
 
 
@@ -425,27 +432,33 @@ void handle_key()
 
   //No user activity => sleeping a while to keep cpu cool
   //it keep cpu under 100% usage
-  if ((up       || 
-       down     || 
-       left     || 
-       right    || 
-       pagedown || 
-       pageup   ||
-       q_key    ||
-       z_key    ||
+  if ((up_key       || 
+       down_key     || 
+       left_key     || 
+       right_key    || 
+       pagedown_key || 
+       pageup_key   ||
+       q_key        ||
+       z_key        ||
        k_key    
        )==false)
     {
       int delay=20;
-      printf("sleeping %dms\n",delay);
+      //      printf("sleeping %dms\n",delay);
       SDL_Delay(delay);
     }
   else
     {
       int delay=40;
-      printf("sleeping %dms\n",delay);
-      SDL_Delay(delay);
+      //      printf("sleeping %dms\n",delay);
+            SDL_Delay(delay);
     }
+  //  printf("up\tdown\tleft\tright\n");
+  printf("%d\t%d\t%d\t%d\n",
+	 up_key,
+	 down_key,
+	 left_key,
+	 right_key);
 }
 
 
@@ -651,7 +664,7 @@ int main()
   loadPattern();
   sg.initVideo();
   //handle_key();
-  SDL_EnableKeyRepeat(500,500);
+  //  SDL_EnableKeyRepeat(500,500);
   sg.openFont();
   display_board();
 
