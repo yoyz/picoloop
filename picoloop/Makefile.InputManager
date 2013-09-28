@@ -1,0 +1,17 @@
+CC=g++
+CFLAGS=-c -DLINUX -I. -LSDL/lib -ggdb
+LDFLAGS=-lSDL
+SOURCES=InputManager.cpp SDL_GUI.cpp InputTest.cpp
+OBJECTS=$(SOURCES:.cpp=.o)
+EXECUTABLE=InputTest
+
+all: $(SOURCES) $(EXECUTABLE)
+
+$(EXECUTABLE): $(OBJECTS)
+	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
+
+.cpp.o:
+	$(CC) $(CFLAGS) $< -o $@
+
+clean:
+	-rm -f $(OBJECTS) $(EXECUTABLE)
