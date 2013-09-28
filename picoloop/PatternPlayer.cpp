@@ -34,7 +34,7 @@ PatternReader PR;
 //PatternElement PE0;
 //PatternElement PE1;
 
-SDL_GUI sg;
+SDL_GUI SG;
 
 //MonoMixer MM0;
 //MonoMixer MM1;
@@ -46,36 +46,40 @@ Instrument inst;
 int save=false;
 int load=false;
 
-int left_key=0;
-int right_key=0;
-int up_key=0;
-int down_key=0;
-int pageup_key=0;
-int pagedown_key=0;
-int ctrl_key=0;
 
-int lalt_key=0;
-int lctrl_key=0;
+// BEGIN KEY
+bool left_key=false;
+bool right_key=false;
+bool up_key=false;
+bool down_key=false;
+bool pageup_key=false;
+bool pagedown_key=false;
+bool ctrl_key=false;
 
-int q_key=0; //C
-int z_key=0; //C+
-int s_key=0; //D
-int e_key=0; //D+
-int d_key=0; //E
-int r_key=0; //NULL
-int f_key=0; //F
-int t_key=0; //F+
-int g_key=0; //G
-int y_key=0; //G+
-int h_key=0; //A
-int u_key=0; //A+
-int j_key=0; //B
+bool lalt_key=false;
+bool lctrl_key=false;
 
-int k_key=0; //C
-int o_key=0; //C+
-int l_key=0; //D
-int p_key=0; //D+
-int m_key=0; //E
+bool q_key=false; //C
+bool z_key=false; //C+
+bool s_key=false; //D
+bool e_key=false; //D+
+bool d_key=false; //E
+bool r_key=false; //NULL
+bool f_key=false; //F
+bool t_key=false; //F+
+bool g_key=false; //G
+bool y_key=false; //G+
+bool h_key=false; //A
+bool u_key=false; //A+
+bool j_key=false; //B
+
+bool k_key=false; //C
+bool o_key=false; //C+
+bool l_key=false; //D
+bool p_key=false; //D+
+bool m_key=false; //E
+// END KEY
+
 
 int quit=0;                // do we need to quit ?
 int cursor=0;              // cursor position in the sequencer
@@ -101,7 +105,7 @@ void display_board()
 
   //Draw all box default color   
   for (i=0;i<16;i++)
-    { sg.drawBoxNumber(i,BOX_COLOR); }
+    { SG.drawBoxNumber(i,BOX_COLOR); }
      
 
   // Attack/Release
@@ -111,19 +115,19 @@ void display_board()
 	{
 	  //Draw trigged box trig color   
 	  if (P[ct].getPatternElement(i).getTrig())
-	    sg.drawBoxNumber(i,TRIG_COLOR);
+	    SG.drawBoxNumber(i,TRIG_COLOR);
 	  //AdsR
-	  sg.smallBoxNumber(i,P[ct].getPatternElement(i).getRelease(),0,SMALLBOX_COLOR);
-	  sg.smallBoxNumber(i,0,P[ct].getPatternElement(i).getAttack(),SMALLBOX_COLOR);      
+	  SG.smallBoxNumber(i,P[ct].getPatternElement(i).getRelease(),0,SMALLBOX_COLOR);
+	  SG.smallBoxNumber(i,0,P[ct].getPatternElement(i).getAttack(),SMALLBOX_COLOR);      
 	}
       //Cursor & step postion
-      sg.drawBoxNumber(cursor,CURSOR_COLOR);
-      sg.smallBoxNumber(cursor,P[ct].getPatternElement(cursor).getRelease(),0,SMALLBOX_COLOR);
-      sg.smallBoxNumber(cursor,0,P[ct].getPatternElement(cursor).getAttack(),SMALLBOX_COLOR); 
+      SG.drawBoxNumber(cursor,CURSOR_COLOR);
+      SG.smallBoxNumber(cursor,P[ct].getPatternElement(cursor).getRelease(),0,SMALLBOX_COLOR);
+      SG.smallBoxNumber(cursor,0,P[ct].getPatternElement(cursor).getAttack(),SMALLBOX_COLOR); 
       
-      sg.drawBoxNumber(step,STEP_COLOR);  
-      sg.smallBoxNumber(step,P[ct].getPatternElement(step).getRelease(),0,SMALLBOX_COLOR);
-      sg.smallBoxNumber(step,0,P[ct].getPatternElement(step).getAttack(),SMALLBOX_COLOR); 
+      SG.drawBoxNumber(step,STEP_COLOR);  
+      SG.smallBoxNumber(step,P[ct].getPatternElement(step).getRelease(),0,SMALLBOX_COLOR);
+      SG.smallBoxNumber(step,0,P[ct].getPatternElement(step).getAttack(),SMALLBOX_COLOR); 
     }
 
 
@@ -135,28 +139,28 @@ void display_board()
 	{
 	  //Draw trig note color
 	  if (P[ct].getPatternElement(i).getTrig())
-	    sg.drawBoxNumber(i,NOTE_COLOR);
+	    SG.drawBoxNumber(i,NOTE_COLOR);
 
-	  sg.smallBoxNumber(i,
+	  SG.smallBoxNumber(i,
 			    (P[ct].getPatternElement(i).getNote()%12)*10,
 			    (P[ct].getPatternElement(i).getNote()/12)*10,
 			    SMALLBOX_COLOR);
 	}      
       //Cursor & Step postion
-      sg.drawBoxNumber(cursor,CURSOR_COLOR);
-      sg.drawBoxNumber(step,STEP_COLOR);  
+      SG.drawBoxNumber(cursor,CURSOR_COLOR);
+      SG.drawBoxNumber(step,STEP_COLOR);  
       
-      sg.smallBoxNumber(cursor,
+      SG.smallBoxNumber(cursor,
 			(P[ct].getPatternElement(cursor).getNote()%12)*10,
 			(P[ct].getPatternElement(cursor).getNote()/12)*10,
 			SMALLBOX_COLOR);
-      sg.smallBoxNumber(step,  
+      SG.smallBoxNumber(step,  
 			(P[ct].getPatternElement(step).getNote()%12)*10,
 			(P[ct].getPatternElement(step).getNote()/12)*10,
 			SMALLBOX_COLOR);
     }
 
-  sg.refresh();
+  SG.refresh();
 }
 
 
@@ -662,10 +666,10 @@ int main()
   char * str="808-cowbell.wav";
   cowbell.loadWave(str);
   loadPattern();
-  sg.initVideo();
+  SG.initVideo();
   //handle_key();
   //  SDL_EnableKeyRepeat(500,500);
-  sg.openFont();
+  SG.openFont();
   display_board();
 
 
