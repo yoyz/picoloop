@@ -5,7 +5,7 @@ using namespace std;
 #ifndef __INPUTMANAGER__
 #define __INPUTMANAGER__
 
-#define MAXKEY 512
+#define MAX_KEY 512
 
 class InputManager
 {
@@ -15,6 +15,9 @@ public:
   int    shouldExit();
   int    updateState(int symbol,bool state);
   void   printState();
+  bool * returnKeyState();
+  int  * returnKeyRepeat();
+
  private:
 
   bool  * key_state;    //[ 0,1, 0, 1,0,0....] value of key

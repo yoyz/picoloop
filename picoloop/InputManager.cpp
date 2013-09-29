@@ -3,16 +3,16 @@
 InputManager::InputManager()
 {
   int i;
-  key_state=(bool*)malloc(sizeof(bool)*MAXKEY);
-  for (i=0;i<MAXKEY;i++)
+  key_state=(bool*)malloc(sizeof(bool)*MAX_KEY);
+  for (i=0;i<MAX_KEY;i++)
     key_state[i]=false;
 
-  key_repeat=(int*)malloc(sizeof(int)*MAXKEY);
-  for (i=0;i<MAXKEY;i++)
+  key_repeat=(int*)malloc(sizeof(int)*MAX_KEY);
+  for (i=0;i<MAX_KEY;i++)
     key_repeat[i]=0;
-
-  
 }
+
+
 
 
 void InputManager::printState()
@@ -35,7 +35,7 @@ int InputManager::updateState(int symbol,bool state)
     key_repeat[symbol]=0;
 
   if (state)
-    for (i=0;i<MAXKEY;i++)
+    for (i=0;i<MAX_KEY;i++)
       if (key_state[i])
 	key_repeat[i]=key_repeat[i]+1;
 
@@ -48,6 +48,17 @@ int InputManager::shouldExit()
   if (quit)
     return(1);
   return(0);
+}
+
+
+bool * InputManager::returnKeyState()
+{
+  return key_state;
+}
+
+int * InputManager::returnKeyRepeat()
+{
+  return key_repeat;
 }
 
 
@@ -88,7 +99,7 @@ int InputManager::handleKey()
 	      escape=true;
 	      printf("Exiting...\n");
 	      exit(0);
-	      break;
+ 	      break;
 	      */
 	      
 	    default:
@@ -104,6 +115,6 @@ int InputManager::handleKey()
       printf("new event:%d %s\n",event.type,SDL_GetKeyName(event.key.keysym.sym));
     }
   if (keypressrelease==0) //need to update the state to increment keypress
-    this->updateState(MAXKEY,true); 
+    this->updateState(MAX_KEY,true); 
   return keypressrelease;
 }
