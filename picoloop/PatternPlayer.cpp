@@ -18,10 +18,11 @@ AudioEngine ae;
 #define KEY_REPEAT_INTERVAL 400
 
 #define BOX_COLOR        0xAECD15
+#define TRIG_COLOR       0x0E4C15
 #define NOTE_COLOR       0x46DC65
-#define CURSOR_COLOR     0x1545CD
-#define STEP_COLOR       0x045c15
-#define TRIG_COLOR       0x0EDC15
+#define CURSOR_COLOR     0x1515CD
+#define STEP_COLOR       0x242C45
+
 #define SMALLBOX_COLOR   0x442233
 
 vector <Pattern>     P(TRACK_MAX);  
@@ -190,125 +191,6 @@ void openaudio()
 void handle_key()
 {
 
-  /*
-  SDL_Event event;
-  if (SDL_PollEvent(&event))
-    {
-      // printf("loop %d\n",loop);
-      //loop++;
-      
-      //printf("[%d %d %d %d]\n",SDL_KEYUP,SDL_KEYDOWN,event.type,event.key.keysym.sym);
-      switch (event.type)
-	{
-	case SDL_QUIT:
-	  printf("Exiting...\n");
-	  quit = 1;	  
-	  exit(0);
-	  break; 	  
-	  
-	case SDL_KEYUP:
-	  switch (event.key.keysym.sym)
-	    {
-
-
-	    case SDLK_LEFT:        left_key=0;      break;	     
-	    case SDLK_RIGHT:       right_key=0;     break;	      
-	    case SDLK_UP:          up_key=0;        break;	      
-	    case SDLK_DOWN:        down_key=0;      break;
-
-
-	    case SDLK_RCTRL:       ctrl_key=false;      break;
-	    case SDLK_PAGEUP:      pageup_key=false;    break;	      
-
-	    case SDLK_LALT:        lalt_key=false;      break;
-	    case SDLK_LCTRL:       lctrl_key=false;     break;
-
-	    case SDLK_PAGEDOWN:    pagedown_key=false;  break;
-	      
-	    case SDLK_q:           q_key=false;        break;
-	    case SDLK_z:           z_key=false;        break;
-	    case SDLK_s:           s_key=false;        break;
-	    case SDLK_e:           e_key=false;        break;
-	    case SDLK_d:           d_key=false;        break;
-	    case SDLK_r:           r_key=false;        break;
-	    case SDLK_f:           f_key=false;        break;
-	    case SDLK_t:           t_key=false;        break;
-	    case SDLK_g:           g_key=false;        break;
-	    case SDLK_y:           y_key=false;        break;
-	    case SDLK_h:           h_key=false;        break;
-	    case SDLK_u:           u_key=false;        break;
-	    case SDLK_j:           j_key=false;        break;
-	    case SDLK_k:           k_key=false;        break;
-	    case SDLK_o:           o_key=false;        break;
-	    case SDLK_l:           l_key=false;        break;
-	    case SDLK_p:           m_key=false;        break;
-	    case SDLK_m:           m_key=false;        break;
-	      
-	    case SDLK_RETURN:     start_key=2; break;
-	      
-	    default:
-	      break;
-	    }
-	  break;
-	  
-	case SDL_KEYDOWN:
-	  switch (event.key.keysym.sym)
-	    {
-	    case SDLK_ESCAPE:
-	      printf("Exiting...\n");
-	      quit = 1;
-	      exit(0);
-	      break;
-	      
-
-
-	    case SDLK_LEFT:        left_key++;         break;	      
-	    case SDLK_RIGHT:       right_key++;        break;	      
-	    case SDLK_UP:          up_key++;           break;	      
-	    case SDLK_DOWN:        down_key++;         break;
-
-	    case SDLK_PAGEUP:      pageup_key=true;    break;	      
-	    case SDLK_PAGEDOWN:    pagedown_key=true;  break;
-
-	    case SDLK_RCTRL:       ctrl_key=true;      break;
-	    case SDLK_LALT:        lalt_key=true;      break;
-	    case SDLK_LCTRL:       lctrl_key=true;     break;
-
-
-	    case SDLK_q:           q_key=true;         break;
-	    case SDLK_z:           z_key=true;         break;
-	    case SDLK_s:           s_key=true;         break;
-	    case SDLK_e:           e_key=true;         break;
-	    case SDLK_d:           d_key=true;         break;
-	    case SDLK_r:           r_key=true;         break;
-	    case SDLK_f:           f_key=true;         break;
-	    case SDLK_t:           t_key=true;         break;
-	    case SDLK_g:           g_key=true;         break;
-	    case SDLK_y:           y_key=true;         break;
-	    case SDLK_h:           h_key=true;         break;
-	    case SDLK_u:           u_key=true;         break;
-	    case SDLK_j:           j_key=true;         break;
-	    case SDLK_k:           k_key=true;         break;
-	    case SDLK_o:           o_key=true;         break;
-	    case SDLK_l:           l_key=true;         break;
-	    case SDLK_p:           m_key=true;         break;
-	    case SDLK_m:           m_key=true;         break;
-	      
-	    case SDLK_RETURN:      start_key=1;        break;
-
-	    default:
-	      break;
-	      
-	    }
-	  
-	  break;
-	  
-	}
-      printf("new event:%d %s\n",event.type,SDL_GetKeyName(event.key.keysym.sym));
-    }
-  */
-  //printf("No new event\n");
-
   bool * keyState;
   int  * keyRepeat;
   int    lastEvent;
@@ -324,21 +206,26 @@ void handle_key()
 
 
   
-
+  
   //if (start_key==2) 
-  if (lastEvent==SDL_KEYUP && lastKey==SDLK_RETURN)
+  //printf("%d %d %d\n",lastKey,lastEvent,lastKey==&& SDLK_RETURN && lastEvent==SDL_KEYUP);
+  //  printf("lastevent=%d\n",lastEvent);
+  if (lastKey   == SDLK_RETURN && lastEvent ==  SDL_KEYUP)
     {
-      if (menu==0)        { menu=1;  start_key=0; }
-      else if (menu==1)   { menu=0;  start_key=0; }
+      printf("Entering menu\n");
+      if      (menu==0)        { menu=1;  start_key=0; }
+      else if (menu==1)        { menu=0;  start_key=0; }   
       IE.clearLastKeyEvent();
     }
 
 
+  //Move MENU_CURSOR
   if (menu==1)
     {
-      if(keyState[SDLK_LEFT])
+      if(keyState[SDLK_LEFT]) 
 	{
-	  menu_cursor--;
+	  if (keyRepeat[SDLK_LEFT]==1 || keyRepeat[SDLK_LEFT]%16==0)
+	    menu_cursor--;
 	  if (menu_cursor<0) menu_cursor=4;
 	  printf("[menu_cursor:%d]\n",menu_cursor);
 	  printf("key left\n");            
@@ -347,7 +234,8 @@ void handle_key()
 
       if(keyState[SDLK_RIGHT])
 	{
-	  menu_cursor++;
+	  if (keyRepeat[SDLK_RIGHT]==1 || keyRepeat[SDLK_RIGHT]%16==0)
+	    menu_cursor++;
 	  if (menu_cursor>4) menu_cursor=0;
 	  printf("[menu_cursor:%d]\n",menu_cursor);
 	  printf("key right\n");            
@@ -356,7 +244,8 @@ void handle_key()
 
       if(keyState[SDLK_UP])
 	{
-	  ct++;
+	  if (keyRepeat[SDLK_UP]==1 || keyRepeat[SDLK_UP]%8==0)
+	    ct++;
 	  if (ct >= TRACK_MAX) ct=0;
 	  printf("key up\n");
 	  dirty_graphic=1;
@@ -364,53 +253,57 @@ void handle_key()
 
       if(keyState[SDLK_DOWN])
 	{
-	  ct--;
+	  if (keyRepeat[SDLK_DOWN]==1 || keyRepeat[SDLK_DOWN]%8==0)
+	    ct--;
 	  if (ct<0) ct=TRACK_MAX-1;
 	  printf("key down\n");
 	  dirty_graphic=1;
 	}
     }
 
-  
+
+
+
+  //MOVE the cursor : LEFT UP DOWN RIGHT   
   if (menu==0)
     {
-      /*
-      if (s_key)
-	  save=true;
-      if (l_key)
+
+      if (lastKey==SDLK_s  && lastEvent==SDLK_UP)
+	save=true;
+      if (lastKey==SDLK_l && lastEvent==SDLK_UP)
 	load=true;
-      */
 
 
       if(keyState[SDLK_UP] && ! keyState[SDLK_LCTRL])
 	{
-	  cursor=cursor-4;
+	  if (keyRepeat[SDLK_UP]==1 || keyRepeat[SDLK_UP]%16==0)
+	    cursor=cursor-4;
 	  if (cursor < 0) cursor=cursor +16;
 	  printf("key down : up \n");
 	  dirty_graphic=1;
-	  //up_key=1;
 	}
 
       if(keyState[SDLK_DOWN] && ! keyState[SDLK_LCTRL])
 	{
-	  cursor=( cursor+4 ) %16;
-	  //if (cursor > 15) cursor=cursor-12;
-	  printf("[cursor:%d]\n",cursor);
+	  if (keyRepeat[SDLK_DOWN]==1 || keyRepeat[SDLK_DOWN]%16==0)
+	    cursor=( cursor+4 ) %16;
 	  printf("key down : down\n");
 	  dirty_graphic=1;
 	}
       
       if(keyState[SDLK_LEFT] && ! keyState[SDLK_LCTRL])
 	{
-	  cursor--;
+	  if (keyRepeat[SDLK_LEFT]==1 || keyRepeat[SDLK_LEFT]%16==0)
+	      cursor--;
+	  
 	  if (cursor<0) cursor=15;
-	  printf("[cursor:%d]\n",cursor);
 	  printf("key left\n");            
 	  dirty_graphic=1;
 	}
       
       if (keyState[SDLK_RIGHT] && ! keyState[SDLK_LCTRL])
 	{
+	  if (keyRepeat[SDLK_RIGHT]==1 || keyRepeat[SDLK_RIGHT]%16==0)
 	  cursor++;
 	  if (cursor>15) cursor=0;
 	  printf("key right\n");      
@@ -418,29 +311,44 @@ void handle_key()
 	}
     }
 
-  
+  // Move Attack Release 
+  // Insert/Remove Trig
   if (menu==0 && menu_cursor==0)
     {
-      if (keyState[SDLK_LALT])
+      if (lastKey== SDLK_LALT && lastEvent == SDL_KEYDOWN)
 	{
 	  invert_trig=1;
 	  printf("key lalt\n");      
 	  dirty_graphic=1;
+	  IE.clearLastKeyEvent();
 	}
 
-      if (keyState[SDLK_LEFT]  && keyState[SDLK_LCTRL]) { release=-4; 	  dirty_graphic=1; }
-      if (keyState[SDLK_RIGHT] && keyState[SDLK_LCTRL]) { release=4; 	  dirty_graphic=1; }
-      if (keyState[SDLK_UP]    && keyState[SDLK_LCTRL]) { attack=4;  	  dirty_graphic=1; }
-      if (keyState[SDLK_DOWN]  && keyState[SDLK_LCTRL]) { attack=-4; 	  dirty_graphic=1; }
+      if (keyState[SDLK_LEFT]  && keyState[SDLK_LCTRL]) 
+	if (keyRepeat[SDLK_LEFT]==1 ||  keyRepeat[SDLK_LEFT]%1==0) 
+	  { release=-4;   dirty_graphic=1; }
+
+      if (keyState[SDLK_RIGHT] && keyState[SDLK_LCTRL]) 
+	if (keyRepeat[SDLK_RIGHT]==1 || keyRepeat[SDLK_RIGHT]%1==0) 
+	  { release=4; 	  dirty_graphic=1; }
+
+      if (keyState[SDLK_UP]    && keyState[SDLK_LCTRL]) 
+	if (keyRepeat[SDLK_UP]==1 ||    keyRepeat[SDLK_UP]%1==0) 
+	  { attack=4;  	  dirty_graphic=1; }
+
+      if (keyState[SDLK_DOWN]  && keyState[SDLK_LCTRL]) 
+	if (keyRepeat[SDLK_DOWN]==1 || keyRepeat[SDLK_DOWN]%1==0) 
+	  { attack=-4; 	  dirty_graphic=1; }
     }  
 
   if (menu==0 && menu_cursor==1)
     {
-      if (keyState[SDLK_LALT])
+      //if (keyState[SDLK_LALT])
+      if (lastKey== SDLK_LALT && lastEvent ==  SDL_KEYUP)
 	{
 	  invert_trig=1;
 	  printf("key lalt\n");      
 	  dirty_graphic=1;
+	  IE.clearLastKeyEvent();
 	}
       
       if (keyState[SDLK_LEFT]  && keyState[SDLK_LCTRL]) { note=-1; 	  dirty_graphic=1;}
@@ -450,61 +358,11 @@ void handle_key()
     }  
 
 
-      int delay=20;
-      printf("sleeping %dms\n",delay);
-      SDL_Delay(delay);
-
-  
-  //  if(pageup_key)   { printf("key pgup \n");        }
-  //  if(pagedown_key) { printf("key pgdown \n");    }
+  int delay=10;
+  //printf("sleeping %dms\n",delay);
+  SDL_Delay(delay);
 
 
-
-  //  if (s_key) { attack=-4;  }
-  //  if (z_key) { attack=4;   }
-
-  // if (e_key) { release=4; }
-  //  if (d_key) { release=-4;  }
-
-  //  if (r_key) { note=1;   }
-  //  if (f_key) { note=-1;  }
-
-
-
-
-  //No user activity => sleeping a while to keep cpu cool
-  //it keep cpu under 100% usage
-  /*
-  if ((up_key       || 
-       down_key     || 
-       left_key     || 
-       right_key    || 
-       pagedown_key || 
-       pageup_key   ||
-       q_key        ||
-       z_key        ||
-       k_key    
-       )==false)
-    {
-      int delay=20;
-      //      printf("sleeping %dms\n",delay);
-      SDL_Delay(delay);
-    }
-  else
-    {
-      int delay=40;
-      //      printf("sleeping %dms\n",delay);
-      SDL_Delay(delay);
-    }
-  */
-  //  printf("up\tdown\tleft\tright\n");
-  /*
-  printf("%d\t%d\t%d\t%d\n",
-	 up_key,
-	 down_key,
-	 left_key,
-	 right_key);
-  */
 }
 
 

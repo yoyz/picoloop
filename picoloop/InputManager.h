@@ -25,8 +25,8 @@ public:
 
   bool  * key_state;            // [ 0,1, 0, 1,0,0....] value of key
   int   * key_repeat;           // [ 0,12,0,32,0,0....] number of time handleKey is called 
-  int     last_key;             // the last key   : the SDL_KEY number with an event associated
-  bool    last_event;           // the last event : 0 = SDL_KEYUP ; 1 = SDL_KEYDOWN
+  int     last_key;             // the last key   : SDLK_XXX number          || 0 if event cleared
+  int    last_event;           // the last event : SDL_KEYUP || SDL_KEYDOWN || 0 if event cleared 
   bool    quit;
   bool    escape;
   int     max_key;

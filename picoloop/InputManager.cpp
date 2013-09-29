@@ -102,14 +102,22 @@ int InputManager::handleKey()
 	case SDL_KEYUP:
 	  keypressrelease=1;
 	  last_key=event.key.keysym.sym;
-	  last_event=false;
+	  last_event=event.type;
+	  //last_event=2;
 	  this->updateState(event.key.keysym.sym,false);
 	  break;
 
 	  
 	case SDL_KEYDOWN:
-	  switch (event.key.keysym.sym)
-	    {
+	  keypressrelease=1;
+	  last_key=event.key.keysym.sym;
+	  last_event=event.type;
+	  //last_event=3;
+	  this->updateState(event.key.keysym.sym,true);
+	  break;
+	  
+	  //switch (event.key.keysym.sym)
+	  //	    {
 	      /*
 	    case SDLK_ESCAPE:
 	      escape=true;
@@ -118,14 +126,9 @@ int InputManager::handleKey()
  	      break;
 	      */
 	      
-	    default:
-	      keypressrelease=1;
-	      last_key=event.key.keysym.sym;
-	      last_event=true;
-	      this->updateState(event.key.keysym.sym,true);
-	      break;
-	    }	  
-	  break;
+	  //default:
+	  //  }	  
+	  // break;
 	  
 	}
       printf("new event:%d %s\n",event.type,SDL_GetKeyName(event.key.keysym.sym));
