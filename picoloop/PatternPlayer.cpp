@@ -50,6 +50,15 @@ Instrument inst;
 int save=false;
 int load=false;
 
+int tempo=60;
+int nbcb=0;      // current nb audio callback 
+int last_nbcb=0;
+int nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*tempo); // Weird ?
+int last_nbcb_ch_step=0; // nb audio callback from last step
+int debug=1;
+int t=0; // index of track
+
+
 
 // BEGIN KEY
 bool left_key=false;
@@ -366,176 +375,133 @@ void handle_key()
 }
 
 
+int seq_update()
+{
+  
+  if (save)
+    {
+      PR.writePattern(1,ct+1,P[ct]);
+      save=false;
+    }
+  
+  if (load)
+    {
+      PR.readPatternData(1,ct+1,P[ct]);
+      load=false;
+    }
+  
+  if (note!=0)
+    { 
+      P[ct].getPatternElement(cursor).setNote(P[ct].getPatternElement(cursor).getNote()+note);
+      note=0;
+    }
+  
+  
+  if (attack!=0)
+    {
+      //m0.getADSR().setAttack(m0.getADSR().getAttack()+attack);
+      P[ct].getPatternElement(cursor).setAttack(P[ct].getPatternElement(cursor).getAttack()+attack);
+      attack=0;
+      if (debug)
+	printf("[attack:%d]\n",M[ct].getADSR().getAttack());
+    }
+  
+  if (release!=0)
+    {
+      //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
+      P[ct].getPatternElement(cursor).setRelease(P[ct].getPatternElement(cursor).getRelease()+release);
+      release=0;
+      if (debug)
+	printf("[release:%d]\n",P[ct].getPatternElement(cursor).getRelease()+release);
+    }
+  
+  if (invert_trig)
+    {
+      P[ct].getPatternElement(cursor).setTrig(! P[ct].getPatternElement(cursor).getTrig());
+      invert_trig=0;
+    }	  
+  
+  
+  
+  if (step==16) { step=0; }
+  if (debug)
+    printf("STEP:%d\n",step);	  
+  
+  
+  
+  for (t=0;t<TRACK_MAX;t++)
+    {
+      if (P[t].getPatternElement(step).getTrig()==true)
+	{
+	  float f=P[t].getPatternElement(step).getNoteFreq();
+	  int   i=f;
+	  
+	  
+	  M[t].setSynthFreq(i);
+	  M[t].getADSR().reset();;
+	  M[t].getADSR().setRelease(P[t].getPatternElement(step).getRelease());		  
+	  
+	  //m0.getADSR().get();
+	  M[t].getOscillator()->reset();
+	  //m.setSynthFreq(1200);
+	}
+      else
+	{
+	  //m.setSynthFreq(800);
+	  //printf("m.setSynthFreq(0);\n");
+	  //m0.setSynthFreq(0);
+	}
+    }		  
+}
+
 
 int seq()
 {
-  //  Machine m0;
-  //  Machine m1;
-
-  int tempo=60;
-
-  int nbcb=0;      // current nb audio callback 
-  int last_nbcb=0;
-  int nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*tempo); // Weird ?
-  int last_nbcb_ch_step=0; // nb audio callback from last step
-  int debug=1;
-  int t=0; // index of track
-
-
   AudioMixer & am=ae.getAudioMixer();
-  //Track & t0=ae.getAudioMixer().getTrack(0);
-
-  //  m0.setSawOsc();
-  //M[0].setSawOsc();
-  //M[0].setFuzzyPulseOsc();
 
   for (t=0;t<TRACK_MAX;t++)
     {
       M[t].setSynthFreq(0);
       M[t].setSineOsc();
     }
-  M[1].setSawOsc();
-  //  M[0].setSineOsc();
-  //  M[1].setSineOsc();
-  //  m1.setSawOsc();
 
-  //  m0.setSineOsc();
-  //m1.setSawOsc();
-
-
-  //  M[0].setSynthFreq(0);
-  //  M[1].setSynthFreq(0);
-
-  //Track     & t0=ae.getAudioMixer().getTrack(0);
-  //  MonoMixer & mm0=ae.getAudioMixer().getTrack(0).getMonoMixer();
-  //  MonoMixer & mm1=ae.getAudioMixer().getTrack(1).getMonoMixer();
   for (t=0;t<TRACK_MAX;t++)
     {
       MM[t]=&ae.getAudioMixer().getTrack(t).getMonoMixer();
       MM[t]->setInput(&M[t]);
       MM[t]->setAmplitude(32);
     }
-  /*
-  mm0.setInput(&M[0]);
-  mm0.setAmplitude(64);
-  mm1.setInput(&M[1]);
-  mm1.setAmplitude(64);
-  */
+
   printf("openAudio start streaming\n");
   ae.startAudio();
 
-  
+  seq_update();  
   while (true)
     {
       nbcb=ae.getNbCallback();
 
       if (nbcb>last_nbcb)
 	{
-	  //ae.processBuffer();
 	  last_nbcb=nbcb;
 	}
-      //if (nbcb>last_nbcb)
-      //{
-	  handle_key();
+      handle_key();
 
-	  //GRAPHICS
-	  if (	  dirty_graphic)
-	    display_board();
-	  //SDL_Delay(40);	  
-	  //if (step > 0)  sg.drawBoxNumber(step-1,0xAECD15);
-	  //	  if (step == 0) sg.drawBoxNumber(15,0xAECD15);
-	  //sg.drawBoxNumber(cursor,0x1545CD);
-	  //sg.refresh();
-	  //GRAPHICS
+      //GRAPHICS
+      if (dirty_graphic)
+	display_board();
 
-	  //	}
+
 
       if (nbcb-last_nbcb_ch_step>nb_cb_ch_step)
 	{
 	  dirty_graphic=1;
 	  display_board();
 	  //printf("[cursor:%d]\n",cursor);
-
+	  
 	  //printf("loop\n");    
 	  last_nbcb_ch_step=nbcb;
 	  step++;  
-
-	  if (save)
-	    {
-	      PR.writePattern(1,ct+1,P[ct]);
-	      save=false;
-	    }
-
-	  if (load)
-	    {
-	      PR.readPatternData(1,ct+1,P[ct]);
-	      load=false;
-	    }
-
-	  if (note!=0)
-	    { 
-	      P[ct].getPatternElement(cursor).setNote(P[ct].getPatternElement(cursor).getNote()+note);
-	      note=0;
-	    }
-
-
-	  if (attack!=0)
-	    {
-	      //m0.getADSR().setAttack(m0.getADSR().getAttack()+attack);
-	      P[ct].getPatternElement(cursor).setAttack(P[ct].getPatternElement(cursor).getAttack()+attack);
-	      attack=0;
-	      if (debug)
-		printf("[attack:%d]\n",M[ct].getADSR().getAttack());
-	    }
-
-	  if (release!=0)
-	    {
-	      //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
-	      P[ct].getPatternElement(cursor).setRelease(P[ct].getPatternElement(cursor).getRelease()+release);
-	      release=0;
-	      if (debug)
-		printf("[release:%d]\n",P[ct].getPatternElement(cursor).getRelease()+release);
-	    }
-
-	  if (invert_trig)
-	    {
-	       P[ct].getPatternElement(cursor).setTrig(! P[ct].getPatternElement(cursor).getTrig());
-	       invert_trig=0;
-	    }	  
-
-
-
-	  if (step==16) { step=0; }
-	  if (debug)
-	    printf("STEP:%d\n",step);	  
-	  
-
-	  
-	  for (t=0;t<TRACK_MAX;t++)
-	    {
-	      if (P[t].getPatternElement(step).getTrig()==true)
-		{
-		  float f=P[t].getPatternElement(step).getNoteFreq();
-		  int   i=f;
-		  
-
-		  M[t].setSynthFreq(i);
-		  M[t].getADSR().reset();;
-		  M[t].getADSR().setRelease(P[t].getPatternElement(step).getRelease());		  
-		  
-		  //m0.getADSR().get();
-		  M[t].getOscillator()->reset();
-		  //m.setSynthFreq(1200);
-		}
-	      else
-		{
-		  //m.setSynthFreq(800);
-		  //printf("m.setSynthFreq(0);\n");
-		  //m0.setSynthFreq(0);
-		}
-
-	    }	
-
+	  seq_update();
 	}
     }
 }
