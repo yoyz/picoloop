@@ -51,16 +51,32 @@ int InputManager::shouldExit()
 }
 
 
-bool * InputManager::returnKeyState()
+bool * InputManager::keyState()
 {
   return key_state;
 }
 
-int * InputManager::returnKeyRepeat()
+int * InputManager::keyRepeat()
 {
   return key_repeat;
 }
 
+
+int InputManager::lastKey()
+{
+  return last_key;
+}
+
+int InputManager::lastEvent()
+{
+  return last_event;
+}
+
+void InputManager::clearLastKeyEvent()
+{
+  last_event=0;
+  last_key=0;
+}
 
 /*
   int handleKey()

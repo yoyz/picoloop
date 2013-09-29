@@ -22,12 +22,14 @@ int main()
       //printf("%d %d ",SDLK_p, SDLK_m);
       //printf("launch InputManager::.handleKey()\n");
       IE.handleKey();
-      key_state=IE.returnKeyState();
-      key_repeat=IE.returnKeyRepeat();
+      key_state=IE.keyState();
+      key_repeat=IE.keyRepeat();
       
-      if (key_state[SDLK_LEFT])
+      //if (key_state[SDLK_LEFT])
+      if (IE.lastEvent()==0 && IE.lastKey()==SDLK_LEFT)
 	{
 	  printf("LEFT:%d\n",key_repeat[SDLK_LEFT]);	  
+	  IE.clearLastKeyEvent();
 	}
       //IE.printState();
       SDL_Delay(10);
