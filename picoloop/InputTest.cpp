@@ -13,6 +13,16 @@ SDL_GUI SG;
 int main()
 {
   SG.initVideo();
-  sleep(1);
+  while (true)
+    {
+      //printf("%d %d ",SDLK_p, SDLK_m);
+      //printf("launch InputManager::.handleKey()\n");
+      IE.handleKey();
+      IE.printState();
+      if (IE.shouldExit())
+	exit(0);
+      //      sleep(1);
+      
+    }
   exit(0);
 }
