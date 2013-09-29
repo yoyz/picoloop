@@ -11,6 +11,7 @@ using namespace std;
 #include "Wave.h"
 #include "MonoMixer.h"
 #include "SDL_GUI.h"
+#include "InputManager.h"
 
 AudioEngine ae;
 
@@ -35,6 +36,8 @@ PatternReader PR;
 //PatternElement PE1;
 
 SDL_GUI SG;
+
+InputManager IE;
 
 //MonoMixer MM0;
 //MonoMixer MM1;
@@ -78,9 +81,16 @@ bool o_key=false; //C+
 bool l_key=false; //D
 bool p_key=false; //D+
 bool m_key=false; //E
+
+/*
+typedef enum { 
+
+bool key_pressed[127];
+int  key_times[127];
+*/
 // END KEY
 
-
+int repeat=0;
 int quit=0;                // do we need to quit ?
 int cursor=0;              // cursor position in the sequencer
 int note=0;
@@ -179,6 +189,8 @@ void openaudio()
 
 void handle_key()
 {
+
+  /*
   SDL_Event event;
   if (SDL_PollEvent(&event))
     {
@@ -294,19 +306,37 @@ void handle_key()
 	}
       printf("new event:%d %s\n",event.type,SDL_GetKeyName(event.key.keysym.sym));
     }
-  
+  */
   //printf("No new event\n");
 
-  if (start_key==2) 
+  bool * keyState;
+  int  * keyRepeat;
+  int    lastEvent;
+  int    lastKey;
+  IE.handleKey();
+
+  keyState=IE.keyState();
+  keyRepeat=IE.keyRepeat();
+  lastEvent=IE.lastEvent();
+  lastKey=IE.lastKey();
+  if (IE.shouldExit())
+    exit(0);
+
+
+  
+
+  //if (start_key==2) 
+  if (lastEvent==SDL_KEYUP && lastKey==SDLK_RETURN)
     {
       if (menu==0)        { menu=1;  start_key=0; }
       else if (menu==1)   { menu=0;  start_key=0; }
+      IE.clearLastKeyEvent();
     }
 
 
   if (menu==1)
     {
-      if(left_key)
+      if(keyState[SDLK_LEFT])
 	{
 	  menu_cursor--;
 	  if (menu_cursor<0) menu_cursor=4;
@@ -315,7 +345,7 @@ void handle_key()
 	  dirty_graphic=1;
 	}      
 
-      if(right_key)
+      if(keyState[SDLK_RIGHT])
 	{
 	  menu_cursor++;
 	  if (menu_cursor>4) menu_cursor=0;
@@ -324,7 +354,7 @@ void handle_key()
 	  dirty_graphic=1;
 	}
 
-      if(up_key)
+      if(keyState[SDLK_UP])
 	{
 	  ct++;
 	  if (ct >= TRACK_MAX) ct=0;
@@ -332,7 +362,7 @@ void handle_key()
 	  dirty_graphic=1;
 	}
 
-      if(down_key)
+      if(keyState[SDLK_DOWN])
 	{
 	  ct--;
 	  if (ct<0) ct=TRACK_MAX-1;
@@ -344,12 +374,15 @@ void handle_key()
   
   if (menu==0)
     {
+      /*
       if (s_key)
 	  save=true;
       if (l_key)
 	load=true;
-      
-      if(up_key && ! lctrl_key)
+      */
+
+
+      if(keyState[SDLK_UP] && ! keyState[SDLK_LCTRL])
 	{
 	  cursor=cursor-4;
 	  if (cursor < 0) cursor=cursor +16;
@@ -358,7 +391,7 @@ void handle_key()
 	  //up_key=1;
 	}
 
-      if(down_key && ! lctrl_key)
+      if(keyState[SDLK_DOWN] && ! keyState[SDLK_LCTRL])
 	{
 	  cursor=( cursor+4 ) %16;
 	  //if (cursor > 15) cursor=cursor-12;
@@ -367,7 +400,7 @@ void handle_key()
 	  dirty_graphic=1;
 	}
       
-      if(left_key && ! lctrl_key)
+      if(keyState[SDLK_LEFT] && ! keyState[SDLK_LCTRL])
 	{
 	  cursor--;
 	  if (cursor<0) cursor=15;
@@ -376,7 +409,7 @@ void handle_key()
 	  dirty_graphic=1;
 	}
       
-      if (right_key && ! lctrl_key)
+      if (keyState[SDLK_RIGHT] && ! keyState[SDLK_LCTRL])
 	{
 	  cursor++;
 	  if (cursor>15) cursor=0;
@@ -388,37 +421,42 @@ void handle_key()
   
   if (menu==0 && menu_cursor==0)
     {
-      if (lalt_key)
+      if (keyState[SDLK_LALT])
 	{
 	  invert_trig=1;
 	  printf("key lalt\n");      
 	  dirty_graphic=1;
 	}
 
-      if (left_key      && lctrl_key) { release=-4; 	  dirty_graphic=1; }
-      if (right_key     && lctrl_key) { release=4; 	  dirty_graphic=1; }
-      if (up_key        && lctrl_key) { attack=4;  	  dirty_graphic=1; }
-      if (down_key      && lctrl_key) { attack=-4; 	  dirty_graphic=1; }
+      if (keyState[SDLK_LEFT]  && keyState[SDLK_LCTRL]) { release=-4; 	  dirty_graphic=1; }
+      if (keyState[SDLK_RIGHT] && keyState[SDLK_LCTRL]) { release=4; 	  dirty_graphic=1; }
+      if (keyState[SDLK_UP]    && keyState[SDLK_LCTRL]) { attack=4;  	  dirty_graphic=1; }
+      if (keyState[SDLK_DOWN]  && keyState[SDLK_LCTRL]) { attack=-4; 	  dirty_graphic=1; }
     }  
 
   if (menu==0 && menu_cursor==1)
     {
-      if (lalt_key)
+      if (keyState[SDLK_LALT])
 	{
 	  invert_trig=1;
 	  printf("key lalt\n");      
 	  dirty_graphic=1;
 	}
       
-      if (left_key  && lctrl_key) { note=-1; 	  dirty_graphic=1;}
-      if (right_key && lctrl_key) { note=1;  	  dirty_graphic=1;}
-      if (up_key    && lctrl_key) { note=12;   	  dirty_graphic=1;}
-      if (down_key  && lctrl_key) { note=-12;  	  dirty_graphic=1;}
+      if (keyState[SDLK_LEFT]  && keyState[SDLK_LCTRL]) { note=-1; 	  dirty_graphic=1;}
+      if (keyState[SDLK_RIGHT] && keyState[SDLK_LCTRL]) { note=1;  	  dirty_graphic=1;}
+      if (keyState[SDLK_UP]    && keyState[SDLK_LCTRL]) { note=12;   	  dirty_graphic=1;}
+      if (keyState[SDLK_DOWN]  && keyState[SDLK_LCTRL]) { note=-12;  	  dirty_graphic=1;}
     }  
 
+
+      int delay=20;
+      printf("sleeping %dms\n",delay);
+      SDL_Delay(delay);
+
   
-  if(pageup_key)   { printf("key pgup \n");        }
-  if(pagedown_key) { printf("key pgdown \n");    }
+  //  if(pageup_key)   { printf("key pgup \n");        }
+  //  if(pagedown_key) { printf("key pgdown \n");    }
 
 
 
@@ -436,6 +474,7 @@ void handle_key()
 
   //No user activity => sleeping a while to keep cpu cool
   //it keep cpu under 100% usage
+  /*
   if ((up_key       || 
        down_key     || 
        left_key     || 
@@ -455,14 +494,17 @@ void handle_key()
     {
       int delay=40;
       //      printf("sleeping %dms\n",delay);
-            SDL_Delay(delay);
+      SDL_Delay(delay);
     }
+  */
   //  printf("up\tdown\tleft\tright\n");
+  /*
   printf("%d\t%d\t%d\t%d\n",
 	 up_key,
 	 down_key,
 	 left_key,
 	 right_key);
+  */
 }
 
 
