@@ -1,21 +1,29 @@
 #include "SDL_GUI.h"
 
-
-
-
 SDL_GUI::SDL_GUI()
 {
   printf("construction SDL_GUI::SDL_GUI()\n");
   screen=NULL;
-  font=NULL;
+  bmp_font=NULL;
+  ttf_font=NULL;
   boxSize=30;
   boxOffset=20;
+
+  message=NULL;
 }
 
 SDL_GUI::~SDL_GUI()
 {
-  printf("destructor SDL_GUI::SDL_GUI()\n");
+  printf("SDL_GUI::~SDL_GUI()\n");
+  
+  if (ttf_font!=NULL)
+    TTF_CloseFont(ttf_font);
+  if (message!=NULL)
+    SDL_FreeSurface( message );
+  //Quit SDL_ttf
+  TTF_Quit();
 }
+
 
 
 int SDL_GUI::initVideo()
@@ -42,22 +50,21 @@ int SDL_GUI::initVideo()
   return 1;
 }
 
+void SDL_GUI::refresh()
+{
+  SDL_Flip(screen);
+}
+
+
+
+
 
 int SDL_GUI::closeVideo()
 {
   SDL_Quit();
 }
 
-void SDL_GUI::drawText(int x, int y, string txt)
-{
-  printf("SDL_GUI::drawText\n");
-}
-/*
-void SDL_GUI::drawBox(int x, int y, int color)
-{
-    printf("SDL_GUI::drawBox\n");
-}
-*/
+
 
 
 
@@ -135,32 +142,6 @@ void SDL_GUI::box(int x, int y, int w, int h, Uint32 c)
 
 }
 
-void SDL_GUI::drawTextNumber(int n,char * str)
-{
-  switch(n)
-    {
-    case 0:  this->guiText(boxOffset+(0*boxSize),boxOffset,str); break;
-    case 1:  this->guiText(boxOffset+(1*boxSize)+10,boxOffset,str); break;
-    case 2:  this->guiText(boxOffset+(2*boxSize)+20,boxOffset,str); break;
-    case 3:  this->guiText(boxOffset+(3*boxSize)+30,boxOffset,str); break;
-
-    case 4:  this->guiText(boxOffset+(0*boxSize),   boxOffset+(1*boxSize+10),str); break;
-    case 5:  this->guiText(boxOffset+(1*boxSize)+10,boxOffset+(1*boxSize+10),str); break;
-    case 6:  this->guiText(boxOffset+(2*boxSize)+20,boxOffset+(1*boxSize+10),str); break;
-    case 7:  this->guiText(boxOffset+(3*boxSize)+30,boxOffset+(1*boxSize+10),str); break;
-
-    case 8:  this->guiText(boxOffset+(0*boxSize),   boxOffset+(2*boxSize+20),str); break;
-    case 9:  this->guiText(boxOffset+(1*boxSize)+10,boxOffset+(2*boxSize+20),str); break;
-    case 10: this->guiText(boxOffset+(2*boxSize)+20,boxOffset+(2*boxSize+20),str); break;
-    case 11: this->guiText(boxOffset+(3*boxSize)+30,boxOffset+(2*boxSize+20),str); break;
-      
-    case 12: this->guiText(boxOffset+(0*boxSize),   boxOffset+(3*boxSize+30),str); break;
-    case 13: this->guiText(boxOffset+(1*boxSize)+10,boxOffset+(3*boxSize+30),str); break;
-    case 14: this->guiText(boxOffset+(2*boxSize)+20,boxOffset+(3*boxSize+30),str); break;
-    case 15: this->guiText(boxOffset+(3*boxSize)+30,boxOffset+(3*boxSize+30),str); break;
-
-    }
-}
 
 
 void SDL_GUI::drawBoxNumber(int n, Uint32 c)
@@ -191,9 +172,71 @@ void SDL_GUI::drawBoxNumber(int n, Uint32 c)
     }               
 }
 
+/*
+void SDL_GUI::drawText(int x, int y, string txt)
+{
+  printf("SDL_GUI::drawText\n");
+}
+*/
+
+/*
+void SDL_GUI::drawBox(int x, int y, int color)
+{
+    printf("SDL_GUI::drawBox\n");
+}
+*/
 
 
-SDL_Surface * SDL_GUI::gui_load_image(const char *fn)
+int SDL_GUI::openTTFFont()
+{
+  if( TTF_Init() == -1 )
+    {
+      return 0;
+    }
+
+  //Open the font
+  ttf_font = TTF_OpenFont("font.ttf", 12 );
+  
+  //If there was an error in loading the font
+  if( ttf_font == NULL )
+    {
+      return false;
+    }
+  return true;  
+}
+
+
+void SDL_GUI::apply_surface( int x, int y, SDL_Surface* source, SDL_Surface* destination, SDL_Rect* clip
+)
+{
+    //Holds offsets
+    SDL_Rect offset;
+
+    //Get offsets
+    offset.x = x;
+    offset.y = y;
+
+    //Blit
+    SDL_BlitSurface( source, clip, destination, &offset );
+}
+
+
+int SDL_GUI::guiTTFText(int x,int y,char *txt)
+{
+  SDL_Color textColor = { 54, 25, 0 };
+  SDL_Rect * clip = NULL;
+
+  if (message!=NULL)
+    SDL_FreeSurface(message);
+  
+  message = TTF_RenderText_Solid( ttf_font, txt, textColor );
+  //apply_surface( 0, 0, background, screen );
+  this->apply_surface( x, y, message, screen,clip);
+}
+
+
+
+SDL_Surface * SDL_GUI::loadBMP(const char *fn)
 {
   SDL_Surface *cvt;
   SDL_Surface *img = SDL_LoadBMP(fn);
@@ -205,11 +248,68 @@ SDL_Surface * SDL_GUI::gui_load_image(const char *fn)
 }
 
 
-
-int SDL_GUI::openFont()
+void SDL_GUI::drawTTFTextNumber(int n,char * str)
 {
-  font = gui_load_image("font.bmp");
-  if(!font)
+  switch(n)
+    {
+    case 0:  this->guiTTFText(boxOffset+(0*boxSize),boxOffset,str); break;
+    case 1:  this->guiTTFText(boxOffset+(1*boxSize)+10,boxOffset,str); break;
+    case 2:  this->guiTTFText(boxOffset+(2*boxSize)+20,boxOffset,str); break;
+    case 3:  this->guiTTFText(boxOffset+(3*boxSize)+30,boxOffset,str); break;
+
+    case 4:  this->guiTTFText(boxOffset+(0*boxSize),   boxOffset+(1*boxSize+10),str); break;
+    case 5:  this->guiTTFText(boxOffset+(1*boxSize)+10,boxOffset+(1*boxSize+10),str); break;
+    case 6:  this->guiTTFText(boxOffset+(2*boxSize)+20,boxOffset+(1*boxSize+10),str); break;
+    case 7:  this->guiTTFText(boxOffset+(3*boxSize)+30,boxOffset+(1*boxSize+10),str); break;
+
+    case 8:  this->guiTTFText(boxOffset+(0*boxSize),   boxOffset+(2*boxSize+20),str); break;
+    case 9:  this->guiTTFText(boxOffset+(1*boxSize)+10,boxOffset+(2*boxSize+20),str); break;
+    case 10: this->guiTTFText(boxOffset+(2*boxSize)+20,boxOffset+(2*boxSize+20),str); break;
+    case 11: this->guiTTFText(boxOffset+(3*boxSize)+30,boxOffset+(2*boxSize+20),str); break;
+      
+    case 12: this->guiTTFText(boxOffset+(0*boxSize),   boxOffset+(3*boxSize+30),str); break;
+    case 13: this->guiTTFText(boxOffset+(1*boxSize)+10,boxOffset+(3*boxSize+30),str); break;
+    case 14: this->guiTTFText(boxOffset+(2*boxSize)+20,boxOffset+(3*boxSize+30),str); break;
+    case 15: this->guiTTFText(boxOffset+(3*boxSize)+30,boxOffset+(3*boxSize+30),str); break;
+
+    }
+}
+
+
+void SDL_GUI::drawBMPTextNumber(int n,char * str)
+{
+  switch(n)
+    {
+    case 0:  this->guiBMPText(boxOffset+(0*boxSize),boxOffset,str); break;
+    case 1:  this->guiBMPText(boxOffset+(1*boxSize)+10,boxOffset,str); break;
+    case 2:  this->guiBMPText(boxOffset+(2*boxSize)+20,boxOffset,str); break;
+    case 3:  this->guiBMPText(boxOffset+(3*boxSize)+30,boxOffset,str); break;
+
+    case 4:  this->guiBMPText(boxOffset+(0*boxSize),   boxOffset+(1*boxSize+10),str); break;
+    case 5:  this->guiBMPText(boxOffset+(1*boxSize)+10,boxOffset+(1*boxSize+10),str); break;
+    case 6:  this->guiBMPText(boxOffset+(2*boxSize)+20,boxOffset+(1*boxSize+10),str); break;
+    case 7:  this->guiBMPText(boxOffset+(3*boxSize)+30,boxOffset+(1*boxSize+10),str); break;
+
+    case 8:  this->guiBMPText(boxOffset+(0*boxSize),   boxOffset+(2*boxSize+20),str); break;
+    case 9:  this->guiBMPText(boxOffset+(1*boxSize)+10,boxOffset+(2*boxSize+20),str); break;
+    case 10: this->guiBMPText(boxOffset+(2*boxSize)+20,boxOffset+(2*boxSize+20),str); break;
+    case 11: this->guiBMPText(boxOffset+(3*boxSize)+30,boxOffset+(2*boxSize+20),str); break;
+      
+    case 12: this->guiBMPText(boxOffset+(0*boxSize),   boxOffset+(3*boxSize+30),str); break;
+    case 13: this->guiBMPText(boxOffset+(1*boxSize)+10,boxOffset+(3*boxSize+30),str); break;
+    case 14: this->guiBMPText(boxOffset+(2*boxSize)+20,boxOffset+(3*boxSize+30),str); break;
+    case 15: this->guiBMPText(boxOffset+(3*boxSize)+30,boxOffset+(3*boxSize+30),str); break;
+
+    }
+}
+
+
+
+
+int SDL_GUI::openBMPFont()
+{
+  bmp_font = this->loadBMP("font.bmp");
+  if(!bmp_font)
     {
       fprintf(stderr, "Couldn't load font!\n");
       return -1;
@@ -218,7 +318,7 @@ int SDL_GUI::openFont()
 }
 
 
-void SDL_GUI::guiText(int x, int y, const char *txt)
+void SDL_GUI::guiBMPText(int x, int y, const char *txt)
 {
   SDL_Surface *dst=this->screen;
   int sx = x;
@@ -290,11 +390,11 @@ void SDL_GUI::guiText(int x, int y, const char *txt)
 	    if(c < ' ' || c > 127)
 	      c = 127;
 	    c -= 32;
-	    sr.x = (c % (font->w / FONT_CW)) * FONT_CW;
-	    sr.y = (c / (font->w / FONT_CW)) * FONT_CH;
+	    sr.x = (c % (bmp_font->w / FONT_CW)) * FONT_CW;
+	    sr.y = (c / (bmp_font->w / FONT_CW)) * FONT_CH;
 	    dr.x = x;
 	    dr.y = y;
-	    SDL_BlitSurface(font, &sr, dst, &dr);
+	    SDL_BlitSurface(bmp_font, &sr, dst, &dr);
 	    //gui_dirty(&dr);
 	    x += FONT_CW;
 	    break;
@@ -355,11 +455,5 @@ void SDL_GUI::guiText(int x, int y, const char *txt)
     }
 }
 
-
-
-void SDL_GUI::refresh()
-{
-  SDL_Flip(screen);
-}
 
 

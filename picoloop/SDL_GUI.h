@@ -1,5 +1,7 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_audio.h>
+#include "SDL/SDL_image.h"
+#include "SDL/SDL_ttf.h"
 #include <string>
 
 #include "Master.h"
@@ -18,23 +20,37 @@ class SDL_GUI
   SDL_GUI();
   ~SDL_GUI();
   int  initVideo();
+
   int  closeVideo();
-  void drawText(int x,int y,string txt);
 
   void smallBoxNumber(int n,int x,int y,Uint32 c);
   void smallBox(int x, int y,Uint32 c);
   void box(int x, int y, int w, int h, Uint32 c);
   //  void drawBox(int x,int y,Uint32 color);
   void drawBoxNumber(int n,Uint32 color);
-  void drawTextNumber(int n,char *txt);
-  int  openFont();
-  void guiText(int x, int y, const char *txt);
+
+  int  openBMPFont();
+  void guiBMPText(int x, int y, const char *txt);
+  void drawBMPText(int x,int y,string txt);
+  void drawBMPTextNumber(int n,char *txt);
+
+  int  openTTFFont();
+  int  guiTTFText(int x,int y,char *txt);
+  void drawTTFTextNumber(int n,char *txt);
 
   void refresh();
- private:
-  SDL_Surface * gui_load_image(const char * fn);
+
+  void apply_surface( int x, int y, SDL_Surface* source, SDL_Surface* destination, SDL_Rect* clip = NULL );
+
+ private:  
+  SDL_Surface * loadBMP(const char * fn);
   SDL_Surface * screen;
-  SDL_Surface * font;
+  SDL_Surface * bmp_font;
+
+  TTF_Font    * ttf_font;
+
+  SDL_Surface * message;
+
   int boxSize;
   int boxOffset;
 
