@@ -111,11 +111,14 @@ int release=0;
 int start_key=0;        // start key pressed ?
 int step=0;             // current step in the sequencer
 int menu=0;             // menu mode
+int menu_note=0;
 int menu_cursor=0;      // index of menu
 int ct=0;               // current_track
 int invert_trig=0;
 
 int dirty_graphic=1;
+
+char * tmp_str;
 
 void display_board()
 {
@@ -154,18 +157,32 @@ void display_board()
   // Note
   if (menu_cursor==1)
     {
-      
-      for (i=0;i<16;i++)
-	{
-	  //Draw trig note color
-	  if (P[ct].getPatternElement(i).getTrig())
-	    SG.drawBoxNumber(i,NOTE_COLOR);
 
-	  SG.smallBoxNumber(i,
-			    (P[ct].getPatternElement(i).getNote()%12)*10,
-			    (P[ct].getPatternElement(i).getNote()/12)*10,
-			    SMALLBOX_COLOR);
-	}      
+      if (menu_note==0)      
+	for (i=0;i<16;i++)
+	  {
+	    //Draw trig note color
+	    if (P[ct].getPatternElement(i).getTrig())
+	      SG.drawBoxNumber(i,NOTE_COLOR);
+	    
+	    SG.smallBoxNumber(i,
+			      (P[ct].getPatternElement(i).getNote()%12)*10,
+			      (P[ct].getPatternElement(i).getNote()/12)*10,
+			      SMALLBOX_COLOR);
+	  }      
+      if (menu_note==1)
+	for (i=0;i<16;i++)
+	  {
+	    //Draw trig note color
+	    if (P[ct].getPatternElement(i).getTrig())
+	      SG.drawBoxNumber(i,NOTE_COLOR);
+
+	    //sprintf(tmp_str,"%d",P[ct].getPatternElement(i).getNote());
+	    char * toto="C3+";
+	    //sprintf(tmp_str,"%s","C3");
+	    //SG.drawTTFTextNumber(i,"C3");
+	    SG.drawTTFTextNumber(i,toto);
+	  }	
       //Cursor & Step postion
       SG.drawBoxNumber(cursor,CURSOR_COLOR);
       SG.drawBoxNumber(step,STEP_COLOR);  
@@ -219,13 +236,22 @@ void handle_key()
   //if (start_key==2) 
   //printf("%d %d %d\n",lastKey,lastEvent,lastKey==&& SDLK_RETURN && lastEvent==SDL_KEYUP);
   //  printf("lastevent=%d\n",lastEvent);
-  if (lastKey   == SDLK_RETURN && lastEvent ==  SDL_KEYUP)
+  if (lastKey   == SDLK_ESCAPE && lastEvent ==  SDL_KEYUP)
     {
       printf("Entering menu\n");
       if      (menu==0)        { menu=1;  start_key=0; }
       else if (menu==1)        { menu=0;  start_key=0; }   
       IE.clearLastKeyEvent();
     }
+
+  if (lastKey   == SDLK_RETURN && lastEvent ==  SDL_KEYUP)
+    {
+      printf("Entering menu note\n");
+      if      (menu_note==0)        { menu_note=1;  }
+      else if (menu_note==1)        { menu_note=0;  }   
+      IE.clearLastKeyEvent();
+    }
+
 
 
   //Move MENU_CURSOR
@@ -530,12 +556,14 @@ int main()
 {
   //string wave="808-cowbell.wav";
   char * str="808-cowbell.wav";
+  tmp_str=(char*)malloc(sizeof(char)*4);
   cowbell.loadWave(str);
   loadPattern();
   SG.initVideo();
   //handle_key();
   //  SDL_EnableKeyRepeat(500,500);
-  SG.openFont();
+  SG.openBMPFont();
+  SG.openTTFFont();
   display_board();
 
 

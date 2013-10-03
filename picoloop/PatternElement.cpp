@@ -21,9 +21,104 @@ int PatternElement::getNote()
   return PatternElement::Note;
 }
 
+/*
+char * PatterElement::getNoteCharStar()
+{
+  char * C0="C0";
+  char * C0plus="C0+";
+  char * D0="D0";
+  char * D0plus="D0+";
+  char * E0="E0";
+  char * F0="F0";
+  char * F0plus="F0+";
+  char * G0="G0";
+  char * G0plus="G0+";
+  char * A0="A0";
+  char * A0plus="A0+";
+  char * B1="B1";
+
+  char * C1plus="C1+";
+  char * D1="D1";
+  char * D1plus="D1+";
+  char * E1="E1";
+  char * F1="F1";
+  char * F1plus="F1+";
+  char * G1="G1";
+  char * G1plus="G1+";
+  char * A1="A1";
+  char * A1plus="A1+";
+  char * B2="B2";
+
+  char * C2plus="C2+";
+  char * D2="D2";
+  char * D2+ ="D2+ ";
+  char * E2="E2";
+  char * F2="F2";
+  char * F2plus="F2+";
+  char * A2="A2";
+  char * A2plus="A2+";
+  char * G2="G2";
+  char * G2plus="G2+";
+  char * B3="B3";
+
+  char * C3plus="C3+";
+  char * D3="D3";
+  char * D3plus="D3+";
+  char * E3="E3";
+  char * F3="F3";
+  char * F3plus="F3+";
+  char * G3="G3";
+  char * G3plus="G3+";
+  char * A3="A3";
+  char * A3plus="A3+";
+  char * B3="B3";
+
+  char * C4plus="C4+";
+  char * D4="D4";
+  char * D4plus="D4+";
+  char * E4="E4";
+  char * F4="F4";
+  char * F4plus="F4+";
+  char * G4="G4";
+  char * G4plus="G4+";
+  char * A4="A4";
+  char * A4plus="A4+";
+  char * B4="B4";
+
+  char * C5plus="C5+";
+  char * D5="D5";
+  char * D5plus="D5+";
+  char * E5="E5";
+  char * F5="F5";
+  char * F5plus="F5+";
+  char * G5="G5";
+  char * G5plus="G5+";
+  char * A5="A5";
+  char * A5plus="A5+";
+  char * B5="B5";
+
+  char * C6plus="C6+";
+  char * D6="D6";
+  char * D6plus="D6+";
+  char * E6="E6";
+  char * F6="F6";
+  char * F6plus="F6+";
+  char * G6="G6";
+  char * G6plus="G6+";
+  char * A6="A6";
+  char * A6plus="A6+";
+  char * B6="B6";
+
+  char * C7plus="C7+";
+  char * D7="D7";
+  char * D7plus="D7+";
+}
+*/
+
 
 float PatternElement::getNoteFreq()
 {
+  
   float note_hertz[]=
     {
       0.0,
