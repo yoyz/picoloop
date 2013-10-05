@@ -35,12 +35,18 @@ int SDL_GUI::initVideo()
     }
   
   printf("SDL initialized.\n");
-  
+  #ifdef OPENDINGUX
   screen = SDL_SetVideoMode(SCREEN_WIDTH, 
 			    SCREEN_HEIGHT, 
 			    SCREEN_DEPTH,			
-			    SDL_SWSURFACE|SDL_DOUBLEBUF);
-  
+			    SDL_HWSURFACE|SDL_DOUBLEBUF|SDL_FULLSCREEN);
+  #endif
+  #ifdef LINUX_DESKTOP
+  screen = SDL_SetVideoMode(SCREEN_WIDTH, 
+			    SCREEN_HEIGHT, 
+			    SCREEN_DEPTH,			
+			    SDL_HWSURFACE|SDL_DOUBLEBUF|SDL_FULLSCREEN);
+  #endif
   if (screen == NULL)
     {
       fprintf(stderr, "Couldn't set video mode: %s\n", SDL_GetError());
