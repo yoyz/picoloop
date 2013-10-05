@@ -171,30 +171,40 @@ void display_board()
 			      SMALLBOX_COLOR);
 	  }      
       if (menu_note==1)
-	for (i=0;i<16;i++)
-	  {
-	    //Draw trig note color
-	    if (P[ct].getPatternElement(i).getTrig())
-	      SG.drawBoxNumber(i,NOTE_COLOR);
+	{
 
-	    //sprintf(tmp_str,"%d",P[ct].getPatternElement(i).getNote());
-	    char * toto="C3+";
-	    //sprintf(tmp_str,"%s","C3");
-	    //SG.drawTTFTextNumber(i,"C3");
-	    SG.drawTTFTextNumber(i,toto);
-	  }	
+
+	  
+	  for (i=0;i<16;i++)
+	    {
+	      //Draw trig note color
+	      if (P[ct].getPatternElement(i).getTrig())
+		SG.drawBoxNumber(i,NOTE_COLOR);
+	      
+	      if (i==cursor)
+		SG.drawBoxNumber(cursor,CURSOR_COLOR);
+	      if (i==step)
+		SG.drawBoxNumber(step,STEP_COLOR);  
+
+	      if (P[ct].getPatternElement(i).getTrig())
+		SG.drawTTFTextNumber(i,P[ct].getPatternElement(i).getNoteCharStar());
+	    }
+	}
       //Cursor & Step postion
-      SG.drawBoxNumber(cursor,CURSOR_COLOR);
-      SG.drawBoxNumber(step,STEP_COLOR);  
-      
-      SG.smallBoxNumber(cursor,
-			(P[ct].getPatternElement(cursor).getNote()%12)*10,
-			(P[ct].getPatternElement(cursor).getNote()/12)*10,
-			SMALLBOX_COLOR);
-      SG.smallBoxNumber(step,  
-			(P[ct].getPatternElement(step).getNote()%12)*10,
-			(P[ct].getPatternElement(step).getNote()/12)*10,
-			SMALLBOX_COLOR);
+      if (menu_note==0)
+	{
+	  SG.drawBoxNumber(cursor,CURSOR_COLOR);
+	  SG.drawBoxNumber(step,STEP_COLOR);  
+    
+	  SG.smallBoxNumber(cursor,
+			    (P[ct].getPatternElement(cursor).getNote()%12)*10,
+			    (P[ct].getPatternElement(cursor).getNote()/12)*10,
+			    SMALLBOX_COLOR);
+	  SG.smallBoxNumber(step,  
+			    (P[ct].getPatternElement(step).getNote()%12)*10,
+			    (P[ct].getPatternElement(step).getNote()/12)*10,
+			    SMALLBOX_COLOR);
+	}
     }
 
   SG.refresh();

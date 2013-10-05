@@ -13,6 +13,7 @@ public:
   bool   setNote(int Note);
   int    getNote();
   float  getNoteFreq();
+  char * getNoteCharStar();
   bool   setTrig(bool Trig);
   bool   getTrig();
 
@@ -34,15 +35,15 @@ public:
   string getStr();
   void   print();
 private:
-  int    checkSevenBitBoundarie(int val);
-  int Note;
+  int  checkSevenBitBoundarie(int val);
+  int  Note;
   bool Trig;
-  int Channel;
+  int  Channel;
 
-  int attack;
-  int decay;
-  int sustain;
-  int release;
+  int  attack;
+  int  decay;
+  int  sustain;
+  int  release;
   
 };
 
