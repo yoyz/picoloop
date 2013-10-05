@@ -14,6 +14,7 @@ int main()
 {
   printf("ESC+RETURN to exit\n");
   SG.initVideo();
+  
   bool * key_state;
   int  * key_repeat;
   while (true)
