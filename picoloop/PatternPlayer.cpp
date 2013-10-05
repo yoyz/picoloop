@@ -30,18 +30,10 @@ vector <Machine>     M(TRACK_MAX);
 vector <MonoMixer *> MM(TRACK_MAX);
 
 PatternReader PR;
-//Pattern P0;
-//Pattern P1;
-
-//PatternElement PE0;
-//PatternElement PE1;
 
 SDL_GUI SG;
 
 InputManager IE;
-
-//MonoMixer MM0;
-//MonoMixer MM1;
 
 Wave cowbell;
 //Synth beeper;
@@ -51,58 +43,18 @@ int save=false;
 int load=false;
 
 int tempo=60;
-int nbcb=0;      // current nb audio callback 
+int nbcb=0;             // current nb audio callback 
 int last_nbcb=0;
 int nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*tempo); // Weird ?
-int last_nbcb_ch_step=0; // nb audio callback from last step
+int last_nbcb_ch_step=0;// nb audio callback from last step
 int debug=1;
-int t=0; // index of track
+int t=0;                // index of track
 
 
-
-// BEGIN KEY
-bool left_key=false;
-bool right_key=false;
-bool up_key=false;
-bool down_key=false;
-bool pageup_key=false;
-bool pagedown_key=false;
-bool ctrl_key=false;
-
-bool lalt_key=false;
-bool lctrl_key=false;
-
-bool q_key=false; //C
-bool z_key=false; //C+
-bool s_key=false; //D
-bool e_key=false; //D+
-bool d_key=false; //E
-bool r_key=false; //NULL
-bool f_key=false; //F
-bool t_key=false; //F+
-bool g_key=false; //G
-bool y_key=false; //G+
-bool h_key=false; //A
-bool u_key=false; //A+
-bool j_key=false; //B
-
-bool k_key=false; //C
-bool o_key=false; //C+
-bool l_key=false; //D
-bool p_key=false; //D+
-bool m_key=false; //E
-
-/*
-typedef enum { 
-
-bool key_pressed[127];
-int  key_times[127];
-*/
-// END KEY
 
 int repeat=0;
-int quit=0;                // do we need to quit ?
-int cursor=0;              // cursor position in the sequencer
+int quit=0;             // do we need to quit ?
+int cursor=0;           // cursor position in the sequencer
 int note=0;
 int attack=0;
 int release=0;
@@ -126,7 +78,7 @@ void display_board()
   char str[8];
   dirty_graphic=0;
 
-  //Draw all box default color   
+  // Draw all box default color   
   for (i=0;i<16;i++)
     { SG.drawBoxNumber(i,BOX_COLOR); }
      
@@ -136,14 +88,14 @@ void display_board()
     {
       for (i=0;i<16;i++)
 	{
-	  //Draw trigged box trig color   
+	  // Draw trigged box trig color   
 	  if (P[ct].getPatternElement(i).getTrig())
 	    SG.drawBoxNumber(i,TRIG_COLOR);
-	  //AdsR
+	  // AdsR
 	  SG.smallBoxNumber(i,P[ct].getPatternElement(i).getRelease(),0,SMALLBOX_COLOR);
 	  SG.smallBoxNumber(i,0,P[ct].getPatternElement(i).getAttack(),SMALLBOX_COLOR);      
 	}
-      //Cursor & step postion
+      // Cursor & step postion
       SG.drawBoxNumber(cursor,CURSOR_COLOR);
       SG.smallBoxNumber(cursor,P[ct].getPatternElement(cursor).getRelease(),0,SMALLBOX_COLOR);
       SG.smallBoxNumber(cursor,0,P[ct].getPatternElement(cursor).getAttack(),SMALLBOX_COLOR); 
@@ -157,11 +109,10 @@ void display_board()
   // Note
   if (menu_cursor==1)
     {
-
       if (menu_note==0)      
 	for (i=0;i<16;i++)
 	  {
-	    //Draw trig note color
+	    // Draw trig note color
 	    if (P[ct].getPatternElement(i).getTrig())
 	      SG.drawBoxNumber(i,NOTE_COLOR);
 	    
@@ -169,15 +120,13 @@ void display_board()
 			      (P[ct].getPatternElement(i).getNote()%12)*10,
 			      (P[ct].getPatternElement(i).getNote()/12)*10,
 			      SMALLBOX_COLOR);
-	  }      
+	  }
+      // Note C3 
       if (menu_note==1)
-	{
-
-
-	  
+	{	  
 	  for (i=0;i<16;i++)
 	    {
-	      //Draw trig note color
+	      // Draw trig note color
 	      if (P[ct].getPatternElement(i).getTrig())
 		SG.drawBoxNumber(i,NOTE_COLOR);
 	      
@@ -190,7 +139,7 @@ void display_board()
 		SG.drawTTFTextNumber(i,P[ct].getPatternElement(i).getNoteCharStar());
 	    }
 	}
-      //Cursor & Step postion
+      // Note Cursor
       if (menu_note==0)
 	{
 	  SG.drawBoxNumber(cursor,CURSOR_COLOR);
@@ -552,12 +501,6 @@ void loadPattern()
   for (i=0;i<TRACK_MAX;i++)
     PR.readPatternData(1,i+1,P[i]);
 
-  /*
-  PR.readPatternData(1,1,P[0]);
-  PR.readPatternData(1,2,P[1]);
-  */
-  //  P[1].print();
-  //exit(0);
 }
 
 
