@@ -45,7 +45,7 @@ int SDL_GUI::initVideo()
   screen = SDL_SetVideoMode(SCREEN_WIDTH, 
 			    SCREEN_HEIGHT, 
 			    SCREEN_DEPTH,			
-			    SDL_HWSURFACE|SDL_DOUBLEBUF|SDL_FULLSCREEN);
+			    SDL_HWSURFACE|SDL_DOUBLEBUF);
   #endif
   if (screen == NULL)
     {
