@@ -6,6 +6,12 @@ MonoMixer::MonoMixer(): M()
   amplitude=127;
 }
 
+MonoMixer::~MonoMixer()
+{
+  printf("MonoMixer::~MonoMixer()\n");  
+}
+
+
 void MonoMixer::setAmplitude(int amp)
 {
   int debug=0;

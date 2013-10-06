@@ -1,6 +1,7 @@
 using namespace std;
 
 #include <string>
+#include <stdio.h>
 #include "PatternElement.h"
 #ifndef __PATTERN__
 #define __PATTERN__
@@ -16,6 +17,7 @@ class Pattern
 
 
   Pattern();
+  ~Pattern();
   void setPatternSize(int patternSize);
   PatternElement & getPatternElement(int patternElementNumber);
   bool setPatternElement(int PatternElementNumber,PatternElement PEin);

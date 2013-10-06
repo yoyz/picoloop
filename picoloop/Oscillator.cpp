@@ -12,7 +12,7 @@ Oscillator::Oscillator()
 
 Oscillator::~Oscillator()
 {
-  
+  printf("Oscillator::~Oscillator()\n");  
 }
 
 void Oscillator::reset()

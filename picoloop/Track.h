@@ -11,6 +11,7 @@ class Track
 {
  public:
   Track();
+  ~Track();
 
   //  Machine M;
   MonoMixer MM;

@@ -9,6 +9,7 @@ class MonoMixer
 {
  public:
   MonoMixer();
+  ~MonoMixer();
   void    setAmplitude(int amp);
   void    setInput(Machine * M);
   Sint16  tick();

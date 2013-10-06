@@ -5,6 +5,12 @@ AudioMixer::AudioMixer() : T(TRACK_MAX)
 {
 }
 
+AudioMixer::~AudioMixer()
+{
+  printf("AudioMixer::~AudioMixer()\n");  
+}
+
+
 Track & AudioMixer::getTrack(int numTrack)
 {
   return T[numTrack];

@@ -4,6 +4,12 @@ Track::Track() : MM()
 {
   MM.setAmplitude(127);
 }
+
+Track::~Track()
+{
+  printf("Track::~Track()\n");  
+}
+
 /*
 Machine & Track::getMachine()
 {

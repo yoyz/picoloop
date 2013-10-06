@@ -10,6 +10,11 @@ Machine::Machine() : sineosc(), sawosc(), fuzzypulseosc(), adsr()
   //  printf("&S:%d\n",S);
 }
 
+Machine::~Machine()
+{
+  printf("Machine::~Machine()\n");  
+}
+
 void Machine::setSynthFreq(int sfreq)
 {
   freq=sfreq;

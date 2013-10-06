@@ -3,6 +3,7 @@ using namespace std;
 #include <string>
 #include <iostream>
 #include <sstream>
+#include <stdio.h>
 #include "PatternElement.h"
 
 PatternElement::PatternElement()
@@ -14,6 +15,11 @@ PatternElement::PatternElement()
   decay=127;
   sustain=127;
   release=8;
+}
+
+PatternElement::~PatternElement()
+{
+  //printf("PatternElement::~PatternElement()\n");
 }
 
 int PatternElement::getNote()

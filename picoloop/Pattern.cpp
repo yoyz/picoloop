@@ -1,6 +1,5 @@
 using namespace std;
 
-#include <string>
 #include "PatternElement.h"
 #include "Pattern.h"
 
@@ -9,6 +8,12 @@ Pattern::Pattern() : pevector(16,PatternElement())
 {
 
 }
+
+Pattern::~Pattern()
+{
+  printf("Pattern::~Pattern()\n");
+}
+
 
 PatternElement & Pattern::getPatternElement(int patternElementNumber)
 {

@@ -13,6 +13,7 @@ class Machine
 {
  public:
   Machine();
+  ~Machine();
 
   //  void setOscillator(SineOscillator NS);
   void setSynthFreq(int sfreq);

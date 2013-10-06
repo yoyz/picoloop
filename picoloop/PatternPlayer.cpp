@@ -13,8 +13,6 @@ using namespace std;
 #include "SDL_GUI.h"
 #include "InputManager.h"
 
-AudioEngine AE;
-
 #define KEY_REPEAT_INTERVAL 400
 
 #define BOX_COLOR        0xAECD15
@@ -29,15 +27,14 @@ vector <Pattern>     P(TRACK_MAX);
 vector <Machine>     M(TRACK_MAX);
 vector <MonoMixer *> MM(TRACK_MAX);
 
+
+AudioEngine AE;
 PatternReader PR;
-
-SDL_GUI SG;
-
 InputManager IE;
-
+SDL_GUI SG;
 Wave cowbell;
-//Synth beeper;
 Instrument inst;
+
 
 int save=false;
 int load=false;

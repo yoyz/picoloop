@@ -20,8 +20,10 @@ SineOscillator::SineOscillator()
 
 SineOscillator::~SineOscillator()
 {
+  printf("SineOscillator::~SineOscillator()\n");
   if (table!=NULL)
     free(table);
+  
 }
 
 

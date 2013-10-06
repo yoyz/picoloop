@@ -10,6 +10,7 @@ class PatternElement
 {
 public:
   PatternElement();
+  ~PatternElement();
   bool   setNote(int Note);
   int    getNote();
   float  getNoteFreq();
