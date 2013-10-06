@@ -13,7 +13,7 @@ using namespace std;
 #include "SDL_GUI.h"
 #include "InputManager.h"
 
-AudioEngine ae;
+AudioEngine AE;
 
 #define KEY_REPEAT_INTERVAL 400
 
@@ -160,19 +160,6 @@ void display_board()
 }
 
 
-void openaudio()
-{
-  //beeper.initialize(1000,440);
-  //inst.setSynth();
-  //inst.assignSynth(beeper);
-  //  ae.set_instrument(inst);
-  //  printf("Before\n");
-  printf("openAudio output\n");
-  ae.openAudio();
-  //  printf("After\n");
-}
-
-
 void handle_key()
 {
 
@@ -187,7 +174,8 @@ void handle_key()
   lastEvent=IE.lastEvent();
   lastKey=IE.lastKey();
   if (IE.shouldExit())
-    exit(0);
+    quit=1;
+    //exit(0);
 
 
   
@@ -218,7 +206,7 @@ void handle_key()
     {
       if(keyState[SDLK_LEFT]) 
 	{
-	  if (keyRepeat[SDLK_LEFT]==1 || keyRepeat[SDLK_LEFT]%16==0)
+	  if (keyRepeat[SDLK_LEFT]==1 || keyRepeat[SDLK_LEFT]%64==0)
 	    menu_cursor--;
 	  if (menu_cursor<0) menu_cursor=4;
 	  printf("[menu_cursor:%d]\n",menu_cursor);
@@ -228,7 +216,7 @@ void handle_key()
 
       if(keyState[SDLK_RIGHT])
 	{
-	  if (keyRepeat[SDLK_RIGHT]==1 || keyRepeat[SDLK_RIGHT]%16==0)
+	  if (keyRepeat[SDLK_RIGHT]==1 || keyRepeat[SDLK_RIGHT]%64==0)
 	    menu_cursor++;
 	  if (menu_cursor>4) menu_cursor=0;
 	  printf("[menu_cursor:%d]\n",menu_cursor);
@@ -238,7 +226,7 @@ void handle_key()
 
       if(keyState[SDLK_UP])
 	{
-	  if (keyRepeat[SDLK_UP]==1 || keyRepeat[SDLK_UP]%8==0)
+	  if (keyRepeat[SDLK_UP]==1 || keyRepeat[SDLK_UP]%64==0)
 	    ct++;
 	  if (ct >= TRACK_MAX) ct=0;
 	  printf("key up\n");
@@ -247,7 +235,7 @@ void handle_key()
 
       if(keyState[SDLK_DOWN])
 	{
-	  if (keyRepeat[SDLK_DOWN]==1 || keyRepeat[SDLK_DOWN]%8==0)
+	  if (keyRepeat[SDLK_DOWN]==1 || keyRepeat[SDLK_DOWN]%64==0)
 	    ct--;
 	  if (ct<0) ct=TRACK_MAX-1;
 	  printf("key down\n");
@@ -270,7 +258,7 @@ void handle_key()
 
       if(keyState[SDLK_UP] && ! keyState[SDLK_LCTRL])
 	{
-	  if (keyRepeat[SDLK_UP]==1 || keyRepeat[SDLK_UP]%16==0)
+	  if (keyRepeat[SDLK_UP]==1 || keyRepeat[SDLK_UP]%64==0)
 	    cursor=cursor-4;
 	  if (cursor < 0) cursor=cursor +16;
 	  printf("key down : up \n");
@@ -279,7 +267,7 @@ void handle_key()
 
       if(keyState[SDLK_DOWN] && ! keyState[SDLK_LCTRL])
 	{
-	  if (keyRepeat[SDLK_DOWN]==1 || keyRepeat[SDLK_DOWN]%16==0)
+	  if (keyRepeat[SDLK_DOWN]==1 || keyRepeat[SDLK_DOWN]%64==0)
 	    cursor=( cursor+4 ) %16;
 	  printf("key down : down\n");
 	  dirty_graphic=1;
@@ -287,7 +275,7 @@ void handle_key()
       
       if(keyState[SDLK_LEFT] && ! keyState[SDLK_LCTRL])
 	{
-	  if (keyRepeat[SDLK_LEFT]==1 || keyRepeat[SDLK_LEFT]%16==0)
+	  if (keyRepeat[SDLK_LEFT]==1 || keyRepeat[SDLK_LEFT]%64==0)
 	      cursor--;
 	  
 	  if (cursor<0) cursor=15;
@@ -297,7 +285,7 @@ void handle_key()
       
       if (keyState[SDLK_RIGHT] && ! keyState[SDLK_LCTRL])
 	{
-	  if (keyRepeat[SDLK_RIGHT]==1 || keyRepeat[SDLK_RIGHT]%16==0)
+	  if (keyRepeat[SDLK_RIGHT]==1 || keyRepeat[SDLK_RIGHT]%64==0)
 	  cursor++;
 	  if (cursor>15) cursor=0;
 	  printf("key right\n");      
@@ -317,20 +305,20 @@ void handle_key()
 	  IE.clearLastKeyEvent();
 	}
 
-      if (keyState[SDLK_LEFT]  && keyState[SDLK_LCTRL]) 
-	if (keyRepeat[SDLK_LEFT]==1 ||  keyRepeat[SDLK_LEFT]%1==0) 
+      if (keyState[SDLK_LEFT]  && keyState[SDLK_LCTRL])
+	if (keyRepeat[SDLK_LEFT]==1 ||  keyRepeat[SDLK_LEFT]>16) 
 	  { release=-4;   dirty_graphic=1; }
 
       if (keyState[SDLK_RIGHT] && keyState[SDLK_LCTRL]) 
-	if (keyRepeat[SDLK_RIGHT]==1 || keyRepeat[SDLK_RIGHT]%1==0) 
+	if (keyRepeat[SDLK_RIGHT]==1 || keyRepeat[SDLK_RIGHT]>16) 
 	  { release=4; 	  dirty_graphic=1; }
 
       if (keyState[SDLK_UP]    && keyState[SDLK_LCTRL]) 
-	if (keyRepeat[SDLK_UP]==1 ||    keyRepeat[SDLK_UP]%1==0) 
+	if (keyRepeat[SDLK_UP]==1 ||    keyRepeat[SDLK_UP]>16) 
 	  { attack=4;  	  dirty_graphic=1; }
 
       if (keyState[SDLK_DOWN]  && keyState[SDLK_LCTRL]) 
-	if (keyRepeat[SDLK_DOWN]==1 || keyRepeat[SDLK_DOWN]%1==0) 
+	if (keyRepeat[SDLK_DOWN]==1 || keyRepeat[SDLK_DOWN]>16) 
 	  { attack=-4; 	  dirty_graphic=1; }
     }  
 
@@ -442,7 +430,7 @@ int seq_update()
 
 int seq()
 {
-  AudioMixer & am=ae.getAudioMixer();
+  AudioMixer & am=AE.getAudioMixer();
 
   for (t=0;t<TRACK_MAX;t++)
     {
@@ -452,18 +440,18 @@ int seq()
 
   for (t=0;t<TRACK_MAX;t++)
     {
-      MM[t]=&ae.getAudioMixer().getTrack(t).getMonoMixer();
+      MM[t]=&AE.getAudioMixer().getTrack(t).getMonoMixer();
       MM[t]->setInput(&M[t]);
       MM[t]->setAmplitude(32);
     }
 
   printf("openAudio start streaming\n");
-  ae.startAudio();
+  AE.startAudio();
 
   seq_update();  
   while (true)
     {
-      nbcb=ae.getNbCallback();
+      nbcb=AE.getNbCallback();
 
       if (nbcb>last_nbcb)
 	{
@@ -471,11 +459,13 @@ int seq()
 	}
       handle_key();
 
+      // if user want to quit via handle_key
+      if (quit)
+	return(0);
+
       //GRAPHICS
       if (dirty_graphic)
 	display_board();
-
-
 
       if (nbcb-last_nbcb_ch_step>nb_cb_ch_step)
 	{
@@ -519,9 +509,13 @@ int main()
   SG.openTTFFont();
   display_board();
 
+  printf("openAudio output\n");
+  AE.openAudio();
 
-  openaudio();
   seq();
+
+  SG.closeVideo();
+  AE.closeAudio();
   //sleep(10);
   //PE.print();
 }
