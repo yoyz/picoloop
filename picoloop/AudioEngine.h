@@ -35,6 +35,7 @@ class AudioEngine
   int probeDevice();
 
   int  startAudio();
+  int  stopAudio();
   int  openAudio();
   int  closeAudio();
   void setTick(int t);

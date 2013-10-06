@@ -267,10 +267,16 @@ void AudioEngine::callback()
 }
 */
 
-
+// enable audio callback
 int AudioEngine::startAudio()
 {
   dac.startStream();
+}
+
+// disable audio callback
+int AudioEngine::stopAudio()
+{
+  dac.stopStream();
 }
 
 
@@ -306,5 +312,5 @@ int AudioEngine::openAudio()
 
 int AudioEngine::closeAudio()
 {
-  
+  dac.closeStream();  
 }
