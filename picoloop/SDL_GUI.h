@@ -25,7 +25,8 @@ class SDL_GUI
 
   void smallBoxNumber(int n,int x,int y,Uint32 c);
   void smallBox(int x, int y,Uint32 c);
-  void box(int x, int y, int w, int h, Uint32 c);
+  void fullBox(int x, int y, int w, int h, Uint32 c);
+  void emptyBox(int x, int y, int w, int h, Uint32 c);
   //  void drawBox(int x,int y,Uint32 color);
   void drawBoxNumber(int n,Uint32 color);
 
