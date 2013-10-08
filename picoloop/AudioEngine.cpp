@@ -216,13 +216,16 @@ int AudioEngine::callback( void *outputBuffer,
       //Sint16 tick = AM.tick();
       tick=buffer_out[i];
       //      printf("%d\n",tick);
+      /*
+      #ifdef LINUX_DESKTOP
       if (debug_audio)
-	{
+	{	  
 	  fwrite(&tick,1,sizeof(Sint16),fd);
 	  fwrite(&tick,1,sizeof(Sint16),fd);
 	  //printf("%d\t",tick);
 	}
-
+      #endif
+      */
       buffer[(2*i)]=    tick;
       buffer[(2*i)+1]=  tick;
 

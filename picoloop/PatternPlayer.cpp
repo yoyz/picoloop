@@ -67,14 +67,27 @@ int invert_trig=0;
 
 int dirty_graphic=1;
 
-char * tmp_str;
+//char * tmp_str;
 
 void display_board()
 {
   int i;
   char str[8];
   dirty_graphic=0;
+  /*
+  SG.clearScreen();
+  sprintf(str,"Track %d ",ct);
+  SG.guiTTFText(200,20,str);
+  
+  if (menu_cursor==0)
+    sprintf(str,"A/D");
+  if (menu_cursor==1)
+    sprintf(str,"Note");
+  if (menu_cursor==2)
+    sprintf(str,"L/S");
 
+  SG.guiTTFText(200,40,str);
+  */
   // Draw all box default color   
   for (i=0;i<16;i++)
     { SG.drawBoxNumber(i,BOX_COLOR); }
@@ -243,14 +256,12 @@ void handle_key()
 
 
 
+
+
   //MOVE the cursor : LEFT UP DOWN RIGHT   
   if (menu==0)
     {
 
-      if (lastKey==SDLK_s  && lastEvent==SDLK_UP)
-	save=true;
-      if (lastKey==SDLK_l && lastEvent==SDLK_UP)
-	load=true;
 
 
       if(keyState[SDLK_UP] && ! keyState[SDLK_LCTRL])
@@ -336,6 +347,13 @@ void handle_key()
       if (keyState[SDLK_DOWN]  && keyState[SDLK_LCTRL]) { note=-12;  	  dirty_graphic=1;}
     }  
 
+  if (menu==0 && menu_cursor==2)
+    {
+      if (keyState[SDLK_DOWN]  && keyState[SDLK_LALT])
+	save=true;
+      if (keyState[SDLK_UP]    && keyState[SDLK_LALT])
+	load=true;
+    }
 
   int delay=10;
   //printf("sleeping %dms\n",delay);
@@ -350,12 +368,14 @@ int seq_update()
   
   if (save)
     {
+      printf("[SAVE]\n");
       PR.writePattern(1,ct+1,P[ct]);
       save=false;
     }
   
   if (load)
     {
+      printf("[LOAD]\n");
       PR.readPatternData(1,ct+1,P[ct]);
       load=false;
     }
@@ -495,9 +515,9 @@ void loadPattern()
 int main()
 {
   //string wave="808-cowbell.wav";
-  char * str="808-cowbell.wav";
-  tmp_str=(char*)malloc(sizeof(char)*4);
-  cowbell.loadWave(str);
+  //  char * str="808-cowbell.wav";
+  //tmp_str=(char*)malloc(sizeof(char)*4);
+  //cowbell.loadWave(str);
   loadPattern();
   SG.initVideo();
   //handle_key();
