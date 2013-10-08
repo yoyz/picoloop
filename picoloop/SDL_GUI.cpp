@@ -62,7 +62,10 @@ void SDL_GUI::refresh()
 }
 
 
-
+void SDL_GUI::clearScreen()
+{
+  SDL_FillRect(screen,NULL, 0x000000);
+}
 
 
 int SDL_GUI::closeVideo()
@@ -257,7 +260,7 @@ void SDL_GUI::apply_surface( int x, int y, SDL_Surface* source, SDL_Surface* des
 
 int SDL_GUI::guiTTFText(int x,int y,char *txt)
 {
-  SDL_Color textColor = { 54, 25, 0 };
+  SDL_Color textColor = { 54, 25, 255 };
   SDL_Rect * clip = NULL;
 
   if (message!=NULL)
