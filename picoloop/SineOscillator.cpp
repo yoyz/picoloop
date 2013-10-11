@@ -23,7 +23,7 @@ SineOscillator::~SineOscillator()
   printf("SineOscillator::~SineOscillator()\n");
   if (table!=NULL)
     free(table);
-  
+
 }
 
 
@@ -33,21 +33,29 @@ Sint16 SineOscillator::tick()
   Uint16 u;
   Sint16 s;
   int debug=0;
-  int index;
   if (frequency==0) return(0);
   if (table==NULL)
     table=(Sint16*)malloc(sizeof(Sint16)*32768);
 
   if (debug) printf("Sint16 SineOscillator::tick()\n");
   sample_num++;
-  index=sample_num % freq_sndcard_div_freq_osc; // index of the lookup table
+
+  //f=(sin((sample_num/3.14159)/22)*10000);  
+  //f=(sin(((sample_num/3.14159)/22)/440*freq)*amp*210
+
+  // Good one
+  //f=(sin(((sample_num/3.14159)/22)/440*freq)*( amp*210));
+  //f=(sin(((sample_num/3.14159)/22)/440*freq));
+
+  // sin(XXX) => -1 <=> 1
+  // note 440Hz
+  //f=(sin(((sample_num/3.14159)/22)/440*frequency));
 
 
-  //if ((sample_num % freq_sndcard_div_freq_osc) <table_fill)
-  if (index<table_fill)
+  if (sample_num % (int)(44100/frequency) <table_fill)
     {
       //    printf("hit\n");
-      return table[index];
+      return table[sample_num % (int)(44100/frequency)];
     }
 
 

@@ -5,7 +5,7 @@ using namespace std;
 #include <vector>
 #include <math.h>
 #include <SDL/SDL.h>
-#include "Master.h"
+
 #include "PatternElement.h"
 
 #ifndef __OSCILLATOR__
@@ -39,9 +39,7 @@ class Oscillator
   int    frequency;
   int    bit;
   int    sample_num;
-  int    sample_num_index;
   int    table_fill;
-  Sint16 freq_sndcard_div_freq_osc;
    
 };
 
