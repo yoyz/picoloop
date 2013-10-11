@@ -74,7 +74,7 @@ void display_board()
   int i;
   char str[8];
   dirty_graphic=0;
-  /*
+
   SG.clearScreen();
   sprintf(str,"Track %d ",ct);
   SG.guiTTFText(200,20,str);
@@ -87,7 +87,7 @@ void display_board()
     sprintf(str,"L/S");
 
   SG.guiTTFText(200,40,str);
-  */
+
   // Draw all box default color   
   for (i=0;i<16;i++)
     { SG.drawBoxNumber(i,BOX_COLOR); }
