@@ -1,9 +1,14 @@
 using namespace std;
 
+
+#include "VCO.h"
+/*
 #include "Oscillator.h"
 #include "SineOscillator.h"
 #include "SawOscillator.h"
 #include "FuzzyPulseOscillator.h"
+*/
+
 #include "ADSR.h"
 
 #ifndef __MACHINE____
@@ -16,18 +21,22 @@ class Machine
   ~Machine();
 
   //  void setOscillator(SineOscillator NS);
+  /*
   void setSynthFreq(int sfreq);
   void setSineOsc();
   void setSawOsc();
   void setFuzzyPulseOsc();
+  */
 
   ADSR & getADSR();
-  Oscillator * getOscillator();
+  VCO  * getVCO();
+  //  Oscillator * getOscillator();
 
   int tick();
 
-
-
+  VCO                 * vco;
+  ADSR                  adsr;
+  /*
   Oscillator          * s;
   SawOscillator         sawosc;
   SineOscillator        sineosc;
@@ -41,6 +50,7 @@ class Machine
 
   int freq;
   int current;
+  */
   /*
   enum OSC 
   { 

@@ -3,8 +3,9 @@
 #include <math.h>
 #include "Wave.h"
 #include "AudioEngine.h"
-#include "Oscillator.h"
-#include "SineOscillator.h"
+//#include "Oscillator.h"
+//#include "SineOscillator.h"
+#include "VCO.h"
 
 #ifndef __ADSR__
 #define __ADSR__
@@ -14,7 +15,8 @@ class ADSR
  public:
   ADSR();
   ~ADSR();
-  void setInput(Oscillator * S);
+  //  void setInput(Oscillator * S);
+  void setVCO(VCO * vcoosc);
 
   void setAttack(int atk);
   void setDecay(int dc);
@@ -40,7 +42,8 @@ class ADSR
   int sustain;
   int release;
   int sample_num;
-  Oscillator * S;
+  //  Oscillator * S;
+  VCO * vco;
 
   int ca;
   int cd;

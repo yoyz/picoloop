@@ -12,6 +12,7 @@ using namespace std;
 #include "MonoMixer.h"
 #include "SDL_GUI.h"
 #include "InputManager.h"
+#include "Machine.h"
 
 #define KEY_REPEAT_INTERVAL 400
 
@@ -427,12 +428,13 @@ int seq_update()
 	  int   i=f;
 	  
 	  
-	  M[t].setSynthFreq(i);
+	  M[t].getVCO()->setSynthFreq(i);
 	  M[t].getADSR().reset();;
 	  M[t].getADSR().setRelease(P[t].getPatternElement(step).getRelease());		  
 	  
 	  //m0.getADSR().get();
-	  M[t].getOscillator()->reset();
+	  //M[t].getOscillator()->reset();
+	  M[t].getVCO()->reset();
 	  //m.setSynthFreq(1200);
 	}
       else
@@ -451,8 +453,8 @@ int seq()
 
   for (t=0;t<TRACK_MAX;t++)
     {
-      M[t].setSynthFreq(0);
-      M[t].setSineOsc();
+      M[t].getVCO()->setSynthFreq(0);
+      //M[t].getVCO().setSineOsc();
     }
 
   for (t=0;t<TRACK_MAX;t++)

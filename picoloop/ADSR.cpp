@@ -61,10 +61,17 @@ int ADSR::getRelease()
   return release;
 }
 
-
+/*
 void ADSR::setOscillator(Oscillator * osc)
 {
   S=osc; 
+}
+*/
+
+ //void ADSR::setOscillator(VCO * vcoosc)
+void ADSR::setVCO(VCO * vcoosc)
+{
+  vco=vcoosc;
 }
 
 int ADSR::getPlaying()
@@ -99,11 +106,12 @@ Sint16 ADSR::tick()
   int debug=1;
   int index_inverse=0;
   //if (debug) fprintf(stderr,"begin Sint16 ADSR::tick()\n");
-  if (sample_num<=0)  { this->reset(); S->reset(); }
+  if (sample_num<=0)  { this->reset(); vco->reset(); }
   sample_num++;
 
-  s=S->tick();
-
+  //s=S->tick();
+  //  s=S->tick();
+  s=vco->tick();
 
   
   //(size-sample_num)
