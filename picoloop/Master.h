@@ -14,6 +14,6 @@
 
 #define FPU 0
 
-#define TRACK_MAX 2
+#define TRACK_MAX 4
 
 #endif
