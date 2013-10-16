@@ -208,6 +208,12 @@ int AudioEngine::callback( void *outputBuffer,
   MY_TYPE *buffer = (MY_TYPE *) outputBuffer;
   
   this->processBuffer();
+
+#ifdef LINUX_DESKTOP
+  if (debug_audio)
+    fwrite(buffer_out,nBufferFrames,sizeof(Sint16),fd);
+#endif
+
   
   for (int i=0;i<nBufferFrames-1;i++)
     {
@@ -235,6 +241,7 @@ int AudioEngine::callback( void *outputBuffer,
     }
   //if (debug_audio)
   //fwrite(buffer,sizeof(MY_TYPE)*nBufferFrames,sizeof(MY_TYPE),fd);
+
 
   return nbCallback++;  
 }
