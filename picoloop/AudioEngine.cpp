@@ -203,7 +203,7 @@ int AudioEngine::callback( void *outputBuffer,
 			   RtAudioStreamStatus status, 
 			   void *user_data )
 {
-  //printf("AudioEngine::calback nBufferFrame=%d nbCallback=%d\n",nBufferFrames,nbCallback);
+  printf("AudioEngine::calback nBufferFrame=%d nbCallback=%d\n",nBufferFrames,nbCallback);
   typedef Sint16 MY_TYPE;
   MY_TYPE *buffer = (MY_TYPE *) outputBuffer;
   
@@ -303,7 +303,17 @@ int AudioEngine::openAudio()
       }
     else
       {
-	
+	/*	
+	dac.openStream( &rtAudioOutputParams, 
+			NULL, 
+			FORMAT, 
+			DEFAULTFREQ, 
+			&bufferFrames, 			
+			&AudioEngine::callback,
+			(void *)this, 
+			&rtAudioStreamOptions );
+	*/
+		
 	dac.openStream( &rtAudioOutputParams, 
 			NULL, 
 			FORMAT, 

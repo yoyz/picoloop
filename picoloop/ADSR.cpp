@@ -7,6 +7,7 @@ using namespace std;
 
 ADSR::ADSR()
 {
+  printf("ADSR::ADSR()\n");
   attack=0;
   decay=127;
   sustain=0;
@@ -20,7 +21,7 @@ ADSR::~ADSR()
 
 }
 
-void ADSR::setAttack(int atk)
+ void ADSR::setAttack(int atk)
 {
   attack=atk;
 }
@@ -71,6 +72,8 @@ void ADSR::setOscillator(Oscillator * osc)
  //void ADSR::setOscillator(VCO * vcoosc)
 void ADSR::setVCO(VCO * vcoosc)
 {
+  //  exit(0);
+  printf("ADSR::setVCO(0x%08.8X\n",vcoosc);
   vco=vcoosc;
 }
 
@@ -81,6 +84,7 @@ int ADSR::getPlaying()
 
 void ADSR::reset()
 {
+  printf("ADSR::reset() this=0x%08.8X\n",this);
   sample_num=0;
   ca=attack;
   cd=decay;
@@ -106,7 +110,10 @@ Sint16 ADSR::tick()
   int debug=1;
   int index_inverse=0;
   //if (debug) fprintf(stderr,"begin Sint16 ADSR::tick()\n");
-  if (sample_num<=0)  { this->reset(); vco->reset(); }
+  if (sample_num==0)  
+    {      
+      this->reset(); vco->reset(); 
+    }
   sample_num++;
 
   //s=S->tick();

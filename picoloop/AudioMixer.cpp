@@ -3,6 +3,7 @@
 //AudioMixer::AudioMixer() : T0(), T1()
 AudioMixer::AudioMixer() : T(TRACK_MAX)
 {
+  printf("AudioMixer::AudioMixer()\n");  
 }
 
 AudioMixer::~AudioMixer()

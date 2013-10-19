@@ -8,7 +8,7 @@ using namespace std;
 
 #include "AudioEngine.h"
 #include "MonoMixer.h" 
-AudioEngine ae;
+AudioEngine AE;
 
 
 //#define SCREEN_WIDTH	640
@@ -64,8 +64,12 @@ bool l_key=false; //D
 bool p_key=false; //D+
 bool m_key=false; //E
 
-Machine m0;
-Machine m1;
+//Machine M0;
+//Machine M1;
+//Machine * M0=new Machine();
+//Machine * M1=new Machine();
+
+
 
 PatternElement PE;
 //printf("Before\n");
@@ -93,23 +97,50 @@ void openaudio()
   //ae.set_instrument(inst);
 //  printf("Before\n");
 
-  ae.openAudio();
-  ae.startAudio();
 
-  m0.setSineOsc();
-  m1.setSineOsc();
+
+  //  M0.getVCO().setSineOsc();
+  //  M1.setSineOsc();
   //  m0.setSawOsc();
   //  m1.setSawOsc();
 
-  m0.setSynthFreq(0);
+
+  MonoMixer & MM0=AE.getAudioMixer().getTrack(0).getMonoMixer();
+  MonoMixer & MM1=AE.getAudioMixer().getTrack(1).getMonoMixer();
+  
+  Machine & M0=MM0.getInput();
+  Machine & M1=MM1.getInput();
+
+  M0.init();
+  M1.init();
+
+  M0.getVCO().init();
+  M1.getVCO().init();
+
+  M0.getVCO().setSynthFreq(0);
   //  m1.setSynthFreq(0);
-  m0.getADSR().setRelease(90);
+  M0.getADSR().setRelease(90);
 
-  MonoMixer & mm0=ae.getAudioMixer().getTrack(0).getMonoMixer();
-  MonoMixer & mm1=ae.getAudioMixer().getTrack(1).getMonoMixer();
 
-  mm0.setInput(&m0);
-  mm1.setInput(&m1);
+  M1.getVCO().setSynthFreq(440);
+  //  m1.setSynthFreq(0);
+  M1.getADSR().setRelease(90);
+
+
+  /*
+  for (i=0;i<1000;i++)
+    printf("[%d]\n",M1.tick());
+  */
+  //MM0.setInput(M0);
+  //MM1.setInput(M1);
+
+  AE.openAudio();
+  AE.startAudio();
+
+  int i=0;
+  for (i=0;i<10;i++)
+    printf("[%d]\n",M1.tick());
+
   /*
   ae.openAudio();
   am=ae.getAudioMixer();
@@ -405,8 +436,11 @@ void handle_key()
 	     m_key
 	     );
 
-      m0.setSynthFreq(PE.getNoteFreq());
-      m0.getADSR().reset();
+      MonoMixer & MM0=AE.getAudioMixer().getTrack(0).getMonoMixer();
+      Machine   & M0=MM0.getInput();
+      M0.getVCO().setSynthFreq(PE.getNoteFreq());
+      M0.getADSR().reset();
+      //      M0.getVCO().reset();
 
       printf("key pressed sleeping 10ms\n");
       SDL_Delay(100);

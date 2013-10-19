@@ -12,7 +12,7 @@ Oscillator::Oscillator()
 
 Oscillator::~Oscillator()
 {
-  
+  printf("Oscillator::~Oscillator()\n");
 }
 
 void Oscillator::reset()
@@ -44,7 +44,7 @@ void Oscillator::setAmplitude(int amp)
   if (amp>=127) {amplitude=127; }
   if (amp<=0)   {amplitude=0;   }
   if (amp>0   && amp<127){ amplitude=amp; }
-  printf("amplitude:%d\n",amplitude);
+  printf("Oscillator::setAmplitude(amplitude=%d)\n",amplitude);
 }
 
 

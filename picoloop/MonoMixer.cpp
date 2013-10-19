@@ -2,8 +2,11 @@
 
 
 MonoMixer::MonoMixer(): M()
+//MonoMixer::MonoMixer()
 {
+  printf("MonoMixer::MonoMixer()\n");  
   amplitude=127;
+  //  M=NULL;
 }
 
 MonoMixer::~MonoMixer()
@@ -18,16 +21,22 @@ void MonoMixer::setAmplitude(int amp)
   if (amp>=127)           { amplitude=127; }
   if (amp<=0)             { amplitude=0;   }
   if (amp>0   && amp<127) { amplitude=amp; }
-  printf("amplitude:%d\n",amplitude);
+  printf("MonoMixer::setAmplitude(amplitude=%d)\n",amplitude);
 
   //M->setAmplitude(amp);
   amplitude=amp;
 }
-
+/*
 void MonoMixer::setInput(Machine * Mach)
 {
   M=Mach;
 }
+*/
+Machine & MonoMixer::getInput()
+{
+  return M;
+}
+
 
 Sint16 MonoMixer::tick()
 {
@@ -36,7 +45,7 @@ Sint16 MonoMixer::tick()
   Sint32 res32;
   Sint16 res16;
   Sint16 tick;
-  tick=M->tick();
+  tick=M.tick();
   res32=tick*amplitude;
   //  res32=tick*127;
   res32=res32/127;

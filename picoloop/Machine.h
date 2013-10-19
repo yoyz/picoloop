@@ -27,14 +27,16 @@ class Machine
   void setSawOsc();
   void setFuzzyPulseOsc();
   */
-
+  void init();
   ADSR & getADSR();
-  VCO  * getVCO();
+  VCO  & getVCO();
   //  Oscillator * getOscillator();
 
   int tick();
 
-  VCO                 * vco;
+  //  VCO                   vco_osc;
+  //  VCO                 * vco_pointer;
+  VCO                   vco;
   ADSR                  adsr;
   /*
   Oscillator          * s;

@@ -5,10 +5,10 @@ using namespace std;
 
 SineOscillator::SineOscillator() 
 {
+  printf("SineOscillator::SineOscillator()\n");
   frequency=440;
   amplitude=127;
   sample_num=0;
-  printf("SineOscillator::SineOscillator()\n");
   if(1)
     {
       //printf("Malloc sine\n");

@@ -24,8 +24,8 @@ using namespace std;
 
 #define SMALLBOX_COLOR   0x442233
 
-vector <Pattern>     P(TRACK_MAX);  
-vector <Machine>     M(TRACK_MAX);
+vector <Pattern>      P(TRACK_MAX);  
+vector <Machine>      M(TRACK_MAX);
 vector <MonoMixer *> MM(TRACK_MAX);
 
 
@@ -428,13 +428,16 @@ int seq_update()
 	  int   i=f;
 	  
 	  
-	  M[t].getVCO()->setSynthFreq(i);
-	  M[t].getADSR().reset();;
-	  M[t].getADSR().setRelease(P[t].getPatternElement(step).getRelease());		  
-	  
+	  //M[t].getVCO()->setSynthFreq(i);
+
 	  //m0.getADSR().get();
 	  //M[t].getOscillator()->reset();
-	  M[t].getVCO()->reset();
+	  M[t].getADSR().reset();;	  
+	  M[t].getVCO().reset();
+	  M[t].getVCO().getOscillatorOne();
+
+	  M[t].getVCO().setSynthFreq(i);
+	  M[t].getADSR().setRelease(P[t].getPatternElement(step).getRelease());		  
 	  //m.setSynthFreq(1200);
 	}
       else
@@ -453,7 +456,7 @@ int seq()
 
   for (t=0;t<TRACK_MAX;t++)
     {
-      M[t].getVCO()->setSynthFreq(0);
+      M[t].getVCO().setSynthFreq(0);
       //M[t].getVCO().setSineOsc();
     }
 
@@ -465,6 +468,7 @@ int seq()
     }
 
   printf("openAudio start streaming\n");
+  //  sleep(2);
   AE.startAudio();
 
   seq_update();  
@@ -516,6 +520,7 @@ void loadPattern()
 
 int main()
 {
+  //  exit(0);
   //string wave="808-cowbell.wav";
   //  char * str="808-cowbell.wav";
   //tmp_str=(char*)malloc(sizeof(char)*4);

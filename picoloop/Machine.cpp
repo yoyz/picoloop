@@ -2,9 +2,17 @@
 
 
 //Machine::Machine() : sineosc(), sawosc(), fuzzypulseosc(), adsr()
-Machine::Machine() : adsr()
+
+//Machine::Machine()// : adsr(), vco()
+//Machine::Machine() : adsr(), vco_osc()
+Machine::Machine() : adsr(), vco()
 {
-  vco = new VCO();
+  printf("Machine::Machine()\n");  
+  //  adsr=new ADSR();
+  //  vco=new VCO();
+
+  //  vco = new VCO();
+  //vco_pointer = new VCO();
   /*
   s = &sineosc;
   s->setFreq(0);
@@ -12,17 +20,24 @@ Machine::Machine() : adsr()
 
   */
   //  adsr.setOscillator(s);
-  adsr.setVCO(vco);
+  //  vco_pointer=&vco_osc;
+  //  adsr.setVCO(vco_pointer);
+
   //  printf("&S:%d\n",S);
 }
 
+
+
 Machine::~Machine()
 {
-  printf("Machine::~Machine()\n");  
+  printf("Machine::~Machine()\n");
 }
 
 
-
+void Machine::init()
+{
+  adsr.setVCO(&vco);
+}
 
 
 /*
@@ -37,8 +52,10 @@ ADSR & Machine::getADSR()
   return adsr;
 }
 
-VCO * Machine::getVCO()
+VCO & Machine::getVCO()
 {
+  //  printf("Machine::getVCO() this=0x%08.8X\n",this);
+  //  return vco_pointer;
   return vco;
 }
 /*

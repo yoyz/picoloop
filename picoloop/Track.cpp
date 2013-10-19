@@ -3,7 +3,7 @@
 Track::Track() : MM()
 {
   MM.setAmplitude(127);
-}
+ }
 
 Track::~Track()
 {
@@ -19,6 +19,7 @@ Machine & Track::getMachine()
 
 MonoMixer & Track::getMonoMixer()
 {
+  printf("MonoMixer & Track::getMonoMixer() this=0x%08.8X\n",this);
   return MM;
 }
 
