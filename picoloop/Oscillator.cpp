@@ -7,7 +7,9 @@ Oscillator::Oscillator()
   frequency=0;
   amplitude=0;
   sample_num=0;
+  sample_num_index=0
   last_tick=0;
+  table_size=0;
 }
 
 Oscillator::~Oscillator()
@@ -29,10 +31,14 @@ void Oscillator::setFreq(int freq)
   if (freq==frequency)
     return;
 
-  if (freq < 0)          freq=1;
+  if (freq <= 0)          freq=0;
   else if (freq > 20000) freq=20000;
   frequency=freq;
   table_fill=0;
+  if (freq!=0)
+    table_size=DEFAULTFREQ/freq;
+  else
+    table_size=0;
   //  printf("setFreq:%d\n",freq);
 }
 
