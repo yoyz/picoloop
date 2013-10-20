@@ -54,6 +54,7 @@ class AudioEngine
   void setSynthFreq(int sfreq);
   int  getNbCallback();
 
+  int bufferIsGenerated();
   void processBuffer();
   
  private:
@@ -78,6 +79,7 @@ class AudioEngine
   int          debug_audio;
   Sint16     * buffer_out;
   RtAudio dac;
+  int          bufferGenerated;
   RtAudio::StreamParameters rtAudioOutputParams;
   RtAudio::StreamOptions    rtAudioStreamOptions;
 

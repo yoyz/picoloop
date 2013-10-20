@@ -25,7 +25,7 @@ using namespace std;
 #define SMALLBOX_COLOR   0x442233
 
 vector <Pattern>      P(TRACK_MAX);  
-vector <Machine>      M(TRACK_MAX);
+vector <Machine   *>  M(TRACK_MAX);
 vector <MonoMixer *> MM(TRACK_MAX);
 
 
@@ -394,7 +394,7 @@ int seq_update()
       P[ct].getPatternElement(cursor).setAttack(P[ct].getPatternElement(cursor).getAttack()+attack);
       attack=0;
       if (debug)
-	printf("[attack:%d]\n",M[ct].getADSR().getAttack());
+	printf("[attack:%d]\n",M[ct]->getADSR().getAttack());
     }
   
   if (release!=0)
@@ -432,12 +432,12 @@ int seq_update()
 
 	  //m0.getADSR().get();
 	  //M[t].getOscillator()->reset();
-	  M[t].getADSR().reset();;	  
-	  M[t].getVCO().reset();
-	  M[t].getVCO().getOscillatorOne();
+	  M[t]->getADSR().reset();;	  
+	  M[t]->getVCO().reset();
+	  M[t]->getVCO().getOscillatorOne();
 
-	  M[t].getVCO().setSynthFreq(i);
-	  M[t].getADSR().setRelease(P[t].getPatternElement(step).getRelease());		  
+	  M[t]->getVCO().setSynthFreq(i);
+	  M[t]->getADSR().setRelease(P[t].getPatternElement(step).getRelease());		  
 	  //m.setSynthFreq(1200);
 	}
       else
@@ -456,16 +456,25 @@ int seq()
 
   for (t=0;t<TRACK_MAX;t++)
     {
-      M[t].getVCO().setSynthFreq(0);
+
+      MM[t]=AE.getAudioMixer().getTrack(t).getMonoMixer();
+      //MM[t]=AE.getAudioMixer().getTrack(t).getMonoMixer().getInput().init();
+      
+      M[t]=MM[t]->getInput();
+      M[t]->init();
+      M[t]->getVCO().init();
+      //M[t]->getVCO().init();
+      M[t]->getVCO().tick();
+      M[t]->getVCO().setSynthFreq(0);
+      
       //M[t].getVCO().setSineOsc();
     }
-
-  for (t=0;t<TRACK_MAX;t++)
-    {
-      MM[t]=&AE.getAudioMixer().getTrack(t).getMonoMixer();
-      MM[t]->setInput(&M[t]);
-      MM[t]->setAmplitude(32);
-    }
+  //  AE.processBuffer();
+  //  for (t=0;t<TRACK_MAX;t++)
+  //    {
+      //MM[t]->setInput(&M[t]);
+      //      MM[t]->setAmplitude(32);
+      //    }
 
   printf("openAudio start streaming\n");
   //  sleep(2);
@@ -501,6 +510,8 @@ int seq()
 	  step++;  
 	  seq_update();
 	}
+      if (AE.bufferIsGenerated()==0)
+	AE.processBuffer();
     }
 }
 

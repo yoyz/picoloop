@@ -32,9 +32,9 @@ void MonoMixer::setInput(Machine * Mach)
   M=Mach;
 }
 */
-Machine & MonoMixer::getInput()
+Machine * MonoMixer::getInput()
 {
-  return M;
+  return &M;
 }
 
 

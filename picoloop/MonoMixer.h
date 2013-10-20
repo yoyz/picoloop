@@ -12,7 +12,7 @@ class MonoMixer
   ~MonoMixer();
   void        setAmplitude(int amp);
   //  void        setInput(Machine * M);
-  Machine &   getInput();
+  Machine *   getInput();
   Sint16      tick();
 
  private:

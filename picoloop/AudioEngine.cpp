@@ -32,6 +32,7 @@ AudioEngine::AudioEngine() : inst(), AM()
       fd = fopen("audioout","w+");
     }
   buffer_out=(Sint16*)malloc(sizeof(Sint16)*BUFFER_FRAME);
+  bufferGenerated=0;
 }
 
 int AudioEngine::getNbCallback()
@@ -45,7 +46,15 @@ void AudioEngine::processBuffer()
     {
       buffer_out[i]=AM.tick();      
     }
+  bufferGenerated=1;
 }
+
+int AudioEngine::bufferIsGenerated()
+{
+  return bufferGenerated;
+}
+
+
 
 /*
 void AudioEngine::setSynthFreq(int sfreq)
@@ -203,10 +212,12 @@ int AudioEngine::callback( void *outputBuffer,
 			   RtAudioStreamStatus status, 
 			   void *user_data )
 {
-  printf("AudioEngine::calback nBufferFrame=%d nbCallback=%d\n",nBufferFrames,nbCallback);
+  printf("AudioEngine::calback() begin nBufferFrame=%d nbCallback=%d\n",nBufferFrames,nbCallback);
   typedef Sint16 MY_TYPE;
   MY_TYPE *buffer = (MY_TYPE *) outputBuffer;
   
+  //  this->bufferGenerated=0;
+  //  if (bufferGenerated==0)
   this->processBuffer();
 
 #ifdef LINUX_DESKTOP
@@ -242,7 +253,7 @@ int AudioEngine::callback( void *outputBuffer,
   //if (debug_audio)
   //fwrite(buffer,sizeof(MY_TYPE)*nBufferFrames,sizeof(MY_TYPE),fd);
 
-
+  printf("AudioEngine::calback() end\n");
   return nbCallback++;  
 }
 
