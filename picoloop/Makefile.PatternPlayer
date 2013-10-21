@@ -1,4 +1,4 @@
-CC=g++-4.4
+CC=g++
 CFLAGS=-c -DLINUX -I. -LSDL/lib -ggdb -pg
 LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf -lpthread  RtAudio.o  -pg
 
