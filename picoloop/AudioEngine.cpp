@@ -212,7 +212,7 @@ int AudioEngine::callback( void *outputBuffer,
 			   RtAudioStreamStatus status, 
 			   void *user_data )
 {
-  printf("AudioEngine::calback() begin nBufferFrame=%d nbCallback=%d\n",nBufferFrames,nbCallback);
+  //  printf("AudioEngine::calback() begin nBufferFrame=%d nbCallback=%d\n",nBufferFrames,nbCallback);
   typedef Sint16 MY_TYPE;
   MY_TYPE *buffer = (MY_TYPE *) outputBuffer;
   
@@ -253,7 +253,7 @@ int AudioEngine::callback( void *outputBuffer,
   //if (debug_audio)
   //fwrite(buffer,sizeof(MY_TYPE)*nBufferFrames,sizeof(MY_TYPE),fd);
 
-  printf("AudioEngine::calback() end\n");
+  //  printf("AudioEngine::calback() end\n");
   return nbCallback++;  
 }
 
