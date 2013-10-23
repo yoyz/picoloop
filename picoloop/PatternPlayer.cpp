@@ -31,6 +31,7 @@ vector <MonoMixer *> MM(TRACK_MAX);
 
 AudioEngine AE;
 PatternReader PR;
+PatternElement PE;
 InputManager IE;
 SDL_GUI SG;
 Wave cowbell;
@@ -409,6 +410,7 @@ int seq_update()
   if (invert_trig)
     {
       P[ct].getPatternElement(cursor).setTrig(! P[ct].getPatternElement(cursor).getTrig());
+      PE=P[ct].getPatternElement(cursor);
       invert_trig=0;
     }	  
   
