@@ -13,29 +13,30 @@ using namespace std;
 #include "SDL_GUI.h"
 #include "InputManager.h"
 #include "Machine.h"
+#include "Sequencer.h"
 
 #define KEY_REPEAT_INTERVAL 400
 
-#define BOX_COLOR        0xAECD15
-#define TRIG_COLOR       0x0E4C15
-#define NOTE_COLOR       0x46DC65
-#define CURSOR_COLOR     0x1515CD
-#define STEP_COLOR       0x242C45
+#define BOX_COLOR           0xAECD15
+#define TRIG_COLOR          0x0E4C15
+#define NOTE_COLOR          0x46DC65
+#define CURSOR_COLOR        0x1515CD
+#define STEP_COLOR          0x242C45
 
-#define SMALLBOX_COLOR   0x442233
+#define SMALLBOX_COLOR      0x442233
 
-vector <Pattern>      P(TRACK_MAX);  
-vector <Machine   *>  M(TRACK_MAX);
-vector <MonoMixer *> MM(TRACK_MAX);
+vector <Pattern>            P(TRACK_MAX);  
+vector <Machine   *>        M(TRACK_MAX);
+vector <MonoMixer *>        MM(TRACK_MAX);
 
-
-AudioEngine AE;      // used to  init alsa/rtaudio
-PatternReader PR;    // used to  read data.pic file
-PatternElement PE;   // used for copy paste PatternElement
-InputManager IE;     // used to  fetch key
-SDL_GUI SG;          // used to  open a gui and display stuff
-Wave cowbell;        // used ?
-Instrument inst;     // used ?
+Sequencer      SEQ;         // used to  store/get information about sequencer 
+AudioEngine    AE;          // used to  init alsa/rtaudio
+PatternReader  PR;          // used to  read data.pic file
+PatternElement PE;          // used for copy paste PatternElement
+InputManager   IE;          // used to  fetch key
+SDL_GUI        SG;          // used to  open a gui and display stuff
+Wave           cowbell;     // used ?
+Instrument     inst;        // used ?
 
 
 int save=false;
@@ -64,7 +65,9 @@ int step=0;             // current step in the sequencer
 int menu=0;             // menu mode
 int menu_note=0;
 int menu_cursor=0;      // index of menu
-int ct=0;               // current_track
+//int ct=0;               // current_track
+int ct_x=0;             
+int ct_y=0;
 int invert_trig=0;
 
 int dirty_graphic=1;
@@ -75,10 +78,12 @@ void display_board()
 {
   int i;
   char str[8];
+  int  cty=SEQ.getCurrentTrackY();
   dirty_graphic=0;
 
   SG.clearScreen();
-  sprintf(str,"Track %d ",ct);
+  //  sprintf(str,"Track %d ",ct);
+  sprintf(str,"Track %d ",cty);
   SG.guiTTFText(200,20,str);
   
   if (menu_cursor==0)
@@ -101,20 +106,20 @@ void display_board()
       for (i=0;i<16;i++)
 	{
 	  // Draw trigged box trig color   
-	  if (P[ct].getPatternElement(i).getTrig())
+	  if (P[cty].getPatternElement(i).getTrig())
 	    SG.drawBoxNumber(i,TRIG_COLOR);
 	  // AdsR
-	  SG.smallBoxNumber(i,P[ct].getPatternElement(i).getRelease(),0,SMALLBOX_COLOR);
-	  SG.smallBoxNumber(i,0,P[ct].getPatternElement(i).getAttack(),SMALLBOX_COLOR);      
+	  SG.smallBoxNumber(i,P[cty].getPatternElement(i).getRelease(),0,SMALLBOX_COLOR);
+	  SG.smallBoxNumber(i,0,P[cty].getPatternElement(i).getAttack(),SMALLBOX_COLOR);      
 	}
       // Cursor & step postion
       SG.drawBoxNumber(cursor,CURSOR_COLOR);
-      SG.smallBoxNumber(cursor,P[ct].getPatternElement(cursor).getRelease(),0,SMALLBOX_COLOR);
-      SG.smallBoxNumber(cursor,0,P[ct].getPatternElement(cursor).getAttack(),SMALLBOX_COLOR); 
+      SG.smallBoxNumber(cursor,P[cty].getPatternElement(cursor).getRelease(),0,SMALLBOX_COLOR);
+      SG.smallBoxNumber(cursor,0,P[cty].getPatternElement(cursor).getAttack(),SMALLBOX_COLOR); 
       
       SG.drawBoxNumber(step,STEP_COLOR);  
-      SG.smallBoxNumber(step,P[ct].getPatternElement(step).getRelease(),0,SMALLBOX_COLOR);
-      SG.smallBoxNumber(step,0,P[ct].getPatternElement(step).getAttack(),SMALLBOX_COLOR); 
+      SG.smallBoxNumber(step,P[cty].getPatternElement(step).getRelease(),0,SMALLBOX_COLOR);
+      SG.smallBoxNumber(step,0,P[cty].getPatternElement(step).getAttack(),SMALLBOX_COLOR); 
     }
 
 
@@ -125,12 +130,12 @@ void display_board()
 	for (i=0;i<16;i++)
 	  {
 	    // Draw trig note color
-	    if (P[ct].getPatternElement(i).getTrig())
+	    if (P[cty].getPatternElement(i).getTrig())
 	      SG.drawBoxNumber(i,NOTE_COLOR);
 	    
 	    SG.smallBoxNumber(i,
-			      (P[ct].getPatternElement(i).getNote()%12)*10,
-			      (P[ct].getPatternElement(i).getNote()/12)*10,
+			      (P[cty].getPatternElement(i).getNote()%12)*10,
+			      (P[cty].getPatternElement(i).getNote()/12)*10,
 			      SMALLBOX_COLOR);
 	  }
       // Note C3 
@@ -139,7 +144,7 @@ void display_board()
 	  for (i=0;i<16;i++)
 	    {
 	      // Draw trig note color
-	      if (P[ct].getPatternElement(i).getTrig())
+	      if (P[cty].getPatternElement(i).getTrig())
 		SG.drawBoxNumber(i,NOTE_COLOR);
 	      
 	      if (i==cursor)
@@ -147,26 +152,46 @@ void display_board()
 	      if (i==step)
 		SG.drawBoxNumber(step,STEP_COLOR);  
 
-	      if (P[ct].getPatternElement(i).getTrig())
-		SG.drawTTFTextNumber(i,P[ct].getPatternElement(i).getNoteCharStar());
+	      if (P[cty].getPatternElement(i).getTrig())
+		SG.drawTTFTextNumber(i,P[cty].getPatternElement(i).getNoteCharStar());
 	    }
 	}
       // Note Cursor
       if (menu_note==0)
 	{
+
 	  SG.drawBoxNumber(cursor,CURSOR_COLOR);
 	  SG.drawBoxNumber(step,STEP_COLOR);  
     
 	  SG.smallBoxNumber(cursor,
-			    (P[ct].getPatternElement(cursor).getNote()%12)*10,
-			    (P[ct].getPatternElement(cursor).getNote()/12)*10,
+			    (P[cty].getPatternElement(cursor).getNote()%12)*10,
+			    (P[cty].getPatternElement(cursor).getNote()/12)*10,
 			    SMALLBOX_COLOR);
 	  SG.smallBoxNumber(step,  
-			    (P[ct].getPatternElement(step).getNote()%12)*10,
-			    (P[ct].getPatternElement(step).getNote()/12)*10,
+			    (P[cty].getPatternElement(step).getNote()%12)*10,
+			    (P[cty].getPatternElement(step).getNote()/12)*10,
 			    SMALLBOX_COLOR);
 	}
     }
+
+  if (menu_cursor==2 && menu==0)
+    {
+
+      int x,y;
+      const char * txt="0";
+      const char * tmp_txt;
+      tmp_txt="0";
+
+      SG.clearScreen();      
+      for (x=0;x<16;x++)
+	for (y=0;y<4;y++)
+	  SG.middleBoxNumber(x,y,NOTE_COLOR);
+      
+      for (x=0;x<16;x++)
+	for (y=0;y<4;y++)
+	  SG.drawTTFTextLoadSaveBoxNumer(x,y,tmp_txt);
+    }
+
 
   SG.refresh();
 }
@@ -174,7 +199,7 @@ void display_board()
 
 void handle_key()
 {
-
+  
   bool * keyState;
   int  * keyRepeat;
   int    lastEvent;
@@ -199,7 +224,7 @@ void handle_key()
       else if (menu==1)        { menu=0;  start_key=0; }   
       IE.clearLastKeyEvent();
     }
-
+  
   if (lastKey   == SDLK_RETURN && lastEvent ==  SDL_KEYUP)
     {
       printf("Entering menu note\n");
@@ -207,7 +232,7 @@ void handle_key()
       else if (menu_note==1)        { menu_note=0;  }   
       IE.clearLastKeyEvent();
     }
-
+  
   //Move MENU_CURSOR
   if (menu==1)
     {
@@ -215,52 +240,64 @@ void handle_key()
 	{
 	  if (keyRepeat[SDLK_LEFT]==1 || keyRepeat[SDLK_LEFT]%64==0)
 	    menu_cursor--;
-	  if (menu_cursor<0) menu_cursor=4;
+	  if (menu_cursor<0) menu_cursor=3;
 	  printf("[menu_cursor:%d]\n",menu_cursor);
 	  printf("key left\n");            
 	  dirty_graphic=1;
 	}      
-
+      
       if(keyState[SDLK_RIGHT])
 	{
 	  if (keyRepeat[SDLK_RIGHT]==1 || keyRepeat[SDLK_RIGHT]%64==0)
 	    menu_cursor++;
-	  if (menu_cursor>4) menu_cursor=0;
+	  if (menu_cursor>3) menu_cursor=0;
 	  printf("[menu_cursor:%d]\n",menu_cursor);
 	  printf("key right\n");            
 	  dirty_graphic=1;
 	}
-
+      
       if(keyState[SDLK_UP])
 	{
 	  if (keyRepeat[SDLK_UP]==1 || keyRepeat[SDLK_UP]%64==0)
-	    ct++;
-	  if (ct >= TRACK_MAX) ct=0;
-	  printf("key up\n");
+	    {
+	      if (SEQ.getCurrentTrackY()>0)
+		SEQ.setCurrentTrackY(SEQ.getCurrentTrackY()-1);
+	      else 
+		SEQ.setCurrentTrackY(TRACK_MAX-1);
+	    }
+	      //if (ct >= TRACK_MAX) ct=0;
+	  printf("key up : change track -- \n");
 	  dirty_graphic=1;
 	}
 
       if(keyState[SDLK_DOWN])
 	{
 	  if (keyRepeat[SDLK_DOWN]==1 || keyRepeat[SDLK_DOWN]%64==0)
-	    ct--;
-	  if (ct<0) ct=TRACK_MAX-1;
-	  printf("key down\n");
+	    {
+	      if (SEQ.getCurrentTrackY()<TRACK_MAX-1)
+		SEQ.setCurrentTrackY(SEQ.getCurrentTrackY()+1);
+	      else 
+		SEQ.setCurrentTrackY(0);
+	      
+	      //	    ct--;
+	    }
+	  //if (ct<0) ct=TRACK_MAX-1;
+	  printf("key down : change track ++\n");
 	  dirty_graphic=1;
 	}
     }
-
-
-
-
-
-
+  
+  
+  
+  
+  
+  
   //MOVE the cursor : LEFT UP DOWN RIGHT   
   if (menu==0)
     {
-
-
-
+      
+      
+      
       if(keyState[SDLK_UP] && ! keyState[SDLK_LCTRL])
 	{
 	  if (keyRepeat[SDLK_UP]==1 || keyRepeat[SDLK_UP]%64==0)
@@ -269,7 +306,7 @@ void handle_key()
 	  printf("key down : up \n");
 	  dirty_graphic=1;
 	}
-
+      
       if(keyState[SDLK_DOWN] && ! keyState[SDLK_LCTRL])
 	{
 	  if (keyRepeat[SDLK_DOWN]==1 || keyRepeat[SDLK_DOWN]%64==0)
@@ -281,7 +318,7 @@ void handle_key()
       if(keyState[SDLK_LEFT] && ! keyState[SDLK_LCTRL])
 	{
 	  if (keyRepeat[SDLK_LEFT]==1 || keyRepeat[SDLK_LEFT]%64==0)
-	      cursor--;
+	    cursor--;
 	  
 	  if (cursor<0) cursor=15;
 	  printf("key left\n");            
@@ -291,14 +328,14 @@ void handle_key()
       if (keyState[SDLK_RIGHT] && ! keyState[SDLK_LCTRL])
 	{
 	  if (keyRepeat[SDLK_RIGHT]==1 || keyRepeat[SDLK_RIGHT]%64==0)
-	  cursor++;
+	    cursor++;
 	  if (cursor>15) cursor=0;
 	  printf("key right\n");      
 	  dirty_graphic=1;
 	}
     }
-
-
+  
+  
   // Move Attack Release 
   // Insert/Remove Trig
   if (menu==0 && menu_cursor==0)
@@ -310,24 +347,24 @@ void handle_key()
 	  dirty_graphic=1;
 	  IE.clearLastKeyEvent();
 	}
-
+      
       if (keyState[SDLK_LEFT]  && keyState[SDLK_LCTRL])
 	if (keyRepeat[SDLK_LEFT]==1 ||  keyRepeat[SDLK_LEFT]>16) 
 	  { release=-4;   dirty_graphic=1; }
-
+      
       if (keyState[SDLK_RIGHT] && keyState[SDLK_LCTRL]) 
 	if (keyRepeat[SDLK_RIGHT]==1 || keyRepeat[SDLK_RIGHT]>16) 
 	  { release=4; 	  dirty_graphic=1; }
-
+      
       if (keyState[SDLK_UP]    && keyState[SDLK_LCTRL]) 
 	if (keyRepeat[SDLK_UP]==1 ||    keyRepeat[SDLK_UP]>16) 
 	  { attack=4;  	  dirty_graphic=1; }
-
+      
       if (keyState[SDLK_DOWN]  && keyState[SDLK_LCTRL]) 
 	if (keyRepeat[SDLK_DOWN]==1 || keyRepeat[SDLK_DOWN]>16) 
 	  { attack=-4; 	  dirty_graphic=1; }
     }  
-
+  
   if (menu==0 && menu_cursor==1)
     {
       //if (keyState[SDLK_LALT])
@@ -344,7 +381,14 @@ void handle_key()
       if (keyState[SDLK_UP]    && keyState[SDLK_LCTRL]) { note=12;   	  dirty_graphic=1;}
       if (keyState[SDLK_DOWN]  && keyState[SDLK_LCTRL]) { note=-12;  	  dirty_graphic=1;}
     }  
-
+  
+  
+  if (menu==1 && menu_cursor==2)
+    {
+      
+    }
+  
+  
   if (menu==0 && menu_cursor==2)
     {
       if (keyState[SDLK_DOWN]  && keyState[SDLK_LALT])
@@ -352,35 +396,36 @@ void handle_key()
       if (keyState[SDLK_UP]    && keyState[SDLK_LALT])
 	load=true;
     }
-
+  
   int delay=10;
   //printf("sleeping %dms\n",delay);
   SDL_Delay(delay);
-
-
+  
+  
 }
 
 
 int seq_update()
 {
-  
+  int  cty=SEQ.getCurrentTrackY();
   if (save)
     {
       printf("<==[SAVE]==>\n");
-      PR.writePattern(1,ct+1,P[ct]);
+      //PR.writePattern(1,ct+1,P[ct]);
+      PR.writePattern(1,cty+1,P[cty]);
       save=false;
     }
   
   if (load)
     {
       printf("<==[LOAD]==>\n");
-      PR.readPatternData(1,ct+1,P[ct]);
+      PR.readPatternData(1,cty+1,P[cty]);
       load=false;
     }
   
   if (note!=0)
     { 
-      P[ct].getPatternElement(cursor).setNote(P[ct].getPatternElement(cursor).getNote()+note);
+      P[cty].getPatternElement(cursor).setNote(P[cty].getPatternElement(cursor).getNote()+note);
       note=0;
     }
   
@@ -388,32 +433,32 @@ int seq_update()
   if (attack!=0)
     {
       //m0.getADSR().setAttack(m0.getADSR().getAttack()+attack);
-      P[ct].getPatternElement(cursor).setAttack(P[ct].getPatternElement(cursor).getAttack()+attack);
+      P[cty].getPatternElement(cursor).setAttack(P[cty].getPatternElement(cursor).getAttack()+attack);
       attack=0;
       if (debug)
-	printf("[attack:%d]\n",M[ct]->getADSR().getAttack());
+	printf("[attack:%d]\n",M[cty]->getADSR().getAttack());
     }
   
   if (release!=0)
     {
       //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
-      P[ct].getPatternElement(cursor).setRelease(P[ct].getPatternElement(cursor).getRelease()+release);
+      P[cty].getPatternElement(cursor).setRelease(P[cty].getPatternElement(cursor).getRelease()+release);
       release=0;
       if (debug)
-	printf("[release:%d]\n",P[ct].getPatternElement(cursor).getRelease()+release);
+	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
     }
   
   if (invert_trig)
     {
-      if (P[ct].getPatternElement(cursor).getTrig())
+      if (P[cty].getPatternElement(cursor).getTrig())
 	{
-	  P[ct].getPatternElement(cursor).setTrig(! P[ct].getPatternElement(cursor).getTrig());
-	  PE=P[ct].getPatternElement(cursor);
+	  P[cty].getPatternElement(cursor).setTrig(! P[cty].getPatternElement(cursor).getTrig());
+	  PE=P[cty].getPatternElement(cursor);
 	}
       else
 	{
-	  P[ct].setPatternElement(cursor,PE);
-	  P[ct].getPatternElement(cursor).setTrig(true);
+	  P[cty].setPatternElement(cursor,PE);
+	  P[cty].getPatternElement(cursor).setTrig(true);
 	}
       invert_trig=0;
     }	  

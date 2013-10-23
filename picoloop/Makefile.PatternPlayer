@@ -4,7 +4,8 @@ LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf -lpthread  RtAudio.o  -pg
 
 CFLAGS=-c -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb
 LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf -lpthread  RtAudio.o 
-SOURCES=Wave.cpp Synth.cpp Instrument.cpp Machine.cpp Track.cpp AudioMixer.cpp AudioEngine.cpp PatternElement.cpp Pattern.cpp PatternPlayer.cpp PatternReader.cpp Oscillator.cpp SineOscillator.cpp SawOscillator.cpp  FuzzyPulseOscillator.cpp  PulseOscillator.cpp MonoMixer.cpp ADSR.cpp SDL_GUI.cpp InputManager.cpp VCO.cpp
+
+SOURCES=Wave.cpp Synth.cpp Instrument.cpp Machine.cpp Track.cpp AudioMixer.cpp AudioEngine.cpp PatternElement.cpp Pattern.cpp PatternPlayer.cpp PatternReader.cpp Oscillator.cpp SineOscillator.cpp SawOscillator.cpp  FuzzyPulseOscillator.cpp  PulseOscillator.cpp MonoMixer.cpp ADSR.cpp SDL_GUI.cpp InputManager.cpp VCO.cpp Sequencer.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=PatternPlayer
 
