@@ -178,7 +178,7 @@ void display_board()
 
   if (menu==0 && menu_cursor==2)
     {
-
+      printf("HIT\n");
       int x,y;
       const char * txt="0";
       const char * tmp_txt;
@@ -188,7 +188,7 @@ void display_board()
       for (x=0;x<16;x++)
 	for (y=0;y<4;y++)
 	  {
-	    if (PR.PatternDataExist(x+1,y+1))
+	    if (PR.PatternDataExist(x,y))
 	      SG.middleBoxNumber(x,y,NOTE_COLOR);
 	    else
 	      SG.middleBoxNumber(x,y,STEP_COLOR);
@@ -399,22 +399,33 @@ void handle_key()
       if (keyState[SDLK_DOWN]  && keyState[SDLK_LALT])
 	save=true;
 
-      if (keyState[SDLK_UP]    && keyState[SDLK_LALT])
+
+      if (keyState[SDLK_UP]    && keyState[SDLK_LALT])	
 	load=true;
 
       if (!keyState[SDLK_LALT])
 	{
-	  if (keyRepeat[SDLK_LEFT]==1  || keyRepeat[SDLK_LEFT]%64==0)  { loadsave_cursor_x++;  dirty_graphic=1;}
-	  if (keyRepeat[SDLK_RIGHT]==1 || keyRepeat[SDLK_RIGHT]%64==0) { loadsave_cursor_x--;  dirty_graphic=1;}
-	  if (keyRepeat[SDLK_UP]==1    || keyRepeat[SDLK_UP]%64==0)    { loadsave_cursor_y--;  dirty_graphic=1;}
-	  if (keyRepeat[SDLK_DOWN]==1  || keyRepeat[SDLK_DOWN]%64==0)  { loadsave_cursor_y++;  dirty_graphic=1;}
+	  if (keyState[SDLK_LEFT])
+	    if (keyRepeat[SDLK_LEFT]==1  || keyRepeat[SDLK_LEFT]%64==0)  { loadsave_cursor_x--;  dirty_graphic=1;}
+
+	  if (keyState[SDLK_RIGHT])
+	    if (keyRepeat[SDLK_RIGHT]==1 || keyRepeat[SDLK_RIGHT]%64==0) { loadsave_cursor_x++;  dirty_graphic=1;}
+
+	  if (keyState[SDLK_UP])
+	    if (keyRepeat[SDLK_UP]==1    || keyRepeat[SDLK_UP]%64==0)    { loadsave_cursor_y--;  dirty_graphic=1;}
+
+	  if (keyState[SDLK_DOWN])
+	    if (keyRepeat[SDLK_DOWN]==1  || keyRepeat[SDLK_DOWN]%64==0)  { loadsave_cursor_y++;  dirty_graphic=1;}
 	  
 	  if (loadsave_cursor_x>15)          { loadsave_cursor_x=0; }
 	  if (loadsave_cursor_x<0)           { loadsave_cursor_x=15; }
 	  if (loadsave_cursor_y>TRACK_MAX-1) { loadsave_cursor_y=0; }
 	  if (loadsave_cursor_y<0)           { loadsave_cursor_y=TRACK_MAX-1; }  
 	  SEQ.setCurrentTrackY(loadsave_cursor_y);
+	  //	  printf("HIT2:%d\n",dirty_graphic);
+	  //	  IE.clearLastKeyEvent();
 	}
+
   
     }
   
@@ -435,6 +446,7 @@ int seq_update()
       printf("<==[SAVE]==>\n");
       //PR.writePattern(1,ct+1,P[ct]);
       PR.writePattern(loadsave_cursor_x,loadsave_cursor_y,P[cty]);
+      dirty_graphic=1;
       save=false;
     }
   

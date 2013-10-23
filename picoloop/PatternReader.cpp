@@ -13,8 +13,10 @@
 using namespace std;
 
 PatternReader::PatternReader() : twoDPVector(16,vector <Pattern>(TRACK_MAX)), 
-				 loadedData(16,vector      <int>(TRACK_MAX)), 
-				 savedData(16,vector       <int>(TRACK_MAX))
+				 loadedData(16,vector      <int>(TRACK_MAX))
+
+				 //, 
+				 //				 savedData(16,vector       <int>(TRACK_MAX))
 {
 
 }
@@ -27,8 +29,8 @@ void PatternReader::init()
   for (x=0;x<16;x++)
     for (y=0;y<TRACK_MAX-1;y++)
       {
-	loadedData[x][y]=0;
-	savedData[x][y]=0;
+	loadedData[x][y]=DATA_HAS_NOT_BEEN_CHECK;
+	//	savedData[x][y]=0;
 	twoDPVector[x][y].init();
       }
 }
@@ -42,6 +44,11 @@ bool PatternReader::PatternDataExist(int PatternNumber,int TrackNumber)
   int PatNum,TrackNum,PatSize;
   bool retcode=true;
   bool found=false;
+
+  if (loadedData[PatternNumber][TrackNumber]==DATA_EXIST_ON_STORAGE)
+    return true;
+  if (loadedData[PatternNumber][TrackNumber]==DATA_DOES_NOT_EXIST_ON_STORAGE)
+    return false;
 
   fd=fopen(fn.c_str(),"r+");
 
@@ -65,6 +72,12 @@ bool PatternReader::PatternDataExist(int PatternNumber,int TrackNumber)
 
   if (match)
     found=true;
+
+  if (found==true)
+    loadedData[PatternNumber][TrackNumber]=DATA_EXIST_ON_STORAGE;
+  else
+    loadedData[PatternNumber][TrackNumber]=DATA_DOES_NOT_EXIST_ON_STORAGE;
+
 
   free(line);
   fclose(fd);
@@ -244,7 +257,7 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
     retcode=false;
 
   if (retcode==true)
-    loadedData[PatternNumber][TrackNumber]=1;
+    loadedData[PatternNumber][TrackNumber]=DATA_EXIST_ON_STORAGE;
   
   free(line);
   fclose(fd);
@@ -265,6 +278,11 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
   line=(char*)malloc(1024);
   line2=(char*)malloc(1024);
   bool found=false;
+
+
+  //  loadedData[PatternNumber][TrackNumber]==0;
+  //savedData[PatternNumber][TrackNumber]==0;
+
   
   fd=fopen(fn.c_str(),"r+");
   
@@ -366,11 +384,14 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
       fprintf(fd,"%s",data[i].c_str());
     }
   fclose(fd);
+
+  loadedData[PatternNumber][TrackNumber]=DATA_EXIST_ON_STORAGE;
   //printf("%d",data.size());
   //  for (int i=0; i< data.size();i++)
   //  {
   //        cout << data[i] ;
   //      }
+
   
   
 }
