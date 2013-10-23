@@ -27,7 +27,7 @@ Sint16 FuzzyPulseOscillator::tick()
   Sint16 randomize;
   int debug=0;
   int detect_phase=0;
-  int period=0;
+  //  int period=0;
 
   // // // // 1/freq*44100 = > pas de + - + - 
   
@@ -50,15 +50,15 @@ Sint16 FuzzyPulseOscillator::tick()
 
   //detect_phase=sample_num % ( frequency*2);
   
-  period=(44100/frequency);
+  //period=(44100/frequency);
 
   if (debug) 
     printf("period:%d samplenum:%d sample_num mod period: %d \n",
-	   period,
+	   table_size,
 	   sample_num,
-	   sample_num%period);
+	   sample_num%table_size);
   
-  if ((sample_num % ( 2* period) ) > period)
+  if ((sample_num % ( 2* table_size) ) > table_size)
     {  new_phase=-1; }
   else
     {  new_phase=1;  }
