@@ -23,8 +23,14 @@ class SDL_GUI
 
   int  closeVideo();
 
-  void smallBoxNumber(int n,int x,int y,Uint32 c);
+  void middleBox(int x, int y,Uint32 c);
+  void middleBoxNumber(int x, int y,Uint32 c);
+  void loadSaveBoxNumber(int x, int y,Uint32 c);
+  void drawTTFTextLoadSaveBoxNumer(int x,int y,const char *txt);
+
   void smallBox(int x, int y,Uint32 c);
+  void smallBoxNumber(int n,int x,int y,Uint32 c);
+
   void fullBox(int x, int y, int w, int h, Uint32 c);
   void emptyBox(int x, int y, int w, int h, Uint32 c);
   //  void drawBox(int x,int y,Uint32 color);
@@ -36,7 +42,7 @@ class SDL_GUI
   void drawBMPTextNumber(int n,char *txt);
 
   int  openTTFFont();
-  int  guiTTFText(int x,int y,char *txt);
+  int  guiTTFText(int x,int y,const char *txt);
   void drawTTFTextNumber(int n,char *txt);
 
   void refresh();
