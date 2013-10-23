@@ -181,33 +181,6 @@ void SDL_GUI::fullBox(int x, int y, int w, int h, Uint32 c)
 
 
 
-void SDL_GUI::drawBoxNumber(int n, Uint32 c)
-{
-  //sg.box(boxOffset+(0*boxSize),   boxOffset,boxSize,boxSize,0xAECD15);
-
-  switch (n)
-    {
-    case 0:  this->fullBox(boxOffset+(0*boxSize),   boxOffset+(0*boxSize)+0,boxSize,boxSize,c); break;
-    case 1:  this->fullBox(boxOffset+(1*boxSize)+10,boxOffset+(0*boxSize)+0,boxSize,boxSize,c); break;
-    case 2:  this->fullBox(boxOffset+(2*boxSize)+20,boxOffset+(0*boxSize)+0,boxSize,boxSize,c); break;
-    case 3:  this->fullBox(boxOffset+(3*boxSize)+30,boxOffset+(0*boxSize)+0,boxSize,boxSize,c); break;
-
-    case 4:  this->fullBox(boxOffset+(0*boxSize),   boxOffset+(1*boxSize+10),boxSize,boxSize,c); break;
-    case 5:  this->fullBox(boxOffset+(1*boxSize)+10,boxOffset+(1*boxSize+10),boxSize,boxSize,c); break;
-    case 6:  this->fullBox(boxOffset+(2*boxSize)+20,boxOffset+(1*boxSize+10),boxSize,boxSize,c); break;
-    case 7:  this->fullBox(boxOffset+(3*boxSize)+30,boxOffset+(1*boxSize+10),boxSize,boxSize,c); break;
-
-    case 8:  this->fullBox(boxOffset+(0*boxSize),   boxOffset+(2*boxSize+20),boxSize,boxSize,c); break;
-    case 9:  this->fullBox(boxOffset+(1*boxSize)+10,boxOffset+(2*boxSize+20),boxSize,boxSize,c); break;
-    case 10: this->fullBox(boxOffset+(2*boxSize)+20,boxOffset+(2*boxSize+20),boxSize,boxSize,c); break;
-    case 11: this->fullBox(boxOffset+(3*boxSize)+30,boxOffset+(2*boxSize+20),boxSize,boxSize,c); break;
-      
-    case 12: this->fullBox(boxOffset+(0*boxSize),   boxOffset+(3*boxSize+30),boxSize,boxSize,c); break;
-    case 13: this->fullBox(boxOffset+(1*boxSize)+10,boxOffset+(3*boxSize+30),boxSize,boxSize,c); break;
-    case 14: this->fullBox(boxOffset+(2*boxSize)+20,boxOffset+(3*boxSize+30),boxSize,boxSize,c); break;
-    case 15: this->fullBox(boxOffset+(3*boxSize)+30,boxOffset+(3*boxSize+30),boxSize,boxSize,c); break;
-    }               
-}
 
 /*
 void SDL_GUI::drawText(int x, int y, string txt)
@@ -289,26 +262,55 @@ SDL_Surface * SDL_GUI::loadBMP(const char *fn)
 }
 
 
+void SDL_GUI::drawBoxNumber(int n, Uint32 c)
+{
+  //sg.box(boxOffset+(0*boxSize),   boxOffset,boxSize,boxSize,0xAECD15);
+
+  switch (n)
+    {
+    case 0:  this->fullBox(boxOffset+(0*boxSize)+0, boxOffset+(0*boxSize)+0,boxSize,boxSize,c); break;
+    case 1:  this->fullBox(boxOffset+(1*boxSize)+10,boxOffset+(0*boxSize)+0,boxSize,boxSize,c); break;
+    case 2:  this->fullBox(boxOffset+(2*boxSize)+20,boxOffset+(0*boxSize)+0,boxSize,boxSize,c); break;
+    case 3:  this->fullBox(boxOffset+(3*boxSize)+30,boxOffset+(0*boxSize)+0,boxSize,boxSize,c); break;
+
+    case 4:  this->fullBox(boxOffset+(0*boxSize)+0, boxOffset+(1*boxSize+10),boxSize,boxSize,c); break;
+    case 5:  this->fullBox(boxOffset+(1*boxSize)+10,boxOffset+(1*boxSize+10),boxSize,boxSize,c); break;
+    case 6:  this->fullBox(boxOffset+(2*boxSize)+20,boxOffset+(1*boxSize+10),boxSize,boxSize,c); break;
+    case 7:  this->fullBox(boxOffset+(3*boxSize)+30,boxOffset+(1*boxSize+10),boxSize,boxSize,c); break;
+
+    case 8:  this->fullBox(boxOffset+(0*boxSize)+0, boxOffset+(2*boxSize+20),boxSize,boxSize,c); break;
+    case 9:  this->fullBox(boxOffset+(1*boxSize)+10,boxOffset+(2*boxSize+20),boxSize,boxSize,c); break;
+    case 10: this->fullBox(boxOffset+(2*boxSize)+20,boxOffset+(2*boxSize+20),boxSize,boxSize,c); break;
+    case 11: this->fullBox(boxOffset+(3*boxSize)+30,boxOffset+(2*boxSize+20),boxSize,boxSize,c); break;
+      
+    case 12: this->fullBox(boxOffset+(0*boxSize)+0, boxOffset+(3*boxSize+30),boxSize,boxSize,c); break;
+    case 13: this->fullBox(boxOffset+(1*boxSize)+10,boxOffset+(3*boxSize+30),boxSize,boxSize,c); break;
+    case 14: this->fullBox(boxOffset+(2*boxSize)+20,boxOffset+(3*boxSize+30),boxSize,boxSize,c); break;
+    case 15: this->fullBox(boxOffset+(3*boxSize)+30,boxOffset+(3*boxSize+30),boxSize,boxSize,c); break;
+    }               
+}
+
+
 void SDL_GUI::drawTTFTextNumber(int n,char * str)
 {
   switch(n)
     {
-    case 0:  this->guiTTFText(boxOffset+(0*boxSize),boxOffset,str); break;
+    case 0:  this->guiTTFText(boxOffset+(0*boxSize)+0, boxOffset,str); break;
     case 1:  this->guiTTFText(boxOffset+(1*boxSize)+10,boxOffset,str); break;
     case 2:  this->guiTTFText(boxOffset+(2*boxSize)+20,boxOffset,str); break;
     case 3:  this->guiTTFText(boxOffset+(3*boxSize)+30,boxOffset,str); break;
 
-    case 4:  this->guiTTFText(boxOffset+(0*boxSize),   boxOffset+(1*boxSize+10),str); break;
+    case 4:  this->guiTTFText(boxOffset+(0*boxSize)+0, boxOffset+(1*boxSize+10),str); break;
     case 5:  this->guiTTFText(boxOffset+(1*boxSize)+10,boxOffset+(1*boxSize+10),str); break;
     case 6:  this->guiTTFText(boxOffset+(2*boxSize)+20,boxOffset+(1*boxSize+10),str); break;
     case 7:  this->guiTTFText(boxOffset+(3*boxSize)+30,boxOffset+(1*boxSize+10),str); break;
 
-    case 8:  this->guiTTFText(boxOffset+(0*boxSize),   boxOffset+(2*boxSize+20),str); break;
+    case 8:  this->guiTTFText(boxOffset+(0*boxSize)+0, boxOffset+(2*boxSize+20),str); break;
     case 9:  this->guiTTFText(boxOffset+(1*boxSize)+10,boxOffset+(2*boxSize+20),str); break;
     case 10: this->guiTTFText(boxOffset+(2*boxSize)+20,boxOffset+(2*boxSize+20),str); break;
     case 11: this->guiTTFText(boxOffset+(3*boxSize)+30,boxOffset+(2*boxSize+20),str); break;
       
-    case 12: this->guiTTFText(boxOffset+(0*boxSize),   boxOffset+(3*boxSize+30),str); break;
+    case 12: this->guiTTFText(boxOffset+(0*boxSize)+0, boxOffset+(3*boxSize+30),str); break;
     case 13: this->guiTTFText(boxOffset+(1*boxSize)+10,boxOffset+(3*boxSize+30),str); break;
     case 14: this->guiTTFText(boxOffset+(2*boxSize)+20,boxOffset+(3*boxSize+30),str); break;
     case 15: this->guiTTFText(boxOffset+(3*boxSize)+30,boxOffset+(3*boxSize+30),str); break;
@@ -321,22 +323,22 @@ void SDL_GUI::drawBMPTextNumber(int n,char * str)
 {
   switch(n)
     {
-    case 0:  this->guiBMPText(boxOffset+(0*boxSize),boxOffset,str); break;
+    case 0:  this->guiBMPText(boxOffset+(0*boxSize)+0, boxOffset,str); break;
     case 1:  this->guiBMPText(boxOffset+(1*boxSize)+10,boxOffset,str); break;
     case 2:  this->guiBMPText(boxOffset+(2*boxSize)+20,boxOffset,str); break;
     case 3:  this->guiBMPText(boxOffset+(3*boxSize)+30,boxOffset,str); break;
 
-    case 4:  this->guiBMPText(boxOffset+(0*boxSize),   boxOffset+(1*boxSize+10),str); break;
+    case 4:  this->guiBMPText(boxOffset+(0*boxSize)+0, boxOffset+(1*boxSize+10),str); break;
     case 5:  this->guiBMPText(boxOffset+(1*boxSize)+10,boxOffset+(1*boxSize+10),str); break;
     case 6:  this->guiBMPText(boxOffset+(2*boxSize)+20,boxOffset+(1*boxSize+10),str); break;
     case 7:  this->guiBMPText(boxOffset+(3*boxSize)+30,boxOffset+(1*boxSize+10),str); break;
 
-    case 8:  this->guiBMPText(boxOffset+(0*boxSize),   boxOffset+(2*boxSize+20),str); break;
+    case 8:  this->guiBMPText(boxOffset+(0*boxSize)+0, boxOffset+(2*boxSize+20),str); break;
     case 9:  this->guiBMPText(boxOffset+(1*boxSize)+10,boxOffset+(2*boxSize+20),str); break;
     case 10: this->guiBMPText(boxOffset+(2*boxSize)+20,boxOffset+(2*boxSize+20),str); break;
     case 11: this->guiBMPText(boxOffset+(3*boxSize)+30,boxOffset+(2*boxSize+20),str); break;
       
-    case 12: this->guiBMPText(boxOffset+(0*boxSize),   boxOffset+(3*boxSize+30),str); break;
+    case 12: this->guiBMPText(boxOffset+(0*boxSize)+0, boxOffset+(3*boxSize+30),str); break;
     case 13: this->guiBMPText(boxOffset+(1*boxSize)+10,boxOffset+(3*boxSize+30),str); break;
     case 14: this->guiBMPText(boxOffset+(2*boxSize)+20,boxOffset+(3*boxSize+30),str); break;
     case 15: this->guiBMPText(boxOffset+(3*boxSize)+30,boxOffset+(3*boxSize+30),str); break;
