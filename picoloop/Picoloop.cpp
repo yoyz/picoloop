@@ -86,7 +86,68 @@ int main()
       }
   
   sleep(1);
+
+  //clear all and redisplay
+  sg.clearScreen();
+  sg.refresh();
+
+  int x,y;
+  const char * txt="0";
+  const char * tmp_txt;
+  tmp_txt="0";
+
+  for (x=0;x<16;x++)
+    for (y=0;y<8;y++)
+      sg.middleBoxNumber(x,y,0x46DC65);
+
+  for (x=0;x<16;x++)
+    for (y=0;y<8;y++)
+      sg.drawTTFTextLoadSaveBoxNumer(x,y,tmp_txt);
+
+
+  /*
+  sg.middleBox(10,50,0x443322);
+  sg.middleBox(10,70,0x443322);
+  sg.middleBox(10,90,0x443322);
+  sg.middleBox(10,110,0x443322);
+  sg.middleBox(10,130,0x443322);
+  sg.middleBox(10,150,0x443322);
+  sg.middleBox(10,170,0x443322);
+  sg.middleBox(10,190,0x443322);
+
+  sg.middleBox(30,50,0x443322);
+  sg.middleBox(30,70,0x443322);
+  sg.middleBox(30,90,0x443322);
+  sg.middleBox(30,110,0x443322);
+  sg.middleBox(30,130,0x443322);
+  sg.middleBox(30,150,0x443322);
+  sg.middleBox(30,170,0x443322);
+  sg.middleBox(30,190,0x443322);
+
+  sg.middleBox(50,50,0x443322);
+  sg.middleBox(50,70,0x443322);
+  sg.middleBox(50,90,0x443322);
+  sg.middleBox(50,110,0x443322);
+  sg.middleBox(50,130,0x443322);
+  sg.middleBox(50,150,0x443322);
+  sg.middleBox(50,170,0x443322);
+  sg.middleBox(50,190,0x443322);
+
+  sg.middleBox(70,50,0x443322);
+  sg.middleBox(70,70,0x443322);
+  sg.middleBox(70,90,0x443322);
+  sg.middleBox(70,110,0x443322);
+  sg.middleBox(70,130,0x443322);
+  sg.middleBox(70,150,0x443322);
+  sg.middleBox(70,170,0x443322);
+  sg.middleBox(70,190,0x443322);
+  */
+
+
+  sg.refresh();
+  sleep(4);
   sg.closeVideo();
+
   return(0);
 
 
