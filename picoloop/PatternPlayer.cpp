@@ -79,23 +79,32 @@ int dirty_graphic=1;
 void display_board()
 {
   int i;
-  char str[8];
+  char str_up[8];
+  char str_down[24];
   int  cty=SEQ.getCurrentTrackY();
   dirty_graphic=0;
 
   SG.clearScreen();
   //  sprintf(str,"Track %d ",ct);
-  sprintf(str,"Track %d ",cty);
-  SG.guiTTFText(200,20,str);
+  sprintf(str_up,"Track %d ",cty);
+  SG.guiTTFText(200,20,str_up);
+  //  sprintf(str_down,"[A/D] Note L/S",cty);
   
-  if (menu_cursor==0)
-    sprintf(str,"A/D");
-  if (menu_cursor==1)
-    sprintf(str,"Note");
-  if (menu_cursor==2)
-    sprintf(str,"L/S");
 
-  SG.guiTTFText(200,40,str);
+  if (menu==1 && menu_cursor==0) sprintf(str_down,"[A/D] Note  L/S  VCO ",cty);  
+  if (menu==1 && menu_cursor==1) sprintf(str_down," A/D [Note] L/S  VCO ",cty);
+  if (menu==1 && menu_cursor==2) sprintf(str_down," A/D  Note [L/S] VCO ",cty);
+  if (menu==1 && menu_cursor==3) sprintf(str_down," A/D  Note  L/S [VCO]",cty);
+  if (menu==0)                   sprintf(str_down,"                     ",cty);
+
+  if (menu_cursor==0)            sprintf(str_up,"A/D ");
+  if (menu_cursor==1)            sprintf(str_up,"Note");
+  if (menu_cursor==2)            sprintf(str_up,"L/S ");
+  if (menu_cursor==3)            sprintf(str_up,"VCO ");
+
+
+  SG.guiTTFText(200,40,str_up);
+  SG.guiTTFText(10,200,str_down);
 
   // Draw all box default color   
   for (i=0;i<16;i++)
@@ -302,11 +311,9 @@ void handle_key()
   
   
   //MOVE the cursor : LEFT UP DOWN RIGHT   
-  if (menu==0)
-    {
-      
-      
-      
+  if (menu==0 && menu_cursor==0 ||
+      menu==0 && menu_cursor==1    )
+    {                 
       if(keyState[SDLK_UP] && ! keyState[SDLK_LCTRL])
 	{
 	  if (keyRepeat[SDLK_UP]==1 || keyRepeat[SDLK_UP]%64==0)
@@ -391,8 +398,9 @@ void handle_key()
       if (keyState[SDLK_DOWN]  && keyState[SDLK_LCTRL]) { note=-12;  	  dirty_graphic=1;}
     }  
   
-  
+  //
   // in the loadsave view, move loasavecursor position 
+  //
   if (menu==0 && menu_cursor==2)
     {
 
@@ -429,7 +437,7 @@ void handle_key()
   
     }
   
-  int delay=10;
+  int delay=1;
   //printf("sleeping %dms\n",delay);
   SDL_Delay(delay);
   
@@ -486,20 +494,6 @@ int seq_update()
 	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
     }
   
-  if (invert_trig)
-    {
-      if (P[cty].getPatternElement(cursor).getTrig())
-	{
-	  P[cty].getPatternElement(cursor).setTrig(! P[cty].getPatternElement(cursor).getTrig());
-	  PE=P[cty].getPatternElement(cursor);
-	}
-      else
-	{
-	  P[cty].setPatternElement(cursor,PE);
-	  P[cty].getPatternElement(cursor).setTrig(true);
-	}
-      invert_trig=0;
-    }	  
   
   
   
@@ -542,6 +536,8 @@ int seq_update()
 int seq()
 {
   AudioMixer & am=AE.getAudioMixer();
+  int  cty=SEQ.getCurrentTrackY();
+  int  ctx=SEQ.getCurrentTrackX();
 
   for (t=0;t<TRACK_MAX;t++)
     {
@@ -558,12 +554,6 @@ int seq()
       
       //M[t].getVCO().setSineOsc();
     }
-  //  AE.processBuffer();
-  //  for (t=0;t<TRACK_MAX;t++)
-  //    {
-      //MM[t]->setInput(&M[t]);
-      //      MM[t]->setAmplitude(32);
-      //    }
 
   printf("openAudio start streaming\n");
   //  sleep(2);
@@ -572,6 +562,9 @@ int seq()
   seq_update();  
   while (true)
     {
+      cty=SEQ.getCurrentTrackY();
+      ctx=SEQ.getCurrentTrackX();
+
       nbcb=AE.getNbCallback();
 
       if (nbcb>last_nbcb)
@@ -579,6 +572,23 @@ int seq()
 	  last_nbcb=nbcb;
 	}
       handle_key();
+
+      if (invert_trig)
+	{
+	  if (P[cty].getPatternElement(cursor).getTrig())
+	    {
+	      P[cty].getPatternElement(cursor).setTrig(! P[cty].getPatternElement(cursor).getTrig());
+	      PE=P[cty].getPatternElement(cursor);
+	    }
+	  else
+	    {
+	      P[cty].setPatternElement(cursor,PE);
+	      P[cty].getPatternElement(cursor).setTrig(true);
+	    }
+	  invert_trig=0;
+	}	  
+      
+
 
       // if user want to quit via handle_key
       if (quit)
