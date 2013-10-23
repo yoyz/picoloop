@@ -284,7 +284,7 @@ void handle_key()
 	  if (keyRepeat[SDLK_DOWN]==1 || keyRepeat[SDLK_DOWN]%64==0)
 	    {
 	      if (SEQ.getCurrentTrackY()<TRACK_MAX-1)
-		SEQ.setCurrentTrackY(SEQ.getCurrentTrackY());
+		SEQ.setCurrentTrackY(SEQ.getCurrentTrackY()+1);
 	      else 
 		SEQ.setCurrentTrackY(0);
 	      
