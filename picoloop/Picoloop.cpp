@@ -13,7 +13,8 @@ int main()
 
   sdls=(SDL_Surface*)malloc(sizeof(int)*8*8);
 
-  sg.initVideo();
+  if (sg.initVideo()==0)
+    exit(1);
   //  sg.initTTF();
   sg.openBMPFont();
   sg.openTTFFont();
