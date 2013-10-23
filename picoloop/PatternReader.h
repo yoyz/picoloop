@@ -19,6 +19,7 @@ class PatternReader
 {
  public:
   PatternReader();
+  ~PatternReader();
 
   void setFileName(string filename);
   bool PatternDataExist(int PatternNumber,int TrackNumber);
