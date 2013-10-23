@@ -43,9 +43,10 @@ bool PatternReader::PatternDataExist(int PatternNumber,int TrackNumber)
 
       if ( catcheof==NULL)
 	retcode=false;
-
     }
-  if (match)found=true;
+
+  if (match)
+    found=true;
 
   free(line);
   fclose(fd);
