@@ -5,6 +5,8 @@
 #include "SineOscillator.h"
 #include "SawOscillator.h"
 #include "FuzzyPulseOscillator.h"
+#include "PulseOscillator.h"
+//#include "NoiseOscillator.h"
 
 class VCO
 {
@@ -30,6 +32,7 @@ public:
   SawOscillator         sawosc;
   SineOscillator        sineosc;
   FuzzyPulseOscillator  fuzzypulseosc;
+  PulseOscillator       pulseosc;
   Oscillator          * s1;
   Oscillator          * s2;
 

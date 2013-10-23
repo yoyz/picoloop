@@ -1,7 +1,7 @@
 #include "VCO.h"
 
 
-VCO::VCO() : sineosc(), sawosc(), fuzzypulseosc()
+VCO::VCO() : sineosc(), sawosc(), fuzzypulseosc(), pulseosc()
 {
   printf("VCO::VCO()\n");
   s1=NULL;
@@ -27,11 +27,11 @@ VCO::~VCO()
 void VCO::init()
 {
   printf("VCO::init() begin s1:=0x%08.8X s2:=0x%08.8X\n",s1,s2);
-  s1 = &sineosc;
+  s1 = &pulseosc;
   s1->setFreq(0);
   s1->setAmplitude(32);
 
-  s2 = &fuzzypulseosc;
+  s2 = &pulseosc;
   s2->setFreq(0);
   s2->setAmplitude(32);
   printf("VCO::init() end s1:=0x%08.8X s2:=0x%08.8X\n",s1,s2);
@@ -60,6 +60,8 @@ void VCO::setSynthFreq(int sfreq)
   s1->setFreq(sfreq);
   s2->setFreq(sfreq);
 }
+
+
 
 
 Sint16 VCO::tick()
