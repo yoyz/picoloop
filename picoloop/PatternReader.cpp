@@ -18,7 +18,12 @@ PatternReader::PatternReader() : twoDPVector(16,vector <Pattern>(TRACK_MAX)),
 				 //, 
 				 //				 savedData(16,vector       <int>(TRACK_MAX))
 {
+  printf("PatternReader::PatternReader()\n");
+}
 
+PatternReader::~PatternReader()
+{
+  printf("PatternReader::~PatternReader()\n");
 }
 
 void PatternReader::init()
@@ -40,7 +45,6 @@ bool PatternReader::PatternDataExist(int PatternNumber,int TrackNumber)
 {
   int match=0;
   char * line;
-  line=(char*)malloc(1024);
   int PatNum,TrackNum,PatSize;
   bool retcode=true;
   bool found=false;
@@ -50,6 +54,7 @@ bool PatternReader::PatternDataExist(int PatternNumber,int TrackNumber)
   if (loadedData[PatternNumber][TrackNumber]==DATA_DOES_NOT_EXIST_ON_STORAGE)
     return false;
 
+  line=(char*)malloc(1024);
   fd=fopen(fn.c_str(),"r+");
 
   while (match==0 && retcode==true)
