@@ -54,17 +54,19 @@ int t=0;                // index of track
 
 int repeat=0;
 int quit=0;             // do we need to quit ?
-int cursor=0;           // cursor position in the sequencer
+int cursor=0;           // cursor position in a sequencer track
 int note=0;
 int attack=0;
 int release=0;
 
+int loadsave_cursor_x=0; // index in the load/save menu
+int loadsave_cursor_y=0; // index in the load/save menu
 
 int start_key=0;        // start key pressed ?
 int step=0;             // current step in the sequencer
 int menu=0;             // menu mode
 int menu_note=0;
-int menu_cursor=0;      // index of menu
+int menu_cursor=0;      // index int the menu
 //int ct=0;               // current_track
 int ct_x=0;             
 int ct_y=0;
@@ -191,6 +193,8 @@ void display_board()
 	    else
 	      SG.middleBoxNumber(x,y,STEP_COLOR);
 	  }
+      
+      SG.middleBoxNumber(loadsave_cursor_x,loadsave_cursor_y,TRIG_COLOR);
       
       for (x=0;x<16;x++)
 	for (y=0;y<4;y++)
@@ -388,18 +392,29 @@ void handle_key()
     }  
   
   
-  if (menu==1 && menu_cursor==2)
+  if (menu_cursor==2 && menu==0)
     {
-      
-    }
-  
-  
-  if (menu==0 && menu_cursor==2)
-    {
+
       if (keyState[SDLK_DOWN]  && keyState[SDLK_LALT])
 	save=true;
+
       if (keyState[SDLK_UP]    && keyState[SDLK_LALT])
 	load=true;
+
+      if (!keyState[SDLK_LALT])
+	{
+	  if (keyRepeat[SDLK_LEFT]==1  || keyRepeat[SDLK_LEFT]%64==0)  { loadsave_cursor_x++;  dirty_graphic=1;}
+	  if (keyRepeat[SDLK_RIGHT]==1 || keyRepeat[SDLK_RIGHT]%64==0) { loadsave_cursor_x--;  dirty_graphic=1;}
+	  if (keyRepeat[SDLK_UP]==1    || keyRepeat[SDLK_UP]%64==0)    { loadsave_cursor_y--;  dirty_graphic=1;}
+	  if (keyRepeat[SDLK_DOWN]==1  || keyRepeat[SDLK_DOWN]%64==0)  { loadsave_cursor_y++;  dirty_graphic=1;}
+	  
+	  if (loadsave_cursor_x>15)          { loadsave_cursor_x=0; }
+	  if (loadsave_cursor_x<0)           { loadsave_cursor_x=15; }
+	  if (loadsave_cursor_y>TRACK_MAX-1) { loadsave_cursor_y=0; }
+	  if (loadsave_cursor_y<0)           { loadsave_cursor_y=TRACK_MAX-1; }  
+	  SEQ.setCurrentTrackY(loadsave_cursor_y);
+	}
+  
     }
   
   int delay=10;
@@ -418,14 +433,18 @@ int seq_update()
     {
       printf("<==[SAVE]==>\n");
       //PR.writePattern(1,ct+1,P[ct]);
-      PR.writePattern(ctx+1,cty+1,P[cty]);
+      PR.writePattern(loadsave_cursor_x+1,loadsave_cursor_y+1,P[cty]);
       save=false;
     }
   
   if (load)
     {
       printf("<==[LOAD]==>\n");
-      PR.readPatternData(ctx+1,cty+1,P[cty]);
+      if (PR.PatternDataExist(loadsave_cursor_x+1,loadsave_cursor_y+1)==true)
+	PR.readPatternData(loadsave_cursor_x+1,loadsave_cursor_y+1,P[cty]);
+      else
+	P[cty].init();
+
       load=false;
     }
   
