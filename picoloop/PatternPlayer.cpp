@@ -184,7 +184,7 @@ void display_board()
       const char * tmp_txt;
       tmp_txt="0";
 
-      SG.clearScreen();      
+      SG.clearScreen();
       for (x=0;x<16;x++)
 	for (y=0;y<4;y++)
 	  {
@@ -392,6 +392,7 @@ void handle_key()
     }  
   
   
+  // in the loadsave view, move loasavecursor position 
   if (menu_cursor==2 && menu==0)
     {
 

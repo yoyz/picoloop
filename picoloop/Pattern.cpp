@@ -17,6 +17,7 @@ Pattern::~Pattern()
 void Pattern::init()
 {
   int i;
+  printf("====Pattern::init()====\n");
   for (i=0;i<16-1;i++)
     {
       pevector[i].init();
