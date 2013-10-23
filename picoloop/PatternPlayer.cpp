@@ -29,13 +29,13 @@ vector <Machine   *>  M(TRACK_MAX);
 vector <MonoMixer *> MM(TRACK_MAX);
 
 
-AudioEngine AE;
-PatternReader PR;
-PatternElement PE;
-InputManager IE;
-SDL_GUI SG;
-Wave cowbell;
-Instrument inst;
+AudioEngine AE;      // used to  init alsa/rtaudio
+PatternReader PR;    // used to  read data.pic file
+PatternElement PE;   // used for copy paste PatternElement
+InputManager IE;     // used to  fetch key
+SDL_GUI SG;          // used to  open a gui and display stuff
+Wave cowbell;        // used ?
+Instrument inst;     // used ?
 
 
 int save=false;
@@ -188,9 +188,6 @@ void handle_key()
   if (IE.shouldExit())
     quit=1;
     //exit(0);
-
-
-  
   
   //if (start_key==2) 
   //printf("%d %d %d\n",lastKey,lastEvent,lastKey==&& SDLK_RETURN && lastEvent==SDL_KEYUP);
@@ -210,8 +207,6 @@ void handle_key()
       else if (menu_note==1)        { menu_note=0;  }   
       IE.clearLastKeyEvent();
     }
-
-
 
   //Move MENU_CURSOR
   if (menu==1)
@@ -303,6 +298,7 @@ void handle_key()
 	}
     }
 
+
   // Move Attack Release 
   // Insert/Remove Trig
   if (menu==0 && menu_cursor==0)
@@ -370,14 +366,14 @@ int seq_update()
   
   if (save)
     {
-      printf("[SAVE]\n");
+      printf("<==[SAVE]==>\n");
       PR.writePattern(1,ct+1,P[ct]);
       save=false;
     }
   
   if (load)
     {
-      printf("[LOAD]\n");
+      printf("<==[LOAD]==>\n");
       PR.readPatternData(1,ct+1,P[ct]);
       load=false;
     }
@@ -409,8 +405,16 @@ int seq_update()
   
   if (invert_trig)
     {
-      P[ct].getPatternElement(cursor).setTrig(! P[ct].getPatternElement(cursor).getTrig());
-      PE=P[ct].getPatternElement(cursor);
+      if (P[ct].getPatternElement(cursor).getTrig())
+	{
+	  P[ct].getPatternElement(cursor).setTrig(! P[ct].getPatternElement(cursor).getTrig());
+	  PE=P[ct].getPatternElement(cursor);
+	}
+      else
+	{
+	  P[ct].setPatternElement(cursor,PE);
+	  P[ct].getPatternElement(cursor).setTrig(true);
+	}
       invert_trig=0;
     }	  
   
