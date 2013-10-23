@@ -7,7 +7,7 @@ Oscillator::Oscillator()
   frequency=0;
   amplitude=0;
   sample_num=0;
-  sample_num_index=0
+  sample_num_index=0;
   last_tick=0;
   table_size=0;
 }

@@ -543,7 +543,7 @@ int main()
   //handle_key();
   //  SDL_EnableKeyRepeat(500,500);
   SG.openBMPFont();
-  SG.openTTFFont();
+  if (SG.openTTFFont()==false) { printf("ttf font error\n"); exit(1); }
   display_board();
 
   printf("openAudio output\n");

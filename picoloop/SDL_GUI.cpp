@@ -232,12 +232,16 @@ int SDL_GUI::openTTFFont()
     }
 
   //Open the font
+
   ttf_font = TTF_OpenFont("font.ttf", 12 );
   
   //If there was an error in loading the font
-  if( ttf_font == NULL )
-    {
-      return false;
+  //  printf("%d\n",ttf_font);
+  // exit(0);
+  if( ttf_font == NULL || ttf_font==0 )
+    {      
+      printf("font not found or is not a font file ttf_font:%d\n",ttf_font);
+      return false;      
     }
   return true;  
 }
