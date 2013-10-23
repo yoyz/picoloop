@@ -7,12 +7,30 @@
 #include <iostream>
 #include <fstream>
 
+#include "Master.h"
 #include "PatternReader.h"
 
 using namespace std;
 
-PatternReader::PatternReader()
+PatternReader::PatternReader() : twoDPVector(16,vector <Pattern>(TRACK_MAX)), 
+				 loadedData(16,vector      <int>(TRACK_MAX)), 
+				 savedData(16,vector       <int>(TRACK_MAX))
 {
+
+}
+
+void PatternReader::init()
+{
+  int x;
+  int y;
+  
+  for (x=0;x<16;x++)
+    for (y=0;y<TRACK_MAX-1;y++)
+      {
+	loadedData[x][y]=0;
+	savedData[x][y]=0;
+	twoDPVector[x][y].init();
+      }
 }
 
 
@@ -225,6 +243,8 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
   else
     retcode=false;
 
+  if (retcode==true)
+    loadedData[PatternNumber][TrackNumber]=1;
   
   free(line);
   fclose(fd);

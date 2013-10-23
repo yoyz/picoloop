@@ -21,9 +21,15 @@ class PatternReader
   bool readPatternData(int PatternNumber,int TrackNumber, Pattern & P);
   bool writePattern(int PatternNumber,int TrackNumber,Pattern & P);
 
+  void init();
+
  private:
   FILE * fd;
   string fn;
+  vector < vector < Pattern > > twoDPVector;
+  vector < vector < int > > loadedData;
+  vector < vector < int > > savedData;
+  
 };
 
 #endif
