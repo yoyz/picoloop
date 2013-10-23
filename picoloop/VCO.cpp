@@ -27,7 +27,7 @@ VCO::~VCO()
 void VCO::init()
 {
   printf("VCO::init() begin s1:=0x%08.8X s2:=0x%08.8X\n",s1,s2);
-  s1 = &pulseosc;
+  s1 = &sineosc;
   s1->setFreq(0);
   s1->setAmplitude(32);
 
