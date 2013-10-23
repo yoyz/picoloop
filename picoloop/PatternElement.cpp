@@ -22,6 +22,19 @@ PatternElement::~PatternElement()
   //printf("PatternElement::~PatternElement()\n");
 }
 
+
+void PatternElement::init()
+{
+  printf("====PatternElement::init()====\n");
+  Note=0;
+  Trig=false;
+  Channel=0;
+  attack=0;
+  decay=127;
+  sustain=127;
+  release=8;
+}
+
 int PatternElement::getNote()
 {
   return PatternElement::Note;

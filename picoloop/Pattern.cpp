@@ -14,6 +14,15 @@ Pattern::~Pattern()
   printf("Pattern::~Pattern()\n");
 }
 
+void Pattern::init()
+{
+  int i;
+  for (i=0;i<16-1;i++)
+    {
+      pevector[i].init();
+    }
+}
+
 
 PatternElement & Pattern::getPatternElement(int patternElementNumber)
 {

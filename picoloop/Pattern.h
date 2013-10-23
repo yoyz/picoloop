@@ -18,6 +18,7 @@ class Pattern
 
   Pattern();
   ~Pattern();
+  void init();
   void setPatternSize(int patternSize);
   PatternElement & getPatternElement(int patternElementNumber);
   bool setPatternElement(int PatternElementNumber,PatternElement PEin);

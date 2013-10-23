@@ -11,6 +11,7 @@ class PatternElement
 public:
   PatternElement();
   ~PatternElement();
+  void   init();
   bool   setNote(int Note);
   int    getNote();
   float  getNoteFreq();
