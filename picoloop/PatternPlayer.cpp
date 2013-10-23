@@ -185,7 +185,12 @@ void display_board()
       SG.clearScreen();      
       for (x=0;x<16;x++)
 	for (y=0;y<4;y++)
-	  SG.middleBoxNumber(x,y,NOTE_COLOR);
+	  {
+	    if (PR.PatternDataExist(x+1,y+1))
+	      SG.middleBoxNumber(x,y,NOTE_COLOR);
+	    else
+	      SG.middleBoxNumber(x,y,STEP_COLOR);
+	  }
       
       for (x=0;x<16;x++)
 	for (y=0;y<4;y++)
@@ -408,18 +413,19 @@ void handle_key()
 int seq_update()
 {
   int  cty=SEQ.getCurrentTrackY();
+  int  ctx=SEQ.getCurrentTrackX();
   if (save)
     {
       printf("<==[SAVE]==>\n");
       //PR.writePattern(1,ct+1,P[ct]);
-      PR.writePattern(1,cty+1,P[cty]);
+      PR.writePattern(ctx+1,cty+1,P[cty]);
       save=false;
     }
   
   if (load)
     {
       printf("<==[LOAD]==>\n");
-      PR.readPatternData(1,cty+1,P[cty]);
+      PR.readPatternData(ctx+1,cty+1,P[cty]);
       load=false;
     }
   

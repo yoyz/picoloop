@@ -16,6 +16,42 @@ PatternReader::PatternReader()
 }
 
 
+bool PatternReader::PatternDataExist(int PatternNumber,int TrackNumber)
+{
+  int match=0;
+  char * line;
+  line=(char*)malloc(1024);
+  int PatNum,TrackNum,PatSize;
+  bool retcode=true;
+  bool found=false;
+
+  fd=fopen(fn.c_str(),"r+");
+
+  while (match==0 && retcode==true)
+    {
+      char * catcheof;
+      catcheof=fgets(line,512,fd);
+      //printf("[%s]\n",st);
+      //sleep(1);
+
+      //match('Pattern 1 Track 1 Param PatternSize 16')
+      sscanf(line,"Pattern %d Track %d Param PatternSize %d",
+	     &PatNum,&TrackNum,&PatSize);
+      if (PatNum    ==PatternNumber &&
+	  TrackNum  ==TrackNumber)
+	match=1;
+
+      if ( catcheof==NULL)
+	retcode=false;
+
+    }
+  if (match)found=true;
+
+  free(line);
+  fclose(fd);
+  return found;
+}
+
 bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern & P)
 {
   PatternElement Pe;
