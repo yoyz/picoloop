@@ -176,7 +176,7 @@ void display_board()
 	}
     }
 
-  if (menu_cursor==2 && menu==0)
+  if (menu==0 && menu_cursor==2)
     {
 
       int x,y;
@@ -284,7 +284,7 @@ void handle_key()
 	  if (keyRepeat[SDLK_DOWN]==1 || keyRepeat[SDLK_DOWN]%64==0)
 	    {
 	      if (SEQ.getCurrentTrackY()<TRACK_MAX-1)
-		SEQ.setCurrentTrackY(SEQ.getCurrentTrackY()+1);
+		SEQ.setCurrentTrackY(SEQ.getCurrentTrackY());
 	      else 
 		SEQ.setCurrentTrackY(0);
 	      
@@ -393,7 +393,7 @@ void handle_key()
   
   
   // in the loadsave view, move loasavecursor position 
-  if (menu_cursor==2 && menu==0)
+  if (menu==0 && menu_cursor==2)
     {
 
       if (keyState[SDLK_DOWN]  && keyState[SDLK_LALT])
@@ -434,15 +434,15 @@ int seq_update()
     {
       printf("<==[SAVE]==>\n");
       //PR.writePattern(1,ct+1,P[ct]);
-      PR.writePattern(loadsave_cursor_x+1,loadsave_cursor_y+1,P[cty]);
+      PR.writePattern(loadsave_cursor_x,loadsave_cursor_y,P[cty]);
       save=false;
     }
   
   if (load)
     {
       printf("<==[LOAD]==>\n");
-      if (PR.PatternDataExist(loadsave_cursor_x+1,loadsave_cursor_y+1)==true)
-	PR.readPatternData(loadsave_cursor_x+1,loadsave_cursor_y+1,P[cty]);
+      if (PR.PatternDataExist(loadsave_cursor_x,loadsave_cursor_y)==true)
+	PR.readPatternData(loadsave_cursor_x,loadsave_cursor_y,P[cty]);
       else
 	P[cty].init();
 
@@ -592,15 +592,17 @@ int seq()
     }
 }
 
-void loadPattern()
+void load_pattern()
 {
   int i;
 
   string fileName="data.pic";
   //PR.setFileName("data.pic");
+  PR.init();
   PR.setFileName(fileName);
   for (i=0;i<TRACK_MAX;i++)
-    PR.readPatternData(1,i+1,P[i]);
+    PR.readPatternData(0,i,P[i]);
+    //PR.readPatternData(1,i+1,P[i]);
 
 }
 
@@ -613,7 +615,7 @@ int main()
   //  char * str="808-cowbell.wav";
   //tmp_str=(char*)malloc(sizeof(char)*4);
   //cowbell.loadWave(str);
-  loadPattern();
+  load_pattern();
   SG.initVideo();
   //handle_key();
   //  SDL_EnableKeyRepeat(500,500);
