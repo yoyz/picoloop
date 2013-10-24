@@ -581,7 +581,9 @@ int seq()
       P[cty].getPatternElement(cursor).setAttack(P[cty].getPatternElement(cursor).getAttack()+attack);
       attack=0;
       if (debug)
-	printf("[attack:%d]\n",M[cty]->getADSR().getAttack());
+	printf("[attack:%d]\n",P[cty].getPatternElement(cursor).getAttack());
+	//printf("[attack:%d]\n",P[cty].getPatternElement(cursor).getAttack()+attack);
+	//printf("[attack:%d]\n",M[cty]->getADSR().getAttack());
     }
   
   if (release!=0)
@@ -590,7 +592,9 @@ int seq()
       P[cty].getPatternElement(cursor).setRelease(P[cty].getPatternElement(cursor).getRelease()+release);
       release=0;
       if (debug)
-	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
+	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease());
+	//	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
+
     }
   
   
