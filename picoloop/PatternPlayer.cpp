@@ -507,6 +507,7 @@ int seq_update()
 
 	  M[t]->getVCO().setSynthFreq(i);
 	  M[t]->getADSR().setRelease(P[t].getPatternElement(step).getRelease());		  
+	  M[t]->getADSR().setAttack(P[t].getPatternElement(step).getAttack());		  
 	  //m.setSynthFreq(1200);
 	}
       else

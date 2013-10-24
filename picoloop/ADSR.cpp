@@ -91,22 +91,24 @@ void ADSR::reset()
   cs=sustain;
   cr=release;
   //fseconds=(float)release/16+(float(attack/16);
-  fseconds=(float)release/128;
-  size=fseconds*44100;
+  fseconds_release=(float)release/128;
+  fseconds_attack=(float)attack/128;
+  size_release=fseconds_release*44100;
+  size_attack=fseconds_attack*44100;
 }
 
 int ADSR::getSize()
 {
-  return size;
+  return size_release;
 }
 
 Sint16 ADSR::tick()
 {
   //  return S->tick();
 
-  Sint16 s;
-  float f1;
-  float f2;
+  Sint16 s=0;
+  float f1=0.0;
+  float f2=0.0;
   int debug=1;
   int index_inverse=0;
   //if (debug) fprintf(stderr,"begin Sint16 ADSR::tick()\n");
@@ -122,14 +124,26 @@ Sint16 ADSR::tick()
 
   
   //(size-sample_num)
-  f1=s;
-  index_inverse=size-sample_num;
-  if (index_inverse<=0) { return 0; }
-  f2=f1*((float)(index_inverse)/(size));
-  //  printf("size:%d sample_num:%d s:%d f1:%f f2:%f\n",size,sample_num,s,f1,f2);
-
+  if (sample_num<size_attack)
+    {
+      f1=s;
+      index_inverse=sample_num;
+      f2=f1*((float)(index_inverse)/(size_attack));
+      
+    }
+  if (sample_num>size_attack)
+    {
+      f1=s;
+      index_inverse=(size_release+size_attack)-sample_num;
+      if (index_inverse<=0) { return 0; }
+      
+      if (sample_num>size_attack)
+	f2=f1*((float)(index_inverse)/(size_release));
+      //  printf("size:%d sample_num:%d s:%d f1:%f f2:%f\n",size,sample_num,s,f1,f2);
+      
+     
+    }
   s=f2;
-
   //if (debug) fprintf(stderr,"end Sint16 ADSR::tick()\n");
   return s;  
 }

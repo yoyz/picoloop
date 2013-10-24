@@ -51,8 +51,11 @@ class ADSR
   int cr;
   int playing;
 
-  int size;
-  float fseconds;  
+  int size_release;
+  int size_attack;
+  //  int size;
+  float fseconds_attack;  
+  float fseconds_release;  
 };
 
 #endif
