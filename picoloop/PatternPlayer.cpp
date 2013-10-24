@@ -363,22 +363,21 @@ void handle_key()
 	  dirty_graphic=1;
 	  IE.clearLastKeyEvent();
 	}
-      
-      if (keyState[SDLK_LEFT]  && keyState[SDLK_LCTRL])
-	if (keyRepeat[SDLK_LEFT]==1 ||  keyRepeat[SDLK_LEFT]>16) 
-	  { release=-4;   dirty_graphic=1; }
+            if (keyState[SDLK_LEFT]  && keyState[SDLK_LCTRL])
+	if (keyRepeat[SDLK_LEFT]==1 ||  keyRepeat[SDLK_LEFT]>4) 
+	  { release=-1;   dirty_graphic=1; }
       
       if (keyState[SDLK_RIGHT] && keyState[SDLK_LCTRL]) 
-	if (keyRepeat[SDLK_RIGHT]==1 || keyRepeat[SDLK_RIGHT]>16) 
-	  { release=4; 	  dirty_graphic=1; }
+	if (keyRepeat[SDLK_RIGHT]==1 || keyRepeat[SDLK_RIGHT]>4) 
+	  { release=1; 	  dirty_graphic=1; }
       
       if (keyState[SDLK_UP]    && keyState[SDLK_LCTRL]) 
-	if (keyRepeat[SDLK_UP]==1 ||    keyRepeat[SDLK_UP]>16) 
-	  { attack=4;  	  dirty_graphic=1; }
+	if (keyRepeat[SDLK_UP]==1 ||    keyRepeat[SDLK_UP]>4) 
+	  { attack=1;  	  dirty_graphic=1; }
       
       if (keyState[SDLK_DOWN]  && keyState[SDLK_LCTRL]) 
-	if (keyRepeat[SDLK_DOWN]==1 || keyRepeat[SDLK_DOWN]>16) 
-	  { attack=-4; 	  dirty_graphic=1; }
+	if (keyRepeat[SDLK_DOWN]==1 || keyRepeat[SDLK_DOWN]>4) 
+	  { attack=-1; 	  dirty_graphic=1; }
     }  
   
   if (menu==0 && menu_cursor==1)
@@ -392,10 +391,21 @@ void handle_key()
 	  IE.clearLastKeyEvent();
 	}
       
-      if (keyState[SDLK_LEFT]  && keyState[SDLK_LCTRL]) { note=-1; 	  dirty_graphic=1;}
-      if (keyState[SDLK_RIGHT] && keyState[SDLK_LCTRL]) { note=1;  	  dirty_graphic=1;}
-      if (keyState[SDLK_UP]    && keyState[SDLK_LCTRL]) { note=12;   	  dirty_graphic=1;}
-      if (keyState[SDLK_DOWN]  && keyState[SDLK_LCTRL]) { note=-12;  	  dirty_graphic=1;}
+      if (keyState[SDLK_LEFT]  && keyState[SDLK_LCTRL]) 
+	if (keyRepeat[SDLK_LEFT]==1 || keyRepeat[SDLK_LEFT]%64==0) 
+	{ note=-1; 	  dirty_graphic=1;}
+
+      if (keyState[SDLK_RIGHT] && keyState[SDLK_LCTRL]) 
+	if (keyRepeat[SDLK_RIGHT]==1 || keyRepeat[SDLK_RIGHT]%64==0) 
+	  { note=1;  	  dirty_graphic=1;}
+
+      if (keyState[SDLK_UP]    && keyState[SDLK_LCTRL]) 
+	if (keyRepeat[SDLK_UP]==1 || keyRepeat[SDLK_UP]%64==0) 
+	  { note=12;   	  dirty_graphic=1;}
+
+      if (keyState[SDLK_DOWN]  && keyState[SDLK_LCTRL])
+	if (keyRepeat[SDLK_DOWN]==1 || keyRepeat[SDLK_DOWN]%64==0) 
+	{ note=-12;  	  dirty_graphic=1;}
     }  
   
   //
@@ -469,30 +479,6 @@ int seq_update()
       load=false;
     }
   
-  if (note!=0)
-    { 
-      P[cty].getPatternElement(cursor).setNote(P[cty].getPatternElement(cursor).getNote()+note);
-      note=0;
-    }
-  
-  
-  if (attack!=0)
-    {
-      //m0.getADSR().setAttack(m0.getADSR().getAttack()+attack);
-      P[cty].getPatternElement(cursor).setAttack(P[cty].getPatternElement(cursor).getAttack()+attack);
-      attack=0;
-      if (debug)
-	printf("[attack:%d]\n",M[cty]->getADSR().getAttack());
-    }
-  
-  if (release!=0)
-    {
-      //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
-      P[cty].getPatternElement(cursor).setRelease(P[cty].getPatternElement(cursor).getRelease()+release);
-      release=0;
-      if (debug)
-	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
-    }
   
   
   
@@ -573,6 +559,8 @@ int seq()
 	}
       handle_key();
 
+
+      // invert trig on the while true
       if (invert_trig)
 	{
 	  if (P[cty].getPatternElement(cursor).getTrig())
@@ -587,7 +575,30 @@ int seq()
 	    }
 	  invert_trig=0;
 	}	  
-      
+        if (attack!=0)
+    {
+      //m0.getADSR().setAttack(m0.getADSR().getAttack()+attack);
+      P[cty].getPatternElement(cursor).setAttack(P[cty].getPatternElement(cursor).getAttack()+attack);
+      attack=0;
+      if (debug)
+	printf("[attack:%d]\n",M[cty]->getADSR().getAttack());
+    }
+  
+  if (release!=0)
+    {
+      //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
+      P[cty].getPatternElement(cursor).setRelease(P[cty].getPatternElement(cursor).getRelease()+release);
+      release=0;
+      if (debug)
+	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
+    }
+  
+  
+  if (note!=0)
+    { 
+      P[cty].getPatternElement(cursor).setNote(P[cty].getPatternElement(cursor).getNote()+note);
+      note=0;
+    }
 
 
       // if user want to quit via handle_key
