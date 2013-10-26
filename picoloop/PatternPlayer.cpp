@@ -58,6 +58,7 @@ int cursor=0;           // cursor position in a sequencer track
 int note=0;
 int attack=0;
 int release=0;
+int vcomix=0;
 
 int loadsave_cursor_x=0; // index in the load/save menu
 int loadsave_cursor_y=0; // index in the load/save menu
@@ -132,6 +133,30 @@ void display_board()
       SG.smallBoxNumber(step,P[cty].getPatternElement(step).getRelease(),0,SMALLBOX_COLOR);
       SG.smallBoxNumber(step,0,P[cty].getPatternElement(step).getAttack(),SMALLBOX_COLOR); 
     }
+
+  // VCO/??
+  if (menu_cursor==3)
+    {
+      for (i=0;i<16;i++)
+	{
+	  // Draw trigged box trig color   
+	  //	  if (P[cty].getPatternElement(i).getTrig())
+	  //	    SG.drawBoxNumber(i,TRIG_COLOR);
+	  // AdsR
+	  SG.smallBoxNumber(i,P[cty].getPatternElement(i).getVCOMix(),0,SMALLBOX_COLOR);
+	  //	  SG.smallBoxNumber(i,0,P[cty].getPatternElement(i).getAttack(),SMALLBOX_COLOR);      
+	}
+      // Cursor & step postion
+      SG.drawBoxNumber(cursor,CURSOR_COLOR);
+      SG.smallBoxNumber(cursor,P[cty].getPatternElement(cursor).getVCOMix(),0,SMALLBOX_COLOR);
+      //      SG.smallBoxNumber(cursor,0,P[cty].getPatternElement(cursor).getAttack(),SMALLBOX_COLOR); 
+      
+      SG.drawBoxNumber(step,STEP_COLOR);  
+      SG.smallBoxNumber(step,P[cty].getPatternElement(step).getVCOMix(),0,SMALLBOX_COLOR);
+      //      SG.smallBoxNumber(step,0,P[cty].getPatternElement(step).getAttack(),SMALLBOX_COLOR); 
+    }
+
+
 
 
   // Note
@@ -235,22 +260,30 @@ void handle_key()
   //if (start_key==2) 
   //printf("%d %d %d\n",lastKey,lastEvent,lastKey==&& SDLK_RETURN && lastEvent==SDL_KEYUP);
   //  printf("lastevent=%d\n",lastEvent);
-  if (lastKey   == SDLK_ESCAPE && lastEvent ==  SDL_KEYUP)
+
+  //Enable Menu navigation
+  if (lastKey   ==  SDLK_ESCAPE && 
+      lastEvent ==  SDL_KEYUP)
     {
-      printf("Entering menu\n");
       if      (menu==0)        { menu=1;  start_key=0; }
       else if (menu==1)        { menu=0;  start_key=0; }   
+      dirty_graphic=1;
       IE.clearLastKeyEvent();
+      printf("[global menu : %d]\n",menu);
     }
   
-  if (lastKey   == SDLK_RETURN && lastEvent ==  SDL_KEYUP)
+  if (lastKey   ==  SDLK_RETURN && 
+      lastEvent ==  SDL_KEYUP  && 
+      menu_cursor==1)
     {
-      printf("Entering menu note\n");
       if      (menu_note==0)        { menu_note=1;  }
       else if (menu_note==1)        { menu_note=0;  }   
+      dirty_graphic=1;
       IE.clearLastKeyEvent();
+      printf("[sub menu note : %d]\n",menu_note);
     }
   
+  //Menu Mode 
   //Move MENU_CURSOR
   if (menu==1)
     {
@@ -259,9 +292,9 @@ void handle_key()
 	  if (keyRepeat[SDLK_LEFT]==1 || keyRepeat[SDLK_LEFT]%64==0)
 	    menu_cursor--;
 	  if (menu_cursor<0) menu_cursor=3;
+	  dirty_graphic=1;
 	  printf("[menu_cursor:%d]\n",menu_cursor);
 	  printf("key left\n");            
-	  dirty_graphic=1;
 	}      
       
       if(keyState[SDLK_RIGHT])
@@ -269,9 +302,9 @@ void handle_key()
 	  if (keyRepeat[SDLK_RIGHT]==1 || keyRepeat[SDLK_RIGHT]%64==0)
 	    menu_cursor++;
 	  if (menu_cursor>3) menu_cursor=0;
+	  dirty_graphic=1;
 	  printf("[menu_cursor:%d]\n",menu_cursor);
 	  printf("key right\n");            
-	  dirty_graphic=1;
 	}
       
       if(keyState[SDLK_UP])
@@ -283,8 +316,7 @@ void handle_key()
 	      else 
 		SEQ.setCurrentTrackY(TRACK_MAX-1);
 	    }
-	      //if (ct >= TRACK_MAX) ct=0;
-	  printf("key up : change track -- \n");
+	  printf("[key up : change track : %d] \n",SEQ.getCurrentTrackY());
 	  dirty_graphic=1;
 	}
 
@@ -295,12 +327,9 @@ void handle_key()
 	      if (SEQ.getCurrentTrackY()<TRACK_MAX-1)
 		SEQ.setCurrentTrackY(SEQ.getCurrentTrackY()+1);
 	      else 
-		SEQ.setCurrentTrackY(0);
-	      
-	      //	    ct--;
+		SEQ.setCurrentTrackY(0);	      
 	    }
-	  //if (ct<0) ct=TRACK_MAX-1;
-	  printf("key down : change track ++\n");
+	  printf("[key down : change track : %d] \n",SEQ.getCurrentTrackY());
 	  dirty_graphic=1;
 	}
     }
@@ -354,7 +383,8 @@ void handle_key()
   
   // Move Attack Release 
   // Insert/Remove Trig
-  if (menu==0 && menu_cursor==0)
+  if (menu==0 && 
+      menu_cursor==0)
     {
       if (lastKey== SDLK_LALT && lastEvent == SDL_KEYDOWN)
 	{
@@ -363,7 +393,7 @@ void handle_key()
 	  dirty_graphic=1;
 	  IE.clearLastKeyEvent();
 	}
-            if (keyState[SDLK_LEFT]  && keyState[SDLK_LCTRL])
+      if (keyState[SDLK_LEFT]  && keyState[SDLK_LCTRL])
 	if (keyRepeat[SDLK_LEFT]==1 ||  keyRepeat[SDLK_LEFT]>4) 
 	  { release=-1;   dirty_graphic=1; }
       
@@ -382,8 +412,9 @@ void handle_key()
   
   if (menu==0 && menu_cursor==1)
     {
-      //if (keyState[SDLK_LALT])
-      if (lastKey== SDLK_LALT && lastEvent ==  SDL_KEYUP)
+      // copy/paste/insert/delete trig 
+      if (lastKey   == SDLK_LALT && 
+	  lastEvent ==  SDL_KEYUP)
 	{
 	  invert_trig=1;
 	  printf("key lalt\n");      
@@ -409,49 +440,125 @@ void handle_key()
     }  
   
   //
-  // in the loadsave view, move loasavecursor position 
-  //
-  if (menu==0 && menu_cursor==2)
+  // in the load/save view //move loasavecursor position 
+  // Save/load Pattern
+  if (menu        == 0 && 
+      menu_cursor == 2 && 
+      keyState[SDLK_LALT] )
     {
 
-      if (keyState[SDLK_DOWN]  && keyState[SDLK_LALT])
+      if (keyState[SDLK_DOWN]  )
 	save=true;
 
 
       if (keyState[SDLK_UP]    && keyState[SDLK_LALT])	
 	load=true;
+    }
 
-      if (!keyState[SDLK_LALT])
-	{
-	  if (keyState[SDLK_LEFT])
-	    if (keyRepeat[SDLK_LEFT]==1  || keyRepeat[SDLK_LEFT]%64==0)  { loadsave_cursor_x--;  dirty_graphic=1;}
+  //
+  // in the load/save view 
+  // move load/save cursor position 
+  if (menu        == 0 && 
+      menu_cursor == 2 && 
+      !keyState[SDLK_LALT] )
+    {
+      if (keyState[SDLK_LEFT])
+	if (keyRepeat[SDLK_LEFT]==1  || keyRepeat[SDLK_LEFT]%64==0)  
+	  { loadsave_cursor_x--;  dirty_graphic=1;}
 
-	  if (keyState[SDLK_RIGHT])
-	    if (keyRepeat[SDLK_RIGHT]==1 || keyRepeat[SDLK_RIGHT]%64==0) { loadsave_cursor_x++;  dirty_graphic=1;}
+      if (keyState[SDLK_RIGHT])
+	if (keyRepeat[SDLK_RIGHT]==1 || keyRepeat[SDLK_RIGHT]%64==0) 
+	  { loadsave_cursor_x++;  dirty_graphic=1;}
 
-	  if (keyState[SDLK_UP])
-	    if (keyRepeat[SDLK_UP]==1    || keyRepeat[SDLK_UP]%64==0)    { loadsave_cursor_y--;  dirty_graphic=1;}
+      if (keyState[SDLK_UP])
+	if (keyRepeat[SDLK_UP]==1    || keyRepeat[SDLK_UP]%64==0)    
+	  { loadsave_cursor_y--;  dirty_graphic=1;}
 
-	  if (keyState[SDLK_DOWN])
-	    if (keyRepeat[SDLK_DOWN]==1  || keyRepeat[SDLK_DOWN]%64==0)  { loadsave_cursor_y++;  dirty_graphic=1;}
+      if (keyState[SDLK_DOWN])
+	if (keyRepeat[SDLK_DOWN]==1  || keyRepeat[SDLK_DOWN]%64==0)  
+	  { loadsave_cursor_y++;  dirty_graphic=1;}
 	  
-	  if (loadsave_cursor_x>15)          { loadsave_cursor_x=0; }
-	  if (loadsave_cursor_x<0)           { loadsave_cursor_x=15; }
-	  if (loadsave_cursor_y>TRACK_MAX-1) { loadsave_cursor_y=0; }
-	  if (loadsave_cursor_y<0)           { loadsave_cursor_y=TRACK_MAX-1; }  
-	  SEQ.setCurrentTrackY(loadsave_cursor_y);
-	  //	  printf("HIT2:%d\n",dirty_graphic);
-	  //	  IE.clearLastKeyEvent();
-	}
+      if (loadsave_cursor_x>15)          { loadsave_cursor_x=0;           }
+      if (loadsave_cursor_x<0)           { loadsave_cursor_x=15;          }
+      if (loadsave_cursor_y>TRACK_MAX-1) { loadsave_cursor_y=0;           }
+      if (loadsave_cursor_y<0)           { loadsave_cursor_y=TRACK_MAX-1; }  
+      
+      SEQ.setCurrentTrackY(loadsave_cursor_y);
 
-  
+    }
+
+  // VCO Menu
+  // Move cursor
+  if (menu        == 0 && 
+      menu_cursor == 3 &&
+      !keyState[SDLK_LCTRL]
+      )
+    {
+      //if(keyState[SDLK_UP] && ! keyState[SDLK_LCTRL])
+      if(keyState[SDLK_UP])
+	{
+	  if (keyRepeat[SDLK_UP]==1 || keyRepeat[SDLK_UP]%64==0)
+	    cursor=cursor-4;
+	  if (cursor < 0) cursor=cursor +16;
+	  printf("key down : up \n");
+	  dirty_graphic=1;
+	}
+      
+      if(keyState[SDLK_DOWN])
+	{
+	  if (keyRepeat[SDLK_DOWN]==1 || keyRepeat[SDLK_DOWN]%64==0)
+	    cursor=( cursor+4 ) %16;
+	  printf("key down : down\n");
+	  dirty_graphic=1;
+	}
+      
+      if(keyState[SDLK_LEFT])
+	{
+	  if (keyRepeat[SDLK_LEFT]==1 || keyRepeat[SDLK_LEFT]%64==0)
+	    cursor--;
+	  
+	  if (cursor<0) cursor=15;
+	  printf("key left\n");            
+	  dirty_graphic=1;
+	}
+      
+      if (keyState[SDLK_RIGHT])
+	{
+	  if (keyRepeat[SDLK_RIGHT]==1 || keyRepeat[SDLK_RIGHT]%64==0)
+	    cursor++;
+	  if (cursor>15) cursor=0;
+	  printf("key right\n");      
+	  dirty_graphic=1;
+	}
+    }
+      
+  // VCO Menu
+  // Change Value
+  if (menu        == 0 && 
+      menu_cursor == 3 &&
+      keyState[SDLK_LCTRL]
+      )
+    {
+      if (keyState[SDLK_LEFT]) 
+	if (keyRepeat[SDLK_LEFT]==1 || keyRepeat[SDLK_LEFT]%4==0) 
+	  { vcomix=-1; 	  dirty_graphic=1;}
+      
+      if (keyState[SDLK_RIGHT]) 
+	if (keyRepeat[SDLK_RIGHT]==1 || keyRepeat[SDLK_RIGHT]%4==0) 
+	  { vcomix=1;  	  dirty_graphic=1;}
+      
+      if (keyState[SDLK_UP]) 
+	if (keyRepeat[SDLK_UP]==1 || keyRepeat[SDLK_UP]%64==0) 
+	  { attack=1;   	  dirty_graphic=1;}
+      
+      if (keyState[SDLK_DOWN])
+	if (keyRepeat[SDLK_DOWN]==1 || keyRepeat[SDLK_DOWN]%64==0) 
+	  { attack=-1;  	  dirty_graphic=1;}
     }
   
   int delay=1;
   //printf("sleeping %dms\n",delay);
-  SDL_Delay(delay);
-  
-  
+  SDL_Delay(delay);  
 }
 
 
@@ -508,6 +615,7 @@ int seq_update()
 	  M[t]->getVCO().setSynthFreq(i);
 	  M[t]->getADSR().setRelease(P[t].getPatternElement(step).getRelease());		  
 	  M[t]->getADSR().setAttack(P[t].getPatternElement(step).getAttack());		  
+	  M[t]->getVCO().setVCOMix(P[t].getPatternElement(step).getVCOMix());		  
 	  //m.setSynthFreq(1200);
 	}
       else
@@ -597,6 +705,18 @@ int seq()
 	//	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
 
     }
+
+  if (vcomix!=0)
+    {
+      //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
+      P[cty].getPatternElement(cursor).setVCOMix(P[cty].getPatternElement(cursor).getVCOMix()+vcomix);
+      vcomix=0;
+      if (debug)
+	printf("[vcomix:%d]\n",P[cty].getPatternElement(cursor).getVCOMix());
+	//	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
+
+    }
+
   
   
   if (note!=0)
