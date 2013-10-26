@@ -19,6 +19,8 @@ public:
   bool   setTrig(bool Trig);
   bool   getTrig();
 
+  int    getVCOMix();
+  void   setVCOMix(int mix);
   int    getAttack();
   void   setAttack(int atk);
   int    getDecay();
@@ -42,6 +44,7 @@ private:
   bool Trig;
   int  Channel;
 
+  int  vcomix;
   int  attack;
   int  decay;
   int  sustain;

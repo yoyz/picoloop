@@ -8,9 +8,11 @@ using namespace std;
 
 PatternElement::PatternElement()
 {
+  printf("PatternElement::PatternElement()\n");
   Note=0;
   Trig=false;
   Channel=0;
+  vcomix=64;
   attack=0;
   decay=127;
   sustain=127;
@@ -19,7 +21,7 @@ PatternElement::PatternElement()
 
 PatternElement::~PatternElement()
 {
-  //printf("PatternElement::~PatternElement()\n");
+  printf("PatternElement::~PatternElement()\n");
 }
 
 
@@ -29,6 +31,7 @@ void PatternElement::init()
   Note=0;
   Trig=false;
   Channel=0;
+  vcomix=64;
   attack=0;
   decay=127;
   sustain=127;
@@ -38,6 +41,102 @@ void PatternElement::init()
 int PatternElement::getNote()
 {
   return PatternElement::Note;
+}
+
+
+
+int PatternElement::checkSevenBitBoundarie(int val)
+{
+  if (val < 0)
+    return 0;
+  if (val > 127)
+    return 127;
+  return val;
+}
+
+void PatternElement::setVCOMix(int mix)
+{
+  vcomix=this->checkSevenBitBoundarie(mix);  
+}
+
+int PatternElement::getVCOMix()
+{
+  return vcomix;
+}
+
+int PatternElement::getAttack()
+{
+  return attack;
+}
+
+void PatternElement::setAttack(int atk)
+{
+  attack=this->checkSevenBitBoundarie(atk);  
+}
+
+int PatternElement::getDecay()
+{
+  return decay;
+}
+
+void PatternElement::setDecay(int dcy)
+{
+  decay=this->checkSevenBitBoundarie(dcy);
+}
+
+
+int PatternElement::getSustain()
+{
+  return sustain;
+}
+
+void PatternElement::setSustain(int sus)
+{
+  sustain=this->checkSevenBitBoundarie(sus);
+}
+
+
+int PatternElement::getRelease()
+{
+  return release;
+}
+
+void PatternElement::setRelease(int rls)
+{
+  release=this->checkSevenBitBoundarie(rls);
+}
+
+
+
+bool PatternElement::setNote(int N)
+{
+  Note=this->checkSevenBitBoundarie(N);
+}
+
+bool PatternElement::setTrig(bool T)
+{
+  return Trig=T;
+}
+
+bool PatternElement::getTrig()
+{
+  return Trig;
+}
+
+
+string PatternElement::getStr()
+{
+  stringstream ss;
+  string s;
+  ss << "Note:" << Note << "\tTrig:" << Trig << "\tChannel:" << Channel ;
+  s=ss.str();
+  return s;
+    //cout << "Note:" << Note << " Trig:" << Trig << " Channel:" << Channel << "\n";
+}
+
+void PatternElement::print()
+{
+  cout << getStr() << "\n";
 }
 
 
@@ -349,89 +448,4 @@ float PatternElement::getNoteFreq()
 
 
   return note_hertz[PatternElement::Note];
-}
-
-int PatternElement::checkSevenBitBoundarie(int val)
-{
-  if (val < 0)
-    return 0;
-  if (val > 127)
-    return 127;
-  return val;
-}
-
-int PatternElement::getAttack()
-{
-  return attack;
-}
-
-void PatternElement::setAttack(int atk)
-{
-  attack=this->checkSevenBitBoundarie(atk);
-  
-}
-
-int PatternElement::getDecay()
-{
-  return decay;
-}
-
-void PatternElement::setDecay(int dcy)
-{
-  decay=this->checkSevenBitBoundarie(dcy);
-}
-
-
-int PatternElement::getSustain()
-{
-  return sustain;
-}
-
-void PatternElement::setSustain(int sus)
-{
-  sustain=this->checkSevenBitBoundarie(sus);
-}
-
-
-int PatternElement::getRelease()
-{
-  return release;
-}
-
-void PatternElement::setRelease(int rls)
-{
-  release=this->checkSevenBitBoundarie(rls);
-}
-
-
-
-bool PatternElement::setNote(int N)
-{
-  Note=this->checkSevenBitBoundarie(N);
-}
-
-bool PatternElement::setTrig(bool T)
-{
-  return Trig=T;
-}
-
-bool PatternElement::getTrig()
-{
-  return Trig;
-}
-
-
-string PatternElement::getStr()
-{
-  stringstream ss;
-  string s;
-  ss << "Note:" << Note << "\tTrig:" << Trig << "\tChannel:" << Channel ;
-  s=ss.str();
-  return s;
-    //cout << "Note:" << Note << " Trig:" << Trig << " Channel:" << Channel << "\n";
-}
-
-void PatternElement::print()
-{
-  cout << getStr() << "\n";
 }
