@@ -27,6 +27,7 @@ public:
   void                  reset();
   Sint16                tick();
   void                  init();
+  void                  setVCOMix(int mix);
   Oscillator          * getOscillatorOne();
 
   SawOscillator         sawosc;
@@ -38,6 +39,7 @@ public:
 
   int freq;
   int current;
+  int vcomix;
 };
 
 #endif

@@ -16,6 +16,7 @@ VCO::VCO() : sineosc(), sawosc(), fuzzypulseosc(), pulseosc()
   */
   //  s1=NULL;
   //  s2=NULL;
+  vcomix=64;
 }
 
 VCO::~VCO()
@@ -23,6 +24,10 @@ VCO::~VCO()
   printf("VCO::~VCO()\n");
 }
 
+void VCO::setVCOMix(int mix)
+{
+  vcomix=mix;
+}
 
 void VCO::init()
 {
@@ -68,6 +73,11 @@ Sint16 VCO::tick()
 {
   //  printf("VCO::tick() this=0x%08.8X\n",this); 
   // return s1->tick()+s2->tick();
+  Sint32 sa;
+  Sint32 sb;
+  Sint32 sc;
+  Sint16 s;
+  if (vcomix==0) vcomix=1;
   if (s1==NULL)
     { 
       printf("[s1 is NULL]\n"); 
@@ -77,5 +87,19 @@ Sint16 VCO::tick()
     {
       printf("[s1 is NOT NULL]\n"); 
       } */
-  return s1->tick()+s2->tick();
+  //  return s1->tick()+s2->tick();
+  
+  //sa=s1->tick()*(128/vcomix);
+
+  sa=(s1->tick()*128-vcomix)/128;
+  sb=(s2->tick()*vcomix-128)/128;
+  sc=sa+sb;
+  s=sc;
+  //  sb=(s2->tick())
+
+  //return s1->tick()/(128-vcomix)+s2->tick()/(vcomix);  
+    
+  
+  //return s1->tick()+s2->tick();
+  return s;
 }
