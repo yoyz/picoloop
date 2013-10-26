@@ -170,6 +170,27 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
     retcode=false;
 
 
+  fgets(line,512,fd);
+  //match('Pattern 1 Track 1 Param Decay 0  0 1  0 0  0 1  0 0  1  0  0  1  0  0')
+  sscanf(line,
+	 "Pattern %d Track %d Param VCOMix %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
+	 &PatNum,&TrackNum,
+	 &t[0], &t[1], &t[2], &t[3],
+	 &t[4], &t[5], &t[6], &t[7],
+	 &t[8], &t[9], &t[10],&t[11],
+	 &t[12],&t[13],&t[14],&t[15]);
+
+  if (PatNum    ==PatternNumber &&
+      TrackNum  ==TrackNumber)
+    for (i=0;i<PatSize;i++)
+      {
+	Pe=P.getPatternElement(i);      
+	Pe.setVCOMix(t[i]);
+	P.setPatternElement(i,Pe);      
+      }
+  else
+    retcode=false;
+
 
   fgets(line,512,fd);
   //match('Pattern 1 Track 1 Param Attack 0  0 1  0 0  0 1  0 0  1  0  0  1  0  0')
@@ -191,6 +212,8 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
       }
   else
     retcode=false;
+
+
 
 
 
@@ -339,6 +362,17 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
     }
   sprintf(line+strlen(line),"\n");
   data.insert(data.end(),line);
+
+  for (int i=0; i< P.getSize();i++)
+    {
+      if (i==0)
+	sprintf(line,"Pattern %d Track %d Param VCOMix ",PatternNumber,TrackNumber);
+      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).getVCOMix());
+    }
+  sprintf(line+strlen(line),"\n");
+  data.insert(data.end(),line);
+
+
 
   for (int i=0; i< P.getSize();i++)
     {
