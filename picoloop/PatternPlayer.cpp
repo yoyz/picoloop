@@ -42,6 +42,10 @@ Instrument     inst;        // used ?
 int save=false;
 int load=false;
 
+int saveall=false;
+int loadall=false;
+
+
 int tempo=60;
 int nbcb=0;             // current nb audio callback 
 int last_nbcb=0;
@@ -444,23 +448,33 @@ void handle_key()
   // Save/load Pattern
   if (menu        == 0 && 
       menu_cursor == 2 && 
-      keyState[SDLK_LALT] )
+      keyState[SDLK_LALT])
     {
-
-      if (keyState[SDLK_DOWN]  )
+      if (keyState[SDLK_DOWN])
 	save=true;
-
-
-      if (keyState[SDLK_UP]    && keyState[SDLK_LALT])	
+      if (keyState[SDLK_UP])	
 	load=true;
     }
+
+  if (menu        == 0 && 
+      menu_cursor == 2 && 
+      keyState[SDLK_LCTRL] )
+    {
+      if (keyState[SDLK_DOWN])
+	saveall=true;
+      if (keyState[SDLK_UP])	
+	loadall=true;
+    }
+
 
   //
   // in the load/save view 
   // move load/save cursor position 
   if (menu        == 0 && 
-      menu_cursor == 2 && 
-      !keyState[SDLK_LALT] )
+      menu_cursor == 2 &&
+      (!(
+       keyState[SDLK_LALT] ||
+       keyState[SDLK_LCTRL])))
     {
       if (keyState[SDLK_LEFT])
 	if (keyRepeat[SDLK_LEFT]==1  || keyRepeat[SDLK_LEFT]%64==0)  
@@ -568,6 +582,7 @@ int seq_update()
 {
   int  cty=SEQ.getCurrentTrackY();
   int  ctx=SEQ.getCurrentTrackX();
+  int  t;
 
   // Load save only on pattern change
   if (save)
@@ -587,9 +602,32 @@ int seq_update()
 	PR.readPatternData(loadsave_cursor_x,loadsave_cursor_y,P[cty]);
       else
 	P[cty].init();
-
       load=false;
     }
+
+  // Load save only on pattern change
+  if (saveall)
+    {
+      printf("<==[SAVE_ALL]==>\n");
+      //PR.writePattern(1,ct+1,P[ct]);
+      for (t=0;t<TRACK_MAX;t++)
+	PR.writePattern(loadsave_cursor_x,t,P[t]);
+      dirty_graphic=1;
+      saveall=false;      
+    }
+
+  // Load save only on pattern change
+  if (loadall)
+    {
+      printf("<==[LOAD_ALL]==>\n");
+      for (t=0;t<TRACK_MAX;t++)
+	if (PR.PatternDataExist(loadsave_cursor_x,t)==true)
+	  PR.readPatternData(loadsave_cursor_x,t,P[t]);
+	else
+	  P[t].init();
+      loadall=false;
+    }
+
     
   if (step==16) 
     step=0; 
