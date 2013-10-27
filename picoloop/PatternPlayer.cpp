@@ -562,10 +562,14 @@ void handle_key()
 }
 
 
+
+// 
 int seq_update()
 {
   int  cty=SEQ.getCurrentTrackY();
   int  ctx=SEQ.getCurrentTrackX();
+
+  // Load save only on pattern change
   if (save)
     {
       printf("<==[SAVE]==>\n");
@@ -574,7 +578,8 @@ int seq_update()
       dirty_graphic=1;
       save=false;
     }
-  
+
+  // Load save only on pattern change
   if (load)
     {
       printf("<==[LOAD]==>\n");
@@ -585,29 +590,24 @@ int seq_update()
 
       load=false;
     }
-  
-  
-  
-  
-  
-  if (step==16) { step=0; }
+    
+  if (step==16) 
+    step=0; 
+
   if (debug)
     printf("STEP:%d\n",step);	  
   
   
-  
+  // Handle only modification of on next step value 
+  // for each Machine 
+  // of each track 
   for (t=0;t<TRACK_MAX;t++)
     {
       if (P[t].getPatternElement(step).getTrig()==true)
 	{
 	  float f=P[t].getPatternElement(step).getNoteFreq();
 	  int   i=f;
-	  
-	  
-	  //M[t].getVCO()->setSynthFreq(i);
-
-	  //m0.getADSR().get();
-	  //M[t].getOscillator()->reset();
+	  	 
 	  M[t]->getADSR().reset();;	  
 	  M[t]->getVCO().reset();
 	  M[t]->getVCO().getOscillatorOne();
@@ -616,7 +616,6 @@ int seq_update()
 	  M[t]->getADSR().setRelease(P[t].getPatternElement(step).getRelease());		  
 	  M[t]->getADSR().setAttack(P[t].getPatternElement(step).getAttack());		  
 	  M[t]->getVCO().setVCOMix(P[t].getPatternElement(step).getVCOMix());		  
-	  //m.setSynthFreq(1200);
 	}
       else
 	{
@@ -634,6 +633,7 @@ int seq()
   int  cty=SEQ.getCurrentTrackY();
   int  ctx=SEQ.getCurrentTrackX();
 
+  // Initialize 
   for (t=0;t<TRACK_MAX;t++)
     {
 
@@ -642,11 +642,11 @@ int seq()
       
       M[t]=MM[t]->getInput();
       M[t]->init();
+      M[t]->getADSR().init();
       M[t]->getVCO().init();
       //M[t]->getVCO().init();
-      M[t]->getVCO().tick();
-      M[t]->getVCO().setSynthFreq(0);
-      
+      //M[t]->getVCO().tick();
+      M[t]->getVCO().setSynthFreq(0);      
       //M[t].getVCO().setSineOsc();
     }
 
@@ -669,7 +669,7 @@ int seq()
       handle_key();
 
 
-      // invert trig on the while true
+      // invert trig => insert/remove/copy note 
       if (invert_trig)
 	{
 	  if (P[cty].getPatternElement(cursor).getTrig())
@@ -683,57 +683,60 @@ int seq()
 	      P[cty].getPatternElement(cursor).setTrig(true);
 	    }
 	  invert_trig=0;
-	}	  
-        if (attack!=0)
-    {
-      //m0.getADSR().setAttack(m0.getADSR().getAttack()+attack);
-      P[cty].getPatternElement(cursor).setAttack(P[cty].getPatternElement(cursor).getAttack()+attack);
-      attack=0;
-      if (debug)
-	printf("[attack:%d]\n",P[cty].getPatternElement(cursor).getAttack());
-	//printf("[attack:%d]\n",P[cty].getPatternElement(cursor).getAttack()+attack);
+	}
+	  
+      // Change Attack
+      if (attack!=0)
+	{
+	  //m0.getADSR().setAttack(m0.getADSR().getAttack()+attack);
+	  P[cty].getPatternElement(cursor).setAttack(P[cty].getPatternElement(cursor).getAttack()+attack);
+	  attack=0;
+	  if (debug)
+	    printf("[attack:%d]\n",P[cty].getPatternElement(cursor).getAttack());
+	  //printf("[attack:%d]\n",P[cty].getPatternElement(cursor).getAttack()+attack);
 	//printf("[attack:%d]\n",M[cty]->getADSR().getAttack());
-    }
-  
-  if (release!=0)
-    {
-      //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
-      P[cty].getPatternElement(cursor).setRelease(P[cty].getPatternElement(cursor).getRelease()+release);
-      release=0;
-      if (debug)
-	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease());
-	//	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
-
-    }
-
-  if (vcomix!=0)
-    {
-      //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
-      P[cty].getPatternElement(cursor).setVCOMix(P[cty].getPatternElement(cursor).getVCOMix()+vcomix);
-      vcomix=0;
-      if (debug)
-	printf("[vcomix:%d]\n",P[cty].getPatternElement(cursor).getVCOMix());
-	//	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
-
-    }
-
-  
-  
-  if (note!=0)
-    { 
-      P[cty].getPatternElement(cursor).setNote(P[cty].getPatternElement(cursor).getNote()+note);
-      note=0;
-    }
-
-
+	}
+      
+      // Change Release
+      if (release!=0)
+	{
+	  //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
+	  P[cty].getPatternElement(cursor).setRelease(P[cty].getPatternElement(cursor).getRelease()+release);
+	  release=0;
+	  if (debug)
+	    printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease());
+	  //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
+	  
+	}
+      
+      // Change VCOMix
+      if (vcomix!=0)
+	{
+	  //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
+	  P[cty].getPatternElement(cursor).setVCOMix(P[cty].getPatternElement(cursor).getVCOMix()+vcomix);
+	  vcomix=0;
+	  if (debug)
+	    printf("[vcomix:%d]\n",P[cty].getPatternElement(cursor).getVCOMix());
+	  //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
+	  
+	}
+        
+      // Change Note
+      if (note!=0)
+	{ 
+	  P[cty].getPatternElement(cursor).setNote(P[cty].getPatternElement(cursor).getNote()+note);
+	  note=0;
+	}
+            
       // if user want to quit via handle_key
       if (quit)
 	return(0);
-
-      //GRAPHICS
+      
+      //display graphic if something has change : handle_key 
       if (dirty_graphic)
 	display_board();
 
+      // change step in the pattern
       if (nbcb-last_nbcb_ch_step>nb_cb_ch_step)
 	{
 	  dirty_graphic=1;
@@ -774,6 +777,7 @@ int main()
   //tmp_str=(char*)malloc(sizeof(char)*4);
   //cowbell.loadWave(str);
   load_pattern();
+  printf("[openVideo output]\n");
   SG.initVideo();
   //handle_key();
   //  SDL_EnableKeyRepeat(500,500);
@@ -781,12 +785,14 @@ int main()
   if (SG.openTTFFont()==false) { printf("ttf font error\n"); exit(1); }
   display_board();
 
-  printf("openAudio output\n");
+  printf("[openAudio output]\n");
   AE.openAudio();
 
   seq();
 
+  printf("[closeVideo output]\n");
   SG.closeVideo();
+  printf("[closeAudio output]\n");
   AE.closeAudio();
   //sleep(10);
   //PE.print();
