@@ -124,22 +124,20 @@ void handle_key()
     quit=1;
 
   
-  if(lastKey == SDLK_UP)
+  if(lastKey == SDLK_UP && lastEvent ==  SDL_KEYUP)
     {
     if (divide<=32) divide=32;
-    divide=divide/1.1;
     octave=octave+12;
     redraw=true;
-    printf("key up\n");
+    printf("key up octave:%d\n",octave);
     }
 
-  if(lastKey== SDLK_DOWN)
+  if(lastKey== SDLK_DOWN && lastEvent ==  SDL_KEYUP)
     {
       if (divide>=4096) divide=4096;
-      divide=divide*1.1;
       octave=octave-12;
       redraw=true;
-      printf("key down\n");
+      printf("key down octave:%d\n",octave);
     }
 
   if(lastKey==SDLK_LEFT)
@@ -224,6 +222,7 @@ void handle_key()
 	  float f=PE.getNoteFreq();
 	  int   i=f;
 	  
+	  printf("[Freq:%d]\n",i);
 	  M[t]->getADSR().reset();;	  
 	  M[t]->getVCO().reset();
 	  M[t]->getVCO().getOscillatorOne();
@@ -239,7 +238,7 @@ void handle_key()
 	}
     }  
   
-  printf("key pressed sleeping 10ms\n");
+  //printf("key pressed sleeping 10ms\n");
   SDL_Delay(10);
 
 }
