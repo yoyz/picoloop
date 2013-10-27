@@ -21,6 +21,18 @@ ADSR::~ADSR()
 
 }
 
+void ADSR::init()
+{
+  printf("ADSR::init()\n");
+  attack=0;
+  decay=127;
+  sustain=0;
+  release=2;
+  sample_num=-1;
+  playing=1;
+}
+
+
  void ADSR::setAttack(int atk)
 {
   attack=atk;
