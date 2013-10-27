@@ -57,6 +57,7 @@ int PatternElement::checkSevenBitBoundarie(int val)
 void PatternElement::setVCOMix(int mix)
 {
   vcomix=this->checkSevenBitBoundarie(mix);  
+  printf("[vcomix:%d]\n",vcomix);
 }
 
 int PatternElement::getVCOMix()
