@@ -19,7 +19,7 @@ class SawOscillator : public Oscillator
   //  void   setFreq(int freq);
   //  void   setAmplitude(int amplitude);
   Sint16 tick();
-
+  int    phase;  
   
 };
 
