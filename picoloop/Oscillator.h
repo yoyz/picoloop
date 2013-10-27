@@ -42,7 +42,10 @@ class Oscillator
   int    sample_num_index;
   int    table_fill;
   int    table_size;
-   
+  Uint16 u;
+  Uint16 last_u;
+  Sint16 s;
+  
 };
 
 #endif
