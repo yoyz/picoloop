@@ -8,11 +8,14 @@ using namespace std;
 
 #include "AudioEngine.h"
 #include "MonoMixer.h" 
-AudioEngine AE;
+#include "InputManager.h"
+
+AudioEngine    AE;          // used to  init alsa/rtaudio
+InputManager   IE;          // used to  fetch key
+vector <Machine   *>        M(TRACK_MAX);
+vector <MonoMixer *>        MM(TRACK_MAX);
 
 
-//#define SCREEN_WIDTH	640
-//#define SCREEN_HEIGHT	480
 #define SCREEN_DEPTH	16
 #define NCOEF	(32)
 
@@ -37,132 +40,34 @@ SDL_Surface *screen=NULL;
 
 bool left_key=false;
 bool right_key=false;
-bool up=false;
-bool down=false;
-bool pageup=false;
-bool pagedown=false;
-bool ctrl=false;
-
-bool q_key=false; //C
-bool z_key=false; //C+
-bool s_key=false; //D
-bool e_key=false; //D+
-
-bool d_key=false; //E
-bool f_key=false; //F
-bool t_key=false; //F+
-bool g_key=false; //G
-
-bool y_key=false; //G+
-bool h_key=false; //A
-bool u_key=false; //A+
-bool j_key=false; //B
-
-bool k_key=false; //C
-bool o_key=false; //C+
-bool l_key=false; //D
-bool p_key=false; //D+
-bool m_key=false; //E
-
-//Machine M0;
-//Machine M1;
-//Machine * M0=new Machine();
-//Machine * M1=new Machine();
 
 
 
 PatternElement PE;
-//printf("Before\n");
-//ae.openAudio();
-
-//AudioMixer am;
-//Track      t0;
-//Machine    m0;
-//AudioMixer & am=ae.getAudioMixer();
-//Track      & t0=ae.getAudioMixer().getTrack(0);
-//Machine    & m0=ae.getAudioMixer().getTrack(0).getMachine();
-
-//Track      & t1=ae.getAudioMixer().getTrack(1);
-//Machine    & m1=ae.getAudioMixer().getTrack(1).getMachine();
-
-//AudioMixer & am;
-//Track      & t0;
-//Machine    & m0;
 
 void openaudio()
 {
-  //beeper.initialize(1000,440);
-  //inst.setSynth();
-  //inst.assignSynth(beeper);
-  //ae.set_instrument(inst);
-//  printf("Before\n");
-
-
-
-  //  M0.getVCO().setSineOsc();
-  //  M1.setSineOsc();
-  //  m0.setSawOsc();
-  //  m1.setSawOsc();
-
-
-  MonoMixer & MM0=AE.getAudioMixer().getTrack(0).getMonoMixer();
-  MonoMixer & MM1=AE.getAudioMixer().getTrack(1).getMonoMixer();
-  
-  Machine & M0=MM0.getInput();
-  Machine & M1=MM1.getInput();
-
-  M0.init();
-  M1.init();
-
-  M0.getVCO().init();
-  M1.getVCO().init();
-
-  M0.getVCO().setSynthFreq(0);
-  //  m1.setSynthFreq(0);
-  M0.getADSR().setRelease(90);
-
-
-  M1.getVCO().setSynthFreq(440);
-  //  m1.setSynthFreq(0);
-  M1.getADSR().setRelease(90);
-
-
-  /*
-  for (i=0;i<1000;i++)
-    printf("[%d]\n",M1.tick());
-  */
-  //MM0.setInput(M0);
-  //MM1.setInput(M1);
+  int t;
 
   AE.openAudio();
+  for (t=0;t<TRACK_MAX;t++)
+    {
+      MM[t]=AE.getAudioMixer().getTrack(t).getMonoMixer();
+      M[t]=MM[t]->getInput();
+      M[t]->init();
+      M[t]->getADSR().init();
+      M[t]->getVCO().init();
+      M[t]->getVCO().setSynthFreq(0);      
+    }
+
+
+  printf("openAudio start streaming\n");
   AE.startAudio();
 
   int i=0;
   for (i=0;i<10;i++)
-    printf("[%d]\n",M1.tick());
+    printf("[%d]\n",M[0]->tick());
 
-  /*
-  ae.openAudio();
-  am=ae.getAudioMixer();
-  m0=ae.getAudioMixer().getTrack(0).getMachine();
-  m0.setFuzzyPulseOsc();
-  m0.setSynthFreq(440);
-  */
-  /*
-  AudioMixer & am=ae.getAudioMixer();
-  Track      & t0=ae.getAudioMixer().getTrack(0);
-  Machine    & m0=ae.getAudioMixer().getTrack(0).getMachine();
-
-  Track      & t1=ae.getAudioMixer().getTrack(1);
-  Machine    & m1=ae.getAudioMixer().getTrack(1).getMachine();
-  m0.setSynthFreq(440);
-  m1.setSynthFreq(880);
-  */
-//  am=ae.getAudioMixer();
-//  t0=ae.getAudioMixer().getTrack(0);
-//  m0=ae.getAudioMixer().getTrack(0).getMachine();
-
-//  printf("After\n");
 }
 
 
@@ -196,119 +101,23 @@ void init_video()
 
 void handle_key()
 {
-  SDL_Event event;
-  if (SDL_PollEvent(&event))
-    {
-      printf("loop %d\n",loop);
-      loop++;
 
-      //printf("[%d %d %d %d]\n",SDL_KEYUP,SDL_KEYDOWN,event.type,event.key.keysym.sym);
-      switch (event.type)
-	{
-	case SDL_QUIT:
-	  printf("Exiting...\n");
-	  quit = 1;
-	  free(file_buffer);
-	  exit(0);
-	  break; 	  
-	  
-	case SDL_KEYUP:
-	  switch (event.key.keysym.sym)
-	    {
-	      printf("key release\n");
-	    case SDLK_LCTRL:       ctrl=false;      break;
-	    case SDLK_RCTRL:       ctrl=false;      break;
-	    case SDLK_LEFT:        left_key=false;  break;	     
-	    case SDLK_RIGHT:       right_key=false; break;	      
-	    case SDLK_UP:          up=false;        break;	      
-	    case SDLK_DOWN:        down=false;      break;
-	    case SDLK_PAGEUP:      pageup=false;    break;	      
-	    case SDLK_PAGEDOWN:    pagedown=false;  break;
+  bool * keyState;
+  int  * keyRepeat;
+  int    lastEvent;
+  int    lastKey;
+  IE.handleKey();
 
-	    case SDLK_q:           q_key=false;     break;
-	    case SDLK_z:           z_key=false;     break;
-	    case SDLK_s:           s_key=false;     break;
-	    case SDLK_e:           e_key=false;     break;
+  keyState=IE.keyState();
+  keyRepeat=IE.keyRepeat();
+  lastEvent=IE.lastEvent();
+  lastKey=IE.lastKey();
 
-	    case SDLK_d:           d_key=false;     break;
-	    case SDLK_f:           f_key=false;     break;
-	    case SDLK_t:           t_key=false;     break;
-	    case SDLK_g:           g_key=false;     break;
-
-	    case SDLK_y:           y_key=false;     break;
-	    case SDLK_h:           h_key=false;     break;
-	    case SDLK_u:           u_key=false;     break;
-	    case SDLK_j:           j_key=false;     break;
-
-	    case SDLK_k:           k_key=false;     break;
-	    case SDLK_o:           o_key=false;     break;
-	    case SDLK_l:           l_key=false;     break;
-	    case SDLK_p:           m_key=false;     break;
-	    case SDLK_m:           m_key=false;     break;
-
-
-
-	    default:
-	      break;
-	    }
-	  break;
-	  
-	case SDL_KEYDOWN:
-	  switch (event.key.keysym.sym)
-	    {
-	      printf("key down\n");
-	    case SDLK_ESCAPE:
-	      printf("Exiting...\n");
-	      quit = 1;
-	      exit(0);
-	      break;
-	      
-	    case SDLK_LCTRL:       ctrl=true;      break;
-	    case SDLK_RCTRL:       ctrl=true;      break;
-	    case SDLK_LEFT:        left_key=true;  break;	      
-	    case SDLK_RIGHT:       right_key=true; break;	      
-	    case SDLK_UP:          up=true;        break;	      
-	    case SDLK_DOWN:        down=true;      break;
-	    case SDLK_PAGEUP:      pageup=true;    break;	      
-	    case SDLK_PAGEDOWN:    pagedown=true;  break;
-
-	    case SDLK_q:           q_key=true;     break;
-	    case SDLK_z:           z_key=true;     break;
-	    case SDLK_s:           s_key=true;     break;
-	    case SDLK_e:           e_key=true;     break;
-
-	    case SDLK_d:           d_key=true;     break;
-	    case SDLK_f:           f_key=true;     break;
-	    case SDLK_t:           t_key=true;     break;
-	    case SDLK_g:           g_key=true;     break;
-
-	    case SDLK_y:           y_key=true;     break;
-	    case SDLK_h:           h_key=true;     break;
-	    case SDLK_u:           u_key=true;     break;
-	    case SDLK_j:           j_key=true;     break;
-
-	    case SDLK_k:           k_key=true;     break;
-	    case SDLK_o:           o_key=true;     break;
-	    case SDLK_l:           l_key=true;     break;
-	    case SDLK_p:           p_key=true;     break;
-	    case SDLK_m:           m_key=true;     break;
-
-	      
-	    default:
-	      break;
-	      
-	    }
-
-	  break;
-
-	}
-      printf("new event:%d %s\n",event.type,SDL_GetKeyName(event.key.keysym.sym));
-    }
-
-  printf("No new event\n");
+  if (IE.shouldExit())
+    quit=1;
 
   
-  if(up)
+  if(lastKey == SDLK_UP)
     {
     if (divide<=32) divide=32;
     divide=divide/1.1;
@@ -317,7 +126,7 @@ void handle_key()
     printf("key up\n");
     }
 
-  if(down)
+  if(lastKey== SDLK_DOWN)
     {
       if (divide>=4096) divide=4096;
       divide=divide*1.1;
@@ -326,10 +135,10 @@ void handle_key()
       printf("key down\n");
     }
 
-  if(left_key)
+  if(lastKey==SDLK_LEFT)
     {
       offset=offset--;
-      if (!ctrl) 
+      if (!keyState[SDLK_LCTRL]) 
 	offset=offset-(10*zoom);
       else
 	offset=offset-SCREEN_WIDTH;
@@ -339,10 +148,10 @@ void handle_key()
       printf("key left\n");            
     }
 
-  if (right_key)
+  if (lastKey==SDLK_RIGHT)
     {
       offset=offset++;
-      if (!ctrl) 
+      if (!keyState[SDLK_LCTRL]) 
 	offset=offset+(10*zoom);
       else
 	offset=offset+SCREEN_WIDTH;
@@ -351,7 +160,7 @@ void handle_key()
       printf("key right\n");      
     }
 
-  if(pageup)
+  if(lastKey==SDLK_PAGEUP)
     {
       zoom=zoom*1.1;
       if (zoom>1024.0) zoom=1024;
@@ -359,7 +168,7 @@ void handle_key()
       printf("key pgup %f\n",zoom);      
     }
 
-  if(pagedown)
+  if(lastKey==SDLK_PAGEDOWN)
     {
       zoom=zoom/1.1;
       if (zoom<0.01) zoom=0.01;
@@ -367,84 +176,50 @@ void handle_key()
       printf("key pgdown %f\n",zoom);
     }
 
-  if (q_key) { printf("key q\n"); PE.setNote(0+octave);  }
-  if (z_key) { printf("key z\n"); PE.setNote(1+octave);  }
-  if (s_key) { printf("key s\n"); PE.setNote(2+octave);  }
-  if (e_key) { printf("key e\n"); PE.setNote(3+octave);  }
-  if (d_key) { printf("key d\n"); PE.setNote(4+octave);  }
-  if (f_key) { printf("key f\n"); PE.setNote(5+octave);  }
-  if (t_key) { printf("key t\n"); PE.setNote(6+octave);  }
-  if (g_key) { printf("key g\n"); PE.setNote(7+octave);  }
-  if (y_key) { printf("key y\n"); PE.setNote(8+octave);  }
-  if (h_key) { printf("key h\n"); PE.setNote(9+octave);  }
-  if (u_key) { printf("key u\n"); PE.setNote(10+octave);  }
-  if (j_key) { printf("key j\n"); PE.setNote(11+octave);  }
-
-  if (k_key) { printf("key k\n"); PE.setNote(12+octave);  }
-  if (o_key) { printf("key o\n"); PE.setNote(13+octave);  }
-  if (l_key) { printf("key l\n"); PE.setNote(14+octave);  }
-  if (p_key) { printf("key p\n"); PE.setNote(15+octave);  }
-  if (m_key) { printf("key m\n"); PE.setNote(16+octave);  }
-
-  /*
-  if (k_key)
+  if (lastEvent ==  SDL_KEYUP)
     {
-            printf("key z\n");
-	    //Machine    & m0=ae.getAudioMixer().getTrack(0).getMachine();
-	    m0.setSynthFreq(880);
-    }
-  */
+      if (lastKey==SDLK_q) { printf("key q\n"); PE.setNote(0+octave);  }
+      if (lastKey==SDLK_z) { printf("key z\n"); PE.setNote(1+octave);  }
+      if (lastKey==SDLK_s) { printf("key s\n"); PE.setNote(2+octave);  }
+      if (lastKey==SDLK_e) { printf("key e\n"); PE.setNote(3+octave);  }
+      if (lastKey==SDLK_d) { printf("key d\n"); PE.setNote(4+octave);  }
+      if (lastKey==SDLK_f) { printf("key f\n"); PE.setNote(5+octave);  }
+      if (lastKey==SDLK_t) { printf("key t\n"); PE.setNote(6+octave);  }
+      if (lastKey==SDLK_g) { printf("key g\n"); PE.setNote(7+octave);  }
+      if (lastKey==SDLK_y) { printf("key y\n"); PE.setNote(8+octave);  }
+      if (lastKey==SDLK_h) { printf("key h\n"); PE.setNote(9+octave);  }
+      if (lastKey==SDLK_u) { printf("key u\n"); PE.setNote(10+octave);  }
+      if (lastKey==SDLK_j) { printf("key j\n"); PE.setNote(11+octave);  }
+      
+      if (lastKey==SDLK_k) { printf("key k\n"); PE.setNote(12+octave);  }
+      if (lastKey==SDLK_o) { printf("key o\n"); PE.setNote(13+octave);  }
+      if (lastKey==SDLK_l) { printf("key l\n"); PE.setNote(14+octave);  }
+      if (lastKey==SDLK_p) { printf("key p\n"); PE.setNote(15+octave);  }
+      if (lastKey==SDLK_m) { printf("key m\n"); PE.setNote(16+octave);  }
 
-  //No user activity => sleeping a while to keep cpu cool
-  //it keep cpu under 100% usage
-  if ((up       || 
-       down     || 
-       left_key || 
-       right_key|| 
-       pagedown || 
-       pageup   ||
-       q_key    ||
-       z_key    ||
-       s_key    ||
-       e_key    ||
-       d_key    ||
-       f_key    ||
-       t_key    ||
-       g_key    ||
-       y_key    ||
-       j_key    ||
-       u_key    ||
-       j_key    ||
-       k_key    ||
-       o_key    ||
-       l_key    ||
-       p_key    ||
-       m_key    
-       )==false)
-    {
-      printf("no key so sleeping 100ms\n");
-      SDL_Delay(100);
+      IE.clearLastKeyEvent(); 
 
-    }
-  else
-    {
-      printf("%d%d%d%d %d%d%d%d %d%d%d%d %d%d%d%d %d\n",
-	     q_key,z_key,s_key,e_key,
-	     d_key,f_key,t_key,g_key,
-	     y_key,h_key,u_key,j_key,
-	     k_key,o_key,l_key,p_key,
-	     m_key
-	     );
+      int t;
+      for (t=0;t<1;t++)
+	{
+	  float f=PE.getNoteFreq();
+	  int   i=f;
+	  
+	  M[t]->getADSR().reset();;	  
+	  M[t]->getVCO().reset();
+	  M[t]->getVCO().getOscillatorOne();
+	  
+	  M[t]->getVCO().setSynthFreq(i);
+	  M[t]->getADSR().setRelease(63);
+	  M[t]->getADSR().setAttack(0);
+	  //M[t]->getADSR().setRelease(P[t].getPatternElement(step).getRelease());		  
+	  //	  M[t]->getADSR().setAttack(P[t].getPatternElement(step).getAttack());		  
+	  //M[t]->getVCO().setVCOMix(P[t].getPatternElement(step).getVCOMix());	
+	}
+    }  
 
-      MonoMixer & MM0=AE.getAudioMixer().getTrack(0).getMonoMixer();
-      Machine   & M0=MM0.getInput();
-      M0.getVCO().setSynthFreq(PE.getNoteFreq());
-      M0.getADSR().reset();
-      //      M0.getVCO().reset();
-
-      printf("key pressed sleeping 10ms\n");
-      SDL_Delay(100);
-    }
+  printf("key pressed sleeping 10ms\n");
+  SDL_Delay(100);
 
 }
 
@@ -462,7 +237,6 @@ void prepare_vector_buffer()
       j=offset+i*zoom;
       if (j<=filesize_octet*2)
 	{
-	  //	  if (zoom<=1.0)
 	    y_value=file_buffer[j]/divide;
 	    /*
 	  else
@@ -483,8 +257,9 @@ void prepare_vector_buffer()
 	    */
  	}
       else
-	y_value=0;
-
+	{
+	  y_value=0;
+	}
       vector_buffer[i]=y_value;
     }
 }
@@ -563,7 +338,7 @@ int main(int argc,char ** argv)
 	}
       else 
 	{ 
-	  handle_key(); 
+	  handle_key();
 	}
     }
 
