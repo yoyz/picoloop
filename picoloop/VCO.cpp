@@ -43,11 +43,13 @@ void VCO::setVCOMix(int mix)
 void VCO::init()
 {
   printf("VCO::init() begin s1:=0x%08.8X s2:=0x%08.8X\n",s1,s2);
-  s1 = &sineosc;
+  //  s1 = &sineosc;
+  s1 = &pulseosc;
   s1->setFreq(0);
   s1->setAmplitude(32);
 
-  s2 = &pulseosc;
+  s2 = &sawosc;
+  //  s2 = &pulseosc;
   s2->setFreq(0);
   s2->setAmplitude(32);
   printf("VCO::init() end s1:=0x%08.8X s2:=0x%08.8X\n",s1,s2);
