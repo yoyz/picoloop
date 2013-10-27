@@ -239,8 +239,8 @@ void handle_key()
     }  
   
   //printf("key pressed sleeping 10ms\n");
+  redraw=true;
   SDL_Delay(10);
-
 }
 
 void prepare_vector_buffer()
@@ -251,11 +251,15 @@ void prepare_vector_buffer()
   Sint32 idx=0;
   Sint64 average=0;
   Sint64 counter=0;
+
+  file_buffer=AE.getBufferOut();
+
   for (int i = 0; i < SCREEN_WIDTH-1 ; i++)
     {
       last_j=j;
       j=offset+i*zoom;
-      if (j<=filesize_octet*2)
+      //      if (j<=filesize_octet*2)
+      if (j<=DEFAULTSAMPLES)
 	{
 	    y_value=file_buffer[j]/divide;
 	    /*
