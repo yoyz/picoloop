@@ -187,8 +187,8 @@ void handle_key()
   if (lastKey==SDLK_c) { release--; printf("release %d\n",release); }
   if (lastKey==SDLK_v) { release++; printf("release %d\n",release); }
 
-  if (lastKey==SDLK_b) { vcomix--; printf("vco %d\n",vcomix); }
-  if (lastKey==SDLK_n) { vcomix++; printf("vco %d\n",vcomix); }
+  if (lastKey==SDLK_b) { vcomix--; printf("vco %d\n",vcomix); if (vcomix<=0  ) vcomix=0;   }
+  if (lastKey==SDLK_n) { vcomix++; printf("vco %d\n",vcomix); if (vcomix>=127) vcomix=127; }
 
 
   if (lastEvent ==  SDL_KEYUP)
