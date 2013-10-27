@@ -56,7 +56,8 @@ class AudioEngine
 
   int bufferIsGenerated();
   void processBuffer();
-  
+  Sint16 * getBufferOut();
+
  private:
   int          freq;
   int          samples;

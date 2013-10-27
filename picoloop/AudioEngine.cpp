@@ -54,6 +54,11 @@ int AudioEngine::bufferIsGenerated()
   return bufferGenerated;
 }
 
+Sint16 * AudioEngine::getBufferOut()
+{
+  return buffer_out;
+}
+
 
 
 /*
