@@ -13,7 +13,8 @@ class VCO
 public:
   VCO();
   ~VCO();
-  
+
+  int checkSevenBitBoundarie(int val);
   void setSynthFreq(int sfreq);
   
   /*

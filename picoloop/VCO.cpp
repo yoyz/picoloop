@@ -24,9 +24,20 @@ VCO::~VCO()
   printf("VCO::~VCO()\n");
 }
 
+int VCO::checkSevenBitBoundarie(int val)
+{
+  if (val < 0)
+    return 0;
+  if (val > 127)
+    return 127;
+  return val;
+}
+
+
 void VCO::setVCOMix(int mix)
 {
-  vcomix=mix;
+
+  vcomix=this->checkSevenBitBoundarie(mix);
 }
 
 void VCO::init()
@@ -91,8 +102,19 @@ Sint16 VCO::tick()
   
   //sa=s1->tick()*(128/vcomix);
 
-  sa=(s1->tick()*128-vcomix)/128;
-  sb=(s2->tick()*vcomix-128)/128;
+  //vcomix=0    sa full
+  //vcomix=128  sa 0
+
+  //vcomix=0    sb 0
+  //vcomix=128  sb full
+
+  //  sa=(s1->tick()*((128-vcomix))/128);
+  //  sb=(s2->tick()*((vcomix-128))/128);
+  
+  sa=(s1->tick()*((128-vcomix))/(128));
+
+  sb=(s2->tick()*((vcomix))/(128));
+
   sc=sa+sb;
   s=sc;
   //  sb=(s2->tick())
