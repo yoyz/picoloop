@@ -6,7 +6,7 @@ SDL_GUI::SDL_GUI()
   screen=NULL;
   bmp_font=NULL;
   ttf_font=NULL;
-  boxSize=30;
+  boxSize=31;
   boxOffset=20;
 
   message=NULL;
@@ -257,25 +257,25 @@ void SDL_GUI::smallBoxNumber(int n,int x,int y,Uint32 c)
     {
       //case 0: this->box(boxOffset+(0*boxSize)+((x*((boxSize*100)/(x+1)))/100),boxOffset,boxSize/4,boxSize/4,c); break;
       //case 0: this->box(boxOffset+(0*boxSize)+((4*x)/boxSize),boxOffset,boxSize/4,boxSize/4,c); break;
-    case 0:  this->fullBox(boxOffset+(0*boxSize)+0+ ((4*x)/boxSize),boxOffset+(0*boxSize+0)+((4*y)/boxSize),boxSize/4,boxSize/4,c); break;
-    case 1:  this->fullBox(boxOffset+(1*boxSize)+10+((4*x)/boxSize),boxOffset+(0*boxSize+0)+((4*y)/boxSize),boxSize/4,boxSize/4,c); break;
-    case 2:  this->fullBox(boxOffset+(2*boxSize)+20+((4*x)/boxSize),boxOffset+(0*boxSize+0)+((4*y)/boxSize),boxSize/4,boxSize/4,c); break;
-    case 3:  this->fullBox(boxOffset+(3*boxSize)+30+((4*x)/boxSize),boxOffset+(0*boxSize+0)+((4*y)/boxSize),boxSize/4,boxSize/4,c); break;
+    case 0:  this->fullBox(boxOffset+(0*boxSize)+0+ ((6*x)/boxSize),boxOffset+(0*boxSize+0)+((6*y)/boxSize),boxSize/4,boxSize/4,c); break;
+    case 1:  this->fullBox(boxOffset+(1*boxSize)+10+((6*x)/boxSize),boxOffset+(0*boxSize+0)+((6*y)/boxSize),boxSize/4,boxSize/4,c); break;
+    case 2:  this->fullBox(boxOffset+(2*boxSize)+20+((6*x)/boxSize),boxOffset+(0*boxSize+0)+((6*y)/boxSize),boxSize/4,boxSize/4,c); break;
+    case 3:  this->fullBox(boxOffset+(3*boxSize)+30+((6*x)/boxSize),boxOffset+(0*boxSize+0)+((6*y)/boxSize),boxSize/4,boxSize/4,c); break;
 
-    case 4:  this->fullBox(boxOffset+(0*boxSize)+0+ ((4*x)/boxSize),boxOffset+(1*boxSize+10)+((4*y)/boxSize),boxSize/4,boxSize/4,c); break;
-    case 5:  this->fullBox(boxOffset+(1*boxSize)+10+((4*x)/boxSize),boxOffset+(1*boxSize+10)+((4*y)/boxSize),boxSize/4,boxSize/4,c); break;
-    case 6:  this->fullBox(boxOffset+(2*boxSize)+20+((4*x)/boxSize),boxOffset+(1*boxSize+10)+((4*y)/boxSize),boxSize/4,boxSize/4,c); break;
-    case 7:  this->fullBox(boxOffset+(3*boxSize)+30+((4*x)/boxSize),boxOffset+(1*boxSize+10)+((4*y)/boxSize),boxSize/4,boxSize/4,c); break;
+    case 4:  this->fullBox(boxOffset+(0*boxSize)+0+ ((6*x)/boxSize),boxOffset+(1*boxSize+10)+((6*y)/boxSize),boxSize/4,boxSize/4,c); break;
+    case 5:  this->fullBox(boxOffset+(1*boxSize)+10+((6*x)/boxSize),boxOffset+(1*boxSize+10)+((6*y)/boxSize),boxSize/4,boxSize/4,c); break;
+    case 6:  this->fullBox(boxOffset+(2*boxSize)+20+((6*x)/boxSize),boxOffset+(1*boxSize+10)+((6*y)/boxSize),boxSize/4,boxSize/4,c); break;
+    case 7:  this->fullBox(boxOffset+(3*boxSize)+30+((6*x)/boxSize),boxOffset+(1*boxSize+10)+((6*y)/boxSize),boxSize/4,boxSize/4,c); break;
 
-    case 8:  this->fullBox(boxOffset+(0*boxSize)+0+ ((4*x)/boxSize),boxOffset+(2*boxSize+20)+((4*y)/boxSize),boxSize/4,boxSize/4,c); break;
-    case 9:  this->fullBox(boxOffset+(1*boxSize)+10+((4*x)/boxSize),boxOffset+(2*boxSize+20)+((4*y)/boxSize),boxSize/4,boxSize/4,c); break;
-    case 10: this->fullBox(boxOffset+(2*boxSize)+20+((4*x)/boxSize),boxOffset+(2*boxSize+20)+((4*y)/boxSize),boxSize/4,boxSize/4,c); break;
-    case 11: this->fullBox(boxOffset+(3*boxSize)+30+((4*x)/boxSize),boxOffset+(2*boxSize+20)+((4*y)/boxSize),boxSize/4,boxSize/4,c); break;
+    case 8:  this->fullBox(boxOffset+(0*boxSize)+0+ ((6*x)/boxSize),boxOffset+(2*boxSize+20)+((6*y)/boxSize),boxSize/4,boxSize/4,c); break;
+    case 9:  this->fullBox(boxOffset+(1*boxSize)+10+((6*x)/boxSize),boxOffset+(2*boxSize+20)+((6*y)/boxSize),boxSize/4,boxSize/4,c); break;
+    case 10: this->fullBox(boxOffset+(2*boxSize)+20+((6*x)/boxSize),boxOffset+(2*boxSize+20)+((6*y)/boxSize),boxSize/4,boxSize/4,c); break;
+    case 11: this->fullBox(boxOffset+(3*boxSize)+30+((6*x)/boxSize),boxOffset+(2*boxSize+20)+((6*y)/boxSize),boxSize/4,boxSize/4,c); break;
 
-    case 12: this->fullBox(boxOffset+(0*boxSize)+0+ ((4*x)/boxSize),boxOffset+(3*boxSize+30)+((4*y)/boxSize),boxSize/4,boxSize/4,c); break;
-    case 13: this->fullBox(boxOffset+(1*boxSize)+10+((4*x)/boxSize),boxOffset+(3*boxSize+30)+((4*y)/boxSize),boxSize/4,boxSize/4,c); break;
-    case 14: this->fullBox(boxOffset+(2*boxSize)+20+((4*x)/boxSize),boxOffset+(3*boxSize+30)+((4*y)/boxSize),boxSize/4,boxSize/4,c); break;
-    case 15: this->fullBox(boxOffset+(3*boxSize)+30+((4*x)/boxSize),boxOffset+(3*boxSize+30)+((4*y)/boxSize),boxSize/4,boxSize/4,c); break;
+    case 12: this->fullBox(boxOffset+(0*boxSize)+0+ ((6*x)/boxSize),boxOffset+(3*boxSize+30)+((6*y)/boxSize),boxSize/4,boxSize/4,c); break;
+    case 13: this->fullBox(boxOffset+(1*boxSize)+10+((6*x)/boxSize),boxOffset+(3*boxSize+30)+((6*y)/boxSize),boxSize/4,boxSize/4,c); break;
+    case 14: this->fullBox(boxOffset+(2*boxSize)+20+((6*x)/boxSize),boxOffset+(3*boxSize+30)+((6*y)/boxSize),boxSize/4,boxSize/4,c); break;
+    case 15: this->fullBox(boxOffset+(3*boxSize)+30+((6*x)/boxSize),boxOffset+(3*boxSize+30)+((6*y)/boxSize),boxSize/4,boxSize/4,c); break;
 
     }  
 }
