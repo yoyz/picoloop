@@ -139,7 +139,7 @@ void handle_key()
       redraw=true;
       printf("key down octave:%d\n",octave);
     }
-
+  /*
   if(lastKey==SDLK_LEFT)
     {
       offset=offset--;
@@ -152,7 +152,9 @@ void handle_key()
       redraw=true;
       printf("key left\n");            
     }
+  */
 
+  /*
   if (lastKey==SDLK_RIGHT)
     {
       offset=offset++;
@@ -164,6 +166,7 @@ void handle_key()
       redraw=true;
       printf("key right\n");      
     }
+  */
 
   if(lastKey==SDLK_PAGEUP)
     {
@@ -353,17 +356,9 @@ int main(int argc,char ** argv)
   quit = 0;
   while(!quit)
     {
-      if (redraw==true)
-	{	  
-	  prepare_vector_buffer();
-	  draw_screen();
-	  quit=0;
-	  //SDL_Delay(100);
-	}
-      else 
-	{ 
-	  handle_key();
-	}
+      prepare_vector_buffer();
+      draw_screen();
+      handle_key();
     }
 
   return 0;
