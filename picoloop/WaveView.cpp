@@ -374,7 +374,24 @@ void draw_screen()
       color=vector_buffer[i];
       SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, color, 0, 128));      
     }
-  
+
+  //Draw Min lower bar
+  rect.x=0;
+  rect.w=SCREEN_WIDTH;
+  rect.y=((SCREEN_HEIGHT/2)+(float)(16384.0/divide));
+  rect.h=1;
+  SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, color, 0, 128));      
+
+
+  //Draw Max upper bar
+  rect.x=0;
+  rect.w=SCREEN_WIDTH;
+  rect.y=((SCREEN_HEIGHT/2)-(float)(16384.0/divide));
+  rect.h=1;
+  SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, color, 0, 128));      
+
+
+
   SDL_Flip(screen);
   SDL_Delay(1);
   redraw=false;  
