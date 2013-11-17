@@ -44,7 +44,7 @@ Sint16 PulseOscillator::tick()
   //s=rand()*4;
   //s=amplitude*127+rand();
   //  s=amplitude*96+randomize;
-  s=amplitude*96;
+  s=amplitude*255;
   if (s<0) s=s*-1;
   
   //printf("s:%d\n",s);
