@@ -59,7 +59,7 @@ void VCO::setOscillator(int oscillator_number,int oscillator_type)
       if (oscillator_type%3==0) s2=&sineosc;
       if (oscillator_type%3==1) s2=&sawosc;
       if (oscillator_type%3==2) s2=&pulseosc;
-      s2->
+      //s2->set
     }
 }
 
