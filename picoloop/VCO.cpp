@@ -6,18 +6,24 @@ VCO::VCO() : sineosc(), sawosc(), fuzzypulseosc(), pulseosc()
   printf("VCO::VCO()\n");
   s1=NULL;
   s2=NULL;
-  //  s1 = &sineosc;
-  //  s1->setFreq(0);
-  //  s1->setAmplitude(32);
-  /*
-  s2 = &sineosc;
-  s2->setFreq(0);
-  s2->setAmplitude(32);
-  */
-  //  s1=NULL;
-  //  s2=NULL;
   vcomix=64;
 }
+
+void VCO::init()
+{
+  printf("VCO::init() begin s1:=0x%08.8X s2:=0x%08.8X\n",s1,s2);
+  //  s1 = &sineosc;
+  s1 = &pulseosc;
+  s1->setFreq(0);
+  s1->setAmplitude(32);
+
+  s2 = &sawosc;
+  //  s2 = &pulseosc;
+  s2->setFreq(0);
+  s2->setAmplitude(32);
+  printf("VCO::init() end s1:=0x%08.8X s2:=0x%08.8X\n",s1,s2);
+}
+
 
 VCO::~VCO()
 {
@@ -40,20 +46,23 @@ void VCO::setVCOMix(int mix)
   vcomix=this->checkSevenBitBoundarie(mix);
 }
 
-void VCO::init()
+void VCO::setOscillator(int oscillator_number,int oscillator_type)
 {
-  printf("VCO::init() begin s1:=0x%08.8X s2:=0x%08.8X\n",s1,s2);
-  //  s1 = &sineosc;
-  s1 = &pulseosc;
-  s1->setFreq(0);
-  s1->setAmplitude(32);
-
-  s2 = &sawosc;
-  //  s2 = &pulseosc;
-  s2->setFreq(0);
-  s2->setAmplitude(32);
-  printf("VCO::init() end s1:=0x%08.8X s2:=0x%08.8X\n",s1,s2);
+  if (oscillator_number %2==0)
+    {
+      if (oscillator_type%3==0) s1=&sineosc;
+      if (oscillator_type%3==1) s1=&sawosc;
+      if (oscillator_type%3==2) s1=&pulseosc;
+    }
+  if (oscillator_number %2==1)
+    {
+      if (oscillator_type%3==0) s2=&sineosc;
+      if (oscillator_type%3==1) s2=&sawosc;
+      if (oscillator_type%3==2) s2=&pulseosc;
+      s2->
+    }
 }
+
 
 
 void VCO::reset()

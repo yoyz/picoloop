@@ -16,7 +16,7 @@ public:
 
   int checkSevenBitBoundarie(int val);
   void setSynthFreq(int sfreq);
-  
+  void setOscillator(int oscillator_number,int oscillator_type);
   /*
   void setSineOsc();
   void setSawOsc();
