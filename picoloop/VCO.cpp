@@ -48,6 +48,9 @@ void VCO::setVCOMix(int mix)
 
 void VCO::setOscillator(int oscillator_number,int oscillator_type)
 {
+  int s1freq=s1->getFreq();
+  int s2freq=s2->getFreq();
+
   if (oscillator_number %2==0)
     {
       if (oscillator_type%3==0) s1=&sineosc;
@@ -59,8 +62,9 @@ void VCO::setOscillator(int oscillator_number,int oscillator_type)
       if (oscillator_type%3==0) s2=&sineosc;
       if (oscillator_type%3==1) s2=&sawosc;
       if (oscillator_type%3==2) s2=&pulseosc;
-      //s2->set
     }
+  s1->setFreq(s1freq);
+  s2->setFreq(s2freq);
 }
 
 
