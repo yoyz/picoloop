@@ -17,6 +17,8 @@ PatternElement::PatternElement()
   decay=127;
   sustain=127;
   release=8;
+  oscOneType=SAW;
+  oscTwoType=PULSE;
 }
 
 PatternElement::~PatternElement()
@@ -36,7 +38,31 @@ void PatternElement::init()
   decay=127;
   sustain=127;
   release=8;
+
+  oscOneType=SAW;
+  oscTwoType=PULSE;
 }
+
+int PatternElement::getOscillatorOneType()
+{
+  return oscOneType;
+}
+
+int PatternElement::getOscillatorTwoType()
+{
+  return oscTwoType;
+}
+
+void PatternElement::setOscillatorOneType(int type)
+{
+  oscOneType=type%3;
+}
+
+void PatternElement::setOscillatorTwoType(int type)
+{
+  oscTwoType=type%3;
+}
+
 
 int PatternElement::getNote()
 {
@@ -138,6 +164,35 @@ string PatternElement::getStr()
 void PatternElement::print()
 {
   cout << getStr() << "\n";
+}
+
+char * PatternElement::getOscOneTypeCharStar()
+{
+  char * str_sine  = "SINE ";
+  char * str_saw   = "SAW  ";
+  char * str_pulse = "PULSE";
+  switch (oscOneType)
+    {
+    case SINE:  return str_sine;  break;
+    case SAW:   return str_saw;   break; 
+    case PULSE: return str_pulse; break;      
+    }
+  return str_sine;
+}
+
+
+char * PatternElement::getOscTwoTypeCharStar()
+{
+  char * str_sine  = "SINE ";
+  char * str_saw   = "SAW  ";
+  char * str_pulse = "PULSE";
+  switch (oscTwoType)
+    {
+    case SINE:  return str_sine;  break;
+    case SAW:   return str_saw;   break; 
+    case PULSE: return str_pulse; break;      
+    }
+  return str_sine;
 }
 
 

@@ -6,6 +6,13 @@ using namespace std;
 #ifndef __PATTERNELEMENT__
 #define __PATTERNELEMENT__
 
+enum 
+  {
+    SINE,
+    SAW,
+    PULSE,
+  };
+
 class PatternElement
 {
 public:
@@ -16,6 +23,8 @@ public:
   int    getNote();
   float  getNoteFreq();
   char * getNoteCharStar();
+  char * getOscOneTypeCharStar();
+  char * getOscTwoTypeCharStar();
   bool   setTrig(bool Trig);
   bool   getTrig();
 
@@ -30,7 +39,11 @@ public:
   int    getRelease();
   void   setRelease(int rls);
 
+  int    getOscillatorOneType();
+  int    getOscillatorTwoType();
   
+  void   setOscillatorOneType(int type);
+  void   setOscillatorTwoType(int type);
 
   bool   setChannel(int Channel);
   bool   setKeyValue(string key, string value);
@@ -49,6 +62,9 @@ private:
   int  decay;
   int  sustain;
   int  release;
+
+  int oscOneType;
+  int oscTwoType;
   
 };
 
