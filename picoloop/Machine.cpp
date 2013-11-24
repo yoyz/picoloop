@@ -36,7 +36,7 @@ Machine::~Machine()
 
 void Machine::init()
 {
-  adsr.setVCO(&vco);
+  adsr.setInput(&vco);
 }
 
 
