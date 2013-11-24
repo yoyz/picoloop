@@ -63,6 +63,8 @@ int note=0;
 int attack=0;
 int release=0;
 int vcomix=0;
+int osconetype=0;
+int osctwotype=0;
 
 int loadsave_cursor_x=0; // index in the load/save menu
 int loadsave_cursor_y=0; // index in the load/save menu
@@ -162,6 +164,8 @@ void display_board()
     { SG.drawBoxNumber(i,BOX_COLOR); }
      
 
+
+
   // Attack/Release
   if (menu_cursor==AD)
     {
@@ -216,7 +220,7 @@ void display_board()
 		SG.drawBoxNumber(step,STEP_COLOR);  
 
 	      if (P[cty].getPatternElement(i).getTrig())
-		SG.drawTTFTextNumber(i,P[cty].getPatternElement(i).getNoteCharStar());
+		SG.drawTTFTextNumberFirstLine(i,P[cty].getPatternElement(i).getNoteCharStar());
 	    }
 	}
       // Note Cursor
@@ -273,20 +277,56 @@ void display_board()
 	  //	  if (P[cty].getPatternElement(i).getTrig())
 	  //	    SG.drawBoxNumber(i,TRIG_COLOR);
 	  // AdsR
-	  SG.smallBoxNumber(i,P[cty].getPatternElement(i).getVCOMix(),0,SMALLBOX_COLOR);
+	  if (P[cty].getPatternElement(i).getTrig())
+	    {	      
+	    if (P[cty].getPatternElement(i).getTrig())
+	      SG.drawBoxNumber(i,NOTE_COLOR);
+	      SG.smallBoxNumber(i,P[cty].getPatternElement(i).getVCOMix(),0,SMALLBOX_COLOR);
+	      if (i==cursor) SG.smallBoxNumber(i,P[cty].getPatternElement(i).getVCOMix(),0,CURSOR_COLOR);
+	      if (i==step) SG.smallBoxNumber(i,P[cty].getPatternElement(i).getVCOMix(),0,STEP_COLOR);
+	    }
 	  //	  SG.smallBoxNumber(i,0,P[cty].getPatternElement(i).getAttack(),SMALLBOX_COLOR);      
+	  else
+	    {
+	      /*
+	      if (i==cursor) SG.drawBoxNumber(cursor,CURSOR_COLOR);
+	      if (i=step)    SG.drawBoxNumber(step,STEP_COLOR);  
+
+	      if (i==cursor) SG.smallBoxNumber(i,P[cty].getPatternElement(i).getVCOMix(),0,CURSOR_COLOR);
+	      if (i==step)   SG.smallBoxNumber(i,P[cty].getPatternElement(i).getVCOMix(),0,STEP_COLOR);
+	      */
+	    }
 	}
       // Cursor & step postion
-      SG.drawBoxNumber(cursor,CURSOR_COLOR);
-      SG.smallBoxNumber(cursor,P[cty].getPatternElement(cursor).getVCOMix(),0,SMALLBOX_COLOR);
+      //      SG.drawBoxNumber(cursor,CURSOR_COLOR);
+      //      SG.smallBoxNumber(cursor,P[cty].getPatternElement(cursor).getVCOMix(),0,SMALLBOX_COLOR);
       //      SG.smallBoxNumber(cursor,0,P[cty].getPatternElement(cursor).getAttack(),SMALLBOX_COLOR); 
       
-      SG.drawBoxNumber(step,STEP_COLOR);  
-      SG.smallBoxNumber(step,P[cty].getPatternElement(step).getVCOMix(),0,SMALLBOX_COLOR);
+      //      SG.drawBoxNumber(step,STEP_COLOR);  
+      //      SG.smallBoxNumber(step,P[cty].getPatternElement(step).getVCOMix(),0,SMALLBOX_COLOR);
       //      SG.smallBoxNumber(step,0,P[cty].getPatternElement(step).getAttack(),SMALLBOX_COLOR); 
     }
+  
+  if (menu_cursor==OSC)
+    {
+      for (i=0;i<16;i++)
+	{
+	  if (P[cty].getPatternElement(i).getTrig())
+	    {
+	      SG.drawBoxNumber(i,TRIG_COLOR);
+	      if (i==cursor)       SG.drawBoxNumber(cursor,CURSOR_COLOR);
+	      if (i==step)         SG.drawBoxNumber(step,STEP_COLOR);  
+	      SG.drawTTFTextNumberFirstLine(i, P[cty].getPatternElement(i).getOscOneTypeCharStar());
+	      SG.drawTTFTextNumberSecondLine(i,P[cty].getPatternElement(i).getOscTwoTypeCharStar());
+	    }
+	  else
+	    {
+	      if (i==cursor)SG.drawBoxNumber(cursor,CURSOR_COLOR);
+	      if (i==step)  SG.drawBoxNumber(step,STEP_COLOR);  
+	    }
 
-
+	}
+    }
 
 
   SG.refresh();
@@ -425,7 +465,10 @@ void handle_key()
   
   //MOVE the cursor : LEFT UP DOWN RIGHT   
   if ((menu==MENU_OFF && menu_cursor==AD    ||
-       menu==MENU_OFF && menu_cursor==NOTE) &&
+       menu==MENU_OFF && menu_cursor==NOTE  ||
+       menu==MENU_OFF && menu_cursor==VCO   ||
+       menu==MENU_OFF && menu_cursor==OSC
+       ) &&
       !keyState[BUTTON_B]                   &&
       !keyState[BUTTON_A]
       )
@@ -599,57 +642,12 @@ void handle_key()
 
     }
 
-  // VCO Menu
-  // Move cursor
-  if (menu        == MENU_OFF && 
-      menu_cursor == VCO      &&
-      !keyState[BUTTON_A]
-      )
-    {
-      //if(keyState[BUTTON_UP] && ! keyState[BUTTON_A])
-      if(keyState[BUTTON_UP])
-	{
-	  if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%64==0)
-	    cursor=cursor-4;
-	  if (cursor < 0) cursor=cursor +16;
-	  printf("key down : up \n");
-	  dirty_graphic=1;
-	}
-      
-      if(keyState[BUTTON_DOWN])
-	{
-	  if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%64==0)
-	    cursor=( cursor+4 ) %16;
-	  printf("key down : down\n");
-	  dirty_graphic=1;
-	}
-      
-      if(keyState[BUTTON_LEFT])
-	{
-	  if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%64==0)
-	    cursor--;
-	  
-	  if (cursor<0) cursor=15;
-	  printf("key left\n");            
-	  dirty_graphic=1;
-	}
-      
-      if (keyState[BUTTON_RIGHT])
-	{
-	  if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%64==0)
-	    cursor++;
-	  if (cursor>15) cursor=0;
-	  printf("key right\n");      
-	  dirty_graphic=1;
-	}
-    }
-      
 
   // VCO Menu
   // Change Value
   if (menu        == MENU_OFF && 
       menu_cursor == VCO      &&
-      keyState[BUTTON_A]
+      keyState[BUTTON_B]
       )
     {
       if (keyState[BUTTON_LEFT]) 
@@ -669,6 +667,29 @@ void handle_key()
 	  { attack=-1;  	  dirty_graphic=1;}
     }
   
+
+  // change oscilltor one and two type
+  if (menu        == MENU_OFF && 
+      menu_cursor == OSC )
+    {
+      if (keyState[BUTTON_LEFT]) 
+	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%3==0) 
+	  { osconetype=-1; 	  dirty_graphic=1;}
+      
+      if (keyState[BUTTON_RIGHT]) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%4==0) 
+	  { osconetype=1;  	  dirty_graphic=1;}
+      
+      if (keyState[BUTTON_UP]) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%64==0) 
+	  { osctwotype=1;   	  dirty_graphic=1;}
+      
+      if (keyState[BUTTON_DOWN])
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%64==0) 
+	  { osctwotype=-1;  	  dirty_graphic=1;}
+    }
+
+
   int delay=1;
   //printf("sleeping %dms\n",delay);
   SDL_Delay(delay);  
@@ -753,6 +774,8 @@ int seq_update()
 	  M[t]->getADSR().setRelease(P[t].getPatternElement(step).getRelease());		  
 	  M[t]->getADSR().setAttack(P[t].getPatternElement(step).getAttack());		  
 	  M[t]->getVCO().setVCOMix(P[t].getPatternElement(step).getVCOMix());		  
+	  M[t]->getVCO().setOscillator(0,P[t].getPatternElement(step).getOscillatorOneType());
+	  M[t]->getVCO().setOscillator(1,P[t].getPatternElement(step).getOscillatorTwoType());
 	}
       else
 	{
@@ -858,6 +881,24 @@ int seq()
 	  
 	}
         
+      if (osconetype!=0)
+	{
+	  P[cty].getPatternElement(cursor).setOscillatorOneType(P[cty].getPatternElement(cursor).getOscillatorOneType()+osconetype);
+	  osconetype=0;
+	  if (debug)
+	    printf("[osconetype:%d]\n",P[cty].getPatternElement(cursor).getOscillatorOneType());	  
+	}
+
+      if (osctwotype!=0)
+	{
+	  P[cty].getPatternElement(cursor).setOscillatorTwoType(P[cty].getPatternElement(cursor).getOscillatorTwoType()+osctwotype);
+	  osctwotype=0;
+	  if (debug)
+	    printf("[osctwotype:%d]\n",P[cty].getPatternElement(cursor).getOscillatorTwoType());	  
+	}
+
+
+
       // Change Note
       if (note!=0)
 	{ 
