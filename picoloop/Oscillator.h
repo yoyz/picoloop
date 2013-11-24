@@ -18,6 +18,7 @@ class Oscillator
   ~Oscillator();
   void   setAmplitude(int amp);
   void   setFreq(int freq);
+  int    getFreq();
   void   reset();
   //virtual Sint16 tick();
   

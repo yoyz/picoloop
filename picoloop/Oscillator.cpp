@@ -26,6 +26,11 @@ void Oscillator::reset()
 }
 
 
+int Oscillator::getFreq()
+{
+  return frequency;
+}
+
 void Oscillator::setFreq(int freq)
 {
   if (freq==frequency)
