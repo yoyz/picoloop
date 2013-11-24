@@ -320,9 +320,22 @@ void handle_key()
     {
       switch (menu)
 	{
-	case MENU_OFF:      menu=MENU_ON_PAGE1; break;
-	case MENU_ON_PAGE1: menu=MENU_OFF;      break;
-	  //	case MENU_ON_PAGE1: menu=MENU_ON_PAGE2; menu_cursor=+4; break;
+	case MENU_OFF:      
+	  menu=MENU_ON_PAGE1;                 
+	  break;
+
+	case MENU_ON_PAGE1: 
+	  menu=MENU_ON_PAGE2; 
+	  menu_cursor+=4; 
+	  break;
+
+	case MENU_ON_PAGE2: 
+	  menu=MENU_ON_PAGE1; 
+	  menu_cursor-=4; 
+	  break;
+
+	  //	case MENU_ON_PAGE1: menu=MENU_OFF;      break;
+	  //case MENU_ON_PAGE1: menu=MENU_ON_PAGE2; menu_cursor=+4; break;
 	  //case MENU_ON_PAGE2: menu=MENU_ON_PAGE1; menu_cursor=-4; break;
 	}
       dirty_graphic=1;
@@ -330,7 +343,12 @@ void handle_key()
       printf("[global menu : %d]\n",menu);
     }
 
-
+  //leave menu mode
+  if (lastKey      ==  BUTTON_B       && 
+      lastEvent    ==  SDL_KEYUP      &&
+      (menu        ==  MENU_ON_PAGE1  ||
+       menu        ==  MENU_ON_PAGE2))
+    menu=MENU_OFF;
   
   if (lastKey     ==  BUTTON_START  && 
       lastEvent   ==  SDL_KEYUP     && 
@@ -345,26 +363,30 @@ void handle_key()
   
   //Menu Mode 
   //Move MENU_CURSOR
-  if (menu==MENU_ON_PAGE1)
+  if (menu==MENU_ON_PAGE1 ||
+      menu==MENU_ON_PAGE2)
     {
       if(keyState[BUTTON_LEFT]) 
 	{
-	  if (keyRepeat[BUTTON_LEFT]==1 || 
-	      keyRepeat[BUTTON_LEFT]%64==0)
+	  if (keyRepeat[BUTTON_LEFT]    == 1 || 
+	      keyRepeat[BUTTON_LEFT]%64 == 0)
 	    menu_cursor--;
-	  if (menu_cursor<0) menu_cursor=3;
+	  if (menu_cursor<AD  && menu==MENU_ON_PAGE1) menu_cursor=VCO;
+	  if (menu_cursor<OSC && menu==MENU_ON_PAGE2) menu_cursor=FX;
 	  dirty_graphic=1;
-	  printf("[menu_cursor:%d]\n",menu_cursor);
+	  printf("\t\t[menu_cursor:%d]\n",menu_cursor);
 	  printf("key left\n");            
 	}      
       
       if(keyState[BUTTON_RIGHT])
 	{
-	  if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%64==0)
+	  if (keyRepeat[BUTTON_RIGHT]    == 1 || 
+	      keyRepeat[BUTTON_RIGHT]%64 == 0)
 	    menu_cursor++;
-	  if (menu_cursor>3) menu_cursor=0;
+	  if (menu_cursor>VCO && menu==MENU_ON_PAGE1) menu_cursor=AD;
+	  if (menu_cursor>FX  && menu==MENU_ON_PAGE2) menu_cursor=OSC;
 	  dirty_graphic=1;
-	  printf("[menu_cursor:%d]\n",menu_cursor);
+	  printf("\t\t[menu_cursor:%d]\n",menu_cursor);
 	  printf("key right\n");            
 	}
       
