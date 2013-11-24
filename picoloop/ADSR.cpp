@@ -82,7 +82,7 @@ void ADSR::setOscillator(Oscillator * osc)
 */
 
  //void ADSR::setOscillator(VCO * vcoosc)
-void ADSR::setVCO(VCO * vcoosc)
+void ADSR::setInput(VCO * vcoosc)
 {
   //  exit(0);
   printf("ADSR::setVCO(0x%08.8X\n",vcoosc);
@@ -136,13 +136,16 @@ Sint16 ADSR::tick()
 
   
   //(size-sample_num)
+
+  //We are in the attack phase
   if (sample_num<size_attack)
     {
       f1=s;
       index_inverse=sample_num;
-      f2=f1*((float)(index_inverse)/(size_attack));
-      
+      f2=f1*((float)(index_inverse)/(size_attack));      
     }
+
+  //We are in the release phase
   if (sample_num>size_attack)
     {
       f1=s;
@@ -152,10 +155,10 @@ Sint16 ADSR::tick()
       if (sample_num>size_attack)
 	f2=f1*((float)(index_inverse)/(size_release));
       //  printf("size:%d sample_num:%d s:%d f1:%f f2:%f\n",size,sample_num,s,f1,f2);
-      
-     
     }
   s=f2;
+
+
   //if (debug) fprintf(stderr,"end Sint16 ADSR::tick()\n");
   return s;  
 }

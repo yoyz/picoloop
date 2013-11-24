@@ -17,7 +17,7 @@ class ADSR
   ~ADSR();
   //  void setInput(Oscillator * S);
   void init();
-  void setVCO(VCO * vcoosc);
+  void setInput(VCO * vcoosc);
 
   void setAttack(int atk);
   void setDecay(int dc);
