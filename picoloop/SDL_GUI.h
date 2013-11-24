@@ -5,7 +5,6 @@
 #include <string>
 
 #include "Master.h"
-
 #ifndef __SDL_GUI__
 #define __SDL_GUI__
 
@@ -43,7 +42,9 @@ class SDL_GUI
 
   int  openTTFFont();
   int  guiTTFText(int x,int y,const char *txt);
-  void drawTTFTextNumber(int n,char *txt);
+  void drawTTFTextNumberFirstLine(int n,char *txt);
+  void drawTTFTextNumberSecondLine(int n,char *txt);
+  //  void drawTTFTextNumber(int n,char *txt);
 
   void refresh();
   void clearScreen();

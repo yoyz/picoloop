@@ -310,33 +310,90 @@ void SDL_GUI::drawBoxNumber(int n, Uint32 c)
     }               
 }
 
-
+/*
 void SDL_GUI::drawTTFTextNumber(int n,char * str)
 {
   switch(n)
     {
-    case 0:  this->guiTTFText(boxOffset+(0*boxSize)+0, boxOffset,str); break;
+    case 0:  this->guiTTFText(boxOffset+(0*boxSize)+0 ,boxOffset,str); break;
     case 1:  this->guiTTFText(boxOffset+(1*boxSize)+10,boxOffset,str); break;
     case 2:  this->guiTTFText(boxOffset+(2*boxSize)+20,boxOffset,str); break;
     case 3:  this->guiTTFText(boxOffset+(3*boxSize)+30,boxOffset,str); break;
 
-    case 4:  this->guiTTFText(boxOffset+(0*boxSize)+0, boxOffset+(1*boxSize+10),str); break;
+    case 4:  this->guiTTFText(boxOffset+(0*boxSize)+0 ,boxOffset+(1*boxSize+10),str); break;
     case 5:  this->guiTTFText(boxOffset+(1*boxSize)+10,boxOffset+(1*boxSize+10),str); break;
     case 6:  this->guiTTFText(boxOffset+(2*boxSize)+20,boxOffset+(1*boxSize+10),str); break;
     case 7:  this->guiTTFText(boxOffset+(3*boxSize)+30,boxOffset+(1*boxSize+10),str); break;
 
-    case 8:  this->guiTTFText(boxOffset+(0*boxSize)+0, boxOffset+(2*boxSize+20),str); break;
+    case 8:  this->guiTTFText(boxOffset+(0*boxSize)+0 ,boxOffset+(2*boxSize+20),str); break;
     case 9:  this->guiTTFText(boxOffset+(1*boxSize)+10,boxOffset+(2*boxSize+20),str); break;
     case 10: this->guiTTFText(boxOffset+(2*boxSize)+20,boxOffset+(2*boxSize+20),str); break;
     case 11: this->guiTTFText(boxOffset+(3*boxSize)+30,boxOffset+(2*boxSize+20),str); break;
       
-    case 12: this->guiTTFText(boxOffset+(0*boxSize)+0, boxOffset+(3*boxSize+30),str); break;
+    case 12: this->guiTTFText(boxOffset+(0*boxSize)+0 ,boxOffset+(3*boxSize+30),str); break;
     case 13: this->guiTTFText(boxOffset+(1*boxSize)+10,boxOffset+(3*boxSize+30),str); break;
     case 14: this->guiTTFText(boxOffset+(2*boxSize)+20,boxOffset+(3*boxSize+30),str); break;
     case 15: this->guiTTFText(boxOffset+(3*boxSize)+30,boxOffset+(3*boxSize+30),str); break;
 
     }
 }
+*/
+
+void SDL_GUI::drawTTFTextNumberFirstLine(int n,char * str)
+{
+  switch(n)
+    {
+    case 0:  this->guiTTFText(boxOffset+(0*boxSize)+0 ,boxOffset,str); break;
+    case 1:  this->guiTTFText(boxOffset+(1*boxSize)+10,boxOffset,str); break;
+    case 2:  this->guiTTFText(boxOffset+(2*boxSize)+20,boxOffset,str); break;
+    case 3:  this->guiTTFText(boxOffset+(3*boxSize)+30,boxOffset,str); break;
+
+    case 4:  this->guiTTFText(boxOffset+(0*boxSize)+0 ,boxOffset+(1*boxSize+10),str); break;
+    case 5:  this->guiTTFText(boxOffset+(1*boxSize)+10,boxOffset+(1*boxSize+10),str); break;
+    case 6:  this->guiTTFText(boxOffset+(2*boxSize)+20,boxOffset+(1*boxSize+10),str); break;
+    case 7:  this->guiTTFText(boxOffset+(3*boxSize)+30,boxOffset+(1*boxSize+10),str); break;
+
+    case 8:  this->guiTTFText(boxOffset+(0*boxSize)+0 ,boxOffset+(2*boxSize+20),str); break;
+    case 9:  this->guiTTFText(boxOffset+(1*boxSize)+10,boxOffset+(2*boxSize+20),str); break;
+    case 10: this->guiTTFText(boxOffset+(2*boxSize)+20,boxOffset+(2*boxSize+20),str); break;
+    case 11: this->guiTTFText(boxOffset+(3*boxSize)+30,boxOffset+(2*boxSize+20),str); break;
+      
+    case 12: this->guiTTFText(boxOffset+(0*boxSize)+0 ,boxOffset+(3*boxSize+30),str); break;
+    case 13: this->guiTTFText(boxOffset+(1*boxSize)+10,boxOffset+(3*boxSize+30),str); break;
+    case 14: this->guiTTFText(boxOffset+(2*boxSize)+20,boxOffset+(3*boxSize+30),str); break;
+    case 15: this->guiTTFText(boxOffset+(3*boxSize)+30,boxOffset+(3*boxSize+30),str); break;
+
+    }
+}
+
+void SDL_GUI::drawTTFTextNumberSecondLine(int n,char * str)
+{
+  switch(n)
+    {
+    case 0:  this->guiTTFText(boxOffset+(0*boxSize)+0 ,boxOffset+10            ,str); break;
+    case 1:  this->guiTTFText(boxOffset+(1*boxSize)+10,boxOffset+10            ,str); break;
+    case 2:  this->guiTTFText(boxOffset+(2*boxSize)+20,boxOffset+10            ,str); break;
+    case 3:  this->guiTTFText(boxOffset+(3*boxSize)+30,boxOffset+10            ,str); break;
+
+    case 4:  this->guiTTFText(boxOffset+(0*boxSize)+0 ,boxOffset+(1*boxSize+10)+10,str); break;
+    case 5:  this->guiTTFText(boxOffset+(1*boxSize)+10,boxOffset+(1*boxSize+10)+10,str); break;
+    case 6:  this->guiTTFText(boxOffset+(2*boxSize)+20,boxOffset+(1*boxSize+10)+10,str); break;
+    case 7:  this->guiTTFText(boxOffset+(3*boxSize)+30,boxOffset+(1*boxSize+10)+10,str); break;
+
+    case 8:  this->guiTTFText(boxOffset+(0*boxSize)+0 ,boxOffset+(2*boxSize+20)+10,str); break;
+    case 9:  this->guiTTFText(boxOffset+(1*boxSize)+10,boxOffset+(2*boxSize+20)+10,str); break;
+    case 10: this->guiTTFText(boxOffset+(2*boxSize)+20,boxOffset+(2*boxSize+20)+10,str); break;
+    case 11: this->guiTTFText(boxOffset+(3*boxSize)+30,boxOffset+(2*boxSize+20)+10,str); break;
+      
+    case 12: this->guiTTFText(boxOffset+(0*boxSize)+0 ,boxOffset+(3*boxSize+30)+10,str); break;
+    case 13: this->guiTTFText(boxOffset+(1*boxSize)+10,boxOffset+(3*boxSize+30)+10,str); break;
+    case 14: this->guiTTFText(boxOffset+(2*boxSize)+20,boxOffset+(3*boxSize+30)+10,str); break;
+    case 15: this->guiTTFText(boxOffset+(3*boxSize)+30,boxOffset+(3*boxSize+30)+10,str); break;
+
+    }
+}
+
+
 
 
 void SDL_GUI::drawBMPTextNumber(int n,char * str)
