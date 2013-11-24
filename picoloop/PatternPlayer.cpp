@@ -98,6 +98,20 @@ enum {
   MENU_ON_PAGE2
 };
 
+#define BUTTON_B      SDLK_LALT
+#define BUTTON_A      SDLK_LCTRL
+#define BUTTON_X      SDLK_SPACE
+#define BUTTON_Y      SDLK_LSHIFT
+
+#define BUTTON_UP     SDLK_UP
+#define BUTTON_DOWN   SDLK_DOWN
+#define BUTTON_LEFT   SDLK_LEFT
+#define BUTTON_RIGHT  SDLK_RIGHT
+
+#define BUTTON_SELECT SDLK_ESCAPE
+#define BUTTON_START  SDLK_RETURN
+
+
 //char * tmp_str;
 
 void display_board()
@@ -117,22 +131,27 @@ void display_board()
   //  printf("           AD:%d FX:%d\n",AD,FX);
   //  exit(0);
 
-  if (menu==1 && menu_cursor==AD)    sprintf(str_down,"[A/D] Note  L/S   VCO ",cty);  
-  if (menu==1 && menu_cursor==NOTE)  sprintf(str_down," A/D [Note] L/S   VCO ",cty);
-  if (menu==1 && menu_cursor==LS)    sprintf(str_down," A/D  Note [L/S]  VCO ",cty);
-  if (menu==1 && menu_cursor==VCO)   sprintf(str_down," A/D  Note  L/S  [VCO]",cty);
+  if (menu==MENU_ON_PAGE1 && menu_cursor==AD)    sprintf(str_down,"[A/R] Note  L/S   VCO ",cty);  
+  if (menu==MENU_ON_PAGE1 && menu_cursor==NOTE)  sprintf(str_down," A/R [Note] L/S   VCO ",cty);
+  if (menu==MENU_ON_PAGE1 && menu_cursor==LS)    sprintf(str_down," A/R  Note [L/S]  VCO ",cty);
+  if (menu==MENU_ON_PAGE1 && menu_cursor==VCO)   sprintf(str_down," A/R  Note  L/S  [VCO]",cty);
 
-  if (menu==1 && menu_cursor==OSC)   sprintf(str_down,"[OSC] LFO   FLTR  FX ",cty);  
-  if (menu==1 && menu_cursor==LFO)   sprintf(str_down," OSC [LFO]  FLTR  FX ",cty);
-  if (menu==1 && menu_cursor==FLTR)  sprintf(str_down," OSC  LFO  [FLTR] FX ",cty);
-  if (menu==1 && menu_cursor==FX)    sprintf(str_down," OSC  LFO   FLTR [FX]",cty);
+  if (menu==MENU_ON_PAGE2 && menu_cursor==OSC)   sprintf(str_down,"[OSC] LFO   FLTR  FX ",cty);  
+  if (menu==MENU_ON_PAGE2 && menu_cursor==LFO)   sprintf(str_down," OSC [LFO]  FLTR  FX ",cty);
+  if (menu==MENU_ON_PAGE2 && menu_cursor==FLTR)  sprintf(str_down," OSC  LFO  [FLTR] FX ",cty);
+  if (menu==MENU_ON_PAGE2 && menu_cursor==FX)    sprintf(str_down," OSC  LFO   FLTR [FX]",cty);
 
   if (menu==0)                       sprintf(str_down,"                     ",cty);
 
-  if (menu_cursor==AD)               sprintf(str_up,"A/D ");
+  if (menu_cursor==AD)               sprintf(str_up,"A/R ");
   if (menu_cursor==NOTE)             sprintf(str_up,"Note");
   if (menu_cursor==LS)               sprintf(str_up,"L/S ");
   if (menu_cursor==VCO)              sprintf(str_up,"VCO ");
+
+  if (menu_cursor==OSC)              sprintf(str_up,"OSC ");
+  if (menu_cursor==LFO)              sprintf(str_up,"LFO");
+  if (menu_cursor==FLTR)             sprintf(str_up,"FLTR ");
+  if (menu_cursor==FX)               sprintf(str_up,"FX ");
 
 
   SG.guiTTFText(200,40,str_up);
@@ -292,23 +311,30 @@ void handle_key()
     //exit(0);
   
   //if (start_key==2) 
-  //printf("%d %d %d\n",lastKey,lastEvent,lastKey==&& SDLK_RETURN && lastEvent==SDL_KEYUP);
+  //printf("%d %d %d\n",lastKey,lastEvent,lastKey==&& BUTTON_START && lastEvent==SDL_KEYUP);
   //  printf("lastevent=%d\n",lastEvent);
 
   //Enable Menu navigation
-  if (lastKey   ==  SDLK_ESCAPE && 
+  if (lastKey   ==  BUTTON_SELECT && 
       lastEvent ==  SDL_KEYUP)
     {
-      if      (menu==MENU_OFF)             { menu=MENU_ON_PAGE1;       start_key=0; }
-      else if (menu==MENU_ON_PAGE1)        { menu=MENU_OFF;            start_key=0; }   
+      switch (menu)
+	{
+	case MENU_OFF:      menu=MENU_ON_PAGE1; break;
+	case MENU_ON_PAGE1: menu=MENU_OFF;      break;
+	  //	case MENU_ON_PAGE1: menu=MENU_ON_PAGE2; menu_cursor=+4; break;
+	  //case MENU_ON_PAGE2: menu=MENU_ON_PAGE1; menu_cursor=-4; break;
+	}
       dirty_graphic=1;
       IE.clearLastKeyEvent();
       printf("[global menu : %d]\n",menu);
     }
+
+
   
-  if (lastKey   ==  SDLK_RETURN && 
-      lastEvent ==  SDL_KEYUP  && 
-      menu_cursor==1)
+  if (lastKey     ==  BUTTON_START  && 
+      lastEvent   ==  SDL_KEYUP     && 
+      menu_cursor ==  NOTE)
     {
       if      (menu_note==0)        { menu_note=1;  }
       else if (menu_note==1)        { menu_note=0;  }   
@@ -321,9 +347,10 @@ void handle_key()
   //Move MENU_CURSOR
   if (menu==MENU_ON_PAGE1)
     {
-      if(keyState[SDLK_LEFT]) 
+      if(keyState[BUTTON_LEFT]) 
 	{
-	  if (keyRepeat[SDLK_LEFT]==1 || keyRepeat[SDLK_LEFT]%64==0)
+	  if (keyRepeat[BUTTON_LEFT]==1 || 
+	      keyRepeat[BUTTON_LEFT]%64==0)
 	    menu_cursor--;
 	  if (menu_cursor<0) menu_cursor=3;
 	  dirty_graphic=1;
@@ -331,9 +358,9 @@ void handle_key()
 	  printf("key left\n");            
 	}      
       
-      if(keyState[SDLK_RIGHT])
+      if(keyState[BUTTON_RIGHT])
 	{
-	  if (keyRepeat[SDLK_RIGHT]==1 || keyRepeat[SDLK_RIGHT]%64==0)
+	  if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%64==0)
 	    menu_cursor++;
 	  if (menu_cursor>3) menu_cursor=0;
 	  dirty_graphic=1;
@@ -341,9 +368,10 @@ void handle_key()
 	  printf("key right\n");            
 	}
       
-      if(keyState[SDLK_UP])
+      if(keyState[BUTTON_UP])
 	{
-	  if (keyRepeat[SDLK_UP]==1 || keyRepeat[SDLK_UP]%64==0)
+	  if (keyRepeat[BUTTON_UP]    == 1 || 
+	      keyRepeat[BUTTON_UP]%64 == 0)
 	    {
 	      if (SEQ.getCurrentTrackY()>0)
 		SEQ.setCurrentTrackY(SEQ.getCurrentTrackY()-1);
@@ -354,9 +382,9 @@ void handle_key()
 	  dirty_graphic=1;
 	}
 
-      if(keyState[SDLK_DOWN])
+      if(keyState[BUTTON_DOWN])
 	{
-	  if (keyRepeat[SDLK_DOWN]==1 || keyRepeat[SDLK_DOWN]%64==0)
+	  if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%64==0)
 	    {
 	      if (SEQ.getCurrentTrackY()<TRACK_MAX-1)
 		SEQ.setCurrentTrackY(SEQ.getCurrentTrackY()+1);
@@ -374,33 +402,37 @@ void handle_key()
   
   
   //MOVE the cursor : LEFT UP DOWN RIGHT   
-  if (menu==MENU_OFF && menu_cursor==AD ||
-      menu==MENU_OFF && menu_cursor==NOTE    )
+  if ((menu==MENU_OFF && menu_cursor==AD    ||
+       menu==MENU_OFF && menu_cursor==NOTE) &&
+      !keyState[BUTTON_B]                   &&
+      !keyState[BUTTON_A]
+      )
     {                 
-      if(keyState[SDLK_UP] && ! keyState[SDLK_LCTRL])
+      if(keyState[BUTTON_UP] && 
+	 !keyState[BUTTON_B])
 	{
-	  if (keyRepeat[SDLK_UP]   ==1 || 
-	      keyRepeat[SDLK_UP]%64==0)
+	  if (keyRepeat[BUTTON_UP]   ==1 || 
+	      keyRepeat[BUTTON_UP]%64==0)
 	    cursor=cursor-4;
 	  if (cursor < 0) cursor=cursor +16;
 	  printf("key down : up \n");
 	  dirty_graphic=1;
 	}
       
-      if(keyState[SDLK_DOWN] && 
-	 !keyState[SDLK_LCTRL])
+      if(keyState[BUTTON_DOWN] && 
+	 !keyState[BUTTON_B])
 	{
-	  if (keyRepeat[SDLK_DOWN]==1 || keyRepeat[SDLK_DOWN]%64==0)
+	  if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%64==0)
 	    cursor=( cursor+4 ) %16;
 	  printf("key down : down\n");
 	  dirty_graphic=1;
 	}
       
-      if(keyState[SDLK_LEFT] && 
-	 !keyState[SDLK_LCTRL])
+      if(keyState[BUTTON_LEFT] && 
+	 !keyState[BUTTON_B])
 	{
-	  if (keyRepeat[SDLK_LEFT]==1 || 
-	      keyRepeat[SDLK_LEFT]%64==0)
+	  if (keyRepeat[BUTTON_LEFT]==1 || 
+	      keyRepeat[BUTTON_LEFT]%64==0)
 	    cursor--;
 	  
 	  if (cursor<0) cursor=15;
@@ -408,11 +440,11 @@ void handle_key()
 	  dirty_graphic=1;
 	}
       
-      if (keyState[SDLK_RIGHT] && 
-	  !keyState[SDLK_LCTRL])
+      if (keyState[BUTTON_RIGHT] && 
+	  !keyState[BUTTON_B])
 	{
-	  if (keyRepeat[SDLK_RIGHT]   ==1 || 
-	      keyRepeat[SDLK_RIGHT]%64==0)
+	  if (keyRepeat[BUTTON_RIGHT]   ==1 || 
+	      keyRepeat[BUTTON_RIGHT]%64==0)
 	    cursor++;
 	  if (cursor>15) cursor=0;
 	  printf("key right\n");      
@@ -426,7 +458,7 @@ void handle_key()
   if (menu          == MENU_OFF && 
       menu_cursor   == AD)
     {
-      if (lastKey   == SDLK_LALT && 
+      if (lastKey   == BUTTON_A && 
 	  lastEvent == SDL_KEYDOWN)
 	{
 	  invert_trig=1;
@@ -434,20 +466,20 @@ void handle_key()
 	  dirty_graphic=1;
 	  IE.clearLastKeyEvent();
 	}
-      if (keyState[SDLK_LEFT]  && keyState[SDLK_LCTRL])
-	if (keyRepeat[SDLK_LEFT]==1 ||  keyRepeat[SDLK_LEFT]>4) 
+      if (keyState[BUTTON_LEFT]  && keyState[BUTTON_B])
+	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>4) 
 	  { release=-1;   dirty_graphic=1; }
       
-      if (keyState[SDLK_RIGHT] && keyState[SDLK_LCTRL]) 
-	if (keyRepeat[SDLK_RIGHT]==1 || keyRepeat[SDLK_RIGHT]>4) 
+      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>4) 
 	  { release=1; 	  dirty_graphic=1; }
       
-      if (keyState[SDLK_UP]    && keyState[SDLK_LCTRL]) 
-	if (keyRepeat[SDLK_UP]==1 ||    keyRepeat[SDLK_UP]>4) 
+      if (keyState[BUTTON_UP]    && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>4) 
 	  { attack=1;  	  dirty_graphic=1; }
       
-      if (keyState[SDLK_DOWN]  && keyState[SDLK_LCTRL]) 
-	if (keyRepeat[SDLK_DOWN]==1 || keyRepeat[SDLK_DOWN]>4) 
+      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>4) 
 	  { attack=-1; 	  dirty_graphic=1; }
     }  
   
@@ -457,7 +489,7 @@ void handle_key()
       menu_cursor == NOTE)
     {
       // copy/paste/insert/delete trig 
-      if (lastKey   == SDLK_LALT && 
+      if (lastKey   == BUTTON_A && 
 	  lastEvent ==  SDL_KEYUP)
 	{
 	  invert_trig=1;
@@ -466,20 +498,20 @@ void handle_key()
 	  IE.clearLastKeyEvent();
 	}
       
-      if (keyState[SDLK_LEFT]  && keyState[SDLK_LCTRL]) 
-	if (keyRepeat[SDLK_LEFT]==1 || keyRepeat[SDLK_LEFT]%64==0) 
+      if (keyState[BUTTON_LEFT]  && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%64==0) 
 	{ note=-1; 	  dirty_graphic=1;}
 
-      if (keyState[SDLK_RIGHT] && keyState[SDLK_LCTRL]) 
-	if (keyRepeat[SDLK_RIGHT]==1 || keyRepeat[SDLK_RIGHT]%64==0) 
+      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%64==0) 
 	  { note=1;  	  dirty_graphic=1;}
 
-      if (keyState[SDLK_UP]    && keyState[SDLK_LCTRL]) 
-	if (keyRepeat[SDLK_UP]==1 || keyRepeat[SDLK_UP]%64==0) 
+      if (keyState[BUTTON_UP]    && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%64==0) 
 	  { note=12;   	  dirty_graphic=1;}
 
-      if (keyState[SDLK_DOWN]  && keyState[SDLK_LCTRL])
-	if (keyRepeat[SDLK_DOWN]==1 || keyRepeat[SDLK_DOWN]%64==0) 
+      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B])
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%64==0) 
 	{ note=-12;  	  dirty_graphic=1;}
     }  
   
@@ -489,11 +521,11 @@ void handle_key()
   // Save/load Pattern
   if (menu        == MENU_OFF && 
       menu_cursor == LS       && 
-      keyState[SDLK_LALT])
+      keyState[BUTTON_B])
     {
-      if (keyState[SDLK_DOWN])
+      if (keyState[BUTTON_DOWN])
 	save=true;
-      if (keyState[SDLK_UP])	
+      if (keyState[BUTTON_UP])	
 	load=true;
     }
 
@@ -503,11 +535,11 @@ void handle_key()
 
   if (menu        == MENU_OFF && 
       menu_cursor == LS       && 
-      keyState[SDLK_LCTRL] )
+      keyState[BUTTON_A] )
     {
-      if (keyState[SDLK_DOWN])
+      if (keyState[BUTTON_DOWN])
 	saveall=true;
-      if (keyState[SDLK_UP])	
+      if (keyState[BUTTON_UP])	
 	loadall=true;
     }
 
@@ -517,23 +549,23 @@ void handle_key()
   if (menu        == MENU_OFF && 
       menu_cursor == LS &&
       (!(
-       keyState[SDLK_LALT] ||
-       keyState[SDLK_LCTRL])))
+       keyState[BUTTON_B] ||
+       keyState[BUTTON_A])))
     {
-      if (keyState[SDLK_LEFT])
-	if (keyRepeat[SDLK_LEFT]==1  || keyRepeat[SDLK_LEFT]%64==0)  
+      if (keyState[BUTTON_LEFT])
+	if (keyRepeat[BUTTON_LEFT]==1  || keyRepeat[BUTTON_LEFT]%64==0)  
 	  { loadsave_cursor_x--;  dirty_graphic=1;}
 
-      if (keyState[SDLK_RIGHT])
-	if (keyRepeat[SDLK_RIGHT]==1 || keyRepeat[SDLK_RIGHT]%64==0) 
+      if (keyState[BUTTON_RIGHT])
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%64==0) 
 	  { loadsave_cursor_x++;  dirty_graphic=1;}
 
-      if (keyState[SDLK_UP])
-	if (keyRepeat[SDLK_UP]==1    || keyRepeat[SDLK_UP]%64==0)    
+      if (keyState[BUTTON_UP])
+	if (keyRepeat[BUTTON_UP]==1    || keyRepeat[BUTTON_UP]%64==0)    
 	  { loadsave_cursor_y--;  dirty_graphic=1;}
 
-      if (keyState[SDLK_DOWN])
-	if (keyRepeat[SDLK_DOWN]==1  || keyRepeat[SDLK_DOWN]%64==0)  
+      if (keyState[BUTTON_DOWN])
+	if (keyRepeat[BUTTON_DOWN]==1  || keyRepeat[BUTTON_DOWN]%64==0)  
 	  { loadsave_cursor_y++;  dirty_graphic=1;}
 	  
       if (loadsave_cursor_x>15)          { loadsave_cursor_x=0;           }
@@ -549,30 +581,30 @@ void handle_key()
   // Move cursor
   if (menu        == MENU_OFF && 
       menu_cursor == VCO      &&
-      !keyState[SDLK_LCTRL]
+      !keyState[BUTTON_A]
       )
     {
-      //if(keyState[SDLK_UP] && ! keyState[SDLK_LCTRL])
-      if(keyState[SDLK_UP])
+      //if(keyState[BUTTON_UP] && ! keyState[BUTTON_A])
+      if(keyState[BUTTON_UP])
 	{
-	  if (keyRepeat[SDLK_UP]==1 || keyRepeat[SDLK_UP]%64==0)
+	  if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%64==0)
 	    cursor=cursor-4;
 	  if (cursor < 0) cursor=cursor +16;
 	  printf("key down : up \n");
 	  dirty_graphic=1;
 	}
       
-      if(keyState[SDLK_DOWN])
+      if(keyState[BUTTON_DOWN])
 	{
-	  if (keyRepeat[SDLK_DOWN]==1 || keyRepeat[SDLK_DOWN]%64==0)
+	  if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%64==0)
 	    cursor=( cursor+4 ) %16;
 	  printf("key down : down\n");
 	  dirty_graphic=1;
 	}
       
-      if(keyState[SDLK_LEFT])
+      if(keyState[BUTTON_LEFT])
 	{
-	  if (keyRepeat[SDLK_LEFT]==1 || keyRepeat[SDLK_LEFT]%64==0)
+	  if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%64==0)
 	    cursor--;
 	  
 	  if (cursor<0) cursor=15;
@@ -580,9 +612,9 @@ void handle_key()
 	  dirty_graphic=1;
 	}
       
-      if (keyState[SDLK_RIGHT])
+      if (keyState[BUTTON_RIGHT])
 	{
-	  if (keyRepeat[SDLK_RIGHT]==1 || keyRepeat[SDLK_RIGHT]%64==0)
+	  if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%64==0)
 	    cursor++;
 	  if (cursor>15) cursor=0;
 	  printf("key right\n");      
@@ -595,23 +627,23 @@ void handle_key()
   // Change Value
   if (menu        == MENU_OFF && 
       menu_cursor == VCO      &&
-      keyState[SDLK_LCTRL]
+      keyState[BUTTON_A]
       )
     {
-      if (keyState[SDLK_LEFT]) 
-	if (keyRepeat[SDLK_LEFT]==1 || keyRepeat[SDLK_LEFT]%4==0) 
+      if (keyState[BUTTON_LEFT]) 
+	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%4==0) 
 	  { vcomix=-1; 	  dirty_graphic=1;}
       
-      if (keyState[SDLK_RIGHT]) 
-	if (keyRepeat[SDLK_RIGHT]==1 || keyRepeat[SDLK_RIGHT]%4==0) 
+      if (keyState[BUTTON_RIGHT]) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%4==0) 
 	  { vcomix=1;  	  dirty_graphic=1;}
       
-      if (keyState[SDLK_UP]) 
-	if (keyRepeat[SDLK_UP]==1 || keyRepeat[SDLK_UP]%64==0) 
+      if (keyState[BUTTON_UP]) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%64==0) 
 	  { attack=1;   	  dirty_graphic=1;}
       
-      if (keyState[SDLK_DOWN])
-	if (keyRepeat[SDLK_DOWN]==1 || keyRepeat[SDLK_DOWN]%64==0) 
+      if (keyState[BUTTON_DOWN])
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%64==0) 
 	  { attack=-1;  	  dirty_graphic=1;}
     }
   
