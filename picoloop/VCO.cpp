@@ -1,7 +1,7 @@
 #include "VCO.h"
 
 
-VCO::VCO() : sineosc(), sawosc(), fuzzypulseosc(), pulseosc()
+VCO::VCO() : sineosc(), sawosc(), pulseosc()//, noiseosc()
 {
   printf("VCO::VCO()\n");
   s1=NULL;
@@ -56,12 +56,14 @@ void VCO::setOscillator(int oscillator_number,int oscillator_type)
       if (oscillator_type%3==0) s1=&sineosc;
       if (oscillator_type%3==1) s1=&sawosc;
       if (oscillator_type%3==2) s1=&pulseosc;
+      //      if (oscillator_type%4==2) s1=&noiseosc;
     }
   if (oscillator_number %2==1)
     {
       if (oscillator_type%3==0) s2=&sineosc;
       if (oscillator_type%3==1) s2=&sawosc;
       if (oscillator_type%3==2) s2=&pulseosc;
+      //      if (oscillator_type%4==3) s2=&noiseosc;
     }
   s1->setFreq(s1freq);
   s2->setFreq(s2freq);

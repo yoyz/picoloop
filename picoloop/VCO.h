@@ -35,6 +35,7 @@ public:
   SineOscillator        sineosc;
   FuzzyPulseOscillator  fuzzypulseosc;
   PulseOscillator       pulseosc;
+  //NoiseOscillator       noiseosc;
   Oscillator          * s1;
   Oscillator          * s2;
 
