@@ -79,6 +79,25 @@ int invert_trig=0;
 
 int dirty_graphic=1;
 
+//menu_cursor
+enum {
+  AD,
+  NOTE,
+  LS,
+  VCO,
+  OSC,
+  LFO,
+  FLTR,
+  FX
+};
+  
+//menu
+enum {
+  MENU_OFF,
+  MENU_ON_PAGE1,
+  MENU_ON_PAGE2
+};
+
 //char * tmp_str;
 
 void display_board()
@@ -95,17 +114,25 @@ void display_board()
   SG.guiTTFText(200,20,str_up);
   //  sprintf(str_down,"[A/D] Note L/S",cty);
   
+  //  printf("           AD:%d FX:%d\n",AD,FX);
+  //  exit(0);
 
-  if (menu==1 && menu_cursor==0) sprintf(str_down,"[A/D] Note  L/S  VCO ",cty);  
-  if (menu==1 && menu_cursor==1) sprintf(str_down," A/D [Note] L/S  VCO ",cty);
-  if (menu==1 && menu_cursor==2) sprintf(str_down," A/D  Note [L/S] VCO ",cty);
-  if (menu==1 && menu_cursor==3) sprintf(str_down," A/D  Note  L/S [VCO]",cty);
-  if (menu==0)                   sprintf(str_down,"                     ",cty);
+  if (menu==1 && menu_cursor==AD)    sprintf(str_down,"[A/D] Note  L/S   VCO ",cty);  
+  if (menu==1 && menu_cursor==NOTE)  sprintf(str_down," A/D [Note] L/S   VCO ",cty);
+  if (menu==1 && menu_cursor==LS)    sprintf(str_down," A/D  Note [L/S]  VCO ",cty);
+  if (menu==1 && menu_cursor==VCO)   sprintf(str_down," A/D  Note  L/S  [VCO]",cty);
 
-  if (menu_cursor==0)            sprintf(str_up,"A/D ");
-  if (menu_cursor==1)            sprintf(str_up,"Note");
-  if (menu_cursor==2)            sprintf(str_up,"L/S ");
-  if (menu_cursor==3)            sprintf(str_up,"VCO ");
+  if (menu==1 && menu_cursor==OSC)   sprintf(str_down,"[OSC] LFO   FLTR  FX ",cty);  
+  if (menu==1 && menu_cursor==LFO)   sprintf(str_down," OSC [LFO]  FLTR  FX ",cty);
+  if (menu==1 && menu_cursor==FLTR)  sprintf(str_down," OSC  LFO  [FLTR] FX ",cty);
+  if (menu==1 && menu_cursor==FX)    sprintf(str_down," OSC  LFO   FLTR [FX]",cty);
+
+  if (menu==0)                       sprintf(str_down,"                     ",cty);
+
+  if (menu_cursor==AD)               sprintf(str_up,"A/D ");
+  if (menu_cursor==NOTE)             sprintf(str_up,"Note");
+  if (menu_cursor==LS)               sprintf(str_up,"L/S ");
+  if (menu_cursor==VCO)              sprintf(str_up,"VCO ");
 
 
   SG.guiTTFText(200,40,str_up);
@@ -117,7 +144,7 @@ void display_board()
      
 
   // Attack/Release
-  if (menu_cursor==0)
+  if (menu_cursor==AD)
     {
       for (i=0;i<16;i++)
 	{
@@ -138,33 +165,10 @@ void display_board()
       SG.smallBoxNumber(step,0,P[cty].getPatternElement(step).getAttack(),SMALLBOX_COLOR); 
     }
 
-  // VCO/??
-  if (menu_cursor==3)
-    {
-      for (i=0;i<16;i++)
-	{
-	  // Draw trigged box trig color   
-	  //	  if (P[cty].getPatternElement(i).getTrig())
-	  //	    SG.drawBoxNumber(i,TRIG_COLOR);
-	  // AdsR
-	  SG.smallBoxNumber(i,P[cty].getPatternElement(i).getVCOMix(),0,SMALLBOX_COLOR);
-	  //	  SG.smallBoxNumber(i,0,P[cty].getPatternElement(i).getAttack(),SMALLBOX_COLOR);      
-	}
-      // Cursor & step postion
-      SG.drawBoxNumber(cursor,CURSOR_COLOR);
-      SG.smallBoxNumber(cursor,P[cty].getPatternElement(cursor).getVCOMix(),0,SMALLBOX_COLOR);
-      //      SG.smallBoxNumber(cursor,0,P[cty].getPatternElement(cursor).getAttack(),SMALLBOX_COLOR); 
-      
-      SG.drawBoxNumber(step,STEP_COLOR);  
-      SG.smallBoxNumber(step,P[cty].getPatternElement(step).getVCOMix(),0,SMALLBOX_COLOR);
-      //      SG.smallBoxNumber(step,0,P[cty].getPatternElement(step).getAttack(),SMALLBOX_COLOR); 
-    }
-
-
 
 
   // Note
-  if (menu_cursor==1)
+  if (menu_cursor==NOTE)
     {
       if (menu_note==0)      
 	for (i=0;i<16;i++)
@@ -214,7 +218,8 @@ void display_board()
 	}
     }
 
-  if (menu==0 && menu_cursor==2)
+  if (menu==MENU_OFF && 
+      menu_cursor==LS)
     {
       printf("HIT\n");
       int x,y;
@@ -238,6 +243,31 @@ void display_board()
 	for (y=0;y<4;y++)
 	  SG.drawTTFTextLoadSaveBoxNumer(x,y,tmp_txt);
     }
+
+
+  // VCO
+  if (menu_cursor==VCO)
+    {
+      for (i=0;i<16;i++)
+	{
+	  // Draw trigged box trig color   
+	  //	  if (P[cty].getPatternElement(i).getTrig())
+	  //	    SG.drawBoxNumber(i,TRIG_COLOR);
+	  // AdsR
+	  SG.smallBoxNumber(i,P[cty].getPatternElement(i).getVCOMix(),0,SMALLBOX_COLOR);
+	  //	  SG.smallBoxNumber(i,0,P[cty].getPatternElement(i).getAttack(),SMALLBOX_COLOR);      
+	}
+      // Cursor & step postion
+      SG.drawBoxNumber(cursor,CURSOR_COLOR);
+      SG.smallBoxNumber(cursor,P[cty].getPatternElement(cursor).getVCOMix(),0,SMALLBOX_COLOR);
+      //      SG.smallBoxNumber(cursor,0,P[cty].getPatternElement(cursor).getAttack(),SMALLBOX_COLOR); 
+      
+      SG.drawBoxNumber(step,STEP_COLOR);  
+      SG.smallBoxNumber(step,P[cty].getPatternElement(step).getVCOMix(),0,SMALLBOX_COLOR);
+      //      SG.smallBoxNumber(step,0,P[cty].getPatternElement(step).getAttack(),SMALLBOX_COLOR); 
+    }
+
+
 
 
   SG.refresh();
@@ -269,8 +299,8 @@ void handle_key()
   if (lastKey   ==  SDLK_ESCAPE && 
       lastEvent ==  SDL_KEYUP)
     {
-      if      (menu==0)        { menu=1;  start_key=0; }
-      else if (menu==1)        { menu=0;  start_key=0; }   
+      if      (menu==MENU_OFF)             { menu=MENU_ON_PAGE1;       start_key=0; }
+      else if (menu==MENU_ON_PAGE1)        { menu=MENU_OFF;            start_key=0; }   
       dirty_graphic=1;
       IE.clearLastKeyEvent();
       printf("[global menu : %d]\n",menu);
@@ -289,7 +319,7 @@ void handle_key()
   
   //Menu Mode 
   //Move MENU_CURSOR
-  if (menu==1)
+  if (menu==MENU_ON_PAGE1)
     {
       if(keyState[SDLK_LEFT]) 
 	{
@@ -344,19 +374,21 @@ void handle_key()
   
   
   //MOVE the cursor : LEFT UP DOWN RIGHT   
-  if (menu==0 && menu_cursor==0 ||
-      menu==0 && menu_cursor==1    )
+  if (menu==MENU_OFF && menu_cursor==AD ||
+      menu==MENU_OFF && menu_cursor==NOTE    )
     {                 
       if(keyState[SDLK_UP] && ! keyState[SDLK_LCTRL])
 	{
-	  if (keyRepeat[SDLK_UP]==1 || keyRepeat[SDLK_UP]%64==0)
+	  if (keyRepeat[SDLK_UP]   ==1 || 
+	      keyRepeat[SDLK_UP]%64==0)
 	    cursor=cursor-4;
 	  if (cursor < 0) cursor=cursor +16;
 	  printf("key down : up \n");
 	  dirty_graphic=1;
 	}
       
-      if(keyState[SDLK_DOWN] && ! keyState[SDLK_LCTRL])
+      if(keyState[SDLK_DOWN] && 
+	 !keyState[SDLK_LCTRL])
 	{
 	  if (keyRepeat[SDLK_DOWN]==1 || keyRepeat[SDLK_DOWN]%64==0)
 	    cursor=( cursor+4 ) %16;
@@ -364,9 +396,11 @@ void handle_key()
 	  dirty_graphic=1;
 	}
       
-      if(keyState[SDLK_LEFT] && ! keyState[SDLK_LCTRL])
+      if(keyState[SDLK_LEFT] && 
+	 !keyState[SDLK_LCTRL])
 	{
-	  if (keyRepeat[SDLK_LEFT]==1 || keyRepeat[SDLK_LEFT]%64==0)
+	  if (keyRepeat[SDLK_LEFT]==1 || 
+	      keyRepeat[SDLK_LEFT]%64==0)
 	    cursor--;
 	  
 	  if (cursor<0) cursor=15;
@@ -374,9 +408,11 @@ void handle_key()
 	  dirty_graphic=1;
 	}
       
-      if (keyState[SDLK_RIGHT] && ! keyState[SDLK_LCTRL])
+      if (keyState[SDLK_RIGHT] && 
+	  !keyState[SDLK_LCTRL])
 	{
-	  if (keyRepeat[SDLK_RIGHT]==1 || keyRepeat[SDLK_RIGHT]%64==0)
+	  if (keyRepeat[SDLK_RIGHT]   ==1 || 
+	      keyRepeat[SDLK_RIGHT]%64==0)
 	    cursor++;
 	  if (cursor>15) cursor=0;
 	  printf("key right\n");      
@@ -387,10 +423,11 @@ void handle_key()
   
   // Move Attack Release 
   // Insert/Remove Trig
-  if (menu==0 && 
-      menu_cursor==0)
+  if (menu          == MENU_OFF && 
+      menu_cursor   == AD)
     {
-      if (lastKey== SDLK_LALT && lastEvent == SDL_KEYDOWN)
+      if (lastKey   == SDLK_LALT && 
+	  lastEvent == SDL_KEYDOWN)
 	{
 	  invert_trig=1;
 	  printf("key lalt\n");      
@@ -414,7 +451,10 @@ void handle_key()
 	  { attack=-1; 	  dirty_graphic=1; }
     }  
   
-  if (menu==0 && menu_cursor==1)
+  // change note
+  // copy/paste
+  if (menu        == MENU_OFF && 
+      menu_cursor == NOTE)
     {
       // copy/paste/insert/delete trig 
       if (lastKey   == SDLK_LALT && 
@@ -443,11 +483,12 @@ void handle_key()
 	{ note=-12;  	  dirty_graphic=1;}
     }  
   
-  //
-  // in the load/save view //move loasavecursor position 
+
+  // in the load/save view 
+  // move loasavecursor position 
   // Save/load Pattern
-  if (menu        == 0 && 
-      menu_cursor == 2 && 
+  if (menu        == MENU_OFF && 
+      menu_cursor == LS       && 
       keyState[SDLK_LALT])
     {
       if (keyState[SDLK_DOWN])
@@ -456,8 +497,12 @@ void handle_key()
 	load=true;
     }
 
-  if (menu        == 0 && 
-      menu_cursor == 2 && 
+  // in the load/save view 
+  // move loasavecursor position 
+  // Save/load bund of Pattern
+
+  if (menu        == MENU_OFF && 
+      menu_cursor == LS       && 
       keyState[SDLK_LCTRL] )
     {
       if (keyState[SDLK_DOWN])
@@ -467,11 +512,10 @@ void handle_key()
     }
 
 
-  //
   // in the load/save view 
   // move load/save cursor position 
-  if (menu        == 0 && 
-      menu_cursor == 2 &&
+  if (menu        == MENU_OFF && 
+      menu_cursor == LS &&
       (!(
        keyState[SDLK_LALT] ||
        keyState[SDLK_LCTRL])))
@@ -503,8 +547,8 @@ void handle_key()
 
   // VCO Menu
   // Move cursor
-  if (menu        == 0 && 
-      menu_cursor == 3 &&
+  if (menu        == MENU_OFF && 
+      menu_cursor == VCO      &&
       !keyState[SDLK_LCTRL]
       )
     {
@@ -546,10 +590,11 @@ void handle_key()
 	}
     }
       
+
   // VCO Menu
   // Change Value
-  if (menu        == 0 && 
-      menu_cursor == 3 &&
+  if (menu        == MENU_OFF && 
+      menu_cursor == VCO      &&
       keyState[SDLK_LCTRL]
       )
     {
