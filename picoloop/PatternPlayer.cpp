@@ -672,20 +672,20 @@ void handle_key()
   if (menu        == MENU_OFF && 
       menu_cursor == OSC )
     {
-      if (keyState[BUTTON_LEFT]) 
-	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%3==0) 
+      if (keyState[BUTTON_LEFT] && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%128==0) 
 	  { osconetype=-1; 	  dirty_graphic=1;}
       
-      if (keyState[BUTTON_RIGHT]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%4==0) 
+      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%128==0) 
 	  { osconetype=1;  	  dirty_graphic=1;}
       
-      if (keyState[BUTTON_UP]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%64==0) 
+      if (keyState[BUTTON_UP] && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%128==0) 
 	  { osctwotype=1;   	  dirty_graphic=1;}
       
-      if (keyState[BUTTON_DOWN])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%64==0) 
+      if (keyState[BUTTON_DOWN] && keyState[BUTTON_B])
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%128==0) 
 	  { osctwotype=-1;  	  dirty_graphic=1;}
     }
 
