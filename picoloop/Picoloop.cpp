@@ -36,42 +36,25 @@ int main()
 	if (i == 0) sg.drawBoxNumber(15,0xAECD15);
 	sg.drawBoxNumber(i,0x045c15);
 
-	sg.drawTTFTextNumber(0,"C3");
-	sg.drawTTFTextNumber(1,"C3");
-	sg.drawTTFTextNumber(2,"C3");
-	sg.drawTTFTextNumber(3,"C3");
-	sg.drawTTFTextNumber(4,"C3");
-	sg.drawTTFTextNumber(5,"C3");
-	sg.drawTTFTextNumber(6,"C3");
-	sg.drawTTFTextNumber(7,"C3");
-	sg.drawTTFTextNumber(8,"C3");
-	sg.drawTTFTextNumber(9,"C3");
-	sg.drawTTFTextNumber(10,"C3");
-	sg.drawTTFTextNumber(11,"C3");
-	sg.drawTTFTextNumber(12,"C3");
-	sg.drawTTFTextNumber(13,"C3");
-	sg.drawTTFTextNumber(14,"C3");
-	sg.drawTTFTextNumber(15,"C3");
+	sg.drawTTFTextNumberFirstLine(0,"C3");
+	sg.drawTTFTextNumberFirstLine(1,"C3");
+	sg.drawTTFTextNumberFirstLine(2,"C3");
+	sg.drawTTFTextNumberFirstLine(3,"C3");
+	sg.drawTTFTextNumberFirstLine(4,"C3");
+	sg.drawTTFTextNumberFirstLine(5,"C3");
+	sg.drawTTFTextNumberFirstLine(6,"C3");
+	sg.drawTTFTextNumberFirstLine(7,"C3");
+	sg.drawTTFTextNumberFirstLine(8,"C3");
+	sg.drawTTFTextNumberFirstLine(9,"C3");
+	sg.drawTTFTextNumberFirstLine(10,"C3");
+	sg.drawTTFTextNumberFirstLine(11,"C3");
+	sg.drawTTFTextNumberFirstLine(12,"C3");
+	sg.drawTTFTextNumberFirstLine(13,"C3");
+	sg.drawTTFTextNumberFirstLine(14,"C3");
+	sg.drawTTFTextNumberFirstLine(15,"C3");
 
-	sg.smallBoxNumber(0 ,k,0,0x443322);
-	sg.smallBoxNumber(1 ,k,0,0x443322);
-	sg.smallBoxNumber(2 ,k,0,0x443322);
-	sg.smallBoxNumber(3 ,k,0,0x443322);
-
-	sg.smallBoxNumber(4 ,k,0,0x443322);
-	sg.smallBoxNumber(5 ,k,0,0x443322);
-	sg.smallBoxNumber(6 ,k,0,0x443322);
-	sg.smallBoxNumber(7 ,k,0,0x443322);
-
-	sg.smallBoxNumber(8 ,k,0,0x443322);
-	sg.smallBoxNumber(9 ,k,0,0x443322);
-	sg.smallBoxNumber(10,k,0,0x443322);
-	sg.smallBoxNumber(11,k,0,0x443322);
-
-	sg.smallBoxNumber(12,k,0,0x443322);
-	sg.smallBoxNumber(13,k,0,0x443322);
-	sg.smallBoxNumber(14,k,0,0x443322);
-	sg.smallBoxNumber(15,k,0,0x443322);
+	for (l=0;l<16;l++) 
+	  sg.smallBoxNumber(l ,k,0,0x443322);
 
 	sg.guiTTFText(0,0,"AA");
 
@@ -103,45 +86,6 @@ int main()
   for (x=0;x<16;x++)
     for (y=0;y<8;y++)
       sg.drawTTFTextLoadSaveBoxNumer(x,y,tmp_txt);
-
-
-  /*
-  sg.middleBox(10,50,0x443322);
-  sg.middleBox(10,70,0x443322);
-  sg.middleBox(10,90,0x443322);
-  sg.middleBox(10,110,0x443322);
-  sg.middleBox(10,130,0x443322);
-  sg.middleBox(10,150,0x443322);
-  sg.middleBox(10,170,0x443322);
-  sg.middleBox(10,190,0x443322);
-
-  sg.middleBox(30,50,0x443322);
-  sg.middleBox(30,70,0x443322);
-  sg.middleBox(30,90,0x443322);
-  sg.middleBox(30,110,0x443322);
-  sg.middleBox(30,130,0x443322);
-  sg.middleBox(30,150,0x443322);
-  sg.middleBox(30,170,0x443322);
-  sg.middleBox(30,190,0x443322);
-
-  sg.middleBox(50,50,0x443322);
-  sg.middleBox(50,70,0x443322);
-  sg.middleBox(50,90,0x443322);
-  sg.middleBox(50,110,0x443322);
-  sg.middleBox(50,130,0x443322);
-  sg.middleBox(50,150,0x443322);
-  sg.middleBox(50,170,0x443322);
-  sg.middleBox(50,190,0x443322);
-
-  sg.middleBox(70,50,0x443322);
-  sg.middleBox(70,70,0x443322);
-  sg.middleBox(70,90,0x443322);
-  sg.middleBox(70,110,0x443322);
-  sg.middleBox(70,130,0x443322);
-  sg.middleBox(70,150,0x443322);
-  sg.middleBox(70,170,0x443322);
-  sg.middleBox(70,190,0x443322);
-  */
 
 
   sg.refresh();
