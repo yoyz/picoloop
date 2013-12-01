@@ -279,34 +279,35 @@ void display_board()
 	  // AdsR
 	  if (P[cty].getPatternElement(i).getTrig())
 	    {	      
-	    if (P[cty].getPatternElement(i).getTrig())
+	      //if (P[cty].getPatternElement(i).getTrig())
 	      SG.drawBoxNumber(i,NOTE_COLOR);
 	      SG.smallBoxNumber(i,P[cty].getPatternElement(i).getVCOMix(),0,SMALLBOX_COLOR);
+
+	      if (i==step)   SG.smallBoxNumber(i,P[cty].getPatternElement(i).getVCOMix(),0,STEP_COLOR);
 	      if (i==cursor) SG.smallBoxNumber(i,P[cty].getPatternElement(i).getVCOMix(),0,CURSOR_COLOR);
-	      if (i==step) SG.smallBoxNumber(i,P[cty].getPatternElement(i).getVCOMix(),0,STEP_COLOR);
 	    }
 	  //	  SG.smallBoxNumber(i,0,P[cty].getPatternElement(i).getAttack(),SMALLBOX_COLOR);      
 	  else
 	    {
-	      /*
-	      if (i==cursor) SG.drawBoxNumber(cursor,CURSOR_COLOR);
-	      if (i=step)    SG.drawBoxNumber(step,STEP_COLOR);  
 
-	      if (i==cursor) SG.smallBoxNumber(i,P[cty].getPatternElement(i).getVCOMix(),0,CURSOR_COLOR);
-	      if (i==step)   SG.smallBoxNumber(i,P[cty].getPatternElement(i).getVCOMix(),0,STEP_COLOR);
-	      */
+	      if (i==step)    SG.drawBoxNumber(step,  STEP_COLOR);  
+	      if (i==cursor) SG.drawBoxNumber(cursor,CURSOR_COLOR);
+
+	      //	      if (i==cursor) SG.smallBoxNumber(i,P[cty].getPatternElement(i).getVCOMix(),0,CURSOR_COLOR);
+	      //	      if (i==step)   SG.smallBoxNumber(i,P[cty].getPatternElement(i).getVCOMix(),0,STEP_COLOR);
+
 	    }
 	}
       // Cursor & step postion
-      //      SG.drawBoxNumber(cursor,CURSOR_COLOR);
+      //SG.drawBoxNumber(cursor,CURSOR_COLOR);
       //      SG.smallBoxNumber(cursor,P[cty].getPatternElement(cursor).getVCOMix(),0,SMALLBOX_COLOR);
       //      SG.smallBoxNumber(cursor,0,P[cty].getPatternElement(cursor).getAttack(),SMALLBOX_COLOR); 
       
       //      SG.drawBoxNumber(step,STEP_COLOR);  
-      //      SG.smallBoxNumber(step,P[cty].getPatternElement(step).getVCOMix(),0,SMALLBOX_COLOR);
-      //      SG.smallBoxNumber(step,0,P[cty].getPatternElement(step).getAttack(),SMALLBOX_COLOR); 
+      //SG.smallBoxNumber(step,P[cty].getPatternElement(step).getVCOMix(),0,SMALLBOX_COLOR);
+      //SG.smallBoxNumber(step,0,P[cty].getPatternElement(step).getAttack(),SMALLBOX_COLOR); 
     }
-  
+
   if (menu_cursor==OSC)
     {
       for (i=0;i<16;i++)
