@@ -192,44 +192,24 @@ void display_board_note()
 }
 
 
+
 void display_board_vco()
 {
   int i;
   int cty=SEQ.getCurrentTrackY();
   for (i=0;i<16;i++)
     {
-      // Draw trigged box trig color   
-      //	  if (P[cty].getPatternElement(i).getTrig())
-      //	    SG.drawBoxNumber(i,TRIG_COLOR);
-      // AdsR
       if (P[cty].getPatternElement(i).getTrig())
-	{	      
-	  if (P[cty].getPatternElement(i).getTrig())
-	    SG.drawBoxNumber(i,NOTE_COLOR);
-	  SG.smallBoxNumber(i,P[cty].getPatternElement(i).getVCOMix(),0,SMALLBOX_COLOR);
-	  if (i==cursor) SG.smallBoxNumber(i,P[cty].getPatternElement(i).getVCOMix(),0,CURSOR_COLOR);
-	  if (i==step) SG.smallBoxNumber(i,P[cty].getPatternElement(i).getVCOMix(),0,STEP_COLOR);
-	}
-      //	  SG.smallBoxNumber(i,0,P[cty].getPatternElement(i).getAttack(),SMALLBOX_COLOR);      
-      else
-	{
-	  /*
-	    if (i==cursor) SG.drawBoxNumber(cursor,CURSOR_COLOR);
-	    if (i=step)    SG.drawBoxNumber(step,STEP_COLOR);  
-	    
-	    if (i==cursor) SG.smallBoxNumber(i,P[cty].getPatternElement(i).getVCOMix(),0,CURSOR_COLOR);
-	    if (i==step)   SG.smallBoxNumber(i,P[cty].getPatternElement(i).getVCOMix(),0,STEP_COLOR);
-	  */
-	}
+	SG.drawBoxNumber(i,TRIG_COLOR);
+      SG.smallBoxNumber(i,P[cty].getPatternElement(i).getVCOMix(),0,SMALLBOX_COLOR);
     }
-  // Cursor & step postion
-  //      SG.drawBoxNumber(cursor,CURSOR_COLOR);
-  //      SG.smallBoxNumber(cursor,P[cty].getPatternElement(cursor).getVCOMix(),0,SMALLBOX_COLOR);
-  //      SG.smallBoxNumber(cursor,0,P[cty].getPatternElement(cursor).getAttack(),SMALLBOX_COLOR); 
-  
-  //      SG.drawBoxNumber(step,STEP_COLOR);  
-  //      SG.smallBoxNumber(step,P[cty].getPatternElement(step).getVCOMix(),0,SMALLBOX_COLOR);
-  //      SG.smallBoxNumber(step,0,P[cty].getPatternElement(step).getAttack(),SMALLBOX_COLOR); 
+  SG.drawBoxNumber(cursor,CURSOR_COLOR);
+  SG.smallBoxNumber(cursor,P[cty].getPatternElement(cursor).getVCOMix(),0,SMALLBOX_COLOR);
+
+  SG.drawBoxNumber(step,STEP_COLOR);  
+  SG.smallBoxNumber(step,P[cty].getPatternElement(step).getVCOMix(),0,SMALLBOX_COLOR);
+
+
 }
 
 
@@ -363,6 +343,11 @@ void display_board()
 
   SG.refresh();
 }
+
+
+
+
+
 
 
 void handle_key()
@@ -519,7 +504,8 @@ void handle_key()
       if(keyState[BUTTON_DOWN] && 
 	 !keyState[BUTTON_B])
 	{
-	  if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%64==0)
+	  if (keyRepeat[BUTTON_DOWN]==1 || 
+	      keyRepeat[BUTTON_DOWN]%64==0)
 	    cursor=( cursor+4 ) %16;
 	  printf("key down : down\n");
 	  dirty_graphic=1;
@@ -564,19 +550,23 @@ void handle_key()
 	  IE.clearLastKeyEvent();
 	}
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_B])
-	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>4) 
+	if (keyRepeat[BUTTON_LEFT]==1 ||  
+	    keyRepeat[BUTTON_LEFT]>4) 
 	  { release=-1;   dirty_graphic=1; }
       
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>4) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || 
+	    keyRepeat[BUTTON_RIGHT]>4) 
 	  { release=1; 	  dirty_graphic=1; }
       
       if (keyState[BUTTON_UP]    && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>4) 
+	if (keyRepeat[BUTTON_UP]==1 ||    
+	    keyRepeat[BUTTON_UP]>4) 
 	  { attack=1;  	  dirty_graphic=1; }
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>4) 
+	if (keyRepeat[BUTTON_DOWN]==1 || 
+	    keyRepeat[BUTTON_DOWN]>4) 
 	  { attack=-1; 	  dirty_graphic=1; }
     }  
   
@@ -596,19 +586,23 @@ void handle_key()
 	}
       
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%64==0) 
+	if (keyRepeat[BUTTON_LEFT]==1 || 
+	    keyRepeat[BUTTON_LEFT]%64==0) 
 	{ note=-1; 	  dirty_graphic=1;}
 
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%64==0) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || 
+	    keyRepeat[BUTTON_RIGHT]%64==0) 
 	  { note=1;  	  dirty_graphic=1;}
 
       if (keyState[BUTTON_UP]    && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%64==0) 
+	if (keyRepeat[BUTTON_UP]==1 || 
+	    keyRepeat[BUTTON_UP]%64==0) 
 	  { note=12;   	  dirty_graphic=1;}
 
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%64==0) 
+	if (keyRepeat[BUTTON_DOWN]==1 || 
+	    keyRepeat[BUTTON_DOWN]%64==0) 
 	{ note=-12;  	  dirty_graphic=1;}
     }  
   
@@ -650,15 +644,18 @@ void handle_key()
        keyState[BUTTON_A])))
     {
       if (keyState[BUTTON_LEFT])
-	if (keyRepeat[BUTTON_LEFT]==1  || keyRepeat[BUTTON_LEFT]%64==0)  
+	if (keyRepeat[BUTTON_LEFT]==1  || 
+	    keyRepeat[BUTTON_LEFT]%64==0)  
 	  { loadsave_cursor_x--;  dirty_graphic=1;}
 
       if (keyState[BUTTON_RIGHT])
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%64==0) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || 
+	    keyRepeat[BUTTON_RIGHT]%64==0) 
 	  { loadsave_cursor_x++;  dirty_graphic=1;}
 
       if (keyState[BUTTON_UP])
-	if (keyRepeat[BUTTON_UP]==1    || keyRepeat[BUTTON_UP]%64==0)    
+	if (keyRepeat[BUTTON_UP]==1    || 
+	    keyRepeat[BUTTON_UP]%64==0)    
 	  { loadsave_cursor_y--;  dirty_graphic=1;}
 
       if (keyState[BUTTON_DOWN])
@@ -683,41 +680,50 @@ void handle_key()
       )
     {
       if (keyState[BUTTON_LEFT]) 
-	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%4==0) 
+	if (keyRepeat[BUTTON_LEFT]==1 || 
+	    keyRepeat[BUTTON_LEFT]%4==0) 
 	  { vcomix=-1; 	  dirty_graphic=1;}
       
       if (keyState[BUTTON_RIGHT]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%4==0) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || 
+	    keyRepeat[BUTTON_RIGHT]%4==0) 
 	  { vcomix=1;  	  dirty_graphic=1;}
       
       if (keyState[BUTTON_UP]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%64==0) 
+	if (keyRepeat[BUTTON_UP]==1   || 
+	    keyRepeat[BUTTON_UP]%64==0) 
 	  { attack=1;   	  dirty_graphic=1;}
       
       if (keyState[BUTTON_DOWN])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%64==0) 
+	if (keyRepeat[BUTTON_DOWN]==1   || 
+	    keyRepeat[BUTTON_DOWN]%64==0) 
 	  { attack=-1;  	  dirty_graphic=1;}
     }
   
 
   // change oscilltor one and two type
   if (menu        == MENU_OFF && 
-      menu_cursor == OSC )
+      menu_cursor == OSC  && 
+      keyState[BUTTON_B])
     {
       if (keyState[BUTTON_LEFT]) 
-	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%3==0) 
+	if (keyRepeat[BUTTON_LEFT]==1   || 
+	    keyRepeat[BUTTON_LEFT]%3==0) 
 	  { osconetype=-1; 	  dirty_graphic=1;}
       
       if (keyState[BUTTON_RIGHT]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%4==0) 
+	if (keyRepeat[BUTTON_RIGHT]==1   || 
+	    keyRepeat[BUTTON_RIGHT]%4==0) 
 	  { osconetype=1;  	  dirty_graphic=1;}
       
       if (keyState[BUTTON_UP]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%64==0) 
+	if (keyRepeat[BUTTON_UP]==1 || 
+	    keyRepeat[BUTTON_UP]%64==0) 
 	  { osctwotype=1;   	  dirty_graphic=1;}
       
       if (keyState[BUTTON_DOWN])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%64==0) 
+	if (keyRepeat[BUTTON_DOWN]==1 || 
+	    keyRepeat[BUTTON_DOWN]%64==0) 
 	  { osctwotype=-1;  	  dirty_graphic=1;}
     }
 
