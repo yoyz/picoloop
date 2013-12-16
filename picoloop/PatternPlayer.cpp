@@ -114,14 +114,158 @@ enum {
 #define BUTTON_START  SDLK_RETURN
 
 
-//char * tmp_str;
+void display_board_adsr()
+{
+  int i;
+  int cty=SEQ.getCurrentTrackY();
+  for (i=0;i<16;i++)
+    {
+      // Draw trigged box trig color   
+      if (P[cty].getPatternElement(i).getTrig())
+	SG.drawBoxNumber(i,TRIG_COLOR);
+      // AdsR
+      SG.smallBoxNumber(i,P[cty].getPatternElement(i).getRelease(),0,SMALLBOX_COLOR);
+      SG.smallBoxNumber(i,0,P[cty].getPatternElement(i).getAttack(),SMALLBOX_COLOR);      
+    }
+  // Cursor & step postion
+  SG.drawBoxNumber(cursor,CURSOR_COLOR);
+  SG.smallBoxNumber(cursor,P[cty].getPatternElement(cursor).getRelease(),0,SMALLBOX_COLOR);
+  SG.smallBoxNumber(cursor,0,P[cty].getPatternElement(cursor).getAttack(),SMALLBOX_COLOR); 
+  
+  SG.drawBoxNumber(step,STEP_COLOR);  
+  SG.smallBoxNumber(step,P[cty].getPatternElement(step).getRelease(),0,SMALLBOX_COLOR);
+  SG.smallBoxNumber(step,0,P[cty].getPatternElement(step).getAttack(),SMALLBOX_COLOR);   
+}
+
+void display_board_note()
+{
+  int i;
+  int  cty=SEQ.getCurrentTrackY();
+
+  if (menu_note==0)      
+    for (i=0;i<16;i++)
+      {
+	// Draw trig note color
+	if (P[cty].getPatternElement(i).getTrig())
+	  SG.drawBoxNumber(i,NOTE_COLOR);
+	
+	SG.smallBoxNumber(i,
+			  (P[cty].getPatternElement(i).getNote()%12)*10,
+			  (P[cty].getPatternElement(i).getNote()/12)*10,
+			  SMALLBOX_COLOR);
+      }
+  // Note C3 
+  if (menu_note==1)
+    {	  
+      for (i=0;i<16;i++)
+	{
+	  // Draw trig note color
+	  if (P[cty].getPatternElement(i).getTrig())
+	    SG.drawBoxNumber(i,NOTE_COLOR);
+	  
+	  if (i==cursor)
+	    SG.drawBoxNumber(cursor,CURSOR_COLOR);
+	  if (i==step)
+	    SG.drawBoxNumber(step,STEP_COLOR);  
+	  
+	  if (P[cty].getPatternElement(i).getTrig())
+	    SG.drawTTFTextNumberFirstLine(i,P[cty].getPatternElement(i).getNoteCharStar());
+	}
+    }
+  // Note Cursor
+  if (menu_note==0)
+    {
+      
+      SG.drawBoxNumber(cursor,CURSOR_COLOR);
+      SG.drawBoxNumber(step,STEP_COLOR);  
+      
+      SG.smallBoxNumber(cursor,
+			(P[cty].getPatternElement(cursor).getNote()%12)*10,
+			(P[cty].getPatternElement(cursor).getNote()/12)*10,
+			SMALLBOX_COLOR);
+      SG.smallBoxNumber(step,  
+			(P[cty].getPatternElement(step).getNote()%12)*10,
+			(P[cty].getPatternElement(step).getNote()/12)*10,
+			SMALLBOX_COLOR);
+    }
+  
+}
+
+
+void display_board_vco()
+{
+  int i;
+  int cty=SEQ.getCurrentTrackY();
+  for (i=0;i<16;i++)
+    {
+      // Draw trigged box trig color   
+      //	  if (P[cty].getPatternElement(i).getTrig())
+      //	    SG.drawBoxNumber(i,TRIG_COLOR);
+      // AdsR
+      if (P[cty].getPatternElement(i).getTrig())
+	{	      
+	  if (P[cty].getPatternElement(i).getTrig())
+	    SG.drawBoxNumber(i,NOTE_COLOR);
+	  SG.smallBoxNumber(i,P[cty].getPatternElement(i).getVCOMix(),0,SMALLBOX_COLOR);
+	  if (i==cursor) SG.smallBoxNumber(i,P[cty].getPatternElement(i).getVCOMix(),0,CURSOR_COLOR);
+	  if (i==step) SG.smallBoxNumber(i,P[cty].getPatternElement(i).getVCOMix(),0,STEP_COLOR);
+	}
+      //	  SG.smallBoxNumber(i,0,P[cty].getPatternElement(i).getAttack(),SMALLBOX_COLOR);      
+      else
+	{
+	  /*
+	    if (i==cursor) SG.drawBoxNumber(cursor,CURSOR_COLOR);
+	    if (i=step)    SG.drawBoxNumber(step,STEP_COLOR);  
+	    
+	    if (i==cursor) SG.smallBoxNumber(i,P[cty].getPatternElement(i).getVCOMix(),0,CURSOR_COLOR);
+	    if (i==step)   SG.smallBoxNumber(i,P[cty].getPatternElement(i).getVCOMix(),0,STEP_COLOR);
+	  */
+	}
+    }
+  // Cursor & step postion
+  //      SG.drawBoxNumber(cursor,CURSOR_COLOR);
+  //      SG.smallBoxNumber(cursor,P[cty].getPatternElement(cursor).getVCOMix(),0,SMALLBOX_COLOR);
+  //      SG.smallBoxNumber(cursor,0,P[cty].getPatternElement(cursor).getAttack(),SMALLBOX_COLOR); 
+  
+  //      SG.drawBoxNumber(step,STEP_COLOR);  
+  //      SG.smallBoxNumber(step,P[cty].getPatternElement(step).getVCOMix(),0,SMALLBOX_COLOR);
+  //      SG.smallBoxNumber(step,0,P[cty].getPatternElement(step).getAttack(),SMALLBOX_COLOR); 
+}
+
+
+void display_board_osc()
+{
+  int  i;
+  int  cty=SEQ.getCurrentTrackY();
+
+  for (i=0;i<16;i++)
+    {
+      if (P[cty].getPatternElement(i).getTrig())
+	{
+	  SG.drawBoxNumber(i,TRIG_COLOR);
+	  if (i==cursor)       SG.drawBoxNumber(cursor,CURSOR_COLOR);
+	  if (i==step)         SG.drawBoxNumber(step,STEP_COLOR);  
+	  SG.drawTTFTextNumberFirstLine(i, P[cty].getPatternElement(i).getOscOneTypeCharStar());
+	  SG.drawTTFTextNumberSecondLine(i,P[cty].getPatternElement(i).getOscTwoTypeCharStar());
+	}
+      else
+	{
+	  if (i==cursor)SG.drawBoxNumber(cursor,CURSOR_COLOR);
+	  if (i==step)  SG.drawBoxNumber(step,STEP_COLOR);  
+	}
+      
+    }
+
+}
+
 
 void display_board()
 {
-  int i;
+  int  i;
+  int  cty=SEQ.getCurrentTrackY();
   char str_up[8];
   char str_down[24];
-  int  cty=SEQ.getCurrentTrackY();
+
   dirty_graphic=0;
 
   SG.clearScreen();
@@ -163,83 +307,31 @@ void display_board()
   for (i=0;i<16;i++)
     { SG.drawBoxNumber(i,BOX_COLOR); }
      
-
-
-
   // Attack/Release
   if (menu_cursor==AD)
     {
-      for (i=0;i<16;i++)
-	{
-	  // Draw trigged box trig color   
-	  if (P[cty].getPatternElement(i).getTrig())
-	    SG.drawBoxNumber(i,TRIG_COLOR);
-	  // AdsR
-	  SG.smallBoxNumber(i,P[cty].getPatternElement(i).getRelease(),0,SMALLBOX_COLOR);
-	  SG.smallBoxNumber(i,0,P[cty].getPatternElement(i).getAttack(),SMALLBOX_COLOR);      
-	}
-      // Cursor & step postion
-      SG.drawBoxNumber(cursor,CURSOR_COLOR);
-      SG.smallBoxNumber(cursor,P[cty].getPatternElement(cursor).getRelease(),0,SMALLBOX_COLOR);
-      SG.smallBoxNumber(cursor,0,P[cty].getPatternElement(cursor).getAttack(),SMALLBOX_COLOR); 
-      
-      SG.drawBoxNumber(step,STEP_COLOR);  
-      SG.smallBoxNumber(step,P[cty].getPatternElement(step).getRelease(),0,SMALLBOX_COLOR);
-      SG.smallBoxNumber(step,0,P[cty].getPatternElement(step).getAttack(),SMALLBOX_COLOR); 
+      display_board_adsr();
     }
-
-
 
   // Note
   if (menu_cursor==NOTE)
     {
-      if (menu_note==0)      
-	for (i=0;i<16;i++)
-	  {
-	    // Draw trig note color
-	    if (P[cty].getPatternElement(i).getTrig())
-	      SG.drawBoxNumber(i,NOTE_COLOR);
-	    
-	    SG.smallBoxNumber(i,
-			      (P[cty].getPatternElement(i).getNote()%12)*10,
-			      (P[cty].getPatternElement(i).getNote()/12)*10,
-			      SMALLBOX_COLOR);
-	  }
-      // Note C3 
-      if (menu_note==1)
-	{	  
-	  for (i=0;i<16;i++)
-	    {
-	      // Draw trig note color
-	      if (P[cty].getPatternElement(i).getTrig())
-		SG.drawBoxNumber(i,NOTE_COLOR);
-	      
-	      if (i==cursor)
-		SG.drawBoxNumber(cursor,CURSOR_COLOR);
-	      if (i==step)
-		SG.drawBoxNumber(step,STEP_COLOR);  
-
-	      if (P[cty].getPatternElement(i).getTrig())
-		SG.drawTTFTextNumberFirstLine(i,P[cty].getPatternElement(i).getNoteCharStar());
-	    }
-	}
-      // Note Cursor
-      if (menu_note==0)
-	{
-
-	  SG.drawBoxNumber(cursor,CURSOR_COLOR);
-	  SG.drawBoxNumber(step,STEP_COLOR);  
-    
-	  SG.smallBoxNumber(cursor,
-			    (P[cty].getPatternElement(cursor).getNote()%12)*10,
-			    (P[cty].getPatternElement(cursor).getNote()/12)*10,
-			    SMALLBOX_COLOR);
-	  SG.smallBoxNumber(step,  
-			    (P[cty].getPatternElement(step).getNote()%12)*10,
-			    (P[cty].getPatternElement(step).getNote()/12)*10,
-			    SMALLBOX_COLOR);
-	}
+      display_board_note();
     }
+
+
+  // VCO
+  if (menu_cursor==VCO)
+    {
+      display_board_vco();
+    }
+
+  // OSC
+  if (menu_cursor==OSC)
+    {
+      display_board_osc();
+    }
+
 
   if (menu==MENU_OFF && 
       menu_cursor==LS)
@@ -267,66 +359,6 @@ void display_board()
 	  SG.drawTTFTextLoadSaveBoxNumer(x,y,tmp_txt);
     }
 
-
-  // VCO
-  if (menu_cursor==VCO)
-    {
-      for (i=0;i<16;i++)
-	{
-	  // Draw trigged box trig color   
-	  //	  if (P[cty].getPatternElement(i).getTrig())
-	  //	    SG.drawBoxNumber(i,TRIG_COLOR);
-	  // AdsR
-	  if (P[cty].getPatternElement(i).getTrig())
-	    {	      
-	    if (P[cty].getPatternElement(i).getTrig())
-	      SG.drawBoxNumber(i,NOTE_COLOR);
-	      SG.smallBoxNumber(i,P[cty].getPatternElement(i).getVCOMix(),0,SMALLBOX_COLOR);
-	      if (i==cursor) SG.smallBoxNumber(i,P[cty].getPatternElement(i).getVCOMix(),0,CURSOR_COLOR);
-	      if (i==step) SG.smallBoxNumber(i,P[cty].getPatternElement(i).getVCOMix(),0,STEP_COLOR);
-	    }
-	  //	  SG.smallBoxNumber(i,0,P[cty].getPatternElement(i).getAttack(),SMALLBOX_COLOR);      
-	  else
-	    {
-	      /*
-	      if (i==cursor) SG.drawBoxNumber(cursor,CURSOR_COLOR);
-	      if (i=step)    SG.drawBoxNumber(step,STEP_COLOR);  
-
-	      if (i==cursor) SG.smallBoxNumber(i,P[cty].getPatternElement(i).getVCOMix(),0,CURSOR_COLOR);
-	      if (i==step)   SG.smallBoxNumber(i,P[cty].getPatternElement(i).getVCOMix(),0,STEP_COLOR);
-	      */
-	    }
-	}
-      // Cursor & step postion
-      //      SG.drawBoxNumber(cursor,CURSOR_COLOR);
-      //      SG.smallBoxNumber(cursor,P[cty].getPatternElement(cursor).getVCOMix(),0,SMALLBOX_COLOR);
-      //      SG.smallBoxNumber(cursor,0,P[cty].getPatternElement(cursor).getAttack(),SMALLBOX_COLOR); 
-      
-      //      SG.drawBoxNumber(step,STEP_COLOR);  
-      //      SG.smallBoxNumber(step,P[cty].getPatternElement(step).getVCOMix(),0,SMALLBOX_COLOR);
-      //      SG.smallBoxNumber(step,0,P[cty].getPatternElement(step).getAttack(),SMALLBOX_COLOR); 
-    }
-  
-  if (menu_cursor==OSC)
-    {
-      for (i=0;i<16;i++)
-	{
-	  if (P[cty].getPatternElement(i).getTrig())
-	    {
-	      SG.drawBoxNumber(i,TRIG_COLOR);
-	      if (i==cursor)       SG.drawBoxNumber(cursor,CURSOR_COLOR);
-	      if (i==step)         SG.drawBoxNumber(step,STEP_COLOR);  
-	      SG.drawTTFTextNumberFirstLine(i, P[cty].getPatternElement(i).getOscOneTypeCharStar());
-	      SG.drawTTFTextNumberSecondLine(i,P[cty].getPatternElement(i).getOscTwoTypeCharStar());
-	    }
-	  else
-	    {
-	      if (i==cursor)SG.drawBoxNumber(cursor,CURSOR_COLOR);
-	      if (i==step)  SG.drawBoxNumber(step,STEP_COLOR);  
-	    }
-
-	}
-    }
 
 
   SG.refresh();
