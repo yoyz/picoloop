@@ -267,17 +267,17 @@ void display_board()
   if (menu==MENU_ON_PAGE2 && menu_cursor==FLTR)  sprintf(str_down," OSC  LFO  [FLTR] FX ",cty);
   if (menu==MENU_ON_PAGE2 && menu_cursor==FX)    sprintf(str_down," OSC  LFO   FLTR [FX]",cty);
 
-  if (menu==0)                       sprintf(str_down,"                     ",cty);
+  if (menu==0)                                   sprintf(str_down,"                     ",cty);
 
-  if (menu_cursor==AD)               sprintf(str_up,"A/R ");
-  if (menu_cursor==NOTE)             sprintf(str_up,"Note");
-  if (menu_cursor==LS)               sprintf(str_up,"L/S ");
-  if (menu_cursor==VCO)              sprintf(str_up,"VCO ");
+  if (menu_cursor==AD)                           sprintf(str_up,"A/R ");
+  if (menu_cursor==NOTE)                         sprintf(str_up,"Note");
+  if (menu_cursor==LS)                           sprintf(str_up,"L/S ");
+  if (menu_cursor==VCO)                          sprintf(str_up,"VCO ");
 
-  if (menu_cursor==OSC)              sprintf(str_up,"OSC ");
-  if (menu_cursor==LFO)              sprintf(str_up,"LFO");
-  if (menu_cursor==FLTR)             sprintf(str_up,"FLTR ");
-  if (menu_cursor==FX)               sprintf(str_up,"FX ");
+  if (menu_cursor==OSC)                          sprintf(str_up,"OSC ");
+  if (menu_cursor==LFO)                          sprintf(str_up,"LFO");
+  if (menu_cursor==FLTR)                         sprintf(str_up,"FLTR ");
+  if (menu_cursor==FX)                           sprintf(str_up,"FX ");
 
 
   SG.guiTTFText(200,40,str_up);
