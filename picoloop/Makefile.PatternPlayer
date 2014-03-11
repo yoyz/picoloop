@@ -1,18 +1,23 @@
 CC=g++
-CFLAGS=-c -DLINUX -I. -LSDL/lib -ggdb -pg
-LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf -lpthread  RtAudio.o  -pg
+#CFLAGS=-c -DLINUX -I. -LSDL/lib -ggdb -pg
+#LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf -lpthread  RtAudio.o  -pg
+#LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf -lpthread  RtAudio.o 
+
+#CFLAGS=-c -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP
 
 CFLAGS=-c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb
-LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf -lpthread  RtAudio.o 
+LDFLAGS=-lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread 
+OBJTOLINK=RtAudio.o
 
-SOURCES=Wave.cpp Synth.cpp Instrument.cpp Machine.cpp Track.cpp AudioMixer.cpp AudioEngine.cpp PatternElement.cpp Pattern.cpp PatternPlayer.cpp PatternReader.cpp Oscillator.cpp SineOscillator.cpp SawOscillator.cpp  FuzzyPulseOscillator.cpp  PulseOscillator.cpp MonoMixer.cpp ADSR.cpp SDL_GUI.cpp InputManager.cpp VCO.cpp Sequencer.cpp
+SOURCES=Wave.cpp Synth.cpp Instrument.cpp Machine.cpp Track.cpp AudioMixer.cpp AudioEngine.cpp PatternElement.cpp Pattern.cpp PatternPlayer.cpp PatternReader.cpp Oscillator.cpp SineOscillator.cpp SawOscillator.cpp  FuzzyPulseOscillator.cpp PulseOscillator.cpp  MonoMixer.cpp ADSR.cpp SDL_GUI.cpp VCO.cpp Sequencer.cpp InputManager.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=PatternPlayer
 
 all: $(SOURCES) $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJECTS)
-	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
+	$(CC) $(OBJTOLINK)  $(OBJECTS) -o $@ $(LDFLAGS)
+#	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
 
 .cpp.o:
 	$(CC) $(CFLAGS) $< -o $@
