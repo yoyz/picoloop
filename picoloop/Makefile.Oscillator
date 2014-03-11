@@ -1,14 +1,18 @@
 CC=g++
 CFLAGS=-c -DLINUX -I. -LSDL/lib -g -fpermissive -DLINUX_DESKTOP
-LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf RtAudio.o  
+LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf -lpthread -lasound
+
+OBJTOLINK=RtAudio.o
+
 SOURCES=Osc.cpp AudioEngine.cpp Instrument.cpp Synth.cpp Oscillator.cpp FuzzyPulseOscillator.cpp SineOscillator.cpp SawOscillator.cpp AudioMixer.cpp  Wave.cpp Track.cpp Machine.cpp MonoMixer.cpp ADSR.cpp PatternElement.cpp VCO.cpp PulseOscillator.cpp InputManager.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=Oscillator
 
+
 all: $(SOURCES) $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJECTS)
-	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
+	$(CC) $(OBJTOLINK) $(OBJECTS) -o $@ $(LDFLAGS) 
 
 .cpp.o:
 	$(CC) $(CFLAGS) $< -o $@
