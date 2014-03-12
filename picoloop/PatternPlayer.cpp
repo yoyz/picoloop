@@ -164,28 +164,34 @@ void display_board()
     { SG.drawBoxNumber(i,BOX_COLOR); }
      
 
-
-
   // Attack/Release
   if (menu_cursor==AD)
     {
+      // Cursor & step postion      
+      SG.drawBoxNumber(cursor,CURSOR_COLOR);
+      //SG.smallBoxNumber(cursor,P[cty].getPatternElement(cursor).getRelease(),0,SMALLBOX_COLOR);
+      //SG.smallBoxNumber(cursor,0,P[cty].getPatternElement(cursor).getAttack(),SMALLBOX_COLOR); 
+      
+      SG.drawBoxNumber(step,STEP_COLOR);  
+      //SG.smallBoxNumber(step,P[cty].getPatternElement(step).getRelease(),0,SMALLBOX_COLOR);
+      //SG.smallBoxNumber(step,0,P[cty].getPatternElement(step).getAttack(),SMALLBOX_COLOR); 
+
       for (i=0;i<16;i++)
 	{
 	  // Draw trigged box trig color   
 	  if (P[cty].getPatternElement(i).getTrig())
-	    SG.drawBoxNumber(i,TRIG_COLOR);
-	  // AdsR
-	  SG.smallBoxNumber(i,P[cty].getPatternElement(i).getRelease(),0,SMALLBOX_COLOR);
-	  SG.smallBoxNumber(i,0,P[cty].getPatternElement(i).getAttack(),SMALLBOX_COLOR);      
+	    {
+	      SG.drawBoxNumber(i,TRIG_COLOR);
+	      if (i==cursor)
+		SG.drawBoxNumber(cursor,CURSOR_COLOR);
+	      if (i==step)
+		SG.drawBoxNumber(step,STEP_COLOR);  
+
+	      // AdsR
+	      SG.smallBoxNumber(i,P[cty].getPatternElement(i).getRelease(),0,SMALLBOX_COLOR);
+	      SG.smallBoxNumber(i,0,P[cty].getPatternElement(i).getAttack(),SMALLBOX_COLOR);      
+	    }
 	}
-      // Cursor & step postion
-      SG.drawBoxNumber(cursor,CURSOR_COLOR);
-      SG.smallBoxNumber(cursor,P[cty].getPatternElement(cursor).getRelease(),0,SMALLBOX_COLOR);
-      SG.smallBoxNumber(cursor,0,P[cty].getPatternElement(cursor).getAttack(),SMALLBOX_COLOR); 
-      
-      SG.drawBoxNumber(step,STEP_COLOR);  
-      SG.smallBoxNumber(step,P[cty].getPatternElement(step).getRelease(),0,SMALLBOX_COLOR);
-      SG.smallBoxNumber(step,0,P[cty].getPatternElement(step).getAttack(),SMALLBOX_COLOR); 
     }
 
 
