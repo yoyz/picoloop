@@ -4,6 +4,8 @@ using namespace std;
 #include <unistd.h>
 #include <iostream>
 #include <string.h>
+
+#include "Master.h"
 #include "Note.h"
 #include "PatternReader.h"
 #include "PatternPlayer.h"
@@ -1006,4 +1008,5 @@ int main()
   AE.closeAudio();
   //sleep(10);
   //PE.print();
+  printf("Exiting PatternPlayer\n");
 }
