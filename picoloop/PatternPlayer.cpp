@@ -215,6 +215,9 @@ void display_board()
       // Note C3 
       if (menu_note==1)
 	{	  
+	  SG.drawBoxNumber(step,STEP_COLOR);  
+	  SG.drawBoxNumber(cursor,CURSOR_COLOR);
+
 	  for (i=0;i<16;i++)
 	    {
 	      // Draw trig note color
@@ -226,9 +229,10 @@ void display_board()
 		    SG.drawBoxNumber(cursor,CURSOR_COLOR);
 		  if (i==step)
 		    SG.drawBoxNumber(step,STEP_COLOR);  
+		  SG.drawTTFTextNumberFirstLine(i,P[cty].getPatternElement(i).getNoteCharStar());
 		}
-	      if (P[cty].getPatternElement(i).getTrig())
-		SG.drawTTFTextNumberFirstLine(i,P[cty].getPatternElement(i).getNoteCharStar());
+	      //      if (P[cty].getPatternElement(i).getTrig())
+		
 	    }
 	}
       // Note Cursor
@@ -381,13 +385,19 @@ void handle_key()
 	  break;
 
 	case MENU_ON_PAGE1: 
-	  menu=MENU_ON_PAGE2; 
-	  menu_cursor+=4; 
+	  menu=MENU_ON_PAGE2;
+	  if (menu_cursor<3)
+	    menu_cursor+=4; 
+	  else
+	    menu_cursor=4;
 	  break;
 
 	case MENU_ON_PAGE2: 
 	  menu=MENU_ON_PAGE1; 
-	  menu_cursor-=4; 
+	  if (menu_cursor>4)
+	    menu_cursor-=4; 
+	  else
+	    menu_cursor=0;
 	  break;
 
 	  //	case MENU_ON_PAGE1: menu=MENU_OFF;      break;
@@ -396,7 +406,7 @@ void handle_key()
 	}
       dirty_graphic=1;
       IE.clearLastKeyEvent();
-      printf("[global menu : %d]\n",menu);
+      printf("[gmenu : %d cmenu : %d]\n",menu,menu_cursor);
     }
 
   //leave menu mode
@@ -857,6 +867,12 @@ int seq()
 	    {
 	      P[cty].setPatternElement(cursor,PE);
 	      P[cty].getPatternElement(cursor).setTrig(true);
+	      if (P[cty].getPatternElement(cursor).getNote()==0)
+		{
+		  P[cty].getPatternElement(cursor).setAttack(8);
+		  P[cty].getPatternElement(cursor).setRelease(64);
+		  P[cty].getPatternElement(cursor).setNote(32);
+		}
 	    }
 	  invert_trig=0;
 	}
