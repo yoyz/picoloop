@@ -92,7 +92,10 @@ bool PatternReader::PatternDataExist(int PatternNumber,int TrackNumber)
 bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern & P)
 {
   PatternElement Pe;
-  int PatNum,TrackNum,PatSize;
+  FILE *fd;
+  int PatNum;
+  int TrackNum;
+  int PatSize;
   int n[16];
   int t[16];
   int i;
@@ -101,8 +104,14 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
   char * line;
   line=(char*)malloc(1024);
 
+
   //check if file name can be open
   fd=fopen(fn.c_str(),"r+");
+  if (fd==0)
+    {
+      printf("[data file %s not found]\n",fn.c_str());
+      exit(213);
+    }
 
   while (match==0 && retcode==true)
     {
@@ -120,6 +129,11 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
 	match=1;
       if ( catcheof==NULL)
 	retcode=false;
+    }
+  if (retcode==false)
+    {
+      P.setPatternSize(16);
+      return false;
     }
 
   P.setPatternSize(PatSize);
@@ -340,38 +354,46 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
 
 
 bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P)
-{
-  FILE *fd;
-  int PatNum,TrackNum,PatSize;
+{  
+  FILE         * fd=NULL;
+  int            PatNum=0;
+  int            TrackNum=0;
+  int            PatSize=0;  
+  int            match=0;
   vector<string> data;
-  int match=0;
-  bool retcode=true;
-  char * line;
-  char * line2;
-  char * catcheof;
+  bool           retcode=true;
+  bool           found=false;
+  char         * line=NULL;
+  char         * line2=NULL;
+  char         * catcheof=NULL;
   line=(char*)malloc(1024);
   line2=(char*)malloc(1024);
-  bool found=false;
 
+  //  printf("SIZE:%d\n",P.getSize());
+  //  exit(1);
 
   //  loadedData[PatternNumber][TrackNumber]==0;
   //savedData[PatternNumber][TrackNumber]==0;
 
   
   fd=fopen(fn.c_str(),"r+");
-  
+  if (fd==0)
+    {
+      printf("[data file %s not found]\n",fn.c_str());
+      exit(213);
+    }
+
   while (retcode==true)
     {
       catcheof=fgets(line,512,fd);
-      sscanf(line,"Pattern %d Track %d",
+      sscanf(line,"Pattern %d Track %d ",
 	     &PatNum,&TrackNum);
-      if (PatNum    ==PatternNumber &&
-	  TrackNum  ==TrackNumber)
+      if (PatNum    ==  PatternNumber &&
+	  TrackNum  ==  TrackNumber)
 	found=true;
       else
 	{
 	  data.insert(data.end(),line);
-	  //printf("%s",line);
 	}
       if ( catcheof==NULL)
 	retcode=false;
@@ -418,8 +440,6 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
   sprintf(line+strlen(line),"\n");
   data.insert(data.end(),line);
 
-
-
   for (int i=0; i< P.getSize();i++)
     {
       if (i==0)
@@ -456,7 +476,6 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
   sprintf(line+strlen(line),"\n");
   data.insert(data.end(),line);
 
-
   for (int i=0; i< P.getSize();i++)
     {
       if (i==0)
@@ -465,7 +484,6 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
     }
   sprintf(line+strlen(line),"\n");
   data.insert(data.end(),line);
-
 
   for (int i=0; i< P.getSize();i++)
     {
@@ -492,14 +510,6 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
   fclose(fd);
 
   loadedData[PatternNumber][TrackNumber]=DATA_EXIST_ON_STORAGE;
-  //printf("%d",data.size());
-  //  for (int i=0; i< data.size();i++)
-  //  {
-  //        cout << data[i] ;
-  //      }
-
-  
-  
 }
 
 
