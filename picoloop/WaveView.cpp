@@ -313,29 +313,12 @@ void prepare_vector_buffer()
       j=offset+i*zoom;
       if (j<=filesize_octet*2)
 	{
-	  //	  if (zoom<=1.0)
-	    y_value=file_buffer[j]/divide;
-	    /*
-	  else
-	    {
-	      average=0;
-	      counter=0;
-	      for (idx=j;idx<offset+(i+1)*zoom;idx++)
-		{
-		  average=average+file_buffer[idx];
-		  counter++;
-		  idx++;
-
-		  }
-	      printf("%d %d\n",counter,average);
-	      vector_buffer[i]=(average/counter)/divide;
-	      continue;
-	    }
-	    */
+	  y_value=file_buffer[j]/divide;
  	}
       else
-	y_value=0;
-
+	{
+	  y_value=0;      
+	}
       vector_buffer[i]=y_value;
     }
 }
