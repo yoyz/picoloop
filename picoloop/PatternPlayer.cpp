@@ -155,7 +155,7 @@ void display_board()
   if (menu_cursor==M_OSC)              sprintf(str_up,"OSC ");
   if (menu_cursor==M_LFO)              sprintf(str_up,"LFO");
   if (menu_cursor==M_FLTR)             sprintf(str_up,"FLTR ");
-  if (menu_cursor==M_BPM)              sprintf(str_up,"BPM ");
+  if (menu_cursor==M_BPM)              sprintf(str_up,"BPM %d",tempo);
 
 
   SG.guiTTFText(200,40,str_up);
@@ -349,6 +349,8 @@ void display_board()
 
 	}
     }
+
+
 
 
   SG.refresh();
@@ -546,6 +548,7 @@ void handle_key()
     }
   
   
+  // M_AD
   // Move Attack Release 
   // Insert/Remove Trig
   if (menu          == MENU_OFF && 
@@ -576,6 +579,7 @@ void handle_key()
 	  { attack=-1; 	  dirty_graphic=1; }
     }  
   
+  // M_NOTE
   // change note
   // copy/paste
   if (menu        == MENU_OFF && 
@@ -609,67 +613,69 @@ void handle_key()
     }  
   
 
-  // in the load/save view 
-  // move loasavecursor position 
-  // Save/load Pattern
-  if (menu        == MENU_OFF && 
-      menu_cursor == M_LS     && 
-      keyState[BUTTON_B])
+  // M_LS
+  // Load/Save 
+  if (menu_cursor == M_LS)
     {
-      if (keyState[BUTTON_DOWN])
-	save=true;
-      if (keyState[BUTTON_UP])	
-	load=true;
-    }
-
-  // in the load/save view 
-  // move loasavecursor position 
-  // Save/load bund of Pattern
-
-  if (menu        == MENU_OFF && 
-      menu_cursor == M_LS     && 
-      keyState[BUTTON_A] )
-    {
-      if (keyState[BUTTON_DOWN])
-	saveall=true;
-      if (keyState[BUTTON_UP])	
-	loadall=true;
-    }
-
-
-  // in the load/save view 
-  // move load/save cursor position 
-  if (menu        == MENU_OFF && 
-      menu_cursor == M_LS &&
-      (!(
-       keyState[BUTTON_B] ||
-       keyState[BUTTON_A])))
-    {
-      if (keyState[BUTTON_LEFT])
-	if (keyRepeat[BUTTON_LEFT]==1  || keyRepeat[BUTTON_LEFT]%64==0)  
-	  { loadsave_cursor_x--;  dirty_graphic=1;}
-
-      if (keyState[BUTTON_RIGHT])
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%64==0) 
-	  { loadsave_cursor_x++;  dirty_graphic=1;}
-
-      if (keyState[BUTTON_UP])
-	if (keyRepeat[BUTTON_UP]==1    || keyRepeat[BUTTON_UP]%64==0)    
-	  { loadsave_cursor_y--;  dirty_graphic=1;}
-
-      if (keyState[BUTTON_DOWN])
-	if (keyRepeat[BUTTON_DOWN]==1  || keyRepeat[BUTTON_DOWN]%64==0)  
-	  { loadsave_cursor_y++;  dirty_graphic=1;}
-	  
-      if (loadsave_cursor_x>15)          { loadsave_cursor_x=0;           }
-      if (loadsave_cursor_x<0)           { loadsave_cursor_x=15;          }
-      if (loadsave_cursor_y>TRACK_MAX-1) { loadsave_cursor_y=0;           }
-      if (loadsave_cursor_y<0)           { loadsave_cursor_y=TRACK_MAX-1; }  
+      // in the load/save view 
+      // move loasavecursor position 
+      // Save/load Pattern
+      if (menu        == MENU_OFF && 
+	  keyState[BUTTON_B])
+	{
+	  if (keyState[BUTTON_DOWN])
+	    save=true;
+	  if (keyState[BUTTON_UP])	
+	    load=true;
+	}
       
-      SEQ.setCurrentTrackY(loadsave_cursor_y);
-
+      // M_LS
+      // in the load/save view 
+      // move loasavecursor position 
+      // Save/load bund of Pattern
+      
+      if (menu        == MENU_OFF && 
+	  keyState[BUTTON_A] )
+	{
+	  if (keyState[BUTTON_DOWN])
+	    saveall=true;
+	  if (keyState[BUTTON_UP])	
+	    loadall=true;
+	}
+      
+      
+      // in the load/save view 
+      // move load/save cursor position 
+      if (menu        == MENU_OFF && 	  
+	  (!(
+	     keyState[BUTTON_B] ||
+	     keyState[BUTTON_A])))
+	{
+	  if (keyState[BUTTON_LEFT])
+	    if (keyRepeat[BUTTON_LEFT]==1  || keyRepeat[BUTTON_LEFT]%64==0)  
+	      { loadsave_cursor_x--;  dirty_graphic=1;}
+	  
+	  if (keyState[BUTTON_RIGHT])
+	    if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%64==0) 
+	      { loadsave_cursor_x++;  dirty_graphic=1;}
+	  
+	  if (keyState[BUTTON_UP])
+	    if (keyRepeat[BUTTON_UP]==1    || keyRepeat[BUTTON_UP]%64==0)    
+	      { loadsave_cursor_y--;  dirty_graphic=1;}
+	  
+	  if (keyState[BUTTON_DOWN])
+	    if (keyRepeat[BUTTON_DOWN]==1  || keyRepeat[BUTTON_DOWN]%64==0)  
+	      { loadsave_cursor_y++;  dirty_graphic=1;}
+	  
+	  if (loadsave_cursor_x>15)          { loadsave_cursor_x=0;           }
+	  if (loadsave_cursor_x<0)           { loadsave_cursor_x=15;          }
+	  if (loadsave_cursor_y>TRACK_MAX-1) { loadsave_cursor_y=0;           }
+	  if (loadsave_cursor_y<0)           { loadsave_cursor_y=TRACK_MAX-1; }  
+	  
+	  SEQ.setCurrentTrackY(loadsave_cursor_y);
+	}
     }
-
+      
 
   // VCO Menu
   // Change Value
