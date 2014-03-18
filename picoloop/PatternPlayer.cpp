@@ -643,7 +643,7 @@ void handle_key()
 	    loadall=true;
 	}
       
-      
+      // M_LS
       // in the load/save view 
       // move load/save cursor position 
       if (menu        == MENU_OFF && 	  
@@ -677,6 +677,7 @@ void handle_key()
     }
       
 
+  // M_VCO
   // VCO Menu
   // Change Value
   if (menu        == MENU_OFF && 
@@ -701,7 +702,8 @@ void handle_key()
 	  { attack=-1;  	  dirty_graphic=1;}
     }
   
-
+  
+  // M_OSC
   // change oscilltor one and two type
   if (menu        == MENU_OFF && 
       menu_cursor == M_OSC )
@@ -723,6 +725,35 @@ void handle_key()
 	  { osctwotype=-1;  	  dirty_graphic=1;}
     }
 
+
+  // M_BPM
+  // change bpm speed
+  if (menu        == MENU_OFF && 
+      menu_cursor == M_BPM )
+    {
+      if (keyState[BUTTON_LEFT] && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%128==0) 
+	  { tempo=tempo-1; 	  dirty_graphic=1; printf("[B+LEFT  t=%d]\n",tempo); }
+
+      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%128==0) 
+	  { tempo=tempo+1; 	  dirty_graphic=1; printf("[B+RIGHT t=%d]\n",tempo);}
+
+      if (keyState[BUTTON_DOWN] && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%128==0) 
+	  { tempo=tempo-10; 	  dirty_graphic=1; printf("[B+DOWN  t=%d]\n",tempo); }
+
+      if (keyState[BUTTON_UP] && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%128==0) 
+	  { tempo=tempo+10; 	  dirty_graphic=1; printf("[B+UP    t=%d]\n",tempo);}
+
+
+      if (tempo < 20) tempo=20;
+      if (tempo > 260) tempo=260;
+
+      nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*tempo);
+    }
+  
 
   int delay=1;
   //printf("sleeping %dms\n",delay);
