@@ -48,7 +48,7 @@ int saveall=false;
 int loadall=false;
 
 
-int tempo=60;
+int tempo=120;
 int nbcb=0;             // current nb audio callback 
 int last_nbcb=0;
 int nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*tempo); // Weird ?
@@ -85,14 +85,14 @@ int dirty_graphic=1;
 
 //menu_cursor
 enum {
-  AD,
-  NOTE,
-  LS,
-  VCO,
-  OSC,
-  LFO,
-  FLTR,
-  FX
+  M_AD,
+  M_NOTE,
+  M_LS,
+  M_VCO,
+  M_OSC,
+  M_LFO,
+  M_FLTR,
+  M_BPM
 };
   
 //menu
@@ -135,27 +135,27 @@ void display_board()
   //  printf("           AD:%d FX:%d\n",AD,FX);
   //  exit(0);
 
-  if (menu==MENU_ON_PAGE1 && menu_cursor==AD)    sprintf(str_down,"[A/R] Note  L/S   VCO ",cty);  
-  if (menu==MENU_ON_PAGE1 && menu_cursor==NOTE)  sprintf(str_down," A/R [Note] L/S   VCO ",cty);
-  if (menu==MENU_ON_PAGE1 && menu_cursor==LS)    sprintf(str_down," A/R  Note [L/S]  VCO ",cty);
-  if (menu==MENU_ON_PAGE1 && menu_cursor==VCO)   sprintf(str_down," A/R  Note  L/S  [VCO]",cty);
+  if (menu==MENU_ON_PAGE1 && menu_cursor==M_AD)    sprintf(str_down,"[A/R] Note  L/S   VCO ",cty);  
+  if (menu==MENU_ON_PAGE1 && menu_cursor==M_NOTE)  sprintf(str_down," A/R [Note] L/S   VCO ",cty);
+  if (menu==MENU_ON_PAGE1 && menu_cursor==M_LS)    sprintf(str_down," A/R  Note [L/S]  VCO ",cty);
+  if (menu==MENU_ON_PAGE1 && menu_cursor==M_VCO)   sprintf(str_down," A/R  Note  L/S  [VCO]",cty);
 
-  if (menu==MENU_ON_PAGE2 && menu_cursor==OSC)   sprintf(str_down,"[OSC] LFO   FLTR  FX ",cty);  
-  if (menu==MENU_ON_PAGE2 && menu_cursor==LFO)   sprintf(str_down," OSC [LFO]  FLTR  FX ",cty);
-  if (menu==MENU_ON_PAGE2 && menu_cursor==FLTR)  sprintf(str_down," OSC  LFO  [FLTR] FX ",cty);
-  if (menu==MENU_ON_PAGE2 && menu_cursor==FX)    sprintf(str_down," OSC  LFO   FLTR [FX]",cty);
+  if (menu==MENU_ON_PAGE2 && menu_cursor==M_OSC)   sprintf(str_down,"[OSC] LFO   FLTR  BPM ",cty);  
+  if (menu==MENU_ON_PAGE2 && menu_cursor==M_LFO)   sprintf(str_down," OSC [LFO]  FLTR  BPM ",cty);
+  if (menu==MENU_ON_PAGE2 && menu_cursor==M_FLTR)  sprintf(str_down," OSC  LFO  [FLTR] BPM ",cty);
+  if (menu==MENU_ON_PAGE2 && menu_cursor==M_BPM)   sprintf(str_down," OSC  LFO   FLTR [BPM]",cty);
 
   if (menu==0)                       sprintf(str_down,"                     ",cty);
 
-  if (menu_cursor==AD)               sprintf(str_up,"A/R ");
-  if (menu_cursor==NOTE)             sprintf(str_up,"Note");
-  if (menu_cursor==LS)               sprintf(str_up,"L/S ");
-  if (menu_cursor==VCO)              sprintf(str_up,"VCO ");
+  if (menu_cursor==M_AD)               sprintf(str_up,"A/R ");
+  if (menu_cursor==M_NOTE)             sprintf(str_up,"Note");
+  if (menu_cursor==M_LS)               sprintf(str_up,"L/S ");
+  if (menu_cursor==M_VCO)              sprintf(str_up,"VCO ");
 
-  if (menu_cursor==OSC)              sprintf(str_up,"OSC ");
-  if (menu_cursor==LFO)              sprintf(str_up,"LFO");
-  if (menu_cursor==FLTR)             sprintf(str_up,"FLTR ");
-  if (menu_cursor==FX)               sprintf(str_up,"FX ");
+  if (menu_cursor==M_OSC)              sprintf(str_up,"OSC ");
+  if (menu_cursor==M_LFO)              sprintf(str_up,"LFO");
+  if (menu_cursor==M_FLTR)             sprintf(str_up,"FLTR ");
+  if (menu_cursor==M_BPM)              sprintf(str_up,"BPM ");
 
 
   SG.guiTTFText(200,40,str_up);
@@ -167,7 +167,7 @@ void display_board()
      
 
   // Attack/Release
-  if (menu_cursor==AD)
+  if (menu_cursor==M_AD)
     {
       // Cursor & step postion      
       SG.drawBoxNumber(cursor,CURSOR_COLOR);
@@ -194,7 +194,7 @@ void display_board()
 
 
   // Note
-  if (menu_cursor==NOTE)
+  if (menu_cursor==M_NOTE)
     {
 
       if (menu_note==0)
@@ -263,7 +263,7 @@ void display_board()
     }
 
   if (menu==MENU_OFF && 
-      menu_cursor==LS)
+      menu_cursor==M_LS)
     {
       printf("HIT\n");
       int x,y;
@@ -290,7 +290,7 @@ void display_board()
 
 
   // VCO
-  if (menu_cursor==VCO)
+  if (menu_cursor==M_VCO)
     {
       SG.drawBoxNumber(cursor,CURSOR_COLOR);
       SG.drawBoxNumber(step,STEP_COLOR);  
@@ -329,7 +329,7 @@ void display_board()
 	}
     }
 
-  if (menu_cursor==OSC)
+  if (menu_cursor==M_OSC)
     {
       for (i=0;i<16;i++)
 	{
@@ -420,7 +420,7 @@ void handle_key()
   
   if (lastKey     ==  BUTTON_START  && 
       lastEvent   ==  SDL_KEYUP     && 
-      menu_cursor ==  NOTE)
+      menu_cursor ==  M_NOTE)
     {
       if      (menu_note==0)        { menu_note=1;  }
       else if (menu_note==1)        { menu_note=0;  }   
@@ -439,8 +439,8 @@ void handle_key()
 	  if (keyRepeat[BUTTON_LEFT]    == 1 || 
 	      keyRepeat[BUTTON_LEFT]%64 == 0)
 	    menu_cursor--;
-	  if (menu_cursor<AD  && menu==MENU_ON_PAGE1) menu_cursor=VCO;
-	  if (menu_cursor<OSC && menu==MENU_ON_PAGE2) menu_cursor=FX;
+	  if (menu_cursor<M_AD  && menu==MENU_ON_PAGE1) menu_cursor=M_VCO;
+	  if (menu_cursor<M_OSC && menu==MENU_ON_PAGE2) menu_cursor=M_BPM;
 	  dirty_graphic=1;
 	  printf("\t\t[menu_cursor:%d]\n",menu_cursor);
 	  printf("key left\n");            
@@ -451,8 +451,8 @@ void handle_key()
 	  if (keyRepeat[BUTTON_RIGHT]    == 1 || 
 	      keyRepeat[BUTTON_RIGHT]%64 == 0)
 	    menu_cursor++;
-	  if (menu_cursor>VCO && menu==MENU_ON_PAGE1) menu_cursor=AD;
-	  if (menu_cursor>FX  && menu==MENU_ON_PAGE2) menu_cursor=OSC;
+	  if (menu_cursor>M_VCO  && menu==MENU_ON_PAGE1) menu_cursor=M_AD;
+	  if (menu_cursor>M_BPM  && menu==MENU_ON_PAGE2) menu_cursor=M_OSC;
 	  dirty_graphic=1;
 	  printf("\t\t[menu_cursor:%d]\n",menu_cursor);
 	  printf("key right\n");            
@@ -492,10 +492,10 @@ void handle_key()
   
   
   //MOVE the cursor : LEFT UP DOWN RIGHT   
-  if ((menu==MENU_OFF && menu_cursor==AD    ||
-       menu==MENU_OFF && menu_cursor==NOTE  ||
-       menu==MENU_OFF && menu_cursor==VCO   ||
-       menu==MENU_OFF && menu_cursor==OSC
+  if ((menu==MENU_OFF && menu_cursor==M_AD    ||
+       menu==MENU_OFF && menu_cursor==M_NOTE  ||
+       menu==MENU_OFF && menu_cursor==M_VCO   ||
+       menu==MENU_OFF && menu_cursor==M_OSC
        ) &&
       !keyState[BUTTON_B]                   &&
       !keyState[BUTTON_A]
@@ -549,7 +549,7 @@ void handle_key()
   // Move Attack Release 
   // Insert/Remove Trig
   if (menu          == MENU_OFF && 
-      menu_cursor   == AD)
+      menu_cursor   == M_AD)
     {
       if (lastKey   == BUTTON_A && 
 	  lastEvent == SDL_KEYDOWN)
@@ -579,7 +579,7 @@ void handle_key()
   // change note
   // copy/paste
   if (menu        == MENU_OFF && 
-      menu_cursor == NOTE)
+      menu_cursor == M_NOTE)
     {
       // copy/paste/insert/delete trig 
       if (lastKey   == BUTTON_A && 
@@ -613,7 +613,7 @@ void handle_key()
   // move loasavecursor position 
   // Save/load Pattern
   if (menu        == MENU_OFF && 
-      menu_cursor == LS       && 
+      menu_cursor == M_LS     && 
       keyState[BUTTON_B])
     {
       if (keyState[BUTTON_DOWN])
@@ -627,7 +627,7 @@ void handle_key()
   // Save/load bund of Pattern
 
   if (menu        == MENU_OFF && 
-      menu_cursor == LS       && 
+      menu_cursor == M_LS     && 
       keyState[BUTTON_A] )
     {
       if (keyState[BUTTON_DOWN])
@@ -640,7 +640,7 @@ void handle_key()
   // in the load/save view 
   // move load/save cursor position 
   if (menu        == MENU_OFF && 
-      menu_cursor == LS &&
+      menu_cursor == M_LS &&
       (!(
        keyState[BUTTON_B] ||
        keyState[BUTTON_A])))
@@ -674,7 +674,7 @@ void handle_key()
   // VCO Menu
   // Change Value
   if (menu        == MENU_OFF && 
-      menu_cursor == VCO      &&
+      menu_cursor == M_VCO    &&
       keyState[BUTTON_B]
       )
     {
@@ -698,7 +698,7 @@ void handle_key()
 
   // change oscilltor one and two type
   if (menu        == MENU_OFF && 
-      menu_cursor == OSC )
+      menu_cursor == M_OSC )
     {
       if (keyState[BUTTON_LEFT] && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%128==0) 
