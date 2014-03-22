@@ -9,9 +9,12 @@ using namespace std;
 #include "AudioEngine.h"
 #include "MonoMixer.h" 
 #include "InputManager.h"
+#include "SDL_GUI.h"
 
+SDL_GUI        SG;          // used to  initialize video
 AudioEngine    AE;          // used to  init alsa/rtaudio
 InputManager   IE;          // used to  fetch key
+
 vector <Machine   *>        M(TRACK_MAX);
 vector <MonoMixer *>        MM(TRACK_MAX);
 
@@ -79,26 +82,7 @@ void openaudio()
 
 void init_video()
 {
-  if ( SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0 )
-    {
-      fprintf(stderr, "Couldn't initialize SDL: %s\n", SDL_GetError());
-      exit(1);
-    }
-  
-  printf("SDL initialized.\n");
- 
-  screen = SDL_SetVideoMode(SCREEN_WIDTH, 
-			    SCREEN_HEIGHT, 
-			    SCREEN_DEPTH,			
-			    SDL_SWSURFACE|SDL_DOUBLEBUF|SDL_HWACCEL);
-  
-  if (screen == NULL)
-    {
-      fprintf(stderr, "Couldn't set video mode: %s\n", SDL_GetError());
-      SDL_Quit();
-      exit(1);
-    }
-
+  SG.initVideo();
 }
 
 
@@ -303,7 +287,11 @@ void draw_screen()
   // int h the height of the rectangle
 
   //Blank screen
-  SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 0, 0, 0));               
+  //SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 0, 0, 0));               
+  if (screen==NULL)
+    screen=SDL_GetVideoSurface();
+
+  SDL_FillRect(screen,NULL, 0x000000);
 
   for (int i = 0; i < SCREEN_WIDTH-1 ; i++)
     {
