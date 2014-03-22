@@ -93,6 +93,9 @@ void func()
       int   i=f;
       
       printf("[Freq:%d]\n",i);
+      M[t]->getVCO().setOscillator(0,0);
+      M[t]->getVCO().setOscillator(1,2);
+      M[t]->getVCO().setVCOMix(64);
       M[t]->getADSR().reset();;	  
       M[t]->getVCO().reset();
       M[t]->getVCO().getOscillatorOne();
