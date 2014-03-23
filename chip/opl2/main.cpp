@@ -4,7 +4,9 @@
 #include "hiopl.h"
 #include <stdio.h>
 #include <stdint.h>
-#define SAM 2048
+#define SAM 1024
+#define NUM 1024
+
 
 int main()
 {
@@ -13,46 +15,60 @@ int main()
   Hiopl ho(44100);
   int16_t s;
   int i=0;
+  int j=0;
+  int k=1;
 
   FILE * F;
 
   for (i=0;i<SAM;i++)
-    buff[i]=0.0;
+    buff[i]=0;
 
-  
+  ////  ho.EnableOpl3Mode();
+
   ho.SetSampleRate(44100);
   //  ho.EnableWaveformControl();
   ho.SetWaveform(1,1,SIN);
-  ho.SetWaveform(1,2,HALF_SIN);
+  ho.SetWaveform(1,2,SIN);
 
-  ho.SetFrequencyMultiple(1,1,x3);
-  ho.SetFrequencyMultiple(1,2,x10);
+  ho.SetFrequencyMultiple(1,1,x1);
 
-  ho.SetEnvelopeAttack(1,1,6);
-  ho.SetEnvelopeAttack(1,2,6);
+  ho.SetFrequencyMultiple(1,2,x1);
 
-  ho.SetEnvelopeDecay(1,1,6);
-  ho.SetEnvelopeDecay(1,2,6);
-
+  ho.SetEnvelopeAttack(1,1,2);
+  ho.SetEnvelopeDecay(1,1,3);
   ho.SetEnvelopeSustain(1,1,6);
-  ho.SetEnvelopeSustain(1,2,6);
+  ho.SetEnvelopeRelease(1,1,2);
 
-  ho.SetEnvelopeRelease(1,1,6);
-  ho.SetEnvelopeRelease(1,2,6);
+  ho.SetEnvelopeAttack(1,2,5);
+  ho.SetEnvelopeDecay(1,2,2);
+  ho.SetEnvelopeSustain(1,2,5);
+  ho.SetEnvelopeRelease(1,2,15);
 
-  ho.KeyOn(1,200.0);
+  //  ho.SetAttenuation(1, 1, 1);
+  //  ho.SetAttenuation(1, 2, 1);
 
-  ho.Generate(1024,buff);
+  //  ho.EnableSustain(1,1,false);
+  //  ho.EnableSustain(1,2,true);
 
-  for (i=0;i<SAM;i++)
-    printf("%d\t",(int16_t)buff[i]);
+  ho.KeyOn(1,440.0);
+
+
+  //    for (i=0;i<SAM*NUM;i++)
+  //      printf("%d\t",(int16_t)buff[i]);
   
   F=fopen("audioout","w+");
   
-  for (i=0;i<SAM;i++)
+  for (j=0;j<NUM;j++)
     {
-      s=(int16_t)buff[i]*255;
-      fwrite(&s,1,sizeof(int16_t),F);
+      ho.Generate(SAM,buff);
+      for (i=0;i<SAM/2;i++)
+	{
+	  //  printf("[%6.d]",(int16_t)buff[i]);
+	}
+	
+      //      printf("\n{%d}\n",j);
+
+      fwrite(buff,sizeof(int16_t),SAM/2,F);
     }
   
 	//fwrite(buff,SAM,sizeof(int16_t),F);
