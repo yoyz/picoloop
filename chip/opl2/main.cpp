@@ -28,7 +28,7 @@ int main()
   ho.SetSampleRate(44100);
   //  ho.EnableWaveformControl();
   ho.SetWaveform(1,1,SIN);
-  ho.SetWaveform(1,2,SIN);
+  ho.SetWaveform(1,2,QUART_SIN);
 
   ho.SetFrequencyMultiple(1,1,x1);
 
@@ -36,12 +36,12 @@ int main()
 
   ho.SetEnvelopeAttack(1,1,2);
   ho.SetEnvelopeDecay(1,1,3);
-  ho.SetEnvelopeSustain(1,1,6);
-  ho.SetEnvelopeRelease(1,1,2);
+  ho.SetEnvelopeSustain(1,1,15);
+  ho.SetEnvelopeRelease(1,1,15);
 
   ho.SetEnvelopeAttack(1,2,5);
   ho.SetEnvelopeDecay(1,2,2);
-  ho.SetEnvelopeSustain(1,2,5);
+  ho.SetEnvelopeSustain(1,2,15);
   ho.SetEnvelopeRelease(1,2,15);
 
   //  ho.SetAttenuation(1, 1, 1);
@@ -50,7 +50,7 @@ int main()
   //  ho.EnableSustain(1,1,false);
   //  ho.EnableSustain(1,2,true);
 
-  ho.KeyOn(1,440.0);
+  ho.KeyOn(1,110.0);
 
 
   //    for (i=0;i<SAM*NUM;i++)
