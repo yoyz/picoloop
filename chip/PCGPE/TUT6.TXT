@@ -1,0 +1,434 @@
+
+                   ÕÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¸
+                   ³         W E L C O M E         ³
+                   ³  To the VGA Trainer Program   ³ ³
+                   ³              By               ³ ³
+                   ³      DENTHOR of ASPHYXIA      ³ ³ ³
+                   ÔÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¾ ³ ³
+                     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ ³
+                       ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+                           --==[ PART 6 ]==--
+
+
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+ş Introduction
+
+Hi there! I'm back, with the latest part in the series : Pregenerated
+arrays. This is a fairly simple concept that can treble the speed of
+your code, so have a look.
+
+I still suggest that if you haven't got a copy of TEXTER that you get it.
+This is shareware, written by me, that allows you to grab fonts and use
+them in your own programs.
+
+I downloaded the Friendly City BBS Demo, an intro for a PE BBS, written
+by a new group called DamnRite, with coder Brett Step. The music was
+excellent, written by Kon Wilms (If I'm not mistaken, he is an Amiga
+weenie ;-)). A very nice first production, and I can't wait to see more
+of their work. I will try con a local BBS to allow me to send Brett some
+fido-mail.
+
+If you would like to contact me, or the team, there are many ways you
+can do it : 1) Write a message to Grant Smith in private mail here on
+                  the Mailbox BBS.
+            2) Write a message here in the Programming conference here
+                  on the Mailbox (Preferred if you have a general
+                  programming query or problem others would benefit from)
+            3) Write to ASPHYXIA on the ASPHYXIA BBS.
+            4) Write to Denthor, Eze or Livewire on Connectix.
+            5) Write to :  Grant Smith
+                           P.O.Box 270 Kloof
+                           3640
+                           Natal
+            6) Call me (Grant Smith) at (031) 73 2129 (leave a message if you
+                  call during varsity)
+
+NB : If you are a representative of a company or BBS, and want ASPHYXIA
+       to do you a demo, leave mail to me; we can discuss it.
+NNB : If you have done/attempted a demo, SEND IT TO ME! We are feeling
+        quite lonely and want to meet/help out/exchange code with other demo
+        groups. What do you have to lose? Leave a message here and we can work
+        out how to transfer it. We really want to hear from you!
+
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+ş  Why do I need a lookup table? What is it?
+
+A lookup table is an imaginary table in memory where you look up the
+answers to certain mathematical equations instead of recalculating them
+each time. This may speed things up considerably. Please note that a
+lookup table is sometimes referred to as a pregenerated array.
+
+One way of looking at a lookup table is as follows : Let us say that for
+some obscure reason you need to calculate a lot of multiplications (eg.
+5*5 , 7*4 , 9*2 etc.). Instead of actually doing a slow multiply each
+time, you can generate a kind of bonds table, as seen below :
+
+
+ÉÍÑÍËÍÍÍÍÍÍÍÑÍÍÍÍÍÍÑÍÍÍÍÍÍÑÍÍÍÍÍÍÑÍÍÍÍÍÍÑÍÍÍÍÍÍÑÍÍÍÍÍÍÑÍÍÍÍÍÍÑÍÍÍÍÍÍ»
+ÇÄÅÄ¶   1   ³  2   ³  3   ³  4   ³  5   ³  6   ³  7   ³  8   ³  9   º
+ÇÄÁÄ×ÍÍÍÍÍÍÍØÍÍÍÍÍÍØÍÍÍÍÍÍØÍÍÍÍÍÍØÍÍÍÍÍÍØÍÍÍÍÍÍØÍÍÍÍÍÍØÍÍÍÍÍÍØÍÍÍÍÍÍµ
+º 1 º   1   ³  2   ³  3   ³  4   ³  5   ³  6   ³  7   ³  8   ³  9   ³
+ÇÄÄÄ×ÄÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄ´
+º 2 º   2   ³  4   ³  6   ³  8   ³  10  ³  12  ³  14  ³  16  ³  18  ³
+ÇÄÄÄ×ÄÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄ´
+º 3 º   3   ³  6   ³  9   ³  12  ³  15  ³  18  ³  21  ³  24  ³  27  ³
+ÇÄÄÄ×ÄÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄ´
+º 4 º   4   ³  8   ³  12  ³  16  ³  20  ³  24  ³  28  ³  32  ³  36  ³
+ÇÄÄÄ×ÄÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄ´
+º 5 º   5   ³  10  ³  15  ³  20  ³  25  ³  30  ³  35  ³  40  ³  45  ³
+ÇÄÄÄ×ÄÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄ´
+º 6 º   6   ³  12  ³  18  ³  24  ³  30  ³  36  ³  42  ³  48  ³  54  ³
+ÇÄÄÄ×ÄÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄ´
+º 7 º   7   ³  14  ³  21  ³  28  ³  35  ³  42  ³  49  ³  56  ³  63  ³
+ÇÄÄÄ×ÄÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄ´
+º 8 º   8   ³  16  ³  24  ³  32  ³  40  ³  48  ³  56  ³  64  ³  72  ³
+ÇÄÄÄ×ÄÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄ´
+º 9 º   9   ³  18  ³  27  ³  36  ³  45  ³  54  ³  63  ³  72  ³  81  ³
+ÈÍÍÍÊÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÙ
+
+This means that instead of calculating 9*4, you just find the 9 on the
+top and the 4 on the side, and the resulting number is the answer.  This
+type of table is very useful when the equations are very long to do.
+
+The example I am going to use for this part is that of circles. Cast
+your minds back to Part 3 on lines and circles. The circle section took
+quite a while to finish drawing, mainly because I had to calculate the
+SIN and COS for EVERY SINGLE POINT. Calculating SIN and COS is obviously
+very slow, and that was reflected in the speed of the section.
+
+
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+ş  How do I generate a lookup table?
+
+This is very simple. In my example, I am drawing a circle. A circle has
+360 degrees, but for greater accuracy, to draw my circle I will start
+with zero and increase my degrees by 0.4. This means that in each circle
+there need to be 8000 SINs and COSes (360/0.4=8000). Putting these into
+the base 64k that Pascal allocates for normal variables is obviously not
+a happening thing, so we define them as pointers in the following
+manner: 
+        TYPE   table = Array [1..8000] of real;
+
+        VAR    sintbl : ^table;
+               costbl : ^table;
+
+Then in the program we get the memory for these two pointers. Asphyxia 
+was originally thinking of calling itself Creative Reboot Inc., mainly 
+because we always forgot to get the necessary memory for our pointers.
+(Though a bit of creative assembly coding also contributed to this. We
+wound up rating our reboots on a scale of 1 to 10 ;-)). The next obvious
+step is to place our necessary answers into our lookup tables.  This can
+take a bit of time, so in a demo, you would do it in the very beginning
+(people just think it's slow disk access or something), or after you
+have shown a picture (while the viewer is admiring it, you are
+calculating pi to its 37th degree in the background ;-)) Another way of
+doing it is, after calculating it once, you save it to a file which you
+then load into the variable at the beginning of the program. Anyway,
+this is how we will calculate the table for our circle :
+
+    Procedure Setup;
+    VAR deg:real;
+    BEGIN
+      deg:=0;
+      for loop1:=1 to 8000 do BEGIN
+        deg:=deg+0.4;
+        costbl^[loop1]:=cos (rad(deg));
+        sintbl^[loop1]:=sin (rad(deg));
+      END;
+    END;
+
+This will calculate the needed 16000 reals and place them into our two
+variables. The amount of time this takes is dependant on your computer.
+
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+ş  How do I use a lookup table?
+
+This is very easy. In your program, wherever you put
+               cos (rad(deg)),
+you just replace it with :
+               costbl^[deg]
+
+Easy, no? Note that the new "deg" variable is now an integer, always
+between 1 and 8000.
+
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+ş Where else do I use lookup tables?
+
+Lookup tables may be used in many different ways. For example, when
+working out 3-dimensional objects, sin and cos are needed often, and are
+best put in a lookup table. In a game, you may pregen the course an
+enemy may take when attacking. Even saving a picture (for example, a
+plasma screen) after generating it, then loading it up later is a form
+of pregeneration.
+
+When you feel that your program is going much too slow, your problems
+may be totally sorted out by using a table. Or, maybe not. ;-)
+
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+ş  In closing
+
+As you have seen above, lookup tables aren't all that exciting, but they
+are useful and you need to know how to use them. The attached sample
+program will demonstrate just how big a difference they can make.
+
+Keep on coding, and if you finish anything, let me know about it! I
+never get any mail, so all mail is greatly appreciated ;-)
+
+Sorry, no quote today, it's hot and I'm tired. Maybe next time ;-)
+
+  - Denthor
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ TUTPROG6.PAS ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+{$X+}
+USES crt;
+
+CONST VGA = $a000;
+
+TYPE tbl = Array [1..8000] of real;
+             { This will be the shape of the 'table' where we look up
+               values, which is faster then calculating them }
+
+VAR loop1:integer;
+    Pall : Array [1..20,1..3] of byte;
+      { This is our temporary pallette. We ony use colors 1 to 20, so we
+        only have variables for those ones. }
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+Procedure SetMCGA;  { This procedure gets you into 320x200x256 mode. }
+BEGIN
+  asm
+     mov        ax,0013h
+     int        10h
+  end;
+END;
+
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+Procedure SetText;  { This procedure returns you to text mode.  }
+BEGIN
+  asm
+     mov        ax,0003h
+     int        10h
+  end;
+END;
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+Procedure Cls (Col : Byte);
+   { This clears the screen to the specified color }
+BEGIN
+  Fillchar (Mem [VGA:0],64000,col);
+END;
+
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+Procedure Putpixel (X,Y : Integer; Col : Byte);
+  { This puts a pixel on the screen by writing directly to memory. }
+BEGIN
+  Mem [VGA:X+(Y*320)]:=Col;
+END;
+
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+procedure WaitRetrace; assembler;
+  {  This waits for a vertical retrace to reduce snow on the screen }
+label
+  l1, l2;
+asm
+    mov dx,3DAh
+l1:
+    in al,dx
+    and al,08h
+    jnz l1
+l2:
+    in al,dx
+    and al,08h
+    jz  l2
+end;
+
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+Procedure Pal(ColorNo : Byte; R,G,B : Byte);
+  { This sets the Red, Green and Blue values of a certain color }
+Begin
+   Port[$3c8] := ColorNo;
+   Port[$3c9] := R;
+   Port[$3c9] := G;
+   Port[$3c9] := B;
+End;
+
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+Function rad (theta : real) : real;
+  {  This calculates the degrees of an angle }
+BEGIN
+  rad := theta * pi / 180
+END;
+
+
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+Procedure NormCirc;
+  { This generates a spireal without using a lookup table }
+VAR deg,radius:real;
+    x,y:integer;
+
+BEGIN
+  gotoxy (1,1);
+  Writeln ('Without pregenerated arrays.');
+  for loop1:=60 downto 43 do BEGIN
+    deg:=0;
+    radius:=loop1;
+    repeat
+      X:=round(radius*COS (rad (deg)));
+      Y:=round(radius*sin (rad (deg)));
+      putpixel (x+160,y+100,61-loop1);
+      deg:=deg+0.4;           { Increase the degree so the circle is round }
+      radius:=radius-0.02;    { Decrease the radius for a spiral effect }
+    until radius<0; {  Continue till at the centre (the radius is zero) }
+  END;
+END;
+
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+Procedure LookupCirc;
+  {  This draws a spiral using a lookup table }
+VAR radius:real;
+    x,y,pos:integer;
+    costbl : ^tbl;
+    sintbl : ^tbl;
+
+    Procedure Setupvars;
+      {  This is a nested procedure (a procedure in a procedure), and may
+         therefore only be used from within the main part of this procedure.
+         This section gets the memory for the table, then generates the
+         table. }
+    VAR deg:real;
+    BEGIN
+      getmem (costbl,sizeof(costbl^));
+      getmem (sintbl,sizeof(sintbl^));
+      deg:=0;
+      for loop1:=1 to 8000 do BEGIN         { There are 360 degrees in a    }
+        deg:=deg+0.4;                       { circle. If you increase the   }
+        costbl^[loop1]:=cos (rad(deg));     { degrees by 0.4, the number of }
+        sintbl^[loop1]:=sin (rad(deg));     { needed parts of the table is  }
+      END;                                  { 360/0.4=8000                  }
+    END;
+    { NB : For greater accuracy I increase the degrees by 0.4, because if I
+           increase them by one, holes are left in the final product as a
+           result of the rounding error margin. This means the pregen array
+           is bigger, takes up more memory and is slower to calculate, but
+           the finished product looks better.}
+
+BEGIN
+  cls (0);
+  gotoxy (1,1);
+  Writeln ('Generating variables....');
+  setupvars;
+  gotoxy (1,1);
+  Writeln ('With pregenerated arrays.');
+  for loop1:=60 downto 43 do BEGIN
+    pos:=1;
+    radius:=loop1;
+    repeat
+      X:=round (radius*costbl^[pos]);   { Note how I am not recalculating sin}
+      Y:=round (radius*sintbl^[pos]);   { and cos for each point.            }
+      putpixel (x+160,y+100,61-loop1);
+      radius:=radius-0.02;
+      inc (pos);
+      if pos>8000 then pos:=1;    { I only made a table from 1 to 8000, so it}
+                                  { must never exceed that, or the program   }
+                                  { will probably crash.                     }
+    until radius<0;
+  END;
+  freemem (costbl,sizeof(costbl^));   { Freeing the memory taken up by the   }
+  freemem (sintbl,sizeof(sintbl^));   { tables. This is very important.      }
+END;
+
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+Procedure PalPlay;
+  { This procedure mucks about with our "virtual pallette", then shoves it
+    to screen. }
+Var Tmp : Array[1..3] of Byte;
+  { This is used as a "temporary color" in our pallette }
+    loop1 : Integer;
+BEGIN
+   Move(Pall[1],Tmp,3);
+     { This copies color 1 from our virtual pallette to the Tmp variable }
+   Move(Pall[2],Pall[1],18*3);
+     { This moves the entire virtual pallette down one color }
+   Move(Tmp,Pall[18],3);
+     { This copies the Tmp variable to no. 18 of the virtual pallette }
+   WaitRetrace;
+   For loop1:=1 to 18 do
+     pal (loop1,pall[loop1,1],pall[loop1,2],pall[loop1,3]);
+END;
+
+
+BEGIN
+  ClrScr;
+  writeln ('Hi there! This program will demonstrate the usefullness of ');
+  writeln ('pregenerated arrays, also known as lookup tables. The program');
+  writeln ('will first draw a spiral without using a lookup table, rotate');
+  writeln ('the pallette until a key is pressed, the calculate the lookup');
+  writeln ('table, then draw the same spiral using the lookup table.');
+  writeln;
+  writeln ('This is merely one example for the wide range of uses of a ');
+  writeln ('lookup table.');
+  writeln;
+  writeln;
+  Write ('  Hit any key to contine ...');
+  Readkey;
+  setmcga;
+  directvideo:=FALSE;  { This handy trick allows you to use GOTOXY and }
+                       { Writeln in GFX mode. Hit CTRL-F1 on it for more }
+                       { info/help }
+  For Loop1 := 1 to 18 do BEGIN
+    Pall[Loop1,1] := (Loop1*3)+9;
+    Pall[Loop1,2] := 0;
+    Pall[Loop1,3] := 0;
+  END;
+       { This sets colors 1 to 18 to values between 12 to 63. }
+
+   WaitRetrace;
+   For loop1:=1 to 18 do
+     pal (loop1,pall[loop1,1],pall[loop1,2],pall[loop1,3]);
+        { This sets the true pallette to variable Pall }
+
+  normcirc;         { This draws a spiral without lookups }
+  Repeat
+    PalPlay;
+  Until keypressed;
+  readkey;
+  lookupcirc;       { This draws a spiral with lookups }
+  Repeat
+    PalPlay;
+  Until keypressed;
+  Readkey;
+
+  SetText;
+  Writeln ('All done. This concludes the sixth sample program in the ASPHYXIA');
+  Writeln ('Training series. You may reach DENTHOR under the name of GRANT');
+  Writeln ('SMITH on the MailBox BBS, or leave a message to ASPHYXIA on the');
+  Writeln ('ASPHYXIA BBS. I am also an avid Connectix BBS user.');
+  Writeln ('Get the numbers from Roblist, or write to :');
+  Writeln ('             Grant Smith');
+  Writeln ('             P.O. Box 270');
+  Writeln ('             Kloof');
+  Writeln ('             3640');
+  Writeln ('I hope to hear from you soon!');
+  Writeln; Writeln;
+  Write   ('Hit any key to exit ...');
+  Readkey;
+END.

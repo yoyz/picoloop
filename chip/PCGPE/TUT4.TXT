@@ -1,0 +1,408 @@
+
+                   ÕÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¸
+                   ³         W E L C O M E         ³
+                   ³  To the VGA Trainer Program   ³ ³
+                   ³              By               ³ ³
+                   ³      DENTHOR of ASPHYXIA      ³ ³ ³
+                   ÔÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¾ ³ ³
+                     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ ³
+                       ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+                           --==[ PART 4 ]==--
+
+
+
+ş Introduction
+
+
+Howdy all! Welcome to the fourth part of this trainer series! It's a
+little late, but I am sure you will find that the wait was worth it,
+becase today I am going to show you how to use a very powerful tool :
+Virtual Screens.
+
+If you would like to contact me, or the team, there are many ways you
+can do it : 1) Write a message to Grant Smith in private mail here on
+                  the Mailbox BBS.
+            2) Write a message here in the Programming conference here
+                  on the Mailbox (Preferred if you have a general
+                  programming query or problem others would benefit from)
+            3) Write to ASPHYXIA on the ASPHYXIA BBS.
+            4) Write to Denthor, Eze or Livewire on Connectix.
+            5) Write to :  Grant Smith
+                           P.O.Box 270 Kloof
+                           3640
+            6) Call me (Grant Smith) at 73 2129 (leave a message if you
+                  call during varsity)
+
+NB : If you are a representative of a company or BBS, and want ASPHYXIA
+       to do you a demo, leave mail to me; we can discuss it.
+NNB : If you have done/attempted a demo, SEND IT TO ME! We are feeling
+        quite lonely and want to meet/help out/exchange code with other demo
+        groups. What do you have to lose? Leave a message here and we can work
+        out how to transfer it. We really want to hear from you!
+
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+ş  What is a Virtual Screen and why do we need it?
+
+Let us say you are generating a complex screen numerous times on the fly
+(for example scrolling up the screen then redrawing all the sprites for
+each frame of a game you are writing.) Do you have any idea how awful it
+would look if the user could actually see you erasing and redrawing each
+sprite for each frame? Can you visualise the flicker effect this would
+give off? Do you realise that there would be a "sprite doubling" effect
+(where you see two copies of the same sprite next to each other)? In the
+sample program I have included a part where I do not use virtual screens
+to demonstrate these problems. Virtual screens are not the only way to
+solve these problems, but they are definately the easiest to code in.
+
+A virtual screen is this : a section of memory set aside that is exactly
+like the VGA screen on which you do all your working, then "flip" it
+on to your true screen. In EGA 640x350x16 you automatically have a
+virtual page, and it is possible to have up to four on the MCGA using a
+particular tweaked mode, but for our puposes we will set one up using base
+memory.
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+ş  Setting up a virtual screen
+
+As you will have seen in the first part of this trainer series, the MCGA
+screen is 64000 bytes big (320x200=64000). You may also have noticed that
+in TP 6.0 you arn't allowed too much space for normal variables. For
+example, saying :
+
+VAR Virtual : Array [1..64000] of byte;
+
+would be a no-no, as you wouldn't have any space for your other variables.
+What is the solution? I hear you enquiring minds cry. The answer : pointers!
+Pointers to not use up the base 64k allocated to you by TP 6.0, it gets
+space from somewhere else in the base 640k memory of your computer. Here is
+how you set them up :
+
+Type Virtual = Array [1..64000] of byte;  { The size of our Virtual Screen }
+     VirtPtr = ^Virtual;                  { Pointer to the virtual screen }
+
+VAR Virscr : VirtPtr;                      { Our first Virtual screen }
+    Vaddr  : word;                        { The segment of our virtual screen}
+
+If you put this in a program as it stands, and try to acess VirScr, your
+machine will probably crash. Why? Because you have to get the memory for
+your pointers before you can acess them! You do that as follows :
+
+Procedure SetUpVirtual;
+BEGIN
+  GetMem (VirScr,64000);
+  vaddr := seg (virscr^);
+END;
+
+This procedure has got the memory for the screen, then set vaddr to the
+screens segment. DON'T EVER LEAVE THIS PROCEDURE OUT OF YOUR PROGRAM!
+If you leave it out, when you write to your virtual screen you will probably
+be writing over DOS or some such thing. Not a good plan ;-).
+
+When you have finished your program, you will want to free the memory
+taken up by the virtual screen by doing the following :
+
+Procedure ShutDown;
+BEGIN
+  FreeMem (VirScr,64000);
+END;
+
+If you don't do this your other programs will have less memory to use for
+themselves.
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+ş  Putting a pixel to your virtual screen
+
+This is very similar to putting a pixel to your normal MCGA screen, as
+discussed in part one... here is our origonal putpixel :
+
+Procedure PutPixel (X,Y : Integer; Col : Byte);
+BEGIN
+  Mem [VGA:X+(Y*320)]:=col;
+END;
+
+For our virtual screen, we do the following :
+
+Procedure VirtPutPixel (X,Y : Integer; Col : Byte);
+BEGIN
+  Mem [Vaddr:X+(Y*320)]:=col;
+END;
+
+It seems quite wasteful to have two procedures doing exactly the same thing,
+just to different screens, doesn't it? So why don't we combine the two like
+this :
+
+Procedure PutPixel (X,Y : Integer; Col : Byte; Where : Word);
+BEGIN
+  Mem [Where:X+(Y*320)]:=col;
+END;
+
+To use this, you will say something like :
+
+Putpixel (20,20,32,VGA);
+PutPixel (30,30,64,Vaddr);
+
+These two statements draw two pixels ... one to the VGA screen and one to
+the virtual screen! Doesn't that make you jump  with joy! ;-) You will
+have noticed that we still can't actually SEE the virtual screen, so on to
+the next part ...
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+ş  How to "Flip" your virtual screen on to the true screen
+
+You in fact already have to tools to do this yourselves from information
+in the previous parts of this trainer series. We will of course use the
+Move command, like so :
+
+Move (Virscr^,mem [VGA:0],64000);
+
+simple, eh? Yuo may want to wait for a verticle retrace (Part 2) before you
+do that, as it may make the flip much smoother (and, alas, slower).
+
+Note that most of our other procedures may be altered to support the
+virtual screen, such as Cls etc. (see Part 1 of this series), using the
+methoods described above (I have altered the CLS procedure in the sample
+program given at the end of this Part.)
+
+We of ASPHYXIA have used virtual screens in almost all of our demos.
+Can you imagine how awful the SoftelDemo would have looked if you had to
+watch us redrawing the moving background, text and vectorballs for EACH
+FRAME? The flicker, doubling effects etc would have made it awful! So
+we used a virtual screen, and are very pleased with the result.
+Note, though, that to get the speed we needed to get the demo fast enough,
+we wrote our sprites routines, flip routines, pallette routines etc. all
+in assembly. The move command is very fast, but not as fast as ASM ;-)
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+ş  In closing
+
+I am writing this on the varsity computers in between lectures. I prefer
+writing & coding between 6pm and 4am, but it isn't a good plan when
+varsity is on ;-), so this is the first part of the trainer series ever
+written before 9pm.
+
+I have been asked to do a part on scrolling the screen, so that is
+probably what I will do for next week. Also, ASPHYXIA will soon be putting
+up a small demo with source on the local boards. It will use routines
+that we have discussed in this series, and demonstrate how powerful these
+routines can be if used in the correct manner.
+
+Some projects for you to do :
+  1) Rewrite the flip statement so that you can say :
+        flip (Vaddr,VGA);
+        flip (VGA,Vaddr);
+      ( This is how ASPHYXIAS one works )
+
+  2) Put most of the routines (putpixel, cls, pal etc.) into a unit,
+     so that you do not need to duplicate the procedures in each program
+     you write. If you need help, leave me mail.
+
+
+See you next week
+   - Denthor
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ TUTPROG4.PAS ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+{$X+}   (* This is a handy little trick to know. If you put this at the top
+           of your program, you do not have to set a variable when calling
+           a function, i.e. you may just say 'READKEY' instead of
+           'CH:=READKEY'                                                *)
+
+USES Crt;           (* This has a few nice functions in it, such as the
+                       READKEY command.                                 *)
+
+CONST VGA = $a000;  (* This sets the constant VGA to the segment of the
+                       VGA screen.                                      *)
+
+Type Virtual = Array [1..64000] of byte;  { The size of our Virtual Screen }
+     VirtPtr = ^Virtual;                  { Pointer to the virtual screen }
+
+VAR Virscr : VirtPtr;                      { Our first Virtual screen }
+    Vaddr  : word;                        { The segment of our virtual screen}
+
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+Procedure SetMCGA;  { This procedure gets you into 320x200x256 mode. }
+BEGIN
+  asm
+     mov        ax,0013h
+     int        10h
+  end;
+END;
+
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+Procedure SetText;  { This procedure returns you to text mode.  }
+BEGIN
+  asm
+     mov        ax,0003h
+     int        10h
+  end;
+END;
+
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+Procedure Cls (Col : Byte; Where:Word);
+   { This clears the screen to the specified color, on the VGA or on the
+        virtual screen }
+BEGIN
+  Fillchar (Mem [where:0],64000,col);
+END;
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+procedure WaitRetrace; assembler;
+  { This waits until you are in a Verticle Retrace ... this means that all
+    screen manipulation you do only appears on screen in the next verticle
+    retrace ... this removes most of the "fuzz" that you see on the screen
+    when changing the pallette. It unfortunately slows down your program
+    by "synching" your program with your monitor card ... it does mean
+    that the program will run at almost the same speed on different
+    speeds of computers which have similar monitors. In our SilkyDemo,
+    we used a WaitRetrace, and it therefore runs at the same (fairly
+    fast) speed when Turbo is on or off. }
+
+label
+  l1, l2;
+asm
+    mov dx,3DAh
+l1:
+    in al,dx
+    and al,08h
+    jnz l1
+l2:
+    in al,dx
+    and al,08h
+    jz  l2
+end;
+
+
+
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+Procedure SetUpVirtual;
+   { This sets up the memory needed for the virtual screen }
+BEGIN
+  GetMem (VirScr,64000);
+  vaddr := seg (virscr^);
+END;
+
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+Procedure ShutDown;
+   { This frees the memory used by the virtual screen }
+BEGIN
+  FreeMem (VirScr,64000);
+END;
+
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+Procedure PutPixel (X,Y : Integer; Col : Byte; Where : Word);
+   { This puts a pixel at X,Y using color col, on VGA or the Virtual Screen}
+BEGIN
+  Mem [Where:X+(Y*320)]:=col;
+END;
+
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+Procedure Flip;
+   { This flips the virtual screen to the VGA screen. }
+BEGIN
+  Move (Virscr^,mem [VGA:0],64000);
+END;
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+Procedure BlockMove;
+   { This tests various ways of moving a block around the screen }
+VAR loop1,loop2,loop3:Integer;
+BEGIN
+  For loop1:=1 to 50 do BEGIN                     { This draw a block    }
+    for loop2:=1 to 50 do                         {  directly to VGA, no }
+      for loop3:=1 to 50 do                       {  flipping            }
+        putpixel (loop1+loop2,loop3,32,VGA);
+    cls (0,VGA);
+  END;
+
+  For loop1:=1 to 50 do BEGIN                     { This draws a block     }
+    for loop2:=1 to 50 do                         { to the virtual screen, }
+      for loop3:=1 to 50 do                       { then flips it to VGA   }
+        putpixel (loop1+loop2,loop3,32,Vaddr);
+    flip;
+    cls (0,Vaddr);
+  END;
+
+  For loop1:=1 to 50 do BEGIN                     { This draws a block     }
+    for loop2:=1 to 50 do                         { to the virtual screen, }
+      for loop3:=1 to 50 do                       { waits for a retrace,   }
+        putpixel (loop1+loop2,loop3,32,Vaddr);    { then flips it to VGA   }
+    waitretrace;
+    flip;
+    cls (0,Vaddr);
+  END;
+END;
+
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+Procedure PatternDraw;
+   { This test the speed of flipping by drawing two patterns and flipping
+     them }
+VAR loop1,loop2:integer;
+BEGIN
+  for loop1:=1 to 100 do                        { This draws pattern one }
+    for loop2:=1 to 100 do                      { to the virtual screen  }
+      putpixel (loop1,loop2,loop1,Vaddr);       { then flips it to VGA   }
+  flip;
+
+  for loop1:=1 to 100 do                        { This draws pattern two }
+    for loop2:=1 to 100 do                      { to the virtual screen  }
+      putpixel (loop1,loop2,loop2,Vaddr);       { then flips it to VGA   }
+  flip;
+END;
+
+
+BEGIN
+  ClrScr;
+  Writeln ('This program will demonstrate the power of virtual screens.');
+  Writeln ('A block will firstly move across the screen, being drawn and');
+  Writeln ('erased totally on the VGA. Then the same block will move');
+  Writeln ('across, but will be drawn on the virtual screen and flipped');
+  Writeln ('to the VGA screen without a retrace (see part 2). The the');
+  Writeln ('block will go again, with flipping and a retrace.');
+  Writeln;
+  Writeln ('I will then draw a pattern, flip it to VGA, draw another');
+  Writeln ('pattern, flip it to VGA, and repeat that until a key is pressed.');
+  Writeln ('This will demonstrate that even when I put down 10000 pixels,');
+  Writeln ('then flip them to the VGA, it is still relatively fast.      ');
+  Writeln; Writeln;
+  Writeln ('Hit any key to continue ...');
+  readkey;
+  setmcga;
+  setupvirtual;
+  cls (0,vaddr);    { After you have got the memory for the virtual screen,
+                      it is usually filled with random garbage. It is always
+                      wise to clear the virtual screen directly afterwards }
+  BlockMove;
+
+  Repeat
+    PatternDraw;
+  Until keypressed;
+
+  Readkey;
+  settext;
+  shutdown;
+  Writeln ('All done. This concludes the fourth sample program in the ASPHYXIA');
+  Writeln ('Training series. You may reach DENTHOR under the name of GRANT');
+  Writeln ('SMITH on the MailBox BBS, or leave a message to ASPHYXIA on the');
+  Writeln ('ASPHYXIA BBS. Get the numbers from Roblist, or write to :');
+  Writeln ('             Grant Smith');
+  Writeln ('             P.O. Box 270');
+  Writeln ('             Kloof');
+  Writeln ('             3640');
+  Writeln ('I hope to hear from you soon!');
+  Writeln; Writeln;
+  Write   ('Hit any key to exit ...');
+  Readkey;
+END.

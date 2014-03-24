@@ -1,0 +1,149 @@
+
+                   旼컴컴컴컴컴컴컴컴컴컴컴커
+                   � Perspective Transforms �
+                   읕컴컴컴컴컴컴컴컴컴컴컴켸
+
+        By Andre Yew (andrey@gluttony.ugcs.caltech.edu)
+
+
+
+    This is how I learned perspective transforms --- it was
+intuitive and understandable to me, so perhaps it'll be to
+others as well.  It does require knowledge of matrix math
+and homogeneous coordinates.  IMO, if you want to write a
+serious renderer, you need to know both.
+
+   First, let's look at what we're trying to do:
+               S (screen)
+               |    * P (y, z)
+               |   /|
+               |  / |
+               | /  |
+               |/   |
+               * R  |
+             / |    |
+            /  |    |
+           /   |    |
+   E (eye)/    |    | W
+---------*-----|----*-------------
+         <- d -><-z->
+
+   E is the eye, P is the point we're trying to project, and
+R is its projected position on the screen S (this is the point
+you want to draw on your monitor).  Z goes into the monitor (left-
+handed coordinates), with X and Y being the width and height of the
+screen.  So let's find where R is:
+
+    R = (xs, ys)
+
+    Using similar triangles (ERS and EPW)
+
+    xs/d = x/(z + d)
+    ys/d = y/(z + d)
+    (Use similar triangles to determine this)
+
+    So,
+
+    xs = x*d/(z + d)
+    ys = y*d/(z + d)
+
+    Express this homogeneously:
+
+    R = (xs, ys, zs, ws).
+
+    Make xs = x*d
+         ys = y*d
+         zs = 0 (the screen is a flat plane)
+         ws = z + d
+
+    and express this as a vector transformed by a matrix:
+
+    [x y z 1][ d 0 0 0 ]
+             [ 0 d 0 0 ]    =  R
+             [ 0 0 0 1 ]
+             [ 0 0 0 d ]
+
+    The matrix on the right side can be called a perspective transform.
+But we aren't done yet.  See the zero in the 3rd column, 3rd row of
+the matrix?  Make it a 1 so we retain the z value (perhaps for some
+kind of Z-buffer).  Also, this isn't exactly what we want since we'd
+also like to have the eye at the origin and we'd like to specify some
+kind of field-of-view.  So, let's translate the matrix (we'll call
+it M) by -d to move the eye to the origin:
+
+    [ 1 0 0  0 ][ d 0 0 0 ]
+    [ 0 1 0  0 ][ 0 d 0 0 ]
+    [ 0 0 1  0 ][ 0 0 1 1 ]  <--- Remember, we put a 1 in (3,3) to
+    [ 0 0 -d 1 ][ 0 0 0 d ]       retain the z part of the vector.
+
+    And we get:
+
+    [ d 0 0  0 ]
+    [ 0 d 0  0 ]
+    [ 0 0 1  1 ]
+    [ 0 0 -d 0 ]
+
+    Now parametrize d by the angle PEW, which is half the field-of-view
+(FOV/2).  So we now want to pick a d such that ys = 1 always and we get
+a nice relationship:
+
+    d = cot( FOV/2 )
+
+    Or, to put it another way, using this formula, ys = 1 always.
+
+    Replace all the d's in the last perspective matrix and multiply
+through by sin's:
+
+    [ cos 0   0    0   ]
+    [ 0   cos 0    0   ]
+    [ 0   0   sin  sin ]
+    [ 0   0   -cos 0   ]
+
+    With all the trig functions taking FOV/2 as their arguments.
+Let's refine this a little further and add near and far Z-clipping
+planes.  Look at the lower right 2x2 matrix:
+
+   [ sin sin ]
+   [-cos 0   ]
+
+   and replace the first column by a and b:
+
+   [ a sin ]
+   [ b 0   ]
+   [ b 0   ]
+
+   Transform out near and far boundaries represented homogeneously
+as (zn, 1), (zf, 1), respectively and we get:
+
+   (zn*a + b, zn*sin) and (zf*a + b, zf*sin).
+
+   We want the transformed boundaries to map to 0 and 1, respectively,
+so divide out the homogeneous parts to get normal coordinates and equate:
+
+    (zn*a + b)/(zn*sin) = 0 (near plane)
+    (zf*a + b)/(zf*sin) = 1 (far plane)
+
+   Now solve for a and b and we get:
+
+   a = (zf*sin)/(zf - zn)
+     = sin/(1 - zn/zf)
+   b = -a*zn
+   b = -a*zn
+
+   At last we have the familiar looking perspective transform matrix:
+
+   [ cos( FOV/2 ) 0                        0            0 ]
+   [ 0            cos( FOV/2 )             0            0 ]
+   [ 0            0 sin( FOV/2 )/(1 - zn/zf) sin( FOV/2 ) ]
+   [ 0            0                    -a*zn            0 ]
+
+   There are some pretty neat properties of the matrix.  Perhaps
+the most interesting is how it transforms objects that go through
+the camera plane, and how coupled with a clipper set up the right
+way, it does everything correctly.  What's interesting about this
+is how it warps space into something called Moebius space, which
+is kind of like a fortune-cookie except the folds pass through
+each other to connect the lower folds --- you really have to see
+it to understand it.  Try feeding it some vectors that go off to
+infinity in various directions (ws = 0) and see where they come
+out.

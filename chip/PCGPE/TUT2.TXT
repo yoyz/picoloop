@@ -1,0 +1,616 @@
+                   ÕÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¸
+                   ³         W E L C O M E         ³
+                   ³  To the VGA Trainer Program   ³ ³
+                   ³              By               ³ ³
+                   ³      DENTHOR of ASPHYXIA      ³ ³ ³
+                   ÔÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¾ ³ ³
+                     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ ³
+                       ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+                           --==[ PART 2 ]==--
+
+
+
+ş Introduction
+
+
+
+Hi there again! This is Grant Smith, AKA Denthor of ASPHYXIA. This is the
+second part of my Training Program for new programmers. I have only had a
+lukewarm response to my first part of the trainer series ... remember, if
+I don't hear from you, I will assume that you are all dead and will stop
+writing the series ;-). Also, if you do get in contact with me I will give
+you some of our fast assembly routines which will speed up your demos no
+end. So go on, leave mail to GRANT SMITH in the main section of the
+MailBox BBS, start up a discussion or ask a few questions in this Conference,
+leave mail to ASPHYXIA on the ASPHYXIA BBS, leave mail to Denthor on
+Connectix, or write to Grant Smith,
+                       P.O.Box 270
+                       Kloof
+                       3640
+See, there are many ways you can get in contact with me! Use one of them!
+
+In this part, I will put the Pallette through it's paces. What the hell is
+a pallette? How do I find out what it is? How do I set it? How do I stop
+the "fuzz" that appears on the screen when I change the pallette? How do
+I black out the screen using the pallette? How do I fade in a screen?
+How do I fade out a screen? Why are telephone calls so expensive?
+Most of these quesions will be answered in this, the second part of my
+Trainer Series for Pascal.
+
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+ş  What is the Pallette?
+
+A few weeks ago a friend of mine was playing a computer game. In the game
+there was a machine with stripes of blue running across it. When the
+machine was activated, while half of the the blue stripes stayed the same,
+the other half started to change color and glow. He asked me how two stripes
+of the same color suddenly become different like that. The answer is simple:
+the program was changing the pallette. As you know from Part 1, there are
+256 colors in MCGA mode, numbered 0 to 255. What you don't know is that each
+if those colors is made up of different intensities of Red, Green and Blue,
+the primary colors (you should have learned about the primary colors at
+school). These intensities are numbers between 0 and 63. The color of
+bright red would for example be obtained by setting red intensity to 63,
+green intensity to 0, and blue intensity to 0. This means that two colors
+can look exactly the same, eg you can set color 10 to bright red and color
+78 to color bright red. If you draw a picture using both of those colors,
+no-one will be able to tell the difference between the two.. It is only
+when you again change the pallette of either of them will they be able to
+tell the difference. Also, by changing the whole pallette, you can obtain
+the "Fade in" and "Fade out" effects found in many demos and games.
+Pallette manipulation can become quite confusing to some people, because
+colors that look the same are in fact totally seperate.
+
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+ş  How do I read in the pallette value of a color?
+
+This is very easy to do. To read in the pallette value, you enter in the
+number of the color you want into port $3c7, then read in the values of
+red, green and blue respectively from port $3c9. Simple, huh? Here is a
+procedure that does it for you :
+
+Procedure GetPal(ColorNo : Byte; Var R,G,B : Byte);
+  { This reads the values of the Red, Green and Blue values of a certain
+    color and returns them to you. }
+Begin
+   Port[$3c7] := ColorNo;
+   R := Port[$3c9];
+   G := Port[$3c9];
+   B := Port[$3c9];
+End;
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+ş  How do I set the pallette value of a color?
+
+This is also as easy as 3.1415926535897932385. What you do is you enter in
+the number of the color you want to change into port $3c8, then enter the
+values of red, green and blue respectively into port $3c9. Because you are
+all so lazy I have written the procedure for you ;-)
+
+
+Procedure Pal(ColorNo : Byte; R,G,B : Byte);
+  { This sets the Red, Green and Blue values of a certain color }
+Begin
+   Port[$3c8] := ColorNo;
+   Port[$3c9] := R;
+   Port[$3c9] := G;
+   Port[$3c9] := B;
+End;
+
+
+Asphyxia doesn't use the above pallete procedures, we use assembler versions,
+which will be given to PEOPLE WHO RESPOND TO THIS TRAINER SERIES (HINT,
+HINT)
+
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+ş  How do I stop the "fuzz" that appears on my screen when I change the
+        pallette?
+
+If you have used the pallette before, you will have noticed that there is
+quite a bit of "fuzz" on the screen when you change it. The way we counter
+this is as follows : There is an elctron beam on your monitor that is
+constantly updating your screen from top to bottom. As it gets to the
+bottom of the screen, it takes a while for it to get back up to the top of
+the screen to start updating the screen again. The period where it moves
+from the bottom to the top is called the Verticle Retrace. During the
+verticle retrace you may change the pallette without affecting what is
+on the screen. What we do is that we wait until a verticle retrace has
+started by calling a certain procedure; this means that everything we do
+now will only be shown after the verticle retrace, so we can do all sorts
+of strange and unusual things to the screen during this retrace and only
+the results will be shown when the retrace is finished. This is way cool,
+as it means that when we change the pallette, the fuzz doesn't appear on
+the screen, only the result (the changed pallette), is seen after the
+retrace! Neat, huh? ;-) I have put the purely assembler WaitRetrace routine
+in the sample code that follows this message. Use it wisely, my son.
+
+NOTE : WaitRetrace can be a great help to your coding ... code that fits
+       into one retrace will mean that the demo will run at the same
+       speed no matter what your computer speed (unless you are doing a lot
+       during the WaitRetrace and the computer is slooooow). Note that in
+       the following sample program and in our SilkyDemo, the thing will run
+       at the same speed whether turbo is on or off.
+
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+ş  How do I black out the screen using the pallette?
+
+This is basic : just set the Red, Green and Blue values of all colors to
+zero intensity, like so :
+
+Procedure Blackout;
+  { This procedure blackens the screen by setting the pallette values of
+    all the colors to zero. }
+VAR loop1:integer;
+BEGIN
+  WaitRetrace;
+  For loop1:=0 to 255 do
+    Pal (loop1,0,0,0);
+END;
+
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+ş  How do I fade in a screen?
+
+Okay, this can be VERY effective. What you must first do is grab the
+pallette into a variable, like so :
+
+   VAR Pall := Array [0.255,1..3] of BYTE;
+
+0 to 255 is for the 256 colors in MCGA mode, 1 to 3 is red, green and blue
+intensity values;
+
+Procedure GrabPallette;
+VAR loop1:integer;
+BEGIN
+  For loop1:=0 to 255 do
+    Getpal (loop1,pall[loop1,1],pall[loop1,2],pall[loop1,3]);
+END;
+
+This loads the entire pallette into variable pall. Then you must blackout
+the screen (see above), and draw what you want to screen without the
+construction being shown. Then what you do is go throgh the pallette. For
+each color, you see if the individual intensities are what they should be.
+If not, you increase them by one unit until they are. Beacuse intensites
+are in a range from 0 to 63, you only need do this a maximum of 64 times.
+
+Procedure Fadeup;
+VAR loop1,loop2:integer;
+    Tmp : Array [1..3] of byte;
+      { This is temporary storage for the values of a color }
+BEGIN
+  For loop1:=1 to 64 do BEGIN
+      { A color value for Red, green or blue is 0 to 63, so this loop only
+        need be executed a maximum of 64 times }
+    WaitRetrace;
+    For loop2:=0 to 255 do BEGIN
+      Getpal (loop2,Tmp[1],Tmp[2],Tmp[3]);
+      If Tmp[1]<Pall[loop2,1] then inc (Tmp[1]);
+      If Tmp[2]<Pall[loop2,2] then inc (Tmp[2]);
+      If Tmp[3]<Pall[loop2,3] then inc (Tmp[3]);
+        { If the Red, Green or Blue values of color loop2 are less then they
+          should be, increase them by one. }
+      Pal (loop2,Tmp[1],Tmp[2],Tmp[3]);
+        { Set the new, altered pallette color. }
+    END;
+  END;
+END;
+
+Hey-presto! The screen fades up. You can just add in a delay before the
+waitretrace if you feel it is too fast. Cool, no?
+
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+ş  How do I fade out a screen?
+
+This is just like the fade in of a screen, just in the opposite direction.
+What you do is you check each color intensity. If it is not yet zero, you
+decrease it by one until it is. BAAASIIIC!
+
+Procedure FadeDown;
+VAR loop1,loop2:integer;
+    Tmp : Array [1..3] of byte;
+      { This is temporary storage for the values of a color }
+BEGIN
+  For loop1:=1 to 64 do BEGIN
+    WaitRetrace;
+    For loop2:=0 to 255 do BEGIN
+      Getpal (loop2,Tmp[1],Tmp[2],Tmp[3]);
+      If Tmp[1]>0 then dec (Tmp[1]);
+      If Tmp[2]>0 then dec (Tmp[2]);
+      If Tmp[3]>0 then dec (Tmp[3]);
+        { If the Red, Green or Blue values of color loop2 are not yet zero,
+          then, decrease them by one. }
+      Pal (loop2,Tmp[1],Tmp[2],Tmp[3]);
+        { Set the new, altered pallette color. }
+    END;
+  END;
+END;
+
+Again, to slow the above down, put in a delay above the WaitRetrace. Fading
+out the screen looks SO much more impressive then just clearing the screen;
+it can make a world of difference in the impression your demo etc will
+leave on the people viewing it. To restore the pallette, just do this :
+
+Procedure RestorePallette;
+VAR loop1:integer;
+BEGIN
+  WaitRetrace;
+  For loop1:=0 to 255 do
+    pal (loop1,Pall[loop1,1],Pall[loop1,2],Pall[loop1,3]);
+END;
+
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+ş  In closing
+
+Well, there are most of those origional questions answered ;-) The following
+sample program is quite big, so it might take you a while to get around it.
+Persevere and thou shalt overcome. Pallette manipulation has been a thorn
+in many coders sides for quite some time, yet hopefully I have shown you
+all how amazingly simple it is once you have grasped the basics.
+
+I need more feedback! In which direction would you like me to head? Is there
+any particular section you would like more info on? Also, upload me your
+demo's, however trivial they might seem. We really want to get in contact
+with/help out new and old coders alike, but you have to leave us that message
+telling us about yourself and what you have done or want to do.
+
+IS THERE ANYBODY OUT THERE!?!
+
+P.S. Our new demo should be out soon ... it is going to be GOOOD ... keep
+     an eye out for it.
+
+          [ And so she came across him, slumped over his keyboard
+            yet again . 'It's three in the morning' she whispered.
+            'Let's get you to bed'. He stirred, his face bathed in
+            the dull light of his monitor. He mutters something.
+            As she leans across him to disconnect the power, she
+            asks him; 'Was it worth it?'. His answer surprises her.
+            'No.' he says. In his caffiene-enduced haze, he smiles.
+            'But it sure is a great way to relax.'                  ]
+                                           - Grant Smith
+                                              Tue 13 July, 1993
+                                               2:23 am.
+
+See you next week!
+   - Denthor
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ TUTPROG2.PAS ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+{$X+}
+
+Uses Crt;
+
+CONST VGA=$a000;
+
+Var Pall,Pall2 : Array[0..255,1..3] of Byte;
+     { This declares the PALL variable. 0 to 255 signify the colors of the
+       pallette, 1 to 3 signifies the Red, Green and Blue values. I am
+       going to use this as a sort of "virtual pallette", and alter it
+       as much as I want, then suddenly bang it to screen. Pall2 is used
+       to "remember" the origional pallette so that we can restore it at
+       the end of the program. }
+
+
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+Procedure SetMCGA;  { This procedure gets you into 320x200x256 mode. }
+BEGIN
+  asm
+     mov        ax,0013h
+     int        10h
+  end;
+END;
+
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+Procedure SetText;  { This procedure returns you to text mode.  }
+BEGIN
+  asm
+     mov        ax,0003h
+     int        10h
+  end;
+END;
+
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+procedure WaitRetrace; assembler;
+  { This waits until you are in a Verticle Retrace ... this means that all
+    screen manipulation you do only appears on screen in the next verticle
+    retrace ... this removes most of the "fuzz" that you see on the screen
+    when changing the pallette. It unfortunately slows down your program
+    by "synching" your program with your monitor card ... it does mean
+    that the program will run at almost the same speed on different
+    speeds of computers which have similar monitors. In our SilkyDemo,
+    we used a WaitRetrace, and it therefore runs at the same (fairly
+    fast) speed when Turbo is on or off. }
+
+label
+  l1, l2;
+asm
+    mov dx,3DAh
+l1:
+    in al,dx
+    and al,08h
+    jnz l1
+l2:
+    in al,dx
+    and al,08h
+    jz  l2
+end;
+
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+Procedure GetPal(ColorNo : Byte; Var R,G,B : Byte);
+  { This reads the values of the Red, Green and Blue values of a certain
+    color and returns them to you. }
+Begin
+   Port[$3c7] := ColorNo;
+   R := Port[$3c9];
+   G := Port[$3c9];
+   B := Port[$3c9];
+End;
+
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+Procedure Pal(ColorNo : Byte; R,G,B : Byte);
+  { This sets the Red, Green and Blue values of a certain color }
+Begin
+   Port[$3c8] := ColorNo;
+   Port[$3c9] := R;
+   Port[$3c9] := G;
+   Port[$3c9] := B;
+End;
+
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+Procedure Putpixel (X,Y : Integer; Col : Byte);
+  { This puts a pixel on the screen by writing directly to memory. }
+BEGIN
+  Mem [VGA:X+(Y*320)]:=Col;
+END;
+
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+Procedure line(a,b,c,d,col:integer);
+  { This draws a line from a,b to c,d of color col. }
+   Function sgn(a:real):integer;
+   BEGIN
+        if a>0 then sgn:=+1;
+        if a<0 then sgn:=-1;
+        if a=0 then sgn:=0;
+   END;
+var u,s,v,d1x,d1y,d2x,d2y,m,n:real;
+    i:integer;
+BEGIN
+     u:= c - a;
+     v:= d - b;
+     d1x:= SGN(u);
+     d1y:= SGN(v);
+     d2x:= SGN(u);
+     d2y:= 0;
+     m:= ABS(u);
+     n := ABS(v);
+     IF NOT (M>N) then
+     BEGIN
+          d2x := 0 ;
+          d2y := SGN(v);
+          m := ABS(v);
+          n := ABS(u);
+     END;
+     s := INT(m / 2);
+     FOR i := 0 TO round(m) DO
+     BEGIN
+          putpixel(a,b,col);
+          s := s + n;
+          IF not (s<m) THEN
+          BEGIN
+               s := s - m;
+               a:= a +round(d1x);
+               b := b + round(d1y);
+          END
+          ELSE
+          BEGIN
+               a := a + round(d2x);
+               b := b + round(d2y);
+          END;
+     END;
+END;
+
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+Procedure PalPlay;
+  { This procedure mucks about with our "virtual pallette", then shoves it
+    to screen. }
+Var Tmp : Array[1..3] of Byte;
+  { This is used as a "temporary color" in our pallette }
+    loop1 : Integer;
+BEGIN
+   Move(Pall[200],Tmp,3);
+     { This copies color 200 from our virtual pallette to the Tmp variable }
+   Move(Pall[0],Pall[1],200*3);
+     { This moves the entire virtual pallette up one color }
+   Move(Tmp,Pall[0],3);
+     { This copies the Tmp variable to the bottom of the virtual pallette }
+   WaitRetrace;
+   For loop1:=1 to 255 do
+     pal (loop1,pall[loop1,1],pall[loop1,2],pall[loop1,3]);
+END;
+
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+Procedure SetUpScreen;
+  { This gets our screen ready but setting up the pallette and drawing
+    the lines. }
+Var Loop : Integer;
+BEGIN
+   FillChar(Pall,SizeOf(Pall),0);
+       { Clear the entire PALL variable to zero. }
+   For Loop := 0 to 200 do BEGIN
+      Pall[Loop,1] := Loop mod 64;
+   END;
+       { This sets colors 0 to 200 in the PALL variable to values between
+         0 to 63. the MOD function gives you the remainder of a division,
+         ie. 105 mod 10 = 5 }
+
+   For Loop := 1 to 320 do BEGIN
+      Line(319,199,320-Loop,0,(Loop Mod 199)+1);
+      Line(0,0,Loop,199,(Loop Mod 199)+1);
+       { These two lines start drawing lines from the left and the right
+         hand sides of the screen, using colors 1 to 199. Look at these
+         two lines and understand them. }
+      PalPlay;
+        { This calls the PalPlay procedure }
+   END;
+END;
+
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+Procedure GrabPallette;
+VAR loop1:integer;
+BEGIN
+  For loop1:=0 to 255 do
+    Getpal (loop1,pall2[loop1,1],pall2[loop1,2],pall2[loop1,3]);
+END;
+
+
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+Procedure Blackout;
+  { This procedure blackens the screen by setting the pallette values of
+    all the colors to zero. }
+VAR loop1:integer;
+BEGIN
+  WaitRetrace;
+  For loop1:=0 to 255 do
+    Pal (loop1,0,0,0);
+END;
+
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+Procedure HiddenScreenSetup;
+  { This procedure sets up the screen while it is blacked out, so that the
+    user can't see what is happening. }
+VAR loop1,loop2:integer;
+BEGIN
+  For loop1:=0 to 319 do
+    For loop2:=0 to 199 do
+      PutPixel (loop1,loop2,Random (256));
+END;
+
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+Procedure Fadeup;
+  { This procedure slowly fades up the new screen }
+VAR loop1,loop2:integer;
+    Tmp : Array [1..3] of byte;
+      { This is temporary storage for the values of a color }
+BEGIN
+  For loop1:=1 to 64 do BEGIN
+      { A color value for Red, green or blue is 0 to 63, so this loop only
+        need be executed a maximum of 64 times }
+    WaitRetrace;
+    For loop2:=0 to 255 do BEGIN
+      Getpal (loop2,Tmp[1],Tmp[2],Tmp[3]);
+      If Tmp[1]<Pall2[loop2,1] then inc (Tmp[1]);
+      If Tmp[2]<Pall2[loop2,2] then inc (Tmp[2]);
+      If Tmp[3]<Pall2[loop2,3] then inc (Tmp[3]);
+        { If the Red, Green or Blue values of color loop2 are less then they
+          should be, increase them by one. }
+      Pal (loop2,Tmp[1],Tmp[2],Tmp[3]);
+        { Set the new, altered pallette color. }
+    END;
+  END;
+END;
+
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+Procedure FadeDown;
+  { This procedure fades the screen out to black. }
+VAR loop1,loop2:integer;
+    Tmp : Array [1..3] of byte;
+      { This is temporary storage for the values of a color }
+BEGIN
+  For loop1:=1 to 64 do BEGIN
+    WaitRetrace;
+    For loop2:=0 to 255 do BEGIN
+      Getpal (loop2,Tmp[1],Tmp[2],Tmp[3]);
+      If Tmp[1]>0 then dec (Tmp[1]);
+      If Tmp[2]>0 then dec (Tmp[2]);
+      If Tmp[3]>0 then dec (Tmp[3]);
+        { If the Red, Green or Blue values of color loop2 are not yet zero,
+          then, decrease them by one. }
+      Pal (loop2,Tmp[1],Tmp[2],Tmp[3]);
+        { Set the new, altered pallette color. }
+    END;
+  END;
+END;
+
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+Procedure RestorePallette;
+  { This procedure restores the origional pallette }
+VAR loop1:integer;
+BEGIN
+  WaitRetrace;
+  For loop1:=0 to 255 do
+    pal (loop1,Pall2[loop1,1],Pall2[loop1,2],Pall2[loop1,3]);
+END;
+
+
+BEGIN
+  ClrScr;
+  Writeln ('This program will draw lines of different colors across the');
+  Writeln ('screen and change them only by changing their pallette values.');
+  Writeln ('The nice thing about using the pallette is that one pallette');
+  Writeln ('change changes the same color over the whole screen, without');
+  Writeln ('you having to redraw it. Because I am using a WaitRetrace');
+  Writeln ('command, turning on and off your turbo during the demonstration');
+  Writeln ('should have no effect.');
+  Writeln;
+  Writeln ('The second part of the demo blacks out the screen using the');
+  Writeln ('pallette, fades in the screen, waits for a keypress, then fades');
+  Writeln ('it out again. I haven''t put in any delays for the fadein/out,');
+  Writeln ('so you will have to put ''em in yourself to get it to the speed you');
+  Writeln ('like. Have fun and enjoy! ;-)');
+  Writeln; Writeln;
+  Writeln ('Hit any key to continue ...');
+  Readkey;
+  SetMCGA;
+  GrabPallette;
+  SetUpScreen;
+  repeat
+     PalPlay;
+       { Call the PalPlay procedure repeatedly until a key is pressed. }
+  Until Keypressed;
+  Readkey;
+    { Read in the key pressed otherwise it is left in the keyboard buffer }
+  Blackout;
+  HiddenScreenSetup;
+  FadeUp;
+  Readkey;
+  FadeDown;
+  Readkey;
+  RestorePallette;
+  SetText;
+  Writeln ('All done. This concludes the second sample program in the ASPHYXIA');
+  Writeln ('Training series. You may reach DENTHOR under the name of GRANT');
+  Writeln ('SMITH on the MailBox BBS, or leave a message to ASPHYXIA on the');
+  Writeln ('ASPHYXIA BBS. Get the numbers from Roblist, or write to :');
+  Writeln ('             Grant Smith');
+  Writeln ('             P.O. Box 270');
+  Writeln ('             Kloof');
+  Writeln ('             3640');
+  Writeln ('I hope to hear from you soon!');
+  Writeln; Writeln;
+  Write   ('Hit any key to exit ...');
+  Readkey;
+END.

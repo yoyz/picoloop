@@ -1,0 +1,369 @@
+                   ÕÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¸
+                   ³         W E L C O M E         ³
+                   ³  To the VGA Trainer Program   ³ ³
+                   ³              By               ³ ³
+                   ³      DENTHOR of ASPHYXIA      ³ ³ ³
+                   ÔÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¾ ³ ³
+                     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ ³
+                       ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+                           --==[ PART 1 ]==--
+
+
+
+ş Introduction
+
+
+
+Hi there! This is Denthor of ASPHYXIA, AKA Grant Smith. This training
+program is aimed at all those budding young demo coders out there. I am
+assuming that the reader is fairly young, has a bit of basic Std. 6 math
+under his belt, has done a bit of programming before, probably in BASIC,
+and wants to learn how to write a demo all of his/her own.
+
+This I what I am going to do. I am going to describe how certain routines
+work, and even give you working source code on how you do it. The source
+code will assume that you have a VGA card that can handle the
+320x200x256 mode. I will also assume that you have Turbo Pascal 6.0 or
+above (this is because some of the code will be in Assembly language,
+and Turbo Pascal 6.0 makes this incredibly easy to use). By the end of
+the first "run" of sections, you will be able to code some cool demo
+stuff all by yourself. The info you need, I will provide to you, but it
+will be you who decides on the most spectacular way to use it.
+
+Why not download some of our demos and see what I'm trying to head you
+towards.
+
+I will be posting one part a week on the Mailbox BBS. I have the first
+"run" of sections worked out, but if you want me to also do sections on
+other areas of coding, leave a message to Grant Smith in private E-Mail,
+or start a conversation here in this conference. I will do a bit of
+moderating of a sort, and point out things that have been done wrong.
+
+In this, the first part, I will show you how you are supposed to set up
+your Pascal program, how to get into 320x200x256 graphics mode without a
+BGI file, and various methods of putpixels and a clearscreen utility.
+
+NOTE : I drop source code all through my explanations. You needn't try
+       to grab all of it from all over the place, at the end of each part I
+       add a little program that uses all the new routines that we have
+       learned. If you do not fully understand a section, leave me
+       private mail telling me what you don't understand or asking how I
+       got something etc, and I will try to make myself clearer. One
+       last thing : When you spot a mistake I have made in one of my
+       parts, leave me mail and I will correct it post-haste.
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+ş Disclaimer
+
+
+
+Hi again, sorry that I have to add this, but here goes. All source code
+obtained from this series of instruction programs is used at your own
+risk. Denthor and the ASPHYXIA demo team hold no responsibility for any
+loss or damage suffered by anyone through the use of this code. Look
+guys, the code I'm going to give you has been used by us before in
+Demos, Applications etc, and we have never had any compliants of machine
+damage, but if something does go wrong with your computer, don't blame
+us. Sorry, but that's the way it is.
+
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+ş The MCGA mode and how you get into it in Pascal without a BGI
+
+
+Lets face it. BGI's are next to worthless for demo coding. It is
+difficult to find something that is slower then the BGI units for doing
+graphics. Another thing is, they wern't really meant for 256 color
+screens anyhow. You have to obtain a specific external 256VGA BGI to get
+into it in Pascal, and it just doesn't make the grade.
+
+So the question remains, how do we get into MCGA 320x200x256 mode in
+Pascal without a BGI? The answer is simple : Assembly language.
+Obviously assembly language has loads of functions to handle the VGA
+card, and this is just one of them. If you look in Norton Gides to
+Assembly Language, it says this ...
+
+____________________________________________________________________
+INT 10h,  00h (0)        Set Video Mode
+
+    Sets the video mode.
+
+       On entry:      AH         00h
+                      AL         Video mode
+
+       Returns:       None
+
+       Registers destroyed:      AX, SP, BP, SI, DI
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+This is all well and good, but what does it mean? It means that if you
+plug in the video mode into AL and call interrupt 10h, SHAZAM! you are
+in the mode of your choice. Now, the MCGA video mode is mode 13h, and
+here is how we do it in Pascal.
+
+Procedure SetMCGA;
+BEGIN
+  asm
+        mov     ax,0013h
+        int     10h
+  end;
+END;
+
+There you have it! One call to that procedure, and BANG you are in
+320x200x256 mode. We can't actually do anything in it yet, so to go back
+to text mode, you make the video mode equal to 03h, as seen below :
+
+Procedure SetText;
+BEGIN
+  asm
+        mov     ax,0003h
+        int     10h
+  end;
+END;
+
+
+BANG! We are back in text mode! Now, cry all your enquiring minds, what
+use is this? We can get into the mode, but how do we actually SHOW
+something on the screen? For that, you must move onto the next section
+....
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+ş  Clearing the screen to a specific color
+
+Now that we are in MCGA mode, how do we clear the screen. The answer is
+simple : you must just remember that the base adress of the screen is
+$a000. From $a000, the next 64000 bytes are what is actually displayed on
+the screen (Note : 320 * 200 = 64000). So to clear the screen, you just use
+the fillchar command (a basic Pascal command) like so :
+
+      FillChar (Mem [$a000:0],64000,Col);
+
+What the mem command passes the Segment base and the Offset of a part of
+memory : in this case the screen base is the Segment, and we are starting
+at the top of the screen; Offset 0. The 64000 is the size of the screen
+(see above), and Col is a value between 0 and 255, which represents the
+color you want to clear the screen to.
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+ş  Putting a pixel on the screen (two different methoods)
+
+If you look in Norton Guides about putting a pixel onto the screen, you
+will see this  :
+
+
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+    Writes a pixel dot of a specified color at a specified screen
+    coordinate.
+
+    On entry:      AH         0Ch
+                   AL         Pixel color
+                   CX         Horizontal position of pixel
+                   DX         Vertical position of pixel
+                   BH         Display page number (graphics modes with more
+                              than 1 page)
+
+    Returns:       None
+
+    Registers destroyed:      AX, SP, BP, SI, DI
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+As seen from our SetMCGA example, you would write this by doing the following:
+
+Procedure INTPutpixel (X,Y : Integer; Col : Byte);
+BEGIN
+  asm
+     mov        ah,0Ch
+     mov        al,[col]
+     mov        cx,[x]
+     mov        dx,[y]
+     mov        bx,[1]
+     int        10h
+  end;
+END;
+
+The X would be the X-Coordinate, the Y would be the Y-Coordinate, and the Col
+would be the color of the pixel to place. Note that MCGA has 256 colors,
+numbered 0 to 255. The startoff pallette is pretty grotty, and I will show
+you how to alter it in my next lesson, but for now you will have to hunt for
+colors that fit in for what you want to do. Luckily, a byte is 0 to 255, so
+that is what we pass to the col variable. Have a look at the following.
+
+    CGA = 4 colours.
+    4x4 = 16
+    EGA = 16 colors.
+    16x16 = 256
+    VGA = 256 colors.
+    Therefore an EGA is a CGA squared, and a VGA is an EGA squared ;-)
+
+Anyway, back to reality. Even though the abouve procedure is written in
+assembly language, it is slooow. Why? I hear your enquiring minds cry. The
+reason is simple : It uses interrupts (It calls INT 10h). Interrupts are
+sloooow ... which is okay for getting into MCGA mode, but not for trying
+to put down a pixel lickety-split. So, why not try the following ...
+
+Procedure MEMPutpixel (X,Y : Integer; Col : Byte);
+BEGIN
+  Mem [VGA:X+(Y*320)]:=Col;
+END;
+
+
+The Mem command, as we have seen above, allows you to point at a certain
+point in memory ... the starting point is $a000, the base of the VGA's
+memory, and then we specify how far into this base memory we start.
+Think of the monitor this way. It starts in the top left hand corner at
+0. As you increase the number, you start to move across the screen to your
+right, until you reach 320. At 320, you have gone all the way across the
+screen and come back out the left side, one pixel down. This carries on
+until you reach 63999, at the bottom right hand side of the screen. This
+is how we get the equation X+(Y*320). For every increased Y, we must
+increment the number by 320. Once we are at the beginning of the Y line
+we want, we add our X by how far out we want to be. This gives us the
+exact point in memory that we want to be at, and then we set it equal to
+the pixel value we want.
+
+The MEM methood of putpixel is much faster, and it is shown in the sample
+program at the end of this lesson. The ASPHYXIA team uses neither putpixel;
+we use a DMA-Straight-To-Screen-Kill-Yer-Momma-With-An-Axe type putipixel
+which is FAST. We will give it out, but only to those of you who show us
+you are serious about coding. If you do do anything, upload it to me,
+I will be very interested to see it. Remember : If you do glean anything
+from these training sessions, give us a mention in your demos and UPLOAD
+YOUR DEMO TO US!
+
+Well, after this is the sample program; have fun with it, UNDERSTAND it,
+and next week I will start on fun with the pallette.
+
+See you all later,
+    - Denthor
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ TUTPROG1.PAS ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+
+{$X+}   (* This is a handy little trick to know. If you put this at the top
+           of your program, you do not have to set a variable when calling
+           a function, i.e. you may just say 'READKEY' instead of
+           'CH:=READKEY'                                                *)
+
+USES Crt;           (* This has a few nice functions in it, such as the
+                       READKEY command.                                 *)
+
+CONST VGA = $a000;  (* This sets the constant VGA to the segment of the
+                       VGA screen.                                      *)
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+Procedure SetMCGA;  { This procedure gets you into 320x200x256 mode. }
+BEGIN
+  asm
+     mov        ax,0013h
+     int        10h
+  end;
+END;
+
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+Procedure SetText;  { This procedure returns you to text mode.  }
+BEGIN
+  asm
+     mov        ax,0003h
+     int        10h
+  end;
+END;
+
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+Procedure Cls (Col : Byte);
+   { This clears the screen to the specified color }
+BEGIN
+  Fillchar (Mem [$a000:0],64000,col);
+END;
+
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+Procedure INTPutpixel (X,Y : Integer; Col : Byte);
+   { This puts a pixel on the screen using interrupts. }
+BEGIN
+  asm
+     mov        ah,0Ch
+     mov        al,[col]
+     mov        cx,[x]
+     mov        dx,[y]
+     mov        bx,[1]
+     int        10h
+  end;
+END;
+
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+Procedure TestINTPutpixel;
+   { This tests out the speed of the INTPutpixel procedure. }
+VAR loop1,loop2 : Integer;
+BEGIN
+  For loop1:=0 to 319 do
+    For loop2:=0 to 199 do
+      INTPutpixel (loop1,loop2,Random (256));
+  Readkey;
+  Cls (0);
+END;
+
+
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+Procedure MEMPutpixel (X,Y : Integer; Col : Byte);
+  { This puts a pixel on the screen by writing directly to memory. }
+BEGIN
+  Mem [VGA:X+(Y*320)]:=Col;
+END;
+
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+Procedure TestMEMPutpixel;
+   { This tests out the speed of the MEMPutpixel procedure. }
+VAR loop1,loop2 : Integer;
+BEGIN
+  For loop1:=0 to 319 do
+    For loop2:=0 to 199 do
+      MEMPutpixel (loop1,loop2,Random (256));
+  Readkey;
+  Cls (0);
+END;
+
+
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+BEGIN    (* Of the main program *)
+  ClrScr;               { This clears the text Screen (CRT unit) }
+  Writeln ('What will happen is that I will clear the screen twice. After');
+  Writeln ('each clear screen you will have to hit a key. I will then fill');
+  Writeln ('the screen twice with randomlly colored pixels using two different');
+  Writeln ('methoods, after each of which you will have to hit a key. I will');
+  Writeln ('then return you to text mode.');
+  Writeln; Writeln;
+  Write ('Hit any kay to continue ...');
+  Readkey;
+
+  SetMCGA;
+  CLS (32);
+  Readkey;
+  CLS (90);
+  Readkey;
+  TestINTPutpixel;
+  TestMEMPutpixel;
+  SetText;
+
+  Writeln ('All done. This concludes the first sample program in the ASPHYXIA');
+  Writeln ('Training series. You may reach DENTHOR under the name of GRANT');
+  Writeln ('SMITH on the MailBox BBS, or leave a message to ASPHYXIA on the');
+  Writeln ('ASPHYXIA BBS. Get the numbers from Roblist, or write to :');
+  Writeln ('             Grant Smith');
+  Writeln ('             P.O. Box 270');
+  Writeln ('             Kloof');
+  Writeln ('             3640');
+  Writeln ('I hope to hear from you soon!');
+  Writeln; Writeln;
+  Write   ('Hit any key to exit ...');
+  Readkey;
+END.     (* Of the main program *)

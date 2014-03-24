@@ -1,0 +1,473 @@
+            ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+            ³ Introduction to Programming the SVGA Cards  ³
+            ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+            Written for the PC-GPE by Mark Feldman
+            e-mail address : u914097@student.canberra.edu.au
+                             myndale@cairo.anu.edu.au
+
+             ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+             ³      THIS FILE MAY NOT BE DISTRIBUTED     ³
+             ³ SEPARATE TO THE ENTIRE PC-GPE COLLECTION. ³
+             ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Disclaimer ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+I assume no responsibility whatsoever for any effect that this file, the
+information contained therein or the use thereof has on you, your sanity,
+computer, spouse, children, pets or anything else related to you or your
+existance. No warranty is provided nor implied with this information.
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ SVGA Section Overview ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+The vast majority of the information presented in the PC-GPE was obtained
+from the book "Programmer's Guide to the EGA and VGA Cards - Includes Super
+VGAs, Second Edition" by Richard Ferraro, ISBN 0-201-57025-4, published
+by Addison-Wesley. This book is by far the most comprehensive VGA/SVGA
+reference I have seen to date and is more than worth it's price tag. I
+heartily recommend it to anyone wishing to do any serious graphics
+programming for the PC.
+
+The PC-GPE SVGA section was originally not going to be included in version 1
+due to the fact that I have only been able to verify that the info on the
+Paradise SVGA is correct. I will include it however, in the hope that
+everyone (and I mean *EVERYONE*) who reads these files and tries out the
+routines will e-mail me with the results they get so I can make the
+modifications in time for version 2.
+
+I will need to know these things:
+
+1) Your SVGA board name
+
+2) The id and revision number of the chip inside (if possible)
+
+3) What you tried and the results you got. This applies to *all* routines,
+   bank switching, chip detection etc....  I need to know everything!
+
+If a routine doesn't work as expected then let me know if it's doing anything
+at all. "The routine is stuffed you idiot" won't exactly help me much, but
+"I can only read pixels in bank 0 you idiot" just might......
+
+And of course there's always the chance that I've misunderstood my references
+so I need to have my mistakes pointed out to me as well. I'm a big boy...I
+can take it!
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Writing to the VGA Ports ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+Many of the PC-GPE SVGA texts have the PortW Pascal command as follows:
+
+PortW[PORTNUM] := VALUE;
+
+This command writes a 16 bit word to the port, the same as the asm op code:
+
+out dx, ax
+
+The effect of this code is the same as the following two Pascal statements:
+
+Port[PORTNUM] := Lo(VALUE);
+Port[PORTNUM + 1] := Hi(VALUE);
+
+I'm not sure if this is common to all the PC ports or only works on the
+VGA. (Perhaps someone could enlighten me?)
+
+The PortW command is very handy when writing to the SVGA extended registers.
+The SVGA register sets are all extensions of the VGA register sets and
+use an indexed addressing scheme to cut down on the number of ports they
+use. The texts often have register maps which look similar to the following:
+
+          PR0A Address Offset A
+          Index : 09h at port 3CEh
+          Read/Write at port 3CFh
+          ÚÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄ¿
+          ³ 7 ³ 6 ³ 5 ³ 4 ³ 3 ³ 2 ³ 1 ³ 0 ³
+          ÀÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÙ
+                ÀÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÙ
+                           Bank
+
+For this particular map, the register name is PR0A Offset A. To select the
+register and get it ready for reading and/or writing you write the value
+09h to port 3CEh (the index port). The register can then be read from or
+written to port 3CFh (the read/write port).
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Bank Switching ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+In real mode, the PC has addresses A000:0000-B000:FFFF allocated for video
+memory, although most graphics modes only use the A000 segment.
+
+If you set an SVGA card to 640x480x256 color mode (for example) then there
+will be a total of 307200 pixels on the screen. Since each pixel takes up
+one byte in 256 color modes around 300K of video memory will be used to
+store the screen data. In most cases all this memory is accessed through the
+A000 segment. When you initially set the mode, bank 0 on the card will be
+active and anything you read to or write from this segment will be in the
+first 64K bytes in video memory (i.e. lines 0-101 and the first 256 bytes in
+line number 102). If you want to access the next 64K you must switch the
+card to bank number 1 so that the A000 segment now maps to the second bank,
+and so forth.
+
+The problem here is that each card has a different method of doing the bank
+switching. The PC-GPE files contain info on how to do the bank switching for
+a number of the most commonly used SVGA cards. The VESA standard helped
+inject some sanity into the otherwise chaotic world of SVGA programming by
+introducing a "standard" method of bank switching for all cards.
+
+A note should be made here about bank granularity. In the section above I
+assumed that bank 0 corresponded to the first 64K, bank 1 to the next etc..
+ie each bank has a 64K granularity. This is true for most cards, but some
+do have smaller granularities (see the table below). The Paradise for
+instance has a 4K granularity. It's very similar in concept to the PC's
+segmented memory, segments are 64K long but they have a 16 byte granularity.
+The Paradise chip's banks are also 64K long, but they have a 4K granularity.
+All the bank switching code given in the PC-GPE SVGA files adjust for this
+so that your code can assume the card has a 64K granularity in all cases.
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ SVGA Libraries ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+There are a few SVGA libraries available via anonymouse ftp. I haven't had
+a chance to use any of them yet, but I've heard some of them are pretty good,
+so they might be worth checking out. Here's two C libraries that I know of:
+
+     site: ftp.fasttax.com
+directory: /pc/graphic/scitech/beta
+ filename: svkt44bl.zip
+
+     site: garbo.uwasa.fi
+directory: /pc/programming
+ filename: SVGACC20.ZIP
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Common SVGA Cards ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+The PC-GPE files contain information on programming the 7 VGA "standards"
+as covered by Ferraro. According to Ferraro the majority of SVGA cards on
+the market today conform to one of these standards. The standards are
+Ati, Chips and Technologies, Genoa, Paradise, Trident, Tseng and Video7.
+I've also included a file on the VESA specifications (VESASP12.TXT). VESA
+seems to be the way to go now since public domain drivers are available for
+most cards and you only need to write one set of graphics drivers if you use
+it. VESA BIOS calls can be slow however, so if your program needs to do LOTS
+of bank switching then you may need to work with the cards on a hardware
+level.
+
+The following is a list of common SVGA's along with the chip it is based on,
+the number of banks the card contains and the modes they support. The GR
+field is the bank granularity. This information was obtained by examining
+the configuration files in the shareware program VPIC. VPIC is a great
+little program which supports numerous graphics file formats as well
+as all the cards listed below (and a few more). VPIC can be obtained via
+anonymous ftp from oak.oakland.edu, directory /pub/msdos/gif, filename
+vpic. I tried to contact the author so I'd feel better about blatently
+ripping all the info out of his data files but he doesn't seem to have an
+e-mail address. Are you out there Bob Montgomery?
+
+Quite a number of the chip sets in the list are not mentioned in Ferraro. If
+anyone has information on programming any of them drop me a line.
+
+Each mode in the table below has a mode number. To set the mode, load the AX
+register with this value and do an interrupt 10h. Some modes below have two
+numbers. In these cases load AX with the first number and BX with the second
+before calling interrupt 10h.
+
+Only 16 and 256 color are presented in the table below. True-color modes
+are not included in this version.
+
+
+Board                   Chip           Banks     Modes    Resolution  Col GR
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Acumos                  ACUMOS         8         5Eh      640x400     256 64k
+                                                 5Fh      640x480     256 64k
+                                                 5Ch      800x256     256 64k
+                                                 10h      640x350     16  64k
+                                                 12h      640x480     16  64k
+                                                 58h      800x600     16  64k
+                                                 5dh      1024x768    16  64k
+
+Ahead A Chip            AHEADA         4/8       60h      640x400     256 64k
+                                                 61h      640x480     256 64k
+                                                 62h      800x600     256 64k
+                                                 6Ah      800x600     16  64k
+                                                 74h      1024x768    16  64k
+
+Ahead B Chip            AHEADB         8/16      60h      640x400     256 64k
+                                                 61h      640x480     256 64k
+                                                 62h      800x600     256 64k
+                                                 63h      1024x768    256 64k
+                                                 6Ah      800x600     16  64k
+                                                 74h      1024x768    16  64k
+
+ATI VGA Wonder          ATI OLD        4/8       61h      640x400     256 32k
+                                                 62h      640x480     256 32k
+                                                 63h      800x600     256 32k
+                                                 54h      800x600     16  32k
+                                                 65h      1024x768    16  64k
+
+ATI VGA Wonder+         ATI NEW        4/8/16    61h      640x400     256 32k
+                                                 62h      640x480     256 32k
+                                                 63h      800x600     256 32k
+                                                 64h      1024x768    256 32k
+                                                 54h      800x600     16  32k
+                                                 55h      1024x768    16  32k
+
+ATI Ultra 8514A GA      ATI NEW        4/8/16    61h      640x400     256 32k
+                                                 62h      640x480     256 32k
+                                                 63h      800x600     256 32k
+                                                 54h      800x600     16  32k
+                                                 55h      1024x768    16  32k
+
+ATI XL                  ATI NEW        4/8/16    61h      640x400     256 32k
+                                                 62h      640x480     256 32k
+                                                 63h      800x600     256 32k
+                                                 64h      1024x768    256 32k
+                                                 54h      800x600     16  32k
+                                                 55h      1024x768    16  32k
+
+Chips & Technology      Chips and      4/8       78h      640x400     256 16k
+                        Technologies             79h      640x480     256 16k
+                                                 7Ah      720x540     256 16k
+                                                 7Bh      800x600     256 16k
+                                                 70h      800x600     16  16k
+                                                 71h      960x720     16  16k
+                                                 72h      1024x768    16  16k
+
+Cirrus Logic GD54       VESA           16/64  4F02h,100h  640x400     256  4k
+                                              4F02h,101h  640x480     256  4k
+                                              4F02h,103h  800x600     256  4k
+                                              4F02h,105h  1024x768    256  4k
+                                              4F02h,102h  800x600     16   4k
+                                              4F02h,104h  1024x768    16   4k
+
+Definicon, 16 Bit       TSENG 4000     8/16      2dh      640x350     256 64k
+                                                 2fh      640x400     256 64k
+                                                 2eh      640x480     256 64k
+                                                 30h      800x600     256 64k
+                                                 38h      1024x768    256 64k
+                                                 29h      800x600     16  64k
+                                                 37h      1024x768    16  64k
+                                                 3Dh      1280x1024   16  64k
+
+Diamond 24x             PARADISE       4/16      5eh      640x400     256  4k
+                                                 5fh      640x480     256  4k
+                                                 5ch      800x600     256  4k
+                                                 60h      1024x768    256  4k
+                                                 58h      800x600     16   4k
+                                                 5Dh      1024x768    16   4k
+                                                 6Ch      1280x960    16   4k
+                                                 64h      1280x1024   16   4k
+
+Diamond Speedstar 24    TSENG 4000     8/16      2dh      640x350     256 64k
+                                                 2fh      640x400     256 64k
+                                                 2eh      640x480     256 64k
+                                                 30h      800x600     256 64k
+                                                 38h      1024x768    256 64k
+                                                 29h      800x600     16  64k
+                                                 37h      1024x768    16  64k
+
+Everex EV-673           EVEREX         4/8       70h,13h  640x350     256 64k
+                                                 70h,14h  640x400     256 64k
+                                                 70h,15h  512x480     256 64k
+                                                 70h,30h  640x480     256 64k
+                                                 70h,31h  800x600     256 64k
+                                                 70h,02h  800x600     16  64k
+                                                 70h,20h  1024x768    16  64k
+
+Everev 678              TRIDENT        4/8       70h,14h  640x400     256 64k
+                        8800                     70h,15h  512x480     256 64k
+                                                 70h,30h  640x480     256 64k
+                                                 70h,31h  800x600     256 64k
+                                                 70h,02h  800x600     16  64k
+                                                 70h,20h  1024x768    16  64k
+
+Everex Vision VGA HC    TSENG 4000     8/16      2fh      640x400     256 64k
+                                                 2eh      640x480     256 64k
+
+Genoa 5400              TSENG 3000     4/8       2dh      640x350     256 64k
+                                                 2eh      640x480     256 64k
+                                                 30h      800x600     256 64k
+                                                 29h      800x600     16  64k
+                                                 37h      1024x768    16  64k
+
+Genoa 6400              GENOA          4/8       2bh      640x350     256 64k
+                                                 2eh      640x480     256 64k
+                                                 30h      800x600     256 64k
+                                                 29h      800x600     16  64k
+                                                 37h      1024x768    16  64k
+
+Genoa 7900 24 bit       TSENG 4000     8/16      2dh      640x350     256 64k
+                                                 2fh      640x400     256 64k
+                                                 2eh      640x480     256 64k
+                                                 30h      800x600     256 64k
+                                                 38h      1024x768    256 64k
+                                                 29h      800x600     16  64k
+                                                 37h      1024x768    16  64k
+
+Headland 1024i          HEADLAND       4/8    6F05h,66h   640x400     256 64k
+                                              6F05h,67h   640x480     256 64k
+                                              6F05h,68h   720x540     256 64k
+                                              6F05h,69h   800x600     256 64k
+                                              6F05h,61h   720x540     16  64k
+                                              6F05h,62h   800x600     16  64k
+                                              6F05h,65h   1024x768    16  64k
+
+Hi Res 512              ZYMOS          4/8       5ch      640x400     256 64k
+                                                 5dh      640x480     256 64k
+                                                 5eh      800x600     256 64k
+                                                 6ah      800x600     16  64k
+                                                 5fh      1024x768    16  64k
+
+Maxxon                  TRIDENT 8800   4/8       5ch      640x400     256 64k
+                                                 5dh      640x480     256 64k
+                                                 5eh      800x600     256 64k
+                                                 5bh      800x600     16  64k
+                                                 5fh      1024x768    16  64k
+
+C&T MK82452             CHIPS AND      8         78h      640x400     256 16k
+                        TECHNOLOGIES             79h      640x480     256 16k
+                                                 70h      800x600     16  16k
+                                                 72h      1024x768    16  16k
+
+NCR 77C22               NCR            8/16      5eh      640x400     256 64k
+                                                 5fh      640x480     256 64k
+                                                 5ch      800x600     256 64k
+                                                 62h      1024x768    256 64k
+                                                 58h      800x600     16  64k
+                                                 5dh      1024x768    16  64k
+
+OAK                     OAK            8/16      53h      640x480     256 64k
+                                                 54h      800x600     256 64k
+                                                 59h      1024x768    256 64k
+                                                 52h      800x600     16  64k
+                                                 56h      1024x768    16  64k
+
+Orchid
+Fahrenheight 1280       S3             8/16   4F02h,201h  640x480     256 64k
+                                              4F02h,203h  800x600     256 64k
+                                              4F02h,205h  1024x768    256 64k
+                                              4F02h,202h  800x600     16  64k
+                                              4F02h,204h  1024x768    16  64k
+                                              4F02h,206h  1280x960    16  64k
+                                              4F02h,206h  1280x1024   16  64k
+
+Orchid Pro
+Designer II             TSENG 4000     8/16      2dh      640x350     256 64k
+                                                 2fh      640x400     256 64k
+                                                 2eh      640x480     256 64k
+                                                 30h      800x600     256 64k
+                                                 38h      1024x768    256 64k
+                                                 29h      800x600     16  64k
+                                                 37h      1024x768    16  64k
+
+Paradise VGA Pro        PARADISE       4/16      5eh      640x400     256  4k
+                                                 5fh      640x480     256  4k
+                                                 5ch      800x600     256  4k
+                                                 60h      1024x768    256  4k
+                                                 58h      800x600     16   4k
+                                                 5Dh      1024x768    16   4k
+
+Primus P2000 GA         PRIMUS         8/16      2dh      640x480     256 64k
+                                                 2bh      800x600     256 64k
+                                                 31h      1024x768    256 64k
+                                                 37h      1280x1024   256 64k
+                                                 2ah      800x600     16  64k
+                                                 30h      1024x768    16  64k
+                                                 36h      1280x1024   16  64k
+
+Compaq QVision          QVISION        8/16      32h      640x480     256  4k
+                                                 38h      1024x768    256  4k
+                                                 10h      640x350     16   4k
+                                                 12h      640x480     16   4k
+                                                 29h      800x600     16   4k
+                                                 37h      1024x768    16   4k
+
+Realtek RTVGA           REALTEK        8/16      25h      640x400     256 64k
+                                                 26h      640x480     256 64k
+                                                 27h      800x600     256 64k
+                                                 28h      1024x768    256 64k
+                                                 1Fh      800x600     16  64k
+                                                 21h      1024x768    16  64k
+                                                 2Ah      1280x1024   16  64k
+
+Realtek RTVGA           REALTEK        8/16      25h      640x400     256 64k
+                                                 26h      640x480     256 64k
+                                                 27h      800x600     256 64k
+                                                 28h      1024x768    256 64k
+                                                 1Fh      800x600     16  64k
+                                                 21h      1024x768    16  64k
+                                                 2Ah      1280x1024   16  64k
+
+S3 Graphics Accelerator S3             8/16   4F02h,201h  640x480     256 64k
+                                              4F02h,203h  800x600     256 64k
+                                              4F02h,205h  1024x768    256 64k
+                                              4F02h,202h  800x600     16  64k
+                                              4F02h,204h  1024x768    16  64k
+                                              4F02h,206h  1280x960    16  64k
+
+STB EM 16               TSENG 4000     8/16      2dh      640x350     256 64k
+                                                 78h      640x400     256 64k
+                                                 2eh      640x480     256 64k
+                                                 30h      800x600     256 64k
+                                                 38h      1024x768    256 64k
+                                                 29h      800x600     16  64k
+                                                 37h      1024x768    16  64k
+
+Phoebes                 TRIDENT 8800CS 4/8       5ch      640x400     256 64k
+                                                 5dh      640x480     256 64k
+                                                 5bh      800x600     16  64k
+                                                 5fh      1024x768    16  64k
+
+Maxxon                  TRIDENT 8800CS 4/8       5ch      640x400     256 64k
+                                                 5dh      640x480     256 64k
+                                                 5eh      800x600     256 64k
+                                                 5bh      800x600     16  64k
+                                                 5fh      1024x768    16  64k
+
+Trident 8900            TRIDENT 8900   8/16      5Ch      640x400     256 64k
+                                                 5Dh      640x480     256 64k
+                                                 5Eh      800x600     256 64k
+                                                 62h      1024x768    256 64k
+                                                 5Bh      800x600     16  64k
+                                                 5Fh      1024x768    16  64k
+
+Tseng ET-3000           TSENG ET3000   4/8       2dh      640x350     256 64k
+                                                 2eh      640x480     256 64k
+                                                 30h      800x600     256 64k
+                                                 29h      800x600     16  64k
+                                                 36h      960x720     16  64k
+                                                 37h      1024x768    16  64k
+
+Tseng ET-4000           TSENG ET4000   8/16      2dh      640x350     256 64k
+                                                 2fh      640x400     256 64k
+                                                 2eh      640x480     256 64k
+                                                 30h      800x600     256 64k
+                                                 38h      1024x768    256 64k
+                                                 29h      800x600     16  64k
+                                                 37h      1024x768    16  64k
+
+Video 7 VRAM            VIDEO7         4/8    6f05h,66h   640x400     256 64k
+                                              6f05h,67h   640x480     256 64k
+                                              6f05h,68h   720x540     256 64k
+                                              6f05h,69h   800x600     256 64k
+                                              6f05h,61h   720x540     16  64k
+                                              6f05h,62h   800x600     16  64k
+                                              6f05h,65h   1024x768    16  64k
+
+Western Digital 90C     PARADISE      4/8        5eh      640x400     256  4k
+                                                 5fh      640x480     256  4k
+                                                 5ch      800x600     256  4k
+                                                 58h      800x600     16   4k
+                                                 5Dh      1024x768    16   4k

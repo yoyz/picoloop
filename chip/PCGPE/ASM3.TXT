@@ -1,0 +1,526 @@
+
+                  - ASMVLA01 - File I/O - 04/14/93 -
+
+    Lately we have been quite busy with school, so this second issue is a 
+little behind schedule.  But that's life... This little issue will quickly
+show off the DOS file functions: read, write, open, close, create & others.  
+They are all pretty much the same, so there isn't a whole lot to go over.
+But, as a bonus, I'm going to throw in a bit about how to do a subroutine.
+Let's do the subroutine stuff first.
+
+`Procedures' as they are called, are declared like this:
+
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+PROC TheProcedure
+
+    ...             ;do whatever..
+    
+    ret             ;MUST have a RET statement!
+ENDP TheProcedure
+
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+    In the procedure, you can do basically anything you want, just at the 
+end of it, you say ret.  You can also specify how to call the PROC by putting
+a NEAR or FAR after the procedure name.  This tells the compiler whether
+to change segment AND offset, or just offset when the procedure is called.
+Note that if you don't specify, it compiles into whatever the default is for
+the current .MODEL (small = near, large = far)
+
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+PROC TheProc NEAR
+
+    ...
+
+    ret             ;this compiles to `retn' (return near- pops offset off
+ENDP TheProc        ; stack only)
+
+    OR
+
+PROC TheProc FAR
+
+    ...
+
+    ret             ;compiles to `retf' pops both offset & segment off stack
+ENDP TheProc        ; pops offset first
+
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+    That's basically all there is to that.  Note that if you REALLY wanted to
+be tricky, you could do a far jump by doing this:
+
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+    push    seg TheProc
+    push    offset TheProc
+    retf
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+    This would "return" you to the beginning of the procedure "TheProc"...
+This code is just to illustrate a point.  If you actually did something like
+this and compiled and executed it, it would bomb.  Know why?  What happens 
+when it hits the `ret' in the PROC?  Well it pops off the offset and puts 
+it in IP and then pops the segment and puts it in CS.  Who knows what was
+on the stack... will return to an unknown address and probably crash.  (It
+DEFINATELY will not continue executing your code.)
+
+    Of course, the only stack operations are PUSH and POP.  All they do is 
+push or pop off the stack a word sized or a Dword sized piece of data.  NEVER
+under ANY circumstance try to push a byte sized piece of data!  The results 
+are unpredictable.  Well, not really, but just don't do it, ok?
+
+    There are also two commands that'll save you some time and code space:
+
+PUSHA and POPA (push all and Pop all)
+
+    PUSHA pushes the general registers in this order:
+
+AX, CX, DX, BX, SP, BP, SI, DI
+
+    POPA pops the general registers in this order:
+
+DI, SI, BP, (sp), BX, DX, CX, AX
+
+    SP is different because popa does NOT restore the value of SP.  It merely 
+pops it off and throws it away.
+
+    For the 386+, pushad and popad push and pop all extended registers in
+the same order.  You don't need to memorize the order, because you don't
+need to know the order until you go and get tricky. (hint: the location of
+AX on the stack is [sp + 14] - useful if you want to change what AX returns,
+but you did a pusha cause you wanted to save all the registers (except AX)
+Then you'd do a popa, and AX= whatever value you put in there.
+
+    컴컴
+
+    Alright, now a slightly different topic: memory management
+
+    Ok, this isn't true by-the-book memory management, but you need to know
+one thing:  Upon execution of a program, DOS gives it ALL memory up to the
+address A000:0000. This happens to be the beginning of the VGA buffer...
+Another thing you must know is that, if you used DOSSEG at the top of your
+file, the segment is the last piece of your program.  The size of the segment
+is derived from the little command `STACK 200h' or whatever the value was
+that you put up there.  The 200h is the number of bytes in the stack.  To get
+the number of paragraphs, you'd divide by 16.  Here's an example of how I can
+get a pointer to the first valid available segment that I can use for data:
+
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+    mov     ax,ss       ;grab the stack segment
+    add     ax,200h/16  ;add the size of the stack 200h/16 = 20h
+
+    ;AX now contains the value of the first available segment the you can
+    ; use.
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+    This is very nice, because you can just plop your data right there
+and you have a 64k buffer you can use for anything you want.
+
+    Ok, say you want to find out how much memory is available to use.  This
+would be done like this:  (no suprises, I hope.)
+
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+    mov     ax,ss       ;grab the stack segment
+    add     ax,200h/16  ;add the size of the stack 200h/16 = 20h
+    mov     bx,0A000h   ;upper limit of the free memory
+    sub     bx,ax       ;bx= # of paragraphs available
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+    Pretty darn simple.  That's enough of the overhead that you must know
+to understand the included ANSI viewer (asm3.asm)  
+
+        Now to the FILE I/O stuff...
+
+    Files can be opened, read from, written to, created, and closed.  To open
+a file, all you need to do is give the DOS interrupt a name & path.  All
+references to that file are done through what's known as a file handle. A
+file handle is simply a 16bit integer that DOS uses to identify the file.
+It's used more or less like an index into chart of pointers that point to 
+a big structure that holds all the info about the file- like current position
+in the file, file type, etc.. all the data needed to maintain a file.
+The `FILES= 20' thing in your autoexec simply tells DOS how much memory to
+grab for those structures. ( Files=20 grabs enough room for 20 open files. )
+
+    ANYway, here's each of the important function calls and a rundown on what
+they do and how to work them.
+
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+FILE OPEN: Function 3Dh
+
+ IN:
+    ah= 3Dh
+    al= open mode
+
+        bits 7-3: Stuff that doesn't matter to us
+        bits 2-0: Access code
+            000 read only access
+            001 write only access
+            010 read and write access
+
+    DS:DX= pointer to the ASCIIZ filename
+        ASCIIZ means that its an ASCII string with a Zero on the end.
+
+ Returns:
+        CF=1 error occured
+            AX= error code- don't worry about what they are, if the carry
+                is set, you didn't open the file.
+
+        CF=0 no error
+            AX= File Handle ;you need to keep this- it's your only way to
+                            ; reference your file!
+
+  컴컴 EXAMPLE 컴컴
+
+    [...]   ;header stuff
+
+    .CODE           ;this stuff is used for all the examples
+
+  FileName  db "TextFile.TXT",0
+  FileHandle dw 0
+  Buffer    db  300 dup (0)
+  BytesRead dw  0
+  FileSize  dd  0
+
+    [...]   ;more stuff
+
+    mov     ax,3d00h    ; open file for read only
+    mov     ax,cs
+    mov     ds,ax       ;we use CS, cause it's pointing to the CODE segment
+                        ; and our file name is in the code segment
+    mov     dx,offset FileName
+    int     21h
+    jc      FileError_Open
+
+    mov     [FileHandle],ax
+
+    [...]   ;etc...
+
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+FILE CLOSE: Function 3Eh
+
+  IN:
+    AH= 3Eh
+    BX= File Handle
+
+  RETURN:
+    CF=1 error occured, but who cares?
+  
+  컴컴 EXAMPLE 컴컴
+
+    mov     bx,[FileHandle]
+    mov     ah,3eh
+    int     21h
+
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+FILE READ: Function 3Fh
+
+  IN:
+    AH= 3Fh
+    BX= File Handle
+    CX= Number of bytes to read
+    DS:DX= where to put data that is read from the file (in memory)
+    
+  RETURN:
+    AX= number of bytes actually read- if 0, then you tried to read from
+        the end of the file.
+
+  컴컴 EXAMPLE 컴컴
+
+    mov     bx,[FileHandle]
+    mov     ax,cs
+    mov     ds,ax
+    mov     dx,offset buffer
+    mov     ah,3Fh
+    mov     cx,300
+    int     21h
+
+    mov     [BytesRead],ax
+
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+FILE WRITE: Function 40h
+
+  IN:
+    AH= 40h
+    BX= File Handle
+    CX= Number of bytes to write
+    DS:DX= where to read data from (in memory) to put on disk
+    
+  RETURN:
+    AX= number of bytes actually written- if not equal to the number of bytes
+        that you wanted to write, you have an error.
+        
+  컴컴 EXAMPLE 컴컴
+
+    mov     bx,[FileHandle]
+    mov     ax,cs
+    mov     ds,ax
+    mov     dx,offset buffer
+    mov     ah,40h
+    mov     cx,[BytesRead]
+    int     21h
+
+    cmp     cx,ax
+    jne     FileError_Write
+
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+FILE CREATE: Function 3Ch
+
+ IN:
+    ah= 3Ch
+    cl= file attribute
+
+        bit 0: read-only
+        bit 1: hidden
+        bit 2: system
+        bit 3: volume label
+        bit 4: sub directory
+        bit 5: Archive
+        bit 6&7: reserved
+
+    DS:DX= pointer to the ASCIIZ filename
+        ASCIIZ means that its an ASCII string with a Zero on the end.
+
+ Returns:
+        CF=1 error occured
+            AX= error code- don't worry about what they are, if CF
+                is set, you didn't create the file.
+
+        CF=0 no error
+            AX= File Handle ;you need to keep this- it's your only way to
+                            ; reference your file!
+  컴컴 EXAMPLE 컴컴
+
+    mov     ah,3ch
+    mov     ax,cs
+    mov     ds,ax       ;we use CS, cause it's pointing to the CODE segment
+                        ; and our file name is in the code segment
+    mov     dx,offset FileName
+    mov     cx,0        ;no attributes
+    int     21h
+    jc      FileError_Create
+
+    mov     [FileHandle],ax
+
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+FILE DELETE: Function 41h
+
+ IN:
+    ah= 41h
+    DS:DX= pointer to the ASCIIZ filename
+    
+ Returns:
+        CF=1 error occured
+            AX= error code- 2= file not found, 3= path not found
+                    5= access denied
+
+        CF=0 no error
+
+  컴컴 EXAMPLE 컴컴
+
+    mov     ah,41h      ;kill the sucker
+    mov     ax,cs
+    mov     ds,ax
+    mov     dx,offset FileName
+    int     21h
+    jc      FileError_Delete
+
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+FILE MOVE POINTER: Function 42h
+
+ IN:
+    ah= 42h
+    BX= File Handle
+    CX:DX= 32 bit pointer to location in file to move to    
+    AL= 0  offset from beginning of file
+      = 1  offset from curent position
+      = 2  offset from the end of the file
+      
+ Returns:
+        CF=1 error occured
+            AX= error code- no move occured
+
+        CF=0 no error
+            DX:AX 32 bit pointer to indicate current location in file
+            
+  컴컴 EXAMPLE 컴컴
+
+    mov     ah,42h      ;find out the size of the file
+    mov     bx,[FileHandle]
+    xor     cx,cx
+    xor     dx,dx
+    mov     al,2
+    int     21h
+    
+    mov     [word low FileSize],ax
+    mov     [word high FileSize],dx ;load data into filesize
+
+    (or in MASM mode, 
+
+            mov word ptr [FileSize],ax
+            mov word ptr [FileSize+2],dx
+
+    need I say why I like Ideal mode? )
+
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+FILE CHANGE MODE: Function 43h
+
+ IN:
+    ah= 43h
+    DS:DX= pointer to the ASCIIZ filename
+    al= 0
+        returns file attributes in CX
+    al= 1 
+        sets file attributes to what's in CX
+    
+ Returns:
+        CF=1 error occured
+            AX= error code- 2= file not found, 3= path not found.
+                    5= access denied
+
+        CF=0 no error
+
+  컴컴 EXAMPLE 컴컴 Lets erase a hidden file in your root directory...
+
+  FileName db   "C:\msdos.sys",0
+
+    [...]
+
+    mov     ah,43h          ;change attribute to that of a normal file
+    mov     ax,cs
+    mov     ds,ax
+    mov     dx,offset FileName
+    mov     al,1            ;set to whats in CX
+    mov     cx,0            ;attribute = 0
+    int     21h
+
+    mov     ah,41h          ;Nuke it with the delete command
+    int     21h
+
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
+
+    Well, that's all for now.  I hope this info is enough for you to do some 
+SERIOUS damage... :)  I just don't want to see any 'bombs' running around
+erasing the hidden files in the root directory, ok?
+
+    Anyway, go take a look at asm3.asm- it's a SIMPLE ansi/text displayer.
+It just opens the file, reads it all into a "buffer" that was "allocated"
+immediatly after the stack & reads in the entire file (if it's < 64k) and 
+prints out the file character by character via DOS's print char (fn# 2).
+Very simple and very slow.  You'd need a better print routine to go faster...
+The quickest display programs would decode the ANSI on its own... But that's
+kinda a chore...  Oh, well.  Enjoy.
+
+    Draeden/VLA
+
+
+    Suggested projects:
+
+    1)  Write a program that will try to open a file, but if it does not
+        find it, the program creates the file and fills it with a simple
+        text message.
+
+    2)  Write a program that will input your keystrokes and write them
+        directly to a text file.
+
+    3)  The write & read routines actually can be used for a file or device.
+        Try to figure out what the FileHandle for the text screen is by
+        writing to the device with various file handles.  This same channel,
+        when read from, takes it's data from the keyboard.  Try to read data
+        from the keyboard.  Maybe read like 20 characters...  CTRL-Z is the 
+        end of file marker.
+
+    4)  Try to use a file as `virtual memory'- open it for read/write access
+        and write stuff to it and then read it back again after moving the 
+        cursor position.
+
+
+
+旼컴컴컴컴컫컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+� ASM3.ASM �
+읕컴컴컴컴켸
+
+;   VERY, VERY simple ANSI/text viewer
+;
+;   Coded by Draeden [VLA]
+;
+
+    DOSSEG
+    .MODEL SMALL
+    .STACK 200h
+    .CODE
+    Ideal
+
+;===- Data -===
+
+BufferSeg   dw  0
+
+ErrMsgOpen  db  "Error opening `"
+FileName    db  "ANSI.TXT",0,8,"'$"     ;8 is a delete character
+                                        ;0 is required for filename 
+                                        ;(displays a space)
+FileLength dw 0
+
+;===- Subroutines -===
+
+PROC DisplayFile NEAR
+    push    ds
+
+    mov     ax,cs
+    mov     ds,ax
+    mov     ax,3d00h    ;open file (ah=3dh)
+    mov     dx,offset FileName
+    int     21h
+    jc      OpenError
+    mov     bx,ax       ;move the file handle into bx
+
+    mov     ds,[BufferSeg]
+    mov     dx,0            ;load to [BufferSeg]:0000
+    mov     ah,3fh
+    mov     cx,0FFFFh       ;try to read an entire segments worth
+    int     21h
+
+    mov     [cs:FileLength],ax
+
+    mov     ah,3eh
+    int     21h             ;close the file
+
+    cld
+    mov     si,0
+    mov     cx,[cs:FileLength]
+PrintLoop:
+    mov     ah,2
+    lodsb
+    mov     dl,al
+    int     21h         ;print a character
+
+    dec     cx
+    jne     PrintLoop
+    
+    pop     ds
+    ret
+
+OpenError:
+    mov     ah,9
+    mov     dx,offset ErrMsgOpen
+    int     21h
+
+    pop     ds
+    ret
+ENDP DisplayFile
+
+;===- Main Program -===
+
+START:
+    mov     ax,cs
+    mov     ds,ax
+    mov     bx,ss
+    add     bx,200h/10h     ;get past the end of the file
+    mov     [BufferSeg],bx  ;store the buffer segment
+
+    call    DisplayFile
+
+    mov     ax,4c00h
+    int     21h
+END START
+

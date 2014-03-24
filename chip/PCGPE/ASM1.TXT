@@ -1,0 +1,131 @@
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+    ASM1.ASM - print a string
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+    Well, here's the classic example for the first program in just about
+every language.  It prints a message to the screen by using a DOS function.
+More specifically, it uses function 9 of interrupt 21h.  Here's the mock
+specification for the function:
+
+þ-
+|IN:     ah = 9      ;ah tells INT 21h which function you want
+|        DS:DX = FAR pointer to the string to be printed.
+|                    ;the string must terminate with a dollar sign ($)
+|
+|OUT:    Prints the string to the screen
+þ-
+
+    Other than that function, there's nothing new that can't easily be
+figured out.  The directive SEG, as you might have guessed, returns the 
+segment that the specified label is in.  OFFSET returns the offset from 
+the begining of the segment to the specified label.  Together, you can
+form a FAR pointer to a specified label.
+
+    Another thing you might wonder about is why I put the SEG Message into
+AX and THEN Put it in DS.  
+
+    The answer is:  You have to.  An immediate value cannot be put into a 
+segment register, but a register or an indexed value can.  For instance:
+
+These are legal:
+
+:   mov     DS,AX
+:   mov     DS,[TheSegment]
+
+But these are not:
+
+:   mov     DS,50
+:   mov     DS,0a000h
+    
+    One last piece of info: in the lines:
+
+:Message     db  "This was printed using function 9 " 
+:            db  "of the DOS interrupt 21h.$"
+
+    The DB is just a data type.  Its the same as a CHAR in C, which is 1 byte
+    in length.
+
+    Other common data types are:
+
+    DW  same as an INT in C - 2 bytes
+    DD  same as a double int or long int or a FAR pointer - 4 bytes
+
+
+    Well, that's pretty much it for this short section...  Try playing around
+with the 'print' function... Ya learn best by playing with it.
+
+
+One last side note:
+    I COULD have put the message in the CODE segment instead, by doing this:
+    
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+    DOSSEG
+    .MODEL SMALL
+    .STACK 200h
+    .CODE
+
+Message     db  "Hey look! I'm in the code segment!$" 
+            
+START:
+    mov     ax,cs   ;since CS already points to the same segment as Message,
+    mov     ds,ax   ;I don't have to explicitly load the segment that message
+                    ;is in..
+
+    mov     dx,offset Message
+    mov     ah,9
+    int     21h
+
+    mov     ax,4c00h    ;Returns control to DOS
+    int     21h         ;MUST be here! Program will crash without it!
+
+END START
+
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+    The advantage to having all your data in the CODE segment is that DS and
+ES can be pointing anywhere and you can still access your data via a segment
+override!  
+
+    Example:
+        say I'm in the middle of copying one section of the screen memory to
+    another and I need to access the variable "NumLines" I'd do it like this:
+
+ÄÄÄÄÄÄÄÄ
+
+    mov ax,[CS:NumLines]    ;this is in IDEAL mode
+            ^^^
+ÄÄÄÄÄÄÄÄ    Code Segment override
+
+    Pretty flexable, eh?
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ ASM1.ASM ³
+ÀÄÄÄÄÄÄÄÄÄÄÙ
+
+    DOSSEG
+    .MODEL SMALL
+    .STACK 200h
+    .DATA
+
+Message     db  "This was printed using function 9 " 
+            db  "of the DOS interrupt 21h.$"
+                  
+    .CODE
+    
+START:
+    mov     ax,seg Message  ;moves the SEGMENT that `Message' is in into AX
+    mov     ds,ax           ;moves ax into ds (ds=ax)
+                            ;you cannot do this -> mov ds,seg Message
+
+    mov     dx,offset Message   ;move the OFFSET of `Message' into DX
+    mov     ah,9        ;Function 9 of DOS interupt 21h prints a string that
+    int     21h         ;terminates with a "$".  It requires a FAR pointer to
+                        ;what is to be printed in DS:DX
+
+    mov     ax,4c00h    ;Returns control to DOS
+    int     21h         ;MUST be here! Program will crash without it!
+
+END START
+

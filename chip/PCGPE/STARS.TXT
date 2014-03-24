@@ -1,0 +1,710 @@
+----------------------------- VLA.NFO -----------------------------------
+        ÖÄÄÄÄÄÄÄÄÄÄ (% VLA Presents Intro To Starfields %) ÄÄÄÄÄÄÄÄÄÄ·
+        º                                                            º
+        ÓÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ Written áy : Draeden ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ½
+
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ  VLA Members Are  ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+
+                        (© Draeden - Main Coder ª)
+                  (© Lithium - Coder/Ideas/Ray Tracing ª)
+                   (© The Kabal - Coder/Ideas/Artwork ª)
+                      (© Desolation - Artwork/Ideas ª)
+
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ The Finn - Mods/Sounds ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+
+   ÖÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ Contact Us On These Boards: ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ·
+   º                                                                      º
+   ³   % Phantasm BBS .................................. (206) 232-5912   ³
+   ³   * The Deep ...................................... (305) 888-7724   ³
+   ³   * Dark Tanget Systems ........................... (206) 722-7357   ³
+   ³   * Metro Holografix .............................. (619) 277-9016   ³
+   ³                                                                      ³
+   º       % - World Head Quarters      * - Distribution Site             º
+   ÓÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ½
+
+     Or Via Internet Mail For The Group : tkabal@carson.u.washington.edu
+
+                      Or to reach the other members :
+
+                       - draeden@u.washington.edu -
+
+                       - lithium@u.washington.edu -
+
+                     - desolation@u.washington.edu -
+
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ STARS.TXT ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÙ
+
+
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+;
+;     TITLE: Star field
+;WRITTEN BY: DRAEDEN
+;      DATE: 03/15/93
+;
+;     NOTES:
+;
+;ASSOCIATED FILES:
+;
+;       STARGEN.BAS =>  Basic program that generates a set of 'randomized'
+;                       numbers.  Creates STARRND.DW
+;
+;       STARS.ASM   =>  The asm file.
+;
+;       STARRND.DW  =>  File that contains a set of shuffled numbers order.
+;                       Used to create 'random' star field.
+;
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+    A star field is just a series of 3d point plotted onto a 2d plane (your
+screen).  The movement effect is achieved by simply decreasing the Z
+cordinate and redisplaying the results.  The formula for the 3d to 2d
+conversion is:
+
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+    ScreenX = ScreenDist * Xpos / Zpos
+    ScreenY = ScreenDist * Ypos / Zpos
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ 
+
+    This should make perfect sense.  As the object gets futher away, (X,Y)
+cordinates converge to (0,0).  The screen dist is how far away the 'eye' is
+from the screen, or, as I like to think of it, the window.  Naturally, as you
+get closer to the window, your field of view is greatly enhanced (you can see
+more).  But, because we can't make the monitor bigger, we have to shrink the
+data that is being displayed.  And when we have a large screen distance, we
+should see less of the virtual world, and the objects should appear bigger.
+When this formula is translated into assembler, you would immediatly decide
+that 256 is the best screen distance.  Why?  Multiplying by 256 on the 386 is
+as simple as this:
+
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ 
+;we want to multiply ax by 256 and put it into dx:ax to set up for division
+
+    movsx   dx,ah   ;3 cycles
+    shl     ax,8    ;3 cycles -- total 6
+
+;or we could do it the 'normal way'...
+
+    mov     dx,256  ;2 cycles, but we can have any screen distance
+    imul    dx      ;9-22 cycles on a 386, 13-26 on a 486
+                    ;a total of 11-28 cycles!
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ 
+
+    If you'll take note, the 6 cycle trick is AT LEAST 5 cycles faster than
+the imul.  Anyway... I bet you really don't care about a few cycles at this
+point, so I won't spend much more time on it... 
+    So, as you can see, the math part of it is easy..  the hard part is the
+what's left.  You need a routine that creates a star, presumably random, and
+another routine that displays all the stars and advances them.  Well, that's
+how I broke it into subroutines...
+
+    For the routine that creates the star you need it to:
+
+    1)  See if we already have enough stars going (is NUMSTARS > MAXSTARS ?)
+    2)  If there's room, scan for the first open slot... 
+    3)  Now that we've found where to put it, create a star by getting a set
+        of random numbers for the (X,Y) and setting the Z to the maximum.
+        Also select a color for the star.
+
+    The display routine would need to:
+
+    1)  Erase the old star.
+    2)  Calculate the screen X & Y positions for the new position.  Are they 
+        inside the screen boundries?  If not, 'kill' the star, otherwise 
+        display it.  The shade of the color to use must be calculated by 
+        using the Z cordinate. Color = BaseColor + Zpos / 256
+    3)  Decrease the Zpos.
+
+    And the main routine would:
+
+    1)  Call MakeStars
+    2)  Wait for verticle retrace
+    3)  Call DisplayStars
+    4)  Check for keypress, if there is one, handle it, if its not one we're
+        looking for then exit program.
+    5)  Loop to step 1
+
+    To impliment this, we need to create an array of records which has enough
+room for MAXSTARS.  The record would contain the (X,Y,Z) cordinates, the
+OldDi and the base color for the star.  To create a star, it first checks to
+see if there is room.  If there is, then we scan through the array
+looking%wor an open slot.  If we don't find an empty space, then we don't
+create a star.  We create the star by grabbing a pair of (X,Y) cordinates
+from the list of 'random' numbers and set the Z to MAXZPOS.  Then, increase
+NUMSTARS and return.
+
+    In displaying the star, we would like to only have to calculate DI once.
+So we save off a copy of DI in an array after we calculate it for the drawing
+so that erasing the dot is really quick.  Next we calculate the new DI for
+the dot.  This is done by using the formula mentioned above and this one: 
+
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ 
+
+    DI = ScreenY * ScreenWidth + ScreenX
+
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ 
+
+    When doing the math, care must be taken to make sure that:
+
+        a) the Zpos is not zero and X*256/ZPOS is not greater than 32767.
+            will cause a DIVIDE BY ZERO or a DIVIDE OVERFLOW
+
+        b) SY and SX do not go outside the border of the screen.
+
+    If either of these conditions are broken, the star must be terminated and
+calculations for that star must be aborted.  Actually, Zpos = 0 is used to
+signify a nonactive star.  To terminate the star, you'd simply change its
+zpos to 0 and decrease NUMSTARS.
+
+    To create the different shades, I used:
+
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+  Color = BaseColor + Zpos/256
+
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+    I used 256 as the number to divide by because that enables me to do no
+dividing at all- I just use AH, because AH = AX / 256 (AH is the upper 8 bits
+of AX). This relation suggests that the MAXZPOS shoul be 16*256 for 16
+shades.  So, the MAXZPOS = 4096.  The palette will have to be set up so that
+the shades go from light to black (lower # is lighter).  Simple enough. (I
+hope.)
+
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ 
+        RANDOM NUMBERS
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ 
+
+    Well, not truly random numbers, but random enough for a starfield.
+
+    The problem:
+        There is no way on a PC to create truly random numbers with 
+        great speed.
+
+    Solution:
+        Don't use truly random numbers.  Use a chart of non-repeating,
+        shuffled numbers that fall within your desired range.  That way
+        the stars will be evenly spread out and the creation of a new star
+        is incredably fast. ( A few MOV instructions) All you have to is grab
+        the number and increase the NEXTRANDOM pointer.  I chose to fill in
+        the array half with positive numbers, half with negative with a
+        minimum distance of 10 from 0.  I did this so that no stars will
+        'hit' the screen and just vanish.  That doesn't look too good.
+
+    Here's the BASIC file that made my numbers for me...
+
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ 
+
+
+    NumStars = 400
+    dim     RndArray(NumStars)
+    randomize (timer)
+
+    'fill the array with numbers from -Numstars/2 to -10
+    'and from 10 to Numstars/2
+
+    i=10
+    for r = 0 to NumStars/2
+        RndArray(r)=i
+        i=i+1
+    next
+
+    i=-10
+    for r = NumStars/2 to NumStars
+        RndArray(r)=i
+        i=i-1
+    next
+
+    'randomly shuffle them..
+
+    print "Total numbers: ";NumStars
+    print "Shuffling - Please wait... "
+
+    for q = 1 to numstars/5
+        for r = 0 to NumStars
+            swnum1 = int(rnd*NumStars+.5)
+            swap RndArray(swnum1),RndArray(r)
+        next
+    next
+
+    'write the numbers neatly to a file
+
+    open "starrnd.dw" for output as 1
+    cc= 0          ' CC is my "Column Control"
+    print#1, "StarRnd dw ";:print#1, using"####";RndArray(0)
+    for r = 1 to NumStars
+
+        IF cc=0 THEN   ' is this the first one on the line?
+            print#1, "dw ";:print#1, using"####" ;RndArray(r);
+        ELSE 
+            print#1, ",";:print#1, using"####"; RndArray(r);
+        END IF
+
+        cc=cc+1:if cc= 10 then cc=0:print#1," "   'goto the next line
+    next
+    close #1
+
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ 
+
+    This brings up another point.  Whenever you can write a program in a
+higher level language to create data for you, do it.  It sure beats typing
+then in by hand.  For instance, the palette was made using the REPT macro,
+the actual data is created by the compiler at compile time.  Doing it that 
+way happens to be a whole lot easier than typing in every byte.
+
+    Last minute note: I rigged the plus and minus keys up so that they
+control the 'Warpspeed' can be from 0 - MaxWarp, which I set to 90 or 
+something like that.
+
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+   Well, that's it for now.  See INFO.VLA for information on contacting us.
+
+   I would like some suggestions on what to write code for.  What would you
+   like to see done?  What code would you like to get your hands on?
+
+   Send question, comments, suggestions to draeden@u.washington.edu or post
+    on Phantasm BBS.
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ STARS.ASM ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÙ
+
+
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+;
+;     TITLE: Star field
+;WRITTEN BY: DRAEDEN
+;      DATE: 03/15/93
+;
+;     NOTES: Need 386 to execute.
+;
+;ASSOCIATED FILES:
+;
+;       STARGEN.BAS =>  Basic program that generates a set of 'randomized'
+;                       numbers.  Creates STARRND.DW
+;
+;       STARS.TXT   =>  The text file that explains starfields...
+;
+;       STARRND.DW  =>  File that contains a set of shuffled numbers.
+;                       Used to create 'random' star field.
+;
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+    DOSSEG
+    .MODEL SMALL
+    .STACK 200h
+    .CODE
+    .386
+    ASSUME CS:@CODE, DS:@CODE
+    LOCALS
+
+;=== GLOBALS
+;=== Data Includes
+
+INCLUDE starrnd.dw      ;file that has label StarRnd numbers
+
+;=== DATA Structures
+
+    Star_Struc      STRUC
+        X       dw  0
+        Y       dw  0
+        Z       dw  0
+        OldDi   dw  0       ;where to erase last dot
+        Color   db  0       ;BASE color. a number 0-16 is added to it
+    Star_Struc      ENDS
+
+    StarStrucSize = 9       ;number of bytes per entry
+
+;=== DATA
+
+ScreenWidth EQU 320
+ScreenHeight EQU 200
+
+NumRnds     EQU 400     ;number of random numbers defined
+
+MaxZpos     EQU 4096
+MinZpos     EQU 2
+MaxStars    EQU 190
+NumColors   EQU 5       ;number of Base colors in the Color Chart
+
+WarpSpeed   dw  15      ;how quickly the stars move toward ya
+MaxWarp     EQU 90
+
+Xindex      dw  30      ;index into the StarRnd chart for X & Y
+Yindex      dw  230     ; -note they must be different; set em the same to
+                        ;see why
+Cindex      dw  0       ;index into ColorChart
+
+ColorChart  db  0,16,32,48,64,80    ;a list of base colors (-1)
+
+Stars       Star_Struc MaxStars DUP (<>) ;where all the data is held
+NumActive   dw  0       ;number of stars active
+
+Palette     db  3 dup (0)   ;the palette.. first entrie is BG color (black)
+    i = 15
+    REPT    16
+            db  2*i,3*i,4*i
+        i=i-1
+    ENDM
+    i = 15
+    REPT    16
+            db  2*i,2*i,4*i
+        i=i-1
+    ENDM
+    i = 15
+    REPT    16
+            db  3*i,3*i,4*i
+        i=i-1
+    ENDM
+    i = 15
+    REPT    16
+            db  3*i,2*i,4*i
+        i=i-1
+    ENDM
+    i = 15
+    REPT    16
+            db  3*i,3*i,3*i
+        i=i-1
+    ENDM
+    i = 15
+    REPT    16
+            db  2*i,4*i,3*i
+        i=i-1
+    ENDM
+
+;=== Code Includes
+;=== SUBROUTINES
+
+    ;finds 1st available slot for a star and puts it there
+MakeStar PROC NEAR
+    pusha
+    mov     ax,cs
+    mov     es,ax
+    mov     ds,ax
+
+    cmp     [NumActive],MaxStars    ;is there room for another star?
+    jae     NoEmptySpace            
+
+    ;search for 1st available slot
+
+    mov     si,0
+TryAgain:
+    cmp     word ptr [Stars.Z+si],0     ;is this slot empty?
+    je      GotOne                      ;yes, go fill it
+
+    add     si,StarStrucSize
+    cmp     si,MaxStars*StarStrucSize
+    jb      TryAgain
+    jmp     NoEmptySpace
+
+GotOne:         ;si points to the record for the star to fill
+    mov     di,[Yindex]         ;grab index for Ypos
+    add     di,di               ;multiply by 2 to make it a WORD index
+    mov     ax,[StarRnd+di]     ;get the number
+    shl     ax,3                ;multiply by 8- could been done in BAS file
+    mov     [Stars.Y+si],ax     ;and save off the number
+    
+    mov     di,[Xindex]         ;grab index for Xpos
+    add     di,di               ;... same as above, but for Xpos
+    mov     ax,[StarRnd+di]
+    shl     ax,3
+    mov     [Stars.X+si],ax
+
+    mov     [Stars.Z+si],MaxZpos    ;reset Zpos to the max
+    inc     [NumActive]             ;we added a star so increase the counter
+
+    mov     di,[Cindex]             ;grab the color index
+    mov     al,[ColorChart+di]      ;grab the BaseColor for the star
+    mov     [Stars.Color+si],al     ;save it in the record
+
+    ;increase all the index pointers
+
+    inc     [Cindex]                ;increases the color counter
+    cmp     [Cindex],NumColors
+    jb      OkColor
+    mov     [Cindex],0
+OkColor:
+    inc     [Yindex]                ;increases Yindex
+    cmp     [Yindex],NumRnds        ;note that for this one we
+    jb      YindNotZero             ; subtract NumRnds from Yindex if we
+    sub     [Yindex],NumRnds        ; go off the end of the chart
+YindNotZero:
+    inc     [Xindex]                ;increase Xindex
+    cmp     [Xindex],NumRnds        ;have we gone through the entire chart?
+    jb      XindNotZero             ;nope...
+
+;This clever bit of code makes more use out of the chart by increasing Yindex
+; one additional unit each time Xindex goes through the entire chart... the
+; result is nearly NumRND^2 random non-repeating points
+        
+    inc     [Yindex]                ;yes, so change Yindex so that we get a
+    mov     ax,[Yindex]             ;new set of random (x,y)
+    cmp     ax,[Xindex]             ;does Xindex = Yindex?
+    jne     NotTheSame              ;if the index were the same, you'd see 
+                                    ;a graph of the line Y = X, not good...
+    inc     [Yindex]                ;if they are the same, inc Yindex again
+NotTheSame:
+    mov     [Xindex],0              ;reset Xindex to 0
+XindNotZero:                        ;all done making the star...
+
+NoEmptySpace:
+    popa
+    ret
+MakeStar ENDP
+
+DisplayStars PROC NEAR
+    pusha
+    mov     ax,cs
+    mov     ds,ax
+    mov     ax,0a000h
+    mov     es,ax
+
+    mov     si,0
+DispLoop:
+    mov     cx,[Stars.Z+si]
+    or      cx,cx                   ;if Zpos = 0 then this star is dead...
+    je      Cont                    ;continue to the next one- skip this one
+
+    mov     di,[Stars.OldDi+si]     ;grab old Di
+    mov     byte ptr es:[di],0      ;erase the star
+    
+    cmp     cx,MinZpos
+    jl      TermStar                ;if Zpos < MinZpos then kill the star
+
+    mov     ax,[Stars.Y+si]
+    movsx   dx,ah                   ;'multiply' Ypos by 256
+    shl     ax,8
+    
+    idiv    cx                      ;and divide by Zpos
+    add     ax,ScreenHeight/2       ;center it on the screen
+    mov     di,ax
+    cmp     di,ScreenHeight         ;see if the star is in range. 
+    jae     PreTermStar             ; If not, kill it
+    imul    di,ScreenWidth          ; DI = Y*ScreenWidth
+
+    mov     ax,[Stars.X+si]
+    movsx   dx,ah                   ;multiply Xpos by 256
+    shl     ax,8
+
+    idiv    cx                      ;and divide by Zpos
+    add     ax,ScreenWidth/2        ;center it on the screen
+    cmp     ax,ScreenWidth          ;are we inside the screen boundries?
+    jae     PreTermStar
+    add     di,ax                   ; DI = Y * ScreenWidth + X
+
+    mov     [Stars.OldDi+si],di     ;save old di
+
+    ;calculate the color below
+
+    add     ch,cs:[Stars.Color+si]  ;i'm dividing cx (the zpos) by 256 and
+                                    ; putting the result in ch and adding
+                                    ; the base color to it in one instruction
+    mov     es:[di],ch              ;put the dot on the screen
+
+    mov     ax,cs:[WarpSpeed]
+    sub     cs:[Stars.Z+si],ax      ;move the stars inward at WarpSpeed
+
+Cont:
+    add     si,StarStrucSize        ;point to next record
+    cmp     si,MaxStars*StarStrucSize   ;are we done yet?
+    jb      DispLoop
+    popa
+    ret
+
+PreTermStar:
+    mov     [Stars.Z+si],1  ;this is here so that the star will get erased
+    jmp     short Cont      ;next time through if I just went off and killed
+                            ;the star, it would leave a dot on the screen
+TermStar:
+    mov     [Stars.Z+si],0  ;this actually kills the star, after it has
+    dec     [NumActive]     ;been erased
+    jmp     short Cont
+
+DisplayStars ENDP
+
+;=== CODE
+
+START:
+    mov     ax,cs
+    mov     ds,ax
+    mov     es,ax
+
+    mov     ax,0013h                ;set vid mode 320x200x256 graph
+    int     10h
+    
+    mov     dx,offset Palette
+    mov     ax,1012h                ; WRITE palette 
+    mov     bx,0                    
+    mov     cx,256                  ;write entire palette
+    int     10h                     ;doesn't matter if we didnt define it all
+
+StarLoop:
+    call    MakeStar        ;make stars 2x as thick
+    call    MakeStar
+
+    mov     dx,3dah
+VRT:
+    in      al,dx
+    test    al,8
+    jnz     VRT             ;wait until Verticle Retrace starts
+
+NoVRT:
+    in      al,dx
+    test    al,8
+    jz      NoVRT           ;wait until Verticle Retrace Ends
+
+    call    DisplayStars
+
+    mov     ah,1            ;check to see if a char is ready
+    int     16h
+    jz      StarLoop        ;nope, continue
+    
+    mov     ah,0
+    int     16h             ;get the character & put in AX
+
+    cmp     al,"+"          ;compare ASCII part (al) to see what was pressed
+    jne     NotPlus
+
+    inc     [WarpSpeed]
+    cmp     [WarpSpeed],MaxWarp
+    jbe     StarLoop
+
+    mov     [WarpSpeed],MaxWarp
+    jmp     StarLoop
+
+NotPlus:
+    cmp     al,"-"
+    jne     NotMinus
+
+    dec     [WarpSpeed]
+    cmp     [WarpSpeed],0
+    jge     StarLoop
+
+    mov     [WarpSpeed],0
+    Jmp     StarLoop
+
+NotMinus:
+
+    mov     ax,0003h        ;set 80x25x16 char mode
+    int     10h
+    mov     ax,4c00h        ;return control to DOS
+    int     21h
+END START
+
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ STARRND.DW ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+
+StarRnd dw  166
+dw   67, 102,  46,-173,-154,-210,-192, 173,-196, -81 
+dw  -50,  36,  50,-200, -95, 209, -16,-179, -30,  18 
+dw  174, 197, 127,  71,  29,-121,-160,-176,  19, -52 
+dw -185,  89, 172,  74,-156, 157,-125, 144, -34,  69 
+dw   17, -40,  64, -98,-153, 125, 160, 140,-204, 141 
+dw  137,-165, -14, 154,-146, 119, 123, 165,-130, 168 
+dw -180, 143,  52, 107,-107,-102,  57,  27, 117,  37 
+dw  126,  15, -89, 184, 116, 183, -99,-139, 150, 188 
+dw   38,  90,  93,-194, 207,-187,  62,  59, 196,  12 
+dw -174,  54, 146,-137, 198, 162, 155,-163, -77,-144 
+dw  191,-132, -43, 151,-103,  20, -46,  13,-140,  31 
+dw  130,-169,-188, 109, -33,-150,-170,  68, -75,-201 
+dw -100,-171, -19, -61,-206, 149,  99, -76,-186, -44 
+dw -178,  34,  61,  28, 114, 199, 201, -83, -27,  63 
+dw  -38, 204, 208,-112,-208, 122, -90,  23,-122, 161 
+dw   35,-168, 170,-164,-151,  75, -60,-109,  85, 193 
+dw   45,-175,-134, 205, -21,  49, 133, -85, -47, -37 
+dw  -29, -96, -66,  73,-118, 147, -53, 120, 153,-155 
+dw  -11,  11,  95, -26, 134,-145, -49, -74,  42,-124
+dw  189, -42,  92,-167,  88,-126,-129,-108,-193, 195 
+dw  190,-106,-117, 203,  84, 139,-123, -94, -88,-158 
+dw  181, -97, -20,  82, -57, 112, -35,  14, -56, -58 
+dw  200,  80,-183, 106,  87,  30,  51, -28,  98, -12 
+dw -191,-128, -13,-184, 136,  43,-166, -62, -73,-116 
+dw  -31,-135,-101,  25,  41, -82, 110,  10, -45, -41 
+dw   97, 175, 138, 171,  72,-133,-157,  58,-104, 187 
+dw  192, -68, -87, 169,-110,  91, 129, 104, -70,-114 
+dw -138,-115,-141, -67,-195, -79, -69,  40,-147, -80 
+dw -119, 128, 152,-209,  83,  53, 159,  66,-190,  81 
+dw  -92, -10,-181, 135,  60,  33, -25,  70,  22, -72 
+dw  103, -23, 131,  79, -64,  55, -86, -32,-182,-136 
+dw   26, -54,-172,-148, 148, -65,-152,-207, -39, -71 
+dw   65, 179,-177,  24, 118, -59, -63,  44, 105, 206 
+dw  178, -84,-202, 132, 186, -17,  76, 176, -22, 177 
+dw -198,-159,-162,  78,  77, -55,-120,-203,-113, 156 
+dw -189,-197, 124, 121,-142, -15,-205,  56, 158, -18 
+dw  -93,-161,  39,  48, 101, -91, 182,-127, 108, 111 
+dw  -36,-143,  21,-149, -78, -48, 164, 202, 185, 180 
+dw  -51,-199, 100, 194,  32, -24, 142,  86,-111,  47
+dw  115,-105,  16, 167,  94, 163,  96, 113,-131, 145
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ STARGEN.BAS ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+
+'
+'Written by: Draeden /VLA
+'      Date: 03/15/93
+'
+'     Notes: Used for generating 'random' data for Stars.asm
+'
+
+
+        NumStars = 400
+        dim     RndArray(NumStars)
+        randomize (timer)
+
+        'fill the array with numbers from -Numstars/2 to -10
+        'and from 10 to Numstars/2
+
+        i=10
+        for r = 0 to NumStars/2
+                RndArray(r)=i
+                i=i+1
+        next
+        i=-10
+        for r = NumStars/2 to NumStars
+                RndArray(r)=i
+                i=i-1
+        next
+
+        'randomly shuffle them..
+
+        print "Total numbers: ";NumStars
+        print "Shuffling - Please wait... "
+
+        for q = 1 to numstars/5
+                for r = 0 to NumStars
+                        swnum1 = int(rnd*NumStars+.5)
+                        swap RndArray(swnum1),RndArray(r)
+                next
+        next
+
+        'write the numbers neatly to a file
+
+        open "starrnd.dw" for output as 1
+        cc= 0
+        print#1, "StarRnd dw ";:print#1, using"####";RndArray(0)
+        for r = 1 to NumStars
+
+                IF cc=0 THEN
+                        print#1, "dw ";:print#1, using"####" ;RndArray(r);
+                ELSE 
+                        print#1, ",";:print#1, using"####"; RndArray(r);
+                END IF
+
+                cc=cc+1:if cc= 10 then cc=0:print#1," "
+        next
+        close #1
+

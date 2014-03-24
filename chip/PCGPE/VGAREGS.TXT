@@ -1,0 +1,806 @@
+
+                         Programming the VGA Registers
+                      by Boone (boone@ucsd.edu), March '94
+
+   The IBM PC has long been slammed by owners of other computers which come 
+with superior graphics capabilities built right into hardware.  The PC is a 
+strange beast to program in general, and when it comes to graphics the 
+programmer doesn't get much help from the video hardware.  However, there are 
+quite a few neat tricks you can do using the VGA registers, as I'm sure you're 
+aware.  The trick is knowing just which registers to use and how to use them to 
+achieve the desired results.  In particular, precise timing is necessary to 
+avoid screen flicker and/or "snow".  The registers on your video card are 
+necessary for just about any communication with the VGA besides basic 
+reading/writing of pixels.  Some of the registers are standard, which are the 
+ones we will be discussing here.  Most SVGA chipsets have their own special 
+functions associated with different registers for things such as bank 
+switching, which is part of what makes trying to write SVGA programs so 
+difficult.  The registers are also used to set the various attributes of each 
+video mode: horizontal and vertical resolution, color depth, refresh rate, 
+chain-4 mode, and so on.  Luckily, BIOS handles all this for us and since we 
+only need to set the video mode once at program start-up and once at exit, you 
+should need to mess with these particular functions too much, unless you are 
+using a special mode, such as mode X.  (See the mode X section for more info on 
+all this.)  If you want to experiment with the video mode registers, ftp 
+yourself a file called TWEAK*.* (my version is TWEAK10.ZIP).  For now we'll 
+just assume the video mode has already been set to whatever mode you wish.
+   One of the most common techniques used by game programmers is fade in/out.  
+A clean fade is simple but very effective.  Suprisingly, even big-budget games 
+like Ultima VII often have a lot of screen noise during their fades.  With a 
+little effort you can easily write your own noise-free fade routines.  There's 
+nothing like giving a professional first impression on your intro screen, since 
+the fade-in is likely to be the very first thing they see of your program.
+   BIOS is much to slow for this timing-critical opperation, so we'll have to 
+get down and dirty with our VGA card.  Fading is a fairly simple process.  As 
+you should know, the VGA palette consists of 256 colors with 3 attributes for 
+each color: red, green and blue.  Every cycle of the fade, we have to go 
+through all 768 attributes and if it is larger than 0 subtract one.  We'll use 
+regsiters 3C8h and 3C9h for palette opperations.  The operation for sending a 
+palette to the card is straight-forward: send a 0 to port 3C8h and then your 
+768 byte buffer to port 3C9h.  This is good enough for setting the palette at 
+the start of your program, but of course it has to go in a loop for the fade, 
+since you'll have to do this 256 times, subtracting one from each non-zero 
+member of the buffer.  The pseudo-code looks something like this:
+
+   constant PALSIZE = 256*3;
+   unsigned character buffer[PALSIZE];
+   boolean done;
+   counter i,j;
+
+      for j = 255 to 0
+       {
+         for i = 0 to PALSIZE-1
+            if buffer[i] > 0
+               buffer[i] = buffer[i] - 1;
+
+         output 0 to port 3C8h;
+         for i = 0 to PALSIZE-1
+            output buffer[i] to port 3C9h;
+       }
+
+   Easy enough, right?  If you convert this to the language of your choice it 
+should run fine.  (Make sure you have the buffer pre-loaded with the correct 
+palette, however, or you will get very strange results...)  But you'll notice 
+the "snow" mentioned earlier.  Depending on your video card, this could mean 
+that you see no noise at all to fuzz covering your entire screen.  Even if it 
+look fine on your system, however, we want to make sure it will be smooth on 
+*all* setups it could potentially be run on.  For that we're going to have to 
+ask the video card when it's safe to send the palette buffer to the card, and 
+for that we'll need the retrace register.
+   Putting aside palette concerns for a moment, I'll briefly cover the retrace 
+on your video card.  (See the next section of this article for a more in-depth 
+discussion of this.)  Bascially the vertical retrace is a short time in which 
+the screen is not being updated (from video memory to your monitor) and you can 
+safely do writes to your video memory or palette without worrying about getting 
+snow, flicker, tearing, or other unwanted side-effects.  This is a pretty quick 
+period (retrace occurs 60 to 70 times a second) so you can't do too much at 
+once.
+   Returning to our fade: we want to update the palette during the vertical 
+retrace.  The value we want is bit 3 of register 3DAh.  While that bit is zero 
+we're safe to write.  The best practice in this case is to wait for the bit to 
+change to one (screen is being traced) and then the instant it changes to 0, 
+blast all our new video info to the card.  It won't be necessary in this case 
+since all we are doing is fading the palette and then waiting for the next 
+retrace, but if you're doing animation or playing music at the same time 
+you'll want to include this extra bit of code as a safety net.  Otherwise you 
+might detect the 0 in the refresh bit at the very last instant of the retrace 
+and end up writing while the screen is being traced.  The pseudo-code now goes 
+like this:
+
+      for j = 255 to 0
+       {
+         for i = 0 to PALSIZE-1
+            if buffer[i] > 0
+               buffer[i] = buffer[i] - 1;
+
+         while bit 3 of port 3DAh is 0
+            no opperation;
+         while bit 3 of port 3DAh is 1
+            no opperation;
+
+         output 0 to port 3C8h;
+         for i = 0 to PALSIZE-1
+            output buffer[i] to port 3C9h;
+       }
+
+   That's it!  All that's left is for you to implement it in your favorite 
+language.  However, I can hear the cries right now: "Code!  Give us some real 
+assembly code we can use!"  I'm reluctant to provided it as this is the exact 
+sort of thing that is easy to cut and paste into your program without knowing 
+how it works.  However, I'll give you the unoptimized main loop in 80x86 
+assembly as this may be clearer to you that my explanation or pseudo-code.  Two 
+things to remember about this code: it is optimized enough to be smooth on any 
+video card (or any that I've seen, anyway) assuming that the fade is the _only_ 
+thing going on.  There's some other things you may want to change if you plan 
+to say, play music during this process.  Secondly, you'll need to have the 
+current palette loaded into the buffer beforehand.  You could read it from the 
+VGA card using either registers or BIOS, but this is both slow and (in my 
+oppinion) sloppy coding.  You should *never* ask the video card about anything 
+(excluding retrace) that you could keep track of yourself.  In the case of the 
+palette, you probably already loaded it from disk anyway, or if you are using 
+the default palette <cough, gag, choke> just read the values once and store 
+them in your executable or in a resource file.
+
+     palbuf   DB                  768 DUP (?)
+     fadecnt  DW                  040h
+
+; At this point, you should:
+;  1) have the video mode set
+;  2) have palbuf loaded with the current palette
+;  3) have something on the screen to fade!
+
+fadeloop:
+
+     xor      al,al               ; used for comparisons and port 3D8h
+     mov      cx,768              ; loop counter
+     mov      si,offset palbuf    ; save palette buffer in si
+
+decloop:
+     mov      dl,[si]              ; put next pal reg in dx
+     cmp      al,dl                ; is it 0?
+     je       next                 ; nope...
+     dec      dl                   ; yes, so subtract one
+     mov      [si],dl              ; put it back into palette buffer
+
+next:
+     dec      cx                   ; decrement counter
+     inc      si                   ; increment our buffer
+     cmp      cx,0
+     jne      decloop              ; not done yet, so loop around
+
+     mov      cx,768              ; reset for palette output
+     sub      si,768              ; reset palbuf pointer
+     mov      dx,03c8h
+     out      dx,al               ; inform VGA of palette change
+     inc      dx                  ; DX = 3C8h + 1 = 3C9h
+
+     mov      ch,02h              ; do outter loop 2 times
+     mov      dx,03dah            ; prepare refresh register
+     mov      bx,03c9h            ; prepare palette reg (for quick loading)
+
+     cli                          ; disable interrupts!
+
+outloop:
+     mov      cl,80h              ; do inner loop 128 times
+
+     in       al,dx               ; wait for current retrace to end
+     test     al,08h
+     jnz      $-5
+
+     in       al,dx               ; wait for current screen trace to end
+     test     al,08h
+     jz       $-5
+
+     mov      dx,bx               ; load up the palette change register
+
+innerloop:
+     mov      al,[si]             ; load next byte of palbuf
+     out      dx,al               ; send it to the VGA card
+     dec      cl                  ; decrement counter
+     inc      si                  ; increment palbuf pointer
+     cmp      cl,0
+     jne      innerloop           ; loop while not done
+
+     dec      ch                  ; decrement outer loop counter
+     cmp      ch,0
+     jne      outloop             ; loop while not done
+
+     sti                          ; restore interrupts
+
+     mov      ax,fadecnt          ; entire palette has been sent
+     dec      ax                  ; so check fade loop 
+     mov      fadecnt,ax
+     cmp      ax,0                ; ready to quit?
+     jne      fadeloop            ; nope, keep fading!
+
+
+   I should add a few comments about this code segment.  First of all, it 
+assumes you want to fade every color all the way down.  You may only want to 
+fade certain sections of the palette (if your screen was only using a certain 
+number of colors) or maybe your palette is low-intensity so you don't need to 
+go the full 256 loops to get every color down to 0.  It also goes by ones, so 
+if you want a faster fade you can have it subtract two from each attribute.  
+If you want to fade to a certain color other than black (for instance, fade to 
+red such as the "getting hit" effect in Doom), you'll need to check if each 
+attribute is above or below your target color and increment or decrement 
+accordingly.  Also, you may have noticed something in the code absent from the 
+pseudo-code: it only sends 128 colors to the card each retrace!  This is 
+because if you use all 256 the next retrace may start before you get all colors 
+sent to the video card, thanks to the unoptimized code.  Some recommend as 
+little as 64 colors per retrace, however I've found 128 to be okay and 
+certainly much faster.  The above code works for any VGA-equiped machine, 
+regardless of processor, but you'll probably want to compress all the IN and 
+OUT loops into REP INSB/OUTSB, REP INSW/OUTSW, or REP INSD/OUTSD instructions 
+depending upon the minimum processor requirement for your game/demo.
+   I won't describe fading in since it's the same sort of thing, and I'm sure 
+you can figure it out once you know how to use the registers themselves.  It's 
+a little more complicated since you need a second buffer of target values for 
+your attributes, but otherwise quite similar.
+
+   Next up is vertical retrace.  This is simply one of many read registers on 
+your VGA, but it happens to be one of the most useful for animation and palette 
+fades (as shown above).  Here's a quick rundown of what exactly the vertical 
+retrace is, and why it's useful.
+   There's an electron gun in the back of your monitor that keeps the pixels 
+"refreshed" with their correct values every 1/60th of a second or so.  It fires 
+electrons at each pixel, row by row.  The horizontal retrace is the time it 
+takes it to return from the right side of the screen after it has traced a row.  
+This is a very short time and I wouldn't worry about that too much right now, 
+as it is only useful for very specialized (and quite tricky) hardware effects.
+More useful, however, is the vertical retrace which occurs when the electron 
+gun reaches the bottom of the screen (one entire screen traced) and it returns 
+diagonally to the upper-right hand corner of the screen.  During this time you 
+are free to update anything you like having to do with video with no noise or 
+interference (since nothing on the screen is being updated).  This is a fairly 
+short amount of time, though, so whatever you want to do you better do it 
+_quickly_.  For animation, you'll usually want to keep a second buffer in main 
+memory (remember that video RAM is quite slow compared to main RAM) which you 
+can use to write your animations to.  When the vertical retrace occurs, you'll 
+want to blast the entire thing to the VGA as quickly as possible, using a 
+memory copy instruction.  You can find more on this in articles which cover 
+animation.
+
+   Lastly I'll briefly describe the VGA mode-set registers.  There are quite a 
+number of them and for the most part they're pretty boring.  By sending 
+different values to these registers you can achieve the various video modes 
+that your card is capable of.  These registers set values such as horizontal 
+and vertical resolution, retrace timing, addressing modes, color depth, timing, 
+and other fun stuff.  The truth is that it's easier and just as effective to
+let the BIOS (gasp!) handle setting the screen mode for you, particularly since 
+most games use standard modes such as 320x200 anyway.  At the very least you 
+can let BIOS set the mode to begin with and then just modify the registers to 
+"tweak" the mode the way you want it.  Any of these non-BIOS modes are 
+generally refered to as mode X.  I don't want to go deep into detail on the 
+setting and usage of mode X because there is already so much info availible on 
+the topic.  Check out the Mode X Faq (regularly posted in comp.sys.ibm.pc.demos 
+and rec.games.programmer), Micheal Abrash's collumn in Dr. Dobb's and his 
+X-sharp library, or the section on mode X in the PC-GPE.
+   One mode register I'll cover quickly is the chain-4 enable/disable.  A lot 
+of programmers seem to have trouble visualizing what this thing does exactly. 
+Bit 3 of port 3C4h (index 4) controls chain-4 mode.  Normally it is on.  This 
+allows fast linear addressing of the bytes in video memory, which is the way 
+you are probably used to addressing them.  For example, to change the second 
+pixel on the screen to a certain color, you simply write the value to address 
+A000:0001.  With chain-4 disabled (the main feature of mode X besides better 
+resolution) A000:0000 refers to the first pixel in the upper-left corner of 
+your screen, A000:0001 refers to the fourth pixel, A000:0002 to the eight pixel 
+and so on.  The odd pixels are accessed by changing the write plane.  Since 
+there are four planes, you effectively get an extra two bits of addressing 
+space, boosting the total bit width for your pixel addressing from 16 to 18.  
+Standard chain-4 four only allows access to 64K of memory (2^16) while 
+disabling this feature gives you the full 256K (2^18) of memory to work with.  
+The disadvantage, of course, is that pixel writes are slower due to the port 
+writes required to access odd pixels.  How can this be an advantage?  For one 
+thing, you can write four pixels at a time as long as they are all the same 
+color - handy for single-color polygons, as in flight simulators.  Secondly, 
+you get four times as much memory.  This allows you to have higher resolutions 
+without bank switching, or scroll the screen using hardware scrolling, or do 
+page flipping for smooth animation.  And since you can change the resolution, 
+you can give yourself a sqaure aspect ration (320x240) which is better for 
+bitmap rotations and the like.  But remember that it can be slower for 
+bitmapped graphics because you have to do at least four writes to the card (to 
+change planes) in order to copy bitmaps from main RAM to video memory.  Don't 
+use mode X just because you think it's "cool"; make sure you have a good reason 
+for wanting to use it in your program, or otherwise you're wasting a lot of 
+effort for no reason.
+
+   Now, I'm sure you want me to continue until I divulge all the secrets of the 
+VGA register to you - but, I only have some much time and space.  Besides, I 
+still haven't uncovered all of their mysteries and capabilities myself.  
+However, below is a list of the registers which you may want to play with for 
+various effects.  The following list was posted on rec.games.programmer by 
+Andrew Bromage (bromage@mundil.cs.mu.OZ.AU), so thanks to him for posting in to 
+begin with.
+   That's it for this article and I hope it helped you understand your VGA card 
+a little better.  If not, re-read it, and try writing your own programs which 
+use the registers.  The only way to really understand it (as with most things) 
+is to get some hands-on experience.
+   If you've got any questions, comments, flames, or corrections related to 
+this document or game programming/design in general, feel free to post an 
+article in rec.games.programmer (in case you haven't noticed by now, I hang out 
+there regularly) or send mail to boone@ucsd.edu.
+
+Here's the list.  Have fun...
+
+          Documentation Over the I/O Registers for Standard VGA Cards
+
+                    Documentated by Shaggy of The Yellow One
+                           Email: D91-SJD@TEKN.HJ.SE
+
+Feel free to spread this to whoever wants it.....
+------------------------------------------------------------
+Port-Index:  -               Port: Write/03c2h Read/03cch
+usage:       d7   Vertical sync polarity
+             d6   Horizontal sunc polarity
+             d5   Odd /even page
+             d4   Disable video
+             d3   Clock select 1
+             d2   Clock select 0
+             d1   Enable/Disable display RAM
+             d0   I/O address select
+Description: Sync polarity: Bits are set as below for VGA displays
+             that use sync polarity to determine screen resolution.
+             Many newer multiple frequency displays are insensitive
+             to sync polarity
+
+             d7 d6      Resolution
+             0  0       Invalid
+             0  1       400 lines
+             1  0       350 lines
+             1  1       480 lines
+
+             I/O address select: When set to zero, selects the
+             monochrome I/O address space (3bx). When set to one,
+             it selects the color I/O address space (3dx)
+
+------------------------------------------------------------
+Port-Index: -                Port: 03c2h ; read only
+usage:      d7    Vertical Retrace Interrupt pendling
+            d6    Feature connector bit 1
+            d5    Feature connector bit 0
+            d4    Switch sense
+            d0-d3 Unused
+
+Description: d7 uses IRQ2
+
+------------------------------------------------------------
+Port-Index: -                Port: 03bah,03dah ; read only
+usage:      d3  Vertical retrace
+            d0  Horizontal retrace
+
+------------------------------------------------------------
+Port-Index: -                Port: 03c3h,46e8h
+usage:      d7-d1  Reserved
+            d0     VGA enable/disable (03c3h only)
+
+Description: Disables access to display memmory and the other
+             VGA's ports
+
+------------------------------------------------------------
+Port-Index: 00h              Port: 03d4h, 03b4h
+usage:      Horizontal total
+Description: Total number of characters in horizontal scan minus
+             five ( including blanked and border characters)
+
+------------------------------------------------------------
+Port-Index: 01h              Port: 03d4h, 03b4h
+usage:      Horizontal display enable
+Description: Total number of characters displayed in horizontal
+             scan minus one.
+------------------------------------------------------------
+Port-Index: 02h              Port: 03d4h, 03b4h
+usage:      Start horizontal blanking
+Description: Character at which blanking starts
+
+------------------------------------------------------------
+Port-Index: 03h              Port: 03d4h, 03b4h
+usage:      End horizontal blanking
+            d7    Test
+            d6    Skew control
+            d5    Skew control
+            d0-d4 End blanking
+Description: End blanking: is five LSB bits of six-bit value,
+             which define the character at which blanking stops.
+             The MSB bit of this value is in register index 5.
+
+------------------------------------------------------------
+Port-Index: 04h              Port: 03d4h, 03b4h
+usage:      Start horizontal retrace
+Description: Character at which horizontal retrace starts
+
+------------------------------------------------------------
+Port-Index: 05h              Port: 03d4h, 03b4h
+usage:      End horizontal retrace
+            d7    End horizontal blanking bit 5
+            d6    Horizontal retrace delay
+            d5    Horizontal retrace delay
+            d0-d4 End horizontal retrace
+Description: End horizontal retrace: defines the character at
+             which horizontal retrace ends
+
+------------------------------------------------------------
+Port-Index: 06h              Port: 03d4h, 03b4h
+usage:      Vertical total
+Description: Total number of horizontal scan lines minus two
+             (including blanked and border characters). MSB bits
+             of this value are in register index 7
+
+------------------------------------------------------------
+Port-Index: 07h              Port: 03d4h, 03b4h
+usage:      Overflow register
+            d7  Vertical retrace start (bit 9)
+            d6  Vertical display enable end (bit 9)
+            d5  Vertical total (bit 9)
+            d4  Line compare (bit 8)
+            d3  Start vertical blank (bit 8)
+            d2  Vertical retrace start (bit 8)
+            d1  Vertical display enable end (bit 8)
+            d0  Vertical total (bit 8)
+------------------------------------------------------------
+Port-Index: 08h              Port: 03d4h, 03b4h
+usage:      Preset row scan
+            d7    Unused
+            d6    Byte panning control
+            d5    Byte panning control
+            d0-d4 Preset row scan
+Description: Byte panning control: is used to control byte
+             panning. This register together with attribute
+             controller register 13h allows for up to 31 pixels of
+             panning in double word modes
+             Preset row scan: Which character scan line is the
+             first to be displayed
+------------------------------------------------------------
+Port-Index: 09h              Port: 03d4h, 03b4h
+usage:      Maximum scan line/Character height
+            d7    double scan
+            d6    bit d9 of line compare register
+            d5    bit d9 of start vertical blank register
+            d0-d4 Maximum scan line
+Description: d0-d5=Character height-1,  only in textmodes
+------------------------------------------------------------
+Port-Index: 0ah              Port: 03d4h, 03b4h
+usage:      Cursor start
+            d7,d6 Reserved (0)
+            d5    Cursor off
+            d4-d0 Cursor start
+Description:
+------------------------------------------------------------
+Port-Index: 0bh              Port: 03d4h, 03b4h
+usage:      Cursor end
+            d7    reserved
+            d6,d5 Cursor skew
+            d4-d0 Cursor end
+Description:
+------------------------------------------------------------
+Port-Index: 0ch              Port: 03d4h, 03b4h
+usage:      Start address high
+------------------------------------------------------------
+Port-Index: 0dh              Port: 03d4h, 03b4h
+usage:      Start address low
+Description: Determine the offset in display memory to be
+             displayed on the upper-left corner on the screen
+------------------------------------------------------------
+Port-Index: 0eh              Port: 03d4h, 03b4h
+usage:      Cursor location (high byte)
+------------------------------------------------------------
+Port-Index: 0fh              Port: 03d4h, 03b4h
+usage:      Cursor location (low byte)
+Description: Where the cursor is displayed on screen
+------------------------------------------------------------
+Port-Index: 10h              Port: 03d4h, 03b4h
+usage:      Vertical retrace start
+Description: 8 bits out of 10
+------------------------------------------------------------
+Port-Index: 11h              Port: 03d4h, 03b4h
+usage:      Vertical retrace end
+            d7    Write protect CRTC register 0 to 7
+            d6    refresh cycle select
+            d5    enable vertical interrupt (when 0)
+            d4    Clear vertical interrupt (when 0)
+            d0-d3 Vertical retrace end
+------------------------------------------------------------
+Port-Index: 12h              Port: 03d4h, 03b4h
+usage:      Vertical display enable end
+Description: eight LSB bits out of ten-bit value which define
+             scan line minus one at which the display ends.
+             The other two are in CRTC register index 7
+------------------------------------------------------------
+Port-Index: 13h              Port: 03d4h, 03b4h
+usage:      Offset / Logical screen width
+Description: Logical screen width between successive scan lines
+------------------------------------------------------------
+Port-Index: 14h              Port: 03d4h, 03b4h
+usage:      Underline location register
+            d7    Reserved
+            d6    Double word mode
+            d5    count by 4
+            d0-d4 Underline location
+Description: Underline location: Monochrome textmode only
+------------------------------------------------------------
+Port-Index: 15h              Port: 03d4h, 03b4h
+usage:      Start vertical blanking
+Description: eight LSB bits of ten-bit value minus one which
+             define at which scan line the vertical blanking
+             starts. The other two bits are in CRTC registers
+             index 7 and 9
+------------------------------------------------------------
+Port-Index: 16h              Port: 03d4h, 03b4h
+usage:      End vertical blanking
+Description: eight LSB bits of a value which determine the scan
+             line after which vertical blanking ends.
+------------------------------------------------------------
+Port-Index: 17h              Port: 03d4h, 03b4h
+usage:      Mode control register
+            d7  Enable vertical and hoizontal retrace
+            d6  Byte mode (1), word mode (0)
+            d5  Address wrap
+            d4  Reserved
+            d3  count by 2
+            d2  multiple vertical by 2 (use half in
+                CRTC (8,10,12,14,18)
+            d1  Select row scan counter (not used)
+            d0  compatibilty mode support (enable interleave)
+------------------------------------------------------------
+Port-Index: 18h              Port: 03d4h, 03b4h
+usage:      Line compare register
+Description: Split screen,  8 bit value out of a ten-bit value
+------------------------------------------------------------
+Port-Index: 00h              Port: 03c4h
+usage:      Reset register
+            d7-d2 Reserved
+            d1    Synchronous reset
+            d0    Asynchronous reset
+Description: Synchr. when set to zero, will halt and reset
+             the sequencer at the end of its current cycle
+             Asyncht. when set to zero, will immediatly halt
+             and reset the sequencer. Data can be loss.
+------------------------------------------------------------
+Port-Index: 01h              Port: 03c4h
+usage:      Clock mode register
+            d7,d6 Reserved
+            d5    display off
+            d4    Allow 32-bit Fetch (not used in standard modes)
+            d3    Divide dot clock by 2 (used in some 320*200 modes)
+            d2    Allow 16-bit fetch (used in mon graphics modes)
+            d1    Reserved
+            d0    Enable (0) 9 dot characters (mono text and 400-line)
+Description: Display off: Will blank screen and give the cpu
+             uninterrupted access the display memory.
+------------------------------------------------------------
+Port-Index: 02h              Port: 03c4h
+usage:      Color plane write enable register
+            d7,d6 Reserved
+            d3    Plane 3 Write enable
+            d2    Plane 2 Write enable
+            d1    Plane 1 Write enable
+            d0    Plane 0 Write enable
+Description:
+------------------------------------------------------------
+Port-Index: 03h              Port: 03c4h
+usage:      Character generator select register
+            d7,d6 Reserved
+            d5    Character generator table select A (MSB)
+            d4    Character generator table select B (MSB)
+            d3,d2 Character generator table select A
+            d1,d0 Character generator table select B
+Description: This register is only of interest if your software
+             will be using multiple character sets. Either one
+             or two character sets can be active. Table A selects
+             the charcater with attribute d3 set to zero and
+             Table B is the one with d3 set to one.
+------------------------------------------------------------
+Port-Index: 04h              Port: 03c4h
+usage:      Memory mode register
+            d4-d7 Reserved
+            d3    Chain 4 (address bits 0&1 to select plan, mode 13h)
+            d2    Odd/even (address bit 0 to select plane 0&2 or   
+                  1&3 text modes)
+            d1    Extended memory (disable 64k modes)
+            d0    Reserved
+Description:
+------------------------------------------------------------
+Port-Index: 00h              Port: 03ceh
+usage:      Set / Reset register
+            d7-d4 Reserved (0)
+            d3    Fill data for plane 3
+            d2    Fill data for plane 2
+            d1    Fill data for plane 1
+            d0    Fill data for plane 0
+------------------------------------------------------------
+Port-Index: 01h              Port: 03ceh
+usage:      Set / Reset enable register
+            d7-d4 Reserved (0)
+            d3    enable set/reset for plane 3 (1 = enable)
+            d2    enable set/reset for plane 2 (1 = enable)
+            d1    enable set/reset for plane 1 (1 = enable)
+            d0    enable set/reset for plane 0 (1 = enable)
+Description: Set/Reset enable defines which memory planes will
+             receive fill data from set/reset register. Any plane
+             that is disable for set/reset will be written with
+             normal processor output data
+------------------------------------------------------------
+Port-Index: 02h              Port: 03ceh
+usage:      Color compare register
+            d7-d4 Reserved
+            d3    Color compare value for plane 3
+            d2    Color compare value for plane 2
+            d1    Color compare value for plane 1
+            d0    Color compare value for plane 0
+Description: one indicate that color is the same
+------------------------------------------------------------
+Port-Index: 03h              Port: 03ceh
+usage:      Data rotate / Function select register
+            d7-d5 Resrved (0)
+            d4,d3 Function select
+            d2-d0 Rotate count
+
+            d4 d3  Function
+            0  0   Write data unmodified
+            0  1   Write data ANDed with processor latches
+            1  0   Write data ORed with processor latches
+            1  1   Write data XORed with processor latches
+Description: Rotation is made before writing data
+------------------------------------------------------------
+Port-Index: 04h              Port: 03ceh
+usage:      Read plane select register
+            d7-d2 Reserved (0)
+            d1,d0 Defines color plane for reading (0-3)
+Description: Doesnt matter in color compare mode
+------------------------------------------------------------
+Port-Index: 05h              Port: 03ceh
+usage:      Mode register
+            d7    Reserved (0)
+            d6    256-colour mode
+            d5    Shift register mode
+            d4    Odd / Even mode
+            d3    Color compare mode enable (1 = enable)
+            d2    Reserved (0)
+            d1,d0 Write mode
+
+            d1 d0 Write mode
+            0  0  Direct write (data rotate, set/reset may apply)
+            0  1  Use processor latches as write data
+            1  0  Color plane n (0-3) is filled with the value of
+                  bit n in the write data
+            1  1  Use (rotated) write data ANDed with Bit mask as
+                  bit mask. Use set/reset as if set/reset was
+                  enable for all planes
+Description:
+------------------------------------------------------------
+Port-Index: 06h              Port: 03ceh
+usage:      Miscellaneous register
+            d7-d4 Reserved
+            d3-d2 Memory map
+                  00 = A000h for 128k
+                  01 = A000h for 64k
+                  10 = B000h for 32k
+                  11 = B800h for 32k
+            d1    Odd/even enable (used in text modes)
+            d0    Graphics mode enable
+Description: Memory map defines the location and size of the
+             host window
+------------------------------------------------------------
+Port-Index: 07h              Port: 03ceh
+usage:      Color don't care register
+            d7-d4 Reserved (0)
+            d3    Plane 3 don't care
+            d2    Plane 2 don't care
+            d1    Plane 1 don't care
+            d0    Plane 0 don't care
+Description: Color don't care is used in conjunction with color
+             compare mode. This register masks particular planes
+             from being tested during color compare cycles.
+------------------------------------------------------------
+Port-Index: 08h              Port: 03ceh
+usage:      Bitmask register
+Description: The bitmask register is used to mask certain bit
+             positons from being modified.
+------------------------------------------------------------
+Port-Index: -                 Port: 03c0h both index and data
+usage:      d7,d6 Reserved
+            d5    Palette address source
+                  0 = palette can be modified, screen is blanked
+                  1 = screen is enable, palette cannot be modified
+            d4-d0 Palette register address
+Description: Palette register address selects which register of
+             the attributes controller will be addres,sed by the
+             next I/O write cycle
+------------------------------------------------------------
+Port-Index: 00h-0fh          Port: 03c0h
+usage:      Color palette register
+            d6,d7 Reserved
+            d5-d0 Color value
+Description: not used in 256 color modes
+------------------------------------------------------------
+Port-Index: 10h              Port: 03c0h
+usage:      Mode control register
+            d7  p4,p5 source select
+            d6  pixel width
+            d5  Horizontal panning compatibility
+            d4  Reserved
+            d3  Background intensify / enable blinking
+            d2  Line graphics enable (text modes only)
+            d1  display type
+            d0  graphics / text mode
+Description: p4,p5 source select: selects the source for video
+              outputs p4 and p5 to the DACs. If set to zero, p4
+              and p5 are driven from the palette registers (normal
+              operation). If set to one, p4 and p5 video outputs
+              come from bits 0 and 1 of the color select register.
+             pixel width: is set to one in mode 13h (256-color mode)
+             horizontal panning compatibility: enhances the
+              operation of the line compare register of the CRT
+              controller, which allows one section of the screen
+              to be scrolled while another section remains stationary.
+              When this bit is set to one, the stationary
+              section of the screen will also be immune to horizontal
+              panning.
+------------------------------------------------------------
+Port-Index: 11h              Port: 03c0h
+usage:      Screen border color
+Description: In text modes, the screen border color register
+             selects the color of the border that sorrounds the
+             text display area on the screen. This is also referred
+             to by IBM as overscan. Unfortunately, this feature
+             does not work properly on EGA displays in 350-line
+             modes.
+------------------------------------------------------------
+Port-Index: 12h              Port: 03c0h
+usage:      Color plane enable register
+            d7,d6 Reserved
+            d5,d4 Video status mux
+            d3    Enable color plane 3
+            d2    Enable color plane 2
+            d1    Enable color plane 1
+            d0    Enable color plane 0
+Description:  The video status mux bits can be used in conjunction
+             with the diagnostic bits of input status register 1
+             to read palette registers. For the EGA, this is the
+             only means available for reading the palette registers.
+              Enable color planes can be used to enable or disable
+             color planes at the input to the color lockup table.
+             A zero in any of these bit positions will mask the
+             data from that color plane. The effect on the display
+             will be the same as if that color plane were cleared
+             to all zeros.
+------------------------------------------------------------
+Port-Index: 13h              Port: 03c0h
+usage:      Horizontal panning register
+            d7-d4 reserved
+            d3-d0 Horizontal pan
+Description: Horizontal pan allows the display to be shifted
+             horizontally one pixel at a time.
+
+             d3-d0      Number of pixels shifted to the left
+                        0+,1+,2+     13h     Other modes
+                        3+,7,7+
+             0          1            0       0
+             1          2            1       -
+             2          3            2       1
+             3          4            3       -
+             4          5            4       2
+             5          6            5       -
+             6          7            6       3
+             7          8            7       -
+             8          9            -       -
+------------------------------------------------------------
+Port-Index: 14h              Port: 03c0h
+usage:      Color select register
+            d7-d4 Reserved
+            d3    color 7
+            d2    color 6
+            d1    color 5
+            d0    color 4
+Description:  Color 7 and color 6: are normally used as the high
+             order bits of the eight-bit video color data from the
+             attribute controller to the DACs. The only exceptions
+             are 256-color modes
+              Color 5 and color 4: can be used in place of the p5
+             and p6 outputs from the palette registers (see mode
+             control register - index 10h). In 16-color modes, the
+             color select register can be used to rapidly cycle
+             between sets of colors in the video DAC.
+------------------------------------------------------------
+Port-Index: -                Port: 03c6h
+usage:      Pixel mask register
+Description: ???
+------------------------------------------------------------
+Port-Index: -                Port: 03c7h
+usage:      DAC state register (read-only)
+Description: if d0 and d1 is set to zero it indicates that
+             the lookup table is in a write mode
+------------------------------------------------------------
+Port-Index: -                Port: 03c7h
+usage:      Lookup table read index register (Write only)
+Description: Used when you want to read the palette (set color
+             number)
+------------------------------------------------------------
+Port-Index: -                Port: 03c8h
+usage:      Lookup table write index register
+Description: Used when you want to change palette (set color
+             number)
+------------------------------------------------------------
+Port-Index: -                Port: 03c9h
+usage:      Lookup table data register
+Description: Read color value (Red-Green-Blue) or write same data.
+------------------------------------------------------------

@@ -1,0 +1,129 @@
+
+                 ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+                 ³ Programming the Trident SVGA Chip ³
+                 ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+                 Written for the PC-GPE by Mark Feldman
+            e-mail address : u914097@student.canberra.edu.au
+                             myndale@cairo.anu.edu.au
+
+                  Please read the file SVGINTRO.TXT
+              (Graphics/SVGA/Intro PC-GPE menu option)
+
+             ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+             ³      THIS FILE MAY NOT BE DISTRIBUTED     ³
+             ³ SEPARATE TO THE ENTIRE PC-GPE COLLECTION. ³
+             ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Disclaimer ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+I assume no responsibility whatsoever for any effect that this file, the
+information contained therein or the use thereof has on you, your sanity,
+computer, spouse, children, pets or anything else related to you or your
+existance. No warranty is provided nor implied with this information.
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Identifying the Trident SVGA Card ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+There are two Trident SVGA chips, the TVGA 8800 and 8900.
+
+The Trident SVGA chips can be identified by attempting to change the
+Mode Control #1 register as follows:
+
+          Index : 0Eh at port 3C4h
+          Read/write data from port 3C5h
+          ÚÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄ¿
+          ³ 7 ³ 6 ³ 5 ³ 4 ³ 3 ³ 2 ³ 1 ³ 0 ³
+          ÀÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÙ
+                                    ³
+                                   PAGE
+
+First write the value 0Eh to port 3C4h. Then read the value in from port
+3C5h and save it. for rest Next write the value 00h to port 3C5h and
+read the value back in from the port. If bit 1 in the value read is set
+(ie = 1) then a trident chip is present. Finally write the original value
+back to port 3C5h to leave the SVGA adapter in it's original state.
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Identifying which Trident Chip is Present ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+The Trident chip can be identified with the following psuedo code :
+
+Port[$3C4] := $0B
+Port[$3C5] := $00
+hardware_version_number := Port[$3C5]
+if hardware_version_number >= 3 then
+  chip is an 8900
+else
+  chip is an 8800
+
+This procedure leaves the chip in "New Mode". New Mode and Old mode are
+discussed below.
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Trident Graphics Display Modes ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+           ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+           ³ Mode     Resolution       Colors    Chip      ³
+           ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+           ³ 5Bh      800x600          16        8800/8900 ³
+           ³ 5Ch      640x400          256       8800/8900 ³
+           ³ 5Dh      640x480          256       8800/8900 ³
+           ³ 5Eh      800x600          256       8900      ³
+           ³ 5Fh      1024x768         16        8800/8900 ³
+           ³ 61h      768x1024         16        8800/8900 ³
+           ³ 62h      1024x768         256       8900      ³
+           ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Trident Display Memory ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+Both Trident chips can map video memory in either 64K or 128K paging
+schemes. The 8800 defaults to the 128K paging scheme at power up. This
+scheme is known as the "Old Mode". The 8900 defaults to the 64K paging
+scheme, the "New Mode". This file will concentrate solely on the 64K new
+mode operation.
+
+The new mode can be set with the following procedure:
+
+Port[$3C4] := $0B               { Set the old mode 128K scheme }
+Port[$3C5] := $00
+dummy_variable := Port[$3C5]    { Toggle over to the new mode }
+
+Trident bank switching is weird, REALLY weird! In new mode, the New Mode
+Control Register # 1 is used to select the active bank:
+
+          Index : 0Eh at port 3C4h
+          Read/write data from port 3C5h
+          ÚÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄ¿
+          ³ 7 ³ 6 ³ 5 ³ 4 ³ 3 ³ 2 ³ 1 ³ 0 ³
+          ÀÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÙ
+                            ÀÄÂÄÙ   ³   ³
+                            Bank  Page Seg
+
+Bits 3-0 can be considered as a single 4 bit bank number. However, when
+you write to video memory the Trident inverts the Page bit to determine
+which bank should actually be written to. So if you set these bits to the
+value 0 (0000) then bank 0 will be used for all read operations and bank 2
+(0010) will be used for all write operations.
+
+The following code will set the bank number for all read operations:
+
+PortW[$3C4] := bank_number shl 8 + $0E;
+
+The following code will set the bank number for all write operations:
+
+PortW[$3C4] := (bank_number xor 2) shl 8 + $0E;
+
+It is important to realise that setting the write bank number changes the
+read bank number, and visa-versa. How you are supposed to rapidly transfer
+blocks of data around on the Trident screen is beyond me.
+

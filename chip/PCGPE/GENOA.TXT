@@ -1,0 +1,134 @@
+
+                  ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+                  ³ Programming the Genoa SVGA Chip ³
+                  ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+                 Written for the PC-GPE by Mark Feldman
+            e-mail address : u914097@student.canberra.edu.au
+                             myndale@cairo.anu.edu.au
+
+                  Please read the file SVGINTRO.TXT
+              (Graphics/SVGA/Intro PC-GPE menu option)
+
+             ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+             ³      THIS FILE MAY NOT BE DISTRIBUTED     ³
+             ³ SEPARATE TO THE ENTIRE PC-GPE COLLECTION. ³
+             ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Disclaimer ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+I assume no responsibility whatsoever for any effect that this file, the
+information contained therein or the use thereof has on you, your sanity,
+computer, spouse, children, pets or anything else related to you or your
+existance. No warranty is provided nor implied with this information.
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Introduction ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+Genoa has produced 2 SVGA cards. The earlier Genoa cards were based on the
+Tseng ET3000 chip, the more recents cards are based on the Genoa chip. This
+file will deal only with the cards based on the Genoa chip (the GVGA).
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ The Extended Register Set ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+The Genoa uses the same ports as the VGA sequencer register set to access
+most of it's extended registers, ie the Index Register port for the Genoa
+is 3C4h and Data port is 3C5h.
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Identifying the Genoa SVGA Card ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+To identify if a Genoa SVGA is present read the byte at address C000:0000.
+Let's call this byte SIG_OFFSET. Next read the four bytes at
+C000:SIG_OFFSET. These four bytes should have the following values :
+
+                ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+                ³  Memory Address              Value  ³
+                ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+                ³  C000:SIG_OFFSET              77h   ³
+                ³  C000:SIG_OFFSET + 1          xx    ³
+                ³  C000:SIG_OFFSET + 2          66h   ³
+                ³  C000:SIG_OFFSET + 3          99h   ³
+                ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Identifying which Genoa Card is Present ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+The value of the byte at C000:SIG_OFFSET + 1 is the chip identify code. The
+values for each of the Genoa cards is as follows
+
+              ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+              ³ xx       Card             Chip         ³
+              ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+              ³ 33h      5100/5200        Tseng ET3000 ³
+              ³ 55h      5300/5400        Tseng ET3000 ³
+              ³ 22h      6100             Genoa GVGA   ³
+              ³ 00h      6200/6300        Genoa GVGA   ³
+              ³ 11h      6400/6600        Genoa GVGA   ³
+              ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+There is no method for determining the card revision number.
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Genoa Graphics Display Modes ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+All Genoa cards support the following graphics modes :
+
+                  ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+                  ³ Mode     Resolution       Colors  ³
+                  ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+                  ³ 59h      720x512          16      ³
+                  ³ 5Bh      640x350          256     ³
+                  ³ 5Ch      640x480          256     ³
+                  ³ 5Dh      720x512          256     ³
+                  ³ 5Eh      800x600          256     ³
+                  ³ 5Fh      1024x768         16      ³
+                  ³ 6Ah      800x600          16      ³
+                  ³ 6Ch      800x600          256     ³
+                  ³ 73h      640x480          16      ³
+                  ³ 79h      800x600          16      ³
+                  ³ 7Ch      512x512          16      ³
+                  ³ 7Dh      512x512          256     ³
+                  ³ 7Eh      640x400          256     ³
+                  ³ 7Fh      1024x768         4       ³
+                  ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Genoa Display Memory ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+Two banks can be mapped to the segment A000:0000-FFFFh, one for
+reading and one for writing. The banks can be selected by writing to
+the Memory Segment Register :
+
+          Index : 06h at port 3C4h
+          Read/Write at port 3C5h
+          ÚÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄ¿
+          ³ 7 ³ 6 ³ 5 ³ 4 ³ 3 ³ 2 ³ 1 ³ 0 ³
+          ÀÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÙ
+          MEM ÄÄÙ   ÀÄÄÄÂÄÄÄÙ   ÀÄÄÄÂÄÄÄÙ
+                      Write        Read
+                      Bank         Bank
+
+The following code can be used to set the write bank:
+
+Port[$3C4] := $06;
+Port[$3C5] := (Port[$3C5] and $C7) or (write_bank_number shl 3);
+
+The following code can be used to set the read bank:
+
+Port[$3C4] := $06;
+Port[$3C5] := (Port[$3C5] and $F8) or read_bank_number;
+
+There are 8 banks (numbered 0 -7). Each bank is 64K long, has a 64K
+granularity and is mapped to host memory A000:0000-FFFFh.

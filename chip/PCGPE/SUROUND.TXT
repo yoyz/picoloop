@@ -1,0 +1,76 @@
+
+Midi And 4 Channel Surround Sound
+---------------------------------
+
+I got some email today asking how to do Dolby surround midi files. I tought
+it could be of interest to other people. Note: Only a ram wavetable midi
+device can reproduce the surround channel, with this method, but the center
+channel can be done on any midi playback device.
+
+If you want something that comes out from the center channel, just put the
+pan on the midi channel at 64. Coming from left? just put the panning to
+the left (under 64). Coming from right? just put the panning to the right
+(over 64).
+
+For elements that have to be present on both sides i'd recommend dupli
+cating the track and giving two opposite panning. This gives much better
+results than panning to center and shouldn't come out the front channel.
+Also, if you sampled something in stereo, then you can use the left signal
+to create a patch for the left track and a separate patch for the right
+track. This works very well.
+
+Finally, for the surround channel, it's the same as stereo snce you use
+two tracks. One for left, one for right. On the left you use the regular
+instrument, and on the right, you use the *inverted* signal (a flip around
+the X axis of the signal, as done by the invert function of most wave
+editors). When i was asked the question, i hadn't tried this, but i just
+did and it works. I use my own circuit to decode the surround channel (a
+very simple design, found on archive.epas.utoronto.ca under the filename
+surround.txt) and have not tried it on a real dolby surround or pro logic
+unit, but it should work equally well.
+
+Of course by using two voices per sounds, you use the GUS voices much more
+rapidly, but the sound is much better, even when it's the same signal on
+both channels because of the slight phasing between the left and right
+channels. Plus, you get much more balance control.
+
+So when you want something on the left, center or right channel, just use
+mono panning. For the surround channel, on top of that, just add two voices
+panned left and right, one playing the inverse of the other. Note, in mono,
+this will disapear totally...
+
+This should be very simple to understand by looking at this diagram:
+
+P=panning, V=volume
+                             CENTRE CHANNEL
+                             P=64, V=presence
+                              V        /|\
+                              variation |
+                                       \|/
+ LEFT CHANNEL                                                   RIGHT CHANNEL
+P=1, V=presence               P variation <-->                P=127, V=presence
+
+                              Vleft=Vright /|\
+                              variation     |
+                                           \|/
+
+                            P=1,normal patch;P=127,inverted patch,
+                            Vleft=Vright=presence
+                            SURROUND CHANNEL (either 1 or two speakers,
+                                             this channel is mono)
+
+For stereo instead of panned mono:
+P=1, left signal patch;P=127, right signal patch, Vleft=left presence,
+Vright=right presence. So for <--> variation, you use the two volumes instead
+of P.
+
+Hope this helps.
+
+Ciao,
+--
+Francois Dion
+    '  _   _   _
+ CISM (_) (_)  _) FM       Montreal , Canada       Email: CISM@ERE.UMontreal.CA
+      (_)  / . _)             10000 Watts          Telephone no: (514) 343-7511
+_______________________________________________________________________________
+Audio-C-DJ-Fractals-Future-Label-Multimedia-Music-Radio-Rave-Video-VR-Volvo-...

@@ -1,0 +1,112 @@
+
+          ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+          ³ The Microsoft Multimedia WAV Sound File Format ³
+          ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+                 Written for the PC-GPE by Mark Feldman
+            e-mail address : u914097@student.canberra.edu.au
+                             myndale@cairo.anu.edu.au
+
+             ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+             ³      THIS FILE MAY NOT BE DISTRIBUTED     ³
+             ³ SEPARATE TO THE ENTIRE PC-GPE COLLECTION. ³
+             ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Disclaimer ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+I assume no responsibility whatsoever for any effect that this file, the
+information contained therein or the use thereof has on you, your sanity,
+computer, spouse, children, pets or anything else related to you or your
+existance. No warranty is provided nor implied with this information.
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ The RIFF File Format ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+WAV files use the RIFF file structure. The RIFF format was designed
+for multi-media purposes. A RIFF files consists of a number of "chunks":
+
+  ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+  ³ Byte              Length                                               ³
+  ³ Offset   Name   (in bytes)    Description                              ³
+  ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+  ³ 00h      rID        4h        Contains the characters "RIFF"           ³
+  ³ 04h      rLen       4h        The length of the data in the next chunk ³
+  ³ 08h      rData     rLen       The data chunk                           ³
+  ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ The WAVE Form Definition ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+The rData chunk in a WAV file is split up into several further chunks:
+
+ ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+ ³ rData                                                                   ³
+ ³ Byte              Length                                                ³
+ ³ Offset   Name   (in bytes)    Description                               ³
+ ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+ ³ 00h      wID        4h        Contains the characters "WAVE"            ³
+ ³ 04h      Format    14h        Contains data which specifies the format  ³
+ ³          Chunk                  of the Data in the Data Chunk           ³
+ ³ 18h      WAVE Data  ?         Contains the WAV audio data               ³
+ ³          Chunk                                                          ³
+ ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ The Format Chunk ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+The Format Chunk is split up into these fields:
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+³ Format                                                                  ³
+³ Chunk                  Length                                           ³
+³ Offset  Name         (in bytes)   Description                           ³
+ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+³ 00h     fId               4       Contains the characters "fmt"         ³
+³ 04h     fLen              4       Length of data in the format chunk    ³
+³ 08h     wFormatTag        2       *                                     ³
+³ 0Ah     nChannels         2       Number of channels, 1=mono, 2=stereo  ³
+³ 0Ch     nSamplesPerSec    2       Playback frequency                    ³
+³ 0Eh     nAvgBytesPerSec   2       **                                    ³
+³ 10h     nBlockAlign       2       ***                                   ³
+³ 12h     FormatSpecific    2       Format specific data area             ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+* The wFormatTag specifies the wave format, eg 1 = Pulse Code Modulation
+  (or in plain english, regular 8 bit sampled uncompressed sound)
+
+** Indicates the average number of bytes a second the data should be
+   transferred at = nChannels * nSamplesPerSec * (nBitsPerSample / 8)
+
+*** Indicates the block alignment of the data in the data chunk. Software
+    needs to process a multiplt of nBlockAlign at a time.
+    nBlockAlign = nChannels * (nBitsPerSample / 8)
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ The Data Chunk ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+The Data Chunk is split up into these fields:
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+³  Data                                                                   ³
+³ Chunk                  Length                                           ³
+³ Offset  Name         (in bytes)   Description                           ³
+ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+³ 00h     dId              4        Contains the characters "data"        ³
+³ 02h     dLen             4        Length of data in the dData field     ³
+³ 00h     dData            dLen     The actual waveform data              ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+In mono 8-bit files each byte represents one sample. In stereo 8-bit files
+two bytes are stored for each sample, the first byte is the left channel
+value, the next is the right channel value.

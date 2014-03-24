@@ -1,0 +1,136 @@
+
+                 ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+                 ³ Xtended Mode - Unchained 640x400x256 ³
+                 ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+                 Written for the PC-GPE by Mark Feldman
+            e-mail address : u914097@student.canberra.edu.au
+                             myndale@cairo.anu.edu.au
+
+                    Please read the file SVGINTRO.TXT
+                (Graphics/SVGA/Intro PC-GPE menu option)
+
+               ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+               ³      THIS FILE MAY NOT BE DISTRIBUTED     ³
+               ³ SEPARATE TO THE ENTIRE PC-GPE COLLECTION. ³
+               ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Disclaimer ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+I assume no responsibility whatsoever for any effect that this file, the
+information contained therein or the use thereof has on you, your sanity,
+computer, spouse, children, pets or anything else related to you or your
+existance. No warranty is provided nor implied with this information.
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Introduction ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+I am calling this mode Xtended mode simply because I don't know if it 
+already has a name. It is a variation of mode x and it has worked on every 
+SVGA I have tried it on. It seems very very unlikely that I was the first 
+person to try this, so if this mode has already been documented elsewhere I 
+would very much like to hear about it.
+
+Xtended mode is 640x400x256 and will only work on SVGA's supporting the
+"regular" 640x400x256 mode. It's advantage is that it requires no
+bank switching to access the entire display memory and, like mode x, polygon
+fill graphics can be up to 4 times faster.
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Setting Xtended Mode ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+Xtended mode is set similar to the way unchained mode 13h is set, the only
+difference is that you you call BIOS to set the 640x400x256 graphics mode
+instead of mode 13h. The 640x400x256 mode number varies from card to card.
+The following table lists the mode number for each of the 7 "standard"
+SVGAs:
+
+           640x400x256 mode numbers for various SVGA cards
+               ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+               ³      SVGA Chip          Mode Number ³
+               ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+               ³ ATI                        61h      ³
+               ³ Chips & Technologies       78h      ³
+               ³ Genoa                      7Eh      ³
+               ³ Paradise                   5Eh      ³
+               ³ Trident                    5Ch      ³
+               ³ Tseng                      2Fh      ³
+               ³ Video 7                    66h      ³
+               ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+Alternatively the mode can be set with the VESA Set Super VGA Mode BIOS
+call, the VESA SVGA mode number is 100h. Refer to the file "VESASP12.TXT"
+for more information on VESA BIOS calls.
+
+The following Pascal procedure will set Xtended mode for a card with a VESA
+driver:
+
+const VIDEO     = $10;  { Video interrupt number                    }
+      CRTC_ADDR	= $3d4; { Base port of the CRT Controller (color)   }
+      SEQU_ADDR	= $3c4; { Base port of the Sequencer                }
+
+procedure InitXtended;
+begin
+
+  { Set VESA 640x400x256 mode }
+  asm
+    mov ax, $4F02
+    mov bx, $100
+    int VIDEO
+  end;
+
+  { Turn the VGA screen off }
+  Port[SEQU_ADDR] := 1;
+  Port[SEQU_ADDR + 1] := Port[SEQU_ADDR + 1] or $20;
+
+  { Turn off the Chain-4 bit (bit 3 at index 4, port 0x3c4) }
+  PortW[SEQU_ADDR] := $0604;
+
+  { Turn off word mode, by setting the Mode Control register
+    of the CRT Controller (index 0x17, port 0x3d4) }
+  PortW[CRTC_ADDR] := $E317;
+
+  { Turn off doubleword mode, by setting the Underline Location
+    register (index 0x14, port 0x3d4) }
+  PortW[CRTC_ADDR] := $0014;
+
+  { Clear entire video memory, by selecting all four planes, then writing
+  color 0 to the entire segment. Stoopid FillChar fills 1 byte too short! }
+  PortW[SEQU_ADDR] := $0F02;
+  FillChar(Mem[$A000 : 0], $8000, 0);
+  FillChar(Mem[$A000 : $8000], $8000, 0);
+
+  { Give a small delay to let the screen sort itself out }
+  Delay(100);
+
+  { Turn the screen back on }
+  Port[SEQU_ADDR] := 1;
+  Port[SEQU_ADDR + 1] := Port[SEQU_ADDR + 1] and $DF;
+end;
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Drawing a Pixel ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+Drawing a pixel in Xtended mode is similar to drawing one in unchained mode
+13h or mode x, we just have to keep in mind that the display is now twice
+as wide. Also keep in mind that 640x400 has 4 times as many pixels as
+320x200, so there is only one page in Xtended mode.
+
+This example Pascal routine will draw a pixel at any screen position. I'll
+let you do the job of converting it to assembly:
+
+procedure XtendedPutPixel(x, y : word; color : byte);
+begin
+  { Set map mask to select proper plane }
+  PortW[SEQU_ADDR] := $100 shl (x and 3) + 2;
+
+  { Calculate address (y * 160 + x div 4) and write pixel }
+  Mem[$A000 : y shl 7 + y shl 5 + x shr 2] := color;
+end;

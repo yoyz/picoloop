@@ -1,0 +1,163 @@
+
+          ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+          ³ Programming the Chips And Technologies SVGA Chip ³
+          ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+                 Written for the PC-GPE by Mark Feldman
+              e-mail address : u914097@student.canberra.edu.au
+                               myndale@cairo.anu.edu.au
+
+                  Please read the file SVGINTRO.TXT
+              (Graphics/SVGA/Intro PC-GPE menu option)
+
+             ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+             ³      THIS FILE MAY NOT BE DISTRIBUTED     ³
+             ³ SEPARATE TO THE ENTIRE PC-GPE COLLECTION. ³
+             ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Disclaimer ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+I assume no responsibility whatsoever for any effect that this file, the
+information contained therein or the use thereof has on you, your sanity,
+computer, spouse, children, pets or anything else related to you or your
+existance. No warranty is provided nor implied with this information.
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Setup mode ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+To modify some of the CAT's internal SVGA registers the card must be placed
+into setup mode. This is done by writing the value 1Eh to port 46E8h. To
+exit setup mode write the value 0Eh to port 46E8h.
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Enabling Extensions ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+The CAT's extended registers are normally locked and must be enabled before
+you attempt to modify them. To enable them, you must enter setup mode,
+write the value 80h to port 103h and exit setup mode. To disable them
+you must enter setup mode, write the value 00h to port 103h and exit
+setup mode.
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Identifying the CAT Chip ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+Detecting the presence of a CAT chip can be done by entering setup mode,
+checking that the value returned from reading port 104h is A5h and then
+exiting setup mode.
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Identifying which CAT Chip and Revision Number ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+The CAT chip type and revision number can be determined by enabling
+extensions, reading the value of register 0 and disabling extensions.
+The top 4 bits (4-7) are the chip id and the lower 4 are the version
+number.
+
+                     ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+                     ³ Chip ID      Chip             ³
+                     ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+                     ³    1         82c451 or 82c452 ³
+                     ³    2         82c455           ³
+                     ³    3         82c453           ³
+                     ³    5         82c456           ³
+                     ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+
+The 82c451 and 82c452 can be distinguished by attempting to modify
+register 3Ah (Graphics Cursor Color 1, make sure you set it back to what it
+was). If the register exists the chip is an 82c452.
+
+Alternatively the chip ID can be determined using the Get Controller
+Information BIOS call (see below).
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ CAT Graphics Display Modes ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+        ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+        ³ Mode    Resolution   Colors          Chip         ³
+        ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+        ³ 25h     640x480      16              451/452/453  ³
+        ³ 6Ah     800x600      16              451/452/453  ³
+        ³ 70h     800x600      16              451/452/453  ³
+        ³ 71h     960x720      16              452          ³
+        ³ 72h     1024x768     16              452/453      ³
+        ³ 78h     640x400      256             451/452/453  ³
+        ³ 79h     640x480      256             452/453      ³
+        ³ 7Ah     768x576      256             452          ³
+        ³ 7Ch     800x600      256             453          ³
+        ³ 7Eh     1024x768     256             453          ³
+        ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ The CAT Display Memory ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+The following registers can only be modified while the extended registers
+are enabled (See Enabling Extensions above).
+
+The 451, 455 and 456 are always in single-paging mode and have 4 64K
+banks. To switch to a bank you must first enable access to extended memory
+with the following procedure:
+
+Port[$3D6] := $0B;
+Port[$3D6] := Port[$3D6] and $FD;
+
+Selecting a bank can be done with the following procedure:
+
+Port[$3D6] := $0B;
+Port[$3D7] := bank_number;
+
+where bank_number = 0 - 3. Each bank is 64K long and has a 86K granularity.
+
+The 452 and 453 banks have a 16K granularity, so if you want 64K granularity
+you must multiply the bank number by 4 before writing it to the registers :
+
+Port[$3D6] := $10;
+Port[$3D7] := bank_number Shl 2;  { = bank_numer * 4 }
+
+The 452 and 453 allow duel paging. The 64K host address space is split in
+two, one low area A000:0000-7FFFh and a high area A000:8000-FFFFh. This
+mode can be enabled with the following procedure:
+
+Port[$3D6] := $10;
+Port[$3D6] := Port[$3D6] or 2;
+
+In this mode each bank also has a granularity of 16K. The lower bank is
+selected with the same procedure for setting the bank in single-paging
+mode. The upper bank is selected with the following call:
+
+Port[$3D6] := $11;
+Port[$3D7] := bank_number Shl 2;  { = bank_numer * 4 }
+
+None of the CAT chips allow you to select one bank for reading and
+another for writing.
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ CAT Get Controller Information BIOS Call ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+Int 10h
+Inputs :
+    AH = 5Fh            Extended VGA Control
+    AL = 00h            Get Controller Information
+
+Returns:
+AL = 5Fh                Extended VGA control function supported
+BL = Chip type          bits 7-4 contain the chip type number
+                            0 = 82c451
+                            1 = 82c452
+                            2 = 82c455
+                            ? = 82c453
+                        bits 3-0 contain the revision number
+BH = Memory Size        Video memory size
+                          0 = 256k
+                          1 = 512k
+                          2 = 1M

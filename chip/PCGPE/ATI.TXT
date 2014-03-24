@@ -1,0 +1,158 @@
+
+             ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+             ³ Programming the ATI Technologies SVGA Chip ³
+             ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+                 Written for the PC-GPE by Mark Feldman
+            e-mail address : u914097@student.canberra.edu.au
+                             myndale@cairo.anu.edu.au
+
+                  Please read the file SVGINTRO.TXT
+              (Graphics/SVGA/Intro PC-GPE menu option)
+
+             ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+             ³      THIS FILE MAY NOT BE DISTRIBUTED     ³
+             ³ SEPARATE TO THE ENTIRE PC-GPE COLLECTION. ³
+             ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Disclaimer ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+I assume no responsibility whatsoever for any effect that this file, the
+information contained therein or the use thereof has on you, your sanity,
+computer, spouse, children, pets or anything else related to you or your
+existance. No warranty is provided nor implied with this information.
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Locating the Extended Register Set ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+The ATI extended register set is based on the vga's index register scheme,
+ie you write the value of the register you want to modify to Index Register
+Port and write the actual data to the Data Port (the Data Port is one port
+number higher than the Index Register Port). The value of the Index Register
+for the ATI extended register set is stored in a word in BIOS ROM at
+C000:0010. Apparently ATI want to change the value of this register in
+future so they recommend you obtain it by reading the value at this memory
+address.
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Identifying the ATI Chip ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+The ATI chip can be identified by checking the string in memory locations
+C000:0031-003A for the following characters : 761295520
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Identifying which ATI Chip ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+The first version of the ATI chip is the 18800. The second version is the
+28800, which from a programming perspective is identical to the 18800-2.
+The 18800 can be identified by it's lack of support for display mode
+55h.
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Determining the ATI Chip Revision Number ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+The ATI chip revision number is stored at BIOS location C000:0043.
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ ATI Graphics Display Modes ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+             ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+             ³ Mode    Resolution   Colors          Chip     ³
+             ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+             ³  53h     800x600      16              18800   ³
+             ³  54h     800x600      16              18800   ³
+             ³  55h     1024x768     16 (planar)     18800-1 ³
+             ³  61h     640x400      256             18800   ³
+             ³  62h     640x480      256             18800   ³
+             ³  63h     800x600      256             18800   ³
+             ³  65h     1024x768     256 (packed)    18800   ³
+             ³  67h     1024x768     4               ?       ³
+             ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ ATI Display Memory ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+In the following examples the EXT variable is the extended register index
+value obtained from reading the word at C000:0010.
+
+The ATI supports both single and duel bank memory mapping. It supports 64K
+byte pages, each of these can be mapped into the host address space.
+
+
+
+Single or duel bank mode is selected by the E2B bit in register BE
+
+          Index : BEh at port EXT
+          Read/Write at port EXT + 1
+          ÚÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄ¿
+          ³ 7 ³ 6 ³ 5 ³ 4 ³ 3 ³ 2 ³ 1 ³ 0 ³
+          ÀÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÙ
+                            ³
+                            ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄ E2B 0 = Single Bank Mode
+                                                1 = Duel Bank Mode
+
+Selecting a bank to write to in single bank mode is done by writing the bank
+number to the Bank Select Register :
+
+          Index : B2h
+          ÚÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄ¿
+          ³ 7 ³ 6 ³ 5 ³ 4 ³ 3 ³ 2 ³ 1 ³ 0 ³
+          ÀÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÙ
+                        ÀÄÄÄÄÄÂÄÄÄÄÄÙ
+                         Bank number
+
+The following procedure will select a bank in single bank mode :
+
+Port[EXT] := $B2;
+Port[EXT + 1] := (Port[EXT + 1] And $E1) Or (bank_number shl 1);
+
+where bank_number = 0 - 15. Each bank is 64K long and has a 64K
+granularity.
+
+Duel Bank Mode is only supported on the 18800-1 and 28800 chips. You can
+map one bank to A000:0000-FFFF for read operations and another to the
+same address space for write operations.
+
+          Index : B2h
+          ÚÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄ¿
+          ³ 7 ³ 6 ³ 5 ³ 4 ³ 3 ³ 2 ³ 1 ³ 0 ³
+          ÀÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÙ
+            ÀÄÄÄÂÄÄÄÙ       ÀÄÄÄÂÄÄÄÙ
+              Read            Write
+              Bank            Bank
+              Number          Number
+
+The following code will set the write bank number:
+
+Port[EXT] := $B2;
+Port[EXT + 1] := (Port[EXT + 1] And $F0) Or (write_bank_number shl 1);
+
+The following code will set the read bank number:
+
+Port[EXT] := $B2;
+Port[EXT + 1] := (Port[EXT + 1] And $0F) Or (read_bank_number shl 5);
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ ATI IsModeAvailable BIOS Call ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+Int 10h
+Inputs :
+    AH = 12h            Extended VGA Control
+    BX = 5506h          Get Mode Information
+    BP = FFFF           Set up for Return Argument
+    AL = Mode Number    Mode number you want to test
+
+Returns:
+BP = FFFFh Mode not supported
+     Anything else : mode is supported, BP = offset into CRTC table for mode
+

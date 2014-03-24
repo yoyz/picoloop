@@ -1,0 +1,302 @@
+                     ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+                     ³ Programming the PC Speaker ³
+                     ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+            Written for the PC-GPE by Mark Feldman
+            e-mail address : u914097@student.canberra.edu.au
+                             myndale@cairo.anu.edu.au
+
+              ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+              ³      THIS FILE MAY NOT BE DISTRIBUTED     ³
+              ³ SEPARATE TO THE ENTIRE PC-GPE COLLECTION. ³
+              ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Disclaimer ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+I assume no responsibility whatsoever for any effect that this file, the
+information contained therein or the use thereof has on you, your sanity,
+computer, spouse, children, pets or anything else related to you or your
+existance. No warranty is provided nor implied with this information.
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Basic Programming Info ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+The PC speaker has two states, in and out (0 and 1, on and off, Adam and
+Eve etc). You can directly set the state of the PC speaker or you can hook
+the speaker up to the output of PIT timer 2 to get various effects.
+
+Port 61h controls how the speaker will operate as follows:
+
+Bit 0    Effect
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+  0      The state of the speaker will follow bit 1 of port 61h
+  1      The speaker will be connected to PIT channel 2, bit 1 is
+         used as switch ie 0 = not connected, 1 = connected.
+
+Playing around with the bits in port 61h can prevent the Borland BC++ and
+Pascal sound() procedures from working properly. When you are done using the
+speaker make sure you set bit's 0 and 1 of port 61h to 0.
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Your First Tone ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+Ok, so lets generate a simple tone. We'll send a string of 0's and 1's to the
+PC speaker to generate a square wave. Here's the Pascal routine:
+
+
+Uses Crt;
+
+const SPEAKER_PORT = $61;
+
+var portval : byte;
+
+begin
+
+  portval := Port[SPEAKER_PORT] and $FC;
+
+  while not KeyPressed do
+    begin
+      Port[SPEAKER_PORT] := portval or 2;
+      Delay(5);
+      Port[SPEAKER_PORT] := portval;
+      Delay(5);
+    end;
+  ReadKey;
+end.
+
+On my 486SX33 this generates a tone of around about 100Hz.
+
+First this routine grabs the value from the speaker port, sets the lower two
+bits to 0 and stores it. The loop first sets the speaker to "on", waits a
+short while, sets it to "off" and waits another short while. I write the loop
+to do it in this order so that when a key is pressed and the program exits
+the loop the lower two bits in the speaker port will both be 0 so it won't
+prevent other programs which then use the speaker from working properly.
+
+This is a really bad way of generating a tone. While the program is running
+interrupts are continually occurring in the PC and this prevents the timing
+from being accurate. Try running the program and moving the mouse around.
+You can get a nicer tone by disabling interrupts first, but this would
+prevent the KeyPressed function from working. In any case we want to
+generate a nice tone of a given frequency, and using the Delay procedure
+doesn't really allow us to do this. To top it all off, this procedure uses
+all of the CPU's time so we can't do anything in the background while the
+tone is playing.
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Using PIT Channel 2 ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+Connecting the PC speaker to PIT channel 2 is simply a matter of programming
+the channel to generate a square wave of a given frequency and then setting
+the lower two bits in the speaker port to a 1. Detailed information on
+programming the PIT chip can be found in the file PIT.TXT, but here is
+the pascal source you'll need to do the job:
+
+const SPEAKER_PORT = $61;
+       PIT_CONTROL = $43;
+     PIT_CHANNEL_2 = $42;
+          PIT_FREQ = $1234DD;
+
+procedure Sound(frequency : word);
+var counter : word;
+begin
+
+  { Program the PIT chip }
+  counter := PIT_FREQ div frequency;
+  Port[PIT_CONTROL] := $B6;
+  Port[PIT_CHANNEL_2] := Lo(counter);
+  Port[PIT_CHANNEL_2] := Hi(counter);
+
+  { Connect the speaker to the PIT }
+  Port[SPEAKER_PORT] := Port[SPEAKER_PORT] or 3;
+end;
+
+procedure NoSound;
+begin
+  Port[SPEAKER_PORT] := Port[SPEAKER_PORT] and $FC;
+end;
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Playing 8-bit Sound Through the PC Speaker ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+Terminolgy
+ÄÄÄÄÄÄÄÄÄÄ
+
+To clear up any confusion, here's my own definition of some words I'll be
+using in this section:
+
+sample : A single value in the range 0-255 representing the input level of
+         the microphone at any given moment.
+
+volume : A sort of generic version of sample, not limited to the 0-255 range.
+
+  song : A bunch of samples in a row representing a continuous sound.
+
+string : A bunch of binary values (0-1) in a row.
+
+
+
+Programs like the legendary "Magic Mushroom" demo do a handly little trick
+to play 8-bit sound from the PC speaker by sending binary strings to the
+PC speaker for every sample they play. If the bits are all 0's, then the
+speaker will be "off". If they are all 1's the speaker will be "on". If they
+alternate 0's and 1's then the speaker will behave as if it's "half" on, and
+so forth.
+
+                ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+                ³ Bit string     Time speaker is on ³
+                ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+                ³ 11111111              100%        ³
+                ³ 11101110               75%        ³
+                ³ 10101010               50%        ³
+                ³ 10001000               25%        ³
+                ³ 00000000                0%        ³
+                ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+Note that in this table I've used strings which are 8 bits long meaning that
+there can only be 9 discrete volume levels (since anywhere from 0 to 8 of
+them can be set to 1). In reality the strings would be longer.
+
+The problem with using bit strings such as this is getting accurate timing
+between each bit you send. One way around this is to put all the 1's at the
+front of the string and all the 0's at the end, like so:
+
+                ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+                ³ Bit string     Time speaker is on ³
+                ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+                ³ 11111111              100%        ³
+                ³ 11111100               75%        ³
+                ³ 11110000               50%        ³
+                ³ 11000000               25%        ³
+                ³ 00000000                0%        ³
+                ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+This way you can send all the 1's as a single pulse and your timing doesn't
+have to be quite as accurate. The sound isn't quite as good, but I've found
+it to be pretty reasonable. A real advantage in using this method is that
+you can program the PIT chip for "interrupt on terminal count" mode, this
+mode is similar to the one-shot mode, but counting starts as soon as you
+load the PIT counter. So if you are playing an 11kHz song you simply load the
+PIT counter 11000 times a second with a value that's proportional to the
+sample value and trigger it. The speaker output will go low for the set time
+and then remain high until the next time you trigger it (in practise it
+doesn't matter whether the string of 1's make the speaker go "low" or
+"high", just so long as it's consistent). I've managed to get good results
+using PIT channel 2 to handle the one-shot for each sample and PIT channel 0
+to handle when to trigger channel 2 (ie 11000 times a second). *PLUS* I was
+able to have a program drawing stuff on the screen while all this was going
+on in the background!
+
+Incidently I should mention here that the "interrupt on terminal count" mode
+does not generate an actual interrupt on the Intel CPU. The mode was given
+this name since the PIT can can be hooked up to a CPU to generate an
+interrupt. As far as I can tell IBM didn't do it like this.
+
+This technique does have one nasty side-effect though. If you are playing an
+11kHz tone for example then the PC speaker will be being turned on and off
+exactly 11000 times a second, in other words you'll hear a nice 11kHz sine
+wave superimposed over the song (do any of you math weirdo's want to do
+a FFT to prove this for me?). A way around this is to play the song back
+at 22kHz and play each sample twice. This will result in a 22kHz sine wave
+which will pretty much be filtered out by the tiny PC speaker and the simple
+low-pass filter circuit that it's usually connected to on the motherboard.
+
+The PIT chip runs at a frequency of 1193181 Hz (1234DDh). If you are playing
+an 11kHz song at 22kHz then 1193181 / 22000 = 54 clocks per second, so
+you'll have to program the PIT to count a maximum of 54 clocks for each
+sample. What I'm getting at is that you'll only be able to play 54 discreet
+sample levels using this method, so you'll have to scale the 256 different
+levels in an 8-bit song to fit into this range which will also result in
+futher loss of sound quality. I sped things up considerably by pre-
+calculating a lookup table like so:
+
+var count_values : array[0..255] of byte;
+
+for level := 0 to 255 do
+  count_values[level] := level * 54 div 255;
+
+Then for each sample I just look up what it's counter value is and send
+that to the PIT chip. Since each value is of byte size you can program the
+PIT chip to accept the LSB only (see PIT.TXT for more info). The following
+pascal code will set the PIT chip up for "interrupt on terminal count" mode
+where only the LSB of the count needs to be loaded:
+
+Port[PIT_CONTROL] := $90;
+Port[SPEAKER_PORT] := Port[SPEAKER_PORT] or 3;
+
+And the following line will trigger the one-shot for a given sample value
+from 0-255:
+
+Port[PIT_CHANNEL_2] := count_values[sample_value];
+
+Do that 22000 times a second and whaddaya know, you'll hear "8-bit" sound
+from your PC speaker! Here's a bit of code which works ok on my machine:
+
+
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+const SPEAKER_PORT = $61;
+       PIT_CONTROL = $43;
+     PIT_CHANNEL_2 = $42;
+          PIT_FREQ = $1234DD;
+
+     DELAY_LENGTH = 100;
+
+procedure PlaySound(sound : PChar; length : word);
+var count_values : array[0..255] of byte;
+    i, loop : word;
+begin
+
+  { Set up the count table }
+  for i := 0 to 255 do
+    count_values[i] := i * 54 div 255;
+
+  { Set up the PIT and connect the speaker to it }
+  Port[PIT_CONTROL] := $90;
+  Port[SPEAKER_PORT] := Port[SPEAKER_PORT] or 3;
+
+  { Play the sound }
+
+  asm cli end;
+  for i := 0 to length - 1 do
+    begin
+      Port[PIT_CHANNEL_2] := count_values[byte(sound^)];
+      for loop := 0 to DELAY_LENGTH do;
+      Port[PIT_CHANNEL_2] := count_values[byte(sound^)];
+      for loop := 0 to DELAY_LENGTH do;
+      sound := sound + 1;
+    end;
+  asm sti end;
+
+  { Reprogram the speaker for normal operation }
+  Port[SPEAKER_PORT] := Port[SPEAKER_PORT] and $FC;
+  Port[PIT_CONTROL] := $B6;
+end;
+
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+
+Note that in this simple example I used a loop of DELAY_LENGTH to get the
+timing between samples. I had to fiddle around to get the right value for my
+machine and it varies from machine to machine. I also disable interrupts
+while the inner loop is playing, otherwise you hear the 18.2Hz timer tick
+while the sound was playing.
+
+
+Both of these techniques suffer from two drawbacks. The first is that
+samples played from the speaker do not sound very loud. You can make them
+louder by making the song you are playing louder, but this eventually means
+the sample values will start falling outside the 0-255 range and you'll have
+to clip them which starts distorting the sound. The second problem is that
+this technique doesn't work on the psezio-electric "speakers" inside lap-top
+computers.
+

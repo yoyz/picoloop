@@ -1,0 +1,442 @@
+
+                  ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+                  ³ Programming the SoundBlaster DSP ³
+                  ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+                  Written for the PC-GPE by Mark Feldman
+              e-mail address : u914097@student.canberra.edu.au
+                               myndale@cairo.anu.edu.au
+
+             ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+             ³      THIS FILE MAY NOT BE DISTRIBUTED     ³
+             ³ SEPARATE TO THE ENTIRE PC-GPE COLLECTION. ³
+             ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Disclaimer ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+I assume no responsibility whatsoever for any effect that this file, the
+information contained therein or the use thereof has on you, your sanity,
+computer, spouse, children, pets or anything else related to you or your
+existance. No warranty is provided nor implied with this information.
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Introduction ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+The SoundBlaster is capable of both FM and digitised sounds. The FM wave
+is fully Adlib compatible, so check the ADLIB.TXT file for info
+on how to program it. This file will concentrate on recording and playback
+of digital samples through the SoundBlaster CT-DSP 1321 chip.
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ The SoundBlaster DSP I/O Ports ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+The DSP (Digital Sound Processor) chip is programmed through 4 ports which
+are determined by the SoundBlaster base address jumper setting:
+
+                    RESET    2x6h
+
+                READ DATA    2xAh
+
+WRITE COMMAND/DATA output
+WRITE BUFFER STATUS input    2xCh
+
+
+           DATA AVAILABLE    2xEh
+
+where x = 1 for base address jumper setting 210h
+      x = 2 for base address jumper setting 220h
+      .
+      .
+      x = 6 for base address jumper setting 260h
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Resetting the DSP ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+You have to reset the DSP before you program it. This is done with the
+following procedure :
+
+1) Write a 1 to the SoundBlaster RESET port (2x6h)
+2) Wait for 3 micro-seconds
+3) Write a 0 to the SoundBlaster RESET port (2x6h)
+4) Read the byte from the DATA AVAILABLE (2xEh) port until bit 7 = 1
+5) Poll for a ready byte (AAh) from the READ DATA port (2xAh). Before
+   reading the READ DATA port it is avdvisable.
+
+The DSP usually takes somewhere around 100 micro-seconds to reset itself.
+If it fails to do within a reasonable time (say 200 micro-seconds) then
+an error has occurred, possibly an incorrect I/O address is being used.
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Writing to the DSP ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+A value can be written to the DSP with the following procedure :
+
+1) Read the DSP's WRITE BUFFER STATUS port (2xCh) until bit 7 = 0
+2) Write the value to the WRITE COMMAND/DATA port (2xCh)
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Reading the DSP ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+A value can be read from the DSP with the following procedure :
+
+1) Read the DSP's DATA AVAILABLE port (2xEh) until bit 7 = 1
+2) Read the data from the READ DATA port (2xAh)
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Turning the speaker on and controlling DMA ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+Speaker and DMA control are handled by writing one of the following bytes
+to the DSP:
+
+                     ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+                     ³ Value   Description     ³
+                     ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+                     ³ D0h    DMA Stop         ³
+                     ³ D1h    Turn speaker on  ³
+                     ³ D3h    Turn speaker off ³
+                     ³ D4h    DMA Continue     ³
+                     ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+DMA is discussed below. The DMA commands shown here can be used to pause
+the sample during DMA playback playback.
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Writing to the DAC ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+The DAC (Digital to Analog Converter) is the part of the card which converts
+a sample number (ie 0 -> 255) to a sound level. To generate a square sound
+wave at maximum volume (for example) you could alternate writing 0's and
+255's to the DAC.
+
+Programming the DAC in direct mode involves the main program setting the
+DAC to a desired value. Only 8 bit DAC is available in direct mode. To set
+the DAC level you write the value 10h to the DSP followed by the sample
+number (0 -> 255). Note that no sound will be heard unless the speaker has
+been turned on. In direct mode the main program is responsible for the
+timing between samples, the DAC can output sound samples as fast as the
+calling program can change it. Typically the timer interrupt is reprogrammed
+and used to generate the timing required for a sample playback. Info on
+programming the PIT chip can be found in the PIT.TXT file.
+
+The DAC can also be programmed to accept values sent to it via the DMA
+chip. Draeden has written an excellent article on programming the DMA chip
+(see DMA_VLA.TXT) so only a brief example of it's use will be given here.
+The important thing to remember is that the DMA chip cannot transfer data
+which crosses between page breaks. If the data does cross page breaks then
+it will have to be split up into several transfers, with one page per
+transfer.
+
+Setting the playback frequency for the DMA transfer is done by writing
+the value 40h to the DSP followed by TIME_CONSTANT, where
+TIME_CONSTANT = 256 - 1000000 / frequency
+
+There are several types of DMA transfers available. The following table
+lists them:
+
+      ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+      ³DMA_TYPE_VALUE   Description             Frequency Range    ³
+      ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+      ³    14h          8 bit                   4KHz -> 23 KHz     ³
+      ³    74h          4 bit ADPCM             4KHz -> 12 KHz     ³
+      ³    75h          4 bit ADPCM with        4KHz -> 12 KHz     ³
+      ³                 reference byte                             ³
+      ³    76h          2.6 bit ADPCM           4KHz -> 13 KHz     ³
+      ³    77h          2.6 bit ADPCM with      4KHz -> 13 KHz     ³
+      ³                 reference byte                             ³
+      ³    16h          2 bit ADPCM             4KHz -> 11 KHz     ³
+      ³    17h          2 bit ADPCM with        4KHz -> 11 KHz     ³
+      ³                 reference byte                             ³
+      ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+ADPCM stands for Adaptive Pulse Code Modulation, a sound compression
+technique where the difference between successive samples is stored rather
+than their actual values. In the modes with reference bytes, the first
+byte is the actual starting value. Having modes with and without reference
+bytes means you can output successive blocks without the need for a
+reference byte at the start of each one.
+
+The procedure for doing a DMA transfer is as follows:
+
+1) Load the sound data into memory
+2) Set up the DMA chip for the tranfer
+3) Set the DSP TIME_CONSTANT to the sampling rate
+4) Write DMA_TYPE_VALUE value to the DSP
+5) Write DATA_LENGTH to the DSP (2 bytes, LSB first) where
+   DATA_LENGTH = number of bytes to send - 1
+
+Note that the DMA chip must be programmed before the BSP.
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Reading from the ADC ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+Reading samples from the ADC (Analog to Digital Converter) can also be
+done in either direct or DMA mode.
+
+To read a sample in direct mode write the value 20h to the DSP and then
+read the value from the DSP. Simple as that!
+
+To set up the DSP for a DMA transfer, follow this procedure :
+
+1) Get a memory buffer ready to hold the sample
+2) Set up the DMA chip for the transfer
+3) Set the DSP TIME_CONSTANT to the sampling rate
+4) Write the value 24h to the DSP
+5) Write DATA_LENGTH to the DSP (2 bytes, LSB first) where
+   DATA_LENGTH = number of bytes to read - 1
+
+Note that the DMA chip must be programmed before the BSP.
+
+DMA reads only support 8 bit mode, compressed modes are done by software and
+stored in the voc file. I haven't tried to figure out how the compression is
+done. If someone does figure it out I'd like to know about it!
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Programming the DMA Chip ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+As mentioned before, Draeden has written a very good article on the dma
+chip, but here is a brief run down on what you would need to do to program
+the DMA channel 1 for the DSP in real mode:
+
+1) Calculate the 20 bit address of the memory buffer you are using
+   where Base Address = Segment * 16 + Offset
+   eg 1234h:5678h = 179B8h
+2) Send the value 05h to port 0Ah (mask off channel 1)
+3) Send the value 00h to port 0Ch (clear the internal DMA flip/flop)
+4) Send the value 49h to port 0Bh (for playback) or
+                  45h to port 0Bh (for recording)
+5) Write the LSB (bits 0 -> 7) of the 20 bit memory address to port 02h
+6) Write the MSB (bits 8 -> 15) of the 20 bit memory address to ort 02h
+7) Write the Page (bits 16 -> 19) of the 20 bit memory address to port 83h
+8) Send the LSB of DATA_LENGTH to port 03h
+9) Send the MSB of DATA_LENGTH to port 03h
+10) Send the value 01h to port 0Ah (enable channel 1)
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ End of DMA Interrupt ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+When a DMA transfer is complete an interrupt is generated. The actual
+interrupt number depends on the SoundBlaster card's IRQ jumper setting:
+
+                         ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+                         ³ IRQ Jumper             ³
+                         ³  Setting     Interrupt ³
+                         ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+                         ³    2            0Ah    ³
+                         ³    3            0Bh    ³
+                         ³    5            0Dh    ³
+                         ³    7            0Fh    ³
+                         ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+To service one of these interrupts you must perform these 3 tasks:
+
+1) Acknowledge the DSP interrupt by reading the DATA AVAILABLE port (2xEh)
+   once.
+2) If there are more blocks to transfer then set them up
+3) Output value 20h (EOI) to the interrupt controller port 20h
+
+Of course, as with any hardware interrupt you must also leave the
+state of the system (registers etc..) the way it was when the interrupt
+was called.
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ A Simple DSP Pascal Unit ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+{
+
+  DSP.PAS - A demo SoundBlaster DSP unit for real mode
+
+  By Mark Feldman
+}
+
+Unit DSP;
+
+Interface
+
+{ ResetDSP returns true if reset was successful
+  base should be 1 for base address 210h, 2 for 220h etc... }
+function ResetDSP(base : word) : boolean;
+
+{ Write DAC sets the speaker output level }
+procedure WriteDAC(level : byte);
+
+{ ReadDAC reads the microphone input level }
+function ReadDAC : byte;
+
+{ SpeakerOn connects the DAC to the speaker }
+function SpeakerOn: byte;
+
+{ SpeakerOff disconnects the DAC from the speaker,
+  but does not affect the DAC operation }
+function SpeakerOff: byte;
+
+{ Functions to pause DMA playback }
+procedure DMAStop;
+procedure DMAContinue;
+
+{ Playback plays a sample of a given size back at a given frequency using
+  DMA channel 1. The sample must not cross a page boundry }
+procedure Playback(sound : Pointer; size : word; frequency : word);
+
+Implementation
+
+Uses Crt;
+
+var      DSP_RESET : word;
+     DSP_READ_DATA : word;
+    DSP_WRITE_DATA : word;
+  DSP_WRITE_STATUS : word;
+    DSP_DATA_AVAIL : word;
+
+function ResetDSP(base : word) : boolean;
+begin
+
+  base := base * $10;
+
+  { Calculate the port addresses }
+  DSP_RESET := base + $206;
+  DSP_READ_DATA := base + $20A;
+  DSP_WRITE_DATA := base + $20C;
+  DSP_WRITE_STATUS := base + $20C;
+  DSP_DATA_AVAIL := base + $20E;
+
+  { Reset the DSP, and give some nice long delays just to be safe }
+  Port[DSP_RESET] := 1;
+  Delay(10);
+  Port[DSP_RESET] := 0;
+  Delay(10);
+  if (Port[DSP_DATA_AVAIL] And $80 = $80) And
+     (Port[DSP_READ_DATA] = $AA) then
+    ResetDSP := true
+  else
+    ResetDSP := false;
+end;
+
+procedure WriteDSP(value : byte);
+begin
+  while Port[DSP_WRITE_STATUS] And $80 <> 0 do;
+  Port[DSP_WRITE_DATA] := value;
+end;
+
+function ReadDSP : byte;
+begin
+  while Port[DSP_DATA_AVAIL] and $80 = 0 do;
+  ReadDSP := Port[DSP_READ_DATA];
+end;
+
+procedure WriteDAC(level : byte);
+begin
+  WriteDSP($10);
+  WriteDSP(level);
+end;
+
+function ReadDAC : byte;
+begin
+  WriteDSP($20);
+  ReadDAC := ReadDSP;
+end;
+
+function SpeakerOn: byte;
+begin
+  WriteDSP($D1);
+end;
+
+function SpeakerOff: byte;
+begin
+  WriteDSP($D3);
+end;
+
+procedure DMAContinue;
+begin
+  WriteDSP($D4);
+end;
+
+procedure DMAStop;
+begin
+  WriteDSP($D0);
+end;
+
+procedure Playback(sound : Pointer; size : word; frequency : word);
+var time_constant : word;
+     page, offset : word;
+begin
+
+  SpeakerOn;
+
+  size := size - 1;
+
+  { Set up the DMA chip }
+  offset := Seg(sound^) Shl 4 + Ofs(sound^);
+  page := (Seg(sound^) + Ofs(sound^) shr 4) shr 12;
+  Port[$0A] := 5;
+  Port[$0C] := 0;
+  Port[$0B] := $49;
+  Port[$02] := Lo(offset);
+  Port[$02] := Hi(offset);
+  Port[$83] := page;
+  Port[$03] := Lo(size);
+  Port[$03] := Hi(size);
+  Port[$0A] := 1;
+
+  { Set the playback frequency }
+  time_constant := 256 - 1000000 div frequency;
+  WriteDSP($40);
+  WriteDSP(time_constant);
+
+  { Set the playback type (8-bit) }
+  WriteDSP($14);
+  WriteDSP(Lo(size));
+  WriteDSP(Hi(size));
+end;
+
+end.
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ References ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+Title : The SoundBlaster Developpers Kit
+Publishers : Creative Labs Inc
+             Creative Technology PTE LTD
+
+Title : Sound Blaster - The Official Book
+Authors : Richard Heimlich, David M. Golden, Ivan Luk, Peter M. Ridge
+Publishers : Osborne/McGraw Hill
+ISBN : 0-07-881907-5
+
+Some of the information in this file was either obtained from or verified
+by the source code in a public domain library called SOUNDX by Peter
+Sprenger. I haven't tried using his library yet (I don't have a C compiler
+at the moment) but it looks very well done and contains numerous sound card
+detection routines. Says Peter : "It would be nice, that when you make
+something commercial with my routines, that you send me a copy of your
+project or send me some bucks, just enough for pizza and coke to support my
+night programming sessions. If you send me nothing, ok. But USE the stuff,
+if you can need it!". Heh...a REAL programmer!
+
+ftpsite: ftp.uwp.edu
+directory: /pub/msdos/demos/programming/game-dev/source
+filename: soundx.zip
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Sound Familiar? ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+What the...why is there a faint glimmer of sunlight outside? HOLY $#!^!! It's
+5:30am! I'm goin' to bed!
+
