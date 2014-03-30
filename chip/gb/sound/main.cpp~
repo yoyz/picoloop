@@ -1,0 +1,6 @@
+#include "channel1.cpp"
+
+int main()
+{
+  printf("hello\n");
+}
