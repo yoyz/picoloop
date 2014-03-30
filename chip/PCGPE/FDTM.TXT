@@ -1,0 +1,178 @@
+
+                   旼컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴커
+                   � Free Direction Texture Mapping �
+                   읕컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴켸
+
+The following article was posted by Hannu Helminen (dm@stekt.oulu.fi) to
+comp.graphics.algorithms (article 4061). It has been included in the PC-GPE
+with his permission.
+
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+
+From X Sat Apr  2 10:24:14 EST 1994
+Article: 4061 of comp.graphics.algorithms
+Newsgroups: comp.graphics.algorithms
+Path: csc.canberra.edu.au!newshost.anu.edu.au!harbinger.cc.monash.edu.au!msuinfo!agate!howland.reston.ans.net!EU.net!news.funet.fi!ousrvr.oulu.fi!news.oulu.fi!dm
+From: dm@stekt13.oulu.fi (Hannu Helminen)
+Subject: Re: extended DOOM: free-direction texture mapping
+In-Reply-To: dm@stekt13.oulu.fi's message of Fri, 25 Mar 1994 10:37:02 GMT
+Message-ID: <DM.94Mar28152625@stekt13.oulu.fi>
+Lines: 160
+Sender: news@ousrvr.oulu.fi
+Organization: University of Oulu, Department of Electrical Engineering, Finland
+References: <DM.94Mar25123702@stekt13.oulu.fi>
+Date: Mon, 28 Mar 1994 12:26:24 GMT
+
+The idea of free-direction texture-mapping seems to be new to many
+few people, so I decided to post this short introduction.
+
+Warning: The level of this discussion is quite introductory, if you know
+(or guess) what I'm going to talk about, you probably know as much as I
+do.
+
+
+First look at the principles. In Doom (and in Wolfenstain) the method
+used to draw the walls is quite simple. You divide the wall into
+vertical lines. Then you calculate where the wall should start and where
+to end on the screen (A and B in my nice ascii-picture), and where in
+the texture space the corresponding line should start and end.
+
+Wall:      Texture:
+ \            Y
+  \B       \/\^\/\/\
+  ^\       /\/./\/\/
+  . \      \/\.\/\/\
+  . /      /\/./\/\/
+  ./          X
+  /A
+ /      
+
+Then you simply do a highly optimized loop in which you do all the
+pixels in the vertical line, pick a color from the texture, put it onto
+the screen, and move to next position in the texture.
+
+
+The floor is a bit more complicated. (I understand that Wolfenstain had
+no floor texturing, am I correct?) This time, the floor segment is
+mapped to a horizontal line, which is simple enough. However, in texture
+space that same line may be in any direction, so you'll have a 2D line
+in the texture, like this:
+
+Floor:     Texture:
+    /\                Y
+ A/...>\B       \/\/\.\/\
+/        \      /\/\.\/\/
+                \/./\/\/\
+                /./\/\/\/
+                X
+ 
+
+This is old and dull. Now for the new and exciting part: suppose we wish
+to draw a polygon in 3-space that has free orientation. A bit of thought
+and a simple extension of the above ideas tell us that we should use a
+free-direction line in the display coordinates as well.
+
+When we map a plane with free orientation to the screen, there is
+always one direction on the screen, in which the z-coordinate
+(distance) stays the same. In doom's walls it is vertical, in doom's
+floors it is horisontal.  But there is one such direction for every
+plane.
+
+Why is constant z-coordinate important? These lines have the special
+property that constant movement along them corresponds to constant
+movement in texture space.
+
+Read the above two paragraphs again until you have understood them,
+since they are the key thing. The rest is only implementation,
+following is a short explanation on how I did it.
+
+For each polygon you are about to draw on the screen, do the following.
+Find the plane equation. From that, derive the "constant-z" direction.
+(Come on, take a piece of paper and a pen, it is quite easy.)
+
+It helps to make the distinction between two cases here.  Either the
+"constant-z" direction is more horisontal, or it is more vertical.
+Suppose that it is more horisontal. The constant-z line equation is now
+something like y = p*x, where -1 <= p <= 1.
+
+ ----
+     ---   Example of a constant-z line
+        ----
+            ----
+
+Now, a change in the coordinate system is in order. x is the same x as
+before, but y is "slanted" by the factor of p. This means that the
+x-axis will be "slanted" but y-axis will be the same as before.
+
+The next thing is to convert the polygon to this coordinate system.
+Scan convert it line by line, but along these "slanted" (constant-z)
+lines.
+
+Suppose that we are about to draw a triangle shown below, and the
+slanted line is the one shown above. So the path to follow on the
+is as follows (ascii art is back again). The path in the texture is
+also determined.
+        
+On the screen:     In texture (eg.):
+
+ \-------            Y
+ A...    -----/      /./\/\/\/
+   \ ...     /       \/./\/\/\
+    \   ..../        /\/./\/\/
+     \     /B        \/\/./\/\
+      \   /               X
+       \ /
+        X
+
+
+So when you render the triangle, the result would be like this. The
+numbers are lines of constant Z-value.
+
+ 22221110   
+  3332221111000
+   44333222211
+    544433332  
+     5554444   
+      66555    
+       766     
+        7      
+
+Note: you should stack the constant-z lines just as shown in the picture.
+
+Implementation notes: this will be a bit slower than DOOM floors, since
+the algorithm is a bit more complicated. Another thing is that it will
+not be quite as cache-coherent.
+
+If you are rendering big polygons (and have a large cache), it helps
+to precalculate the pixels lying on the line, so you need not worry about
+your Bresenham having to choose right pixels. All you need to do is offset
+the line to right memory offset.
+
+The inner loop of this machine could look something like this:
+
+zbufpointer = zbufbase + offset;
+pixelpointer = pixelbase + offset;
+
+while (--count >= 0) {
+  off = *precalculatedline++;
+  if (z > zbufpoiner[off]) {
+    zbufpointer[off] = z;
+    pixelpointer[off] = texture(x,y);
+  }
+  x += dx;
+  y += dy;
+}
+
+There is an error of about 0.5 pixel-lengths, since the pixels lying on
+the constant-z lines are rounded to nearest pixels.
+
+Another error can also be seen in the above picture, the line marked
+with 0's has a small "gap" in it, what should we do with it?
+
+Happy programming!
+
+--dm
+--
+
+  Hannu    dm@stekt.oulu.fi  || You have been hacking too long when you
+ Helminen dm@phoenix.oulu.fi || talk of people as users (or end-users)

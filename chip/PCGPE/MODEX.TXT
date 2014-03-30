@@ -1,0 +1,720 @@
+
+                      ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+                      ³ INTRODUCTION TO MODE X ³
+                      ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+                 By Robert Schmidt <robert@stud.unit.no>
+
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ XINTRO18.TXT ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+Title:          INTRODUCTION TO MODE X
+
+Version:        1.8
+
+Author:         Robert Schmidt <robert@stud.unit.no>
+
+Copyright:      (C) 1993 of Ztiff Zox Softwear - refer to Status below.
+
+Last revision:  25-Nov-93 (Modified for the PCGPE 17-Apr-94)
+
+Figures:        1. M13ORG - memory organization in mode 13h
+                2. MXORG - memory organization in unchained modes
+                (Both files are appended to the end of this document)
+
+                The figures are available as 7-bit ASCII text (ASC) files.
+
+Status:         This article, its associated figures and source listings
+                named above, are all donated to the public domain.
+                Do with it whatever you like, but give credit where
+                credit is due.
+
+                The standard disclaimer applies.
+
+Index:          0. ABSTRACT
+                1. INTRODUCTION TO THE VGA AND ITS 256-COLOR MODE
+                2. GETTING MORE PAGES AND PUTTING YOUR FIRST PIXEL
+                3. THE ROAD FROM HERE
+                4. BOOKS ON THE SUBJECT
+                5. BYE - FOR NOW
+
+
+0. ABSTRACT
+
+This text gives a fairly basic, yet technical, explanation to what, why
+and how Mode X is.  It first tries to explain the layout of the VGA
+memory and the shortcomings of the standard 320x200 256-color mode,
+then gives instructions on how one can progress from mode 13h to a
+multipage, planar 320x200 256-color mode, and from there to the
+quasi-standard 320x240 mode, known as Mode X.
+
+A little experience in programming the standard VGA mode 13h
+(320x200 in 256 colors) is assumed.  Likewise a good understanding of
+hexadecimal notation and the concepts of segments and I/O ports is
+assumed.  Keep a VGA reference handy, which at least should have
+definitions of the VGA registers at bit level.
+
+Throughout the article, a simple graphics library for unchained (planar)
+256-color modes is developed.  The library supports the 320x200 and
+320x240 modes, active and visible pages, and writing and reading
+individual pixels.
+
+
+1. INTRODUCTION TO THE VGA AND ITS 256-COLOR MODE
+
+Since its first appearance on the motherboards of the IBM PS/2 50, 60
+and 80 models in 1987, the Video Graphics Array has been the de facto
+standard piece of graphics hardware for IBM and compatible personal
+computers.  The abbreviation, VGA, was to most people synonymous with
+acceptable resolution (640x480 pixels), and a stunning rainbow of colors
+(256 from a palette of 262,144), at least compared to the rather gory
+CGA and EGA cards.
+
+Sadly, to use 256 colors, the VGA BIOS limited the users to 320x200
+pixels, i.e. the well-known mode 13h.  This mode has one good and one
+bad asset.  The good one is that each one of the 64,000 pixels is easily
+addressable in the 64 Kb video memory segment at 0A000h.  Simply calculate
+the offset using this formula:
+
+offset = (y * 320) + x;
+
+Set the byte at this address (0A000h:offset) to the color you want, and
+the pixel is there.  Reading a pixel is just as simple: just read the
+corresponding byte.  This was heaven, compared to the havoc of planes and
+masking registers needed in 16-color modes.  Suddenly, the distance from a
+graphics algorithm on paper to an implemented graphics routine in assembly
+was cut down to a fraction.  The results were impressively fast, too!
+
+The bad asset is that mode 13h is also limited to only one page, i.e.
+the VGA can hold only one screenful at any one time (plus 1536 pixels, or
+about four lines).  Most 16-color modes let the VGA hold more than one page,
+and this enables you to show one of the pages to the user, while drawing on
+another page in the meantime.  Page flipping is an important concept in making
+flicker free animations.  Nice looking and smooth scrolling is also almost
+impossible in mode 13h using plain VGA hardware.
+
+Now, the alert reader might say: "Hold on a minute!  If mode 13h enables
+only one page, this means that there is memory for only one page.  But I
+know for a fact that all VGAs have at least 256 Kb RAM, and one 320x200
+256-color page should consume only 320*200=64000 bytes, which is less
+than 64 Kb.  A standard VGA should room a little more than four 320x200
+pages!"  Quite correct, and to see how the BIOS puts this limitation on
+mode 13h, I'll elaborate a little on the memory organization of the VGA.
+
+The memory is separated into four bit planes.  The reason for this stems
+from the EGA, where graphics modes were 16-color.  Using bit planes, the
+designers chose to let each pixel on screen be addressable by a single
+bit in a single byte in the video segment.  Assuming the palette has
+not been modified from the default, each plane represent one of the EGA
+primary colors: red, green, blue and intensity.  When modifying the bit
+representing a pixel, the Write Plane Enable register is set to the
+wanted color.  Reading is more complex and slower, since you can
+only read from a single plane at a time, by setting the Read Plane
+Select register.  Now, since each address in the video segment can
+access 8 pixels, and there are 64 Kb addresses, 8 * 65,536 = 524,288
+16-color pixels can be accessed.  In a 320x200 16-color mode, this makes
+for about 8 (524,288/(320*200)) pages, in 640x480 you get nearly 2
+(524,288/(640*480)) pages.
+
+In a 256-color mode, the picture changes subtly.  The designers decided
+to fix the number of bit planes to 4, so extending the logic above to 8
+planes and 256 colors does not work.  Instead, one of their goals was to
+make the 256-color mode as easily accessible as possible.  Comparing the
+8 pixels/address in 16-color modes to the 1-to-1 correspondence of
+pixels and addresses of mode 13h, one can say that they have
+succeeded, but at a certain cost.  For reasons I am not aware of, the
+designers came up with the following effective, but memory-wasting
+scheme:
+
+The address space of mode 13h is divided evenly across the four bit
+planes.  When an 8-bit color value is written to a 16-bit address in the
+VGA segment, a bit plane is automatically selected by the 2 least
+significant bits of the address.  Then all 8 bits of the data is written
+to the byte at the 16-bit address in the selected bitplane (have a look at
+figure 1).  Reading works exactly the same way.  Since the bit planes are so
+closely tied to the address, only every fourth byte in the video memory is
+accessible, and 192 Kb of a 256 Kb VGA go to waste.  Eliminating the
+need to bother about planes sure is convenient and beneficial, but to
+most people the loss of 3/4 of the total VGA memory sounds just hilarious.
+
+To accomodate this new method of accessing video memory, the VGA
+designers introduced a new configuration bit called Chain-4, which
+resides as bit number 3 in index 4 of the Sequencer.  In 16-color modes,
+the default state for this bit is off (zero), and the VGA operates as
+described earlier.  In the VGA's standard 256-color mode, mode 13h, this
+bit is turned on (set to one), and this turns the tieing of bit
+planes and memory address on.
+
+In this state, the bit planes are said to be chained together, thus mode
+13h is often called a _chained mode_.
+
+Note that Chain-4 in itself is not enough to set a 256-color mode -
+there are other registers which deals with the other subtle changes in
+nature from 16 to 256 colors.  But, as we now will base our work with
+mode X on mode 13h, which already is 256-color, we won't bother about
+these for now.
+
+
+
+2. GETTING MORE PAGES AND PUTTING YOUR FIRST PIXEL
+
+The observant reader might at this time suggest that clearing the
+Chain-4 bit after setting mode 13h will give us access to all 256 Kb of
+video memory, as the two least significant bits of the byte address
+won't be `wasted' on selecting a bit plane.  This is correct.  You might
+also start feeling a little uneasy, because something tells you that
+you'll instantly loose the simple addressing scheme of mode 13h.  Sadly,
+that is also correct.
+
+At the moment Chain-4 is cleared, each byte offset addresses *four*
+sequential pixels, corresponding to the four planes addressed in 16-color
+modes.  Every fourth pixel belong in the same plane.  Before writing to a byte
+offset in the video segment, you should make sure that the 4-bit mask in the
+Write Plane Enable register is set correctly, according to which of the four
+addressable pixels you want to modify.  In essence, it works like a 16-color
+mode with a twist.  See figure 2.
+
+So, is this mode X?  Not quite.  We need to elaborate to the VGA how to
+fetch data for refreshing the monitor image.  Explaining the logic
+behind this is beyond the scope of this getting-you-started text, and it
+wouldn't be very interesting anyway.  Also, mode 13h has only 200 lines,
+while I promised 240 lines.  I'll fix that later below.  Here is the minimum
+snippet of code to initiate the 4 page variant of mode 13h (320x200), written
+in plain C, using some DOS specific features (see header for a note about the
+sources included):
+
+----8<-------cut begin------
+
+/* width and height should specify the mode dimensions.  widthBytes
+   specify the width of a line in addressable bytes. */
+
+int width, height, widthBytes;
+
+/* actStart specifies the start of the page being accessed by
+   drawing operations.  visStart specifies the contents of the Screen
+   Start register, i.e. the start of the visible page */
+
+unsigned actStart, visStart;
+
+/*
+ * set320x200x256_X()
+ *      sets mode 13h, then turns it into an unchained (planar), 4-page
+ *      320x200x256 mode.
+ */
+
+set320x200x256_X()
+        {
+
+        union REGS r;
+
+        /* Set VGA BIOS mode 13h: */
+
+        r.x.ax = 0x0013;
+        int86(0x10, &r, &r);
+
+        /* Turn off the Chain-4 bit (bit 3 at index 4, port 0x3c4): */
+
+        outport(SEQU_ADDR, 0x0604);
+
+        /* Turn off word mode, by setting the Mode Control register
+           of the CRT Controller (index 0x17, port 0x3d4): */
+
+        outport(CRTC_ADDR, 0xE317);
+
+        /* Turn off doubleword mode, by setting the Underline Location
+           register (index 0x14, port 0x3d4): */
+
+        outport(CRTC_ADDR, 0x0014);
+
+        /* Clear entire video memory, by selecting all four planes, then
+           writing 0 to the entire segment. */
+
+        outport(SEQU_ADDR, 0x0F02);
+        memset(vga+1, 0, 0xffff); /* stupid size_t exactly 1 too small */
+        vga[0] = 0;
+
+        /* Update the global variables to reflect the dimensions of this
+           mode.  This is needed by most future drawing operations. */
+
+        width   = 320;
+        height  = 200;
+
+        /* Each byte addresses four pixels, so the width of a scan line
+           in *bytes* is one fourth of the number of pixels on a line. */
+
+        widthBytes = width / 4;
+
+        /* By default we want screen refreshing and drawing operations
+           to be based at offset 0 in the video segment. */
+
+        actStart = visStart = 0;
+
+        }
+
+----8<-------cut end------
+
+As you can see, I've already provided some of the mechanics needed to
+support multiple pages, by providing the actStart and visStart variables.
+Selecting pages can be done in one of two contexts:
+
+        1) selecting the visible page, i.e. which page is visible on
+           screen, and
+
+        2) selecting the active page, i.e. which page is accessed by
+           drawing operations
+
+Selecting the active page is just a matter of offsetting our graphics
+operations by the address of the start of the page, as demonstrated in
+the put pixel routine below.  Selecting the visual page must be passed
+in to the VGA, by setting the Screen Start register.  Sadly enough, the
+resolution of this register is limited to one addressable byte, which
+means four pixels in unchained 256-color modes.  Some further trickery is 
+needed for 1-pixel smooth, horizontal scrolling, but I'll make that a subject
+for later.  The setXXXStart() functions provided here accept byte
+offsets as parameters, so they'll work in any mode.  If widthBytes and
+height are set correctly, so will the setXXXPage() functions.
+
+----8<-------cut begin------
+
+/*
+ * setActiveStart() tells our graphics operations which address in video
+ * memory should be considered the top left corner.
+ */
+
+setActiveStart(unsigned offset)
+        {
+        actStart = offset;
+        }
+
+/*
+ * setVisibleStart() tells the VGA from which byte to fetch the first
+ * pixel when starting refresh at the top of the screen.  This version
+ * won't look very well in time critical situations (games for
+ * instance) as the register outputs are not synchronized with the
+ * screen refresh.  This refresh might start when the high byte is
+ * set, but before the low byte is set, which produces a bad flicker.
+ * I won't bother with this now.
+ */
+
+setVisibleStart(unsigned offset)
+        {
+        visStart = offset;
+        outport(CRTC_ADDR, 0x0C);               /* set high byte */
+        outport(CRTC_ADDR+1, visStart >> 8);
+        outport(CRTC_ADDR, 0x0D);               /* set low byte */
+        outport(CRTC_ADDR+1, visStart & 0xff);
+        }
+
+/*
+ * setXXXPage() sets the specified page by multiplying the page number
+ * with the size of one page at the current resolution, then handing the
+ * resulting offset value over to the corresponding setXXXStart()
+ * function.  The first page number is 0.
+ */
+
+setActivePage(int page)
+        {
+        setActiveStart(page * widthBytes * height);
+        }
+
+setVisiblePage(int page)
+        {
+        setVisibleStart(page * widthBytes * height);
+        }
+
+----8<-------cut end------
+
+Due to the use of bit planes, the graphics routines tend to get more
+complex than in mode 13h, and your first versions will generally tend to
+be a little slower than mode 13h algorithms.  Here's a put pixel routine
+for any unchained 256-color mode (it assumes that the 'width' variable
+from the above code is set correctly).  Optimizing is left as an exercise
+to you, the reader.  This will be the only drawing operation I'll cover
+in this article, but all general primitives like lines and circles can be 
+based on this routine.  (You'll probably not want to do that though, due
+to the inefficiency.)
+
+----8<-------cut begin------
+
+putPixel_X(int x, int y, char color)
+        {
+
+        /* Each address accesses four neighboring pixels, so set
+           Write Plane Enable according to which pixel we want
+           to modify.  The plane is determined by the two least
+           significant bits of the x-coordinate: */
+
+        outportb(0x3c4, 0x02);
+        outportb(0x3c5, 0x01 << (x & 3));
+
+        /* The offset of the pixel into the video segment is
+           offset = (width * y + x) / 4, and write the given
+           color to the plane we selected above.  Heed the active
+           page start selection. */
+
+        vga[(unsigned)(widthBytes * y) + (x / 4) + actStart] = color;
+
+        }
+
+char getPixel_X(int x, int y)
+        {
+
+        /* Select the plane from which we must read the pixel color: */
+
+        outport(GRAC_ADDR, 0x04);
+        outport(GRAC_ADDR+1, x & 3);
+
+        return vga[(unsigned)(widthBytes * y) + (x / 4) + actStart];
+
+        }
+
+----8<-------cut end------
+
+
+However, by now you should be aware of that the Write Plane Enable
+register isn't limited to selecting just one bit plane, like the
+Read Plane Select register is.  You can enable any combination of all
+four to be written.  This ability to access 4 pixels with one
+instruction helps quadrupling the speed in certain respects, especially when 
+drawing horizontal lines and filling polygons of a constant color.  Also, most 
+block algorithms can be optimized in various ways so that they need only
+a constant number of OUTs (typically four) to the Write Plane Enable
+register.  OUT is a relatively slow instruction.
+
+The gained ability to access the full 256 Kb of memory on a standard
+VGA enables you to do paging and all the goodies following from that:
+smooth scrolling over large maps, page flipping for flicker free
+animation... and I'll leave something for your own imagination.
+
+In short, the stuff gained from unchaining mode 13h more than 
+upweighs the additional complexity of using a planar mode.  
+
+Now, the resolution of the mode is of little interest in this
+context.  Nearly any 256-color resolution from (about) 80x8 to 400x300
+is available for most VGAs.  I'll dwell particularly by 320x240, as this
+is the mode that Michael Abrash introduced as 'Mode X' in his DDJ
+articles.  It is also the resolution that most people refer to when
+using that phrase.
+
+The good thing about the 320x240 mode is that the aspect ratio is
+1:1, which means that each pixel is 'perfectly' square, i.e. not
+rectangular like in 320x200.  An ellipse drawn with the same number of
+pixels along both main axes will look like a perfect circle in 320x240,
+but like a subtly tall ellipse in 320x200.
+
+Here's a function which sets the 320x240 mode.  You'll notice that
+it depends on the first piece of code above:
+
+----8<-------cut begin------
+
+set320x240x256_X()
+        {
+
+        /* Set the unchained version of mode 13h: */
+
+        set320x200x256_X();
+
+        /* Modify the vertical sync polarity bits in the Misc. Output
+           Register to achieve square aspect ratio: */
+
+        outportb(0x3C2, 0xE3);
+
+        /* Modify the vertical timing registers to reflect the increased
+           vertical resolution, and to center the image as good as
+           possible: */
+
+        outport(0x3D4, 0x2C11);         /* turn off write protect */
+        outport(0x3D4, 0x0D06);         /* vertical total */
+        outport(0x3D4, 0x3E07);         /* overflow register */
+        outport(0x3D4, 0xEA10);         /* vertical retrace start */
+        outport(0x3D4, 0xAC11);         /* vertical retrace end AND wr.prot */
+        outport(0x3D4, 0xDF12);         /* vertical display enable end */
+        outport(0x3D4, 0xE715);         /* start vertical blanking */
+        outport(0x3D4, 0x0616);         /* end vertical blanking */
+
+        /* Update mode info, so future operations are aware of the
+           resolution: */
+
+        height = 240;
+
+        }
+
+----8<-------cut end------
+
+
+As you've figured out, this mode will be completely compatible with the
+utility functions presented earlier, thanks to the global variable
+'height'.  Boy, am I foreseeing or what!
+
+Other resolutions are achieved through giving other values to the sync
+timing registers of the VGA, but this is quite a large and complex
+subject, so I'll postpone this to later, if ever.
+
+Anyway, I hope I've helped getting you started using mode X.  As far as
+I know, the two modes I've used above should work on *any* VGA and Super
+VGA available, so this is pretty stable stuff.  Let me know of any 
+trouble, and -
+                        good luck!
+
+
+
+3. THE ROAD FROM HERE
+
+I'm providing information on various libraries and archives which relate
+to what this article deals with.  If you want me to add anything to this
+list (for future articles), let me know, although I can't promise anything.
+I am assuming you have ftp access.
+
+
+wuarchive.wustl.edu:/pub/MSDOS_UPLOADS/programming/xlib06.zip
+
+This is the current de facto C/assembler library for programming
+unchained modes (do not confuse with a X Windows library).  All sources
+are included, and the library is totally free.  It has functions for
+pixels, lines, circles, bezier curves, mouse handling, sprites (bitmaps),
+compiled bitmaps, and supports a number of resolutions.  The version number
+('06') is current as of November 1993.
+
+
+graphprg.zip
+
+Michael Abrash' articles in Doctor Dobbs Journal is always mentioned
+with awe.  In this 350 Kb archive, most of his interesting stuff has
+been gathered.  Read about Mode X development and techniques from month
+to month.  Included is also all the individual source code snippets from
+each article, and also the full XSHARP library providing linedrawing,
+polygons, bitmaps, solid 3D projection and speedy rendering, and even an
+implementation of 2D texture mapping (can be used for quasi-3D texture
+mapping), plus an article on assembly optimization on the i86 processor
+family.  Definitely recommended.
+
+
+oak.oakland.edu:/pub/msdos/vga/vgadoc2.zip
+
+This is a bare bones VGA register reference.  It also contains register
+references for the CGA, EGA and Hercules cards, in addition to dozens of
+SuperVGAs.  Check out the BOOKS section for some decent VGA references
+though - you don't want to start tweaking without a real one.
+
+
+wuarchive.wustl.edu:/pub/MSDOS_UPLOADS/programming/tweak15b.zip
+
+TWEAK might be of interest to the more adventurous reader.  TWEAK lets you
+play around with the registers of the VGA in an interactive manner.
+Various testing screens for viewing your newmade modes are applied at
+the press of a key.  Version 1.5 adds a test screen which autodetects your 
+graphics mode and displays various information about resolutions etc.
+Keep a VGA reference handy.  Don't try it if this is the first time you've 
+heard of 'registers' or 'mode X' or 'tweaking'.  I was planning a version
+based on the Turbo Vision interface, but time has been short.  Maybe later!
+
+
+
+
+4. BOOKS ON THE SUBJECT
+
+Extremely little has been published in written form about using
+'Mode X'-style modes.  Below are some books which cover VGA programming
+at varying degrees of technical level, but the only one to mention
+unchained modes and Mode X, is Michael Abrash'.  I'd get one of the VGA
+references first, though.
+
+  o  George Sutty & Steve Blair : "Advanced Pogrammer's Guide to the
+     EGA/VGA" from Brady.  A bit old perhaps, but covers all *standard*
+     EGA/VGA registers, and discusses most BIOS functions and other
+     operations.  Contains disk with C/Pascal/assembler source code.
+     There's a sequel out for SuperVGAs, which I haven't seen.
+
+  o  Michael Abrash : "Power Graphics Programming" from QUE/Programmer's
+     Journal.  Collections of (old) articles from Programmer's Journal on
+     EGA/VGA, read modes and write modes, animation, tweaking (320x400
+     and 360x480).  His newer ravings in DDJ covers fast 256-color
+     bitmaps, compiled bitmaps, polygons, 3D graphics, texture mapping
+     among other stuff.
+
+  o  Richard F. Ferraro : "Programmer's Guide to the EGA and VGA video
+     cards including Super VGA".  I don't have this one, but heard it's
+     nice.  Detailed coverage of all EGA/VGA registers.  The Super VGA
+     reference makes it attractive.
+
+  o  Richard Wilton : "Programmer's Guide to PC & PS/2 Video Systems"
+     Less technical, more application/algorithm oriented.  Nice enough,
+     even though it is a bit outdated, in that he discusses CGA and
+     Hercules cards just as much as EGA/VGA.
+
+
+
+
+5. BYE - FOR NOW
+
+I am considering writing a text describing in more detail the process of
+using TWEAK to achieve the VGA resolution you want or need.  However, I
+thought I'd let this document go first, and see if I get any reactions.
+If I don't, I'll stop.  Feel free to forward any suggestions,
+criticisms, bombs and beers.
+
+I can be reached via:
+
+  o  e-mail: robert@stud.unit.no
+
+  o  land mail:
+
+     Robert Schmidt
+     Stud.post 170
+     NTH
+     N-7034 Trondheim
+     NORWAY
+
+Nothing would encourage or please me more than a postcard from where you
+live!
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ M1ORG.ASC ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÙ
+
+Figure 1: Memory organization in mode 13h (ASCII version)
+          by Robert Schmidt
+          (C) 1993 Ztiff Zox Softwear
+
+a. Imagine that the top of the screen looks like this (pixel values are
+   represented by color digits 0-9 for simplicity - actual colors may
+   range from 0 to 255) - a screen width of 320 pixels is assumed:
+
+    address:  0         10                310      319
+             ----------------------------------------
+             |0123456789012345    .....   0123456789|
+             |                                      |
+             |                                      |
+             |
+
+b. In VGA memory, the screen is represented as follows (question marks
+   represent unused bytes):
+
+   Plane 0:
+
+    address:  0         10                310      319
+             ----------------------------------------
+             |0???4???8???2???    .....   ??2???6???|
+             |                                      |
+             |                                      |
+
+   Plane 1:
+
+    address:  0         10                310      319
+             ----------------------------------------
+             |?1???5???9???3??    .....   ???3???7??|
+             |                                      |
+             |                                      |
+
+   Plane 2:
+
+    address:  0         10                310      319
+             ----------------------------------------
+             |??2???6???0???4?    .....   0???4???8?|
+             |                                      |
+             |                                      |
+
+   Plane 3:
+
+    address:  0         10                310      319
+             ----------------------------------------
+             |???3???7???1???5    .....   ?1???5???9|
+             |                                      |
+             |                                      |
+
+   I.e. a plane is selected automatically by the two least significant
+   bits of the address of the byte being read from or written two.
+   This renders 3/4 of the video memory unavailable and useless, but
+   all visible pixels are easily accessed, as each address in the video
+   segment provides access to one and ONLY ONE pixel.
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ MXORG.ASC ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÙ
+
+Figure 2: Memory organization in unchained 256-color modes (like
+          Mode X) (ASCII version)
+          by Robert Schmidt
+          (C) 1993 Ztiff Zox Softwear
+
+
+Imagine that the screen looks the same as in figure 1a.  A screen width
+of 320 pixels is still assumed.
+
+In VGA memory, the screen will be represented as follows:
+
+   Plane 0:
+
+    address:  0         10                70       79 (NOT 319!)
+             ----------------------------------------
+             |0482604826048260    .....   0482604826|
+             |                                      |
+             |                                      |
+
+   Plane 1:
+
+    address:  0         10                70       79
+             ----------------------------------------
+             |1593715937159371    .....   1593715937|
+             |                                      |
+             |                                      |
+
+   Plane 2:
+
+    address:  0         10                70       79
+             ----------------------------------------
+             |2604826048260482    .....   2604826048|
+             |                                      |
+             |                                      |
+
+   Plane 3:
+
+    address:  0         10                70       79
+             ----------------------------------------
+             |3715937159371593    .....   3715937159|
+             |                                      |
+             |                                      |
+
+Note that if pixel i is in plane p, pixel i+1 is in plane (p+1)%4.
+When the planes are unchained, we need to set the Write Plane Enable
+register to select which planes should receive the data when writing,
+or the Read Plane Select register when reading.  As is evident, one 
+address in the video segment provides access to no less than FOUR
+different pixels.
+
+ÚÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Zox3D ³
+ÀÄÄÄÄÄÄÄÙ
+
+Available via ftp :
+ftp.wustl.edu:/pub/MSDOS_UPLOADS/games/programming/zox3d15.zip
+wasp.eng.ufl.edu:/pub/msdos/demos/<somewhere>/zox3d15.zip
+
+zox3d15.zip contains a demo of my 3D graphics engine.
+It resembles Wolf3D, but has a number of additional
+features:
+
+- texture mapped floor and ceiling (sky, in this demo)
+- real, recursive MIRRORS!
+- partly TRANSPARENT walls
+- input from keyboard, joystick and mouse (at the same
+  time, too, if you wish)
+- controllable camera height - NOT fixed like Wolf3D
+- quick resizable window
+- online help and fps rating
+- advanced collision detection and handling
+- supports a variety of tweaked X modes, from 256x256 to 400x300.
+
+The sky and mirrors have to be seen to be beleived!
+
+Zox3D does NOT implement objects, like the guards in
+Wolf3D, but that should be a breeze to add.
+
+The complete sources are available.  Read ZOX3D.DOC in
+the demo archive for information.
+
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+Robert Schmidt - robert@stud.unit.no - Buuud@IRC

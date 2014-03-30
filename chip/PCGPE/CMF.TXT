@@ -1,0 +1,159 @@
+
+               ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+               ³ Creative Labs File Formats (SBI/CMF/IBK) ³
+               ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+                 Written for the PC-GPE by Mark Feldman
+              e-mail address : u914097@student.canberra.edu.au
+                               myndale@cairo.anu.edu.au
+
+              ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+              ³      THIS FILE MAY NOT BE DISTRIBUTED     ³
+              ³ SEPARATE TO THE ENTIRE PC-GPE COLLECTION. ³
+              ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Disclaimer ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+I assume no responsibility whatsoever for any effect that this file, the
+information contained therein or the use thereof has on you, your sanity,
+computer, spouse, children, pets or anything else related to you or your
+existance. No warranty is provided nor implied with this information.
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Sound Blaster Instrument File Format (SBI) ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+The SBI format contains the register values for the FM chip to synthesize
+an instrument.
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+³ Offset    Description                                                  ³
+ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+³ 00h-03h   Contains id characters "SBI" followed by byte 1Ah            ³
+³ 04h-23h   Instrument name, NULL terminated string                      ³
+³   24h     Modulator Sound Characteristic (Mult, KSR, EG, VIB, AM)      ³
+³   25h     Carrier Sound Characteristic                                 ³
+³   26h     Modulator Scaling/Output Level                               ³
+³   27h     Carrier Scaling/Output Level                                 ³
+³   28h     Modulator Attack/Delay                                       ³
+³   29h     Carrier Attack/Delay                                         ³
+³   2Ah     Modulator Sustain/Release                                    ³
+³   2Bh     Carrier Sustain/Release                                      ³
+³   2Ch     Modulator Wave Seelct                                        ³
+³   2Dh     Carrier Wave Select                                          ³
+³   2Eh     Feedback/Connection                                          ³
+³ 2Fh-33h   Reserved                                                     ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Creative Music File Format (CMF) ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+The CMF file format consists of 3 blocks: the header block, the instrument
+block and the music block.
+
+
+The CMF Header Block
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+³ Offset    Description                                                  ³
+ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+³ 00h-03h   Contains id characters "CTMF"                                ³
+³ 04h-05h   CMF Format Version MSB = major version, lsb = minor version  ³
+³ 06h-07h   File offset of the instrument block                          ³
+³ 08h-09h   File offset of the music block                               ³
+³ 0Ah-0Bh   Clock ticks per quarter note (one beat) default = 120        ³
+³ 0Ch-0Dh   Clock ticks per second                                       ³
+³ 0Eh-0Fh   File offset of the music title (0 = none)                    ³
+³ 10h-11h   File offset of the composer name (0 = none)                  ³
+³ 12h-13h   File offset of the remarks (0 = none)                        ³
+³ 14h-23h   Channel-In-Use Table                                         ³
+³ 24h-25h   Number of instruments used                                   ³
+³ 26h-27h   Basic Tempo                                                  ³
+³ 28h-?     Title, composer and remarks stored here                      ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+
+The CMF Instrument Block
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+The instrument block contains one 16 byte data structure for each instrument
+in the piece. Each record is of the same format as bytes 24h-33h in the
+SBI file format.
+
+
+The CMF Music Block
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+The music block adheres to the standard MIDI file format, and can have from
+1 to 16 instruments. The PC-GPE file MIDI.TXT contains more information
+on this file format.
+
+The music block consists of an alternating seqence of time and MIDI event
+records:
+
+ÚÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÂÄ
+³dTime³MIDI Event³dTime³MIDI Event³dTime³MIDI Event³ ........
+ÀÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÁÄ
+
+dTime (delta Time) is the amount of time before the following MIDI event.
+MIDI Event is any MIDI channel message (see MIDI.TXT).
+
+
+The CMF file format defines the following MIDI Control Change events:
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+³ Control                                                                ³
+³ Number        Control Data                                             ³
+ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+³  66h          1-127, used as markers in the music                      ³
+³  67h          0 - melody mode, 1 = rhythm mode                         ³
+³  68h          0-127, changes the pitch of all following notes upward   ³
+³               by the given number of 1/128 semitones                   ³
+³  69h          0-127, changes the pitch of all following notes downward ³
+³               by the given number of 1/128 semitones                   ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+In rhythm mode, the last five channels are allocated for the percussion
+instruments:
+
+                   ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+                   ³ Channel   Instrument      ³
+                   ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+                   ³  12h      Bass Drum       ³
+                   ³  13h      Snare Drum      ³
+                   ³  14h      Tom-Tom         ³
+                   ³  15h      Top Cymbal      ³
+                   ³  16h      High-hat Cymbal ³
+                   ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Sound Blaster Instrument Bank File Format (IBK) ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+A bank file is a group of up to 128 instruments.
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+³ Offset    Description                                                  ³
+ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+³ 00h-03h   Contains id characters "IBK" followed by byte 1Ah            ³
+³ 04h-803h  Parameters for 128 instruments, 16 bytes for each instrument ³
+³           in the same format as bytes 24h-33h in the SBI format        ³
+³ 804h-C83h Instrument names for 128 instruments, 9 bytes for each       ³
+³           instrument, each name must be null terminated                ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ References ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+Title : Sound Blaster - The Official Book
+Authors : Richard Heimlich, David M. Golden, Ivan Luk, Peter M. Ridge
+Publishers : Osborne/McGraw Hill
+ISBN : 0-07-881907-5

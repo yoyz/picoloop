@@ -1,0 +1,311 @@
+
+        ÖÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´% VLA Proudly Presents %ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ·
+        º                                                          º
+        ÓÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ½
+
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+          ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+                Three Dimensional Shading In Computer Graphics
+          ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+                              By Lithium /VLA
+
+
+
+    Hopefully you have read the companion document 3DROTATE.DOC, as this one
+will build apon the concepts presented in my attempt to teach some of the
+math need to make 3D graphics a reality.  This file will cover such important
+topics as the Dot Product and how routines are best constructed for real-time 
+3D rotations and planar shading.
+
+
+
+
+                        Our Friend, The Dot Product
+
+    The Dot Product is a neat relation that will allow you to quickly find
+the angle between any two vectors.  It's easiest to explain graphicly, so
+I will exercise my extended-ASCII keys.
+
+
+Two Vectors A & B
+
+A (Xa, Ya, Za)     ³A³ = û( (Xa)ı + (Ya)ı + (Za)ı )
+
+B (Xb, Yb, Zb)     ³B³ = û( (Xb)ı + (Yb)ı + (Zb)ı )
+
+
+Where Xa, and the others coorispond to some value on their respective Axis's
+
+
+       ¿A
+      /
+     /
+    /
+   /  
+   \ é   <-- Angle Theta between vector A and B
+    \
+     \
+      \
+       ÙB
+
+
+ Cos(é) =  Xa * Xb + Ya * Yb + Za * Zb
+          ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+                  ³A³*³B³
+
+
+
+Example:
+
+A (1,2,3)         ³A³ = û( 1ı + 2ı + 3ı) = û(14) = 3.7417
+
+B (4,5,6)         ³b³ = û( 4ı + 5ı + 6ı) = û(77) = 8.7750
+
+
+ Cos(é) =  1 * 4 + 2 * 5 + 3 * 6   =  4 + 10 + 18    =    32    =  0.9746
+           ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ    ÄÄÄÄÄ
+             (3.7417)*(8.7750)           32.8334       32.8334
+ 
+
+ ArcCos (.9746) = 12.9ø 
+
+
+    So, your wondering how this revolutionizes you code, huh?  Well, remember
+our other friend, the Normal vector?  You use Normal vectors that define
+the directions of everything in our 3D world.  Let's say that vector A was
+the Normal vector from my plane, and B is a vector that shows the direction
+that the light in my scene is pointing.  If I do the Dot Product of them,
+you will get the angle between them, if that angle is >= 90ø and <= 270ø
+then no light falls on the visible surface and it doesn't need to be 
+displayed.
+
+
+Also notice, the way the values of the Cosine orient themselves
+
+            
+
+           90ø                  Cos 000ø =  1
+                                Cos 090ø =  0
+            ³                   Cos 180ø = -1 
+  Negative  ³  Positive         Cos 270ø =  0
+            ³
+            ³
+180ø ÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄ  0ø        An angle between a light and a plane that
+            ³                   is less than 90ø or greater than 270ø will
+            ³                   be visible, so you can check if the Cos(é)
+  Negative  ³  Positive         is greater than 0 to see if it is visible.
+            ³
+            ³
+
+           270ø
+
+                
+                How Do You Implement The Code?  Easy As ã.
+
+Examples in ASM structures
+
+We will define our points like this
+
+    STRUC XYZs
+        Xpos    dd  ?
+        Ypos    dd  ?
+        Zpos    dd  ?
+        Dist    dd  ?       
+    ENDS  XYZs              ;size is 16 bytes
+
+
+The X,Y,Zpos define a point in 3D space, Dist is the distance from the origin
+
+Dist = û( Xı + Yı + Zı )
+
+Precalculate these values and have them handy in your data area
+
+
+Our planes should look something like this
+
+    STRUC PlaneSt
+        NumPts      db      ?               ;3 or 4
+        NormIndex   dw      ?
+        PtsIndex    dw      ?
+                    dw      ?
+                    dw      ?
+                    dw      ?
+    ENDS  PlaneSt
+
+The number of points that in the plane depends on the number your fill
+routines can handle you must have at least 3 and more than 6 is not suggested
+
+
+Then we set up our data like this
+
+MaxPoints   =           100
+MaxPlanes   =           100
+
+PointList   XYZs        MaxPoints DUP()
+PlaneList   PlaneSt     MaxPlanes DUP()
+NormalList  XYZs        <0,0,0, 10000h> , MaxPlanes DUP()
+
+    Non-ASM User Note:   
+            
+            I set up points in a structure that had an X,Y,Z and Distance
+        value.  I set up a plane structure that had the number of points
+        the index number of the normal vector for that plane and the index
+        numbers for the points in the plane.
+
+            The next lines set up arrays of these points in PointList, and
+        the number of points was defined as MaxPoints.  An array of planes
+        was created as PlaneList with MaxPlanes as the total number of 
+        plane structures in the array.  NormalList is an array of the vectors
+        that are normal to the planes, one is set up initally (I'll explain 
+        that next) and then one for each possible plane is allocated.
+
+
+You'll notice that I defined the first Normal and then created space for 
+the rest of the possible normals.  I'll call this first normal, the 
+Zero Normal.  It will have special properties for planes that don't shade 
+and are never hidden.
+
+
+
+    Well, before I start telling all the tricks to the writting code, let me
+make sure a couple of points are clear.
+
+-       In the 3DROTATE.DOC I said that you could set your view point on the 
+    Z-Axis and then figure out if planes were visible by the post-rotation
+    Normal vectors, if their Z was > 0 then display, if not, don't
+        That is an easy way to set up the data, and I didn't feel like going
+    into the Dot Product at the time, so I generalized.  So, what if you
+    don't view your plane from the Z-Axis, the answer is you use the...
+    
+    Dot Product!  
+    
+    that's right.  The angle will be used now to figure wheither or not to
+    display the plane.
+
+-       I have been mentioning lights and view points as vectors that I can
+    use with the Normal vector from my plane.  To work correctly, these 
+    vectors for the lights and view should point in the direction that you
+    are looking or the direction that the light is pointing, *NOT* a vector 
+    drawn from the origin to the viewer position or light position.
+
+-       True Normal vectors only state a direction, and should therefore have
+    a unit distance of 1.  This will have the advantage of simplifying the
+    math involved to figure you values.  Also, for God's sake, pre-compute
+    your normal, don't do this everytime.  Just rotate them when you do your
+    points and that will update their direction.
+
+        If the Normal's have a length of 1 then ³A³*³B³ = 1 * 1 = 1
+
+    So:
+        Cos(é) = Xa * Xb + Ya * Yb + Za * Zb
+                 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+                          ³A³*³B³
+
+    Is Reduced To:    
+        
+        Cos(é) = Xa * Xb + Ya * Yb + Za * Zb
+     
+
+    We eliminated a multiply and a divide!  Pat yourself on the back.
+
+-       You ASM users might be wondering why I defined my Zero Normal as:
+    <0,0,0,10000h>  How does 10000h = a length of 1 ?
+
+    Well, this is a trick you can do in ASM, instead of using floating point
+    values that will be slow on computers without math co-processors, we can
+    use a double word to hold our value.  The high word holds the integer
+    value, and the low word is our decimal.  You do all of your computations
+    with the whole register, but only pull the high word when you go to 
+    display the point.  So, with that under consideration, 10000h = 1.00000
+    Not bad for integers.
+
+
+-       How does the Zero Normal work?  Since the X,Y,and Z are all 0, the
+    Cos(é) = 0, so if you always display when Cos(é) = 0, then that plane
+    will always be seen.
+
+
+            So, Beyond The Babble...  How To Set Up Your Code    
+
+
+Define Data Points, Normals, and Planes
+    Pre-Calculate as many values as possible
+
+ Rotate Points and Normals
+
+ Determin Visible Planes With Dot Product
+    (Save this value if you want to shade)
+
+    Sort Visible Planes Back to Front
+
+         (Determin Shade From Dot Product)
+
+         Clip Plane to fit scene
+
+         Draw to the screen
+
+ Change Angles
+
+ Goto Rotation
+
+
+
+        A quick way to figure out which color to shade your plane if you are
+    using the double word values like I described before is to take the
+    Dot Product result, it will lie between 10000h - 0h if you would like
+    say 16 shades over the angles, then take that value and shr ,12 that will
+    give you a value from 0h - 10h (0-16, or 17 colors)  if you make 10h into
+    0fh, add that offset to a gradient in your palette, then you will have
+    the color to fill your polygon with.
+
+        Note also that the Cosine function is weighted toward the extremes.
+    If you want a smooth palette change as the angles change, your palette
+    should weight the gradient accordingly.
+
+
+        A useful little relation for depth sorting is to be able to find the
+    center of a triangle.
+
+        E         The center C = (D + E + F)/3
+        ^
+       / \        Divide each cooridinate by (Xd + Xe + Xf)/3 = Xc
+      / C \         and do the same for the Y's and Z's if you 
+     /     \        choose to sort with this method.  Then rotate
+   DÄÄÄÄÄÄÄÄÄF      that point and use it to depth sort the planes
+
+
+Phong and Goraud Shading
+
+    Recently, someone asked me about the practiblity of real-time phong and
+goraud shading.  The technique is common to ray-tracers and requires a great
+deal of calculation when working with individual rays cast from each pixel,
+but when only using this for each plane, it is possible.  This type of shading
+involves taking into account the reduced luminousity of light as distance
+increases.  For each light, you define a falloff value.  This value should be
+the distance a which the light will be at full intensity.  Then at 2*FallOff 
+you will have 1/2 intensity, 3*FallOff will yeild 1/3 and so on.  To implement
+this type of shading, you will need to determin the distance from the light
+to the center of the plane.  If distance < FallOff, then use the normal
+intensity.  If it is greater, divide the FallOff value by the distance.  This
+will give you a scalar value that you can multiple by the shading color that
+the plane should have.  Use that offset and it will be darker since it is
+further away from the light source.
+    However, to determin the distance form the light to each plane, you must
+use a Square Root function, these are inherently slow unless you don't care
+about accuracy.  Also, it would be difficult to notice the use of this 
+technique unless you have a relatively small FallOff value and your objects
+move about in the low intesity boundries.
+
+
+
+
+Well, that's all that I feel like doing tonight, and besides, Star Trek is on!
+So, see VLA.NFO for information about contacting myself or any of the other 
+members of VLA.
+
+                            Happy Coding!
+
+

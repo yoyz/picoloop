@@ -1,0 +1,514 @@
+                   ÕÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¸
+                   ³         W E L C O M E         ³
+                   ³  To the VGA Trainer Program   ³ ³
+                   ³              By               ³ ³
+                   ³      DENTHOR of ASPHYXIA      ³ ³ ³
+                   ÔÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¾ ³ ³
+                     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ ³
+                       ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+                           --==[ PART 10 ]==--
+
+
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+ş Introduction
+
+Wow! The trainer has finally reached part 10! This will also be the
+first part introduced simultaneously to local BBS's and the INTERNET at
+the same time! Yes folks, I put up a copy of previous tutorials onto
+various ftp sites, and awaited the flames saying that the net.gurus
+already knew this stuff, and why was I wasting disk space! The flames
+did not appear (well, except for one), and I got some messages saying
+keep it up, so from now on I will upload all future trainers to ftp
+sites too (wasp.eng.ufl.edu , cs.uwp.edu etc.). I will also leave a
+notice in the USENET groups comp.lang.pascal and comp.sys.ibm.pc.demos
+when a new part is finished (Until enough people say stop ;-))
+
+I can also be reached at my new E-Mail address,
+                 smith9@batis.bis.und.ac.za
+
+Well, this tutorial is on Chain-4. When asked to do a trainer on
+Chain-4, I felt that I would be walking on much travelled ground (I have
+seen numerous trainers on the subject), but the people who asked me said
+that they hadn't seen any, so could I do one anyway? Who am I to say no?
+
+The sample program attached isn't that great, but I am sure that all you
+people out there can immediately see the potential that Chain-4 holds.
+
+
+If you would like to contact me, or the team, there are many ways you
+can do it : 1) Write a message to Grant Smith/Denthor/Asphyxia in private mail
+                  on the ASPHYXIA BBS.
+            2) Write to Denthor, EzE or Goth on Connectix.
+            3) Write to :  Grant Smith
+                           P.O.Box 270 Kloof
+                           3640
+                           Natal
+                           South Africa
+            4) Call me (Grant Smith) at (031) 73 2129 (leave a message if you
+                  call during varsity). Call +27-31-73-2129 if you call
+                  from outside South Africa. (It's YOUR phone bill ;-))
+            5) Write to smith9@batis.bis.und.ac.za in E-Mail.
+
+NB : If you are a representative of a company or BBS, and want ASPHYXIA
+       to do you a demo, leave mail to me; we can discuss it.
+NNB : If you have done/attempted a demo, SEND IT TO ME! We are feeling
+        quite lonely and want to meet/help out/exchange code with other demo
+        groups. What do you have to lose? Leave a message here and we can work
+        out how to transfer it. We really want to hear from you!
+
+
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+ş What is Chain-4?
+
+You people out there all have at least 256k vga cards. Most of you have
+512k vga cards, and some have 1MB vga cards. But what you see on your
+screen, as discussed in previous trainers, is 64k of data! What happened
+to the other 192k??? Chain-4 is a method of using all 256k at one time.
+
+The way this is done is simple. 1 screen = 64k. 64k * 4 = 256k.
+Therefore, chain-4 allows you to write to four screens, while displaying
+one of them. You can then move around these four screens to see the data
+on them. Think of the Chain-4 screen as a big canvas. The viewport,
+the bit you see out of, is a smaller rectangle which can be anywhere
+over the bigger canvas.
+
+     +----------------------------+ Chain-4 screen
+     |          +--+              |
+     |          |  | <- Viewport  |
+     |          +--+              |
+     |                            |
+     +----------------------------+
+
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+ş The size of the chain-4 screen
+
+The Chain-4 screen, can be any size that adds up to 4 screens.
+
+For example, it can be 4 screens across and one screen down, or one
+screen across and 4 screens down, or two screens across and two screens
+down, and any size in between.
+
+In the sample program, the size is a constant. The size * 8 is how many
+pixels across there are on the chain-4 screen, ie
+   Size = 40   = 320 pixels across = 1 screen across, 4 screens down
+   Size = 80   = 640 pixels across = 2 screens across, 2 screens down
+etc.
+
+We need to know the size of the screen for almost all dealings with the
+Chain-4 screen, for obvious reasons.
+
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+ş Layout of the chain-4 screen, and accessing it
+
+If you will remember all the way back to Part 1 of this series, I
+explained that the memory layout of the MCGA screen is linear. Ie, the
+top left hand pixel was pixel zero, the one to the right of it was
+number one, the next one was number two etc. With Chain-4, things are
+very different.
+
+Chain-4 gets the 4 screens and chains them together (hence the name :)).
+Each screen has a different plane value, and must be accessed
+differently. The reason for this is that a segment of memory is only 64k
+big, so that we could not fit the entire Chain-4 screen into one
+segment.
+
+All Chain-4 screens are accessed from $a000, just like in MCGA mode.
+What we do is, before we write to the screen, find out what plane we are
+writing to, set that plane, then plot the pixel. Here is how we find out
+how far in to plot the pixel and what plane it is on :
+
+ Instead of the linear model of MCGA mode, ie :
+        ÚÄÄÂÄÄÂÄÄÂÄÄÂÄÄÂÄÄÂÄÄÂÄÄÂÄÄÂÄÄÂÄÄÂÄÄ¿
+        ³00³01³02³03³04³05³06³07³08³09³10³11³ ...
+
+ Each plane of the Chain-4 screen accesses the memory in this way :
+
+       Plane 0 :
+        ÚÄÄÂÄÄÂÄÄÂÄÄÂÄÄÂÄÄÂÄÄÂÄÄÂÄÄÂÄÄÂÄÄÂÄÄ¿
+        ³00³  ³  ³  ³01³  ³  ³  ³02³  ³  ³  ³ ...
+
+       Plane 1 :
+        ÚÄÄÂÄÄÂÄÄÂÄÄÂÄÄÂÄÄÂÄÄÂÄÄÂÄÄÂÄÄÂÄÄÂÄÄ¿
+        ³  ³00³  ³  ³  ³01³  ³  ³  ³02³  ³  ³ ...
+
+       Plane 2 :
+        ÚÄÄÂÄÄÂÄÄÂÄÄÂÄÄÂÄÄÂÄÄÂÄÄÂÄÄÂÄÄÂÄÄÂÄÄ¿
+        ³  ³  ³00³  ³  ³  ³01³  ³  ³  ³02³  ³ ...
+
+       Plane 3 :
+        ÚÄÄÂÄÄÂÄÄÂÄÄÂÄÄÂÄÄÂÄÄÂÄÄÂÄÄÂÄÄÂÄÄÂÄÄ¿
+        ³  ³  ³  ³00³  ³  ³  ³01³  ³  ³  ³02³ ...
+
+In this way, by choosing the right plane to write to, we can access all
+of the 256k of memory available to us. The plane that we write to can
+easily be found by the simple calculation of  x mod 4, and the x
+coordinate is also found by  x div 4. We work out our y by multiplying
+it by the size of our chain-4 screen.
+
+NOTE : It is possible to write to all four planes at once by setting the
+       correct port values.
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+ş Uses of Chain-4
+
+The uses of Chain-4 are many. One could write data to one screen, then
+flip to it (the move_to command is almost instantaneous). This means
+that 64k of memory does not need to be set aside for a virtual screen,
+you are using the vga cards memory instead!
+
+Scrolling is much easier to code for in Chain-4 mode.
+
+It is possible to "tweak" the mode into other resolutions. In our demo,
+our vectors were in 320x240 mode, and our dot vectors were in 320x400
+mode.
+
+The main disadvantage of chain-4 as I see it is the plane swapping,
+which can be slow. With a bit of clever coding however, these can be
+kept down to a minimum.
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+ş The sample programs
+
+The first sample program is GFX.PAS. This is a until in which I have
+placed most of our routines from previous tuts. All the procedures and
+variables you can see under the INTERFACE section can be used in any
+program with GFX in the USES clause. In other words, I could do this :
+
+USES GFX,crt;
+
+BEGIN
+  Setupvirtual;
+  cls (vaddr,0);
+  Shutdown;
+END.
+
+This program would compile perfectly. What I suggest you do is this :
+Rename the file to a name that suites you (eg your group name), change
+the first line of the unit to that name, then add all useful procedures
+etc. to the unit. Make it grow :-).
+
+The second file is the sample program (note the USES GFX,crt; up near
+the top!). The program is easy to understand and is documented. The bit
+that I want to draw your attention to is the constant, BIT. Because I
+am distributing this file to many places in text form, not binary form,
+I could not just add a .CEL file with the program. So what I did was
+write some text in one color then saved it as a .CEL . I then wrote a
+ten line program that did the following : Moving from left to right, it
+counted how many pixels were of color zero, then saved the byte value to
+an array. When it came across color one, is counted for how long that
+went on then saved the byte value and saved it to an array and so on.
+When it was finished, I converted the array into a text file in the
+CONST format. Not too cunning, but I thought I had better explain it ;-)
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+ş In closing
+
+There are other documents and sample programs available on Chain-4 and
+it's like : Try XLIB for one...
+
+Finally! Some BBS's have joined my BBS list! (Okay, only two new ones,
+but it's a start ;-)) All you international BBS's! If you will regularly
+download the tuts from an FTP site, give me your names!
+
+I own a car. The car's name is Bob. A few days ago, Bob was in an
+accident, and now has major damage to his front. Knowing insurance, I
+probably won't get much, probably nothing (the other guy wasn't insured,
+and I am only 18 :( ). I will probably have to find work in order to pay
+for my repairs. The point to this meandering is this : I am upset, so if
+you think you are getting a quote, you can just forget it.
+
+Oh, well. Life goes on!
+
+See you next time,
+  - Denthor
+
+These fine BBS's carry the ASPHYXIA DEMO TRAINER SERIES : (alphabetical)
+
+ÉÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍËÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍËÍÍÍÍÍËÍÍÍËÍÍÍÍËÍÍÍÍ»
+ºBBS Name                  ºTelephone No.   ºOpen ºMsgºFileºPastº
+ÌÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÎÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÎÍÍÍÍÍÎÍÍÍÎÍÍÍÍÎÍÍÍÍ¹
+ºASPHYXIA BBS #1           º(031) 765-5312  ºALL  º * º *  º *  º
+ºASPHYXIA BBS #2           º(031) 765-6293  ºALL  º * º *  º *  º
+ºConnectix BBS             º(031) 266-9992  ºALL  º   º *  º *  º
+ºPOP!                      º(012) 661-1257  ºALL  º   º *  º *  º
+ºPure Surf BBS             º(031) 561-5943  ºA/H  º   º *  º *  º
+ÈÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÊÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÊÍÍÍÍÍÊÍÍÍÊÍÍÍÍÊÍÍÍÍ¼
+
+For international users : If you live outside the Republic of South
+Africa, do the following : Dial +27, dont dial the first 0, but dial
+the rest of the number. Eg, for the ASPHYXIA BBS : +27-31-765-5312
+
+Open = Open at all times or only A/H
+Msg  = Available in message base
+File = Available in file base
+Past = Previous Parts available
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ C4TUT.PAS ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÙ
+
+(*
+Well folks, here it is - the long awaited for Chain-4 trainer. The
+routines are commented so I'm not going to say too much more here,
+except a few things.
+
+1: If ya don't understand this (not suprising its bloody cryptic!)
+   then if ur serious go out and buy - Programming the EGA & VGA Cards
+   I don't know who the book is by, so don't ask. Perhaps you know Greg?
+
+2: The code is unoptimised. I wrote it specifically for this conf. and
+   I'm buggered if I'm gonna give out my wholely (sp? ahh stuff it :-))
+   optimised code. If you want it faster, OPTIMISE IT!!
+   HINT: Its faster to load ax, with a low byte/high byte combination
+         and out a word instead of a byte at a time. If u don't know
+         what I'm talking about, too bad :-)
+
+3: If you use/like/whatever this code, please give Asphyxia a mention.
+   It wos bloody hard work figuring out how all this cr*p works, we
+   couldn't have done it with out a little guidence (thanx Gregie Poo).
+
+4: LiveWire got interested in the whole tut/trainer idea and MAY be
+   putting together a doc on how the whole thing works, including
+   Pel-Panning which I haven't included here.
+
+
+5: Good luck with the code, and if you write anything with it, I'd
+   appreciate having a look at it :-). Feel free to direct any comments
+   about the code to me in this conf. Or at one of the contact addresses
+   given in the code.
+
+
+l8rs
+EzE / Asphyxia
+
+
+
+--------------------------------=[ Cut Here ]=-------------------------
+*)
+{$X+,G+}
+Program Chain4_Tut;
+Uses
+   Crt;
+
+
+Const
+   Size : Byte = 80;
+
+
+Var Loop : Integer;
+
+
+
+Procedure Init_C4; Assembler;
+Asm
+   mov   ax, 0013h
+   int   10h               { set up bios initially for 13h            }
+
+   mov   dx, 03c4h         { Sequencer Address Register               }
+   mov   al, 4             { Index 4 - Memory mode                    }
+   out   dx, al            { select it.                               }
+   inc   dx                { 03c5h - here we set the mem mode.        }
+   in    al, dx            { get whats already inside the reg         }
+   and   al, 11110111b     { un-set 4th bit - chain4                  }
+   out   dx, al
+
+   mov   dx, 3d4h
+   mov   al, 13h           { Offset Register - allocates amt. mem for }
+   out   dx, al            { 1 displayable line as - length div 8, so }
+   inc   dx                { we use 80 (80*8) = 640 = 2 pages across  }
+   mov   al, [Size]        { and cause of chain-4 i.e. 256k display   }
+   out   dx, al            { mem, 2 pages down for four pages         }
+
+                           { NOTE: setting AL above to 40 selects 1   }
+                           { page across and four down (nice for      }
+                           { 1942 type scrolling games) and setting   }
+                           { AL to 160 selects 4 pages across and 1   }
+                           { down, nice for horizontal scrolling      }
+
+End;
+
+
+
+Procedure Cls_C4; Assembler;
+Asm
+   mov   dx, 03c4h         { 03c4h                                    }
+   mov   al, 2             { Map Mask Register                        }
+   out   dx, al
+   inc   dx
+   mov   al, 00001111b     { Select all planes to write to            }
+   out   dx, al            { Doing this to clear all planes at once   }
+
+   mov   ax, 0a000h
+   mov   es, ax
+   xor   di, di            { set es:di = Screen Mem                   }
+   mov   ax, 0000h         { colour to put = black                    }
+   mov   cx, 32768         { 32768 (words) *2 = 65536 bytes - vga mem }
+   cld
+   rep   stosw             { clear it                                 }
+End;
+
+
+
+Procedure PutPixel_C4(X, Y : Integer; Col : Byte); Assembler;
+Asm
+   mov   ax, [Y]           { Y val multiplied by...                   }
+   xor   bx, bx
+   mov   bl, [Size]        { Size....                                 }
+   shl   bx, 1             { *2 - just 'cause! (I can't remember why!)}
+   mul   bx
+   mov   bx, ax
+
+   mov   ax, [X]
+   mov   cx, ax
+   shr   ax, 2
+   add   bx, ax            { add X val div 4 (four planes)            }
+
+   and   cx, 00000011b     { clever way of finding x mod 4, i.e.      }
+   mov   dx, 03c4h         { which plane we're in.                    }
+   mov   al, 2             { then use 03c4h index 2 - write plane sel.}
+   out   dx, al            { to set plane to write to.                }
+   mov   al, 1             { plane to write to = 1 shl (X mod 4)      }
+   shl   al, cl
+   inc   dx
+   out   dx, al
+
+   mov   ax, 0a000h
+   mov   es, ax
+   mov   al, [Col]
+   mov   es: [bx], al      { then write pixel.                        }
+End;
+
+
+Function GetPixel_C4(X, Y : Integer): Byte; Assembler;
+Asm
+   mov   ax, [Y]           { Y val multiplied by...                   }
+   xor   bx, bx
+   mov   bl, [Size]        { Size....                                 }
+   shl   bx, 1             { *2 - just 'cause! (I can't remember why!)}
+   mul   bx
+   mov   bx, ax
+
+   mov   ax, [X]
+   mov   cx, ax
+   shr   ax, 2
+   add   bx, ax            { add X val div 4 (four planes)            }
+
+   and   cx, 00000011b     { clever way of finding x mod 4, i.e.      }
+   mov   dx, 03c4h         { which plane we're in.                    }
+   mov   al, 4h            { then use 03c4h index 4 - read plane sel. }
+   out   dx, al            { to set plane to read from.               }
+   mov   al, cl            { Plane to read from = X mod 4             }
+   inc   dx
+   out   dx, al
+
+   mov   ax, 0a000h
+   mov   es, ax
+   mov   al, es: [bx]      { then return pixel read                   }
+End;
+
+
+
+Procedure MoveScr_C4(X,Y : Integer); Assembler;
+Asm
+   mov   ax, [Y]           { Y val multiplied by...                   }
+   xor   bx, bx
+   mov   bl, [Size]        { Size....                                 }
+   shl   bx, 1             { *2 - just 'cause! (I can't remember why!)}
+   mul   bx
+   mov   bx, ax
+
+   add   bx, [X]           { Add X val                                }
+
+   mov   dx, 03d4h
+   mov   al, 0ch           { CRTC address reg.                        }
+   out   dx, al            { Start Address High Reg.                  }
+   inc   dx
+   mov   al, bh            { send high byte of start address.         }
+   out   dx, al
+
+   dec   dx
+   mov   al, 0dh           { Start Address Low Reg.                   }
+   out   dx, al
+   inc   dx
+   mov   al, bl            { send low byte of start address.          }
+   out   dx, al
+
+End;
+
+
+Procedure SetText; Assembler;
+Asm
+   mov   ax, 0003h
+   int   10h
+End;
+
+Procedure Creds;
+Begin
+   SetText;
+   While KeyPressed do ReadKey;
+
+   Asm
+      mov   ah, 1
+      mov   ch, 1
+      mov   cl, 0
+      int   10h
+   End;
+
+   WriteLn('Chain-4 Trainer...');
+   WriteLn('By EzE of Asphyxia.');
+   WriteLn;
+   WriteLn('Contact Us on ...');
+   WriteLn;
+   WriteLn;
+   WriteLn('the Asphyxia BBS (031) - 7655312');
+   WriteLn;
+   WriteLn('Email :       eze@');
+   WriteLn('         asphyxia@');
+   WriteLn('          edwards@');
+   WriteLn('           bailey@');
+   WriteLn('          mcphail@');
+   WriteLn('                  beastie.cs.und.ac.za');
+   WriteLn;
+   WriteLn('or  peter.edwards@datavert.co.za');
+   WriteLn;
+   WriteLn('Write me snail-mail at...');
+   WriteLn('P.O. Box 2313');
+   WriteLn('Hillcrest');
+   WriteLn('Natal');
+   WriteLn('3650');
+   Asm
+      mov   ah, 1
+      mov   ch, 1
+      mov   cl, 0
+      int   10h
+   End;
+
+End;
+
+
+
+
+Begin
+   Init_C4;
+   Cls_C4;
+   Repeat
+      Putpixel_C4(Random(320),Random(200),Random(256)+1);
+   Until KeyPressed;
+   For Loop := 0 to 80 do
+   begin
+      MoveScr_C4(0,Loop);
+      Delay(10);
+   End;
+   ReadKey;
+   Loop := GetPixel_C4(100,100);
+   Creds;
+   WriteLn('Colour at location X:100, Y:100 was: ',Loop);
+End.
+
+--------------------------------=[ Cut Here ]=-------------------------

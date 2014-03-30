@@ -1,0 +1,267 @@
+
+                  ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+                  ³ Programming the SoundBlaster Pro ³
+                  ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+                  Written for the PC-GPE by Mark Feldman
+              e-mail address : u914097@student.canberra.edu.au
+                               myndale@cairo.anu.edu.au
+
+             ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+             ³      THIS FILE MAY NOT BE DISTRIBUTED     ³
+             ³ SEPARATE TO THE ENTIRE PC-GPE COLLECTION. ³
+             ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Disclaimer ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+I assume no responsibility whatsoever for any effect that this file, the
+information contained therein or the use thereof has on you, your sanity,
+computer, spouse, children, pets or anything else related to you or your
+existance. No warranty is provided nor implied with this information.
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Introduction ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+I still own a SoundBlaster 1.0 (don't laugh) so I haven't been able to
+test any of the information in this file, ie don't take any of this as
+fact.
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Stereo Sound ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+Generating stereo FM sound on the SB Pro is similar to the way it's done
+on the SB 1.x, you just use different ports for the left and right channels.
+The file ADLIB.TXT has more information on this.
+
+Generating stereo sounds with the DSP is similar to the mono method, but you
+send *two* bytes for every sample. The first one goes to the left channel
+and the second one goes to the right. You also need to reset the mixer chip
+and tell the soundblaster you want to play a stereo sound (see below). This
+has the advantage in that you can store the info for both channels in a
+single data block and transfer it by still using only one DMA channel. The
+WAV file format actually stores it's audio waveform data like this (see the
+PC-GPE file WAV.TXT).
+
+
+  Left channel bytes
+
+  0       1       2       3       4       5       6
+ÚÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄ
+³   ³   ³   ³   ³   ³   ³   ³   ³   ³   ³   ³   ³   ³   ³   ........
+ÀÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄ
+      0       1       2       3       4       5       6
+
+  Right channel bytes
+
+To play the sound the SoundBlaster Pro is set for stereo output and the DMA
+chip is programmed to send this chunk as is.
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ The CT 1345 Mixer Chip ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+
+You access the mixer registers the same way you access the regular SB
+registers, but Port 2x4h is the index port and 2x5h is the data read/write
+port, where x = 2 for base address jumper setting 220h
+            x = 3 for base address jumper setting 230h
+            x = 4 for base address jumper setting 240h
+
+So setting a mixer register to a given value can be accomplished with the
+following procedure:
+
+{ base = 220h, 230 or 240h }
+procedure SetMixerReg(base : word; index, value : byte);
+begin
+  Port[base + 4] := index;
+  Port[base + 5] := value;
+end;
+
+
+You can also read a register's current value:
+
+function GetMixerReg(base : word; index : byte) : byte;
+begin
+  Port[base + 4] := index;
+  GetMixerReg := Port[base + 5];
+end;
+
+
+
+
+
+The Data Reset register is used to reset the mixer chip. Set this register to
+0 before changing any of the other mixer registers.
+
+              Index = 00h
+              ÚÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄ¿
+              ³ 7 ³ 6 ³ 5 ³ 4 ³ 3 ³ 2 ³ 1 ³ 0 ³
+              ÀÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÙ
+                ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+                              ³
+                          Data Reset
+
+
+
+
+The Input register selects the SB Pro sound input source and filter type.
+
+              Index = 0Ch
+              ÚÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄ¿
+              ³ 7 ³ 6 ³ 5 ³ 4 ³ 3 ³ 2 ³ 1 ³ 0 ³
+              ÀÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÙ
+                        ÀÄÄÄÂÄÄÄÙ   ÀÄÂÄÙ
+                            ³         ³
+                ÚÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄ¿ ÚÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+                ³ In Filter       ³ ³ ADC Source        ³
+                ³ 000 - Low       ³ ³ 00 - Microphone 1 ³
+                ³ 001 - High      ³ ³ 01 - CD           ³
+                ³ 010 - No Filter ³ ³ 10 - Microphone 2 ³
+                ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ ³ 11 - Line In      ³
+                                    ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+
+
+The Output register determines whether to output sound in stereo or mono, in
+stereo two bytes must be sent for each sample, the first one goes to the left
+channel and the next one goes to the right. This register allows you to
+bypass the output filter.
+
+              Index = 0Eh
+              ÚÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄ¿
+              ³ 7 ³ 6 ³ 5 ³ 4 ³ 3 ³ 2 ³ 1 ³ 0 ³
+              ÀÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÙ
+                        ³               ³
+           ÚÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ¿ ÚÄÄÁÄÄÄÄÄÄÄÄÄ¿
+           ³ DNFI                  ³ ³ VSTC       ³
+           ³ 0 - Use O/P Filter    ³ ³ 0 - Mono   ³
+           ³ 1 - Bypass O/P Filter ³ ³ 1 - Stereo ³
+           ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ ÀÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+
+The Master Volume register allows you to set the master volume of each
+channel:
+
+              Index = 22h
+              ÚÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄ¿
+              ³ 7 ³ 6 ³ 5 ³ 4 ³ 3 ³ 2 ³ 1 ³ 0 ³
+              ÀÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÙ
+                ÀÄÄÄÄÄÂÄÄÄÄÄÙ   ÀÄÄÄÄÄÂÄÄÄÄÄÙ
+                      ³               ³
+             ÚÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄ¿ÚÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄ¿
+             ³ Master Volume ³³ Master Volume ³
+             ³     Left      ³³     Right     ³
+             ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+
+The Voice Volume register allows you to set the volume of each channel for
+DSP output:
+
+              Index = 04h
+              ÚÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄ¿
+              ³ 7 ³ 6 ³ 5 ³ 4 ³ 3 ³ 2 ³ 1 ³ 0 ³
+              ÀÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÙ
+                ÀÄÄÄÄÄÂÄÄÄÄÄÙ   ÀÄÄÄÄÄÂÄÄÄÄÄÙ
+                      ³               ³
+              ÚÄÄÄÄÄÄÄÁÄÄÄÄÄÄ¿ÚÄÄÄÄÄÄÄÁÄÄÄÄÄÄ¿
+              ³ Voice Volume ³³ Voice Volume ³
+              ³     Left     ³³     Right    ³
+              ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+                 Voice Volume    Voice Volume
+                    Left            Right
+
+
+The FM Volume register allows you to set the volume of each channel for
+FM wave synthesis:
+
+
+
+              Index = 26h
+              ÚÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄ¿
+              ³ 7 ³ 6 ³ 5 ³ 4 ³ 3 ³ 2 ³ 1 ³ 0 ³
+              ÀÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÙ
+                ÀÄÄÄÄÄÂÄÄÄÄÄÙ   ÀÄÄÄÄÄÂÄÄÄÄÄÙ
+                      ³               ³
+                ÚÄÄÄÄÄÁÄÄÄÄÄ¿   ÚÄÄÄÄÄÁÄÄÄÄÄ¿
+                ³ FM Volume ³   ³ FM Volume ³
+                ³   Left    ³   ³   Right   ³
+                ÀÄÄÄÄÄÄÄÄÄÄÄÙ   ÀÄÄÄÄÄÄÄÄÄÄÄÙ
+
+
+The CD Volume register allows you to set the volume of each channel for
+CD output:
+
+              Index = 28h
+              ÚÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄ¿
+              ³ 7 ³ 6 ³ 5 ³ 4 ³ 3 ³ 2 ³ 1 ³ 0 ³
+              ÀÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÙ
+                ÀÄÄÄÄÄÂÄÄÄÄÄÙ   ÀÄÄÄÄÄÂÄÄÄÄÄÙ
+                      ³               ³
+                ÚÄÄÄÄÄÁÄÄÄÄÄ¿   ÚÄÄÄÄÄÁÄÄÄÄÄ¿
+                ³ CD Volume ³   ³ CD Volume ³
+                ³   Left    ³   ³   Right   ³
+                ÀÄÄÄÄÄÄÄÄÄÄÄÙ   ÀÄÄÄÄÄÄÄÄÄÄÄÙ
+
+
+The Line Volume register allows you to set the volume of each channel for
+line in channel:
+
+
+              Index = 2Eh
+              ÚÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄ¿
+              ³ 7 ³ 6 ³ 5 ³ 4 ³ 3 ³ 2 ³ 1 ³ 0 ³
+              ÀÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÙ
+                ÀÄÄÄÄÄÂÄÄÄÄÄÙ   ÀÄÄÄÄÄÂÄÄÄÄÄÙ
+                      ³               ³
+               ÚÄÄÄÄÄÄÁÄÄÄÄÄÄ¿ ÚÄÄÄÄÄÄÁÄÄÄÄÄÄ¿
+               ³ Line Volume ³ ³ Line Volume ³
+               ³    Left     ³ ³    Right    ³
+               ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÙ ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+The Mic Mixing register allows you to set the input volume for the
+microphone:
+
+              Index = 0Ah
+              ÚÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄ¿
+              ³ 7 ³ 6 ³ 5 ³ 4 ³ 3 ³ 2 ³ 1 ³ 0 ³
+              ÀÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÙ
+                                    ÀÄÄÄÂÄÄÄÙ
+                                        ³
+                                 ÚÄÄÄÄÄÄÁÄÄÄÄÄ¿
+                                 ³ Mic Mixing ³
+                                 ÀÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ References ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+Title : The SoundBlaster Developpers Kit
+Publishers : Creative Labs Inc
+             Creative Technology PTE LTD
+
+Title : Sound Blaster - The Official Book
+Authors : Richard Heimlich, David M. Golden, Ivan Luk, Peter M. Ridge
+Publishers : Osborne/McGraw Hill
+ISBN : 0-07-881907-5
+
+Some of the information in this file was either obtained from or verified
+by the source code in a public domain library called SOUNDX by Peter
+Sprenger. I haven't tried using his library yet (I don't have a C compiler
+at the moment) but it looks very well done and contains numerous sound card
+detection routines. Says Peter : "It would be nice, that when you make
+something commercial with my routines, that you send me a copy of your
+project or send me some bucks, just enough for pizza and coke to support my
+night programming sessions. If you send me nothing, ok. But USE the stuff,
+if you can need it!". Heh...a REAL programmer!
+
+ftp site: ftp.uwp.edu
+directory: /pub/msdos/demos/programming/game-dev/source
+filename: soundx.zip
+

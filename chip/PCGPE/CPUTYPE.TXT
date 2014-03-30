@@ -1,0 +1,245 @@
+                   ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+                   ³ Testing the Intel CPU Type ³
+                   ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+            Written for the PC-GPE by Mark Feldman
+            e-mail address : u914097@student.canberra.edu.au
+                             myndale@cairo.anu.edu.au
+
+           ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+           ³      THIS FILE MAY NOT BE DISTRIBUTED     ³
+           ³ SEPERATE TO THE ENTIRE PC-GPE COLLECTION. ³
+           ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Disclaimer ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+I assume no responsibility whatsoever for any effect that this file, the
+information contained therein or the use thereof has on you, your sanity,
+computer, spouse, children, pets or anything else related to you or your
+existance. No warranty is provided nor implied with this information.
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Introduction ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+Believe it or not there are people in the world who still own 8088s! Heck I
+only just upgraded my 286 to a 486SUX33 a couple of months ago.
+
+As we all know, 286's and below just don't make the cut anymore, and even
+386's are becoming a thing of the past. Personally I think a program should
+politely tell someone they are a phleb rather than unceremoniously hanging
+their machine for them.
+
+This text file will show one mothed of detecting the CPU type. Unfortunately
+I don't have a Pentium op code list so it'll only detect up to a 486.
+
+Most of the information in this file came from a well documented assembly
+program available on various ftp sites called 80486.asm, written by Robert
+Collins. I tried calling Robert for permission to use his original file, but
+he appears to have moved house.
+
+ÚÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Method ³
+ÀÄÄÄÄÄÄÄÄÙ
+
+80186 chips and higher generate an interrupt 6 when they come across an
+instruction they don't support, this provides us with a real simple method
+of determining the cpu type (coupled with the trap interrupt it would
+conceivably also allow us to write a Pentium emulator for the 80286, but
+that's another story). We simply have to try execting a 486 command, if it
+causes an interrupt 6 then we know the machine is a 386 or lower.
+
+The op codes used in the program below all modify the dx register.
+
+     ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+     ³  Op Code           Machine Language Bytes   Supported by      ³
+     ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+     ³  shl  dx, 5               C1 E2 05           80186 and higher ³
+     ³  smsw dx                  0F 01 E2           80286 and higher ³
+     ³  mov  edx, cr0            0F 20 C2           80386 and higher ³
+     ³  xadd dx, dx              0F C1 D2           80486 and higher ³
+     ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+When an interrupt 6 is generated you have to modify the value of the IP
+register which was pushed onto the stack when the interrupt occurred,
+otherwise the CPU will go back to it after the interrupt and keep trying
+to execute it. Each of the instructions in the table above are 3 bytes long
+so our interrupt handler can simply add 3 to the IP value on the stack.
+
+Identifying an 8088 chip is even simpler. If you push the SP register onto
+the stack the 8088 increments the SP value before it pushes it, the other
+chips all increment it afterwards. So to test for the presence of an 8088
+push SP onto the stack and pop it off into another variable, say AX. If AX
+and SP are not equal then the chip is an 8088.
+
+Keep in mind that you *MUST* check for the presence of an 8088 before
+doing anything else. Attempting to execute an invalid op code on an 8088
+will cause it to hang. Each of the functions in the unit below check for
+an 8088 first to prevent this happening.
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ A Pascal Unit to Test the CPU Type ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+The following pascal unit contains some functions your program can use to
+make sure it's running on the right kind of machine. If your program will
+only work on a 386 and higher (for example) then put this unit first in your
+Uses clause and modify the unit's initialization code to terminate the
+program if the wrong CPU type is detected. The unit's current initialization
+simply test the CPU type and store it in the 'cpu' variable.
+
+{
+
+  CPUTYPE - A Pascal Unit to Test the CPU Type
+            By Mark Feldman u914097@student.canberra.edu
+                            myndale@cairo.anu.edu.au
+
+            Based on an original assembly program by Robert Collins.
+
+
+}
+
+
+Unit CPUTYPE;
+
+
+Interface
+
+const CPU_8088    =  0;
+      CPU_80186   =  1;
+      CPU_80286   =  2;
+      CPU_80386   =  3;
+      CPU_80486   =  4;
+      CPU_UNKNOWN = -1;
+
+{ The cpu variable is initialised to the cpu type }
+var cpu : integer;
+
+{ Isa8088 returns true only if cpu is an 8088 or 8086 }
+function Isa8088 : boolean;
+
+{ Isa80186 returns true if cpu is an 80186 or higher }
+function Isa80186 : boolean;
+
+{ Isa80286 returns true if cpu is an 80286 or higher }
+function Isa80286 : boolean;
+
+{ Isa80386 returns true if cpu is an 80386 or higher }
+function Isa80386 : boolean;
+
+{ Isa80486 returns true if cpu is an 80486 or higher }
+function Isa80486 : boolean;
+
+
+
+
+Implementation
+
+Uses Dos;
+
+var OldIntr6Handler : procedure;
+      valid_op_code : boolean;
+
+procedure Intr6Handler;
+interrupt;
+begin
+  valid_op_code := false;
+
+  { Stoopid TP7 won't let me modify IP directly }
+  asm
+    add word ptr ss:[bp + 18], 3
+  end;
+end;
+
+function Isa8088 : boolean;
+var sp1, sp2 : word;
+begin
+  asm
+    mov sp1, sp
+    push sp
+    pop sp2
+  end;
+  if sp1 <> sp2 then
+    Isa8088 := true
+  else
+    Isa8088 := false;
+end;
+
+function Isa80186 : boolean;
+begin
+  if Isa8088 then
+    Isa80186 := false
+  else
+    begin
+      valid_op_code := true;
+      GetIntVec(6, @OldIntr6Handler);
+      SetIntVec(6, Addr(Intr6Handler));
+      inline($C1/$E2/$05);  { shl dx, 5 }
+      SetIntVec(6, @OldIntr6Handler);
+      Isa80186 := valid_op_code;
+    end;
+end;
+
+function Isa80286 : boolean;
+begin
+  if Isa8088 then
+    Isa80286 := false
+  else
+    begin
+      valid_op_code := true;
+      GetIntVec(6, @OldIntr6Handler);
+      SetIntVec(6, Addr(Intr6Handler));
+      inline($0F/$01/$E2);  { smsw dx }
+      SetIntVec(6, @OldIntr6Handler);
+      Isa80286 := valid_op_code;
+    end;
+end;
+
+function Isa80386 : boolean;
+begin
+  if Isa8088 then
+    Isa80386 := false
+  else
+    begin
+      valid_op_code := true;
+      GetIntVec(6, @OldIntr6Handler);
+      SetIntVec(6, Addr(Intr6Handler));
+      inline($0F/$20/$C2);  { mov edx, cr0 }
+      SetIntVec(6, @OldIntr6Handler);
+      Isa80386 := valid_op_code;
+    end;
+end;
+
+function Isa80486 : boolean;
+begin
+  if Isa8088 then
+    Isa80486 := false
+  else
+    begin
+      valid_op_code := true;
+      GetIntVec(6, @OldIntr6Handler);
+      SetIntVec(6, Addr(Intr6Handler));
+      inline($0F/$C1/$D2);  { xadd dx, dx }
+      SetIntVec(6, @OldIntr6Handler);
+      Isa80486 := valid_op_code;
+    end;
+end;
+
+
+begin
+  if Isa8088 then
+    cpu := CPU_8088
+  else if Isa80486 then
+    cpu := CPU_80486
+  else if Isa80386 then
+    cpu := CPU_80386
+  else if Isa80286 then
+    cpu := CPU_80286
+  else if Isa80186 then
+    cpu := CPU_80186
+  else
+    cpu := CPU_UNKNOWN;
+end.

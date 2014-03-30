@@ -1,0 +1,302 @@
+
+
+
+      SSSSS   CCCCC  RRRRR    OOOOO  LL    LL    IIIIII NN    NN  GGGGG
+     SS   SS CC   CC RR  RR  OO   OO LL    LL      II   NNN   NN GG   GG
+     SS      CC      RR   RR OO   OO LL    LL      II   NNNN  NN GG
+      SSSSS  CC      RR  RR  OO   OO LL    LL      II   NN NN NN GG
+          SS CC      RRRRR   OO   OO LL    LL      II   NN  NNNN GG  GGG
+     SS   SS CC   CC RR  RR  OO   OO LL    LL      II   NN   NNN GG   GG
+      SSSSS   CCCCC  RR   RR  OOOOO  LLLLL LLLLL IIIIII NN    NN  GGGGG
+
+                    by Alec Thomas (Kestrel) of FORGE Software Australia
+                                          (c9223826@cs.newcastle.edu.au)
+
+
+------------
+INTRODUCTION
+------------
+Okay, here it is fans (and air conditioners, open windows...geez I hate that
+joke!), how to do scrolling using either X-mode (and associated variants) and
+standard mode 13h (not hard but I thought I'd put it in anyway :) as well as
+the basics of parallax scrolling...
+
+First things first - X-mode. Throughout this little dissertation, I'm going
+to assume that you know the basics of X-mode (or mode-X or mode-Y or
+whatever you want to call it) such as how to get into it, how to set the
+offset register, etc. and just get on with the scrolling :) I'm not trying
+to teach you X-mode, but SCROLLING!!
+
+One further thing. I'm not saying that the methods I'll explain below are
+the best method of scrolling, I'm just showing how I got it to work myself
+in the hope that someone out there can use it. Anyway, enough of this crap,
+on with the STUFF!!!
+
+(just a little note, when I'm talking about rows, they number from 0-199 and
+the same with columns (except 0-319), etc. unless otherwise stated)
+
+********************************************************************************
+*                               X-MODE SCROLLING                               *
+********************************************************************************
+------------------
+VERTICAL SCROLLING
+------------------
+Ok, this is the easiest form of scrolling using the VGA hardware...fast and
+clean. The following example assumes you are using 320x200 X-mode with the
+visible page starting at the top of the first page (offset 0).
+
+To scroll what is on the screen up off the top, you simply add 80 (decimal)
+to the screen offset register. This causes the screen to jump up by one
+row. However, it also causes whatever is off the bottom of the screen
+(the next page!) to become visible...not a desireable effect.
+
+Easily fixed however. Draw the image you want to scroll, on the row that
+will scroll on. So, when the screen offset is changed to scroll the screen
+up, the new data is already there for all to see. Beautiful!!!
+
+----------- Scrolling A (up) --------------
+OFFSET = 0
+WHILE NOT FINISHED DO
+  OFFSET = OFFSET + 80
+  DRAW TO ROW 200
+  SET VGA OFFSET = OFFSET
+END WHILE
+-------------------------------------------
+
+Bzzzzz! Wrong! This works fine, until you have scrolled down to the
+bottom of page 4. Because you're effectively off the bottom of the VGA
+window (starting at segment A000h), you can't write to the rest of the
+VGA memory (if there is any - only SVGA's have more than 256K on board
+memory) and so, you'll be viewing garbage.
+
+No problem. The way around it is to only use two pages!!! "What?" I hear
+you say. In fact, by using only two pages for scrolling, you gain two
+major advantages: page flipping (because you're only using two pages for
+the actual scrolling, you can use the spare two to perform page flipping)
+and infinite scroll regions.
+
+You perform the infinite scrolling in exactly the same way as before, with
+two minor additions: after changing the offset register, you copy the row
+just scrolled on to the row just scrolled off. Also, after you have scrolled
+a full page, you reset the offset to the top of the original page.
+
+----------- Scrolling B (up) --------------
+OFFSET = 0
+WHILE NOT FINISHED DO
+  OFFSET = OFFSET + 80
+  IF OFFSET >= (200 * 80) THEN OFFSET = 0
+  DRAW TO ROW 200
+  SET VGA OFFSET = OFFSET
+  DRAW TO ROW -1 (was row 0 before scroll)
+END WHILE
+-------------------------------------------
+
+Ok, so that's how to do vertical scrolling, now on with horizontal scrolling.
+
+
+
+--------------------
+HORIZONTAL SCROLLING
+--------------------
+Horizontal scrolling is essentially the same as vertical scrolling, all
+you do is increment or decrement the VGA offset register by 1 instead of
+80 as with vertical scrolling.
+
+However, horizontal scrolling is complicated by two things
+
+  1. Incrementing the offset register by one actually scrolls by FOUR
+     pixels (and there are FOUR planes on the VGA, what a coincidence)
+
+  2. You can't draw the image off the screen and then scroll it on
+     because of the way the VGA wraps to the next row every 80 bytes
+     (80 bytes * 4 planes = 320 pixels), if you tried it, you would
+     actually be drawing to the other side of the screen (which is
+     entirely visible)
+
+I'll solve these problems one at a time.
+
+Firstly, to get the VGA to scroll by only one pixel you use the horizontal
+pixel panning (HPP) register. This register resides at
+
+  PORT:     3C0H
+  INDEX:    13h
+
+and in real life, you use it like this
+
+----------------- Pixel Panning ---------------
+IN PORT 3DAH (this clears an internal
+  flip-flop of the VGA)
+OUT 13H TO PORT 3C0H
+OUT value TO PORT 3C0H (where "value" is the
+  number of pixels to offset)
+-----------------------------------------------
+
+To implement smooth horizontal scrolling, you would do the following:
+
+-------------- Horizontal Scrolling ------------
+FOR X = 0 TO 319 DO
+  SET HPP TO ( X MOD 4 )
+  SET VGA OFFSET TO ( X/4 )
+END FOR
+------------------------------------------------
+
+Okay, no problem at all (although I think you might have to fiddle
+around with the HPP a bit to get it right...try different values and
+see what works :).
+
+So, the next problem is with drawing the images off the screen where
+they aren't visible and then scrolling them on!!! As it turns out,
+there's yet ANOTHER register to accomplish this. This one's called the
+offset register (no, not the one I was talking about before, that one
+was actually the "start address" register) and it's at
+
+  PORT:     3D4H/3D5H
+  OFFSET:   13H
+
+and here's how to use it
+
+-------------- Offset Register ---------------
+OUT 13H TO PORT 3D4H
+OUT value TO PORT 3D5H
+----------------------------------------------
+
+Now, what my VGA reference says is that this register holds the number
+of bytes (not pixels) difference between the start address of each row.
+So, in X-mode it normally contains the value 80 (as we remember,
+80 bytes * 4 planes = 320 pixels). This register does not affect the
+VISIBLE width of the display, only the difference between addresses on
+each row.
+
+When we scroll horizontally, we need a little bit of extra working space
+so we can draw off the edge of the screen.
+
+Perhaps a little diagram will clarify it. The following picture is of a
+standard X-mode addressing scheme with the OFFSET register set to 80.
+
+      ROW    OFFSET
+      0         0 ========================
+      1        80 [                      ]
+      2       160 [                      ]
+      ..       .. [       VISIBLE        ]
+                  [        SCREEN        ]
+                  [                      ]
+                  [                      ]
+      ..       .. [                      ]
+      199   15920 ========================
+
+and the next diagram is of a modified addressing scheme with the OFFSET
+register set to 82 (to give us 4 extra pixels on each side of the screen)
+
+ROW    OFFSET
+0         0 ------========================------
+1        82 |   V [                      ]   V |
+2       164 |   I [                      ]   I |
+..       .. | N S [      VISIBLE         ] N S |
+            | O I [       SCREEN         ] O I |
+            | T B [                      ] T B |
+            |   L [                      ]   L |
+..       .. |   E [                      ]   E |
+199   16318 ------========================------
+
+Beautiful!!!
+
+As with vertical scrolling, however, you still have the problem of when
+you reach the bottom of page 4...and it's fixed in the same manner.
+
+I haven't actually managed to get infinite horizontal scrolling working,
+but the method I have just stated will give you a horizontal scrolling
+range of over 200 screens!!!! So if you need more (which is extremely
+unlikely), figure it out yourself.
+
+
+------------------
+COMBINED SCROLLING
+------------------
+To do both horizontal and vertical scrolling, all you have to do is combine
+the two methods with a few little extras (it's always the way isn't it).
+
+You have to start off with the original screen on the current page and the
+next page as well. When you scroll horizontally, you have to draw the edge
+that's coming in to the screen to BOTH pages (that means you'll be drawing
+the incoming edge twice, once for each page). You do this so that when you
+have scrolled vertically down through a complete page, you can jump back
+to the first page and it will (hopefully) have an identical copy, and you
+can then continue scrolling again.
+
+I'm sorry about this being so confusing but it's a bit difficult to explain.
+
+
+
+
+
+********************************************************************************
+*                            STANDARD VGA SCROLLING                            *
+********************************************************************************
+Without X-mode, there is no easy way to do scrolling using the VGA hardware.
+So basically, you have to resort to redrawing the entire screen for every
+frame. Several popular games (Raptor and Mortal Kombat spring to mind)
+utilise this method with excellent effect, so it is quite effective.
+
+Basically all you do to implement this is redraw the screen every frame
+with a slightly different offset into the "map".
+
+The following bit of pseudo-code will scroll down and to the right
+through the map.
+
+------------- Standard Scrolling ---------------
+X = 0
+Y = 0
+WHILE NOT FINISHED DO
+  DRAW TO SCREEN( 0, 0 ) FROM MAP( X, Y )
+  X = X + 1
+  Y = Y + 1
+END WHILE
+------------------------------------------------
+
+
+
+
+
+********************************************************************************
+*                              PARALLAX SCROLLING                              *
+********************************************************************************
+Parallax scrolling is when the "world" appears to have different levels
+of perspective. That is, images further away from the viewer move
+proportionately slower than images closer to the screen.
+
+To implement parallax scrolling, you need two or more "maps". You start
+from the most distant map and end with the closest map. When you scroll,
+you offset the map furthest away by the smallest value and the map
+closest to you by the largest value.
+
+The following pseudo-code implements a 3 level parallax scrolling world,
+scrolling (as above) down to the right.
+
+--------------- Parallax Scrolling ------------------
+X = 0
+Y = 0
+WHILE NOT FINISHED DO
+  DRAW TO SCREEN( 0, 0 ) USING MAP_FAR AT ( X/4, Y/4 )
+  DRAW TO SCREEN( 0, 0 ) USING MAP_MEDIUM AT ( X/2, Y/2 )
+  DRAW TO SCREEN( 0, 0 ) USING MAP_NEAR AT ( X, Y )
+  X = X + 4
+  Y = Y + 4
+END WHILE
+-----------------------------------------------------
+
+Obviously, with parallax scrolling, each successive map shouldn't delete
+the previous map entirely. So you'll have to draw the maps using some
+sort of masking (masking being where you can see through the background
+colour to what was there previously).
+
+
+********************************************************************************
+*                                  DISCLAIMER                                  *
+********************************************************************************
+I'm sorry if any of this is confusing, but hey that's half the fun of it -
+figuring out what the hell I'm raving on about :)
+
+So, if you can figure it out, have fun and make games (preferably good ones!)
+
+Later,
+      Kestrel => FORGE Software Australia

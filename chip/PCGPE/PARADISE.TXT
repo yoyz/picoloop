@@ -1,0 +1,237 @@
+
+                ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+                ³ Programming the Paradise SVGA Chip ³
+                ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+                 Written for the PC-GPE by Mark Feldman
+            e-mail address : u914097@student.canberra.edu.au
+                             myndale@cairo.anu.edu.au
+
+                  Please read the file SVGINTRO.TXT
+              (Graphics/SVGA/Intro PC-GPE menu option)
+
+            ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+            ³      THIS FILE MAY NOT BE DISTRIBUTED     ³
+            ³ SEPARATE TO THE ENTIRE PC-GPE COLLECTION. ³
+            ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Disclaimer ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+I assume no responsibility whatsoever for any effect that this file, the
+information contained therein or the use thereof has on you, your sanity,
+computer, spouse, children, pets or anything else related to you or your
+existance. No warranty is provided nor implied with this information.
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Introduction ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+Western Digital have made a series of Paradise chips, the PVGA1A, WD90C00
+and WD90C11. Each chip is fully compatible with it's predecessors. There
+is also a WD90C10 which is a stripped down version of the WD90C00 used for
+motherboard VGA implementations and does not support 256 color modes higher
+that 320x200; this chip will not be discussed here.
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Paradise Extensions ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+To modify any of the Paradise extended registers you must enable the
+extensions. Disable them once you are done.
+
+To enable extensions:
+
+PortW[$3CE] := $050F; { Extensions on             }
+PortW[$3D4] := $8529; { Unlock PR10-PR17          }
+PortW[$3C4] := $4806; { Unlock extended sequencer }
+
+To disable extensions :
+
+PortW[$3CE] := $000F; { Extensions off          }
+PortW[$3D4] := $0029; { Lock PR10-PR17          }
+PortW[$3C4] := $0006; { Lock extended sequencer }
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Identifying the Paradise SVGA Chip ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+To identify if a Paradise SVGA chip is present read the 4 bytes at memory
+address C000:007D. These bytes should be the string "VGA=".
+
+                ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+                ³  Memory Address   Value      ³
+                ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+                ³  C000:007Dh        86d ('V') ³
+                ³  C000:007Eh        71d ('G') ³
+                ³  C000:007Fh        65d ('A') ³
+                ³  C000:0080h        61d ('=') ³
+                ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Identifying which Paradise Chip is Present ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+The Paradise chip present can be determined by trying to access selected
+registers. The following pseudo-code will determine the chip id:
+
+var old_value : byte;
+
+Enable Extensions
+
+{ Test for a PVGA1A }
+Port[$3D4] := $2B
+old_value := Port[$3D5]
+Port[$3D5] := $AA
+if Port[$3D5] <> $AA then
+  begin
+    chip is a PVGA1A
+    Port[$3D5] := old_value
+    return
+  end
+Port[$3D5] := old_value
+
+{ Distinguish between WD90C00 and WD90C10 }
+Port[$3C4] := $12
+old_value := Port[$3C5]
+Port[$3C5] := old_value and $BF
+if (Port[$3C5] and $40) <> 0 then
+  begin
+    chip is a WD90C00
+    return
+  end
+Port[$3C5] := old_value or $40
+if (Port[$3C5] and $40) = 0 then
+  begin
+    chip is a WD90C00
+    Port[$3C5] := old_value
+    return
+  end
+Port[$3C5] := old_value
+
+{ Distinguish between WD90C10 and WD90C11 }
+Port[$3C4] := $10
+old_value := Port[$3C5]
+Port[$3C5] := old_value and $FB
+if (Port[$3C5] and $04) <> 0 then
+  begin
+    chip is a WD90C10
+    Port[$3C5] := old_value
+    return
+  end
+Port[$3C5] := old_value or $04
+if (Port[$3C5] and $04) = 0 then
+  begin
+    chip is a WD90C10
+    Port[$3C5] := old_value
+    return
+  end
+
+{ We made it this far so it's a WD90C11 }
+chip is a WD90C11
+Port[$3C5] := old_value
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Paradise Graphics Display Modes ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+        ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+        ³ Mode     Resolution       Colors    Chips               ³
+        ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+        ³ 58h      800x600          16        pVGA1, WDC90cxx     ³
+        ³ 59h      800x600          2         pVGA1, WDC90cxx     ³
+        ³ 5Eh      640x400          256       pVGA1, WDC90cxx     ³
+        ³ 5Fh      640x480          256       pVGA1, WD90cxx      ³
+        ³ 5Ah      1024x768         2         WD90cxx             ³
+        ³ 5Bh      1024x768         4         WD90cxx             ³
+        ³ 5Dh      1024x768         16        WD90cxx, c11 (512K) ³
+        ³ 5Ch      800x600          256       WD90c11 (512K)      ³
+        ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Paradise Display Memory ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+Remember, extensions must be enabled before any of the following procedures
+are called.
+
+The Paradise can work in either single-paging mode, duel-paging mode or
+read/write mode. There are two registers used to select banks in each of
+the Paradise bank selection modes:
+
+          PR0A Address Offset A
+          Index : 09h at port 3CEh
+          Read/Write at port 3CFh
+          ÚÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄ¿
+          ³ 7 ³ 6 ³ 5 ³ 4 ³ 3 ³ 2 ³ 1 ³ 0 ³
+          ÀÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÙ
+                ÀÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÙ
+                           Bank
+
+          PR0B Address Offset A
+          Index : 0Ah at port 3CEh
+          Read/Write at port 3CFh
+          ÚÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄ¿
+          ³ 7 ³ 6 ³ 5 ³ 4 ³ 3 ³ 2 ³ 1 ³ 0 ³
+          ÀÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÙ
+                ÀÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÙ
+                           Bank
+
+There are 128 banks and the bank granularity is 4k, so if you want a bank
+granularity of 64k you must multiply the bank number by 16.
+
+
+Single Paging Mode
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+In single paging mode PR0A is set to map a bank to host memory at
+A000:0000-FFFFh. The bank is used for both reading and writing operations.
+To set up for single paging mode use the following procedure:
+
+Port[$3C4] := $11;                 { Disable read/write mode }
+Port[$3C5] := Port[$3C5] and $7F;
+Port[$3CE] := $0B;                 { Disable PR0B            }
+Port[$3CF] := Port[$3CF] and $F7;
+
+To set a 64k bank number in single paging mode use the following procedure:
+
+PortW[$3CE] := bank_number Shl 12 + $09;
+
+
+Duel Paging Mode
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+In duel paging mode PR0A is set to map a bank to host memory at
+A000:0000-7FFFh and PR0B is set to map a bank to host memory at
+A000:8000-FFFFh. Each bank is used for both reading and writing operations.
+
+To set up for duel paging mode use the following procedure:
+
+Port[$3C4] := $11;                 { Disable read/write mode }
+Port[$3C5] := Port[$3C5] and $7F;
+Port[$3CE] := $0B;                 { Enable PR0B             }
+Port[$3CF] := Port[$3CF] or $80;
+
+To set the lower bank use the same procedure as given for single-paging
+mode. The upper bank can be set with the following procedure:
+
+PortW[$3CE] := bank_number Shl 12 + $0A;
+
+
+Read/Write Paging Mode
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+In read/write paging mode PR0A is used to map a bank at A000:0000-FFFFh for
+read operations and PR0B is used to map a bank at A000:0000-FFFFh for write
+operations. To set up for read/write paging mode use the following procedure:
+
+Port[$3C4] := $11;                 { Enable read/write mode }
+Port[$3C5] := Port[$3C5] or $80;
+Port[$3CE] := $0B;                 { Enable PR0B             }
+Port[$3CF] := Port[$3CF] or $80;
+
+Setting PR0A and PR0B is the same as for duel paging mode.
+

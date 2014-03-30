@@ -1,0 +1,245 @@
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+    ASM2.TXT - intro to keyboard and flow control
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+    
+    Alright.  This bit of code introduces control flow, keyboard input, and 
+    a way to easily print out one character.
+
+ÄÄÄÄÄÄÄÄ
+    First off, lets examine the easiest one: printing a character.
+
+    It's like this: you put the character to print in DL, put 2 in AH and
+    call interrupt 21h.  Damn easy.
+
+ÄÄÄÄÄÄÄÄ
+    Ok, lets look at the next easiest one: keyboard input.
+
+    There are quite a few functions related to INT 16h (the keyboard
+    interrupt.)  They are:
+
+FUNCTION#
+---------
+
+    0h  -Gets a key from the keyboard buffer.  If there isn't one, it waits
+            until there is.
+            Returns the SCAN code in ah, and the ASCII translation in AL
+
+    1h  -Checks to see if a key is ready to grab.  Sets the zero flag if a
+            key is ready to grab.  Grab it with Fn# 0
+            This also returns the same info about the key as Fn#0, but does
+            not remove it from the buffer.
+
+    2h  -Returns the shift flags in al.  They are:
+            bit 7 - Insert active
+            bit 6 - Caps lock active
+            bit 5 - Num Lock active
+            bit 4 - Scroll lock active
+            bit 3 - Alt pressed
+            bit 2 - Ctrl pressed
+            bit 1 - Left shift pressed
+            bit 0 - right shift pressed
+
+    3h  -You can set the Typematic Rate and delay with this function
+            registers must be set as follows
+            AL = 5
+            BH = Delay value (0-3: 250,500,750,1000 millisec)
+            BL = Typematic rate (0-1fh) 1fh = slowest (2 chars per sec)
+                0 =fastest (30 chars per second)
+
+    4h  -Key Click control - not important
+
+    5h  -STUFF the keyboard
+        input:
+            CH = scan code
+            CL = ascii code
+
+        output:
+            al = 0 no error
+            al = 1 keyboard buffer is full
+
+   10h  -Same as #0, but its for the extended keyboard.  Checks all the keys.
+
+   11h  -Same as #1, but for the extended keyboard.
+
+   12h  -Same as #2, but AH contains additional shift flags:
+            bit 7 - Sys req pressed
+            bit 6 - Caps lock active
+            bit 5 - Num Lock active
+            bit 4 - Scroll lock active
+            bit 3 - Right Alt active
+            bit 2 - Right Ctrl active
+            bit 1 - Left Alt active
+            bit 0 - Right Alt active
+        Al is EXACTLY the same as in Fn#2
+
+
+WHERE AH= the function number when you call INT 16h
+
+ÄÄÄÄÄÄÄÄ
+    That's neat-o, eh?  Now on to flow controll via CMP and Jcc...
+
+CMP:
+ÄÄÄ
+    CMP is the same as SUB, but it does NOT alter any registers, only the
+    flags.  This is used in conjunction with Jcc.
+
+Jcc:
+ÄÄÄ
+    Ok, Jcc is not a real instruction, it means 'jump if conditionis met.'
+
+    I'll break this into 3 sections, comparing signed numbers, comparing 
+    unsigned numbers, and misc.
+
+    Note that a number being 'unsigned' or 'signed' only depends on how you
+    treat it.  That's why there are different Jcc for each...
+
+    If you treat it as a signed number, the highest bit denotes whether it's
+    negative or not.  
+    
+    Prove to yourself that 0FFFFh is actually -1 by adding 1 to 0FFFFh.  You 
+    should get a big zero: 00000h.  (Remember that the number is ONLY 16 bits
+    and the carry dissapears..)
+
+UNSIGNED:
+ÄÄÄÄÄÄÄÄ
+    JA  -jumps if the first number was above the second number
+    JAE -same as above, but will also jump if they are equal
+
+    JB  -jumps if the first number was below the second
+    JBE -duh...
+
+    JNA -jumps if the first number was NOT above... (same as JBE)
+    JNAE-jumps if the first number was NOT above or the same as..
+            (same as JB)
+    JNB -jumps if the first number was NOT below... (same as JAE)
+    JNBE-jumps if the first number was NOT below or the same as..
+            (same as JA)
+    JZ  -jumps if the two numbers were equal (zero flag = 1)
+    JE  -same as JZ, just a different name
+
+    JNZ -pretty obvious, I hope...
+    JNE -same as above...
+
+SIGNED:
+ÄÄÄÄÄÄ
+    JG  -jumps if the first number was > the second number
+    JGE -same as above, but will also jump if they are equal
+
+    JL  -jumps if the first number was < the second
+    JLE -duh...
+
+    JNG -jumps if the first number was NOT >... (same as JLE)
+    JNGE-jumps if the first number was NOT >=.. (same as JL)
+
+    JNL -jumps if the first number was NOT <... (same as JGE)
+    JNLE-jumps if the first number was NOT <=... (same as JG)
+
+    JZ, JE, JNZ, JNE - Same as for Unsigned
+
+MISC:
+ÄÄÄÄ
+    JC  -jumps if the carry flag is set
+    JNC -Go figgure...
+
+    Here's the rest of them... I've never had to use these, though...
+
+    JO  -jump if overflow flag is set
+    JNO -...
+
+    JP  -jump is parity flag is set
+    JNP -...
+    JPE -jump if parity even (same as JP)
+    JPO -jump if parity odd (same as JNP)
+
+    JS  -jumps if sign flag is set
+    JNS -...
+
+
+Here's the flags really quickly:
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+bit#    8 7 6 5 4 3 2 1 0
+        ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+symbol: O D I T S Z A P C
+
+    O = OverFlow flag
+    D = Direction flag  *
+    I = Interrupt flag
+    T = Trap flag
+    S = Sign flag
+    Z = Zero flag       *
+    A = Auxiliary flag
+    C = Carry flag      *
+
+The * denotes the ones that you should know.
+
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+That's it for now...  Until next time...
+
+Draeden\VLA
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ ASM2.ASM ³
+ÀÄÄÄÄÄÄÄÄÄÄÙ
+
+;   ASM2.ASM
+; Prints messages get keyboard input and has control flow
+
+    DOSSEG
+    .MODEL SMALL
+    .STACK 200h
+    .DATA
+
+Prompt      db  13,10,"Do you want to be prompted again? (Y/N) $"
+NoMessage   db  13,10,"Ok, then I won't prompt you anymore.$"
+YesMessage  db  13,10,"Here comes another prompt!$"
+UnKnownKey  db  13,10,"Please hit either Y or N.$"
+
+    .CODE
+
+START:
+    mov     ax,@DATA    ;moves the segment of data into ax
+    mov     ds,ax
+
+MainLoop:
+    mov     ah,9
+    mov     dx,offset Prompt
+    int     21h         ;print a message
+
+    mov     ah,0
+    int     16h         ;get a key, returned in AX
+                        ;AL is the ASCII part
+                        ;AH is the SCAN CODE
+    push    ax
+    mov     dl,al
+    mov     ah,2
+    int     21h         ;print character in dl
+    pop     ax
+
+    cmp     al,"Y"      ;was the character a 'Y'?
+    jne     NotYes      ;nope it was Not Equal
+
+    mov     ah,9
+    mov     dx,offset YesMessage
+    int     21h
+    jmp     MainLoop
+
+NotYes:
+    cmp     al,"N"      ;was the character a 'N'
+    je      ByeBye      ;Yes, it was Equal
+
+    mov     dx,offset UnknownKey
+    mov     ah,9
+    int     21h
+    jmp     MainLoop
+
+ByeBye:
+    mov     dx,offset NoMessage
+    mov     ah,9
+    int     21h
+
+    mov     ax,4c00h    ;Returns control to DOS
+    int     21h         ;MUST be here! Program will crash without it!
+
+END START

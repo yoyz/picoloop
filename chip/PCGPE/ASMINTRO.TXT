@@ -1,0 +1,626 @@
+
+        ÖÄÄÄÄÄÄÄÄÄÄ´% VLA Presents: Intro to Assembler %ÃÄÄÄÄÄÄÄÄÄÄ·
+        º                                                          º
+        ÓÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ½
+
+
+
+  ¯ Dedicated To Those Who Wish To Begin Exploring The Art Of Assembler. ®
+
+
+
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ  VLA Members Are  ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+                         (© Draeden - Main Coder ª)
+                      (© The Priest - Coder/ Artist ª)
+                  (© Lithium -  Coder/Ideas/Ray Tracing ª)
+                   (© The Kabal -  Coder/Ideas/Artwork ª)
+                      (© Desolation - Artwork/Ideas ª)
+
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ The Finn - Mods/Sounds ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+
+   ÖÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÍµ Contact Us On These Boards ÆÍÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ·
+   º                                                                    º
+   ³  % Phantasm BBS .................................. (206) 232-5912  ³
+   ³  * The Deep ...................................... (305) 888-7724  ³
+   ³  * Dark Tanget Systems ........................... (206) 722-7357  ³
+   ³  * Metro Holografix .............................. (619) 277-9016  ³
+   ³                                                                    ³
+   º        % - World Head Quarters      * - Distribution Site          º
+   ÓÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ½
+
+     Or Via Internet Mail For The Group: tkabal@carson.u.washington.edu
+
+                       Or to reach the other members:
+
+                        - draeden@u.washington.edu -
+
+                        - lithium@u.washington.edu -
+
+                       - desolation@u.washington.edu-
+
+
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+    VLA 3/93  Introduction to ASSEMBLER
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Here's something to help those of you who were having trouble understanding
+the instructional programs we released.  Dreaden made these files for the 
+Kabal and myself when we were just learning.  These files go over some of 
+the basic concepts of assembler.  Bonus of bonuses.  These files also have 
+programs imbedded in them.  Most of them have a ton of comments so even
+the beginning programmers should be able to figure them out.
+
+If you'd like to learn more, post a message on Phantasm.  We need to know
+where you're interests are before we can make more files to bring out the
+little programmers that are hiding inside all of us.
+
+    Lithium/VLA
+
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+    First thing ya need to know is a little jargon so you can talk about 
+the basic data structures with your friends and neighbors.  They are (in
+order of increasing size) BIT, NIBBLE, BYTE, WORD, DWORD, FWORD, PWORD and
+QWORD, PARA, KiloByte, MegaByte.  The ones that you'll need to memorize are
+BYTE, WORD, DWORD, KiloByte, and MegaByte.  The others aren't used all that 
+much, and you wont need to know them to get started.  Here's a little 
+graphical representation of a few of those data structures:
+
+(The zeros in between the || is a graphical representation of the number of
+bits in that data structure.)
+
+ÄÄÄÄÄÄ
+1 BIT :     |0|
+
+    The simplest piece of data that exists.  Its either a 1 or a zero.
+    Put a string of them together and you have a BASE-2 number system.
+    Meaning that instead of each 'decimal' place being worth 10, its only 
+    worth 2.  For instance: 00000001 = 1; 00000010 = 2; 00000011 = 3, etc..
+
+ÄÄÄÄÄÄ
+1 NIBBLE:   |0000|
+4 BITs
+
+    The NIBBLE is half a BYTE or four BITS.  Note that it has a maximum value
+    of 15 (1111 = 15).  Not by coincidence, HEXADECIMAL, a base 16 number 
+    system (computers are based on this number system) also has a maximum 
+    value of 15, which is represented by the letter 'F'.  The 'digits' in
+    HEXADECIMAL are (in increasing order): 
+    
+    "0123456789ABCDEF"
+
+    The standard notation for HEXADECIMAL is a zero followed by the number        
+    in HEX followed by a lowercase "h"  For instance: "0FFh" = 255 DECIMAL.
+
+ÄÄÄÄÄÄ
+1 BYTE      |00000000|
+2 NIBBLEs    ÀÄ AL ÄÙ
+8 BITs
+
+    The BYTE is the standard chunk of information.  If you asked how much 
+    memory a machine had, you'd get a response stating the number of BYTEs it
+    had. (Usually preceded by a 'Mega' prefix).  The BYTE is 8 BITs or 
+    2 NIBBLEs.  A BYTE has a maximum value of 0FFh (= 255 DECIMAL).  Notice
+    that because a BYTE is just 2 NIBBLES, the HEXADECIMAL representation is
+    simply two HEX digits in a row (ie. 013h, 020h, 0AEh, etc..)
+
+    The BYTE is also that size of the 'BYTE sized' registers - AL, AH, BL, BH,
+    CL, CH, DL, DH.
+
+ÄÄÄÄÄÄ
+1  WORD      |0000000000000000|
+2  BYTEs      ÀÄ AH ÄÙÀÄ AL ÄÙ     
+4  NIBBLEs    ÀÄÄÄÄÄ AX ÄÄÄÄÄÙ
+16 BITs
+
+    The WORD is just two BYTEs that are stuck together.  A word has a maximum 
+    value of 0FFFFh (= 65,535).  Since a WORD is 4 NIBBLEs, it is represented
+    by 4 HEX digits.  This is the size of the 16bit registers on the 80x86
+    chips.  The registers are: AX, BX, CX, DX, DI, SI, BP, SP, CS, DS, ES, SS,
+    and IP.  Note that you cannot directly change the contents of IP or CS in 
+    any way.  They can only be changed by JMP, CALL, or RET.
+
+ÄÄÄÄÄÄ
+1  DWORD
+2  WORDs     |00000000000000000000000000000000|
+4  BYTEs      ³               ÀÄ AH ÄÙÀÄ AL ÄÙ     
+8  NIBBLEs    ³               ÀÄÄÄÄÄ AX ÄÄÄÄÄÙ
+32 BITs       ÀÄÄÄÄÄÄÄÄÄÄÄÄ EAX ÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+    A DWORD (or "DOUBLE WORD") is just two WORDs, hence the name DOUBLE-WORD.
+    This can have a maximum value of 0FFFFFFFFh (8 NIBBLEs, 8 'F's) which
+    equals 4,294,967,295.  Damn large.  This is also the size or the 386's
+    32bit registers: EAX, EBX, ECX, EDX, EDI, ESI, EBP, ESP, EIP.  The 'E '
+    denotes that they are EXTENDED registers.  The lower 16bits is where the 
+    normal 16bit register of the same name is located. (See diagram.)
+
+ÄÄÄÄÄÄ
+1    KILOBYTE   |-lots of zeros (8192 of 'em)-|
+256  DWORDs
+512  WORDs
+1024 BYTEs
+2048 NIBBLEs
+8192 BITs
+
+    We've all heard the term KILOBYTE byte, before, so I'll just point out
+    that a KILOBYTE, despite its name, is -NOT- 1000 BYTEs.  It is actually
+    1024 bytes.
+
+ÄÄÄÄÄÄ
+          1 MEGABYTE   |-even more zeros (8,388,608 of 'em)-|
+      1,024 KILOBYTEs
+    262,144 DWORDs
+    524,288 WORDs
+  1,048,576 BYTEs
+  2,097,152 NIBBLEs
+  8,388,608 BITs
+
+    Just like the KILOBYTE, the MEGABYTE is -NOT- 1 million bytes.  It is
+    actually 1024*1024 BYTEs, or 1,048,578 BYTEs
+
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+    Now that we know what the different data types are, we will investigate
+    an annoying little aspect of the 80x86 processors.  I'm talking about 
+    nothing other than SEGMENTS & OFFSETS!
+
+
+SEGMENTS & OFFSETS:
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+    Pay close attention, because this topic is (I believe) the single most
+    difficult (or annoying, once you understand it) aspect of ASSEMBLER.
+
+An OverView:
+
+    The original designers of the 8088, way back when dinasaurs ruled the 
+    planet, decided that no one would ever possibly need more than one MEG
+    (short for MEGABYTE :) of memory.  So they built the machine so that it 
+    couldn't access above 1 MEG. To access the whole MEG, 20 BITs are needed.
+    Problem was that the registers only had 16 bits, and if the used two
+    registers, that would be 32 bits, which was way too much (they thought.)  
+    So they came up with a rather brilliant (blah) way to do their addressing-
+    they would use two registers.  They decided that they would not be 32bits, 
+    but the two registers would create 20 bit addressing.  And thus Segments
+    and OFfsets were born.  And now the confusing specifics.
+
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+    
+OFFSET  = SEGMENT*16
+SEGMENT = OFFSET /16    ;note that the lower 4 bits are lost
+
+                 
+SEGMENT * 16    |0010010000010000----|  range (0 to 65535) * 16
+ +                    
+OFFSET          |----0100100000100010|  range (0 to 65535)
+ =
+20 bit address  |00101000100100100010|  range 0 to 1048575 (1 MEG)
+                 ÀÄÄÄÄÄ DS ÄÄÄÄÄÙ
+                     ÀÄÄÄÄÄ SI ÄÄÄÄÄÙ
+                     ÀÄ OverlapÄÙ
+
+ This shows how DS:SI is used to construct a 20 bit address.
+
+Segment registers are: CS, DS, ES, SS. On the 386+ there are also FS & GS
+
+Offset registers  are: BX, DI, SI, BP, SP, IP.  In 386+ protected mode, ANY
+        general register (not a segment register) can be used as an Offset
+        register.  (Except IP, which you can't access.)
+
+    CS:IP => Points to the currently executing code.
+    SS:SP => Points to the current stack position.
+    
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+    If you'll notice, the value in the SEGMENT register is multiplied by
+    16 (or shifted left 4 bits) and then added to the OFFSET register.
+    Together they create a 20 bit address.  Also Note that there are MANY
+    combinations of the SEGMENT and OFFSET registers that will produce the 
+    same address.  The standard notation for a SEGment/OFFset pair is:
+
+ÄÄÄÄ
+SEGMENT:OFFSET or A000:0000 ( which is, of course in HEX )
+
+    Where SEGMENT = 0A000h and OFFSET = 00000h.  (This happens to be the 
+    address of the upper left pixel on a 320x200x256 screen.)
+ÄÄÄÄ
+
+    You may be wondering what would happen if you were to have a segment
+    value of 0FFFFh and an offset value of 0FFFFh.  
+
+    Take notice: 0FFFFh * 16 (or 0FFFF0h ) + 0FFFFh = 1,114,095, which is 
+      definately larger than 1 MEG (which is 1,048,576.)
+
+    This means that you can actually access MORE than 1 meg of memory!  
+    Well, to actually use that extra bit of memory, you would have to enable
+    something called the A20 line, which just enables the 21st bit for
+    addressing.  This little extra bit of memory is usually called
+    "HIGH MEMORY" and is used when you load something into high memory or
+    say DOS = HIGH in your AUTOEXEC.BAT file.  (HIMEM.SYS actually puts it up
+    there..)  You don't need to know that last bit, but hey, knowledge is 
+    good, right?
+
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+    THE REGISTERS:
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+    I've mentioned AX, AL, and AH before, and you're probably wondering what
+    exactly they are.  Well, I'm gonna go through one by one and explain
+    what each register is and what it's most common uses are.  Here goes:
+
+ÄÄÄÄ
+AX (AH/AL): 
+    AX is a 16 bit register which, as metioned before, is merely two bytes
+    attached together.  Well, for AX, BX, CX, & DX you can independantly 
+    access each part of the 16 bit register through the 8bit (or byte sized)
+    registers.  For AX, they are AL and AH, which are the Low and High parts
+    of AX, respectivly.  It should be noted that any change to AL or AH, 
+    will change AX.  Similairly any changes to AX may or may not change AL and
+    AH.  For instance:
+
+ÄÄÄÄÄÄÄÄ
+Let's suppose that AX = 00000h (AH and AL both = 0, too) 
+
+    mov     AX,0
+    mov     AL,0
+    mov     AH,0
+
+Now we set AL = 0FFh.  
+ 
+    mov     AL,0FFh
+
+:AX => 000FFh  ;I'm just showing ya what's in the registers
+:AL =>   0FFh
+:AH => 000h
+
+Now we increase AX by one:
+
+    INC     AX
+
+:AX => 00100h (= 256.. 255+1= 256)
+:AL =>   000h (Notice that the change to AX changed AL and AH)
+:AH => 001h
+
+Now we set AH = 0ABh (=171)
+
+    mov     AH,0ABh
+
+:AX => 0AB00h
+:AL =>   000h
+:AH => 0ABh
+
+Notice that the first example was just redundant...
+We could've set AX = 0 by just doing
+
+    mov     ax,0
+
+:AX => 00000h
+:AL =>   000h
+:AH => 000h
+
+I think ya got the idea...
+ÄÄÄÄÄÄÄÄ
+
+    SPECIAL USES OF AX:
+        Used as the destination of an IN (in port) 
+            ex: IN  AL,DX
+                IN  AX,DX
+
+        Source for the output for an OUT           
+            ex: OUT DX,AL
+                OUT DX,AX
+
+        Destination for LODS (grabs byte/word from [DS:SI] and INCreses SI)
+            ex: lodsb   (same as:   mov al,[ds:si] ; inc si )
+                lodsw   (same as:   mov ax,[ds:si] ; inc si ; inc si )
+
+        Source for STOS      (puts AX/AL into [ES:DI] and INCreses DI)
+            ex: stosb   (same as:   mov [es:di],al ; inc di )
+                stosw   (same as:   mov [es:di],ax ; inc di ; inc di )
+
+        Used for MUL, IMUL, DIV, IDIV
+ÄÄÄÄ
+BX (BH/BL): same as AX (BH/BL)
+
+    SPECIAL USES:
+        As mentioned before, BX can be used as an OFFSET register.
+            ex: mov ax,[ds:bx]  (grabs the WORD at the address created by
+                                    DS and BX)
+
+CX (CH/CL): Same as AX
+    
+    SPECIAL USES:
+        Used in REP prefix to repeat an instruction CX number of times
+            ex: mov cx,10
+                mov ax,0
+                rep stosb ;this would write 10 zeros to [ES:DI] and increase
+                          ;DI by 10.
+        Used in LOOP
+            ex: mov cx,100
+            THELABEL:
+
+                ;do something that would print out 'HI'
+
+                loop THELABEL   ;this would print out 'HI' 100 times
+                                ;the loop is the same as: dec cx
+                                                          jne THELABAL
+            
+DX (DH/DL): Same as above
+    SPECIAL USES:
+        USED in word sized MUL, DIV, IMUL, IDIV as DEST for high word
+                or remainder
+
+            ex: mov bx,10
+                mov ax,5
+                mul bx  ;this multiplies BX by AX and puts the result 
+                        ;in DX:AX
+
+            ex: (continue from above)
+                div bx  ;this divides DX:AX by BX and put the result in AX and
+                        ;the remainder (in this case zero) in DX
+
+        Used as address holder for IN's, and OUT's (see ax's examples)
+            
+INDEX REGISTERS:  
+
+    DI: Used as destination address holder for stos, movs (see ax's examples)
+        Also can be used as an OFFSET register
+
+    SI: Used as source address holder for lods, movs (see ax's examples)
+        Also can be used as OFFSET register
+
+        Example of MOVS:
+            movsb   ;moves whats at [DS:SI] into [ES:DI] and increases
+            movsw   ; DI and SI by one for movsb and 2 for movsw
+
+        NOTE: Up to here we have assumed that the DIRECTION flag was cleared.
+            If the direction flag was set, the DI & SI would be DECREASED 
+            instead of INCREASED.
+            ex:     cld     ;clears direction flag
+                    std     ;sets direction flag
+
+STACK RELATED INDEX REGISTERS:
+    BP: Base Pointer. Can be used to access the stack. Default segment is
+        SS.  Can be used to access data in other segments throught the use
+        of a SEGMENT OVERRIDE.
+
+        ex: mov al,[ES:BP] ;moves a byte from segment ES, offset BP
+            Segment overrides are used to specify WHICH of the 4 (or 6 on the
+            386) segment registers to use.
+
+    SP: Stack Pointer. Does just that.  Segment overrides don't work on this 
+        guy.  Points to the current position in the stack.  Don't alter unless
+        you REALLY know what you are doing.
+        
+SEGMENT REGISTERS:
+    DS: Data segment- all data read are from the segment pointed to be this
+        segment register unless a segment overide is used.
+        Used as source segment for movs, lods
+        This segment also can be thought of as the "Default Segment" because
+        if no segment override is present, DS is assumed to be the segmnet
+        you want to grab the data from.
+
+    ES: Extra Segment- this segment is used as the destination segment
+        for movs, stos
+        Can be used as just another segment...  You need to specify [ES:°°]
+        to use this segment.
+
+    FS: (386+) No particular reason for it's name... I mean, we have CS, DS,
+        and ES, why not make the next one FS? :)  Just another segment..
+    
+    GS: (386+) Same as FS
+
+    
+OTHERS THAT YOU SHOULDN'T OR CAN'T CHANGE:
+    CS: Segment that points to the next instruction- can't change directly
+    IP: Offset pointer to the next instruction- can't even access
+        The only was to change CS or IP would be through a JMP, CALL, or RET
+
+    SS: Stack segment- don't mess with it unless you know what you're
+        doing.  Changing this will probably crash the computer.  This is the
+        segment that the STACK resides in.
+
+ÄÄÄÄÄÄÄÄ
+Heck, as long as I've mentioned it, lets look at the STACK:
+
+    The STACK is an area of memory that has the properties of a STACK of
+    plates- the last one you put on is the first one take off.  The only
+    difference is that the stack of plates is on the roof.  (Ok, so that
+    can't really happen... unless gravity was shut down...)  Meaning that
+    as you put another plate (or piece of data) on the stack, the STACK grows
+    DOWNWARD.  Meaning that the stack pointer is DECREASED after each PUSH,
+    and INCREASED after each POP.
+
+  _____ Top of the allocated memory in the stack segment (SS)
+    ş 
+    ş
+    ş
+    ş ® SP (the stack pointer points to the most recently pushed byte)
+
+    Truthfully, you don't need to know much more than a stack is Last In,
+    First Out (LIFO).
+
+  WRONG ex: push    cx  ;this swaps the contents of CX and AX
+            push    ax  ;of course, if you wanted to do this quicker, you'd
+            ...
+            pop     cx  ;just say XCHG cx,ax
+            pop     ax  ; but thats not my point.
+
+  RIGHT ex: push    cx  ;this correctly restores AX & CX  
+            push    ax
+            ...
+            pop     ax
+            pop     cx
+
+ÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Now I'll do a quick run through on the assembler instructions that you MUST
+know:
+
+ÄÄÄÄ
+MOV:
+
+    Examples of different addressing modes: 
+
+        MOV ax,5        ;moves and IMMEDIATE value into ax (think 'AX = 5')
+        MOV bx,cx       ;moves a register into another register
+        MOV cx,[SI]     ;moves [DS:SI] into cx (the Default Segment is Used)
+        MOV [DI+5],ax   ;moves ax into [DS:DI+5]
+        MOV [ES:DI+BX+34],al    ;same as above, but has a more complicated
+                                ;OFFSET (=DI+BX+34) and a SEGMENT OVERRIDE
+        MOV ax,[546]    ;moves whats at [DS:546] into AX
+                        
+    Note that the last example would be totally different if the brackets 
+    were left out.  It would mean that an IMMEDIATE value of 546 is put into
+    AX, instead of what's at offset 546 in the Default Segment.
+    
+ANOTHER STANDARD NOTATION TO KNOW:
+    Whenever you see brackets [] around something, it means that it refers to 
+    what is AT that offset.  For instance, say you had this situation:
+
+ÄÄÄÄÄÄÄÄÄÄÄÄ
+MyData  dw  55
+    ...
+    mov ax,MyData
+ÄÄÄÄÄÄÄÄÄÄÄÄ
+
+    What is that supposed to mean?  Is MyData an Immediate Value?  This is
+    confusing and for our purposes WRONG.  The 'Correct' way to do this would
+    be:
+
+ÄÄÄÄÄÄÄÄÄÄÄÄ
+MyData  dw  55
+    ...
+    mov ax,[MyData]
+ÄÄÄÄÄÄÄÄÄÄÄÄ
+
+    This is clearly moving what is AT the address of MyData, which would be
+    55, and not moving the OFFSET of MyData itself.  But what if you 
+    actually wanted the OFFSET?  Well, you must specify directly.
+
+ÄÄÄÄÄÄÄÄÄÄÄÄ
+MyData  dw  55
+    ...
+    mov ax,OFFSET MyData
+ÄÄÄÄÄÄÄÄÄÄÄÄ
+
+    Similiarly, if you wanted the SEGMENT that MyData was in, you'd do this:
+
+ÄÄÄÄÄÄÄÄÄÄÄÄ
+MyData  dw  55
+    ...
+    mov ax,SEG MyData
+ÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+INT:
+    Examples:
+        INT 21h     ;calls DOS standard interrupt # 21h
+        INT 10h     ;the Video BIOS interrupt..
+        
+    INT is used to call a subroutine that performs some function that you'd
+    rather not write yourself.  For instance, you would use a DOS interrupt 
+    to OPEN a file.  You would similiarly use the Video BIOS interrupt to
+    set the screen mode, move the cursor, or to do any other function that 
+    would be difficult to program.
+
+    Which subroutine the interrupt preforms is USUALLY specified by AH.
+    For instance, if you wanted to print a message to the screen you'd
+    use INT 21h, subfunction 9 by doing this:
+
+ÄÄÄÄÄÄÄÄÄÄÄÄ
+    mov ah,9
+    int 21h
+ÄÄÄÄÄÄÄÄÄÄÄÄ
+
+    Yes, it's that easy.  Of course, for that function to do anything, you
+    need to specify WHAT to print.  That function requires that you have
+    DS:DX be a FAR pointer that points to the string to display.  This string
+    must terminate with a dollar sign.  Here's an example:
+
+ÄÄÄÄÄÄÄÄÄÄÄÄ
+MyMessage db    "This is a message!$" 
+    ...
+    mov     dx,OFFSET MyMessage
+    mov     ax,SEG MyMessage
+    mov     ds,ax
+    mov     ah,9
+    int     21h
+    ...
+ÄÄÄÄÄÄÄÄÄÄÄÄ
+
+    The DB, like the DW (and DD) merely declares the type of a piece of data.
+
+        DB => Declare Byte (I think of it as 'Data Byte')
+        DW => Declare Word
+        DD => Declare Dword
+    
+    Also, you may have noticed that I first put the segment value into AX
+    and then put it into DS.  I did that because the 80x86 does NOT allow
+    you to put an immediate value into a segment register.  You can, however,
+    pop stuff into a Segment register or mov an indexed value into the
+    segment register.  A few examples:
+
+ÄÄÄÄÄÄÄÄÄÄÄÄ
+  LEGAL:
+    mov     ax,SEG MyMessage
+    mov     ds,ax
+
+    push    SEG Message
+    pop     ds
+
+    mov     ds,[SegOfMyMessage]     
+            ;where [SegOfMyMessage] has already been loaded with 
+            ; the SEGMENT that MyMessage resides in
+  ILLEGAL:
+    mov     ds,10
+    mov     ds,SEG MyMessage
+ÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Well, that's about it for what you need to know to get started...
+
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+    And now the FRAME for an ASSEMBLER program.
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+The Basic Frame for an Assembler program using Turbo Assembler simplified
+    directives is:
+
+;===========-
+
+    DOSSEG  ;This arranges the segments in order according DOS standards
+            ;CODE, DATA, STACK
+    .MODEL SMALL    ;dont worry about this yet
+    .STACK  200h    ;tells the compiler to put in a 200h byte stack
+    .CODE           ;starts code segment
+
+    ASSUME  CS:@CODE, DS:@CODE 
+
+START:      ;generally a good name to use as an entry point
+
+    mov     ax,4c00h
+    int     21h
+
+END START
+
+;===========- By the way, a semicolon means the start of a comment.
+
+    If you were to enter this program and TASM & TLINK it, it would execute
+    perfectly.  It will do absolutly nothing, but it will do it well.
+
+    What it does:
+        Upon execution, it will jump to START. move 4c00h into AX,
+        and call the DOS interrupt, which exits back to DOS.
+
+        Outout seen: NONE
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+That's nice, eh?  If you've understood the majority of what was presented 
+in this document, you are ready to start programming!
+
+See ASM0.TXT and ASM0.ASM to continue this wonderful assembler stuff...
+
+
+Written By Draeden/VLA
+

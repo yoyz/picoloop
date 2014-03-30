@@ -1,0 +1,484 @@
+
+        ÖÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´% VLA Proudly Presents %ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ·
+        º                                                          º
+        ÓÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ½
+
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+          ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+              Three Dimensional Rotations For Computer Graphics
+          ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+                              By Lithium /VLA
+
+
+
+    One of the most difficult programming difficulties you will face is that
+of representing a 3D world on that 2D screen in front of you.  It requires
+some linear alegbra that may be difficult for some, so I will spend some
+bytes explaining the mathmatic computations of using matricies in addition
+to the equations to get you going.  This document is intended to be an aid
+to anyone programming in any language, as a result it will use mathmatic
+notation.  If you are worthy of using these routines, you ought to be able
+to get them into your favorite language.  All I ask is that you pay a little
+tribute to your programming buddies in VLA.
+
+
+    If you aren't a math person, skip to the end and get the final equations.  
+Just be forewarned, implimenting these equations into a coherient 3D world 
+is hard enough when you undersand the mathmatics behind them...
+
+                
+                   REAL PROGRAMMERS AREN'T AFRAID OF MATH
+
+
+3D Coordinates
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+    Just so we all understand each other, 3D is defined in of course three
+directions, we'll call them (X,Y,Z).  X will be the horizontal plane of your
+screen, Z will stretch vertically, and Y will extend out of and into your
+screen.  Got it?  Hope so, becuase it gets a bit tricky now.  The next 
+system is called Sphereical Coordinates it is defined by angles and distance 
+in (é,í,p) These Greek letters are Theta (é), Phi (í), and Roe (p)
+
+        Z                                  Z
+        |                                  |         é - Angle in the XY 
+        |                                  |\            plane
+        |                                  |\\
+        |                                  | \\      í - Angle from the Z
+        |______ X                          |í_|\___X     axis
+       /                                  / \ v \
+      /                                  / é \   o   p - Distance to point
+     /                                  /\    \  |       from the origin
+    /                                  /  -->  \ |       (0,0,0)
+   Y                                  Y         \|
+
+
+    To relate the two systems you can use these equations.
+
+    X = p(siní)(cosé)                 é = arctan (X/Y)
+    Y = p(siní)(siné)                 í = arccos (Z/p)
+    Z = p(cosí)                       p = û(X^2 + Y^2 + Z^2)
+
+    If these don't seem right, do a couple of example problems for yourself,
+it should make since after a bit of trig.
+
+
+Matrix Notation
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+    Lets say I can define Xt and Yt with the equations:
+
+Xt = aX + bY        Where a,b,c,d are coeffiencets
+Yt = cX + dY
+
+    The matrix notation for this system of equations would be:
+               Ú   ¿
+(Xt,Yt) = (X,Y)³a c³
+               ³   ³        And we solve for this with these steps
+               ³b d³
+               À   Ù
+           
+           Ú   ¿ 
+ Xt = (X,Y)³a .³  = aX + bY
+           ³   ³            We move across the coordinates left to right
+           ³b .³            and multiply them by the coeffients in the
+           À   Ù            matrix, top to bottom
+           Ú   ¿ 
+ Yt = (X,Y)³. c³  = cX + dY
+           ³   ³            For Y, the second number, we use the second
+           ³. d³            column of the matrix
+           À   Ù            
+
+ We can also multiply matricies in this fashion    
+                        Ú   ¿           Ú   ¿
+ T = T1*T2  Where  T1 = ³a c³ and  T2 = ³e g³
+                        ³   ³           ³   ³
+                        ³b d³           ³f h³
+                        À   Ù           À   Ù
+
+Ú   ¿Ú   ¿   Ú                     ¿
+³a c³³e g³   ³(ae + cf)   (ag + ch)³    rows ->   columns |
+³   ³³   ³ = ³                     ³                      v
+³b d³³f h³   ³(be + df)   (bg + dh)³
+À   ÙÀ   Ù   À                     Ù
+
+    This product is dependent on position, so that means that 
+    T1*T2 *DOES NOT* equal T2*T1
+
+    In English, the process above went like this, we move left to right in 
+the first matrix, T1, and top to bottom in the second, T2.  AE + CF is our 
+first position.  
+
+    The numbers in the first row are multiplied by the numbers in the
+first column.  1st * 1st + 2nd * 2nd is our first value for the new matrix.
+Then you repeat the process for the next column of the second matrix.  
+
+    After that, you move down to the next row of the first matrix, and 
+multiply it by the 1st column of the second matrix.  You then do the same 
+for the next column of the second matrix.  This process is repeated until 
+you've done all of the rows and columns.  
+
+If this is your introduction to matricies, don't feel bad if you're a bit 
+confused.  They are a different mode of thinking about equations.  The 
+operations above give the same results as if you were to do the long hand 
+algebra to solve them.  It may seem a bit more difficult for these examples, 
+but when you get to systems of equations with many variables, this way is 
+MUCH faster to compute.  Trust me, especially when you make your program do 
+it.
+
+
+So, now you have the basic math....
+
+
+    One important point for these matricies below.  I will use a homogeneous
+coordinate system, (X/r, Y/r, Z/r, r) Now I'll use r=1, so nothing will
+really be different in my calculations, but you need to understand the 
+purpose.  
+
+    This form is very convienent for the translations and rotation
+equations we will need to do because it allows for scaling of our points with
+respect to a center point.  
+    
+    Consider a point (2,2,2) in an object centered at (1,1,1).  If we were 
+to scale the X direction by 3,(the X length to the center is 3 times what it 
+was) the point we want would be (4,2,2).  Our new X = 3*(OldX-CenterX).  
+Without the added factor of the homogeneous system, calculations assume all 
+objects are centered at the origin, so our point would have turned out to be 
+(6,2,2), NOT the one we wanted.  So that's why we are going to do it that way.
+
+
+
+                        ROTATIONS AND TRANSFORMATIONS
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Translation
+ÄÄÄÄÄÄÄÄÄÄÄ
+    We will start with translation from the origin.  Most objects are not
+at (0,0,0,1), so we'll call their center (Tx,Ty,Tz,1).  
+
+Ú             ¿
+³ 1   0   0  0³ = T1
+³             ³
+³ 0   1   0  0³     This physically moves the object, so it is centered
+³             ³     at the origin for our calcuations, eliminating the
+³ 0   0   1  0³     need for a -Tx for each X, the matrix will factor it
+³             ³     in when we multiply it by the others
+³-Tx -Ty -Tz 1³
+À             Ù     But, we need sphereical coordinates...
+
+Ú                                            ¿
+³       1             0            0      0  ³
+³                                            ³  =  T1  
+³       0             1            0      0  ³
+³                                            ³
+³       0             0            1      0  ³
+³                                            ³
+³-p(cosé)(siní) -p(siné)(siní) -p(cosí)   1  ³
+À                                            Ù
+
+
+XY Clockwise Rotation
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+    This will be our first rotation, about the Z-Axis
+
+Ú                   ¿
+³ siné  cosé  0   0 ³
+³                   ³  =  T2
+³-cosé  siné  0   0 ³
+³                   ³
+³  0     0    1   0 ³
+³                   ³
+³  0     0    0   1 ³
+À                   Ù
+
+
+YZ Counter-Clockwise Rotation
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+    Now we rotate about the X axis
+Ú                   ¿
+³  1    0    0    0 ³
+³                   ³  =  T3
+³  0 -cosí -siní  0 ³
+³                   ³
+³  0  siní -cosí  0 ³
+³                   ³
+³  0    0    0    1 ³
+À                   Ù
+
+    Notice that with two rotations that we can get any position in 3D space.
+
+Left Hand Correction 
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+    This will flip the X coordinates.  Think about when you
+look into the mirror, your left hand looks like your right.
+These rotations do the same thing, so by flipping the X, it
+will make your X move right when you increase it's value.
+
+Ú             ¿
+³ -1  0  0  0 ³
+³             ³  =  T4
+³  0  1  0  0 ³
+³             ³
+³  0  0  1  0 ³
+³             ³
+³  0  0  0  1 ³
+À             Ù
+
+
+The Final Viewing Matrix
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+    This is the net transformation matrix for our viewing perspective
+
+The math for this one is really messy, and I would need to go over even
+more matrix stuff to get it reduced, so I will ask you to trust my 
+calculations
+
+V = T1*T2*T3*T4
+
+Ú                                        ¿
+³ -siné  -(cosé)(cosí)  -(cosé)(siní)  0 ³
+³                                        ³  =  V
+³  cosé  -(siné)(cosí)  -(siné)(siní)  0 ³
+³                                        ³
+³   0         siní          -cosí      0 ³
+³                                        ³
+³   0          0              p        1 ³
+À                                        Ù
+
+
+Lets say our original (X,Y,Z,1) were just that, and the point after the 
+rotation is (Xv,Yv,Zv,1)
+
+(Xv,Yv,Zv,1) = (X,Y,Z,1) * V
+
+
+Xv = -Xsiné + Ycosé
+
+Yv = -X(cosé)(cosí) - Y(siné)(cosí) + Zsiní
+
+Zv = -X(cosé)(siní) - Y(siné)(siní) - Zcosí + p
+
+
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+
+    Some people have had trouble concepts of this implimentation, so I have
+another way of setting up the equations.  This works off of the straight
+X,Y, and Z coordinates too, but uses another angle.
+
+
+We will define the following variables
+
+Xan = Rotation about the X-Axis  
+Yan = Rotation about the Y-Axis  
+Zan = Rotation about the Z-Axis
+
+
+Rotation about the Y Axis 
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Ú                                   ¿
+³  cos(Yan)     0       sin(Yan)    ³
+³                                   ³  
+³   0           1           0       ³
+³                                   ³
+³ -sin(Yan)     0       cos(Yan)    ³
+À                                   Ù
+
+
+Rotation about the Z Axis 
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Ú                                   ¿
+³   1           0           0       ³
+³                                   ³  
+³   0        cos(Zan)   -sin(Zan)   ³
+³                                   ³
+³   0        sin(Zan)    cos(Zan)   ³
+À                                   Ù
+
+
+Rotation about the X Axis 
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Ú                                   ¿
+³  cos(Xan)  -sin(Xan)      0       ³
+³                                   ³
+³  sin(Xan)   cos(Xan)      0       ³
+³                                   ³
+³   0           0           1       ³
+À                                   Ù
+
+
+For simplification, lets call sin(Yan) = s1, cos(Xan) = c3, 
+ sin(Zan) = s2, etc
+
+Final Rotation Matrix
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Ú                                                       ¿
+³  c1c3 + s1s2s3        -c1s3 + c3s1s2          c2s1    ³
+³                                                       ³
+³      c2s3                  c2c3               -s2     ³
+³                                                       ³
+³ -c3s1 + c1s2s3         s1s3 + c1c3s2          c1c2    ³
+À                                                       Ù
+
+
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Xv = x(s1s2s3 + c1c3) + y(c2s3) + z(c1s2s3 - c3s1)
+
+Yv = x(c3s1s2 - c1s3) + y(c2c3) + z(c1c3s2 + s1s3)
+
+Zv = x(c1s2s3 - c3s1) + y(-s2)  + z(c1c2)
+
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+
+Where Xv,Yv, and Zv are the final rotated points and the little x,y,z are
+the original points.
+
+
+
+
+
+        Normal Vectors - The Secret To Shading and Plane Elimination
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+
+    So, now you have the rotation equations...  But, how do we make it fast?
+Well, one of the best optimizations you can impliment is plane elimination.
+It boils down to not displaying the planes that won't be seen.  With that
+said, here comes more math....
+
+                        BE A MAN, KNOW YOUR NORMALS
+
+    A 'normal' vector is perpendicular to a plane.  Imagine the face of a
+clock as a plane.  Take your right hand and point your thumb toward yourself
+and the other end toward the clock.  Now curl your fingers in the 
+counter-clockwise direction.  Your thumb is pointing in the direction of the
+normal vector.  This is called 'The Right Hand Rule' and it is the basis for
+figuring the facing of planes.
+
+    A plane can be determined with three points, try it.  That's the minimum
+you need, so that's what we will base our process on.  Now if we have a line
+segment, we could move it to the origin, maintaining it's direction and 
+lenght by subtracting the (X,Y,Z) of one of the points from both ends.  This
+is our definition of a vector.  A line segment, starting at the origin and
+extending in the direction (X,Y,Z).  
+
+    Here will be our plane, built from the three points below.
+
+(X1,Y1,Z1)      V = (X1-X2, Y1-Y2, Z1-Z2)
+(X2,Y2,Z2)      W = (X1-X3, Y1-Y3, Z1-Z3)
+(X3,Y3,Z3)
+
+    So, we have our three points that define a plane.  From these points we
+create two vectors V and W.  Now if you where to use the right hand rule with
+these vectors, pointing your fingers in the direction of V and curling them
+toward the direction of W, you would have the direction of the Normal vector.
+This vector is perpendicular to both vectors, and since we have defined the
+plane by these vectors, the normal is perpendicular to the plane as well.
+
+The process of finding the normal vector is called the 'Cross Product' and
+it is of this form:
+
+     Ú                     ¿
+V*W =³   i      k      j   ³ 
+     ³                     ³
+     ³ X1-X2  Y1-Y2  Z1-Z2 ³
+     ³                     ³
+     ³ X1-X3  Y1-Y3  Z1-Z3 ³
+     À                     Ù
+
+ i = (Y1-Y2)(Z1-Z3) - (Z1-Z2)(Y1-Y3)
+
+-k = (Z1-Z2)(X1-X3) - (X1-X2)(Z1-Z3) 
+
+ j = (X1-X2)(Y1-Y3) - (Y1-Y2)(X1-X3)
+
+The Normal to the plane is (i,-k,j)
+
+
+NOTE: V*W *DOESN'T* equal W*V, it will be pointing in the negative direction
+        To prove that to yourself, lets go back to how I explained it before
+        We pointed in the direction of V and curled our fingers toward W, the
+        normal vector in the direction of your thumb.  Try it in the 
+        direction of W, toward V.  It should be in the opposite direction.
+        Your normal, still perpendicular to both vectors, but it is negative.
+        If you use in your program, you will have the planes appearing when
+        they shouldn't and dissapearing when they are coming into view.
+
+    So, now that we have a way to determin the direction of the plane,
+how do we hide the plane?  If the angle between the view point and the
+normal is greater than 90 degrees, don't show it.  One quick way that I
+always use is to place the view point on an axis.  I tipically set the 
+Z axis to come out of the screen, Y up and X across.  Set the view point
+to be at a positive point on the Z and then, if that normal vector has Z
+greater than zero, I display it, otherwise I skip to the next one.
+
+    This also has an application in shading.  If you define a light scource,
+just like the view point, you find the angle the normal and the light form.
+Since you don't usually just want two colors, our 90 degree trick won't work
+for you, but by finding this angle, and dividing all of the possible angles
+by the number of colors you will allow in the shading, that color can be
+assigned to the plane and, presto-chango, it looks like you know what your 
+doing...
+
+    As you do your rotations, just rotate the coordinates of the normal and
+that will keep everything updated.
+
+
+Tips To Speed-Up Your Routines
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Pre-Calculate as many values as possible
+    The main limitation you will have is the speed of your math, using
+    precalculated values like Normals, Sin/Cos charts, and distance from the
+    origin are all good candidates.
+
+If you can get away with using a math-coprocessor, well...
+    This will greatly increase the speed of your routine.  Unfortunately,
+    not everyone has one.
+
+Only figure values once
+    If you multiply (Siné)(Cosé) and will use that same value later, by all 
+    means, keep it and use it then instead of doing the multiplication again.
+
+Another thing to keep in mind
+    The order of rotations *DOES* make a difference.  Try it out and you'll
+    understand.  Also, when you start to use these routines, you'll find
+    yourself making arrays of points and plane structures.  
+
+
+Counter-Clockwise points
+    Be sure to list your points for the planes in counter-clockwise order.  
+    If you don't, not all of your planes will display correctly when you 
+    start hiding planes.
+
+And as always, be clever
+    Just watch out, because when you have clever ideas you can lose a foot.
+    My brother once had a clever idea to cut his toe nails with an axe and
+    he lost his foot.
+
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Books to look for...
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+    Any math book, the topics I covered will be found in:
+
+    Normal Vectors      - Analytic Geometry
+    Matrix Operations   - Linear Algebra
+    Sines and Cosines   - Trigonometry
+
+    The Art of Graphics, by Jim McGregor and Alan Watt
+        1986 Addison-Wesley Publishers
+
+
+
+Read the VLA.NFO file to find out how to contact us.

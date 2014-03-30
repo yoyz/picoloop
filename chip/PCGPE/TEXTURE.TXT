@@ -1,0 +1,1566 @@
+                            ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+                            ³ Texture Mapping ³
+                            ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+                 Written for the PC-GPE by Sean Barrett.
+
+               ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+               ³      THIS FILE MAY NOT BE DISTRIBUTED     ³
+               ³ SEPARATE TO THE ENTIRE PC-GPE COLLECTION. ³
+               ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+
+-=-=-=-=- -=-=-=-=-=- -=-=-=-=-=- -=-=-=-=-=- -=-=-=-=-=- -=-=-=-=-=-
+TEXTURE
+TEXUE  almost everything you need to know to texture map with the PC
+TXR
+X
+-=-=-=-=- -=-=-=-=-=- -=-=-=-=-=- -=-=-=-=-=- -=-=-=-=-=- -=-=-=-=-=-
+
+Copyright 1994 Sean Barrett.
+Not for reproduction (electronic
+or hardcopy) except for personal use.
+
+Contents:
+
+  0. warnings
+  1. terminology and equations
+  2. the basics
+      Perfect texture mapping
+      DOOM essentials
+      Wraparound textures
+      Non-rectangular polygons
+  3. the hazards
+      going off the texture map
+      divide by 0
+      it'll never be fast enough
+  4. the complexities
+      handling arbitrarily-angled polygons
+      lighting
+      slow 16-bit VGA cards
+      mipmapping
+
+ -=-=-=-=-=-
+| Note:  I am not providing any references as I simply
+|        derived the math myself and worked out the various
+|        techniques for myself (the 32-bit ADC trick was
+|        pointed out to me in another context by TJC,
+|        author of the Mars demo) over the last two years
+|        (since Wolfenstein 3D and Underworld came out).
+ -=-=-=-=-=-
+
+TEXTURE
+TEXUE
+TXR   0. Warnings
+X
+
+  I assume a RIGHT-handed 3D coordinate system, with X positive
+to the right, Y positive disappearing into the screen/distance,
+and Z positive up.  To adjust this to the typical left-handed
+3D space, simply swap all the 3D Ys & Zs.
+
+  I assume the screen space is positive-X to the right,
+positive-Y goes down.  Adjust the signs as appropriate for
+your system.
+
+  I will present code and pseudo-code in C.  I also include
+some relatively tight inner loops written in assembly, but I'm
+omitting the details of the loop setup.  The inner loops, while
+usually from real, working code, should generally be taken
+as examples showing how fast it ought to be possible to run
+a given task, not as necessarily perfect examples.  I often
+use 32-bit instructions (sorry 286 programmers) because they
+can double the performance.  However, I write in real mode,
+because 16-bit addressing is often convenient for texture maps,
+and it's straightforward to use segment registers as pointers
+to texture maps.  The translation to protected mode should not
+prove problematic, but again, these should more be taken as
+examples rather than simply being used directly.  I optimize
+for the 486, but I skip some obvious optimizations.  For example,
+I write "loop", because it's simpler and more clear.
+Production code for the 486 should explicitly decrement and
+then branch.  Similarly, I write "stosb", etc. etc.
+
+
+TEXTURE
+TEXUE
+TXR   1. Terminology and Equations
+X
+
+
+  You really probably don't want to read this section first,
+but rather refer back to it whenever you feel the need.  So
+skip up to section 2 and refer back as appropriate.  I could've
+made this an appendix, but it seems too important to put last.
+
+TEX
+TE   Terms
+T
+    texture:  A texture is a pixelmap of colors which is mapped
+              onto a polygon using "texture mapping".  The size
+              of the polygon has nothing to do with the size (the
+              number of pixels) in the texture map.
+
+    run:  A run is a row or column of pixels.  Normal texture
+          mapping routines process one run in an "inner loop".
+
+    arbitrarily-angled polygon:  a polygon which isn't a floor,
+          wall, or ceiling; technically, a polygon which isn't
+          parallel to the X or Z axes (or X or Y axes in a
+          Z-is-depth coordinate system).
+
+    texture space:
+    polygon space:
+    polygon coordinate space:
+          Since a texture is flat, or two-dimensional, the relation
+          of the texture to the 3D world can be described with a
+          special coordinate space known by one of these names.
+          Because it is only 2D, the space can be characterized with
+          the location of the texture space in 2D, and two 3D vectors
+          which represent the axes of the coordinate space.  Sometimes
+          called "uv" space, because the name of the coordinates are
+          usually u & v.
+
+TEX
+TE   Notation
+T
+
+    Vectors appear in all caps.
+    Components of vectors are P = < Px, Py, Pz >.
+
+    Certain variables have consistent usage:
+
+      x,y,z are coordinates in three-space
+      i,j are screen coordinates
+      u,v are coordinates in texture space
+      a,b,c are "magic coordinates" such that
+         u = a/c, v = b/c
+
+TEX
+TE   Equations
+T
+
+    Don't let this scare you off!  Go read section 2, and
+    come back to this when you're ready.
+
+    Let P,M, and N be vectors defining the texture space: P is the
+    origin, and M and N are the vectors for the u&v axes.
+
+    Assume these vectors are in _view space_, where view space is
+    defined as being the space in which the transformation from
+    3D to 2D is:
+
+      (x,y,z) -> (i,j)
+        i = x / y
+        j = z / y
+
+    In other words, you have to adjust P, M, and N to be relative
+    to the view, and if you have multiplications in your perspective
+    computation, you have to multiply the appropriate components of
+    P, M, and N to compute them.  Note that since typically in 3D
+    up is positive, and in 2D down is positive, there may be a
+    multiplication by -1 that needs to go into Py, My, Ny.  Note that
+    this also assumes that (0,0) in screen space is at the center
+    of the screen.  Since it's generally not, simply translate
+    your screen coordinates (i,j) as if they were before applying
+    the texture mapping math (or if you're funky you can modify
+    your viewspace to pre-skew them).
+
+      For example, if your transforms are:
+         i = Hscale * x / y + Hcenter
+         j = -Vscale * z / y + Vcenter
+
+      Then you should simply multiply Px, Mx, and Nx by Hscale,
+      and multiply Py, My, and Mz by -Vscale.  Then just remember
+      to subtract Hcenter and Vcenter from the i,j values right
+      before plugging them into the texture mapping equations.
+
+    We begin by computing 9 numbers which are constant
+    for texture mapping the entire polygon (O stands for
+    Origin, H for Horizontal, and V for vertical; why I use
+    these names should become clear eventually):
+
+         Oa = Nx*Pz - Nz*Px
+         Ha = Nz*Py - Ny*Pz
+         Va = Ny*Px - Nx*Py
+
+         Ob = Mx*Pz - Mz*Px
+         Hb = Mz*Py - My*Pz
+         Vb = My*Px - Mx*Py
+
+         Oc = Mz*Nx - Mx*Nz
+         Hc = My*Nz - Mz*Ny
+         Vc = Mx*Ny - My*Nx
+
+    Ok.  Then, for a given screen location (i,j), the formula
+    for the texture space (u,v) coordinates corresponding to
+    it is:
+
+         a = Oa + i*Ha + j*Va
+         b = Ob + i*Hb + j*Vb
+         c = Oc + i*Hc + j*Hc
+
+         u = a/c
+         v = b/c
+
+
+TEXTURE
+TEXUE
+TXR   2.  The Basics
+X
+
+    So you've got your polygon 3D engine running, and
+you'd like to start adding a bit of texture to your
+flat- or Gouraud-shaded polygons.  Well, it will make
+it look a lot cooler.  But let's point out the
+disadvantages of texture mapping right away:
+
+      Slower
+      Sometimes hard to see polygon edges
+
+    Each of these has certain ramifications on the
+overall approach you want to take with your code,
+which we'll come back to later, in sections 3 and 4.
+
+    Practical advice: Don't try to get your riproaringly
+fast texture mapper running first.  Get a very simple,
+slow, "perfect" texture mapper working first, as described
+in the first subsection below.  This will allow you to make
+sure you've gotten the equations right.  Realize that I
+can't present the equations appropriate to every scenario,
+since there are simply too many spaces people can work
+in.  I've chosen to present the math from an extremely
+simple coordinate space which keeps the texture mapping
+relatively simple.  You'll have to work out the correct
+transformations to make it work right, and a slow but
+correct texture mapping routine may help you tweak the
+code as necessary to achieve this.  Use very simple
+polygons to start your testing; centered and facing the
+viewer should be your very first one (if done correctly,
+this will simply scale the texture).
+
+TEX
+TE   Perfect Texture Mapping
+T
+
+    To start with, we'll do slow but exact "perfect" texture
+mapping of a square tile with a simple texture map mapped onto
+it.  The polygon is defined in three-space using four points,
+and the texture map is 256x256 pixels.  Note that this is all
+talking about using floating point, so those of you working in
+C or Pascal are fine.  Those in assembly should realize that
+you have to do a bit of extra work to use fixed point, or you
+can beat out the floating point by hand if you want.
+
+    First we have to "map" the texture onto the polygon.
+We have to define how the square texture map corresponds
+to the square polygon.  This is relatively simple.  Let
+one corner of the polygon be the origin (location <0,0>)
+of the texture map.  Let each of the other corners
+correspond to corners just off the edge of the texture
+map (locations <256, 0>, <256, 256>, and <0, 256>).
+
+    We'd like to use the equations in section 1, which
+require vectors P, M, and N, where P is the origin,
+and M & N are the axes for u&v (which are _roughly_
+the coordinates in the texture map, but see below).
+In other words, P, M and N tells us where the texture
+lies relative to the polygon.  P is the coordinate in
+three-space where the origin of the texture is.  M
+tells us which way the "horizontal" dimension of the
+texture lies in three-space, and N the "vertical".
+
+    Suppose the polygon has four vertices V[0], V[1],
+V[2], and V[3] (all four of these are vectors).  Then,
+P is simply V[0].  M is a vector going from the origin
+to the corner <256, 0>, so M is a vector from V[0] to
+V[1], so M = V[1] - V[0].  N is a vector from the origin
+to the corner <0, 256>, so N is V[3] - v[0].
+
+    P = V[0]
+    M = V[1] - V[0]    { note these are vector subtractions }
+    N = V[3] - V[0]
+
+    Again, remember that we need P, M, and N in the viewspace
+discussed with the equation, so make sure you've transformed
+the Vs appropriately, or you can compute P, M, and N in world
+or object space and transform them into viewspace.
+
+    Compute the 9 magic numbers (vectors O, H, and V) as described
+in section 1.  Now, take your 3D polygon and process it as normal.
+Scan convert it so that you have a collection of rows of pixels
+to process.
+
+    Now, iterate across each row.  For each pixel in the polygon
+whose screen coordinates are <i,j>, apply the rest of the math
+described in section 1; that is, compute a, b, and c, and from
+them compute <u,v>.
+
+    I said before that <u,v> are basically the texture map
+coordinates.  What they are in truth are the coordinates in texture
+map space.  Because of the way we defined texture map space,
+we'll actually find that u and v both run from 0..1, not 0..256.
+This is an advantage for descriptive purposes because u and v
+are always 0 to 1, regardless of the size of the texture map.
+
+    So, to convert u&v to pixelmap coordinates, multiply them
+both by 256.  Now, use them as indices into the texture map,
+output the value found there, and voila, you've texture mapped!
+
+The loop should look something like this:
+
+[ loop #1 ]
+    for every j which is a row in the polygon
+      screen = 0xA0000000 + 320*j
+      for i = start_x to end_x for this row
+        a = Oa + (Ha * i) + (Va * j)
+        b = Ob + (Hb * i) + (Vb * j)
+        c = Oc + (Hc * i) + (Vc * j)
+        u = 256 * a / c
+        v = 256 * b / c
+        screen[i] = texture_map[v][u]
+      endfor
+    endfor
+
+    Once you've got that working, congratulations!  You're
+done dealing with the annoying messy part, which is getting
+those 9 magic numbers computed right.  The rest of this is
+just hard grunt work and trickery trying to make the code
+faster.
+
+    From here on in, I'm only going to look at the inner
+loop, that is, a single run (row or column), and let the
+rest of the runs be understood.
+
+TEX
+TE   Prepare to meet thy DOOM
+T
+
+    This subsection is concerned with vastly speeding
+up texture mapping by restricting the mapper to walls,
+floors and ceilings, or what is commonly called
+DOOM-style texture mapping, although it of course predates
+DOOM (e.g. Ultima Underworld [*], Legends of Valour).
+
+[*  Yes, Underworld allowed you to tilt the view,
+but it distorted badly.  Underworld essentially used
+DOOM-style tmapping, and tried to just use that on
+arbitrarily-angled polygons.  I can't even begin to
+guess what Underworld II was doing for the same thing.]
+
+    To begin with, let's take loop #1 and get as much
+stuff out of the inner loop as we can, so we can see
+what's going on.  Note that I'm not going to do low-level
+optimizations, just mathematical optimizations; I assume
+you understand that array walks can be turned into
+pointer walks, etc.
+
+[ loop #2 ]
+      a = Oa + Va*j
+      b = Ob + Vb*j
+      c = Oc + Vc*j
+
+      a += start_x * Ha
+      b += start_x * Hb
+      c += start_x * Hc
+
+      for i = start_x to end_x
+        u = 256 * a / c
+        v = 256 * b / c
+        screen[i] = texture_map[v][u]
+        a += Ha
+        b += Hb
+        c += Hc
+      endfor
+
+    With fixed point math, the multiplies by 256
+are really just shifts.  Furthermore, they can be
+"premultiplied" into a and b (and Ha and Hb) outside
+the loop.
+
+    Ok, so what do we have left?  Three integer adds,
+a texture map lookup, and two extremely expensive fixed-point
+divides.  How can we get rid of the divides?
+
+    This is the big question in texture mapping, and most
+answers to it are _approximate_.  They give results that
+are not quite the same as the above loop, but are difficult
+for the eye to tell the difference.
+
+    However, before we delve into these, there's a very
+special case in which we can get rid of the divides.
+
+    We can move the divide by c out of the loop without
+changing the results IFF c is constant for the duration
+of the loop.  This is true if Hc is 0.  It turns out that
+Hc is 0 if all the points on the run of pixels are the same
+depth from the viewer, that is, they lie on a line of
+so-called "constant Z" (I would call it "constant Y" in
+my coordinate system).
+
+    The requirement that a horizontal line of pixels be the
+same depth turns out to be met by ceilings and floors.
+For ceilings and floors, Hc is 0, and so the loop can be
+adjusted to:
+
+[ loop #3 ]
+      __setup from loop #2__
+      u = 256 * a / c
+      v = 256 * b / c
+      du = 256 * Ha / c
+      dv = 256 * Hb / c
+      for i = start_x to end_x
+        screen[i] = texture_map[v][u]
+        u += du
+        v += dv
+     endfor
+
+    Now _that_ can be a very fast loop, although adjusting
+the u&v values so they can be used as indices has been
+glossed over.  I'll give some sample assembly in the next
+section and make it all explicit.
+
+    First, though, let's look at walls.  Walls are almost
+identical to floors and ceilings.  However, with walls,
+Vc is 0, instead of Hc.  This means that to write a loop
+in which c is constant, we have to walk down columns instead
+of across rows.  This affects scan-conversion, of course.
+
+    The other thing about walls is that with floors, since
+you can rotate about the vertical axis (Z axis for me, Y axis
+for most of you), the horizontal runs on the floors cut
+across the texture at arbitrary angles.  Since you're
+bound to not tilt your head up or down, and since the
+polygons themselves aren't tilted, you generally find
+that for walls, Va is 0 as well.  In other words, as you
+walk down a column of a wall texture, both a & c are constant,
+so u is constant; you generally only change one coordinate,
+v, in the texture map.  This means the inner loop only needs
+to update one variable, and can be made to run _very_ fast.
+
+    The only thing missing from this discussion for creating
+a DOOM clone is how to do transparent walls, how to do
+lighting things, and how to make it fast enough.  These will
+be discussed in section 4, although the some of the speed
+issue is addressed by the inner loops in the next subsection,
+and the rest of the speed issue is discussed in general terms
+in section 3.
+
+TEX
+TE   ...wrapped around your finger...
+T
+
+    So far, we've only looked at texture mapping a single
+polygon.  Of course, it's obvious how to texture map
+a lot of polygons--just lather, rinse, repeat.  But it
+may seem sort of wasteful to go through all the 3D math
+and all over and over again if we just want to have one
+long wall with the same texture repeating over and over
+again--like linoleum tiles or wallpaper.
+
+    Well, we don't have to.  Let's think about this
+idea of a "texture map space" some more.  We defined
+it as being a coordinate system "superimposed" on
+the polygon that told us where the texture goes.
+However, when we implemented it, we simply used the
+polygon itself (in essence) as the coordinate space.
+
+    To see this, make a polygon which is a rectangle,
+perhaps four times as long as it is tall.  When it
+is drawn, you will see the texture is distorted,
+stretched out to four times its length in one dimension.
+Suppose we wanted it to repeat four times instead?
+
+    The first step is to look at what the definition
+of the texture map space means.  The texture map space
+shows how the physical pixelmap itself goes onto the
+polygon.  To get a repeating texture map, our first
+step is to just get one of the copies right.  If
+we set up our P,M, & N so that the M only goes one
+quarter of the way along the long edge of the
+rectangle, we'll map the texture onto just that
+quarter of the rectangle.
+
+     Here's a picture to explain it:
+
+              Polygon A-B-C-D                    Texture map
+
+   A          E                                  u=0     u=1
+    o--------o-___________          B        v=0  11112222
+    |111112222            ---------o              11112222
+    |111112222                     |              33334444
+    |111112222                     |              33334444
+    |333334444                     |         v=1
+    |333334444                     |
+    |333334444 ___________---------o
+    o--------o-                     C
+   D          F
+
+    So, we used to map (u,v)=(0,0) to A, (u,v)=(1,0) to B, and
+(u,v) = (0,1) to D.  This stretched the texture map out to
+fill the entire polygon map.
+
+    Now, instead, we map (u,v)=(1,0) to E.  In other words,
+let P = A, M = E-A, and N = D-A.  In this new coordinate
+space, we will map the texture onto the first quarter of
+the polygon.
+
+    What about the rest of the polygon?  Well, it simply
+turns out that for the first quarter 0 <= u <= 1.  For
+the rest, 1 <= u <= 4.
+
+    To make the texture wrap around, all we have to do is
+ignore the integer part of u, and look at the fractional part.
+Thus, as u goes from 1 to 2, we lookup in the texture map using
+the fractional part of u, or (u-1).
+
+    This is all very simple, and the upshot is that, once
+you define P, M, and N correctly, you simply have to mask
+your fixed-point u&v values; this is why we generally use
+texture maps whose sides are powers of two, so that we can
+mask to stay within the texture map.  (Also because they
+fit conveniently into segments this way, and also so that
+the multiply to convert u&v values from 0..1 to indices
+is just a shift.)
+
+    I'm assuming that's a sufficient explanation of the
+idea for you to get it all setup.  So here's the assembly
+inner loops I promised.  I'm not going to bother giving
+the ultra-fast vertical wall-drawing case, just the
+horizontal floor/ceiling-drawing case.
+
+    Note that a mask of 255 (i.e. for a 256x256 texture)
+can be gotten for free; however, no program that I'm
+aware of uses texture maps that large, since they
+simply require too much storage, and they can cache very
+poorly in the internal cache.
+
+    First, here's your basic floor/ceiling texture mapper,
+in C, with wraparound, and explicitly using fixed point
+math--but no setup.
+
+[ loop #4 ]
+    mask = 127, 63, 31, 15, whatever.
+    for (i=0; i < len; ++i) {
+      temp = table[(v >> 16) & mask][(u >> 16) & mask];
+      u += du;
+      v += dv;
+    }
+
+    Now, here's an assembly one.  This one avoids the
+shifts and does both masks at the same time, and uses
+16 bits of "fractional" precision and however many bits
+are needed for the coordinates.  Note that I assume
+that the texture, even if it is 64x64, still has each
+row starting 256 bytes apart.  This just requires some
+creative storage approaches, and is crucial for a fast
+inner loop, since no shifting&masking is required to
+assemble the index.
+
+       mov  al,mask
+       mov  ah,mask
+       mov  mask2,ax      ; setup mask to do both at the same time
+
+loop5  and  bx,mask2      ; mask both coordinates
+       mov  al,[bx]       ; fetch from the texture map
+       stosb
+       add  dx,ha_low     ; update fraction part of u
+       adc  bl,ha_hi      ; update index part of u
+       add  si,hb_low     ;   these are constant for the loop
+       adc  bh,hb_hi      ;   they should be on the stack
+       loop loop5         ;   so that ds is free for the texture map
+
+    This code is decent, but nowhere near as fast as it can be.
+The main trick to improving performance is to use 32 bit adds
+instead of two adds.  The problem with this is that extra operations
+are required to setup the indexing into the texture map.  Through
+the use of the ADC trick, these can be minimized.  In the following
+code, bl and bh are unchanged.  However, the top half of EBX now
+contains what used to be in si, and the other values have been
+moved into registers.  ESI contains hb_low in the top half, and
+ha_hi in the low 8 bits.  This means that ADC EBX,ESI achieves
+the result of two of the additions above.  Also, we start using
+BP, so we move our variables into the data segment and the texture
+map into FS.
+
+loop6  and  bx,mask2
+       mov  al,fs:[bx]
+       stosb
+       add  dx,bp          ; update fractional part of u
+       adc  ebx,esi        ; update u (BL) and frac. part of v (EBX)
+       adc  bh,ch          ; update index part of v
+       dec  cl
+       jnz  loop6
+
+    This is a bit faster, although it has one bug.  It's
+possible for the addition into BL to overflow into BH.  It might
+not seem to be, since BL is masked every iteration back down to
+stay in 0..127, 0..63, or whatever.  However, if the step is
+negative, then BL will be decremented each iteration, and may
+"underflow" and subtract one from BH.  To handle this, you need
+a seperate version of the loop for those cases.
+
+    If you're not doing wraparound textures, you can speed the
+loop up a bit more by removing the and.  You can run entirely
+from registers except for the texture map lookup.  Additionally,
+unrolling the loop once cuts down on loop overhead, and is crucial
+if you're writing straight to the VGA, since it doubles your
+throughput to a 16-bit VGA card.
+
+    Here's a very fast no-wraparound texture mapper.  It uses
+the ADC trick twice.  Note that the carry flag is maintained
+around the loop every iteration; unfortunately the 'and' required
+for wraparound textures clears the carry flag (uselessly).  EBX
+and EDX contain u & v in their bottom 8 bits, and contain the
+fractional parts of v & u in their top bits (note they keep the
+_other_ coordinate's fractional parts).  You have to have prepped
+the carry flag first; if you can't figure this technique out, don't
+sweat it, or look to see if someone else has a more clear discussion
+of how to do fast fixed-point walks using 32-bit registers.
+
+    This loop is longer because it does two pixels at a time.
+
+loop7   mov  al,[bx]       ; get first sample
+        adc  edx,esi       ; update v-high and u-low
+        adc  ebx,ebp       ; update u-high and v-low
+        mov  bh,dl         ; move v-high into tmap lookup register
+        mov  ah,[bx]       ; get second sample
+        adc  edx,esi
+        adc  ebx,ebp
+        mov  bh,dl
+        mov  es:[di],ax    ; output both pixels
+        inc  di            ; add 2 to di without disturbing carry
+        inc  di
+        dec  cx
+        jnz  loop7
+
+    I went ahead and 486-optimized the stosw/loop at the end to make
+cycle-counting easier.  All of these instructions are single cycle
+instructions, except the branch, and the segment-override.  So you're
+looking at roughly 15 cycles for every two pixels.  Your caching
+behavior on the reads and writes will determine the actual speed.
+It can be unrolled another time to further reduce the loop overhead;
+the core operations are 9 instructions (10 cycles) for every two
+pixels.  Note the "inc di/inc di", which protects the carry flag.
+If you unroll it again, four "inc di"s will be required.  Unroll it
+another time, and you're better off saving the carry flag, adding,
+and restoring, for example "adc ax,ax/add di,8/shr ax,1", rather
+than 8 "inc di"s.
+
+TEX
+TE   Lost My Shape (trying to act casual)
+T
+
+    Non-rectangular polygons are trivial under this system.
+Some approaches require you to specify the (u,v) coordinates
+for each of the vertices of the polygon.  With this technique,
+you instead specify the 3D coordinates for three of the
+"vertices" of the texture map.  So the easiest way of handling
+a texture of a complex polygon is simply to use a square
+texture which is larger than the polygon.  For example:
+
+   P1                       P2
+     x    B  _______  C    x
+           /         \
+         /             \
+     A /                 \
+       \                 / D
+         \             /
+           \ _______ /
+     x    F           E
+   P3
+
+    Now, we simply define the texture map such that P is P1,
+M is P2-P1, and N is P3-P1.  Then, if our texture looks like
+this:
+
+     u=0        u=1
+      ------------
+ v=0 |..XXoooooo..
+     |.XXXXoooooo.
+     |XXXXXXoooooo
+     |.XXXXXXoooo.
+ v=1 |..XXXXXXoo..
+
+    Then the regions marked by '.' in the texture map will
+simply never be displayed anywhere on the polygon.
+
+    Wraparound textures can still be used as per normal,
+and concave polygons require no special handling either.
+
+    Also, you can get special effects by having M and N not
+be perpendicular to each other.
+
+TEXTURE
+TEXUE
+TXR   3.  The Hazards
+X
+
+    This sections discusses some of the pitfalls and
+things-aren't-quite-as-simple-as-they-sounded issues
+that come up while texture mapping.  All of the
+information is, to some extent, important, whether
+you've encountered this problem or not.
+
+TEX
+TE   Cl-cl-cl-close to the Edge
+T
+
+    At some time when you're texture mapping, you'll
+discover (perhaps from the screen, perhaps from a
+debugger) that your U & V values aren't within the
+0..1 range; they'll be just outside it.
+
+    This is one of these "argh" problems.  It is
+possible through very very careful definition of
+scan-conversion operations to avoid it, but you're
+likely to encounter it.
+
+    If you use wraparound textures, you may not ever
+notice it, however, since when it happens, the
+texture will simply wraparound and display an
+appropriate pixel.
+
+    If not, you may get a black pixel, or just
+garbage.  It'll only happen at the edges of your
+polygon.
+
+    The reason this happens is because your scan-conversion
+algorithm may generate pixels "in the polygon" whose
+pixel-centers (or corners, depending on how you've
+defined it) are just outside the texture--that is,
+they're outside the polygon itself.
+
+    The right solution to this is to fix your scan-converter.
+If your texture mapper computes u&v coordinates based on
+the top-left corner of the pixel (as the one I've defined
+so far has), make sure your scan-converter only generates
+pixels whose top-left corner is really within the polygon.
+If you do this, you may need to make a minor change to my
+definition of M & N, but I'm not going to discuss this
+further, since you probably won't do this.
+
+    A second option is to define P, M, and N such that the
+texture map space is slightly bigger than the polygon; that
+is, so that if you go just off the edge of the polygon,
+you'll still be within the texture map.
+
+    This is a pain since you end up having to transform extra
+3D points to do it.
+
+    The third, and probably most common solution, is to always
+use wraparound textures, which hide the problem, but prevent
+you from using textures that have one edge that highly contrasts
+with another.
+
+    The fourth, and probably second most common solution,
+and the one that turns out to be a real pain, is to "clamp"
+the u&v values to be within the texture all the time.
+
+    Naively, you just put this in your inner loop:
+
+      if (u < 0) u = 0; else if (u > 1) u = 1;
+      if (v < 0) v = 0; else if (v > 1) v = 1;
+
+    Of course, you don't really do this, since it'd slow
+you down far too much.  You can do this outside the loop,
+clamping your starting location for each run.  However,
+you can't, under this system, clamp the ending value
+easily.
+
+    Remember that in the loop we update u and v with
+(essentially) Ha/c and Hb/c.  These are constant
+across the entire run, but not constant across the
+entire polygon, because c has different values for
+different runs.
+
+    We can compute du and dv in a different way to
+allow for clamping.  What we do is we explicitly compute
+(a,b,c) at (start_x, j) as we did before, but we also
+compute (a,b,c) at (end_x, j).  From these we compute
+(u,v) at start_x & at end_x.  Next we clamp both sets
+of u & v.  Then we compute du and dv with
+
+    du = (u2 - u1) / (end_x - start_x - 1)
+    dv = (v2 - v1) / (end_x - start_x - 1)
+
+    This is slightly more expensive than the old way,
+because we have to compute u2 and v2, which requires
+extra divides.  However, for methods that explicitly
+calculate u&v sets and then compute deltas (and we'll
+see some in section 4), this is the way to go.
+
+    One final thing you can do is interpolate the (a,b,c)
+triple from the vertices as you scan convert.  This will
+guarantee that all (a,b,c) triples computed will lie be
+within the polygon, and no clamping will be necessary
+(but deltas must still be computed as above).  However,
+you have to make sure the (a,b,c) values you compute at
+the vertices are clamped themselves, which is not too hard
+by a bit more complicated than clamping (u,v) values.
+
+TEX
+TE   Out of This Domain -- Zero's Paradox
+T
+
+    Divides by zero are ugly.  We programmers don't
+like them.  If this were an ideal world (a quick
+nod to mathematicians and some physicists), the
+texture mapping equations would be divide-by-zero-free.
+
+    Unfortunately, it's a repercussion of the exact
+same problem as above that you can bump into them.
+
+    Remember above, I noted that it's possible to
+get (u,v) pairs with a value just outside of the
+0..1 range, because a pixel we're texture mapping
+isn't even in the polygon?
+
+    Well, even worse, it's possible for this pixel,
+which isn't in the polygon, to be along the horizon
+line (vanishing point) for the polygon.  If this
+happens, your Y value (sorry, Z for most of you)
+would be infinite if you tried to compute the 3D
+coordinates from the screen coordinates; and in
+the (u,v) computation, you end up with a 0 value
+for c.  Since u = a/c, blammo, divide by 0.
+
+    Well, the solution is simple.  Test if c is 0,
+and if it is, don't divide.  But what _should_ you do?
+
+    Well, let's look at an "even worse" case.  Suppose
+the pixel is so far off the polygon it's across the
+horizon line.  In this case, we'll end up with c having
+the "wrong" sign, and while our divide won't fault on
+us, our u&v values will be bogus.
+
+    What do we do then?
+
+    We can't clamp our a&b&c values very easily.
+Fortunately, it turns out we don't have to.  If
+this happens, it means the edge of the polygon
+must be very close to the horizon, or the viewer
+must be very, very flat to the polygon (if you know
+what I mean).  If so, the viewer can't really tell
+what should be "right" for the polygon, so if we
+screw up the u&v values, it really doesn't matter.
+
+    So the answer is, don't worry if c gets the
+wrong sign, and if c comes out to be 0, use any
+value for u&v that you like--(0,0) makes an obvious
+choice.
+
+    I've never had a serious problem with this, but
+it is possible that this could actually give you some
+pretty ugly results, if, say, two corners of a polygon
+both "blew up", and you treated them both as being
+(0,0).  It can also cause problems with wraparound
+polygons not repeating the right amount.
+
+TEX
+TE   Do the Dog
+T
+
+    Most polygon 3D graphics engines probably use
+the painter's algorithm for hidden surface removal.
+You somehow figure out what order to paint the polygons
+in (depth sort, BSP trees, whatever), and then paint
+them back-to-front.  The nearer polygons obscure the
+farther ones, and voila!, you're done.
+
+    This works great, especially in a space combat
+simulator, where it's rare that you paint lots of pixels.
+
+    You can texture map this way, too.  For example,
+Wing Commander II doesn't texture map, but it does
+real time rotation, which involves essentially the
+same inner loop.  Wing Commander II is fast--until
+a lot of ships are on the screen close to you, at which
+point it bogs down a bit.
+
+    If you care about not slowing down too much in the above
+case, or you want to do an "indoor" renderer with lots of
+hidden surfaces, you'll find that with texture mapping,
+you can ill-afford to use the painter's algorithm.
+
+    You pay a noticeable cost for every pixel you texture
+map.  If you end up hiding 80% of your surfaces (i.e. there
+are five "layers" everywhere on the screen), you end up
+"wasting" 80% of the time you spend on texture mapping.
+
+    To prevent this, you have to use more complex methods
+of hidden surface removal.  These will probably slow you down
+somewhat, but you should make up for it with the gain in texture
+mapping.
+
+    The essential idea is to only texture map each screen pixel once.
+To do this, you do some sort of "front-to-back" painting, where
+you draw the nearest surface first.  Any pixel touched by this
+surface should never be considered for drawing again.
+
+    There are many ways to do this.  You can process a single
+scanline or column at a time and use ray-casting or just
+"scanline processing", then resolve the overlap between the
+runs with whatever method is appropriate.  You can stay
+polygonal and maintain "2D clipping" information (a data
+structure which tracks which pixels have been drawn so far).
+
+    Beyond getting a fast inner loop for texture mapping,
+getting a fast hidden-surface-removal technique (and a fast
+depth-sorting technique if appropriate) is probably the
+next most crucial thing for your frame rate.
+
+    But the details are beyond the scope of this article.
+
+    Note that if you attempt to use a Z-buffer, you will
+still end up paying all of the costs of texture mapping for
+every forward-facing polygon (or at least 50% of them if
+you get really tricky; if you get really, really tricky,
+the sky's the limit.)  I strongly doubt that any PC game
+now out, or that will come out in the next year, will
+render full-screen texture mapping through a Z-buffer.
+(Superimposing a rendered image on a Z-buffered background
+is a different issue and is no doubt done all the time.)
+
+
+TEXTURE
+TEXUE
+TXR   4.  The Complexities
+X
+
+    In this section we will discuss lots of miscellaneous
+topics.  We'll look at some more optimizations, such as
+considerations for dealing with slow VGA cards, and how to
+texture map arbitrarily-angled polygons without doing two
+divides per pixel.  We'll talk about a technique that lets
+you use textures with high-frequency components, and one way
+to integrate lighting into texture-mapping.
+
+TEX
+TE   Arbitrarily-Angled Polygons
+T
+
+    First suggestion: Don't.  Set up your world to
+have all (or mostly) walls and floors.  Supporting
+arbitrarily-angled polygons is going to slow you
+down, no matter what.
+
+    The original texture mapping loop, which supported
+arbitrarily-angled polygons, required two divides per
+pixel.  We don't have to go that slow, but we'll never
+go as fast as DOOM-style rendering can go.  (However,
+as you start to use more sophisticated lighting algorithms
+in your inner loop, the cost of handling arbitrarily-
+angled polygons may start to become less important.)
+
+    There is one way to texture map such polygons
+"perfectly" without two divides per pixel, and a
+host of ways to do it "imperfectly".  I'll discuss
+several of these ways in varying amounts of detail.
+Your best bet is to implement them all and see
+which ones you can get to run the fastest but still
+look good.  You might find that one is faster for
+some cases but not for others.  You could actually
+have an engine which uses all the methods, depending
+on the polygon it's considering and perhaps a "detail"
+setting which controls how accurate the approximations
+are.
+
+    The "perfect" texture mapping algorithm is
+described in another article, "Free-direction texture
+mapping".  I'll summarize the basic idea and the
+main flaw.  The basic idea is this.  For ceilings
+and walls, we were able to walk along a line on
+the screen for which the step in the "c" parameter
+was 0; this was a line of "constant Z" on the
+polygon.
+
+    It turns out that every polygon has lines of
+"constant Z"--however, they can be at any angle,
+not necessarily vertical or horizontal.
+
+    What this means, though, is that if you walk
+along those lines instead of walking along a horizontal
+or vertical, you do not need a divide to compute your
+texture map coordinates, just deltas.
+
+    The details can be found in the other article.
+The slope of the line to walk on the screen is something
+like Hc/Vc.
+
+    Note, however, that the "DOOM" approach was _just_
+an optimization for a special case.  The wall & ceiling
+renderers produce exactly the same results as a
+perfect texture mapper, for the polygons that they
+handle (ignoring rounding errors and fixed-point precision
+effects).  This is not true for the "free-direction"
+texture mapper.  While there is a line across the
+screen for which the polygon has constant Z,
+you cannot walk exactly along that line, since you
+must step by pixels.  The end result is that while
+in the texture map space, you move by even steps,
+in the screen space, you move with ragged jumps.
+With perfect texture mapping, you always sample
+from the texture map from the position corresponding
+to the top-left/center of each pixel.  With the
+free-direction mapper, you sample from a "random"
+location within the pixel, depending on how you're
+stepping across the screen.  This "random" displacement
+is extremely systematic, and leads to a systematic
+distortion of the texture.  I find it visually
+unacceptable with high-contrast textures, compared to
+perfect texture mapping, but you should try it and decide
+for yourself.  The technically inclined should note that
+this is simply the normal "floor" renderer with an extra
+2D skew, and that while 2D skews are trivial, they are
+non-exact and suffer from the flaw described above.
+
+    The only other alternative for arbitrarily-angled
+polygons is to use some kind of approximation.  We
+can characterize u and v as functions of i (the horizontal
+screen position; or use 'j' if you wish to draw columns);
+for instance, u = a / c, where a = q + i*Ha, c = p + i*Hc.
+So we can say  u(i) = (q + i*Ha) / (r + i*Hc).
+
+    Now, instead of computing u(i) exactly for each i,
+as we've done until now, we can instead compute some
+function u'(i) which is approximately equal to u(i) and
+which can be computed much faster.
+
+    There are two straightforward functions which we
+can compute very fast.  One is the simple linear
+function we used for DOOM-style mapping, u'(x) = r + x*s.
+Since the function we're approximating is curved (a
+hyperbola), a curved function is another possibility,
+such as u'(x) = r + x*s + x^2*t.  (SGI's Reality Engine
+apparently uses a cubic polynomial.)
+
+    If you try both of these approximations on a very
+large polygon at a sharp angle, you will find that
+they're not very good, and still cause visible
+curvature.  They are, of course, only approximations.
+The approximations can be improved with a simple
+speed/quality trade-off through subdivision.  The
+idea of subdivision is that the approximation is
+always of high quality for a small enough region,
+so you can simply subdivide each region until the
+subregions are small enough to have the desired
+quality.
+
+    There are two ways to subdivide.  One simple way
+is to subdivide the entire polygon into smaller
+polygons.  This should be done on the fly, not
+ahead of time, because only polygons that are at
+"bad" angles need a lot of subdivision.  After
+dividing a polygon into multiple smaller ones,
+render each one seperately.  Use the original
+P, M, and N values for all of the new polygons
+to make the texture remain where it should be
+after subdivision.
+
+    The (probably) better way to subdivide is to
+subdivide runs instead of polygons, and so I'll
+discuss this in more detail.  The essential thing
+is that to do an approximation, you evaluate the
+original function at two or more locations and
+then fit your approximate function to the computed
+values.  One advantage of run subdivision is that
+you can share points that you evaluated for one
+subrun with those of the next.
+
+    First lets turn back to the two approximations
+under consideration.  The first is what is called
+"bilinear texture mapping", because the function
+is linear and we're tracking two ("bi") values.
+To use this method, we compute the function at
+both endpoints: u1 = u(start_x), u2 = u(end_x).
+Then we compute our start and step values.  To
+keep things simple, I'm going to assume the approximation
+function u'(x) is defined from 0..end_x-start_x, not
+from start_x..end_x.
+
+    So, the linear function u'(x) = r + s*x, where
+u'(0) = u1 and u'(end_x - start_x) = u2 is met by
+letting r = u1, s = (u2 - u1) / (end_x - startx).
+
+    Now, suppose our run goes from x = 10 to x = 70.
+If we evaluate u(10), u(20), u(30), u(40),... u(70),
+then we can have six seperate sections of bilinear
+texture mapping.
+
+    For a quadratic, there are several ways to compute
+it.  One way is to compute an additional sample in the
+middle; u3 = u((start_x + end_x)/2).  Then we can
+fit u1,u2, and u3 to u'(x) = r + s*x + t*x^2 with:
+
+   len = (end_x - start_x)
+   k   = u1 + u2 - u3*2
+   r   = u1
+   s   = (u2 - u1 - 2*k)/len
+   t   = 2*k / len^2
+
+    Note that to use this in code, you cannot simply
+use a loop like this:
+
+   r += s;
+   s += t;
+
+    because the r,s, and t values aren't correct
+for discrete advancement.  To make them correct,
+do this during the setup code:
+
+    R = r
+    S = s + t
+    T = 2*t
+
+    Then the loop of (...use R..., R += S, S += T) will work correctly.
+
+    The biquadratic loop will be slower than the linear
+loop, but will look better with fewer subdivisions.  You
+can share one of the endpoints from one biquadratic
+section to the next.  Note, though, that you require twice
+as many calculations of u&v values for the same number of
+subdivisions with a biquadratic vs. a bilinear.
+
+    Another thing to do is to choose how to subdivide the run
+more carefully.  If you simply divide it in half or into quarters,
+you'll discover that some of the subruns come out looking better
+than others.  So there are some things you can do to improve the
+subdivision system.  Another thing you can do is to try to make
+most of your subruns have lengths which are powers of two.  This
+will let you use shifts instead of divides when computing r,s, and
+t, which cuts down on your overhead, which lets you use more
+subdivisions and get the same speed.
+
+    Note something very important.  Subdivision increases the
+overhead per run; biquadratic and other things increase the
+cost of the inner loop.  Before you go crazy trying to optimize
+your arbitrarily-angled polygon renderer, make sure you're
+rendering some "typical" scenes.  The "right" answer is going
+to depend on whether you have lots of very shorts runs or
+fewer, longer runs.  If you optimize based on a simple test
+case, you may end up suboptimal on the final code.
+
+    You probably still want to have both a column-based and a
+row-based renderer, and use whichever one the polygon is
+"closer to" (e.g. if Hc is closer to 0 than Vc, use the row-based).
+Note that the free-direction renderer looks its worst (to me)
+for very small rotations, i.e. when Hc or Vc are very close to 0.
+Since in these cases not much subdivision is needed, even if you
+choose to use a free-direction mapper as your primary renderer,
+you might still want to have "almost wall" and "almost floor"
+renderers as well.
+
+    Finally, there is one more approximation method you can use,
+which is faster than any of the ones discussed so far, but is
+simply totally and utterly wrong.  This is the approach used
+by Michael Abrash in his graphics column in Dr. Dobbs.  While
+it's quite wrong, it works on polygons which are entirely
+constant Y (sorry, Z), and can be a noticeable speedup.
+
+    What you do is 2D (instead of 3D) interpolation.  You mark
+each vertex with its coordinates in the texture map.  Then when
+you scan convert, you interpolate these values between vertices
+on the edges of your runs.  Thus, scan conversion will generate
+runs with (u,v) values for the left and right end.  Now simply
+compute (du,dv) by subtracting and dividing by the length (no
+clamping will be necessary), and use your fast bilinear inner
+loop.  When combined with 3D polygon subdivision, this approach
+can actually be useful.
+
+  A cheat:
+
+    When the player is moving, set your internal quality
+settings a little lower.  When the player stops, switch
+back to the normal quality; if the player pauses the game,
+render one frame in normal quality.
+
+    If done right, you can get a small boost to your fps
+without anyone being able to tell that you did it.  You
+may have to use normal quality if the player is only
+moving very slowly, as well.
+
+    Note that while this may sound like an utterly cheap
+trick just to improve the on-paper fps number, it's actually
+quite related to the "progressive refinement" approach used
+by some real VR systems (which, when the viewer isn't moving,
+reuse information from the previous frame to allow them to
+draw successive frames with more detail).
+
+    There are a number of ways of improving this cheat
+intelligently.  If the player is moving parallel to a polygon,
+that polygon will tend to be "stably" texture mapped (similar
+mapping from frame to frame).  If there is any distortion from
+your approximation, this will be visible to the player.  So
+this means a rule of thumb is to only cheat (draw with
+above-average distortion) on polygons that are not facing
+parallel to the direction of motion of the player.
+
+TEX
+TE   Light My Fire
+T
+
+    If you're texture mapping, it's generally a good idea
+to light your polygons.  If you don't light them, then it
+may be difficult to see the edge between two walls which
+have the same texture (for instance, check out the "warehouse"
+section of registered DOOM, which is sometimes confusing
+when a near crate looks the same color as a far crate).
+
+    Lighting is actually pretty straightforward, although
+you take a speed hit in your inner loop.  I'm not going
+to worry about actual lighting models and such; see other
+articles for discussion on how to do light-sourced polygons.
+
+    Instead I'm going to assume you've computed the lighting
+already.  We'll start with "flat-run" shading, wherein an
+entire run has the same intensity of light falling on it.
+
+    DOOM uses flat-run shading.  A given polygon has a certain
+amount of light hitting it, which is the same for the entire
+polygon.  In addition, each run of the polygon is sort-of
+lit by the player.  Since runs are always at a constant
+depth, you can use constant lighting across the run and
+still change the brightness with distance from the player
+(DOOM uses something that resembles black fog, technically).
+
+    So the only real issue is _how_ you actually get the
+lighting to affect the texture.  Several approaches are
+possible, but the only one that I think anyone actually uses
+is with a lighting table.
+
+    The lighting table is a 2D array.  You use the light
+intensity as one index, and the pixelmap color as the
+other index.  You lookup in the table, and this gives
+you your final output color to display.  (With two
+tables, you can do simple dithering.)  So the only thing
+you have to do is precompute this table.
+
+    Basically, your inner loop would look something like this:
+
+  ...compute light...
+  for (i=start_x; i <= end_x; ++i) {
+    color = texture[v >> 16][u >> 16];
+    output = light_table[light][color];
+    screen[i] = output;
+    u += du;
+    v += dv;
+  }
+
+    The next thing to consider is to Gouraud shade your
+texture map.  To do this, you need to compute the light
+intensity at the left and right edge of the run; look
+elsewhere for more details on Gouraud shading.
+
+    Once you've got that, you just do something like this:
+
+  z = light1 << 16;
+  dz = ((light2 - light1) << 16) / (end_x - start_x);
+  for (i=start_x; i <= end_x; ++i) {
+    color = texture[v >> 16][u >> 16];
+    output = light_table[z >> 16][color];
+    screen[i] = color;
+    u += du;
+    v += dv;
+    z += dz;
+  }
+
+    Note that you shouldn't really do this as I've written the
+code.  light1 and light2 should be calculated with 16 bits of extra
+precision in the first place, rather than having to be shifted
+left when computing z.  I just did it that way so the code
+would be self-contained.
+
+    I'm going to attempt to give a reasonably fast assembly
+version of this.  However, there's a big problem with doing
+it fast.  The 80x86 only has one register that you can
+address the individual bytes in, and also use for indexing--BX.
+This means that it's a real pain to make our inner loop alternate
+texture map lookup and lighting fetch--whereas it's almost
+trivial on a 680x0.  I avoid this somewhat by processing two
+pixels at a time; first doing two texture map lookups, then
+doing two lighting lookups.
+
+     Here's a flat-shading inner loop.  I'm doing this code off the
+top of my head, so it may have bugs, but it's trying to show
+at least one way you might try to do this.  Since I use BP,
+I put variables in the FS segment, which means DS points
+to the texture, GS to the lighting table.
+
+        mov  ch,fs:light
+        adc  ax,ax
+loop8   shr  ax,1          ; restore carry
+        mov  cl,[bx]       ; get first sample, setting up cx for color lookup
+        adc  edx,esi       ; update v-high and u-low
+        adc  ebx,ebp       ; update u-high and v-low
+        mov  bh,dl         ; move v-high into tmap lookup register
+        mov  ah,[bx]       ; get second sample, save it in ah
+        adc  edx,esi
+        adc  ebx,ebp
+        mov  dh,bl         ; save value of bl
+        mov  bx,cx         ; use bx to address color map
+        mov  al,gs:[bx]    ; lookup color for pixel 1
+        mov  bl,ah         ; switch to pixel 2
+        mov  ah,gs:[bx]    ; lookup color for pixel 2
+        mov  es:[di],ax    ; output both pixels
+        mov  bl,dh         ; restore bl from dh
+        mov  bh,dl
+        adc  ax,ax         ; save carry so we can do CMP
+        add  di,2
+        cmp  di,fs:last_di ; rather than having to decrement cx
+        jne  loop8
+
+    For a Gouraud shading inner loop, we can now have three
+different numbers u, v, and z, which we're all adding at every
+step.  To do this, we use THREE adc, and we have to shuffle
+around which high-bits correspond to which low-bits in a
+complex way.  I'll leave you to figure this out for yourself,
+but here's an attempt at the inner loop.
+
+loop9   shr  ax,1          ; restore carry
+        mov  al,fs:[bx]    ; get first sample
+        mov  ah,cl         ; save away current z-high into AH
+                           ; this makes AX a value we want to lookup
+        adc  edx,esi       ; update v-high and u-low
+        adc  ebx,ebp       ; update u-high and z-low
+        adc  ecx,z_v_inc   ; update z-high and v-low
+        mov  bh,dl         ; move v-high into tmap lookup register
+        mov  ch,fs:[bx]    ; get second sample, save it in ch
+        mov  dh,bl         ; save value of bl
+        mov  bx,ax
+        mov  al,gs:[bx]    ; lookup first color value
+        mov  bl,ch
+        mov  bh,cl
+        mov  ah,gs:[bx]    ; lookup second color value
+        mov  es:[di],ax    ; output both pixels
+        mov  bl,dh         ; restore bl from dh
+        adc  edx,esi
+        adc  ebx,ebp
+        adc  ecx,z_v_inc
+        mov  bh,dl
+        adc  ax,ax         ; save carry
+        add  di,2
+        cmp  di,last_di    ; rather than having to decrement cx
+        jne  loop9
+
+    Notice that both of these loops are significantly slower
+than the original loop.  I'm not personally aware of any
+generally faster way to do this sort of thing (but the code
+can be tweaked to be faster).  The one exception is
+that for flat-run shading, you could precompute the entire
+texture with the right lighting.  This would require a lot
+of storage, of course, but if you view it as a cache, it
+would let you get some reuse of information from frame to
+frame, since polygons tend to be lit the same from frame to
+frame.
+
+    Finally, here's a brief discussion of transparency.
+There are two ways to get transparency effects.  The first
+one is slower, but more flexible.  You use _another_ lookup
+table.  You have to paint the texture that is transparent
+after you've drawn things behind it.  Then, in the inner
+loop, you fetch the texture value (and light it) to draw.
+Then you fetch the pixel that's currently in that location.
+Lookup in a "transparency" table with those two values as
+indices, and write out the result.  The idea is that you
+do this: table[new][old].  If new is a normal, opaque,
+color, then table[new][old] == new, for every value of old.
+If new is a special "color" which is supposed to be transparent,
+then table[new][old] == old, for every value of old.  This causes
+old to show through.  In addition, you can have translucency
+effects, where table[new][old] gives a mixture of the colors
+of old and new.  This will let you do effects like the
+translucent ghosts in the Ultima Underworlds.
+
+    However, the above approach is extremely slow, since you
+have to load the value from the pixel map and do the extra
+table lookup.  But it works for arbitrary polygons.   DOOM
+only allows transparency on walls, not on ceilings and floors.
+Remember we noticed that the special thing about walls is
+that u is constant as you draw a column from a wall; you
+are walking down a column in the texture map at the same
+time you are drawing a column on screen.  What this means
+is that you can use a data structure which encodes where
+the transparency in each column of the texture map is, and
+use that _outside_ the inner loop to handle transparency.
+For example, your data structure tells you that you have
+a run of 8 opaque pixels, then 3 transparent pixels, then
+5 more opaque ones.  You scale 8, 3, and 5 by the rate at
+which you're walking over the textures, and simply treat
+this as two seperate opaque runs.
+
+    The details of this method depend on exactly how you're
+doing your hidden surface removal, and since it doesn't
+generalize to floors&ceilings, much less to arbitrarily
+angled polygons, I don't think going into further detail
+will be very useful (I've never bothered writing such a
+thing, but I'm pretty sure that's all there is to it).
+
+
+TEX
+TE   The Postman Always Rings Twice
+T
+
+    If you're going to write to a slow 16-bit VGA card, you
+should try your darndest to always write 2 pixels at a time.
+
+    For texture mapping, your best bet is to build your screen
+in a buffer in RAM, and then copy it to the VGA all at once.
+You can do this in Mode 13h or in Mode X or Y, as your heart
+desires.  You should definitely do this if you're painting
+pixels more than once while drawing.
+
+    If, however, you wish to get a speedup by not paying
+for the extra copy, you might like to write directly to the
+VGA card from your inner loop.
+
+    You might not think this is very interesting.  If the
+write to the screen buffer in regular RAM is fast, how much
+can you gain by doing both steps at once, instead of splitting
+them in two?
+
+    The reason it is interesting is because the VGA, while
+slow to accept multiple writes, will let you continue doing
+processing after a single write.  What this means is that
+if you overlap your texture mapping computation with your
+write to the VGA, you can as much as double your speed on
+a slow VGA card.  For example, the fastest I can blast my
+slow VGA card is 45 fps.  I can texture map floor-style directly
+to it at 30 fps.  If I texture map to a memory buffer,
+this is still somewhat slow, more than just the difference
+between the 30 and 45 fps figures.  Thus, my total rate if
+I write to an offscreen buffer drops as low as 20 fps, depending
+on exactly what I do in the texture map inner loop.
+
+    Ok, so, now suppose you've decided it might be a speedup
+to write directly to the VGA.  There are two problems.  First
+of all, if you're in mode X or Y, it's very difficult to
+write two bytes at a time, which is necessary for this
+approach to be a win.  Second of all, even in mode 13h, it's
+difficult to write two bytes at a time when you're drawing
+a column of pixels.
+
+    I have no answer here.  I expect people to stick to
+offscreen buffers, or to simply process columns at a time
+and write (at excruciatingly slow rates on some cards) to
+the VGA only one byte at a time.
+
+    One option is to set up a page flipping mode 13h (which
+is possible on some VGA cards), and to paint two independent
+but adjacent columns at the same time, so that you can write
+a word at a time.  I have a very simple demo that does the
+latter, but it's not for the faint of heart, and I don't
+think it's a win once you have a lot of small polygons.
+
+    Another answer is to have a DOOM-style "low-detail"
+mode which computes one pixel, duplicates it, and always
+writes both pixels at the same time.
+
+    A final answer is just to ignore the market of people
+with slow VGA cards.  I wouldn't be surprised if this
+approach was commonplace in a year or two.  But if you do
+so with commercial software, please put a notice of this
+requirement on the box.
+
+TEX
+TE   Mipmapping (or is it Mip-Mapping?)
+T
+
+    Mipmapping is a very straightforward technique that
+can be used to significantly improve the quality of your
+textures, so much so that textures that you could not
+otherwise use because they look ugly become usable.
+
+    The problem that mipmapping addresses is as follows.
+When a texture is far in the distance, such that its
+on-screen size in pixels is significantly smaller than
+its actual size as a texture, only a small number of
+pixels will actually be visible.  If the texture contains
+areas with lots of rapidly varying high contrast data,
+the texture may look ugly, and, most importantly,
+moire artifacts will occur.  (To see this in DOOM, try
+shrinking the screen to the smallest setting and going
+outside in shareware DOOM.  Many of the buildings will
+show moire patterns.  In registered DOOM, there is
+a black-and-blue ceiling pattern which has very bad
+artifacts if it is brightly lit.  Go to the mission
+with the gigantic round acid pool near the beginning.
+Cheat to get light amplification goggles (or maybe
+invulnerability), and you'll see it.)
+
+    Mipmapping reduces these artifacts by precomputing
+some "anti-aliased" textures and using them when the
+textures are in the distance.
+
+    The basic idea is to substitute a texture map half as
+big when the polygon is so small that only every other
+pixel is being drawn anyway.  This texture map contains
+one pixel for every 2x2 square in the original, and is
+the color average of those pixels.
+
+    For a 64x64 texture map, you'd have the original
+map, a 32x32 map, a 16x16 map, an 8x8 map, etc.
+
+    The mipmaps will smear out colors and lose details.
+You can best test them by forcing them to be displayed
+while they're still close to you; once they appear to
+be working, set them up as described above.
+
+    Mipmapping causes a somewhat ugly effect when you
+see the textures switch from one mipmap to the next.
+However, especially for some textures, it is far less
+ugly than the effect you would get without them.
+
+    For example, a fine white-and-black checkerboard
+pattern (perhaps with some overlaid text) would look
+very ugly without mipmapping, as you would see random
+collections of white and black pixels (which isn't too
+bad), and you would see curving moire patterns (which
+is).  With mipmapping, at a certain distance the whole
+polygon would turn grey.
+
+    I do not believe any existing games for the PC
+use mipmapping.  However, examining the data file
+for the Amiga demo version of Legends of Valour showed
+smaller copies of textures, which made it look like
+mipmapping was being used.
+
+    Mipmapping requires 33% extra storage for the
+extra texture maps (25% for the first, 25% of 25%
+for the second, etc.).
+
+    This may also be a good idea for 2D bitmaps which
+are scaled (e.g. critters in Underworld & DOOM, or
+ships in Wing Commander II--although none of those
+appeared to use it.)
+
+    SGI's Reality Engine does mipmapping.  Actually,
+it does a texturemap lookup on two of the mipmaps,
+the "closer" one and the "farther" one, and uses
+a weighted average between them depending on which
+size is closer to correct.  (The RE also does
+anti-aliasing, which helps even more.)
+
+
+TEXTURE
+TEXUE
+TXR    Where Do We Go From Here?
+X
+
+    The above discussion mostly covers what is basically
+the state of the art of texture mapping on the PC.  Hopefully
+in the future every game will be at least as fast as the
+inner loops in this article allow.
+
+    As long as people want full-screen images, it'll
+be a while before we have enough computational power
+to do more than that.  But if we did have more power,
+what else could we do with it?
+
+    o  Better lighting
+      o  Colored lighting (requires complex lookup tables)
+      o  Phong shading (interpolation of normals--one sqrt() per pixel!)
+    o  Higher resolution (640x400, or 640x400 and anti-alias to 320x200)
+    o  A lot more polygons
+    o  Bump mapping (can be done today with huge amounts of precomputation)
+    o  Curved surfaces

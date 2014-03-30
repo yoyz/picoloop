@@ -1,0 +1,410 @@
+
+                   ÕÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¸
+                   ³         W E L C O M E         ³
+                   ³  To the VGA Trainer Program   ³ ³
+                   ³              By               ³ ³
+                   ³      DENTHOR of ASPHYXIA      ³ ³ ³
+                   ÔÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¾ ³ ³
+                     ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ ³
+                       ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+                           --==[ PART 5 ]==--
+
+
+
+ş Introduction
+
+Hello! This is Denthor here with the 5 part of the ASPHYXIA VGA Trainer
+Series : The Scrolling Saga. I have had many requests for information on
+scrolling, so I decided to make it this weeks topic. Note that I do make
+reference to my recently released program TEXTER5, which should be available
+from wherever you get this message. (Note to Sysops : If you put the trainer
+series up on your boards, please add WORMIE.ZIP and TEXTER5.ZIP as they
+both suppliment this series)
+
+By the way, sorry for the delay in the appearance of this part. Tests,
+projects and a few wild days of sin at the Wild Coast all conspired
+against the prompt appearance of this part. Also note I need more input as
+to what I should do future parts on, so leave me mail.
+
+If you would like to contact me, or the team, there are many ways you
+can do it : 1) Write a message to Grant Smith in private mail here on
+                  the Mailbox BBS.
+            2) Write a message here in the Programming conference here
+                  on the Mailbox (Preferred if you have a general
+                  programming query or problem others would benefit from)
+            3) Write to ASPHYXIA on the ASPHYXIA BBS.
+            4) Write to Denthor, Eze or Livewire on Connectix.
+            5) Write to :  Grant Smith
+                           P.O.Box 270 Kloof
+                           3640
+                           Natal
+            6) Call me (Grant Smith) at 73 2129 (leave a message if you
+                  call during varsity)
+
+NB : If you are a representative of a company or BBS, and want ASPHYXIA
+       to do you a demo, leave mail to me; we can discuss it.
+NNB : If you have done/attempted a demo, SEND IT TO ME! We are feeling
+        quite lonely and want to meet/help out/exchange code with other demo
+        groups. What do you have to lose? Leave a message here and we can work
+        out how to transfer it. We really want to hear from you!
+
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+ş  What is scrolling?
+
+If you have ever seen a demo, you have probably seen some form of scrolling.
+Our SILKYDEMO has quite a nice example of scrolling. What it is is a long
+row of text moving across your screen, usually from right to left, eg :
+
+                                       H     : Step 1
+                                      He     : Step 2
+                                     Hel     : Step 3
+                                    Hell     : Step 4
+                                   Hello     : Step 5
+                                  Hello      : Step 6
+
+etc. etc. See the program attatched for an example of scrolling.
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+ş  What do we scroll?
+
+Usually, letters. Most groups put greetings and information in their
+'scrollies', as they are termed. You can also scroll and entire screen
+using the scrolling technique. Scrolling your text is a hell of a lot
+less boring then just having it appear on your screen. Unfortunately,
+'scrollies' have been used so many times in demos they are wearing a
+bit thin, so usually they are accompanied by a cool picture or some nice
+routine happening at the same time (In our SILKYDEMO we had a moving
+checkerboard and colour bars going at the same time).
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+ş  How do we scroll from side to side?
+
+The theory behind scrolling is quite easy. Let us imagine that we are
+scrolling a 16x16 font grabbed by TEXTER (;-)) across the top of the
+screen (ie. 320 pixels) As we know, the VGA screen starts at zero at the
+top left hand part of the screen, then counts up to the right to 319, then
+goes back to the left hand side one pixel down at 320. (See Tut 1) This means
+that a 16*320 scroller takes up the space 0 to 5119 on the screen. In ascii
+this looks like this :
+
+            (0)   .                                    .  (319)
+            (320) .                                    .  (639)
+                            "             "           "
+           (4800) .                                    .   (5119)
+
+Simple enough. Now what we do is we put down the first Y-line of the first
+character onto the very right hand side of the screen , like so :
+
+              For loop1:=1 to 16 do
+                Putpixel (319,loop1-1,font['A',1,loop1],vga);
+
+This will draw some stuff on the very right hand side. Your screen should now
+look like this :
+
+            (0)   .                                   X.  (319)
+            (320) .                                   X.  (639)
+                            "             "           "
+           (4800) .                                   X.   (5119)
+
+Next, we move each line one to the left, ie :
+
+              For loop1:=0 to 15 do
+                Move (mem[VGA:loop1*320+1],mem[VGA:loop1*320],320);
+
+This scrolls the screen from right to left, which is the easiest to read.
+To scroll the screen from left to right, swap the +1 onto the other side
+of the command. Also, to increase the size of the portion scrolled, increase
+the 15 to however many lines from the top you wish to scroll-1.
+
+After this move, your screen will look like this :
+
+            (0)   .                                  X .  (319)
+            (320) .                                  X .  (639)
+                            "             "           "
+           (4800) .                                  X .   (5119)
+                                                      ^
+                                                Note this space
+
+
+What you then do is draw in the next line on the right hand side, move it,
+draw the next line, move it etc. etc. Tah-Dah! You have a scrolly! Fairly
+simple, isn't it?
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+ş  How do we scroll up or down?
+
+To scroll up or down is also fairly simple. This can be used for 'movie
+credit' endings (I once wrote a little game with a desert scrolling down
+with you being a little robot on the bottom of the screen). The theory is
+this : Draw the top line (or bottom line) then move the entire screen :
+
+             Move (mem[vga:0],mem[vga:320],63680);
+                       { 64000 - 320 = 63680 }
+
+For scrolling down, or :
+
+             Move (mem[vga:320],mem[vga:0],63680);
+
+For scrolling up. You then draw the next line and repeat.
+
+Because of the simplicity of coding in a scrolly, most demos have one. It
+is usually best to have something extra happening on the screen so that
+the viewer doesn't get too bored, even, as I say, if it is only a really nice
+picture.
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+ş  In closing
+
+The University of Natal, Durban, Science Dept., now has 10 new 486's!
+This is a great boon, as now I can program nice routines during frees
+(even though I am a Commerce Student (Shhhhh) ;-) ). I can now use those
+previously wasted hours that I spent socialising and making friends
+coding instead ;-)
+
+I suggest you get a copy of TEXTER, for coding demos with fonts, or in fact
+almost any graphics application, it is an amazing help, and we have used it
+for *ALL* our demos. (P.S. We have written many demos, but many have been
+written for companies and have not been released for the general public)
+NOTE : For TEXTER's test program TEST.PAS, add {$X+} {$R-} if you have range
+checking on (I code with it off.)
+
+            [  "I'm from the Computer Inspection Agency, sir,
+                   I'm here to check your computer. Here is
+                   my identification."
+               "Certainly. Have a look, I'm clean. I don't have
+                   any pirated software."
+               The C-man pushes past him and sits in front of the
+                   computer. He notes the fact that the computer
+                   is currently off with a look of disdain. He
+                   makes a note on his clipboard. He boots up.
+               "What is this?" he asks, pointing at the screen.
+               "It's MasterMenu" stutters the man. "I wrote it
+                   myself!"
+               "Do you know what the penalty is for using junk
+                   like this on a private machine?" The C-man smiles.
+                   "This is a two-month sentance in itself!"
+               "I'm sorry sir! It won't happen again!"
+               "I know. I'll make sure of that." He smiles again.
+               The C-man runs through the hard drive, checking for
+                   illeagal software, bad programs and anti-government
+                   propaganda. He notes with satisfaction that he has
+                   enough to put this weenie away for ten years, not that
+                   it mattered. He usually could just make something up.
+               He comes to the last entry on the aphebetised menu tree.
+                   His hands jerk away from the keyboard. Then, tentatively,
+                   he types in the three letters of doom. He looks at the
+                   man, who is backing away with wide eyes and his hands
+                   outstretched in front of him, as if to ward off a blow.
+               The C-man smiles, his lips a thin, hard line.
+               "Windows!"
+                                                                     ]
+                                                           - Grant Smith
+                                                               1:55pm
+                                                                 16/9/93
+
+Cheers,
+  - Denthor
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ TUTPROG5.PAS ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+{$X+} {$R-}
+Uses Crt;
+
+CONST VGA = $a000;
+      XSize = 16;
+      YSize = 16;
+
+TYPE
+        Letter = Array[1..xsize,1..ysize] of Byte;
+        Letters = Array[' '..']'] of Letter;
+
+VAR Font : ^Letters;
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+Procedure SetMCGA;  { This procedure gets you into 320x200x256 mode. }
+BEGIN
+  asm
+     mov        ax,0013h
+     int        10h
+  end;
+END;
+
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+Procedure SetText;  { This procedure returns you to text mode.  }
+BEGIN
+  asm
+     mov        ax,0003h
+     int        10h
+  end;
+END;
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+procedure WaitRetrace; assembler;
+  { This waits until you are in a Verticle Retrace }
+
+label
+  l1, l2;
+asm
+    mov dx,3DAh
+l1:
+    in al,dx
+    and al,08h
+    jnz l1
+l2:
+    in al,dx
+    and al,08h
+    jz  l2
+end;
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+Procedure Pal(ColorNo : Byte; R,G,B : Byte);
+  { This sets the Red, Green and Blue values of a certain color }
+Begin
+   Port[$3c8] := ColorNo;
+   Port[$3c9] := R;
+   Port[$3c9] := G;
+   Port[$3c9] := B;
+End;
+
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+Procedure PutPixel (X,Y : Integer; Col : Byte; Where : Word);
+   { This puts a pixel at X,Y using color col, on VGA or the Virtual Screen}
+BEGIN
+  Mem [Where:X+(Y*320)]:=col;
+END;
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+procedure LoadPal (FileName : string);
+   { This loads the Pallette file and puts it on screen }
+type DACType = array [0..255] of record
+                                R, G, B : byte;
+                              end;
+var DAC : DACType;
+    Fil : file of DACType;
+    I : integer;
+BEGIN
+  assign (Fil, FileName);
+  reset (Fil);
+  read (Fil, DAC);
+  close (Fil);
+  for I := 0 to 255 do Pal(I,Dac[I].R,Dac[I].G,Dac[I].B);
+end;
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+function Exist(FileName: string): Boolean;
+    { Checks to see if filename exits or not }
+var f: file;
+begin
+  {$I-}
+  Assign(f, FileName);
+  Reset(f);
+  Close(f);
+  {$I+}
+  Exist := (IOResult = 0) and
+   (FileName <> '');
+end;
+
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+Procedure Setup;
+  { This loads the font and the pallette }
+VAR f:file;
+    loop1:char;
+    loop2,loop3:integer;
+BEGIN
+  getmem (font,sizeof (font^));
+  If exist ('softrock.fnt') then BEGIN
+    Assign (f,'softrock.fnt');
+    reset (f,1);
+    blockread (f,font^,sizeof (font^));
+    close (f);
+    Writeln ('SoftRock.FNT from TEXTER5 found in current directory. Using.');
+  END
+  ELSE BEGIN
+    Writeln ('SoftRock.FNT from TEXTER5 not found in current directory.');
+    For loop1:=' ' to ']' do
+      For loop2:=1 to 16 do
+        for loop3:=1 to 16 do
+          font^[loop1,loop2,loop3]:=loop2;
+  END;
+  If exist ('pallette.col') then
+    Writeln ('Pallette.COL from TEXTER5 found in current directory. Using.')
+  ELSE
+    Writeln ('Pallette.COL from TEXTER5 not found in current directory.');
+  Writeln;
+  Writeln;
+  Write ('Hit any key to continue ...');
+  readkey;
+  setmcga;
+  If exist ('pallette.col') then loadpal ('pallette.col');
+END;
+
+
+{ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ}
+Procedure ScrollMsg (Msg : String);
+  { This scrolls the string in MSG across the screen }
+Var Loop1,loop2,loop3 : Integer;
+Begin
+  For loop1:=1 to length (msg) do BEGIN
+    For loop2:=1 to xsize do BEGIN
+
+      { This bit scrolls the screen by one then puts in the new row of
+        letters }
+
+      waitretrace;
+      For Loop3 := 100 to 99+ysize do
+        move (mem[vga:1+(loop3*320)],mem[vga:(loop3*320)],319);
+      for loop3:=100 to 99+ysize do
+        putpixel (319,loop3,font^[msg[loop1],loop2,loop3-99],vga);
+           { Change the -99 above to the minimum of loop3-1, which you
+             will change in order to move the position of the scrolly }
+    END;
+
+    {This next bit scrolls by one pixel after each letter so that there
+      are gaps between the letters }
+
+    waitretrace;
+    For Loop3 := 100 to 99+ysize do
+      move (mem[vga:1+(loop3*320)],mem[vga:(loop3*320)],319);
+      for loop3:=100 to 99+ysize do
+        putpixel (319,loop3,0,vga);
+  END;
+End;
+
+
+BEGIN
+  ClrScr;
+  Writeln ('This program will give you an example of a scrolly. If the file');
+  Writeln ('SOFTROCK.FNT is in the current directory, this program will scroll');
+  Writeln ('letters, otherwise it will only scroll bars. It also searches for');
+  Writeln ('PALLETTE.COL, which it uses for it''s pallette. Both SOFTROCK.FNT');
+  Writeln ('and PALLETTE.COL come with TEXTER5.ZIP, at a BBS near you.');
+  Writeln;
+  Writeln ('You will note that you can change what the scrolly says merely by');
+  Writeln ('changing the string in the program.');
+  Writeln;
+  Setup;
+  repeat
+    ScrollMsg ('ASPHYXIA RULZ!!!   ');
+  until keypressed;
+  Settext;
+  freemem (font, sizeof (font^));
+  Writeln ('All done. This concludes the fifth sample program in the ASPHYXIA');
+  Writeln ('Training series. You may reach DENTHOR under the name of GRANT');
+  Writeln ('SMITH on the MailBox BBS, or leave a message to ASPHYXIA on the');
+  Writeln ('ASPHYXIA BBS. Get the numbers from Roblist, or write to :');
+  Writeln ('             Grant Smith');
+  Writeln ('             P.O. Box 270');
+  Writeln ('             Kloof');
+  Writeln ('             3640');
+  Writeln ('I hope to hear from you soon!');
+  Writeln; Writeln;
+  Write   ('Hit any key to exit ...');
+  Readkey;
+END.

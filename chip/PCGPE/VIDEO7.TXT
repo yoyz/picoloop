@@ -1,0 +1,197 @@
+
+                 ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+                 ³ Programming the Video7 SVGA Chip ³
+                 ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+                 Written for the PC-GPE by Mark Feldman
+            e-mail address : u914097@student.canberra.edu.au
+                             myndale@cairo.anu.edu.au
+
+                  Please read the file SVGINTRO.TXT
+              (Graphics/SVGA/Intro PC-GPE menu option)
+
+             ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+             ³      THIS FILE MAY NOT BE DISTRIBUTED     ³
+             ³ SEPARATE TO THE ENTIRE PC-GPE COLLECTION. ³
+             ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Disclaimer ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+I assume no responsibility whatsoever for any effect that this file, the
+information contained therein or the use thereof has on you, your sanity,
+computer, spouse, children, pets or anything else related to you or your
+existance. No warranty is provided nor implied with this information.
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Video7 Extensions ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+To modify any of the Video7 extended registers you must enable the
+extensions. Disable them once you are done.
+
+To enable extensions:
+
+PortW[$3C4] := $EA06;
+
+To disable extensions:
+
+PortW[$3C4] := $AE06;
+
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Identifying the Video7 SVGA Chip ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+The presence of a Video7 chip can be detected with the following procedure:
+
+var old_value, new_value, id : byte;
+
+EnableVideo7Extensions;
+Port[$3D4] := $0C;
+old_value := Port[$3D5];
+Port[$3D5] := $55;
+new_value := Port[$3D5];
+Port[$3D4] := $1F;
+id := Port[$3D5];
+Port[$3D4] := $0C;
+Port[$3D5] := old_value;
+DisableVideo7Extentions;
+
+{ Check that register value is $55 Xor $EA }
+if id = $BF then
+  card is a video7
+else
+  card isn't a video7
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Identifying which Video7 Chip is Present ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+Once you know that the video card has a video7 in it you can read the Chip
+Revision register to find out which chip it is:
+
+Port[$3C4] := $8E;
+chip := Port[$3C5];
+
+              ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+              ³ Value in                               ³
+              ³ chip variable     Video7 Chip          ³
+              ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+              ³ 40h-49h           1024i                ³
+              ³ 50h-59h           V7VGA Version 5      ³
+              ³ 70h-7Eh           V7VGA FASTWRITE/VRAM ³
+              ³ 80h-FFh           VEGA VGA             ³
+              ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Video7 Graphics Display Modes ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+                  ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+                  ³ Mode     Resolution      Colors  ³
+                  ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+                  ³ 60h      752x410          16     ³
+                  ³ 61h      720x540          16     ³
+                  ³ 62h      800x600          16     ³
+                  ³ 63h      1024x768         2      ³
+                  ³ 64h      1024x768         4      ³
+                  ³ 65h      1024x768         16     ³
+                  ³ 66h      640x400          256    ³
+                  ³ 67h      640x480          256    ³
+                  ³ 68h      720x540          256    ³
+                  ³ 69h      800x600          256    ³
+                  ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Video7 Display Memory ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+Remeber, the extensions must be enabled before calling any of the following
+procedures.
+
+The Video7 version 1-3 chips use a ridiculously complex method to switch
+banks (in my opinion at least), so for these chips I'll only include the code
+to bank switch and leave the technical info on what it does and why it does
+it till a future PC-GPE version (if ever).
+
+The version 1-3 chips map two banks to host memory A000:0000-FFFFh. One bank
+is used for read operations, the other is used for write operations. For 256
+color modes there are 16 64k banks (numbered 0 - 15 for the following
+procedures). One really "stuffed in the head" thing about these chips (from
+a programmers point of view anyway) is that both bank registers use a common
+SVGA register to store their 2 low order bits, so if you set the Read Bank
+number, the Write Bank number's 2 low order bits will be set the same as the
+Read Bank number's 2 low order bits.
+
+The Write Bank number for 256 color modes can be set with the following
+procedure:
+
+Port[$3C4] := $F9;
+Port[$3C5] := bank_number and 1;
+Port[$3C2] := (Port[$3CC] and $DF) or ((bank_number and 2) shl 4);
+Port[$3C4] := $F6;
+Port[$3C5] := (Port[$3C5] and $FC) or (bank_number shr 2);
+
+The Read Bank number for 256 color modes can be set with the following
+procedure:
+
+Port[$3C4] := $F9;
+Port[$3C5] := bank_number and 1;
+Port[$3C2] := (Port[$3CC] and $DF) or ((bank_number and 2) shl 4);
+Port[$3C4] := $F6;
+Port[$3C5] := (Port[$3C5] and $F3) or (bank_number and $0C);
+
+By version 4 Headlands Technologies had gotten their act together and
+adopted a more "sane" bank switching scheme. Version 4 supports both single
+and duel paging schemes. There are 16 64k long banks, and a 64k granularity
+with the techniques used here.
+
+The single paging scheme maps a bank to host memory A000:0000-FFFFh for
+both read and write operations. The single paging scheme is the
+default for version 4, but can also be set with the following procedure:
+
+Port[$3C4] := $E0;
+Port[$3C5] := Port[$3C5] and $7F
+
+The Single/Write Bank Register is used to select which bank to map to
+host memory:
+
+          Index : E8h at port 3C4h
+          Read/Write at port 3C5h
+          ÚÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄ¿
+          ³ 7 ³ 6 ³ 5 ³ 4 ³ 3 ³ 2 ³ 1 ³ 0 ³
+          ÀÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÙ
+            ÀÄÄÄÄÄÂÄÄÄÄÄÙ
+                 Bank
+
+A bank can be selected with the following procedure:
+
+PortW[$3C4] := (bank_number shl 12) + $E8;
+
+In duel paging mode one bank is mapped to A000:0000-FFFF for write operations
+and another for read operations. Duel paging mode can be selected with the
+following procedure:
+
+Port[$3C4] := $E0;
+Port[$3C5] := Port[$3C5] or $80;
+
+The Single/Write Bank Register (see above) is used to select which bank to
+map to host memory for writing operations. The Read Bank Register selects
+which bank to use for read operations:
+
+          Index : E9h at port 3C4h
+          Read/Write at port 3C5h
+          ÚÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄ¿
+          ³ 7 ³ 6 ³ 5 ³ 4 ³ 3 ³ 2 ³ 1 ³ 0 ³
+          ÀÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÙ
+            ÀÄÄÄÄÄÂÄÄÄÄÄÙ
+                 Bank
+
+A read bank can be selected with the following procedure:
+
+PortW[$3C4] := (bank_number shl 12) + $E9;

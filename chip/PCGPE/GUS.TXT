@@ -1,0 +1,1403 @@
+ÚÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ GUSDOC ³
+ÀÄÄÄÄÄÄÄÄÙ
+
+
+
+
+
+                               THE OFFICAL
+
+
+
+                GRAVIS ULTRASOUND PROGRAMMERS ENCYCLOPEDIA
+
+                               ( G.U.P.E )
+
+
+
+                                 v 0.1
+
+
+                           Written by Mark Dixon.
+
+
+
+
+
+
+  -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+ INTRODUCTION
+ ~~~~~~~~~~~~
+    The Gravis Ultrasound is by far the best & easiest sound card to
+  program. Why? Because the card does all the hard stuff for you, leaving
+  you and the CPU to do other things! This reference will document some
+  (but not all) of the Gravis Ultrasound's hardware functions, allowing
+  you to play music & sound effects on your GUS.
+
+    We will not be going into great detail as to the theory behind
+  everything - if you want to get technical information then read the
+  GUS SDK. We will be merely providing you with the routines necessary
+  to play samples on the GUS, and a basic explanation of how they work.
+  
+    This document will NOT go into DMA transfer or MIDI specifications.
+  If someone knows something about them, and would like to write some
+  info on them, we would appreciate it very much.
+
+    All source code is in Pascal (tested under Turbo Pascal v7.0, but
+  should work with TP 6.0 and possibly older versions). This document
+  will assume reasonable knowledge of programming, and some knowledge of
+  soundcards & music.
+
+
+ INITIALISATION & AUTODETECTION
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   Since we are not using DMA, we only need to find the GUS's I/O port,
+ which can be done from the DOS environment space, or preferably from a
+ routine that will scan all possible I/O ports until it finds a GUS.
+
+   The theory behind the detection routine is to store some values into
+ GUS memory, and then read them back. If we have the I/O port correct,
+ we will read back exactly what we wrote. So first, we need a routine
+ that will write data to the memory of the GUS :
+
+
+  Function  GUSPeek(Loc : Longint) : Byte;
+
+  { Read a value from GUS memory }
+
+  Var
+    B : Byte;
+    AddLo : Word;
+    AddHi : Byte;
+  Begin
+    AddLo := Loc AND $FFFF;
+    AddHi := LongInt(Loc AND $FF0000) SHR 16;
+
+    Port [Base+$103] := $43;
+    Portw[Base+$104] := AddLo;
+    Port [Base+$103] := $44;
+    Port [Base+$105] := AddHi;
+
+    B := Port[Base+$107];
+    GUSPeek := B;
+  End;
+
+
+  Procedure GUSPoke(Loc : Longint; B : Byte);
+
+  { Write a value into GUS memory }
+
+  Var
+    AddLo : Word;
+    AddHi : Byte;
+  Begin
+    AddLo := Loc AND $FFFF;
+    AddHi := LongInt(Loc AND $FF0000) SHR 16;
+    Port [Base+$103] := $43;
+    Portw[Base+$104] := AddLo;
+    Port [Base+$103] := $44;
+    Port [Base+$105] := AddHi;
+    Port [Base+$107] := B;
+  End;
+
+
+   Since the GUS can have up to 1meg of memory, we need to use a 32bit
+ word to address all possible memory locations. However, the hardware of
+ the GUS will only accept a 24bit word, which means we have to change
+ the 32bit address into a 24bit address. The first two lines of each
+ procedure does exactly that.
+
+   The rest of the procedures simply send commands and data out through
+ the GUS I/O port defined by the variable BASE (A word). So to test for
+ the presence of the GUS, we simply write a routine to read/write memory
+ for all possible values of BASE :
+
+
+  Function GUSProbe : Boolean;
+
+  { Returns TRUE if there is a GUS at I/O address BASE }
+
+  Var
+    B : Byte;
+  Begin
+    Port [Base+$103] := $4C;
+    Port [Base+$105] := 0;
+    GUSDelay;
+    GUSDelay;
+    Port [Base+$103] := $4C;
+    Port [Base+$105] := 1;
+    GUSPoke(0, $AA);
+    GUSPoke($100, $55);
+    B := GUSPeek(0);
+    If B = $AA then GUSProbe := True else GUSProbe := False;
+  End;
+
+
+  Procedure GUSFind;
+
+  { Search all possible I/O addresses for the GUS }
+
+  Var
+    I : Word;
+  Begin
+    for I := 1 to 8 do
+    Begin
+      Base := $200 + I*$10;
+      If GUSProbe then I := 8;
+    End;
+    If Base < $280 then
+      Write('Found your GUS at ', Base, ' ');
+  End;
+
+
+   The above routines will obviously need to be customised for your own
+ use - for example, setting a boolean flag to TRUE if you find a GUS,
+ rather than just displaying a message.
+
+   It is also a good idea to find out exactly how much RAM is on the
+ GUS, and this can be done in a similar process to the above routine.
+ Since the memory can either be 256k, 512k, 768k or 1024k, all we have
+ to do is to read/write values on the boundaries of these memory
+ addresses. If we read the same value as we wrote, then we know exactly
+ how much memory is available.
+
+
+  Function  GUSFindMem : Longint;
+
+  { Returns how much RAM is available on the GUS }
+
+  Var
+    I : Longint;
+    B : Byte;
+  Begin
+    GUSPoke($40000, $AA);
+    If GUSPeek($40000) <> $AA then I := $3FFFF
+      else
+    Begin
+      GUSPoke($80000, $AA);
+      If GUSPeek($80000) <> $AA then I := $8FFFF
+        else
+      Begin
+        GUSPoke($C0000, $AA);
+        If GUSPeek($C0000) <> $AA then I := $CFFFF
+          else I := $FFFFF;
+      End;
+    End;
+    GUSFindMem := I;
+  End;
+
+
+   Now that we know where the GUS is, and how much memory it has, we
+ need to initialise it for output. Unfortunately, the below routine is
+ slightly buggy. If you run certain programs (I discovered this after
+ running Second Reality demo) that use the GUS, and then your program
+ using this init routine, it will not initialise the GUS correctly.
+
+   It appears that I am not doing everything that is necessary to
+ initialise the GUS. However, I managed to correct the problem by
+ either re-booting (not a brilliant solution) or running Dual Module
+ Player, which seems to initialise it properly. If someone knows where
+ i'm going wrong, please say so!
+
+   Anyway, the following routine should be called after you have found
+ the GUS, and before you start doing anything else with the GUS.
+
+
+
+  Procedure GUSDelay; Assembler;
+
+  { Pause for approx. 7 cycles. }
+
+  ASM
+    mov   dx, 0300h
+    in    al, dx
+    in    al, dx
+    in    al, dx
+    in    al, dx
+    in    al, dx
+    in    al, dx
+    in    al, dx
+  End;
+
+ 
+  Procedure GUSReset;
+
+  { An incomplete routine to initialise the GUS for output. }
+
+  Begin
+    port [Base+$103]   := $4C;
+    port [Base+$105] := 1;
+    GUSDelay;
+    port [Base+$103]   := $4C;
+    port [Base+$105] := 7;
+    port [Base+$103]   := $0E;
+    port [Base+$105] := (14 OR $0C0);
+  End;
+
+
+   Now you have all the routine necessary to find and initialise the
+ GUS, let's see just what we can get the GUS to do!
+
+
+ MAKING SOUNDS
+ ~~~~~~~~~~~~~
+   The GUS is unique in that it allows you to store the data to be
+ played in it's onboard DRAM. To play the sample, you then tell it what
+ frequency to play it at, what volume and pan position, and which sample
+ to play. The GUS will then do everything in the background, it will
+ interpolate the data to give an effective 44khz (or less, depending on
+ how many active voices) sample. This means that an 8khz sample will
+ sound better on the GUS than most other cards, since the GUS will play
+ it at 44khz!
+
+   The GUS also has 32 seperate digital channels (that are mixed by a
+ processor on the GUS) which all have their own individual samples,
+ frequencies, volumes and panning positions. For some reason, however,
+ the GUS can only maintain 44khz output with 16 channels - the more
+ channels, the lower the playback rate (which basically means, lower
+ quality). If you are using all 32 channels (unlikely), then playback is
+ reduced to 22khz.
+
+   Since you allready know how to store samples in the GUS dram (simply
+ use the GUSPoke routine to store the bytes) we will now look at various
+ routines to change the way the gus plays a sample. The first routine we
+ will look at will set the volume of an individual channel :
+
+  Procedure GUSSetVolume( Voi : Byte; Vol : Word);
+
+  { Set the volume of channel VOI to Vol, a 16bit logarithmic scale
+    volume value -  0 is off, $ffff is full volume, $e0000 is half
+    volume, etc }
+
+  Begin
+    Port [Base+$102] := Voi;
+    Port [Base+$102] := Voi;
+    Port [Base+$102] := Voi;
+    Port [Base+$103] := 9;
+    Portw[Base+$104] := Vol;  { 0-0ffffh, log scale not linear }
+  End;
+
+   The volume (and pan position & frequency) can be changed at ANY time
+ regardless of weather the GUS is allready playing the sample or not.
+ This means that to fade out a sample, you simply make several calls to
+ the GUSSetVolume routine with exponentially (to account for the
+ logarithmic scale) decreasing values.
+
+   The next two routines will set the pan position (from 0 to 15, 0
+   being left, 15 right and 7 middle) and the frequency respectively :
+
+  Procedure GUSSetBalance( V, B : Byte);
+  Begin
+    Port [Base+$102] := V;
+    Port [Base+$102] := V;
+    Port [Base+$102] := V;
+    Port [Base+$103] := $C;
+    Port [Base+$105] := B;
+  End;
+
+  Procedure GUSSetFreq( V : Byte; F : Word);
+  Begin
+    Port [Base+$102] := V;
+    Port [Base+$102] := V;
+    Port [Base+$102] := V;
+    Port [Base+$103] := 1;
+    Portw[Base+$104] := F;
+  End;
+
+   I'm not sure the the value F in the set frequency procedure. The GUS
+ SDK claims that it is the exact frequency at which the sample should be
+ played.
+
+   When playing a sample, it is necessary to set the volume, position
+ and frequency BEFORE playing the sample. In order to start playing a
+ sample, you need to tell the GUS where abouts in memory the sample is
+ stored, and how big the sample is  :
+
+ 
+  Procedure GUSPlayVoice( V, Mode : Byte;VBegin, VStart, VEnd : Longint);
+
+  { This routine tells the GUS to play a sample commencing at VBegin,
+    starting at location VStart, and stopping at VEnd }
+
+  Var
+    GUS_Register : Word;
+  Begin
+    Port [Base+$102] := V;
+    Port [Base+$102] := V;
+    Port [Base+$103] := $0A;
+    Portw[Base+$104] := (VBegin SHR 7) AND 8191;
+    Port [Base+$103] := $0B;
+    Portw[Base+$104] := (VBegin AND $127) SHL 8;
+    Port [Base+$103] := $02;
+    Portw[Base+$104] := (VStart SHR 7) AND 8191;
+    Port [Base+$103] := $03;
+    Portw[Base+$104] := (VStart AND $127) SHL 8;
+    Port [Base+$103] := $04;
+    Portw[Base+$104] := ((VEnd)   SHR 7) AND 8191;
+    Port [Base+$103] := $05;
+    Portw[Base+$104] := ((VEnd)   AND $127) SHL 8;
+    Port [Base+$103] := $0;
+    Port [Base+$105] := Mode;
+
+    { The below part isn't mentioned as necessary, but the card won't
+      play anything without it! }
+
+    Port[Base] := 1;
+    Port[Base+$103] := $4C;
+    Port[Base+$105] := 3;
+  end;
+
+   There are a few important things to note about this routine. Firstly,
+ the value VEnd refers to the location in memory, not the length of the
+ sample. So if the sample commenced at location 1000, and was 5000 bytes
+ long, the VEnd would be 6000 if you wanted the sample to play to the
+ end. VBegin and VStart are two weird values, one of them defines the
+ start of the sample, and the other defines where abouts to actually
+ start playing. I'm not sure why both are needed, since I have allways
+ set them to the same value.
+
+   Now that the gus is buisy playing a sample, the CPU is totally free
+ to be doing other things. We might, for example, want to spy on the gus
+ and see where it is currently up to in playing the sample :
+
+  Function VoicePos( V : Byte) : Longint;
+  Var
+    P : Longint;
+    Temp0, Temp1 : Word;
+  Begin
+    Port [Base+$102] := V;
+    Port [Base+$102] := V;
+    Port [Base+$102] := V;
+    Port [Base+$103] := $8A;
+    Temp0 := Portw[Base+$104];
+    Port [Base+$103] := $8B;
+    Temp1 := Portw[Base+$104];
+    VoicePos := (Temp0 SHL 7)+ (Temp1 SHR 8);
+  End;
+
+   This routine will return the memory location that the channel V is
+ currently playing. If the GUS has reached the end of the sample, then
+ the returned value will be VEnd. If you want to see what BYTE value is
+ currently being played (for visual output of the sample's waveform),
+ then you simply PEEK the location pointed to by this routine.
+
+   Finally, we might want to stop playing the sample before it has
+ reached it's end - the following routine will halt the playback on
+ channel V.
+
+
+  Procedure GUSStopVoice( V : Byte);
+  Var
+    Temp : Byte;
+  Begin
+    Port [Base+$102] := V;
+    Port [Base+$102] := V;
+    Port [Base+$102] := V;
+    Port [Base+$103] := $80;
+    Temp := Port[Base+$105];
+    Port [Base+$103] := 0;
+    Port [Base+$105] := (Temp AND $df) OR 3;
+    GUSDelay;
+    Port [Base+$103] := 0;
+    Port [Base+$105] := (Temp AND $df) OR 3;
+  End;
+
+
+ SPECIAL EFFECTS
+ ~~~~~~~~~~~~~~~
+   There are a few extra features of the GUS that are worthy of mention,
+ the main one being hardware controlled sample looping. The GUS has a
+ control byte for each of the 32 channels. This control byte consists of
+ 8 flags that effect the way the sample is played, as follows :
+  ( The table is taken directly from the GUS Software Developers Kit )
+
+           =================================
+           | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0 |
+           =================================
+             |   |   |   |   |   |   |   |
+             |   |   |   |   |   |   |   +---- Voice Stopped
+             |   |   |   |   |   |   +-------- Stop Voice
+             |   |   |   |   |   +------------ 16 bit data
+             |   |   |   |   +---------------- Loop enable
+             |   |   |   +-------------------- Bi-directional loop enable
+             |   |   +------------------------ Wave table IRQ
+             |   +---------------------------- Direction of movement
+             +-------------------------------- IRQ pending
+        (*)Bit 0 = 1 : Voice is stopped. This gets set by hitting the end
+                   address (not looping) or by setting bit 1 in this reg.
+           Bit 1 = 1 : Stop Voice. Manually force voice to stop.
+           Bit 2 = 1 : 16 bit wave data, 0 = 8 bit data
+           Bit 3 = 1 : Loop to begin address when it hits the end address.
+           Bit 4 = 1 : Bi-directional looping enabled
+           Bit 5 = 1 : Enable wavetable IRQ. Generate an irq when the voice
+                       hits the end address. Will generate irq even if looping
+                       is enabled.
+        (*)Bit 6 = 1 - Decreasing addresses, 0 = increasing addresses. It is
+                       self-modifying because it might shift directions when
+                       it hits one of the loop boundaries and looping is enabled.
+        (*)Bit 7 = 1 - Wavetable IRQ pending. If IRQ's are enabled and
+                       looping is NOT enabled, an IRQ will be constantly
+                       generated until voice is stopped. This means that
+                       you may get more than 1 IRQ if it isn't handled
+                       properly.
+
+
+  Procedure GUSVoiceControl( V, B : Byte);
+  Begin
+    Port [Base+$102] := V;
+    Port [Base+$102] := V;
+    Port [Base+$103] := $0;
+    Port [Base+$105] := B;
+  End;
+
+
+   The above routine will set the Voice Control byte for the channel
+ defined in V. For example, if you want channel 1 to play the sample in
+ a continuous loop, you would use the procedure like this :
+
+    GUSVoiceControl( 1, $F );  { Bit 3 ON = $F }
+
+
+ CONCLUSION
+ ~~~~~~~~~~
+
+   The above routines are all that is necessary to get the GUS to start
+ playing music. To prove this, I have included my 669 player & source
+ code in the package as a practical example. The GUSUnit contains all
+ the routines discussed above. I won't go into the theory of the 669
+ player, but it is a good starting point if you want to learn about
+ modplayers. The player is contained within the archive 669UNIT.ARJ
+
+
+
+ÚÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ README ³
+ÀÄÄÄÄÄÄÄÄÙ
+
+
+  GUS669 Unit  v0.2b
+  Copyright 1994 Mark Dixon.
+  (aka C.D. of Silicon Logic)
+
+
+  LEGAL STUFF
+  ~~~~~~~~~~~
+  I'd like to avoid this, but it has to be done. Basically, if anything
+  in this archive causes any kind of damage, I cannot be held
+  responsable - USE AT YOUR OWN RISK.
+
+  In adition, since I spent long hours working on this project, and
+  attempting to decode the GUS SDK, I would appreciate it if people
+  didn't rip off my work. Give me credit for what I have done, and if
+  your planning to use my routines for commercial purposes, talk to me
+  first, or you might find yourself on the wrong side of a legal battle.
+  (Hey, let's sound tough while i'm at it, I have lawyer's in the
+  family, so it's not gonna cost me much to sue someone. And don't
+  criticise my spelling! :)
+
+
+
+  BORING STUFF
+  ~~~~~~~~~~~~
+  Well, if your the sort of person who likes to ignore all the rubishy
+  bits that go into a README text file, then you'd better stop now and
+  go and try out the source code!
+
+  Basically, this readme isn't going to say much more than what the
+  source code is, and then go dribling on for five pages about
+  absolutely nothing.
+
+
+  SOURCE CODE! DID SOMEONE SAY - SOURCE CODE!! - ????
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Yes, that's right, free with every download of this wonderful archive
+  comes the complete Pascal source code to a 669 module player for the
+  GUS. I'd have included my MOD player, but I haven't been able to get
+  all the MOD commands working, so you'll just have to make do with a
+  669 player :)
+
+  Feel free to make use of this source code for any non-commercial
+  purposes you might be able to think of - and mention my name while
+  your at it! Since the source code is here, people are bound to modify
+  it for their personal uses. If you do this, I would very much like to
+  see your modifications - so that I can include them in the next
+  release of the player.
+
+
+  Well, I don't want to bore you anymore, and it's getting late (not!)
+  so i'd better let you go and play around with the source code :)
+
+
+  SILICON LOGIC
+  ~~~~~~~~~~~~~
+  What ever happened to Silicon Logic? Well, after being killed off over
+  in Perth, a major revival is underway here in Canberra, with a more
+  commercial view - more on that later.
+
+  For those of you who have never heard of Silicon Logic, then you're
+  either not Australian, or not into the ausie demo scene. But then,
+  that covers about 99.999999999999% of the world population :)
+
+
+  GREETINGS
+  ~~~~~~~~~
+  I've allways wanted to dribble some thanks, so here goes.
+
+   Thanks go to...
+
+    Darren Lyon    - Who got me into this programming lark in the first
+                     place. Finally wrote myself a mod player :)
+    Tran           - Your source code really helped!
+    Kitsune        - Love those mods, keep up the good work!
+
+    ... and Advanced Gravis, for making the best sound card ever.
+
+   Greetings to...
+
+    FiRE members   - I'll probably never join you guys, but good luck
+                     anyway!
+    UNiQUE         - How's the board going?
+    CRaSH          - Still ripping other peoples source code?
+    Old SL members - Thanks for the support, good luck with your new
+                     group!
+    Oliver White   - G'day... just thought i'd say hi, since you so
+                     kindly beta tested the player for me.
+    Murray Head    - Rick Price sux! :-) SoundBlaster sux too! :-)
+    Perth people   - I'm coming back... someday!
+
+
+    THE PICK / MINNOW   -  Hey, give me a call sometime, long time no
+                           talk...
+
+
+
+  INTERESTED IN A DEMO GROUP IN CANBERRA?
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  If there is anyone interested in joining a demo / coding group in
+  Canberra (ACT), then drop me a line.
+
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ GUSUNIT.PAS³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+Unit  GUSUnit;
+
+{
+  GUS DigiUnit  v1.0
+  Copyright 1994 Mark Dixon.
+
+  This product is "Learnware".
+
+  All contents of this archive, including source and executables, are the
+  intellectual property of the author, Mark Dixon. Use of this product for
+  commercial programs, or commercial gain in ANY way, is illegal. Private
+  use, or non-commercial use (such as demos, PD games, etc) is allowed,
+  provided you give credit to the author for these routines.
+
+  Feel free to make any modifications to these routines, but I would
+  appreciate it if you sent me these modifications, so that I can include
+  them in the next version of the Gus669 Unit.
+
+  If you wish to use these routines for commercial purposes, then you will
+  need a special agreement. Please contact me, Mark Dixon, and we can work
+  something out.
+
+  What's "Learnware"? Well, I think I just made it up actually. What i'm
+  getting at is that the source code is provided for LEARNING purposes only.
+  I'd get really angry if someone ripped off my work and tried to make out
+  that they wrote a mod player.
+
+  As of this release (Gus699 Unit), the Gus DigiUnit has moved to version
+  1.0, and left the beta stage. I feel these routines are fairly sound,
+  and I haven't made any changes to them in weeks.
+
+
+  Notice the complete absence of comments here? Well, that's partially
+  the fault of Gravis and their SDK, since it was so hard to follow, I
+  was more worried about getting it working than commenting it. No offense
+  to Gravis though, since they created this wonderful card! :-) It helps
+  a lot if you have the SDK as a reference when you read this code,
+  otherwise you might as well not bother reading it.
+
+}
+
+
+
+INTERFACE
+
+Procedure GUSPoke(Loc : Longint; B : Byte);
+Function  GUSPeek(Loc : Longint) : Byte;
+Procedure GUSSetFreq( V : Byte; F : Word);
+Procedure GUSSetBalance( V, B : Byte);
+Procedure GUSSetVolume( Voi : Byte; Vol : Word);
+Procedure GUSPlayVoice( V, Mode : Byte;VBegin, VStart, VEnd : Longint);
+Procedure GUSVoiceControl( V, B : Byte);
+Procedure GUSReset;
+Function VoicePos( V : Byte) : Longint;
+
+Const
+  Base : Word = $200;
+  Mode : Byte = 0;
+
+IMPLEMENTATION
+
+
+Uses Crt;
+
+Function Hex( W : Word) : String;
+Var
+  I, J : Word;
+  S : String;
+  C : Char;
+Const
+  H : Array[0..15] of Char = ('0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F');
+Begin
+  S := '';
+  S := S + H[(W DIV $1000) MOD 16];
+  S := S + H[(W DIV $100 ) MOD 16];
+  S := S + H[(W DIV $10  ) MOD 16];
+  S := S + H[(W DIV $1   ) MOD 16];
+  Hex := S+'h';
+End;
+
+
+Procedure GUSDelay; Assembler;
+ASM
+  mov   dx, 0300h
+  in    al, dx
+  in    al, dx
+  in    al, dx
+  in    al, dx
+  in    al, dx
+  in    al, dx
+  in    al, dx
+End;
+
+
+
+Function VoicePos( V : Byte) : Longint;
+Var
+  P : Longint;
+  I, Temp0, Temp1 : Word;
+Begin
+  Port [Base+$102] := V;
+  Port [Base+$103] := $8A;
+  Temp0 := Portw[Base+$104];
+  Port [Base+$103] := $8B;
+  Temp1 := Portw[Base+$104];
+  VoicePos := (Temp0 SHL 7)+ (Temp1 SHR 8);
+  For I := 1 to 10 do GusDelay;
+End;
+
+
+Function  GUSPeek(Loc : Longint) : Byte;
+Var
+  B : Byte;
+  AddLo : Word;
+  AddHi : Byte;
+Begin
+  AddLo := Loc AND $FFFF;
+  AddHi := LongInt(Loc AND $FF0000) SHR 16;
+
+  Port [Base+$103] := $43;
+  Portw[Base+$104] := AddLo;
+  Port [Base+$103] := $44;
+  Port [Base+$105] := AddHi;
+
+  B := Port[Base+$107];
+  GUSPeek := B;
+End;
+
+
+Procedure GUSPoke(Loc : Longint; B : Byte);
+Var
+  AddLo : Word;
+  AddHi : Byte;
+Begin
+  AddLo := Loc AND $FFFF;
+  AddHi := LongInt(Loc AND $FF0000) SHR 16;
+{  Write('POKE  HI :', AddHi:5, '  LO : ', AddLo:5, '    ');}
+  Port [Base+$103] := $43;
+  Portw[Base+$104] := AddLo;
+  Port [Base+$103] := $44;
+  Port [Base+$105] := AddHi;
+  Port [Base+$107] := B;
+{  Writeln(B:3);}
+End;
+
+
+Function GUSProbe : Boolean;
+Var
+  B : Byte;
+Begin
+  Port [Base+$103] := $4C;
+  Port [Base+$105] := 0;
+  GUSDelay;
+  GUSDelay;
+  Port [Base+$103] := $4C;
+  Port [Base+$105] := 1;
+  GUSPoke(0, $AA);
+  GUSPoke($100, $55);
+  B := GUSPeek(0);
+{  Port [Base+$103] := $4C;
+  Port [Base+$105] := 0;}
+  { Above bit disabled since it appears to prevent the GUS from accessing
+    it's memory correctly.. in some bizare way.... }
+
+  If B = $AA then GUSProbe := True else GUSProbe := False;
+End;
+
+
+Procedure GUSFind;
+Var
+  I : Word;
+Begin
+  for I := 1 to 8 do
+  Begin
+    Base := $200 + I*$10;
+    If GUSProbe then I := 8;
+  End;
+  If Base < $280 then
+    Write('Found your GUS at ', Hex(Base), ' ');
+End;
+
+
+Function  GUSFindMem : Longint;
+{ Returns how much RAM is available on the GUS }
+Var
+  I : Longint;
+  B : Byte;
+Begin
+  GUSPoke($40000, $AA);
+  If GUSPeek($40000) <> $AA then I := $3FFFF
+    else
+  Begin
+    GUSPoke($80000, $AA);
+    If GUSPeek($80000) <> $AA then I := $8FFFF
+      else
+    Begin
+      GUSPoke($C0000, $AA);
+      If GUSPeek($C0000) <> $AA then I := $CFFFF
+        else I := $FFFFF;
+    End;
+  End;
+  GUSFindMem := I;
+End;
+
+
+Procedure GUSSetFreq( V : Byte; F : Word);
+Begin
+  Port [Base+$102] := V;
+  Port [Base+$102] := V;
+  Port [Base+$102] := V;
+  Port [Base+$103] := 1;
+  Portw[Base+$104] := (F { DIV 19}); { actual frequency / 19.0579083837 }
+End;
+
+Procedure GUSVoiceControl( V, B : Byte);
+Begin
+  Port [Base+$102] := V;
+  Port [Base+$102] := V;
+  Port [Base+$103] := $0;
+  Port [Base+$105] := B;
+End;
+
+
+
+Procedure GUSSetBalance( V, B : Byte);
+Begin
+  Port [Base+$102] := V;
+  Port [Base+$102] := V;
+  Port [Base+$102] := V;
+  Port [Base+$103] := $C;
+  Port [Base+$105] := B;
+End;
+
+
+Procedure GUSSetVolume( Voi : Byte; Vol : Word);
+Begin
+  Port [Base+$102] := Voi;
+  Port [Base+$102] := Voi;
+  Port [Base+$102] := Voi;
+  Port [Base+$103] := 9;
+  Portw[Base+$104] := Vol;  { 0-0ffffh, log ... not linear }
+End;
+
+
+Procedure GUSSetLoopMode( V : Byte);
+Var
+  Temp : Byte;
+Begin
+  Port [Base+$102] := V;
+  Port [Base+$102] := V;
+  Port [Base+$102] := V;
+  Port [Base+$103] := $80;
+  Temp := Port[Base+$105];
+  Port [Base+$103] := 0;
+  Port [Base+$105] := (Temp AND $E7) OR Mode;
+End;
+
+
+Procedure GUSStopVoice( V : Byte);
+Var
+  Temp : Byte;
+Begin
+  Port [Base+$102] := V;
+  Port [Base+$102] := V;
+  Port [Base+$102] := V;
+  Port [Base+$103] := $80;
+  Temp := Port[Base+$105];
+  Port [Base+$103] := 0;
+  Port [Base+$105] := (Temp AND $df) OR 3;
+  GUSDelay;
+  Port [Base+$103] := 0;
+  Port [Base+$105] := (Temp AND $df) OR 3;
+End;
+
+
+Procedure GUSPlayVoice( V, Mode : Byte;VBegin, VStart, VEnd : Longint);
+Var
+  GUS_Register : Word;
+Begin
+  Port [Base+$102] := V;
+  Port [Base+$102] := V;
+  Port [Base+$103] := $0A;
+  Portw[Base+$104] := (VBegin SHR 7) AND 8191;
+  Port [Base+$103] := $0B;
+  Portw[Base+$104] := (VBegin AND $127) SHL 8;
+  Port [Base+$103] := $02;
+  Portw[Base+$104] := (VStart SHR 7) AND 8191;
+  Port [Base+$103] := $03;
+  Portw[Base+$104] := (VStart AND $127) SHL 8;
+  Port [Base+$103] := $04;
+  Portw[Base+$104] := ((VEnd)   SHR 7) AND 8191;
+  Port [Base+$103] := $05;
+  Portw[Base+$104] := ((VEnd)   AND $127) SHL 8;
+  Port [Base+$103] := $0;
+  Port [Base+$105] := Mode;
+
+  { The below part isn't mentioned as necessary, but the card won't
+    play anything without it! }
+
+  Port[Base] := 1;
+  Port[Base+$103] := $4C;
+  Port[Base+$105] := 3;
+
+end;
+
+
+Procedure GUSReset;
+Begin
+  port [Base+$103]   := $4C;
+  port [Base+$105] := 1;
+  GUSDelay;
+  port [Base+$103]   := $4C;
+  port [Base+$105] := 7;
+  port [Base+$103]   := $0E;
+  port [Base+$105] := (14 OR $0C0);
+End;
+
+
+
+Var
+  I : Longint;
+  F : File;
+  Buf : Array[1..20000] of Byte;
+  S : Word;
+
+
+Begin
+  Clrscr;
+  Writeln('GUS DigiUnit V1.0');
+  Writeln('Copyright 1994 Mark Dixon.');
+  Writeln;
+  GUSFind;
+  Writeln('with ', GUSFindMem, ' bytes onboard.');
+  Writeln;
+  GUSReset;
+End.
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ GUS669.PAS ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+UNIT Gus669;
+
+{
+  GUS669 Unit  v0.2b
+  Copyright 1994 Mark Dixon.
+
+  This product is "Learnware".
+
+  All contents of this archive, including source and executables, are the
+  intellectual property of the author, Mark Dixon. Use of this product for
+  commercial programs, or commercial gain in ANY way, is illegal. Private
+  use, or non-commercial use (such as demos, PD games, etc) is allowed,
+  provided you give credit to the author for these routines.
+
+  Feel free to make any modifications to these routines, but I would
+  appreciate it if you sent me these modifications, so that I can include
+  them in the next version of the Gus669 Unit.
+
+  If you wish to use these routines for commercial purposes, then you will
+  need a special agreement. Please contact me, Mark Dixon, and we can work
+  something out.
+
+  What's "Learnware"? Well, I think I just made it up actually. What i'm
+  getting at is that the source code is provided for LEARNING purposes only.
+  I'd get really angry if someone ripped off my work and tried to make out
+  that they wrote a mod player.
+
+  Beta version? Yes, since the product is still slightly unstable, I feel
+  it is right to keep it under beta status until I find and fix a few
+  bugs.
+
+  FEATURES
+    - Only works with the GUS!
+    - 8 channel, 669 music format.
+    - That's about it really.
+    - Oh, 100% Pascal high level source code = NO ASSEMBLER!
+      (So if you want to learn about how to write your own MOD player, this
+       should make it easier for you)
+    - Tested & compiled with Turbo Pascal v7.0
+
+  BUGS
+    - Not yet, give me a chance!
+      (If you find any, I would very much appreciate it if you could take
+       the time to notify me)
+    - Doesn't sound right with some modules, advice anyone??
+    - Could do with some better I/O handling routines when loading the
+      669 to give better feedback to the user about what went wrong
+      if the module didn't load.
+
+
+ You can contact me at any of the following :
+
+ FidoNet  : Mark Dixon  3:620/243
+ ItnerNet : markd@cairo.anu.edu.au         ( prefered )
+            d9404616@karajan.anu.edu.au    ( might not work for mail :) )
+            sdixonmj@cc.curtin.edu.au      ( Don't use this one often )
+            sdixonmj01@cc.curtin.edu.au    ( Might not exist any more,
+                                             that's how often it's used! )
+            I collect internet accounts.... :)
+
+ If you happen to live in the Australian Capital Territory, you can
+ call me on  231-2000, but at respectable hours please.
+
+
+ "Want more comments? Write em!"
+ Sorry, I just had to quote that. I'm not in the mood for writing lots
+ of comments just yet. The main reason for writing it in Pascal is so
+ that it would be easy to understand. Comments may (or may not) come later
+ on.
+
+ Okay, enough of me dribbling, here's the source your after!
+
+}
+
+
+
+
+Interface
+
+Procedure Load669(N : String);
+Procedure PlayMusic;
+Procedure StopMusic;
+
+Type
+  { This is so that we can keep a record of what each channel is
+    currently doing, so that we can inc/dec the Frequency or volume,
+    or pan left/right, etc }
+  Channel_Type    = Record
+                      Vol : Word;
+                      Freq : Word;
+                      Pan : Byte;
+                    End;
+
+Var
+  Channels : Array[1..8] of Channel_Type;
+  Flags : Array[0..15] of Byte;
+  { Programmer flags. This will be explained when it is fully implemented. }
+
+Const
+  Loaded : Boolean = False;    { Is a module loaded? }
+  Playing : Boolean = False;   { Is a module playing? }
+  WaitState : Boolean = False; { Set to TRUE whenever a new note is played }
+                               { Helpful for timing in with the player }
+
+
+Const
+  NumChannels = 8;
+
+  { Thanks to Tran for releasing the Hell demo source code, from which
+    I managed to find these very helpfull volume and frequency value
+    tables, without which this player would not have worked! }
+
+  voltbl : Array[0..15] of Byte =
+                     (  $004,$0a0,$0b0,$0c0,$0c8,$0d0,$0d8,$0e0,
+                        $0e4,$0e8,$0ec,$0f1,$0f4,$0f6,$0fa,$0ff);
+  freqtbl : Array[1..60] of Word = (
+                        56,59,62,66,70,74,79,83,88,94,99,105,
+                        112,118,125,133,141,149,158,167,177,188,199,211,
+                        224,237,251,266,282,299,317,335,355,377,399,423,
+                        448,475,503,532,564,598,634,671,711,754,798,846,
+                        896,950,1006,1065,1129,1197,1268,1343,1423,1508,1597,1692 );
+
+
+
+Type
+  Header_669_Type = Record
+                      Marker      : Word;
+                      Title       : Array[1..108] of Char;
+                      NOS,                     { No of Samples  0 - 64 }
+                      NOP         : Byte;      { No of Patterns 0 - 128 }
+                      LoopOrder   : Byte;
+                      Order       : Array[0..127] of Byte;
+                      Tempo       : Array[0..127] of Byte;
+                      Break       : Array[0..127] of Byte;
+                    End;
+  Sample_Type     = Record
+                      FileName  : Array[1..13] of Char;
+                      Length    : Longint;
+                      LoopStart : Longint;
+                      LoopLen   : Longint;
+                    End;
+  Sample_Pointer  = ^Sample_Type;
+  Note_Type       = Record
+                      Info,  { <- Don't worry about this little bit here }
+                      Note,
+                      Sample,
+                      Volume,
+                      Command,
+                      Data    : Byte;
+                    End;
+  Event_Type      = Array[1..8] of Note_Type;
+  Pattern_Type    = Array[0..63] of Event_Type;
+  Pattern_Pointer = ^Pattern_Type;
+
+
+
+Var
+  Header : Header_669_Type;
+  Samples : Array[0..64] of Sample_Pointer;
+  Patterns : Array[0..128] of Pattern_Pointer;
+  GusTable : Array[0..64] of Longint;
+  GusPos : Longint;
+  Speed : Byte;
+  Count : Word;
+  OldTimer : Procedure;
+  CurrentPat, CurrentEvent : Byte;
+
+
+Implementation
+
+Uses Dos, Crt, GUSUnit;
+
+
+Procedure Load669(N : String);
+Var
+  F : File;
+  I, J, K : Byte;
+  T : Array[1..8,1..3] of Byte;
+
+  Procedure LoadSample(No, Size : Longint);
+  Var
+    Buf : Array[1..1024] of Byte;
+    I : Longint;
+    J, K : Integer;
+  Begin
+    GusTable[No] := GusPos;
+
+    I := Size;
+    While I > 1024 do
+    Begin
+      BlockRead(F, Buf, SizeOf(Buf), J);
+      For K := 1 to J do GusPoke(GusPos+K-1, Buf[K] XOR 127);
+      Dec(I, J);
+      Inc(GusPos, J);
+    End;
+    BlockRead(F, Buf, I, J);
+    For K := 1 to J do GusPoke(GusPos+K-1, Buf[K] XOR 127);
+    Inc(GusPos, J);
+  End;
+
+Begin
+  {$I-}
+  Assign(F, N);
+  Reset(F, 1);
+  BlockRead(F, Header, SizeOf(Header));
+  If Header.Marker = $6669 then
+  Begin
+    For I := 1 to Header.NOS do
+    Begin
+      New(Samples[I-1]);
+      BlockRead(F, Samples[I-1]^, SizeOf(Samples[I-1]^));
+    End;
+
+    For I := 0 to Header.NOP-1 do
+    Begin
+      New(Patterns[I]);
+      For J := 0 to 63 do
+      Begin
+        BlockRead(F, T, SizeOf(T));
+        For K := 1 to 8 do
+        Begin
+          Patterns[I]^[J,K].Info    := t[K,1];
+          Patterns[I]^[J,K].Note    := ( t[K,1] shr 2);
+          Patterns[I]^[J,K].Sample  := ((t[K,1] AND 3) SHL 4) +  (t[K,2] SHR 4);
+          Patterns[I]^[J,K].Volume  := ( t[K,2] AND 15);
+          Patterns[I]^[J,K].Command := ( t[K,3] shr 4);
+          Patterns[I]^[J,K].Data    := ( t[K,3] AND 15);
+        End;
+      End;
+    End;
+
+    For I := 1 to Header.NOS do
+      LoadSample(I-1, Samples[I-1]^.Length);
+  End;
+
+  Close(F);
+  {$I+}
+  If (IOResult <> 0) OR (Header.Marker <> $6669) then
+    Loaded := False else Loaded := True;
+
+End;
+
+
+
+
+Procedure UpDateNotes;
+Var
+  I : Word;
+  Inst : Byte;
+  Note : Word;
+Begin
+  WaitState := True;
+  For I := 1 to NumChannels do
+  With Patterns[Header.Order[CurrentPat]]^[CurrentEvent, I] do
+
+  For I := 1 to NumChannels do
+  If (Patterns[Header.Order[CurrentPat]]^[CurrentEvent, I].Info < $FE) then
+  Begin
+    Inst := Patterns[Header.Order[CurrentPat]]^[CurrentEvent, I].Sample;
+    Note := Patterns[Header.Order[CurrentPat]]^[CurrentEvent, I].Note;
+    Channels[I].Freq := FreqTbl[Note];
+{    Channels[I].Pan  := (1-(I AND 1)) * 15;}
+    Channels[I].Vol  := $100*VolTbl[Patterns[Header.Order[CurrentPat]]^[CurrentEvent, I].Volume];
+{    Write(Note:3,Inst:3,' -');}
+
+    GUSSetVolume    (I, 0);
+    GUSVoiceControl (I, 1);
+    GUSSetBalance   (I, Channels[I].Pan);
+    GusSetFreq      ( I, Channels[I].Freq);
+{    GUSPlayVoice    ( I, 0, GusTable[Inst],
+                            GusTable[Inst],
+                            GusTable[Inst]+Samples[Inst]^.Length  );}
+
+{    Write(Samples[Inst]^.LoopLen:5);}
+    If Samples[Inst]^.LoopLen < 1048575 then
+    Begin
+    GUSPlayVoice    ( I, 8, GusTable[Inst],
+                            GusTable[Inst]+Samples[Inst]^.LoopStart,
+                            GusTable[Inst]+Samples[Inst]^.LoopLen  );
+    End
+      Else
+    Begin
+    GUSPlayVoice    ( I, 0, GusTable[Inst],
+                            GusTable[Inst],
+                            GusTable[Inst]+Samples[Inst]^.Length  );
+    End;
+
+
+  End;
+
+{  Writeln;}
+
+  For I := 1 to NumChannels do
+    If (Patterns[Header.Order[CurrentPat]]^[CurrentEvent, I].Info < $FF) then
+      GUSSetVolume (I, $100*VolTbl[Patterns[Header.Order[CurrentPat]]^[CurrentEvent, I].Volume]);
+
+  For I := 1 to NumChannels do
+  With Patterns[Header.Order[CurrentPat]]^[CurrentEvent, I] do
+  Case Command of
+    5 : Speed := Data;
+    3 : Begin
+          Channels[I].Freq := Channels[I].Freq + 10;
+          GUSSetFreq(I, Channels[I].Freq);
+        End;
+    8 : Inc(Flags[Data]);
+    6 : Case Data of
+          0 : If Channels[I].Pan > 0 then
+              Begin
+                Dec(Channels[I].Pan);
+                GusSetBalance(I, Channels[I].Pan);
+              End;
+          1 : If Channels[I].Pan < 15 then
+              Begin
+                Inc(Channels[I].Pan);
+                GusSetBalance(I, Channels[I].Pan);
+              End;
+        End;
+  End;
+
+
+
+
+
+  Inc(CurrentEvent);
+  If CurrentEvent > Header.Break[CurrentPat] then Begin CurrentEvent := 0; Inc(CurrentPat) End;
+  If Header.Order[CurrentPat] > (Header.NOP) then Begin CurrentEvent := 0; CurrentPat := 0; End;
+
+End;
+
+
+Procedure UpDateEffects;
+Var
+  I : Word;
+Begin
+  For I := 1 to 4 do
+  With Patterns[Header.Order[CurrentPat]]^[CurrentEvent, I] do
+  Begin
+    Case Command of
+      0 : Begin
+            Inc(Channels[I].Freq, Data);
+            GusSetFreq(I, Channels[I].Freq);
+          End;
+      1 : Begin
+            Dec(Channels[I].Freq, Data);
+            GusSetFreq(I, Channels[I].Freq);
+          End;
+    End;
+  End;
+End;
+
+
+
+
+{ $ F+,S-,W-}
+Procedure ModInterrupt; Interrupt;
+Begin
+  Inc(Count);
+  If Count = Speed then
+  Begin
+    UpDateNotes;
+    Count := 0;
+  End;
+  UpDateEffects;
+  If (Count MOD 27) = 1 then
+  Begin
+    inline ($9C);
+    OldTimer;
+  End;
+  Port[$20] := $20;
+End;
+{ $ F-,S+}
+
+Procedure TimerSpeedup(Speed : Word);
+Begin
+  Port[$43] := $36;
+  Port[$40] := Lo(Speed);
+  Port[$40] := Hi(Speed);
+end;
+
+Procedure PlayMusic;
+Begin
+  If Loaded then
+  Begin
+    TimerSpeedUp( (1192755 DIV 32));
+    GetIntVec($8, Addr(OldTimer));
+    SetIntVec($8, Addr(ModInterrupt));
+    Speed := Header.Tempo[0];
+    Playing := True;
+  End
+  { If the module is not loaded, then the Playing flag will not be set,
+    so your program should check the playing flag just after calling
+    PlayMusic to see if everything was okay. }
+End;
+
+
+Procedure StopMusic;
+Var
+  I : Byte;
+Begin
+  If Playing then
+  Begin
+    SetIntVec($8, Addr(OldTimer));
+    For I := 1 to NumChannels do GusSetVolume(I, 0);
+  End;
+  TimerSpeedUp($FFFF);
+End;
+
+
+Procedure Init;
+Var
+  I : Byte;
+Begin
+  GusPos := 1;
+  Count := 0;
+  Speed := 6;
+  CurrentPat := 0;
+  CurrentEvent := 0;
+  For I := 1 to NumChannels do Channels[I].Pan  := (1-(I AND 1)) * 15;
+  For I := 1 to NumChannels do GUSVoiceControl(I, 1);
+  For I := 0 to 15 do Flags[I] := 0;
+End;
+
+
+Var
+  I, J : Byte;
+
+
+Begin
+  Init;
+  Writeln('GUS669 Unit V0.2b');
+  Writeln('Copyright 1994 Mark Dixon.');
+  Writeln;
+End.
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ PLAY669.PAS ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+Program Testout_Gus669_Unit;
+
+Uses Crt, GUS669;
+
+Begin
+
+  If ParamCount > 0 then Load669(Paramstr(1))
+    else
+  Begin
+    Writeln;
+    Writeln('Please specify the name of the 669 module you wish to play');
+    Writeln('from the command line.');
+    Writeln;
+    Writeln('eg :    Play669  Hardwired.669 ');
+    Writeln;
+    Halt(1);
+  End;
+  PlayMusic;
+  If Playing then
+  Begin
+    Writeln('Playing ', ParamStr(1) );
+    Writeln('Press any key to stop and return to DOS.');
+    Repeat
+    Until Keypressed
+  End
+    else
+  Begin
+    Writeln;
+    Writeln('Couldn''t load or play the module for some reason!');
+    Writeln;
+    Writeln('Please check your GUS is working correctly, and that you have');
+    Writeln('correctly specified the 669 filename.');
+    Writeln;
+  End;
+  StopMusic;
+End.

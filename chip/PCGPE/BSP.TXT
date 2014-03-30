@@ -1,0 +1,149 @@
+                 ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+                 ³ A Simple Explanation of BSP Trees ³
+                 ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+            Written for the PC-GPE by Mark Feldman
+            e-mail address : u914097@student.canberra.edu.au
+                             myndale@cairo.anu.edu.au
+
+             ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+             ³      THIS FILE MAY NOT BE DISTRIBUTED     ³
+             ³ SEPARATE TO THE ENTIRE PC-GPE COLLECTION. ³
+             ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Disclaimer ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+I assume no responsibility whatsoever for any effect that this file, the
+information contained therein or the use thereof has on you, your sanity,
+computer, spouse, children, pets or anything else related to you or your
+existance. No warranty is provided nor implied with this information.
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ BSP Trees ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÙ
+
+Binary Space Partition trees are handy for drawing 3D scenes where the
+positions of objects are fixed and the user's viewing coordinate changes
+(flight simulators being a classic example).
+
+BSP's are an extention of the "Painter's Algorithm". The painter's algorithm
+works by drawing all the polygons (or texture maps) in a scene in back-to-
+front order, so that polygon's in the background are drawn first, and
+polygons in the foreground are drawn over them. The "classic" painter's
+algorithm does have a few problems however:
+1) polygon's will not be drawn correctly if they pass through any other
+polygon
+2) it's difficult and computationally expensive calculating the order that
+the polygons should be drawn in for each frame
+3) the algorithm cannot handle cases of cyclic overlap such as the
+following :
+                           ___       ___
+                          |   |     |   |
+                        __|   |_____|___|___
+                       |  |   |             |
+                       |__|   |_____________|
+                          |   |     |   |
+                        __|___|_____|   |___
+                       |            |   |   |
+                       |____________|   |___|
+                          |   |     |   |
+                          |___|     |___|
+
+In this case it doesn't matter which order you draw the polygon's it still
+won't look right!
+
+BSP's help solve all these problems.
+
+Ok, so let's get down to business. BSP's work by building an ordered tree of
+all the objects in a scene. Let's imagine we live in a 2D world and we have
+a scene like this:
+
+             ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+             ³                                    ³
+             ³                                    ³
+             ³              ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ  ³
+             ³                    line 1          ³
+             ³           \                        ³
+             ³             \                      ³
+             ³               \ line 2             ³
+             ³                 \                  ³
+             ³                   \                ³
+             ³   ÄÄÄÄÄÄÄÄ          \              ³
+             ³   line 3              \            ³
+             ³                                    ³
+             ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+                              ^
+                              viewpoint (assume the viewpoint is the
+                                         origin for this example)
+
+
+Now if we were to draw this scene using the painters algorithm we would
+draw line 1 first, then line 2, finally line 3. Using BSP's we can figure
+out the order beforehand and create a tree. First we note that any
+arbitrary point <x,y> can be on either of it's 2 sides or on the line (which
+can be regarded as being on either of the sides). When we build our tree, we
+take a line and put all the lines on one side of it to the left and all the
+nodes on the other side on the right. So for the above example could wind up
+with the following tree:
+
+          1
+         /
+        2
+       /
+      3
+
+Alternatively, we could also wind up with this tree:
+
+        2
+       / \
+      3   1
+
+Notice that line 2 is the head node, line 3 is on the same side of line 2
+as the origin is and line 1 is on the opposite side.
+
+Now, I hear you say "but hang on a tic, what if line 3 is the head node? What
+side of it is line 2 on?". Yes boys and girls, there had to be a catch
+somewhere and this is it. What you have to do here is split line 2 into
+*TWO* lines so that each portion falls nice and neatly onto either side of
+line 3, so you get a tree like this:
+
+       3
+      / \
+    2a   2b
+          \
+           1
+
+The lines 2a and 2b are portions of the original line 2. If you draw *BOTH*
+of them on the screen it will look as though you've drawn the entire original
+line.
+
+You don't have to worry about balancing a BSP tree, since you have to
+traverse every node in it every time you draw the scene anyway. The trick
+is to figure out how to organise the tree so that you get the *least* number
+of polygon splits. I tackled this by looking at each polygon yet to be
+inserted into the tree, calculating how many splits it will cause if it
+is inserted next and selecting the one which will cause the fewest. This
+is a very slow way of going about things, O(N^2) I think, but for most games
+you only need to sort the tree once when you are developping the game and not
+during the game itself.
+
+Extending these concepts to 3D is pretty straight-forward. Let's say that
+polygon 1 is at the top of the BSP tree and we want to insert polygon 2. If
+all the points in polygon 2 fall on one side or the other of polygon 1 then
+you insert it into polygon 2's left or right node. If some points fall on
+one side and the rest fall on the other, then you have to figure out the line
+of intersection formed by the planes that each polygon lies in and split
+polygon 2 along this line. Each of these 2 new polygons will then fall on
+either side of polygon 1.
+
+
+To draw the objects in a BSP tree you start at the top node and figure out
+which side of the object your view coordinate is on. You then traverse the
+node for the *other* side, draw the current object, then traverse the node
+for the side the view coordinate is on.
+
+

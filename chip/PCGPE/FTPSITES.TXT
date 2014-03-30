@@ -1,0 +1,198 @@
+
+                                Resource Guide
+                                     for
+                            Computer Game Developers
+                
+
+This lists various libraries, development systems, and source packages available
+on the Internet via anonymous FTP to game development designers and programmers.
+
+
+Comments: game-dev@netcom.com
+Copyright 1993, Tom Czarnik
+--------------------------------------------------------------------------------
+                                SECTIONS
+                                ========
+(1) Painting, Sprite Designers
+(2) Sound Development
+(3) Development Libraries or Systems
+(4) Source Code
+
+
+                        Definitions: archives
+                        =====================
+        funet
+                Finland nic.funet.fi:/pub/msdos/games/programming
+        garbo-tp
+                Finland garbo.uwasa.fi:/pc/turbopas
+                USA     ftp.wustl.edu:/mirrors/garbo.uwasa.fi/pc/turbopas
+        netcom
+                USA     ftp.netcom.com:/pub/profile/game-dev/tools
+                USA     ftp.uwp.edu:/pub/msdos/games/game-dev/tools
+
+                        Definitions: system notations
+                        =============================
+                MS      MSDOS                   MC Macintosh
+                WIN     MS Windows 3.x          UX Unix/X-Windows
+                AM      Amiga                   ST Atari ST
+
+
+
+------------------------------------------------------------------------------
+(1) Painting, Sprite Designers
+==============================
+* VGA256 [MS]
+  A 256 color VGA paint program.
+        Archives:
+                netcom, funet
+        Distribution:
+                256paint.zip
+
+* Sprite Designer v0.8 [MS]
+  A sprte designer for ModeX or VGA256
+        Archives:
+                funet, netcom
+        Distribtuion:
+                sprdes.zip
+
+* Tile256 v1.0 [MS]
+  A VGA256 tile and map editor
+        Archives:
+                netcom
+        Distribibution:
+                tile11.zip
+
+
+(2) Sound Development
+=====================
+* Blast v1.3 [MS]
+  Sound Blaster utility and MOD player. Includes binaries, documentation, and
+  objects for Turbo C/C++.
+        Archives:
+                funet, netcom
+        Distribution:
+                blast13.lzh
+
+* FMPlay v1.0 [MS]
+  An Adlib and SoundBlaster FM toolkit with background player. A .rol to
+  .scr convertor is included. Borland C 3.0 source available.
+        Archives:
+                netcom
+        Distribution:
+                fmplay10.zip
+
+
+(3) Game Development Libraries or Systems
+=========================================       
+* Animation Contruction Kit 3-D [MS]
+  A package for making Wolf3D style games.
+        Archives:
+                funet, netcom
+        Distribution:
+                ackkit.zip      Main development system
+                acksrc.zip      Borland C and Microsoft assembly sources
+                pcx2img.zip     PCX to IMG conversions for ACK3D
+
+
+* ANIVGA v1.1 [MS]
+  Sprite routines, editor, examples, VGA256 binaries with Turbo Pascal
+  6.0 source.
+        Archives:
+                funet
+        Distribution:
+                anivga11.zip
+
+
+* DCGames v3.1 [MS]
+  Graphics adventure and RPG building system. Includes example games.
+        Archives:
+                netcom
+        Distribution:
+                dcg301.zip      Main system
+                dcg301sb.zip    SoundBlaster support
+                dcg301xb.zip    Voice and music files
+                dcg301ut.zip    Utilities
+                dcg301up.zip    Upgrade from v3.0 to v3.1 only
+
+* EGOF v1.0 [MS]
+  A Turbo/Borland Pascal 7.0 programming library for VGA256, ModeX, VESA
+  graphics. Documentation included.
+        Archives:
+                garbo-tp
+        Distribution:
+                egof10.zip      Main library
+                egof10b.zip     Demo PCX files for egof10.zip
+                egof10m.zip     Postscript manual for EGOF v1.0
+                egof10p.zip     Protected mode units for EGOF v1.0
+
+* Hobbes Library v3.0 [MS]
+  A modeX library for VGA256. No documentation available. Inlcudes Borland
+  C and assembly.
+        Archives:
+                funet, nectom
+        Distribution:
+                hobbs3.zip      Main system
+                hobbspr2.zip    Related examples. C++ source/sprite executable
+
+* SPX v1.0 [MS]
+  A VGA256 game library for Turbo Pascal 6.0 and 7.0 by Scott Ramsay.
+  Successor to GameTP libray.
+        Archives:
+                funet, netcom
+        Distribution:
+                spx10.zip
+                spxdemo1.zip    Demos with binary and source
+
+* Unchain v2.1 [MS]
+  A Planar VGA Mode (aka modeX) Enforcer for Borland's IDE by Colin Buckely
+        Archives:
+                netcom
+        Distribution:
+                unchain2.zip
+
+* VGA Graphics Library v2.0 [MS]
+  A VGA graphics library by Scott Ramsay. C and assembly source included.
+        Archives: 
+                netcom
+        Distribution:
+                vgl20.zip
+
+* Wordup Graphics Toolkit v3.5 [MS]
+  A VGA256 sprite library by Barry and Chris Egerter. Shareware
+        Archives:
+                funet, netcom
+        Distribution:
+                wgt35.zip       Main system
+                wgtdemo1.zip    Demo
+                wgtmap15.zip    Map editor v1.5
+                wgtspr35.zip    Sprite editor v3.5
+
+* XLib v4.0c [MS]
+  A VGA256 ModeX sprite library by Themie Gouthas. Includes Turbo C/TASM source.
+  Free.
+        Archives:
+                funet, netcom
+        Distribution:
+                xlib04c.zip     Main system
+                xlibtool.zip    Bitmap conversion tools for XLib
+
+
+* yakIcons v2.4 [MS]
+  A VGA256 sprite library with higher level routines over xLib, by Victor Putz.
+  Borland C++ 3.1 source, with doumentation. Free shareware.
+        Archives:
+                netcom
+        Distribution:
+                yak24pat.zip    Patch to yakIcons v2.3
+                yakdemo.zip     Demo of yakIcons
+                yaktool.zip     Converts PCX to .yak and .ypl 
+                yicons24.zip    Main system
+
+
+(4) Source Code
+===============
+* Michael Abrash's Columns on Graphics Programming from Dr. Dobbs Journal
+        Archives:
+                ftp.uwp.edu:/pub/msdos/demos/source
+        Distribution:
+                grphprg.lzh

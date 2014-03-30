@@ -1,0 +1,399 @@
+
+               ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+               ³ Bresenham's Line and Circle Algorithms ³
+               ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+                 Written for the PC-GPE by Mark Feldman
+            e-mail address : u914097@student.canberra.edu.au
+                             myndale@cairo.anu.edu.au
+
+             ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+             ³      THIS FILE MAY NOT BE DISTRIBUTED     ³
+             ³ SEPARATE TO THE ENTIRE PC-GPE COLLECTION. ³
+             ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Disclaimer ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+I assume no responsibility whatsoever for any effect that this file, the
+information contained therein or the use thereof has on you, your sanity,
+computer, spouse, children, pets or anything else related to you or your
+existance. No warranty is provided nor implied with this information.
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Introduction ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+Bresenham is a pretty smart cookie (note the use of the word "is", last I
+heard he was still working for IBM). This file contains the algorithms he
+developped for drawing lines and circles on a pixelated display system
+such as the VGA.
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Line Algorithm ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+The basic algorithm works for lines which look like this:
+
+
+      o-------                         ¿
+     p1       --------                 ³ deltay
+                      -------      p2  ³
+                             -------o  Ù
+
+      ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+                  deltax
+
+where p1 = (x1,y1),
+      p2 = (x2, y2),
+      x and y are both increasing from p1 to p2,
+      deltax = x2 - x1,
+      deltay = y2 - y1 and
+      deltax >= deltay.
+
+All other types of lines can be derived from this type. I'll get to this
+bit later.
+
+First you need to perform the following intialisation:
+
+x = x1
+y = y1
+d = (2 * deltay) - deltax
+
+x is the current x location, you will add 1 to this variable after every
+pixel you draw until all pixels have been drawn.
+y is the current y location. The decision variable is used to determine
+when to add 1 to this value. d is the decision variable which will be used
+to keep a track of what to do.
+
+Now you loop across the screen from x1 to x2 and for each loop perform the
+following operations for each pixel :
+
+PutPixel(x, y);  { Draw a pixel at the current point }
+if d < 0 then
+    d := d + (2 * deltay)
+else
+  begin
+    d := d + 2 * (deltay - deltax);
+    y := y + 1;
+  end;
+x := x + 1;
+
+It's that simple!
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Speeding Up The Line Algorithm ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+There are several useful techniques for speeding up Bresenhams line
+algorithm.
+
+For starters, notice that all multiplications are by 2. This can be
+performed with a simple shift left instruction (Shl in Pascal, << in C).
+
+Next notice that the values you add to the decision variable do not change
+throughout the loop, so they can be precalculated beforehand.
+
+One property of lines is that they are symetrical about their mid-points,
+and we can use this property to speed up the algorithm. Store two x and y
+values, (xa, ya) and (xb, yb). Have each pair start on either end of the
+line. For each pass through the loop you draw the pixel at both points, add
+1 to xa and subtract one from xb. When d >= 0 add 1 to ya and subtract one
+from yb. You then only need to loop until xa = xb.
+
+It's also obvious that if the decision variable becomes the same value
+it was when it was initialised, then the rest of the line is just
+copies of the line you have already drawn up to that point. You might be
+able to speed the algorithm up by keeping an array of how y has been
+modified and then use this array if the line starts repeating itself. If
+you are using the Intel registers to store all values then you probably
+wouldn't get much of a speed increase (in fact it could slow it down), but
+it would probably be useful for thing like linear texture mapping (discussed
+below). I've never actually tried implementing this technique, and I would
+like to hear the results if anyone does.
+
+Above all remember that these optimisations will only significantly speed
+up the line drawing algorithm if the whole thing is done in assembly. A
+profile of the example program at the end of this file showed that 40% of
+CPU time was spent in the slow PutPixel routine I was using, the loop
+mechanics and testing the sign of the decision variable.
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Other Uses for the Line Algorithm ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+A line can be represented by the equation y = mx + c, where
+m = deltay / deltax. Note that this is a version of the standard linear
+equation ax + bx + c = 0. There are many algorithms which use this equation.
+
+One good use for the bresenham line algorithm is for quickly drawing filled
+concave polygons (eg triangles). You can set up an array of minimum and
+maximum x values for every horizontal line on the screen. You then use
+bresenham's algorithm to loop along each of the polygon's sides, find where
+it's x value is on every line and adjust the min and max values accordingly.
+When you've done it for every line you simply loop down the screen drawing
+horizontal lines between the min and max values for each line.
+
+Another area is in linear texture mapping (see the PC-GPE article on texture
+mapping). This method involves taking a string of bitmap pixels and
+stretching them out (or squashing them in) to a line of pixels on the screen.
+Typically you would draw a vertical line down the screen and use Bresenhams
+to calculate which bitmap pixel should be drawn at each screen pixel.
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ Circle Algorithm ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+Circles have the property of being highly symetrical, which is handy
+when it comes to drawing them on a display screen.
+
+      |y          (This diagram is supposed to be a circle, try viewing
+      |           it in 50 line mode).
+  \ ..... /
+   .  |  .        We know that there are 360 degrees in a circle. First we
+  . \ | / .       see that a circle is symetrical about the x axis, so
+  .  \|/  .       only the first 180 degrees need to be calculated. Next
+--.---+---.--     we see that it's also symetrical about the y axis, so now
+  .  /|\  . x     we only need to calculate the first 90 degrees. Finally
+  . / | \ .       we see that the circle is also symetrical about the 45
+   .  |  .        degree diagonal axis, so we only need to calculate the
+  / ..... \       first 45 degrees.
+      |
+      |
+
+Bresenhams circle algorithm calculates the locations of the pixels in the
+first 45 degrees. It assumes that the circle is centered on the origin. So
+for every pixel (x,y) it calculates we draw a pixel in each of the 8 octants
+of the circle :
+
+PutPixel(CenterX + X, Center Y + Y)
+PutPixel(CenterX + X, Center Y - Y)
+PutPixel(CenterX - X, Center Y + Y)
+PutPixel(CenterX - X, Center Y - Y)
+PutPixel(CenterX + Y, Center Y + X)
+PutPixel(CenterX + Y, Center Y - X)
+PutPixel(CenterX - Y, Center Y + X)
+PutPixel(CenterX - Y, Center Y - X)
+
+So let's get into the actual algorithm. Given a radius for the circle
+we perform this initialisation:
+
+d := 3 - (2 * RADIUS)
+x := 0
+y := RADIUS
+
+Now for each pixel we do the following operations:
+
+Draw the 8 circle pixels
+if d < 0 then
+    d := d + (4 * x) + 6
+else
+  begin
+    d := d + 4 * (x - y) + 10
+    y := y - 1;
+  end;
+
+And we keep doing this until x = y. Note that the values added to the
+decision variable in this algorithm (x and y) are constantly changing, so
+we cannot precalculate them. The muliplications however are by 4, and we
+can accomplish this by shifting left twice.
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+³ A Pascal General Line Procedure ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+The basic bresenham line algorithm can be modified to handle all types of
+lines. In this section assume that deltax = abs(x2 - x1) and
+deltay = abs(y2 - y1).
+
+First let's take lines where deltax >= deltay. Now if x1 > x2 then you will
+need to subtract 1 from x for every pass through the loop. Similarly if y1 >
+y2 then you will be also need to subtract 1 from y for every pass through the
+loop where d < 0.
+
+Lines where deltax < deltay can be handled the same way, you just swap all
+the deltax's and deltay's around.
+
+The fastest method of handling all cases is to write a custom routine for
+each of the 8 line types:
+
+1) x1 <= x2, y1 <= y2, deltax >= deltay
+2) x1 <= x2, y1 <= y2, deltax <  deltay
+3) x1 <= x2, y1 >  y2, deltax >= deltay
+4) x1 <= x2, y1 >  y2, deltax <  deltay
+5) x1 >  x2, y1 <= y2, deltax >= deltay
+6) x1 >  x2, y1 <= y2, deltax <  deltay
+7) x1 >  x2, y1 >  y2, deltax >= deltay
+8) x1 >  x2, y1 >  y2, deltax <  deltay
+
+This will give you the fastest results, but will also make your code 8
+times larger! Alternatively you can declare a few extra variables and
+use a common inner loop for all lines:
+
+numpixels = number of pixels to draw
+          = deltax if deltax >= deltay or
+          = deltay if deltax < deltay
+dinc1 = the amount to add to d when d < 0
+dinc2 = the amount to add to d when d >= 0
+xinc1 = the amount to add to x when d < 0
+xinc2 = the amount to add to x when d >= 0
+yinc1 = the amount to add to y when d < 0
+yinc2 = the amount to add to y when d >= 0
+
+The following is a simple example program which uses this technique:
+
+
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+{
+
+BRESLINE.PAS - A general line drawing procedure.
+               By Mark Feldman
+
+This is a very simple implementation of bresenhams' line algorithm with
+no optimisations. It can draw about 6000 random lines a second in mode 13h
+on my 486SX33 with sloooooow Paradise Extended VGA.
+
+}
+
+procedure Line(x1, y1, x2, y2 : integer; color : byte);
+var i, deltax, deltay, numpixels,
+    d, dinc1, dinc2,
+    x, xinc1, xinc2,
+    y, yinc1, yinc2 : integer;
+begin
+
+  { Calculate deltax and deltay for initialisation }
+  deltax := abs(x2 - x1);
+  deltay := abs(y2 - y1);
+
+  { Initialize all vars based on which is the independent variable }
+  if deltax >= deltay then
+    begin
+
+      { x is independent variable }
+      numpixels := deltax + 1;
+      d := (2 * deltay) - deltax;
+      dinc1 := deltay Shl 1;
+      dinc2 := (deltay - deltax) shl 1;
+      xinc1 := 1;
+      xinc2 := 1;
+      yinc1 := 0;
+      yinc2 := 1;
+    end
+  else
+    begin
+
+      { y is independent variable }
+      numpixels := deltay + 1;
+      d := (2 * deltax) - deltay;
+      dinc1 := deltax Shl 1;
+      dinc2 := (deltax - deltay) shl 1;
+      xinc1 := 0;
+      xinc2 := 1;
+      yinc1 := 1;
+      yinc2 := 1;
+    end;
+
+  { Make sure x and y move in the right directions }
+  if x1 > x2 then
+    begin
+      xinc1 := - xinc1;
+      xinc2 := - xinc2;
+    end;
+  if y1 > y2 then
+    begin
+      yinc1 := - yinc1;
+      yinc2 := - yinc2;
+    end;
+
+  { Start drawing at <x1, y1> }
+  x := x1;
+  y := y1;
+
+  { Draw the pixels }
+  for i := 1 to numpixels do
+    begin
+      PutPixel(x, y, color);
+      if d < 0 then
+        begin
+          d := d + dinc1;
+          x := x + xinc1;
+          y := y + yinc1;
+        end
+      else
+        begin
+          d := d + dinc2;
+          x := x + xinc2;
+          y := y + yinc2;
+        end;
+    end;
+end;
+
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+
+
+
+
+
+Note that if you are writing a line routine for mode 13h (for example) you
+can speed it up by converting the inner loop to assembly and including
+mode 13h specific code. This portion of the above routine works the same but
+the <x, y> values are stored in a single variable (screen) which holds the
+memory address of the current pixel, screeninc1 and screeninc2 are the
+update values for screen.
+
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+var screen : word;
+    screeninc1, screeninc2 : integer;
+     .
+     .
+     .
+  { Start drawing at <x1, y1> }
+  screen := word(y1) * 320 + x1;
+  screeninc1 := yinc1 * 320 + xinc1;
+  screeninc2 := yinc2 * 320 + xinc2;
+
+  { Draw the pixels }
+  asm
+
+    { Use as many registers as are available }
+    push $A000
+    pop es
+    mov di, screen
+    mov dx, d
+    mov al, color
+    mov cx, numpixels
+    mov bx, dinc1
+
+    @bres1:
+
+    { Draw the current pixel and compare the decision variable to 0 }
+    mov es:[di], al
+    cmp dx, 0
+    jnl @bres2
+
+    { D < 0 }
+    add dx, bx { bx = dinc1 }
+    add di, screeninc1
+    jmp @bres3
+
+    @bres2:
+
+    { D >= 0 }
+    add dx, dinc2
+    add di, screeninc2
+
+    @bres3:
+
+    loop @bres1
+  end;
+
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+

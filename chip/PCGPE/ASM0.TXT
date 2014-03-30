@@ -1,0 +1,193 @@
+Text for ASM #0
+    
+    Hello there, this is Draeden typing this wonderful document.  This is 
+an explanation of the basic assembler frame.  This document assumes that you
+know what hexdecimal is and somewhat how it works, that you have a copy of  
+TASM and TLINK, that you know what AX is, and how it relates to AL and AH, 
+and you know the commands: 
+
+    MOV xx,xx 
+    JMP xxxx
+and INT xx
+
+    I'm also making the rash assumption that you want to learn ASSEMBLER. :)
+To assemble ASM0.ASM into an executable do the following:
+
+        TASM ASM0
+        TLINK ASM0
+
+    Now you can exececute this wonderful program.  Go ahead.  Try it.  In
+case you are having problems figuring out how to execute this, just type:
+
+        ASM0  (followed by the enter key)
+
+    No, you did nothing wrong. This code (ASM0.ASM) does nothing.  All it 
+does is return control to DOS.  It is the basic frame for an assembler 
+program.  All of the programs that I write use this frame.  If you want to 
+know what each part does, read on.  If you already know, just go read 
+ASM1.TXT.
+
+    The number followed by the colon means that this is from ASM0.ASM and 
+tells which line it is from.
+    
+1:    DOSSEG        
+
+  DOSSEG Sorts the segment using DOS standard, which is:
+
+     1) 'code' segments (in alphabetical order)
+     2) 'data' segments (in alphabetical order)
+     3) 'stack' segments (again, in alphabetical order)
+
+  Although it may not seem clear what this does, don't worry about it.  Just
+have it as the first line in your assembler programs, until you understand it.
+
+2:    .MODEL SMALL  
+
+MODEL ONLY needs to be used if you use the simplified segments, which I 
+strongly recommend.
+
+In a nutshell, .MODEL Selects the MODEL to use.  This is used so that this 
+code can be linked with C, PASCAL, ADA, BASIC, other ASSEMBLER program, and 
+other languages with ease.  It also tells the compiler how to treat your
+code and data segments.
+
+NEAR means that the data/code can be reached using a 16bit pointer (offset)
+FAR  means that a SEGMENT:OFFSET pair must be used to access all the data/code
+
+Possible MODELS are:
+
+     TINY: Code and Data must fit in same 64k segment.  
+           Both Code and Data are NEAR.
+
+    SMALL: Code & Data have seperate segment, but must be each less than 64k
+           Both Code and Data are NEAR.
+           For most applications, this will suffice.
+
+   MEDIUM: Code may be larger than 64k, but Data has to be less than 64k
+           Code is FAR, Data is NEAR.
+
+  COMPACT: Code is less than 64k, but Data may be greater than 64k
+           Code is NEAR, Data is FAR.
+
+    LARGE: Both Code & Data can be greather than 64k.  Both are FAR, but a 
+           single array cannot be greater than 64k.  Note that max array size
+           means nothing if you are just writing in assembler.  This only
+           matters when you link to C or another high level language.
+
+     HUGE: Same as LARGE, but arrays can be greater than 64k.
+           What that means is that the array index is a far pointer, instead
+           of a NEAR one.
+           LARGE and HUGE are identicle to the assembler programmer.
+
+3:    .STACK 200h   
+
+    Tells the compiler to set up a 200h byte stack upon execution of the
+program.  NOTE: the size you choose for the stack does not change the size 
+of the file on disk.  You can see what I mean by changing the 200h to, say,
+400h and then recompiling.  The file sizes are identicle.
+
+    This could be replaced with:
+
+: MyStack SEGMENT PARA PUBLIC STACK 'STACK'
+:       db  200h dup (0)
+: MyStack ENDS
+
+    BUT, doing it this way makes your executable 512 bytes bigger.  If you
+were to double to 400h, the executable would be another 512 bytes bigger.
+I think it's pretty obvious why the simplified version is preferred.
+
+4:    .DATA           
+
+    Simplified, unnamed 'data' segment.  This is where those simplified 
+segments become very handy.  If you were to write out the segment declaration
+the regular way, you'd have to write something like this:
+
+: MyData SEGMENT PARA PUBLIC 'DATA'
+:
+:  ...                  ;your data goes here...
+:
+: MyData ENDS
+
+Where 'MyData' is the name of the segment, public means that its, well, 
+public, and PARA is the alignment of the start of the segment.  'DATA' 
+specifies the type of the segment.  Instead of PARA, WORD or BYTE could 
+have been used.  (PARA = segment will start on an adress that is a multiple 
+of 16, WORD = even addresses, BYTE = where ever it lands.)
+
+5:    .CODE
+
+    Pretty much the same story as above, but this is for the code segment.
+Could be replaced with:
+
+ - IN MASM MODE -
+: MyCode SEGMENT PARA PUBLIC 'CODE'
+:  ...
+: MyCode ENDS
+
+ - IN IDEAL MODE -
+: SEGMENT MyCode PARA PUBLIC 'CODE'
+:  ...
+: ENDS MyCode  ;the 'MyCode' is optional in IDEAL mode
+    
+6: START:
+
+    This is just a label.  Labels just provide a way of refencing memory 
+easily.  Like I could say "JMP START" which would jump to the label START and 
+execute the code immediatly after it.  Or I could say MOV AX,[Start], which
+would grab the WORD that was immediatly after the label START.
+
+7: mov     ax,4c00h
+8: int     21h         
+
+    This bit of code calls DOS function # 4ch, which returns control to DOS
+and sends back the error level code that is in AL (which is zero).
+Note that for all int 21h DOS functions, AH contains the function number.
+
+THIS MUST BE AT THE END OF THE CODE! If it isn't, the code will continue to
+run...  right out of the end of your program and will execute whatever code
+is there!  The program will crash with out it!
+
+9: END START
+
+This tells the compiler that we are all done with our program and that it can
+stop compiling, now.  And it tells the compiler to put the entry point at
+the label START.  This means that DOS is effectivly starting your program by
+executing this:
+
+: JMP START
+
+    As you would probably guess, if you just put `END' instead of `END START'
+and you compiled and linked the program, when you went to execute the code,
+the computer will probably freeze because it does not know where to start
+execution.
+
+    Ok, now that you know what the frame is/does, lets actually make the 
+program do something.  Lets be wild and crazy, and PRINT A MESSAGE! 
+
+
+                            CONTINUED IN ASM1.TXT
+
+
+旼컴컴컴컴컫컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+� ASM0.ASM �
+읕컴컴컴컴켸
+
+    DOSSEG
+    .MODEL SMALL
+    .STACK 200h
+    .DATA
+    .CODE
+
+START:
+
+;
+;   Your code goes here...
+;
+
+    mov     ax,4c00h
+    int     21h
+END START
+
+;   THIS CODE DOES ABSOLUTLY NOTHING EXCEPT RETURN CONTROL TO DOS!
+
+
