@@ -91,7 +91,6 @@ int main()
 	  psg.set_nr11(0); // NR11 FF11 DDLL LLLL    Duty, Length load (64-L)
 	  psg.set_nr12(164); // NR12 FF12 VVVV APPP    Starting volume, Envelope add mode, period
       	  psg.set_nr13(44); // NR13 FF13 FFFF FFFF    Frequency LSB
-
 	  psg.set_nr14(128);
 	}
 
