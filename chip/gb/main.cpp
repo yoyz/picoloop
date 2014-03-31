@@ -50,11 +50,14 @@ int main()
   psg.set_nr14(128); // NR14 FF14 TL-- -FFF    Trigger, Length enable, Frequency MSB
   */
 
-  psg.set_nr10(0);   // NR10 FF10 -PPP NSSS    Sweep period, negate, shift
-  psg.set_nr11(0);   // NR11 FF11 DDLL LLLL    Duty, Length load (64-L)
-  psg.set_nr12(164); // NR12 FF12 VVVV APPP    Starting volume, Envelope add mode, period
-  psg.set_nr13(44);  // NR13 FF13 FFFF FFFF    Frequency LSB
-  psg.set_nr14(128); // NR14 FF14 TL-- -FFF    Trigger, Length enable, Frequency MSB
+
+
+
+  //  psg.set_nr20(0);   // NR10 FF10 -PPP NSSS    Sweep period, negate, shift
+  psg.set_nr21(0);   // NR11 FF11 DDLL LLLL    Duty, Length load (64-L)
+  psg.set_nr22(164); // NR12 FF12 VVVV APPP    Starting volume, Envelope add mode, period
+  psg.set_nr23(44);  // NR13 FF13 FFFF FFFF    Frequency LSB
+  psg.set_nr24(128); // NR14 FF14 TL-- -FFF    Trigger, Length enable, Frequency MSB
   //  psg.set_nr14(128+44); // NR14 FF14 TL-- -FFF    Trigger, Length enable, Frequency MSB
 
 
@@ -74,24 +77,24 @@ int main()
       psg.fillBuffer();  
 
       //      for (j=0;j<SIZE;j++)
-      //	printf("%d ",buf[j]);
+      //      	printf("%d ",buf[j]);
 
       //      printf("\ni:%d\n",i);
       //      fwrite(buf,sizeof(uint_least32_t),SIZE,F);
       int k=0;                                  
-      for (k=0;k<SIZEONE;k=k+96)              
-	fwrite(buf+k,sizeof(  uint_least32_t ),1,F);
-      /*
-      if (i==5)
-	{
-	  psg.set_nr10(0x64); // NR10 FF10 -PPP NSSS    Sweep period, negate, shift
-	  psg.set_nr11(0xFF); // NR11 FF11 DDLL LLLL    Duty, Length load (64-L)
-	  psg.set_nr12(0x97); // NR12 FF12 VVVV APPP    Starting volume, Envelope add mode, period
-      	  psg.set_nr13(0x45); // NR13 FF13 FFFF FFFF    Frequency LSB
+      //      for (k=0;k<SIZEONE;k=k+96)              
+      //	fwrite(buf+k,sizeof(  uint_least32_t ),1,F);
 
-	  psg.set_nr14(0xF2);
+      if (i==100)
+	{
+	  psg.set_nr10(0); // NR10 FF10 -PPP NSSS    Sweep period, negate, shift
+	  psg.set_nr11(0); // NR11 FF11 DDLL LLLL    Duty, Length load (64-L)
+	  psg.set_nr12(164); // NR12 FF12 VVVV APPP    Starting volume, Envelope add mode, period
+      	  psg.set_nr13(44); // NR13 FF13 FFFF FFFF    Frequency LSB
+
+	  psg.set_nr14(128);
 	}
-      */
+
     }
 
 
