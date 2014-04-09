@@ -37,7 +37,8 @@ void Oscillator::setFreq(int freq)
     return;
 
   if (freq <= 0)          freq=0;
-  else if (freq > 20000) freq=20000;
+  else 
+    if (freq > 20000) freq=20000;
   frequency=freq;
   table_fill=0;
   if (freq!=0)
@@ -52,10 +53,17 @@ void Oscillator::setFreq(int freq)
 void Oscillator::setAmplitude(int amp)
 {
   int debug=1;
-  if (amp>=127) {amplitude=127; }
-  if (amp<=0)   {amplitude=0;   }
+  if (amp>=127          ){ amplitude=127; }
+  if (amp<=0            ){ amplitude=0;   }
   if (amp>0   && amp<127){ amplitude=amp; }
   printf("Oscillator::setAmplitude(amplitude=%d)\n",amplitude);
 }
 
+
+
+Sint16 Oscillator::tick()
+{
+  Sint16 trash;
+  printf("Sint16 Oscillator::tick() freq:%d amp:%d\n",frequency,amplitude);
+}
 

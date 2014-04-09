@@ -17,23 +17,15 @@ class Oscillator
   Oscillator();
   ~Oscillator();
   void   setAmplitude(int amp);
+  void   reset();
   void   setFreq(int freq);
   int    getFreq();
-  void   reset();
-  //virtual Sint16 tick();
+
   
-  virtual Sint16 tick()
-  {
-    Sint16 trash;
-    printf("Sint16 Oscillator::tick() freq:%d amp:%d\n",frequency,amplitude);
-    //  exit(0);
-    //return super.tick();
-    //return trash;
-  }
-  
+  virtual Sint16 tick();
 
 
-  //Sint16* buffer;
+
   Sint16 last_tick;
   int    length;
   int    amplitude;

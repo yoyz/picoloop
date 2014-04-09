@@ -11,6 +11,7 @@ enum
     SINE,
     SAW,
     PULSE,
+    WTBL,
   };
 
 class PatternElement
