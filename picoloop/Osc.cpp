@@ -86,15 +86,16 @@ void closeaudio()
 void func()
 {
   int t;
+  float f=PE.getNoteFreq();
+  int   i=f;
 
   for (t=0;t<1;t++)
     {
-      float f=PE.getNoteFreq();
-      int   i=f;
       
       printf("[Freq:%d]\n",i);
-      M[t]->getVCO().setOscillator(0,0);
-      M[t]->getVCO().setOscillator(1,2);
+      //M[t]->getVCO().setOscillator(0,0);
+      //      M[t]->getVCO().setOscillator(1,2);
+      M[t]->getVCO().init();
       M[t]->getVCO().setVCOMix(64);
       M[t]->getADSR().reset();;	  
       M[t]->getVCO().reset();
@@ -106,7 +107,12 @@ void func()
       M[t]->getADSR().setRelease(release);
       M[t]->getADSR().setAttack(attack);
     }     
-  sleep(2);
+  //sleep(4);
+  usleep(1000);
+  M[t]->getVCO().setSynthFreq(i*2);
+  usleep(1000);
+  M[t]->getVCO().setSynthFreq(i*4);
+  sleep(3);
 }
 
 
@@ -122,9 +128,9 @@ int main(int argc,char ** argv)
   openaudio();
 
   attack=0;
-  release=127;
-  vcomix=127;
-  PE.setNote(32);
+  release=128;
+  vcomix=64;
+  PE.setNote(12);
   func();
 
 
