@@ -32,14 +32,19 @@ public:
   void                  setVCOMix(int mix);
   Oscillator          * getOscillatorOne();
 
-  SawOscillator         sawosc;
-  SineOscillator        sineosc;
-  FuzzyPulseOscillator  fuzzypulseosc;
-  PulseOscillator       pulseosc;
-  WaveTableSineOscillator wavetablesineoscillator;
+  SawOscillator           sawOsc1;
+  SawOscillator           sawOsc2;
+  SineOscillator          sineOsc1;
+  SineOscillator          sineOsc2;
+  FuzzyPulseOscillator    fuzzyPulseOsc1;
+  FuzzyPulseOscillator    fuzzyPulseOsc2;
+  PulseOscillator         pulseOsc1;
+  PulseOscillator         pulseOsc2;
+  WaveTableSineOscillator waveTableSineOsc1;
+  WaveTableSineOscillator waveTableSineOsc2;
   //NoiseOscillator       noiseosc;
-  Oscillator          * s1;
-  Oscillator          * s2;
+  Oscillator            * s1;
+  Oscillator            * s2;
 
   int freq;
   int current;
