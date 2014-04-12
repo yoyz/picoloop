@@ -29,12 +29,12 @@ void WaveTableSineOscillator::init()
       //  table=NULL;
       for (i=0;i<table_size;i++)
 	{
-	  f=sin((2*3.14159*i*1)/table_size)*(1<<13);
-	  s=sin((2*3.14159*i*1)/table_size)*(1<<13);
+	  //	  f=sin((2*3.14159*i*1)/table_size)*(1<<13);
+	  s=sin((2*3.14159*i*1)/table_size)*(1<<14);
 	  table[i]=s;
 
 	  //printf("fvalue = %f ",f);
-	  printf("table[%d]=%d\n",i,table[i]);
+	  printf("WaveTableSineOscillator::init() table[%d]=%d\n",i,table[i]);
 	}
     }
   
