@@ -3,98 +3,50 @@
 using namespace std;
 
 
-SineOscillator::SineOscillator() 
+SineOscillator::SineOscillator()
 {
-  printf("SineOscillator::SineOscillator()\n");
-  frequency=440;
-  amplitude=127;
-  sample_num=0;
-  if(1)
-    {
-      //printf("Malloc sine\n");
-      //table = (Sint16*)malloc(sizeof(Sint16)*8192);
-      table=NULL;
-    }
-  table_fill=0;
+  printf("WaveTableSineOscillator::WaveTableSineOscillator()");
+  table_size=1024;
+  table=NULL;
+  index=0;
 }
 
 SineOscillator::~SineOscillator()
 {
-  printf("SineOscillator::~SineOscillator()\n");
+  printf("WaveTableSineOscillator::~WaveTableSineOscillator()\n");
   if (table!=NULL)
     free(table);
-
 }
 
+void SineOscillator::init()
+{
+  int i;
+  float f;
+  Sint16 s;
+  if (table==NULL)
+    {
+      table=(Sint16*)malloc(sizeof(Sint16)*table_size);
+      //  table=NULL;
+      for (i=0;i<table_size;i++)
+	{
+	  f=sin((2*3.14159*i*1)/table_size)*(1<<13);
+	  s=sin((2*3.14159*i*1)/table_size)*(1<<13);
+	  table[i]=s;
+
+	  //printf("fvalue = %f ",f);
+	  printf("table[%d]=%d\n",i,table[i]);
+	}
+    }
+  
+}
 
 Sint16 SineOscillator::tick()
-{
-  float  f;
-  Uint16 u;
-  Sint16 s;
-  int debug=0;
-  if (frequency==0) return(0);
-  if (table==NULL)
-    table=(Sint16*)malloc(sizeof(Sint16)*32768);
-
-  if (debug) 
-    printf("Sint16 SineOscillator::tick()\n");
-
-  sample_num++;
-  sample_num_index++;
-  
-  if (sample_num_index>table_fill)
-    sample_num_index=0;
-
-  //f=(sin((sample_num/3.14159)/22)*10000);  
-  //f=(sin(((sample_num/3.14159)/22)/440*freq)*amp*210
-
-  // Good one
-  //f=(sin(((sample_num/3.14159)/22)/440*freq)*( amp*210));
-  //f=(sin(((sample_num/3.14159)/22)/440*freq));
-
-  // sin(XXX) => -1 <=> 1
-  // note 440Hz
-  //f=(sin(((sample_num/3.14159)/22)/440*frequency));
-
-
-  //  if (sample_num % (int)(44100/frequency) <table_fill)
-  //  if (sample_num % (int)(table_size) <table_fill)
-  if (sample_num_index % (int)(table_size) <table_fill)
-    {
-      //    printf("hit\n");
-      //return table[sample_num % (int)(44100/frequency)];
-      return table[sample_num % (int)(table_size)];
-
-    }
-
-
-  f=sin((2*3.14159*sample_num*frequency)/44100);
-
-  if (debug) printf("%f\n",f);
-
-  // Amplification from -1 1 to -32000 32000
-  f=(f*amplitude*255);
-  //if (f < 0) { f=f*(amp*255); if ( f >=0 ) { f=std::numeric_limits<float>::min(); } }
-  //if (f > 0) { f=f*(amp*255); if ( f <=0 ) { f=std::numeric_limits<float>::max(); } }
-
-
-  u=(Uint16)f;
-  s=u;
-  if (debug) printf("%f\n",f);
-  if (debug) printf("%d\n",u);
-  //u = u ^ 0xA00F;
-  //if (sample_num % 16 == 0) { u = u & 0xCF0F; }
-
-  s=u;
-
-  table_fill=sample_num;
-  table[table_fill]=s;
-  //printf("table_fill : %d\n",table_fill);
-
-  if (debug) printf("%d\n\n",u);
-  //if (sample_num % 32 != 0) { return last_tick; }
-  last_tick=u;
-  //  exit(0);
-  return s;
+{ 
+  index=index+(this->getFreq()*1024)/44100;
+  if (index>table_size)
+    index=index-table_size;
+  //printf("freq=%d index=%d table[index]=%d\n",this->getFreq(),index,table[index]);
+  return table[index];
 }
+
+
