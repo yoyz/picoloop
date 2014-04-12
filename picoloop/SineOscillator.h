@@ -20,11 +20,11 @@ class SineOscillator : public Oscillator
  public:
   SineOscillator();
   ~SineOscillator();
-  void   init();
-  Sint16 tick();
   Sint16 * table;
-  int    table_size;
-  int    index;
+  void     init();
+  Sint16   tick();
+  int      table_size;
+  int      index;
 };
 
 #endif

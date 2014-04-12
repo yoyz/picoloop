@@ -18,8 +18,12 @@ class SawOscillator : public Oscillator
   ~SawOscillator();
   //  void   setFreq(int freq);
   //  void   setAmplitude(int amplitude);
-  Sint16 tick();
-  int    phase;  
+  Sint16 * table;
+  void     init();
+  Sint16   tick();
+  //  int      phase;  
+  int      table_size;
+  int      index;
   
 };
 

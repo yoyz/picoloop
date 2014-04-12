@@ -19,6 +19,9 @@ void VCO::init()
   sineOsc1.init();
   sineOsc2.init();
 
+  sawOsc1.init();
+  sawOsc2.init();
+
 
   //  s1 = &sineosc;
   s1 = &pulseOsc1;
