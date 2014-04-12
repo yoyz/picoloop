@@ -22,6 +22,9 @@ void VCO::init()
   sawOsc1.init();
   sawOsc2.init();
 
+  pulseOsc1.init();
+  pulseOsc2.init();
+
 
   //  s1 = &sineosc;
   s1 = &pulseOsc1;

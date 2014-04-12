@@ -18,11 +18,14 @@ class PulseOscillator : public Oscillator
   ~PulseOscillator();
   //  void   setFreq(int freq);
   //  void   setAmplitude(int amplitude);
-  Sint16 tick();
- private:
-  int old_phase;
-  int new_phase;
-  
+  Sint16 * table;
+  void     init();
+  Sint16   tick();
+
+
+  int      table_size;
+  int      index;
+ 
 };
 
 #endif
