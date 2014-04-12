@@ -14,7 +14,9 @@ void VCO::init()
   printf("VCO::init() begin s1:=0x%08.8X s2:=0x%08.8X\n",s1,s2);
 
   wavetablesineoscillator.init();
+
   sineosc.init();
+
 
   //  s1 = &sineosc;
   s1 = &pulseosc;
@@ -26,8 +28,6 @@ void VCO::init()
   s2->setFreq(0);
   s2->setAmplitude(32);
 
-  //s1= & wavetablesineoscillator;
-  //  s2= & wavetablesineoscillator;
 
   printf("VCO::init() end s1:=0x%08.8X s2:=0x%08.8X\n",s1,s2);
 }
