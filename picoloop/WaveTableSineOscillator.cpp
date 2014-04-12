@@ -6,7 +6,7 @@ using namespace std;
 WaveTableSineOscillator::WaveTableSineOscillator()
 {
   printf("WaveTableSineOscillator::WaveTableSineOscillator()");
-  table_size=1024;
+  table_size=4096;
   table=NULL;
   index=0;
 }

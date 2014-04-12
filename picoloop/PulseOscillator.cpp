@@ -6,7 +6,7 @@ using namespace std;
 PulseOscillator::PulseOscillator()
 {
   printf("PulseOscillator::PulseOscillator()");
-  table_size=1024;
+  table_size=4096;
   table=NULL;
   index=0;
 

@@ -6,7 +6,7 @@ using namespace std;
 NoiseOscillator::NoiseOscillator()
 {
   printf("NoiseOscillator::NoiseOscillator()");
-  table_size=1024;
+  table_size=4096;
   table=NULL;
   index=0;
 }
@@ -39,11 +39,13 @@ void NoiseOscillator::init()
 
 Sint16 NoiseOscillator::tick()
 {
-
   index=index+(this->getFreq()*table_size)/44100;
   if (index>table_size)
     index=index-table_size;
-  //printf("freq=%d index=%d table[index]=%d\n",this->getFreq(),index,table[index]);
+
+  //  d++; if (d>1000) d=0;
+  //  if (d==0)
+  //    printf("freq=%d index=%d table[index]=%d\n",this->getFreq(),index,table[index]);
   return table[index];
 
 }

@@ -25,7 +25,7 @@ class NoiseOscillator : public Oscillator
   //  int      phase;  
   int      table_size;
   int      index;
-  
+  int      d;
 };
 
 #endif
