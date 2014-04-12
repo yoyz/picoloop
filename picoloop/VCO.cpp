@@ -1,7 +1,7 @@
 #include "VCO.h"
 
 
-VCO::VCO() : sineOsc1(), sineOsc2(), sawOsc1(), sawOsc2(), pulseOsc1(), pulseOsc2(), waveTableSineOsc1(), waveTableSineOsc2() //, noiseosc()
+VCO::VCO() : sineOsc1(), sineOsc2(), sawOsc1(), sawOsc2(), pulseOsc1(), pulseOsc2(), waveTableSineOsc1(), waveTableSineOsc2(), noiseOsc1(), noiseOsc2() //, noiseosc()
 {
   printf("VCO::VCO()\n");
   s1=NULL;
@@ -24,6 +24,9 @@ void VCO::init()
 
   pulseOsc1.init();
   pulseOsc2.init();
+
+  noiseOsc1.init();
+  noiseOsc2.init();
 
 
   //  s1 = &sineosc;
@@ -69,19 +72,21 @@ void VCO::setOscillator(int oscillator_number,int oscillator_type)
 
   if (oscillator_number %2==0)
     {
-      if (oscillator_type%4==0) s1=&sineOsc1;
-      if (oscillator_type%4==1) s1=&sawOsc1;
-      if (oscillator_type%4==2) s1=&pulseOsc1;
-      if (oscillator_type%4==3) s1=&waveTableSineOsc1;
+      if (oscillator_type%5==0) s1=&sineOsc1;
+      if (oscillator_type%5==1) s1=&sawOsc1;
+      if (oscillator_type%5==2) s1=&pulseOsc1;
+      if (oscillator_type%5==3) s1=&waveTableSineOsc1;
+      if (oscillator_type%5==4) s1=&noiseOsc1;
 
       //      if (oscillator_type%4==2) s1=&noiseosc;
     }
   if (oscillator_number %2==1)
     {
-      if (oscillator_type%4==0) s2=&sineOsc2;
-      if (oscillator_type%4==1) s2=&sawOsc2;
-      if (oscillator_type%4==2) s2=&pulseOsc2;
-      if (oscillator_type%4==3) s2=&waveTableSineOsc2;
+      if (oscillator_type%5==0) s2=&sineOsc2;
+      if (oscillator_type%5==1) s2=&sawOsc2;
+      if (oscillator_type%5==2) s2=&pulseOsc2;
+      if (oscillator_type%5==3) s2=&waveTableSineOsc2;
+      if (oscillator_type%5==4) s2=&noiseOsc2;
       //      if (oscillator_type%4==3) s2=&noiseosc;
     }
   s1->setFreq(s1freq);

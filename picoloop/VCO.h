@@ -7,7 +7,7 @@
 #include "FuzzyPulseOscillator.h"
 #include "PulseOscillator.h"
 #include "WaveTableSineOscillator.h"
-//#include "NoiseOscillator.h"
+#include "NoiseOscillator.h"
 
 class VCO
 {
@@ -40,8 +40,11 @@ public:
   FuzzyPulseOscillator    fuzzyPulseOsc2;
   PulseOscillator         pulseOsc1;
   PulseOscillator         pulseOsc2;
+  NoiseOscillator         noiseOsc1;
+  NoiseOscillator         noiseOsc2;
   WaveTableSineOscillator waveTableSineOsc1;
   WaveTableSineOscillator waveTableSineOsc2;
+
   //NoiseOscillator       noiseosc;
   Oscillator            * s1;
   Oscillator            * s2;

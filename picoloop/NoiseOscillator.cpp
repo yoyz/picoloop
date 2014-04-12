@@ -5,75 +5,45 @@ using namespace std;
 
 NoiseOscillator::NoiseOscillator()
 {
-  frequency=440;
-  amplitude=127;
-  sample_num=0;
-  old_phase=0;
-  new_phase=0;
+  printf("NoiseOscillator::NoiseOscillator()");
+  table_size=1024;
+  table=NULL;
+  index=0;
 }
 
 NoiseOscillator::~NoiseOscillator()
 {
-
+  printf("NoiseOscillator::~NoiseOscillator()\n");
+  if (table!=NULL)
+    free(table);
 }
 
+void NoiseOscillator::init()
+{
+  int i;
+  float f;
+  Sint16 s;
+  Sint16 bitdepth=16;
+  srand(1<<(bitdepth-2));
+  if (table==NULL)
+    {
+      table=(Sint16*)malloc(sizeof(Sint16)*table_size);
+      for (i=0;i<table_size;i++)
+	{
+	  table[i]=rand();
+	  printf("NoiseOscillator::init() table[%d]=%d\n",i,table[i]);
+	}
+    }  
+}
 
 
 Sint16 NoiseOscillator::tick()
 {
-  float  f;
-  Uint16 u;
-  Sint16 s;
-  int debug=1;
-  int detect_phase=0;
-  int period=0;
 
-  // // // // 1/freq*44100 = > pas de + - + - 
-  
-  if (sample_num==0) srand(frequency);
-  sample_num++;
+  index=index+(this->getFreq()*table_size)/44100;
+  if (index>table_size)
+    index=index-table_size;
+  //printf("freq=%d index=%d table[index]=%d\n",this->getFreq(),index,table[index]);
+  return table[index];
 
-  if (debug) printf("Sint16 NoiseOscillator::tick()\n");
-
-  s=rand();
-  if (s<0) s=s*-1;
-  
-  printf("s:%d\n",s);
-
-  //detect_phase=sample_num % ( frequency*2);
-  
-  period=(44100/frequency);
-
-  if (debug) 
-    printf("period:%d samplenum:%d sample_num mod period: %d \n",
-	   period,
-	   sample_num,
-	   sample_num%period);
-  
-  if ((sample_num % ( 2* period) ) > period)
-    {  new_phase=-1; }
-  else
-    {  new_phase=1;  }
-
-
-  if (old_phase != new_phase) 
-    srand(frequency);
-
-  if (debug) 
-    printf("s:%d phase:%d\n",s,new_phase);
-
-  
-  s=s*new_phase;
-  
-  // Amplification -32000 32000
-  //s=(s*((amplitude/64)*new_phase));
-  //f=(float)(s*((amplitude/256)*new_phase));
-  //f=float(amplitude)/float(512);
-  f=f*s*new_phase;
-  //s=f;
-
-  if (debug) printf("%d\n",s);
-  last_tick=s;
-  old_phase=new_phase;
-  return s;
 }

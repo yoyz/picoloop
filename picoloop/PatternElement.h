@@ -12,6 +12,7 @@ enum
     SAW,
     PULSE,
     WTBL,
+    NOISE,
   };
 
 class PatternElement

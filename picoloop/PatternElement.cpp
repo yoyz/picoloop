@@ -55,12 +55,12 @@ int PatternElement::getOscillatorTwoType()
 
 void PatternElement::setOscillatorOneType(int type)
 {
-  oscOneType=type%4;
+  oscOneType=type%5;
 }
 
 void PatternElement::setOscillatorTwoType(int type)
 {
-  oscTwoType=type%4;
+  oscTwoType=type%5;
 }
 
 
@@ -172,6 +172,7 @@ char * PatternElement::getOscOneTypeCharStar()
   char * str_saw   = "SAW  ";
   char * str_pulse = "PULSE";
   char * str_wtbl  = "WTBL";
+  char * str_noise = "NOISE";
 
   switch (oscOneType)
     {
@@ -179,6 +180,7 @@ char * PatternElement::getOscOneTypeCharStar()
     case SAW:   return str_saw;   break; 
     case PULSE: return str_pulse; break;      
     case WTBL:  return str_wtbl;  break;            
+    case NOISE: return str_noise; break;            
     }
   return str_sine;
 }
@@ -190,6 +192,7 @@ char * PatternElement::getOscTwoTypeCharStar()
   char * str_saw   = "SAW  ";
   char * str_pulse = "PULSE";
   char * str_wtbl  = "WTBL";
+  char * str_noise = "NOISE";
 
   switch (oscTwoType)
     {
@@ -197,7 +200,7 @@ char * PatternElement::getOscTwoTypeCharStar()
     case SAW:   return str_saw;   break; 
     case PULSE: return str_pulse; break;
     case WTBL:  return str_wtbl;  break;            
-      
+    case NOISE: return str_noise; break;                  
     }
   return str_sine;
 }

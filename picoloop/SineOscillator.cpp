@@ -5,7 +5,7 @@ using namespace std;
 
 SineOscillator::SineOscillator()
 {
-  printf("WaveTableSineOscillator::WaveTableSineOscillator()");
+  printf("SineOscillator::SineOscillator()");
   table_size=1024;
   table=NULL;
   index=0;
@@ -13,7 +13,7 @@ SineOscillator::SineOscillator()
 
 SineOscillator::~SineOscillator()
 {
-  printf("WaveTableSineOscillator::~WaveTableSineOscillator()\n");
+  printf("SineOscillator::~SineOscillator()\n");
   if (table!=NULL)
     free(table);
 }
