@@ -13,10 +13,12 @@ PatternElement::PatternElement()
   Trig=false;
   Channel=0;
   vcomix=64;
-  attack=0;
-  decay=127;
-  sustain=127;
-  release=8;
+
+  amp_attack=0;
+  amp_decay=127;
+  amp_sustain=127;
+  amp_release=8;
+
   oscOneType=SAW;
   oscTwoType=PULSE;
 }
@@ -34,10 +36,11 @@ void PatternElement::init()
   Trig=false;
   Channel=0;
   vcomix=64;
-  attack=0;
-  decay=127;
-  sustain=127;
-  release=8;
+
+  amp_attack=0;
+  amp_decay=127;
+  amp_sustain=127;
+  amp_release=8;
 
   oscOneType=SAW;
   oscTwoType=PULSE;
@@ -93,44 +96,44 @@ int PatternElement::getVCOMix()
 
 int PatternElement::getAttack()
 {
-  return attack;
+  return amp_attack;
 }
 
 void PatternElement::setAttack(int atk)
 {
-  attack=this->checkSevenBitBoundarie(atk);  
+  amp_attack=this->checkSevenBitBoundarie(atk);  
 }
 
 int PatternElement::getDecay()
 {
-  return decay;
+  return amp_decay;
 }
 
 void PatternElement::setDecay(int dcy)
 {
-  decay=this->checkSevenBitBoundarie(dcy);
+  amp_decay=this->checkSevenBitBoundarie(dcy);
 }
 
 
 int PatternElement::getSustain()
 {
-  return sustain;
+  return amp_sustain;
 }
 
 void PatternElement::setSustain(int sus)
 {
-  sustain=this->checkSevenBitBoundarie(sus);
+  amp_sustain=this->checkSevenBitBoundarie(sus);
 }
 
 
 int PatternElement::getRelease()
 {
-  return release;
+  return amp_release;
 }
 
 void PatternElement::setRelease(int rls)
 {
-  release=this->checkSevenBitBoundarie(rls);
+  amp_release=this->checkSevenBitBoundarie(rls);
 }
 
 

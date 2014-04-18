@@ -20,6 +20,7 @@ class PatternElement
 public:
   PatternElement();
   ~PatternElement();
+
   void   init();
   bool   setNote(int Note);
   int    getNote();
@@ -32,12 +33,16 @@ public:
 
   int    getVCOMix();
   void   setVCOMix(int mix);
+
   int    getAttack();
   void   setAttack(int atk);
+
   int    getDecay();
   void   setDecay(int dc);
+
   int    getSustain();
   void   setSustain(int sus);
+
   int    getRelease();
   void   setRelease(int rls);
 
@@ -60,10 +65,11 @@ private:
   int  Channel;
 
   int  vcomix;
-  int  attack;
-  int  decay;
-  int  sustain;
-  int  release;
+
+  int  amp_attack;
+  int  amp_decay;
+  int  amp_sustain;
+  int  amp_release;
 
   int oscOneType;
   int oscTwoType;
