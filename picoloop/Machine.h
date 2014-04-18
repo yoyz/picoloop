@@ -10,6 +10,7 @@ using namespace std;
 */
 
 #include "ADSR.h"
+#include "Biquad.h"
 
 #ifndef __MACHINE____
 #define __MACHINE____
@@ -28,8 +29,9 @@ class Machine
   void setFuzzyPulseOsc();
   */
   void init();
-  ADSR & getADSR();
-  VCO  & getVCO();
+  ADSR   & getADSR();
+  VCO    & getVCO();
+  Biquad & getBiquad();
   //  Oscillator * getOscillator();
 
   int tick();
@@ -38,6 +40,7 @@ class Machine
   //  VCO                 * vco_pointer;
   VCO                   vco;
   ADSR                  adsr;
+  Biquad                bq;
   /*
   Oscillator          * s;
   SawOscillator         sawosc;

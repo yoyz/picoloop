@@ -19,6 +19,9 @@ PatternElement::PatternElement()
   amp_sustain=127;
   amp_release=8;
 
+  fltr_cutoff=127;
+  fltr_resonance=0;
+
   oscOneType=SAW;
   oscTwoType=PULSE;
 }
@@ -134,6 +137,26 @@ int PatternElement::getRelease()
 void PatternElement::setRelease(int rls)
 {
   amp_release=this->checkSevenBitBoundarie(rls);
+}
+
+int PatternElement::getCutoff()
+{
+  return fltr_cutoff;
+}
+
+void PatternElement::setCutoff(int cut)
+{
+  fltr_cutoff=this->checkSevenBitBoundarie(cut);
+}
+
+int PatternElement::getResonance()
+{
+  return fltr_resonance;
+}
+
+void PatternElement::setResonance(int res)
+{
+  fltr_resonance=this->checkSevenBitBoundarie(res);
 }
 
 
