@@ -19,8 +19,8 @@ PatternElement::PatternElement()
   amp_sustain=127;
   amp_release=8;
 
-  fltr_cutoff=127;
-  fltr_resonance=0;
+  fltr_cutoff=64;
+  fltr_resonance=80;
 
   oscOneType=SAW;
   oscTwoType=PULSE;
