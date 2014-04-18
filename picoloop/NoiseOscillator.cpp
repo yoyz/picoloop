@@ -31,7 +31,7 @@ void NoiseOscillator::init()
       for (i=0;i<table_size;i++)
 	{
 	  table[i]=rand();
-	  printf("NoiseOscillator::init() table[%d]=%d\n",i,table[i]);
+	  //printf("NoiseOscillator::init() table[%d]=%d\n",i,table[i]);
 	}
     }  
 }

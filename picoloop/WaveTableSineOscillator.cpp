@@ -34,7 +34,7 @@ void WaveTableSineOscillator::init()
 	  table[i]=s;
 
 	  //printf("fvalue = %f ",f);
-	  printf("WaveTableSineOscillator::init() table[%d]=%d\n",i,table[i]);
+	  //printf("WaveTableSineOscillator::init() table[%d]=%d\n",i,table[i]);
 	}
     }
   

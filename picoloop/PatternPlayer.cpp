@@ -145,7 +145,7 @@ void display_board()
   if (menu==MENU_ON_PAGE2 && menu_cursor==M_FLTR)  sprintf(str_down," OSC  LFO  [FLTR] BPM ",cty);
   if (menu==MENU_ON_PAGE2 && menu_cursor==M_BPM)   sprintf(str_down," OSC  LFO   FLTR [BPM]",cty);
 
-  if (menu==0)                       sprintf(str_down,"                     ",cty);
+  if (menu==0)                         sprintf(str_down,"                     ",cty);
 
   if (menu_cursor==M_AD)               sprintf(str_up,"A/R ");
   if (menu_cursor==M_NOTE)             sprintf(str_up,"Note");
@@ -385,12 +385,15 @@ void handle_key()
       switch (menu)
 	{
 	case MENU_OFF:      
-	  menu=MENU_ON_PAGE1;                 
+	  if (menu_cursor<4) 
+	    menu=MENU_ON_PAGE1;
+	  if (menu_cursor>=4)
+	    menu=MENU_ON_PAGE2;
 	  break;
 
 	case MENU_ON_PAGE1: 
 	  menu=MENU_ON_PAGE2;
-	  if (menu_cursor<3)
+	  if (menu_cursor<=3)
 	    menu_cursor+=4; 
 	  else
 	    menu_cursor=4;
@@ -398,7 +401,7 @@ void handle_key()
 
 	case MENU_ON_PAGE2: 
 	  menu=MENU_ON_PAGE1; 
-	  if (menu_cursor>4)
+	  if (menu_cursor>=4)
 	    menu_cursor-=4; 
 	  else
 	    menu_cursor=0;
@@ -497,7 +500,10 @@ void handle_key()
   if ((menu==MENU_OFF && menu_cursor==M_AD    ||
        menu==MENU_OFF && menu_cursor==M_NOTE  ||
        menu==MENU_OFF && menu_cursor==M_VCO   ||
-       menu==MENU_OFF && menu_cursor==M_OSC
+       menu==MENU_OFF && menu_cursor==M_OSC   ||
+       menu==MENU_OFF && menu_cursor==M_LFO   ||
+       menu==MENU_OFF && menu_cursor==M_FLTR  ||
+       menu==MENU_OFF && menu_cursor==M_BPM   
        ) &&
       !keyState[BUTTON_B]                   &&
       !keyState[BUTTON_A]

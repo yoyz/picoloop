@@ -34,7 +34,7 @@ void SineOscillator::init()
 	  table[i]=s;
 
 	  //printf("fvalue = %f ",f);
-	  printf("SineOscillator::init() table[%d]=%d\n",i,table[i]);
+	  //printf("SineOscillator::init() table[%d]=%d\n",i,table[i]);
 	}
     }
   

@@ -42,7 +42,7 @@ void SawOscillator::init()
 	{
 	  table[i]=s;
 	  s=s-dec;
-	  printf("SawOscillator::init() table[%d]=%d\n",i,table[i]);
+	  //printf("SawOscillator::init() table[%d]=%d\n",i,table[i]);
 	}
     }  
 }
