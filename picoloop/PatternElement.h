@@ -46,6 +46,13 @@ public:
   int    getRelease();
   void   setRelease(int rls);
 
+  int    getCutoff();
+  void   setCutoff(int cut);
+
+  int    getResonance();
+  void   setResonance(int res);
+
+
   int    getOscillatorOneType();
   int    getOscillatorTwoType();
   
@@ -70,6 +77,10 @@ private:
   int  amp_decay;
   int  amp_sustain;
   int  amp_release;
+
+  int fltr_cutoff;
+  int fltr_resonance;
+
 
   int oscOneType;
   int oscTwoType;

@@ -27,6 +27,11 @@ using namespace std;
 
 #define SMALLBOX_COLOR      0x442233
 
+#define DISABLE             0
+#define ENABLE              1
+
+
+
 vector <Pattern>            P(TRACK_MAX);  
 vector <Machine   *>        M(TRACK_MAX);
 vector <MonoMixer *>        MM(TRACK_MAX);
@@ -62,8 +67,13 @@ int repeat=0;
 int quit=0;             // do we need to quit ?
 int cursor=0;           // cursor position in a sequencer track
 int note=0;
+
 int attack=0;
 int release=0;
+
+int cutoff=0;
+int resonance=0;
+
 int vcomix=0;
 int osconetype=0;
 int osctwotype=0;
@@ -89,6 +99,7 @@ enum {
   M_NOTE,
   M_LS,
   M_VCO,
+
   M_OSC,
   M_LFO,
   M_FLTR,
@@ -197,7 +208,7 @@ void display_board()
   if (menu_cursor==M_NOTE)
     {
 
-      if (menu_note==0)
+      if (menu_note==DISABLE)
 	{
 
 	  SG.drawBoxNumber(cursor,CURSOR_COLOR);
@@ -215,7 +226,7 @@ void display_board()
 	  */
 	}
       // Note C3 
-      if (menu_note==1)
+      if (menu_note==ENABLE)
 	{	  
 	  SG.drawBoxNumber(step,STEP_COLOR);  
 	  SG.drawBoxNumber(cursor,CURSOR_COLOR);
@@ -238,7 +249,7 @@ void display_board()
 	    }
 	}
       // Note Cursor
-      if (menu_note==0)      
+      if (menu_note==DISABLE)      
 	{
 	  for (i=0;i<16;i++)
 	    {
@@ -349,6 +360,31 @@ void display_board()
 
 	}
     }
+
+  if (menu_cursor==M_FLTR)
+    {
+      // Cursor & step postion      
+      SG.drawBoxNumber(cursor,CURSOR_COLOR);
+      SG.drawBoxNumber(step,STEP_COLOR);  
+
+      for (i=0;i<16;i++)
+	{
+	  // Draw trigged box trig color   
+	  if (P[cty].getPatternElement(i).getTrig())
+	    {
+	      SG.drawBoxNumber(i,TRIG_COLOR);
+	      if (i==cursor)
+		SG.drawBoxNumber(cursor,CURSOR_COLOR);
+	      if (i==step)
+		SG.drawBoxNumber(step,STEP_COLOR);  
+
+	      // AdsR
+	      SG.smallBoxNumber(i,P[cty].getPatternElement(i).getResonance(),0,SMALLBOX_COLOR);
+	      SG.smallBoxNumber(i,0,P[cty].getPatternElement(i).getCutoff(),SMALLBOX_COLOR);      
+	    }
+	}
+    }
+
 
 
 
@@ -732,6 +768,38 @@ void handle_key()
     }
 
 
+  // M_AD
+  // Move Attack Release 
+  // Insert/Remove Trig
+  if (menu          == MENU_OFF && 
+      menu_cursor   == M_FLTR)
+    {
+      if (lastKey   == BUTTON_A && 
+	  lastEvent == SDL_KEYDOWN)
+	{
+	  invert_trig=1;
+	  printf("key lalt\n");      
+	  dirty_graphic=1;
+	  IE.clearLastKeyEvent();
+	}
+      if (keyState[BUTTON_LEFT]  && keyState[BUTTON_B])
+	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>4) 
+	  { resonance=-1;   dirty_graphic=1; }
+      
+      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>4) 
+	  { resonance=1; 	  dirty_graphic=1; }
+      
+      if (keyState[BUTTON_UP]    && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>4) 
+	  { cutoff=1;  	  dirty_graphic=1; }
+      
+      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>4) 
+	  { cutoff=-1; 	  dirty_graphic=1; }
+    }  
+
+
   // M_BPM
   // change bpm speed
   if (menu        == MENU_OFF && 
@@ -834,8 +902,15 @@ int seq_update()
     {
       if (P[t].getPatternElement(step).getTrig()==true)
 	{
-	  float f=P[t].getPatternElement(step).getNoteFreq();
-	  int   i=f;
+	  float   f=P[t].getPatternElement(step).getNoteFreq();
+	  int     i=f;
+
+	  int     i_c;
+	  float   f_c;
+
+	  int     i_r;
+	  float   f_r;
+
 	  	 
 	  M[t]->getADSR().reset();;	  
 	  M[t]->getVCO().reset();
@@ -847,6 +922,22 @@ int seq_update()
 	  M[t]->getVCO().setVCOMix(P[t].getPatternElement(step).getVCOMix());		  
 	  M[t]->getVCO().setOscillator(0,P[t].getPatternElement(step).getOscillatorOneType());
 	  M[t]->getVCO().setOscillator(1,P[t].getPatternElement(step).getOscillatorTwoType());
+	  
+	  i_c=P[t].getPatternElement(step).getCutoff();
+	  i_r=P[t].getPatternElement(step).getResonance();
+
+	  f_c=i_c;
+	  f_c=f_c/128;
+	  
+	  f_r=i_r;
+	  f_r=f_r/128;
+
+	  printf("==================================================================[ %f ]==================================================================\n",f_c);
+	  printf("==================================================================[ %f ]==================================================================\n",f_r);
+	  //M[t]->getBiquad().setFc(f_c);
+	  M[t]->getBiquad().reset();
+	  M[t]->getBiquad().setBiquad(0, f_c+0.005, f_r+0.005, 0.0);
+	  
 	}
       else
 	{
@@ -957,6 +1048,22 @@ int seq()
 	  //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
 	  
 	}
+
+      // Change VCOMix
+      if (cutoff!=0)
+	{
+	  P[cty].getPatternElement(cursor).setCutoff(P[cty].getPatternElement(cursor).getCutoff()+cutoff);
+	  cutoff=0;
+	  if (debug) printf("[cutoff:%d]\n",P[cty].getPatternElement(cursor).getCutoff());	  
+	}
+
+      if (resonance!=0)
+	{
+	  P[cty].getPatternElement(cursor).setResonance(P[cty].getPatternElement(cursor).getResonance()+resonance);
+	  resonance=0;
+	  if (debug) printf("[resonance:%d]\n",P[cty].getPatternElement(cursor).getResonance());	  
+	}
+
         
       if (osconetype!=0)
 	{

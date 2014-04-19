@@ -29,7 +29,10 @@ Biquad::Biquad() {
     z1 = z2 = 0.0;
 }
 
-Biquad::Biquad(int type, double Fc, double Q, double peakGainDB) {
+
+
+Biquad::Biquad(int type, float Fc, float Q, float peakGainDB) {
+
     setBiquad(type, Fc, Q, peakGainDB);
     z1 = z2 = 0.0;
 }
@@ -37,27 +40,45 @@ Biquad::Biquad(int type, double Fc, double Q, double peakGainDB) {
 Biquad::~Biquad() {
 }
 
+
+
+void Biquad::reset()
+{
+    type = bq_type_lowpass;
+    a0 = 1.0;
+    a1 = a2 = b1 = b2 = 0.0;
+    Fc = 0.50;
+    Q = 0.707;
+    peakGain = 0.0;
+    z1 = z2 = 0.0;
+}
+
+
 void Biquad::setType(int type) {
     this->type = type;
     calcBiquad();
 }
 
-void Biquad::setQ(double Q) {
+
+void Biquad::setQ(float Q) {
     this->Q = Q;
     calcBiquad();
 }
 
-void Biquad::setFc(double Fc) {
+
+void Biquad::setFc(float Fc) {
     this->Fc = Fc;
     calcBiquad();
 }
 
-void Biquad::setPeakGain(double peakGainDB) {
+
+void Biquad::setPeakGain(float peakGainDB) {
     this->peakGain = peakGainDB;
     calcBiquad();
 }
     
-void Biquad::setBiquad(int type, double Fc, double Q, double peakGainDB) {
+
+void Biquad::setBiquad(int type, float Fc, float Q, float peakGainDB) {
     this->type = type;
     this->Q = Q;
     this->Fc = Fc;
@@ -65,9 +86,10 @@ void Biquad::setBiquad(int type, double Fc, double Q, double peakGainDB) {
 }
 
 void Biquad::calcBiquad(void) {
-    double norm;
-    double V = pow(10, fabs(peakGain) / 20.0);
-    double K = tan(M_PI * Fc);
+
+    float norm;
+    float V = pow(10, fabs(peakGain) / 20.0);
+    float K = tan(M_PI * Fc);
     switch (this->type) {
         case bq_type_lowpass:
             norm = 1 / (1 + K / Q + K * K);
@@ -161,5 +183,24 @@ void Biquad::calcBiquad(void) {
             break;
     }
     
+
+    i_a0=a0             * DECAL;
+    i_a1=a1             * DECAL;
+    i_a2=a2             * DECAL;
+
+    i_b1=b1             * DECAL;
+    i_b2=b2             * DECAL;
+
+    i_z1=z1             * DECAL;
+    i_z2=z2             * DECAL;
+
+    i_Fc=Fc             * DECAL;
+    i_Q=Q               * DECAL;
+    i_peakGain=peakGain * DECAL;
+
+    //printf("<<< %f %f %f    %f %f    %f %f  %f %f %f>>>\n",a0,a1,a2,b1,b2,z1,z2,Fc,Q,peakGain);
+    //    printf("[[[ %d %d %d    %d %d    %d %d  %d %d %d]]]\n",i_a0,i_a1,i_a2,i_b1,i_b2,i_z1,i_z2,i_Fc,i_Q,i_peakGain);
+
+
     return;
 }

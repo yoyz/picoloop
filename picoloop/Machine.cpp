@@ -5,7 +5,7 @@
 
 //Machine::Machine()// : adsr(), vco()
 //Machine::Machine() : adsr(), vco_osc()
-Machine::Machine() : adsr(), vco()
+Machine::Machine() : adsr(), vco(), bq()
 {
   printf("Machine::Machine()\n");  
   //  adsr=new ADSR();
@@ -37,6 +37,7 @@ Machine::~Machine()
 void Machine::init()
 {
   adsr.setInput(&vco);
+  bq.setBiquad(0, 0.2, 0.5, 0.1);
 }
 
 
@@ -58,6 +59,12 @@ VCO & Machine::getVCO()
   //  return vco_pointer;
   return vco;
 }
+
+Biquad & Machine::getBiquad()
+{
+  return bq;
+}
+
 /*
 void Machine::setSynthFreq(int sfreq)
 {
@@ -110,5 +117,35 @@ int Machine::tick()
 {
   //if (&s==0) { printf("sine:%d\n",sineosc.tick()); exit(0);  }
   //  return s->tick();
-  return adsr.tick();
+  float  f_in;
+  float  f_out;
+  Sint16 s_in;
+  Sint16 s_out;
+
+  s_in=adsr.tick();
+  s_out=bq.process(s_in);
+  //f_in=s_in;
+  //f_in=f_in/32768.0;
+  //  f_in=f_in*0.0000305;
+  //  f_out=bq.process(f_in);
+  //  f_out=f_out*32768.0;
+  //  s_out=f_out;
+  return s_out;
+
+
+  /*    
+  s_in=adsr.tick();
+  f_in=s_in;
+  //f_in=f_in/32768.0;
+  f_in=f_in*0.0000305;
+  f_out=bq.process(f_in);
+  f_out=f_out*32768.0;
+  s_out=f_out;
+  return s_out;
+  */
+
+  //  printf("%d %d %f %f\n",s_in,s_out,f_in,f_out);
+  
+  
+  //return adsr.tick();
 }
