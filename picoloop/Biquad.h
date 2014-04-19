@@ -18,9 +18,10 @@
 
 #include <stdint.h>
 #include <stdio.h>
-#define  DECAL 32768
-//#define  DECAL 2147483648
-//#define  DECAL 16777216
+#define    DECAL 32768
+//#define    DECAL 16777216
+//#define      DECAL 2147483648
+#define      SHIFT 15
                
 #ifndef Biquad_h
 #define Biquad_h
@@ -81,18 +82,23 @@ inline int16_t Biquad::process(int16_t in)
   //  i_in=in*DECAL;
 
   i_in=in;
-  i_in=i_in*DECAL;
+  //i_in=i_in*DECAL;
+  //  i_in=i_in<<15;
+  i_in=i_in<<SHIFT;
   
   //  i_out = i_in   * i_a0   + i_z1;
   //  i_z1  = i_in   * i_a1   + i_z2    - i_b1   * i_out;
   //  i_z2  = i_in   * i_a2   - i_b2    * i_out;
   
 
-  
+  i_out=(( i_a0*i_in )>>SHIFT ) + (( i_a1*i_z1 ) >>SHIFT)+ (( i_a2*i_z2 )>>SHIFT)- (( i_b1*i_z1) >> SHIFT) -(( i_b2*i_z2) >> SHIFT);
+  i_z1=i_z2;
+  i_in=i_z1;
+
   //i_out = i_in / i_a0   + i_z1;
-  i_out = ( ( i_in / i_a0 ) << 15 ) + i_z1 ;
-  i_out_tmp=i_out;
-  if (i_out_tmp==0) i_out_tmp=1;
+  //i_out = ( ( i_in / i_a0 ) << SHIFT ) + i_z1 ;
+  //  i_out_tmp=i_out;
+  //  if (i_out_tmp==0) i_out_tmp=1;
   //i_out = i_out << 15;
   //  i_out = i_out + i_z1;
 
@@ -102,14 +108,14 @@ inline int16_t Biquad::process(int16_t in)
   //i_z1  = i_in / i_a1   + i_z2    - i_b1 / i_out;
   //  i_z2  = i_in / i_a2             - i_b2 / i_out;
 
-  i_z1 = ( ( i_in / i_a1 ) << 15 ) + i_z2 - ( ( i_b1 / i_out_tmp ) << 15);
-  i_z2 = ( ( i_in / i_a2 ) << 15 )        - ( ( i_b2 / i_out_tmp ) << 15); 
-
+  //  i_z1 = ( ( i_in / i_a1 ) << SHIFT ) + i_z2 - ( ( i_b1 / i_out_tmp ) << SHIFT);
+  //  i_z2 = ( ( i_in / i_a2 ) << SHIFT )        - ( ( i_b2 / i_out_tmp ) << SHIFT); 
+  
 
   
   //  printf("i_in:%d i_out:%d\n",i_in,i_out);
   //i_out=i_out;
-  i_out=i_out >> 15;
+  i_out=i_out >> SHIFT;
   out=i_out;
 
 
