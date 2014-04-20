@@ -50,7 +50,7 @@ public:
     void setFc(float Fc);
     void setPeakGain(float peakGainDB);
     void setBiquad(int type, float Fc, float Q, float peakGain);
-    //  float process(float in);
+    float process(float in);
     int16_t process(int16_t in);
 
     
@@ -68,14 +68,14 @@ protected:
     int64_t   i_z1, i_z2;
 
 };
-/*
+
 inline float Biquad::process(float in) {
     float out = in * a0 + z1;
     z1 = in * a1 + z2 - b1 * out;
     z2 = in * a2 - b2 * out;
     return out;
 }
-*/
+
 
 inline int16_t Biquad::process(int16_t in) 
 {
@@ -95,7 +95,15 @@ inline int16_t Biquad::process(int16_t in)
   //  i_z1  = i_in   * i_a1   + i_z2    - i_b1   * i_out;
   //  i_z2  = i_in   * i_a2   - i_b2    * i_out;
   
+  /*
+  Biquads come in several forms. 
+  The most obvious, a direct implementation of the 
+  second order difference equation 
+  (y[n] = a0*x[n] + a1*x[n-1] + a2*x[n-2] - b1*y[n-1] - b2*y[n-2]) 
+  called direct form I:
 
+  from http://www.earlevel.com/main/2003/02/28/biquads/
+   */
   i_out=(( i_a0*i_in )>>SHIFT ) + (( i_a1*i_z1 ) >>SHIFT)+ (( i_a2*i_z2 )>>SHIFT)- (( i_b1*i_z1) >> SHIFT) -(( i_b2*i_z2) >> SHIFT);
   i_z1=i_z2;
   i_in=i_z1;
