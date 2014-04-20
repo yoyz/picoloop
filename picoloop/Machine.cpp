@@ -122,16 +122,27 @@ int Machine::tick()
   Sint16 s_in;
   Sint16 s_out;
 
+
   s_in=adsr.tick();
+  s_in=s_in/4;
   s_out=bq.process(s_in);
-  //f_in=s_in;
-  //f_in=f_in/32768.0;
-  //  f_in=f_in*0.0000305;
-  //  f_out=bq.process(f_in);
-  //  f_out=f_out*32768.0;
-  //  s_out=f_out;
+  //  s_out=bq.process(s_out);
+  //s_out=bq.process(s_out);
   return s_out;
 
+
+  /*
+  s_in=adsr.tick();
+
+  f_in=s_in;
+  f_in=f_in/32768.0;
+  f_out=bq.process(f_in);
+  f_out=bq.process(f_out);
+  f_out=bq.process(f_out);
+  f_out=f_out*32768.0;
+  s_out=f_out;
+  return s_out;
+  */
 
   /*    
   s_in=adsr.tick();

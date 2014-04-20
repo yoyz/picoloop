@@ -84,16 +84,11 @@ inline int16_t Biquad::process(int16_t in)
   int64_t i_out_tmp;
   int16_t out;
   
-  //  i_in=in*DECAL;
+
+  if (in==0) return 0;
 
   i_in=in;
-  //i_in=i_in*DECAL;
-  //  i_in=i_in<<15;
   i_in=i_in<<SHIFT;
-  
-  //  i_out = i_in   * i_a0   + i_z1;
-  //  i_z1  = i_in   * i_a1   + i_z2    - i_b1   * i_out;
-  //  i_z2  = i_in   * i_a2   - i_b2    * i_out;
   
   /*
   Biquads come in several forms. 
@@ -104,21 +99,22 @@ inline int16_t Biquad::process(int16_t in)
 
   from http://www.earlevel.com/main/2003/02/28/biquads/
    */
+
+  // SIMPLE FORM
+  /*
   i_out=(( i_a0*i_in )>>SHIFT ) + (( i_a1*i_z1 ) >>SHIFT)+ (( i_a2*i_z2 )>>SHIFT)- (( i_b1*i_z1) >> SHIFT) -(( i_b2*i_z2) >> SHIFT);
   i_z1=i_z2;
   i_in=i_z1;
+  */
 
-  //i_out = i_in / i_a0   + i_z1;
-  //i_out = ( ( i_in / i_a0 ) << SHIFT ) + i_z1 ;
-  //  i_out_tmp=i_out;
-  //  if (i_out_tmp==0) i_out_tmp=1;
-  //i_out = i_out << 15;
-  //  i_out = i_out + i_z1;
+  // SECOND FORM
+  i_out = (( i_in * i_a0 ) >> SHIFT ) + i_z1;
 
-  //  if (i_out==0) 
-  //    i_out=DECAL;
+  i_z1  = (( i_in * i_a1 ) >> SHIFT ) + i_z2 - (( i_b1 * i_out ) >> SHIFT );
+  i_z2  = (( i_in * i_a2 ) >> SHIFT ) -        (( i_b2 * i_out ) >> SHIFT );
 
-  //i_z1  = i_in / i_a1   + i_z2    - i_b1 / i_out;
+
+  //  i_z1  = i_in / i_a1   + i_z2    - i_b1 / i_out;
   //  i_z2  = i_in / i_a2             - i_b2 / i_out;
 
   //  i_z1 = ( ( i_in / i_a1 ) << SHIFT ) + i_z2 - ( ( i_b1 / i_out_tmp ) << SHIFT);
