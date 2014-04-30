@@ -677,6 +677,19 @@ void handle_key_note()
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%64==0) 
 	{ note=-12;  	  dirty_graphic=1;}
     }  
+
+  // change note from box to value e.g C3 D4...
+  if (lastKey     ==  BUTTON_START  && 
+      lastEvent   ==  SDL_KEYUP     && 
+      menu_cursor ==  M_NOTE)
+    {
+      if      (menu_note==0)        { menu_note=1;  }
+      else if (menu_note==1)        { menu_note=0;  }   
+      dirty_graphic=1;
+      IE.clearLastKeyEvent();
+      printf("[sub menu note : %d]\n",menu_note);
+    }
+
 }
 
 void handle_key_vco()
@@ -945,16 +958,6 @@ void handle_key()
   handle_key_menu();
 
   
-  if (lastKey     ==  BUTTON_START  && 
-      lastEvent   ==  SDL_KEYUP     && 
-      menu_cursor ==  M_NOTE)
-    {
-      if      (menu_note==0)        { menu_note=1;  }
-      else if (menu_note==1)        { menu_note=0;  }   
-      dirty_graphic=1;
-      IE.clearLastKeyEvent();
-      printf("[sub menu note : %d]\n",menu_note);
-    }
   
   
   handle_key_sixteenbox();
@@ -966,18 +969,6 @@ void handle_key()
   handle_key_fltr();
   handle_key_bpm();
  
-  
-  
-  
-
-      
-
-  
-  
-
-
-
-
   int delay=1;
   //printf("sleeping %dms\n",delay);
   SDL_Delay(delay);  
