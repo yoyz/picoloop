@@ -393,28 +393,20 @@ void display_board()
 }
 
 
-void handle_key()
+void handle_key_menu()
 {
-  
   bool * keyState;
   int  * keyRepeat;
   int    lastEvent;
   int    lastKey;
-  IE.handleKey();
 
   keyState=IE.keyState();
   keyRepeat=IE.keyRepeat();
   lastEvent=IE.lastEvent();
   lastKey=IE.lastKey();
-  if (IE.shouldExit())
-    quit=1;
-    //exit(0);
-  
-  //if (start_key==2) 
-  //printf("%d %d %d\n",lastKey,lastEvent,lastKey==&& BUTTON_START && lastEvent==SDL_KEYUP);
-  //  printf("lastevent=%d\n",lastEvent);
 
-  //Enable Menu navigation
+
+  // Enter and cycle thru menu pages
   if (lastKey   ==  BUTTON_SELECT && 
       lastEvent ==  SDL_KEYUP)
     {
@@ -452,26 +444,8 @@ void handle_key()
       printf("[gmenu : %d cmenu : %d]\n",menu,menu_cursor);
     }
 
-  //leave menu mode
-  if (lastKey      ==  BUTTON_B       && 
-      lastEvent    ==  SDL_KEYUP      &&
-      (menu        ==  MENU_ON_PAGE1  ||
-       menu        ==  MENU_ON_PAGE2))
-    menu=MENU_OFF;
-  
-  if (lastKey     ==  BUTTON_START  && 
-      lastEvent   ==  SDL_KEYUP     && 
-      menu_cursor ==  M_NOTE)
-    {
-      if      (menu_note==0)        { menu_note=1;  }
-      else if (menu_note==1)        { menu_note=0;  }   
-      dirty_graphic=1;
-      IE.clearLastKeyEvent();
-      printf("[sub menu note : %d]\n",menu_note);
-    }
-  
-  //Menu Mode 
-  //Move MENU_CURSOR
+  //Move into on menu
+  //select current active track
   if (menu==MENU_ON_PAGE1 ||
       menu==MENU_ON_PAGE2)
     {
@@ -526,13 +500,32 @@ void handle_key()
 	  dirty_graphic=1;
 	}
     }
-  
-  
-  
-  
-  
-  
-  //MOVE the cursor : LEFT UP DOWN RIGHT   
+
+  //leave menu 
+  if (lastKey      ==  BUTTON_B       && 
+      lastEvent    ==  SDL_KEYUP      &&
+      (menu        ==  MENU_ON_PAGE1  ||
+       menu        ==  MENU_ON_PAGE2))
+    menu=MENU_OFF;
+
+
+
+}
+
+
+void handle_key_sixteenbox()
+{
+  bool * keyState;
+  int  * keyRepeat;
+  int    lastEvent;
+  int    lastKey;
+
+  keyState=IE.keyState();
+  keyRepeat=IE.keyRepeat();
+  lastEvent=IE.lastEvent();
+  lastKey=IE.lastKey();
+
+  //MOVE the cursor in the sixteen box : LEFT UP DOWN RIGHT   
   if ((menu==MENU_OFF && menu_cursor==M_AD    ||
        menu==MENU_OFF && menu_cursor==M_NOTE  ||
        menu==MENU_OFF && menu_cursor==M_VCO   ||
@@ -588,8 +581,24 @@ void handle_key()
 	  dirty_graphic=1;
 	}
     }
+
   
-  
+}
+
+
+void handle_key_amp_env()
+{
+  bool * keyState;
+  int  * keyRepeat;
+  int    lastEvent;
+  int    lastKey;
+
+  keyState=IE.keyState();
+  keyRepeat=IE.keyRepeat();
+  lastEvent=IE.lastEvent();
+  lastKey=IE.lastKey();
+
+
   // M_AD
   // Move Attack Release 
   // Insert/Remove Trig
@@ -620,8 +629,23 @@ void handle_key()
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>4) 
 	  { attack=-1; 	  dirty_graphic=1; }
     }  
-  
-  // M_NOTE
+
+}
+
+void handle_key_note()
+{
+
+  bool * keyState;
+  int  * keyRepeat;
+  int    lastEvent;
+  int    lastKey;
+
+  keyState=IE.keyState();
+  keyRepeat=IE.keyRepeat();
+  lastEvent=IE.lastEvent();
+  lastKey=IE.lastKey();
+
+    // M_NOTE
   // change note
   // copy/paste
   if (menu        == MENU_OFF && 
@@ -653,7 +677,180 @@ void handle_key()
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%64==0) 
 	{ note=-12;  	  dirty_graphic=1;}
     }  
-  
+}
+
+void handle_key_vco()
+{
+  bool * keyState;
+  int  * keyRepeat;
+  int    lastEvent;
+  int    lastKey;
+
+  keyState=IE.keyState();
+  keyRepeat=IE.keyRepeat();
+  lastEvent=IE.lastEvent();
+  lastKey=IE.lastKey();
+
+  // M_VCO
+  // VCO Menu
+  // Change Value
+  if (menu        == MENU_OFF && 
+      menu_cursor == M_VCO    &&
+      keyState[BUTTON_B]
+      )
+    {
+      if (keyState[BUTTON_LEFT]) 
+	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%4==0) 
+	  { vcomix=-1; 	  dirty_graphic=1;}
+      
+      if (keyState[BUTTON_RIGHT]) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%4==0) 
+	  { vcomix=1;  	  dirty_graphic=1;}
+      
+      if (keyState[BUTTON_UP]) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%64==0) 
+	  { attack=1;   	  dirty_graphic=1;}
+      
+      if (keyState[BUTTON_DOWN])
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%64==0) 
+	  { attack=-1;  	  dirty_graphic=1;}
+    }
+}
+
+void handle_key_osc()
+{
+  bool * keyState;
+  int  * keyRepeat;
+  int    lastEvent;
+  int    lastKey;
+
+  keyState=IE.keyState();
+  keyRepeat=IE.keyRepeat();
+  lastEvent=IE.lastEvent();
+  lastKey=IE.lastKey();
+
+  // M_OSC
+  // change oscilltor one and two type
+  if (menu        == MENU_OFF && 
+      menu_cursor == M_OSC )
+    {
+      if (keyState[BUTTON_LEFT] && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%128==0) 
+	  { osconetype=-1; 	  dirty_graphic=1;}
+      
+      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%128==0) 
+	  { osconetype=1;  	  dirty_graphic=1;}
+      
+      if (keyState[BUTTON_UP] && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%128==0) 
+	  { osctwotype=1;   	  dirty_graphic=1;}
+      
+      if (keyState[BUTTON_DOWN] && keyState[BUTTON_B])
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%128==0) 
+	  { osctwotype=-1;  	  dirty_graphic=1;}
+    }
+}
+
+void handle_key_fltr()
+{
+  bool * keyState;
+  int  * keyRepeat;
+  int    lastEvent;
+  int    lastKey;
+
+  keyState=IE.keyState();
+  keyRepeat=IE.keyRepeat();
+  lastEvent=IE.lastEvent();
+  lastKey=IE.lastKey();
+
+
+  // M_FLTR
+  // Move Attack Release 
+  // Insert/Remove Trig
+  if (menu          == MENU_OFF && 
+      menu_cursor   == M_FLTR)
+    {
+      if (lastKey   == BUTTON_A && 
+	  lastEvent == SDL_KEYDOWN)
+	{
+	  invert_trig=1;
+	  printf("key lalt\n");      
+	  dirty_graphic=1;
+	  IE.clearLastKeyEvent();
+	}
+      if (keyState[BUTTON_LEFT]  && keyState[BUTTON_B])
+	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>4) 
+	  { resonance=-1;   dirty_graphic=1; }
+      
+      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>4) 
+	  { resonance=1; 	  dirty_graphic=1; }
+      
+      if (keyState[BUTTON_UP]    && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>4) 
+	  { cutoff=1;  	  dirty_graphic=1; }
+      
+      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>4) 
+	  { cutoff=-1; 	  dirty_graphic=1; }
+    }  
+
+}
+
+void handle_key_bpm()
+{
+  bool * keyState;
+  int  * keyRepeat;
+  int    lastEvent;
+  int    lastKey;
+
+  keyState=IE.keyState();
+  keyRepeat=IE.keyRepeat();
+  lastEvent=IE.lastEvent();
+  lastKey=IE.lastKey();
+
+  // M_BPM
+  // change bpm speed
+  if (menu        == MENU_OFF && 
+      menu_cursor == M_BPM )
+    {
+      if (keyState[BUTTON_LEFT] && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%128==0) 
+	  { tempo=tempo-1; 	  dirty_graphic=1; printf("[B+LEFT  t=%d]\n",tempo); }
+
+      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%128==0) 
+	  { tempo=tempo+1; 	  dirty_graphic=1; printf("[B+RIGHT t=%d]\n",tempo);}
+
+      if (keyState[BUTTON_DOWN] && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%128==0) 
+	  { tempo=tempo-10; 	  dirty_graphic=1; printf("[B+DOWN  t=%d]\n",tempo); }
+
+      if (keyState[BUTTON_UP] && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%128==0) 
+	  { tempo=tempo+10; 	  dirty_graphic=1; printf("[B+UP    t=%d]\n",tempo);}
+
+
+      if (tempo < 20) tempo=20;
+      if (tempo > 260) tempo=260;
+
+      nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*tempo);
+    }  
+}
+
+void handle_key_load_save()
+{
+  bool * keyState;
+  int  * keyRepeat;
+  int    lastEvent;
+  int    lastKey;
+
+  keyState=IE.keyState();
+  keyRepeat=IE.keyRepeat();
+  lastEvent=IE.lastEvent();
+  lastKey=IE.lastKey();
+
 
   // M_LS
   // Load/Save 
@@ -717,117 +914,69 @@ void handle_key()
 	  SEQ.setCurrentTrackY(loadsave_cursor_y);
 	}
     }
-      
 
-  // M_VCO
-  // VCO Menu
-  // Change Value
-  if (menu        == MENU_OFF && 
-      menu_cursor == M_VCO    &&
-      keyState[BUTTON_B]
-      )
+}
+
+
+void handle_key()
+{
+  
+  bool * keyState;
+  int  * keyRepeat;
+  int    lastEvent;
+  int    lastKey;
+
+  IE.handleKey();
+
+  keyState=IE.keyState();
+  keyRepeat=IE.keyRepeat();
+  lastEvent=IE.lastEvent();
+  lastKey=IE.lastKey();
+
+  if (IE.shouldExit())
+    quit=1;
+    //exit(0);
+  
+  //if (start_key==2) 
+  //printf("%d %d %d\n",lastKey,lastEvent,lastKey==&& BUTTON_START && lastEvent==SDL_KEYUP);
+  //  printf("lastevent=%d\n",lastEvent);
+
+
+  handle_key_menu();
+
+  
+  if (lastKey     ==  BUTTON_START  && 
+      lastEvent   ==  SDL_KEYUP     && 
+      menu_cursor ==  M_NOTE)
     {
-      if (keyState[BUTTON_LEFT]) 
-	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%4==0) 
-	  { vcomix=-1; 	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_RIGHT]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%4==0) 
-	  { vcomix=1;  	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_UP]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%64==0) 
-	  { attack=1;   	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_DOWN])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%64==0) 
-	  { attack=-1;  	  dirty_graphic=1;}
+      if      (menu_note==0)        { menu_note=1;  }
+      else if (menu_note==1)        { menu_note=0;  }   
+      dirty_graphic=1;
+      IE.clearLastKeyEvent();
+      printf("[sub menu note : %d]\n",menu_note);
     }
   
   
-  // M_OSC
-  // change oscilltor one and two type
-  if (menu        == MENU_OFF && 
-      menu_cursor == M_OSC )
-    {
-      if (keyState[BUTTON_LEFT] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%128==0) 
-	  { osconetype=-1; 	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%128==0) 
-	  { osconetype=1;  	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_UP] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%128==0) 
-	  { osctwotype=1;   	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_DOWN] && keyState[BUTTON_B])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%128==0) 
-	  { osctwotype=-1;  	  dirty_graphic=1;}
-    }
-
-
-  // M_AD
-  // Move Attack Release 
-  // Insert/Remove Trig
-  if (menu          == MENU_OFF && 
-      menu_cursor   == M_FLTR)
-    {
-      if (lastKey   == BUTTON_A && 
-	  lastEvent == SDL_KEYDOWN)
-	{
-	  invert_trig=1;
-	  printf("key lalt\n");      
-	  dirty_graphic=1;
-	  IE.clearLastKeyEvent();
-	}
-      if (keyState[BUTTON_LEFT]  && keyState[BUTTON_B])
-	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>4) 
-	  { resonance=-1;   dirty_graphic=1; }
-      
-      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>4) 
-	  { resonance=1; 	  dirty_graphic=1; }
-      
-      if (keyState[BUTTON_UP]    && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>4) 
-	  { cutoff=1;  	  dirty_graphic=1; }
-      
-      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>4) 
-	  { cutoff=-1; 	  dirty_graphic=1; }
-    }  
-
-
-  // M_BPM
-  // change bpm speed
-  if (menu        == MENU_OFF && 
-      menu_cursor == M_BPM )
-    {
-      if (keyState[BUTTON_LEFT] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%128==0) 
-	  { tempo=tempo-1; 	  dirty_graphic=1; printf("[B+LEFT  t=%d]\n",tempo); }
-
-      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%128==0) 
-	  { tempo=tempo+1; 	  dirty_graphic=1; printf("[B+RIGHT t=%d]\n",tempo);}
-
-      if (keyState[BUTTON_DOWN] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%128==0) 
-	  { tempo=tempo-10; 	  dirty_graphic=1; printf("[B+DOWN  t=%d]\n",tempo); }
-
-      if (keyState[BUTTON_UP] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%128==0) 
-	  { tempo=tempo+10; 	  dirty_graphic=1; printf("[B+UP    t=%d]\n",tempo);}
-
-
-      if (tempo < 20) tempo=20;
-      if (tempo > 260) tempo=260;
-
-      nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*tempo);
-    }
+  handle_key_sixteenbox();
+  handle_key_amp_env();
+  handle_key_note();
+  handle_key_load_save();
+  handle_key_vco();
+  handle_key_osc(); 
+  handle_key_fltr();
+  handle_key_bpm();
+ 
   
+  
+  
+
+      
+
+  
+  
+
+
+
 
   int delay=1;
   //printf("sleeping %dms\n",delay);
