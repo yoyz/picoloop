@@ -129,53 +129,11 @@ enum {
 
 //char * tmp_str;
 
-void display_board()
+
+void display_board_amp_env()
 {
-  int i;
-  char str_up[8];
-  char str_down[24];
+  int  i;
   int  cty=SEQ.getCurrentTrackY();
-  dirty_graphic=0;
-
-  SG.clearScreen();
-  //  sprintf(str,"Track %d ",ct);
-  sprintf(str_up,"Track %d ",cty);
-  SG.guiTTFText(200,20,str_up);
-  //  sprintf(str_down,"[A/D] Note L/S",cty);
-  
-  //  printf("           AD:%d FX:%d\n",AD,FX);
-  //  exit(0);
-
-  if (menu==MENU_ON_PAGE1 && menu_cursor==M_AD)    sprintf(str_down,"[A/R] Note  L/S   VCO ",cty);  
-  if (menu==MENU_ON_PAGE1 && menu_cursor==M_NOTE)  sprintf(str_down," A/R [Note] L/S   VCO ",cty);
-  if (menu==MENU_ON_PAGE1 && menu_cursor==M_LS)    sprintf(str_down," A/R  Note [L/S]  VCO ",cty);
-  if (menu==MENU_ON_PAGE1 && menu_cursor==M_VCO)   sprintf(str_down," A/R  Note  L/S  [VCO]",cty);
-
-  if (menu==MENU_ON_PAGE2 && menu_cursor==M_OSC)   sprintf(str_down,"[OSC] LFO   FLTR  BPM ",cty);  
-  if (menu==MENU_ON_PAGE2 && menu_cursor==M_LFO)   sprintf(str_down," OSC [LFO]  FLTR  BPM ",cty);
-  if (menu==MENU_ON_PAGE2 && menu_cursor==M_FLTR)  sprintf(str_down," OSC  LFO  [FLTR] BPM ",cty);
-  if (menu==MENU_ON_PAGE2 && menu_cursor==M_BPM)   sprintf(str_down," OSC  LFO   FLTR [BPM]",cty);
-
-  if (menu==0)                         sprintf(str_down,"                     ",cty);
-
-  if (menu_cursor==M_AD)               sprintf(str_up,"A/R ");
-  if (menu_cursor==M_NOTE)             sprintf(str_up,"Note");
-  if (menu_cursor==M_LS)               sprintf(str_up,"L/S ");
-  if (menu_cursor==M_VCO)              sprintf(str_up,"VCO ");
-
-  if (menu_cursor==M_OSC)              sprintf(str_up,"OSC ");
-  if (menu_cursor==M_LFO)              sprintf(str_up,"LFO");
-  if (menu_cursor==M_FLTR)             sprintf(str_up,"FLTR ");
-  if (menu_cursor==M_BPM)              sprintf(str_up,"BPM %d",tempo);
-
-
-  SG.guiTTFText(200,40,str_up);
-  SG.guiTTFText(10,200,str_down);
-
-  // Draw all box default color   
-  for (i=0;i<16;i++)
-    { SG.drawBoxNumber(i,BOX_COLOR); }
-     
 
   // Attack/Release
   if (menu_cursor==M_AD)
@@ -201,8 +159,13 @@ void display_board()
 	    }
 	}
     }
+}
 
 
+void display_board_note()
+{
+  int  i;
+  int  cty=SEQ.getCurrentTrackY();
 
   // Note
   if (menu_cursor==M_NOTE)
@@ -273,6 +236,11 @@ void display_board()
 	}
     }
 
+}
+
+
+void display_board_load_save()
+{
   if (menu==MENU_OFF && 
       menu_cursor==M_LS)
     {
@@ -281,7 +249,7 @@ void display_board()
       const char * txt="0";
       const char * tmp_txt;
       tmp_txt="0";
-
+      
       SG.clearScreen();
       for (x=0;x<16;x++)
 	for (y=0;y<4;y++)
@@ -298,7 +266,12 @@ void display_board()
 	for (y=0;y<4;y++)
 	  SG.drawTTFTextLoadSaveBoxNumer(x,y,tmp_txt);
     }
+}
 
+void display_board_vco()
+{
+  int  i;
+  int  cty=SEQ.getCurrentTrackY();
 
   // VCO
   if (menu_cursor==M_VCO)
@@ -339,8 +312,14 @@ void display_board()
 	  */
 	}
     }
+}
 
-  if (menu_cursor==M_OSC)
+void display_board_osc()
+{
+  int  i;
+  int  cty=SEQ.getCurrentTrackY();
+
+    if (menu_cursor==M_OSC)
     {
       for (i=0;i<16;i++)
 	{
@@ -360,6 +339,12 @@ void display_board()
 
 	}
     }
+}
+
+void display_board_fltr()
+{
+  int  i;
+  int  cty=SEQ.getCurrentTrackY();
 
   if (menu_cursor==M_FLTR)
     {
@@ -384,10 +369,63 @@ void display_board()
 	    }
 	}
     }
+}
 
 
+void display_board()
+{
+  int  i;
+  char str_up[8];
+  char str_down[24];
+  int  cty=SEQ.getCurrentTrackY();
+  dirty_graphic=0;
+
+  SG.clearScreen();
+  //  sprintf(str,"Track %d ",ct);
+  sprintf(str_up,"Track %d ",cty);
+  SG.guiTTFText(200,20,str_up);
+  //  sprintf(str_down,"[A/D] Note L/S",cty);
+  
+  //  printf("           AD:%d FX:%d\n",AD,FX);
+  //  exit(0);
+
+  if (menu==MENU_ON_PAGE1 && menu_cursor==M_AD)    sprintf(str_down,"[A/R] Note  L/S   VCO ",cty);  
+  if (menu==MENU_ON_PAGE1 && menu_cursor==M_NOTE)  sprintf(str_down," A/R [Note] L/S   VCO ",cty);
+  if (menu==MENU_ON_PAGE1 && menu_cursor==M_LS)    sprintf(str_down," A/R  Note [L/S]  VCO ",cty);
+  if (menu==MENU_ON_PAGE1 && menu_cursor==M_VCO)   sprintf(str_down," A/R  Note  L/S  [VCO]",cty);
+
+  if (menu==MENU_ON_PAGE2 && menu_cursor==M_OSC)   sprintf(str_down,"[OSC] LFO   FLTR  BPM ",cty);  
+  if (menu==MENU_ON_PAGE2 && menu_cursor==M_LFO)   sprintf(str_down," OSC [LFO]  FLTR  BPM ",cty);
+  if (menu==MENU_ON_PAGE2 && menu_cursor==M_FLTR)  sprintf(str_down," OSC  LFO  [FLTR] BPM ",cty);
+  if (menu==MENU_ON_PAGE2 && menu_cursor==M_BPM)   sprintf(str_down," OSC  LFO   FLTR [BPM]",cty);
+
+  if (menu==0)                         sprintf(str_down,"                     ",cty);
+
+  if (menu_cursor==M_AD)               sprintf(str_up,"A/R ");
+  if (menu_cursor==M_NOTE)             sprintf(str_up,"Note");
+  if (menu_cursor==M_LS)               sprintf(str_up,"L/S ");
+  if (menu_cursor==M_VCO)              sprintf(str_up,"VCO ");
+
+  if (menu_cursor==M_OSC)              sprintf(str_up,"OSC ");
+  if (menu_cursor==M_LFO)              sprintf(str_up,"LFO");
+  if (menu_cursor==M_FLTR)             sprintf(str_up,"FLTR ");
+  if (menu_cursor==M_BPM)              sprintf(str_up,"BPM %d",tempo);
 
 
+  SG.guiTTFText(200,40,str_up);
+  SG.guiTTFText(10,200,str_down);
+
+  // Draw all box default color   
+  for (i=0;i<16;i++)
+    { SG.drawBoxNumber(i,BOX_COLOR); }
+     
+
+  display_board_amp_env();
+  display_board_note();
+  display_board_load_save();
+  display_board_vco();
+  display_board_osc();
+  display_board_fltr();
 
   SG.refresh();
 }
@@ -956,9 +994,6 @@ void handle_key()
 
 
   handle_key_menu();
-
-  
-  
   
   handle_key_sixteenbox();
   handle_key_amp_env();
