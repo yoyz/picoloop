@@ -116,7 +116,7 @@ void VCO::setSynthFreq(int sfreq)
   s2->setSynthFreq(sfreq);
   */
   s1->setFreq(sfreq*1);
-  s2->setFreq(sfreq*1);
+  s2->setFreq(sfreq*2);
   //  s2->setFreq(sfreq*3);
 }
 
