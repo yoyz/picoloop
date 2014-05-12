@@ -107,7 +107,7 @@ void handle_key()
   if (IE.shouldExit())
     quit=1;
 
-  
+  /*
   if(lastKey == SDLK_UP && lastEvent ==  SDL_KEYUP)
     {
     if (divide<=32) divide=32;
@@ -115,42 +115,78 @@ void handle_key()
     redraw=true;
     printf("key up octave:%d\n",octave);
     }
+  */
 
-  if(lastKey== SDLK_DOWN && lastEvent ==  SDL_KEYUP)
+
+  // OCTAVE
+  if (keyRepeat[SDLK_w]%64    && 
+      keyRepeat[SDLK_DOWN]%64 && 
+      lastEvent ==  SDL_KEYDOWN)
     {
-      if (divide>=4096) divide=4096;
       octave=octave-12;
+      if (octave <=1) octave=1;
       redraw=true;
-      printf("key down octave:%d\n",octave);
+      printf("[w]+[down] => octave:%d\n",octave);
     }
-  /*
-  if(lastKey==SDLK_LEFT)
+
+
+  if (keyState[SDLK_w]%64    && 
+      keyState[SDLK_UP]%64   && 
+      lastEvent ==  SDL_KEYDOWN)
     {
-      offset=offset--;
-      if (!keyState[SDLK_LCTRL]) 
-	offset=offset-(10*zoom);
-      else
-	offset=offset-SCREEN_WIDTH;
-
-      if (offset <=0) offset=0;
+      octave=octave+12;
+      if (octave >=73) octave=73;
       redraw=true;
-      printf("key left\n");            
+      printf("[w]+[up] => octave:%d\n",octave);
     }
-  */
 
-  /*
-  if (lastKey==SDLK_RIGHT)
+
+  // AMP ENV ATTACK
+  if (keyRepeat[SDLK_x]%64    && 
+      keyRepeat[SDLK_DOWN]%64 && 
+      lastEvent ==  SDL_KEYDOWN)
     {
-      offset=offset++;
-      if (!keyState[SDLK_LCTRL]) 
-	offset=offset+(10*zoom);
-      else
-	offset=offset+SCREEN_WIDTH;
-
+      attack=attack-1;
+      if (attack <=1) attack=1;
       redraw=true;
-      printf("key right\n");      
+      printf("[x]+[down] => attack:%d\n",attack);
     }
-  */
+
+
+  if (keyState[SDLK_x]%64    && 
+      keyState[SDLK_UP]%64   && 
+      lastEvent ==  SDL_KEYDOWN)
+    {
+      attack=attack+1;
+      if (attack >=127) attack=127;
+      redraw=true;
+      printf("[x]+[up] => attack:%d\n",attack);
+    }
+
+  // AMP ENV RELEASE
+  if (keyRepeat[SDLK_x]%64    && 
+      keyRepeat[SDLK_RIGHT]%64 && 
+      lastEvent ==  SDL_KEYDOWN)
+    {
+      release=release+1;
+      if (release >=127) release=127;
+      redraw=true;
+      printf("[x]+[right] => release:%d\n",release);
+    }
+
+
+  if (keyState[SDLK_x]%64    && 
+      keyState[SDLK_LEFT]%64   && 
+      lastEvent ==  SDL_KEYDOWN)
+    {
+      release=release-1;
+      if (release <=1) release=1;
+      redraw=true;
+      printf("[x]+[left] => release:%d\n",release);
+    }
+
+
+
 
   if(lastKey==SDLK_PAGEUP)
     {
@@ -168,11 +204,11 @@ void handle_key()
       printf("key pgdown %f\n",zoom);
     }
 
-  if (lastKey==SDLK_w) { attack--; printf("attack %d\n",attack); }
-  if (lastKey==SDLK_x) { attack++; printf("attack %d\n",attack); }
+  //  if (lastKey==SDLK_w) { attack--; printf("attack %d\n",attack); }
+  //  if (lastKey==SDLK_x) { attack++; printf("attack %d\n",attack); }
 
-  if (lastKey==SDLK_c) { release--; printf("release %d\n",release); }
-  if (lastKey==SDLK_v) { release++; printf("release %d\n",release); }
+  //  if (lastKey==SDLK_c) { release--; printf("release %d\n",release); }
+  //  if (lastKey==SDLK_v) { release++; printf("release %d\n",release); }
 
   if (lastKey==SDLK_b) { vcomix--; printf("vco %d\n",vcomix); if (vcomix<=0  ) vcomix=0;   }
   if (lastKey==SDLK_n) { vcomix++; printf("vco %d\n",vcomix); if (vcomix>=127) vcomix=127; }
