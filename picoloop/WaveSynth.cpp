@@ -34,6 +34,9 @@ int attack=0;
 int release=63;
 int vcomix=63;
 
+int cutoff=120;
+int resonance=1;
+
 char * filename;
 
 int len=0;
@@ -187,6 +190,77 @@ void handle_key()
 
 
 
+  // FILTER Cutoff/Resonance
+
+  if (keyRepeat[SDLK_c]%64    && 
+      keyRepeat[SDLK_DOWN]%64 && 
+      lastEvent ==  SDL_KEYDOWN)
+    {
+      cutoff=cutoff-12;
+      if (cutoff <=1) cutoff=1;
+      redraw=true;
+      printf("[c]+[down] => cutoff:%d\n",cutoff);
+    }
+
+
+  if (keyState[SDLK_c]%64    && 
+      keyState[SDLK_UP]%64   && 
+      lastEvent ==  SDL_KEYDOWN)
+    {
+      cutoff=cutoff+1;
+      if (cutoff >=126) cutoff=126;
+      redraw=true;
+      printf("[c]+[up] => cutoff:%d\n",cutoff);
+    }
+
+
+  if (keyRepeat[SDLK_c]%64    && 
+      keyRepeat[SDLK_RIGHT]%64 && 
+      lastEvent ==  SDL_KEYDOWN)
+    {
+      resonance=resonance+1;
+      if (resonance >=127) resonance=127;
+      redraw=true;
+      printf("[c]+[right] => resonance:%d\n",resonance);
+    }
+
+
+  if (keyState[SDLK_c]%64    && 
+      keyState[SDLK_LEFT]%64   && 
+      lastEvent ==  SDL_KEYDOWN)
+    {
+      resonance=resonance-1;
+      if (resonance <=1) resonance=1;
+      redraw=true;
+      printf("[c]+[left] => resonance:%d\n",resonance);
+    }
+
+
+
+
+  // VCO MIX
+  if (keyRepeat[SDLK_v]%64    && 
+      keyRepeat[SDLK_DOWN]%64 && 
+      lastEvent ==  SDL_KEYDOWN)
+    {
+      vcomix=vcomix-1;
+      if (vcomix <=1) vcomix=1;
+      redraw=true;
+      printf("[v]+[down] => vcomix:%d\n",vcomix);
+    }
+
+
+  if (keyState[SDLK_v]%64    && 
+      keyState[SDLK_UP]%64   && 
+      lastEvent ==  SDL_KEYDOWN)
+    {
+      vcomix=vcomix+1;
+      if (vcomix >=127) vcomix=127;
+      redraw=true;
+      printf("[v]+[up] => vcomix:%d\n",vcomix);
+    }
+
+
 
   if(lastKey==SDLK_PAGEUP)
     {
@@ -210,8 +284,8 @@ void handle_key()
   //  if (lastKey==SDLK_c) { release--; printf("release %d\n",release); }
   //  if (lastKey==SDLK_v) { release++; printf("release %d\n",release); }
 
-  if (lastKey==SDLK_b) { vcomix--; printf("vco %d\n",vcomix); if (vcomix<=0  ) vcomix=0;   }
-  if (lastKey==SDLK_n) { vcomix++; printf("vco %d\n",vcomix); if (vcomix>=127) vcomix=127; }
+  //  if (lastKey==SDLK_b) { vcomix--; printf("vco %d\n",vcomix); if (vcomix<=0  ) vcomix=0;   }
+  //  if (lastKey==SDLK_n) { vcomix++; printf("vco %d\n",vcomix); if (vcomix>=127) vcomix=127; }
 
 
   if (lastEvent ==  SDL_KEYUP)
@@ -244,6 +318,15 @@ void handle_key()
 	{
 	  float f=PE.getNoteFreq();
 	  int   i=f;
+	  float   f_c;
+	  float   f_r;
+
+	  f_c=cutoff;
+	  f_r=resonance;
+
+
+	  f_c=f_c/256;
+	  f_r=f_r/8;
 	  
 	  printf("[Freq:%d]\n",i);
 	  M[t]->getADSR().reset();;	  
@@ -255,6 +338,10 @@ void handle_key()
 	  M[t]->getVCO().setVCOMix(vcomix);		  
 	  M[t]->getADSR().setRelease(release);
 	  M[t]->getADSR().setAttack(attack);
+
+	  M[t]->getBiquad().reset();
+	  M[t]->getBiquad().setBiquad(0, f_c+0.005, (f_r+0.005), 0.0);
+
 	  //M[t]->getADSR().setRelease(P[t].getPatternElement(step).getRelease());		  
 	  //	  M[t]->getADSR().setAttack(P[t].getPatternElement(step).getAttack());		  
 	  //M[t]->getVCO().setVCOMix(P[t].getPatternElement(step).getVCOMix());	
