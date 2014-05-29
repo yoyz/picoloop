@@ -94,3 +94,20 @@ git push --tags
 And that's it. I hope you find this short tutorial helpful. If you need more detailed information about things I missed here I suggest reading git tutorials on official Git webpage.
 
 Be Sociable, Share!
+
+
+
+remove commit from repo
+=======================
+
+git rebase -i 33ecf5ec76da9ff9ca7e265c027b650473abeecd
+git log
+ll
+git branch
+git merge
+git merge master
+cat .git/config
+git push origin +master
+
+
+
