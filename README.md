@@ -15,8 +15,8 @@ LASTEST SOURCE
 COMPILATION
 ===========
 
-<tt> cd picoloop 				</tt>
-<tt> make -f Makefile.RtAudio clean 		</tt>
+<tt> cd picoloop 				</tt> <br>
+<tt> make -f Makefile.RtAudio clean 		</tt> 
 <tt> make -f Makefile.PatternPlayer clean 	</tt>
 
 <tt> make -f Makefile.RtAudio  			</tt>
