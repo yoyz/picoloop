@@ -32,11 +32,11 @@ It use RtAudio to render audio out.
     - ESC   		: enter menu and move between menu
     - ENTER 		: Start key/enter a menu
     - L-CTRL		: insert note/delete node/copy note
-    - ESC+ENTER	: quit
+    - ESC+ENTER		: quit
 
 Depending on the current menu selected : A/R, OSC, VCO, BPM, LS, etc.
 
-    - L-ALT+up	: change value up
+    - L-ALT+up		: change value up
     - L-ALT+down	: change value down
     - L-ALT+left	: change value left
     - L-ALT+right	: change value right
