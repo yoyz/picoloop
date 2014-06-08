@@ -15,12 +15,12 @@ LASTEST SOURCE
 COMPILATION
 ===========
 
-# cd picoloop
-# make -f Makefile.RtAudio clean
-# make -f Makefile.PatternPlayer clean
+<tt> cd picoloop 				</tt>
+<tt> make -f Makefile.RtAudio clean 		</tt>
+<tt> make -f Makefile.PatternPlayer clean 	</tt>
 
-# make -f Makefile.RtAudio 
-# make -f Makefile.PatternPlayer
+<tt> make -f Makefile.RtAudio  			</tt>
+<tt> make -f Makefile.PatternPlayer		</tt>
 
 LAUNCHING
 =========
