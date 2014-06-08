@@ -1303,7 +1303,9 @@ void load_pattern()
   PR.init();
   PR.setFileName(fileName);
   for (i=0;i<TRACK_MAX;i++)
-    PR.readPatternData(0,i,P[i]);
+    {
+      PR.readPatternData(0,i,P[i]);
+    }
     //PR.readPatternData(1,i+1,P[i]);
 
 }

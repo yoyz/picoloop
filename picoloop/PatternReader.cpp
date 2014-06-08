@@ -44,18 +44,26 @@ void PatternReader::init()
 bool PatternReader::PatternDataExist(int PatternNumber,int TrackNumber)
 {
   int match=0;
-  char * line;
+  //char * line;
   int PatNum,TrackNum,PatSize;
   bool retcode=true;
   bool found=false;
+  char line[1024];
+  char filename[1024];
 
   if (loadedData[PatternNumber][TrackNumber]==DATA_EXIST_ON_STORAGE)
     return true;
   if (loadedData[PatternNumber][TrackNumber]==DATA_DOES_NOT_EXIST_ON_STORAGE)
     return false;
 
-  line=(char*)malloc(1024);
-  fd=fopen(fn.c_str(),"r+");
+  //line=(char*)malloc(1024);
+  //fd=fopen(fn.c_str(),"r+");
+  sprintf(filename,"dataP%dT%d.pic",PatternNumber,TrackNumber);
+  fd=fopen(filename,"r+");
+  if (fd==0)
+    {
+      return false;
+    }
 
   while (match==0 && retcode==true)
     {
@@ -84,7 +92,7 @@ bool PatternReader::PatternDataExist(int PatternNumber,int TrackNumber)
     loadedData[PatternNumber][TrackNumber]=DATA_DOES_NOT_EXIST_ON_STORAGE;
 
 
-  free(line);
+  //free(line);
   fclose(fd);
   return found;
 }
@@ -101,16 +109,22 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
   int i;
   bool retcode=true;
   int match=0;
-  char * line;
-  line=(char*)malloc(1024);
+  //char * line;
+  //line=(char*)malloc(1024);
+  char line[1024];
+  char filename[1024];
+
+  sprintf(filename,"dataP%dT%d.pic",PatternNumber,TrackNumber);
 
 
   //check if file name can be open
-  fd=fopen(fn.c_str(),"r+");
+  //fd=fopen(fn.c_str(),"r+");
+  fd=fopen(filename,"r+");
   if (fd==0)
     {
       printf("[data file %s not found]\n",fn.c_str());
-      exit(213);
+      return false;
+      //exit(213);
     }
 
   while (match==0 && retcode==true)
@@ -389,7 +403,7 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
   if (retcode==true)
     loadedData[PatternNumber][TrackNumber]=DATA_EXIST_ON_STORAGE;
   
-  free(line);
+  //free(line);
   fclose(fd);
   return retcode;
 }
@@ -405,11 +419,16 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
   vector<string> data;
   bool           retcode=true;
   bool           found=false;
-  char         * line=NULL;
-  char         * line2=NULL;
+  //char         * line=NULL;
+  //char         * line2=NULL;
   char         * catcheof=NULL;
-  line=(char*)malloc(1024);
-  line2=(char*)malloc(1024);
+  //line=(char*)malloc(1024);
+  //line2=(char*)malloc(1024);
+  char line[1024];
+  char line2[1024];
+  char filename[1024];
+
+  sprintf(filename,"dataP%dT%d.pic",PatternNumber,TrackNumber);
 
   //  printf("SIZE:%d\n",P.getSize());
   //  exit(1);
@@ -418,30 +437,34 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
   //savedData[PatternNumber][TrackNumber]==0;
 
   
-  fd=fopen(fn.c_str(),"r+");
+  //fd=fopen(fn.c_str(),"r+");
+  fd=fopen(filename,"r+");
   if (fd==0)
     {
       printf("[data file %s not found]\n",fn.c_str());
-      exit(213);
+      retcode=true;
+      //exit(213);
     }
-
-  while (retcode==true)
+  else
     {
-      catcheof=fgets(line,512,fd);
-      sscanf(line,"Pattern %d Track %d ",
-	     &PatNum,&TrackNum);
-      if (PatNum    ==  PatternNumber &&
-	  TrackNum  ==  TrackNumber)
-	found=true;
-      else
-	{
-	  data.insert(data.end(),line);
-	}
-      if ( catcheof==NULL)
-	retcode=false;
-    }
-  fclose(fd);
 
+      while (retcode==true)
+	{
+	  catcheof=fgets(line,512,fd);
+	  sscanf(line,"Pattern %d Track %d ",
+		 &PatNum,&TrackNum);
+	  if (PatNum    ==  PatternNumber &&
+	      TrackNum  ==  TrackNumber)
+	    found=true;
+	  else
+	    {
+	      data.insert(data.end(),line);
+	    }
+	  if ( catcheof==NULL)
+	    retcode=false;
+	}
+      fclose(fd);
+    }
   //  data.insert(data.end(),"\n");
 
   //insert 'Pattern 2 Track 2 Param PatternSize 16'
@@ -563,7 +586,8 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
   sprintf(line,"\n");
   data.insert(data.end(),line);
 
-  fd=fopen(fn.c_str(),"w");
+  //fd=fopen(fn.c_str(),"w");
+  fd=fopen(filename,"w");
   for (int i=0; i< data.size();i++)
     {
       fprintf(fd,"%s",data[i].c_str());
