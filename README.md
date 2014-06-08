@@ -29,32 +29,32 @@ It use RtAudio to render audio out.
 
 ## Debian
 
-ESC   		: enter menu and move between menu
-ENTER 		: Start key/enter a menu
-L-CTRL		: insert note/delete node/copy note
-ESC+ENTER	: quit
+    - ESC   		: enter menu and move between menu
+    - ENTER 		: Start key/enter a menu
+    - L-CTRL		: insert note/delete node/copy note
+    - ESC+ENTER	: quit
 
 Depending on the current menu selected : A/R, OSC, VCO, BPM, LS, etc.
 
-L-ALT+up	: change value up
-L-ALT+down	: change value down
-L-ALT+left	: change value left
-L-ALT+right	: change value right
+    - L-ALT+up	: change value up
+    - L-ALT+down	: change value down
+    - L-ALT+left	: change value left
+    - L-ALT+right	: change value right
 
 
 ## OpenDingux
 
-SELECT   	: enter menu and move between menu
-ENTER    	: Start key/enter a menu
-A key		: insert note/delete node/copy note
-ESC+ENTER	: quit
+    - SELECT   	: enter menu and move between menu
+    - ENTER    	: Start key/enter a menu
+    - A key		: insert note/delete node/copy note
+    - ESC+ENTER	: quit
 
 Depending on the current menu selected : A/R, OSC, VCO, BPM, LS, etc.
 
-B key+up	: change value up
-B key+down	: change value down
-B key+left	: change value left 
-B key+right	: change value right
+    - B key+up	: change value up
+    - B key+down	: change value down
+    - B key+left	: change value left 
+    - B key+right	: change value right
 
 # USAGE
 
