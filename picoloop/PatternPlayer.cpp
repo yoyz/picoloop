@@ -95,15 +95,15 @@ int dirty_graphic=1;
 
 //menu_cursor
 enum {
-  M_AD,
-  M_NOTE,
-  M_LS,
-  M_VCO,
+  M_AD,   // 0
+  M_NOTE, // 1
+  M_OSC,  // 2 
+  M_VCO,  // 3
 
-  M_OSC,
-  M_LFO,
-  M_FLTR,
-  M_BPM
+  M_LS,   // 4
+  M_LFO,  // 5
+  M_FLTR, // 6
+  M_BPM   // 7
 };
   
 //menu
@@ -389,24 +389,24 @@ void display_board()
   //  printf("           AD:%d FX:%d\n",AD,FX);
   //  exit(0);
 
-  if (menu==MENU_ON_PAGE1 && menu_cursor==M_AD)    sprintf(str_down,"[A/R] Note  L/S   VCO ",cty);  
-  if (menu==MENU_ON_PAGE1 && menu_cursor==M_NOTE)  sprintf(str_down," A/R [Note] L/S   VCO ",cty);
-  if (menu==MENU_ON_PAGE1 && menu_cursor==M_LS)    sprintf(str_down," A/R  Note [L/S]  VCO ",cty);
-  if (menu==MENU_ON_PAGE1 && menu_cursor==M_VCO)   sprintf(str_down," A/R  Note  L/S  [VCO]",cty);
+  if (menu==MENU_ON_PAGE1 && menu_cursor==M_AD)    sprintf(str_down,"[A/R] Note  OSC   VCO ",cty);  
+  if (menu==MENU_ON_PAGE1 && menu_cursor==M_NOTE)  sprintf(str_down," A/R [Note] OSC   VCO ",cty);
+  if (menu==MENU_ON_PAGE1 && menu_cursor==M_OSC)   sprintf(str_down," A/R  Note [OSC]  VCO ",cty);
+  if (menu==MENU_ON_PAGE1 && menu_cursor==M_VCO)   sprintf(str_down," A/R  Note  OSC  [VCO]",cty);
 
-  if (menu==MENU_ON_PAGE2 && menu_cursor==M_OSC)   sprintf(str_down,"[OSC] LFO   FLTR  BPM ",cty);  
-  if (menu==MENU_ON_PAGE2 && menu_cursor==M_LFO)   sprintf(str_down," OSC [LFO]  FLTR  BPM ",cty);
-  if (menu==MENU_ON_PAGE2 && menu_cursor==M_FLTR)  sprintf(str_down," OSC  LFO  [FLTR] BPM ",cty);
-  if (menu==MENU_ON_PAGE2 && menu_cursor==M_BPM)   sprintf(str_down," OSC  LFO   FLTR [BPM]",cty);
+  if (menu==MENU_ON_PAGE2 && menu_cursor==M_LS)    sprintf(str_down,"[L/S] LFO   FLTR  BPM ",cty);  
+  if (menu==MENU_ON_PAGE2 && menu_cursor==M_LFO)   sprintf(str_down," L/S [LFO]  FLTR  BPM ",cty);
+  if (menu==MENU_ON_PAGE2 && menu_cursor==M_FLTR)  sprintf(str_down," L/S  LFO  [FLTR] BPM ",cty);
+  if (menu==MENU_ON_PAGE2 && menu_cursor==M_BPM)   sprintf(str_down," L/S  LFO   FLTR [BPM]",cty);
 
   if (menu==0)                         sprintf(str_down,"                     ",cty);
 
   if (menu_cursor==M_AD)               sprintf(str_up,"A/R ");
   if (menu_cursor==M_NOTE)             sprintf(str_up,"Note");
-  if (menu_cursor==M_LS)               sprintf(str_up,"L/S ");
+  if (menu_cursor==M_OSC)              sprintf(str_up,"OSC ");
   if (menu_cursor==M_VCO)              sprintf(str_up,"VCO ");
 
-  if (menu_cursor==M_OSC)              sprintf(str_up,"OSC ");
+  if (menu_cursor==M_LS)               sprintf(str_up,"L/S ");
   if (menu_cursor==M_LFO)              sprintf(str_up,"LFO");
   if (menu_cursor==M_FLTR)             sprintf(str_up,"FLTR ");
   if (menu_cursor==M_BPM)              sprintf(str_up,"BPM %d",tempo);
@@ -492,8 +492,11 @@ void handle_key_menu()
 	  if (keyRepeat[BUTTON_LEFT]    == 1 || 
 	      keyRepeat[BUTTON_LEFT]%64 == 0)
 	    menu_cursor--;
-	  if (menu_cursor<M_AD  && menu==MENU_ON_PAGE1) menu_cursor=M_VCO;
-	  if (menu_cursor<M_OSC && menu==MENU_ON_PAGE2) menu_cursor=M_BPM;
+	  //	  if (menu_cursor<M_AD  && menu==MENU_ON_PAGE1) menu_cursor=M_VCO;
+	  //	  if (menu_cursor<M_OSC && menu==MENU_ON_PAGE2) menu_cursor=M_BPM;
+	  if (menu_cursor<0     && menu==MENU_ON_PAGE1) menu_cursor=3;
+	  if (menu_cursor<4     && menu==MENU_ON_PAGE2) menu_cursor=7;
+
 	  dirty_graphic=1;
 	  printf("\t\t[menu_cursor:%d]\n",menu_cursor);
 	  printf("key left\n");            
@@ -504,8 +507,11 @@ void handle_key_menu()
 	  if (keyRepeat[BUTTON_RIGHT]    == 1 || 
 	      keyRepeat[BUTTON_RIGHT]%64 == 0)
 	    menu_cursor++;
-	  if (menu_cursor>M_VCO  && menu==MENU_ON_PAGE1) menu_cursor=M_AD;
-	  if (menu_cursor>M_BPM  && menu==MENU_ON_PAGE2) menu_cursor=M_OSC;
+	  //if (menu_cursor>M_VCO  && menu==MENU_ON_PAGE1) menu_cursor=M_AD;
+	  //if (menu_cursor>M_BPM  && menu==MENU_ON_PAGE2) menu_cursor=M_OSC;
+	  if (menu_cursor>3      && menu==MENU_ON_PAGE1) menu_cursor=0;
+	  if (menu_cursor>7      && menu==MENU_ON_PAGE2) menu_cursor=4;
+
 	  dirty_graphic=1;
 	  printf("\t\t[menu_cursor:%d]\n",menu_cursor);
 	  printf("key right\n");            
