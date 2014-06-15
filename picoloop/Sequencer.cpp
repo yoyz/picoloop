@@ -1,6 +1,9 @@
-#include "Sequencer.h"
+using namespace std;
 
-Sequencer::Sequencer()
+#include "Sequencer.h"
+#include "PatternSequencer.h"
+
+Sequencer::Sequencer() : psvector(4,PatternSequencer())
 {
   tempo=120;
   current_track_x=0;
@@ -45,4 +48,8 @@ int Sequencer::setCurrentTrackY(int y)
   return y;
 }
 
+PatternSequencer & Sequencer::getPatternSequencer(int ps)
+{
+  return psvector[ps];
+}
 

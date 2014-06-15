@@ -82,7 +82,7 @@ int loadsave_cursor_x=0; // index in the load/save menu
 int loadsave_cursor_y=0; // index in the load/save menu
 
 int start_key=0;        // start key pressed ?
-int step=0;             // current step in the sequencer
+//int step=0;             // current step in the sequencer
 int menu=0;             // menu mode
 int menu_note=0;
 int menu_cursor=0;      // index int the menu
@@ -134,13 +134,15 @@ void display_board_amp_env()
 {
   int  i;
   int  cty=SEQ.getCurrentTrackY();
-
+  int  step=SEQ.getPatternSequencer(cty).getStep();
   // Attack/Release
   if (menu_cursor==M_AD)
     {
       // Cursor & step postion      
       SG.drawBoxNumber(cursor,CURSOR_COLOR);
       SG.drawBoxNumber(step,STEP_COLOR);  
+      //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
+      
 
       for (i=0;i<16;i++)
 	{
@@ -152,6 +154,7 @@ void display_board_amp_env()
 		SG.drawBoxNumber(cursor,CURSOR_COLOR);
 	      if (i==step)
 		SG.drawBoxNumber(step,STEP_COLOR);  
+		//SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
 
 	      // AdsR
 	      SG.smallBoxNumber(i,P[cty].getPatternElement(i).getRelease(),0,SMALLBOX_COLOR);
@@ -166,7 +169,7 @@ void display_board_note()
 {
   int  i;
   int  cty=SEQ.getCurrentTrackY();
-
+  int  step=SEQ.getPatternSequencer(cty).getStep();
   // Note
   if (menu_cursor==M_NOTE)
     {
@@ -174,7 +177,7 @@ void display_board_note()
       if (menu_note==DISABLE)
 	{
 
-	  SG.drawBoxNumber(cursor,CURSOR_COLOR);
+	  SG.drawBoxNumber(cursor,CURSOR_COLOR);	  
 	  SG.drawBoxNumber(step,STEP_COLOR);  
     
 	  /*
@@ -192,6 +195,7 @@ void display_board_note()
       if (menu_note==ENABLE)
 	{	  
 	  SG.drawBoxNumber(step,STEP_COLOR);  
+	  //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
 	  SG.drawBoxNumber(cursor,CURSOR_COLOR);
 
 	  for (i=0;i<16;i++)
@@ -205,6 +209,7 @@ void display_board_note()
 		    SG.drawBoxNumber(cursor,CURSOR_COLOR);
 		  if (i==step)
 		    SG.drawBoxNumber(step,STEP_COLOR);  
+		    //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);
 		  SG.drawTTFTextNumberFirstLine(i,P[cty].getPatternElement(i).getNoteCharStar());
 		}
 	      //      if (P[cty].getPatternElement(i).getTrig())
@@ -224,6 +229,9 @@ void display_board_note()
 		    SG.drawBoxNumber(cursor,CURSOR_COLOR);
 		  if (i==step)
 		    SG.drawBoxNumber(step,STEP_COLOR);  
+
+		  //		  if (i==SEQ.getPatternSequencer(cty).getStep())
+		  //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
 
 		  SG.smallBoxNumber(i,
 				    (P[cty].getPatternElement(i).getNote()%12)*10,
@@ -272,13 +280,13 @@ void display_board_vco()
 {
   int  i;
   int  cty=SEQ.getCurrentTrackY();
+  int  step=SEQ.getPatternSequencer(cty).getStep();
 
   // VCO
   if (menu_cursor==M_VCO)
     {
       SG.drawBoxNumber(cursor,CURSOR_COLOR);
-      SG.drawBoxNumber(step,STEP_COLOR);  
-
+      SG.drawBoxNumber(step,STEP_COLOR);        
       for (i=0;i<16;i++)
 	{
 	  // AdsR
@@ -318,6 +326,7 @@ void display_board_osc()
 {
   int  i;
   int  cty=SEQ.getCurrentTrackY();
+  int  step=SEQ.getPatternSequencer(cty).getStep();
 
     if (menu_cursor==M_OSC)
     {
@@ -345,6 +354,7 @@ void display_board_fltr()
 {
   int  i;
   int  cty=SEQ.getCurrentTrackY();
+  int  step=SEQ.getPatternSequencer(cty).getStep();
 
   if (menu_cursor==M_FLTR)
     {
@@ -1026,7 +1036,8 @@ int seq_update()
 {
   int  cty=SEQ.getCurrentTrackY();
   int  ctx=SEQ.getCurrentTrackX();
-  int  t;
+  int  step=SEQ.getPatternSequencer(cty).getStep();
+    int  t;
 
   // Load save only on pattern change
   if (save)
@@ -1137,8 +1148,10 @@ int seq_update()
 int seq()
 {
   AudioMixer & am=AE.getAudioMixer();
-  int  cty=SEQ.getCurrentTrackY();
-  int  ctx=SEQ.getCurrentTrackX();
+  int          cty=SEQ.getCurrentTrackY();
+  int          ctx=SEQ.getCurrentTrackX();
+  int          step=SEQ.getPatternSequencer(cty).getStep();
+  int          i=0;
 
   // Initialize 
   for (t=0;t<TRACK_MAX;t++)
@@ -1292,7 +1305,11 @@ int seq()
 	  
 	  //printf("loop\n");    
 	  last_nbcb_ch_step=nbcb;
-	  step++;  
+	  //**** step++;
+	  step++;
+	  for(i=0;i<TRACK_MAX;i++)
+	    SEQ.getPatternSequencer(i).incStep();
+  
 	  seq_update();
 	}
       if (AE.bufferIsGenerated()==0)
