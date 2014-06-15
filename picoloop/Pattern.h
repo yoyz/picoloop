@@ -13,9 +13,6 @@ using namespace std;
 class Pattern
 {
  public:
-  int size;
-  int leftVolume;
-  int rightVolume;
 
 
   Pattern();
@@ -32,9 +29,13 @@ class Pattern
   int getLeftVolume();
   int getRightVolume();
 
+ protected:
 
   vector<PatternElement> pevector;  
-
+  int size;
+  int leftVolume;
+  int rightVolume;
+  int stepDivider;
 
 
   

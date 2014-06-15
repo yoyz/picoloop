@@ -39,7 +39,7 @@ int PatternSequencer::getStep()
   if (stepDivider==4)
     return (step/4)%16;
   if (stepDivider==8)
-    return step/8;
+    return (step/8)%16;
 }
 
 

@@ -18,7 +18,6 @@ class Sequencer
   int gcty();              // shortcut to getCurrentTrackY
 
   PatternSequencer & getPatternSequencer(int ps);
-
   int setCurrentTrackX(int x);
   int setCurrentTrackY(int y);
 

@@ -390,7 +390,7 @@ void display_board()
   char str_down[24];
   char str_divider[8];
   int  cty=SEQ.getCurrentTrackY();
-  int  divider=SEQ.getPatternSequencer(cty).getStepDivider();
+  int  stepdiv=SEQ.getPatternSequencer(cty).getStepDivider();
   dirty_graphic=0;
 
   SG.clearScreen();
@@ -398,7 +398,7 @@ void display_board()
   sprintf(str_up,"Track %d ",cty);
   SG.guiTTFText(200,20,str_up);
 
-  sprintf(str_divider,"/%d",divider);
+  sprintf(str_divider,"/%d",stepdiv);
   SG.guiTTFText(200,60,str_divider);
   //  sprintf(str_down,"[A/D] Note L/S",cty);
   
@@ -1106,18 +1106,29 @@ int seq_update()
     }
 
     
-  if (step==16) 
-    step=0; 
+  //if (step==16) 
+  //    step=0; 
 
   if (debug)
     printf("STEP:%d\n",step);	  
   
-  
+}
+
+
+
+
+void seq_update_track(int t)
+{
+  int  cty=SEQ.getCurrentTrackY();
+  int  ctx=SEQ.getCurrentTrackX();
+  //int  step=SEQ.getPatternSequencer(cty).getStep();
+  int  step=SEQ.getPatternSequencer(t).getStep();
+
   // Handle only modification of on next step value 
   // for each Machine 
   // of each track 
-  for (t=0;t<TRACK_MAX;t++)
-    {
+  //for (t=0;t<TRACK_MAX;t++)
+  //{
       if (P[t].getPatternElement(step).getTrig()==true)
 	{
 	  float   f=P[t].getPatternElement(step).getNoteFreq();
@@ -1163,7 +1174,7 @@ int seq_update()
 	  //printf("m.setSynthFreq(0);\n");
 	  //m0.setSynthFreq(0);
 	}
-    }		  
+      //}		  
 }
 
 
@@ -1173,6 +1184,7 @@ int seq()
   int          cty=SEQ.getCurrentTrackY();
   int          ctx=SEQ.getCurrentTrackX();
   int          step=SEQ.getPatternSequencer(cty).getStep();
+  int          oldstep=0;
   int          i=0;
 
   // Initialize 
@@ -1340,11 +1352,24 @@ int seq()
 	  //printf("loop\n");    
 	  last_nbcb_ch_step=nbcb;
 	  //**** step++;
-	  step++;
-	  for(i=0;i<TRACK_MAX;i++)
-	    SEQ.getPatternSequencer(i).incStep();
-  
+	  //step++;
+
 	  seq_update();
+
+	  for(i=0;i<TRACK_MAX;i++)
+	    {
+	      oldstep=0;
+
+	      oldstep=SEQ.getPatternSequencer(i).getStep();
+	      SEQ.getPatternSequencer(i).incStep();
+	      if (oldstep!=SEQ.getPatternSequencer(i).getStep())
+		seq_update_track(i);	  	  
+	    }
+
+	  //for(i=0;i<TRACK_MAX;i++)
+	  //	    {
+	  //	      seq_update_track(i);	  	  
+	      //}
 	}
       if (AE.bufferIsGenerated()==0)
 	AE.processBuffer();

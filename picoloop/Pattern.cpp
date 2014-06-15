@@ -7,6 +7,7 @@ using namespace std;
 Pattern::Pattern() : pevector(16,PatternElement())
 {
   size=16;
+  stepDivider=1;
 }
 
 Pattern::~Pattern()
