@@ -3,8 +3,10 @@ using namespace std;
 #include <string>
 #include <stdio.h>
 #include "PatternElement.h"
+
 #ifndef __PATTERN__
 #define __PATTERN__
+
 #include <iostream>
 #include <vector>
 

@@ -83,6 +83,7 @@ int loadsave_cursor_y=0; // index in the load/save menu
 
 int start_key=0;        // start key pressed ?
 //int step=0;             // current step in the sequencer
+int divider=0;           // divider - => /1 /2 /4 /8  ; divider + => /8 /4 /2 /1
 int menu=0;             // menu mode
 int menu_note=0;
 int menu_cursor=0;      // index int the menu
@@ -238,12 +239,12 @@ void display_board_note()
 				    (P[cty].getPatternElement(i).getNote()/12)*10,
 				    SMALLBOX_COLOR);
 
-
+		  
 		}
 	    }
 	}
     }
-
+  
 }
 
 
@@ -387,13 +388,18 @@ void display_board()
   int  i;
   char str_up[8];
   char str_down[24];
+  char str_divider[8];
   int  cty=SEQ.getCurrentTrackY();
+  int  divider=SEQ.getPatternSequencer(cty).getStepDivider();
   dirty_graphic=0;
 
   SG.clearScreen();
   //  sprintf(str,"Track %d ",ct);
   sprintf(str_up,"Track %d ",cty);
   SG.guiTTFText(200,20,str_up);
+
+  sprintf(str_divider,"/%d",divider);
+  SG.guiTTFText(200,60,str_divider);
   //  sprintf(str_down,"[A/D] Note L/S",cty);
   
   //  printf("           AD:%d FX:%d\n",AD,FX);
@@ -908,6 +914,20 @@ void handle_key_bpm()
 
       nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*tempo);
     }  
+
+  if (menu        == MENU_OFF && 
+      menu_cursor == M_BPM )
+    {
+
+      if (keyState[BUTTON_DOWN] && keyState[BUTTON_A]) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%128==0) 
+	  { divider=-1; 	  dirty_graphic=1; printf("[A+DOWN  t=%d] divider\n",divider); }
+
+      if (keyState[BUTTON_UP] && keyState[BUTTON_A]) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%128==0) 
+	  { divider=1; 	  dirty_graphic=1; printf("[A+UP    t=%d] divider\n",divider);}
+    }  
+
 }
 
 void handle_key_load_save()
@@ -1037,7 +1057,9 @@ int seq_update()
   int  cty=SEQ.getCurrentTrackY();
   int  ctx=SEQ.getCurrentTrackX();
   int  step=SEQ.getPatternSequencer(cty).getStep();
-    int  t;
+  int  t;
+
+  //SEQ.getPatternSequencer(0).setStepDivider(4);
 
   // Load save only on pattern change
   if (save)
@@ -1262,6 +1284,18 @@ int seq()
 	  if (debug) printf("[resonance:%d]\n",P[cty].getPatternElement(cursor).getResonance());	  
 	}
 
+      if (divider>0)
+	{	  	  
+	  SEQ.getPatternSequencer(cty).setStepDivider(SEQ.getPatternSequencer(cty).getStepDivider()*2);
+	  divider=0;
+	}
+
+      if (divider<0)
+	{	  
+	  SEQ.getPatternSequencer(cty).setStepDivider(SEQ.getPatternSequencer(cty).getStepDivider()/2);
+	  //SEQ.getPatternSequencer(cty).setStepDivider(1);
+	  divider=0;
+	}
         
       if (osconetype!=0)
 	{

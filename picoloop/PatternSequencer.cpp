@@ -54,7 +54,20 @@ void PatternSequencer::incStep()
 
 void PatternSequencer::setStepDivider(int sd)
 {
-  stepDivider=sd;
+  if (sd==1)
+    stepDivider=sd;
+  else 
+    if (sd==2)
+      stepDivider=sd;
+    else 
+      if (sd==4)
+	stepDivider=sd;
+      else 
+	if (sd==8)
+	  stepDivider=sd;
+  
+  if (sd!=stepDivider)
+    stepDivider=1;
 }
 
 int PatternSequencer::getStepDivider()
