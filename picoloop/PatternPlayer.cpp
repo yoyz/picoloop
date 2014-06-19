@@ -85,7 +85,7 @@ int start_key=0;        // start key pressed ?
 //int step=0;             // current step in the sequencer
 int divider=0;           // divider - => /1 /2 /4 /8  ; divider + => /8 /4 /2 /1
 int menu=0;             // menu mode
-int menu_note=0;
+int menu_note=ENABLE;
 int menu_cursor=0;      // index int the menu
 //int ct=0;               // current_track
 int ct_x=0;             
@@ -1239,7 +1239,7 @@ int seq()
 		{
 		  P[cty].getPatternElement(cursor).setAttack(8);
 		  P[cty].getPatternElement(cursor).setRelease(64);
-		  P[cty].getPatternElement(cursor).setNote(32);
+		  P[cty].getPatternElement(cursor).setNote(37);
 		}
 	    }
 	  invert_trig=0;
