@@ -53,10 +53,12 @@ int saveall=false;
 int loadall=false;
 
 
-int tempo=120;
+int bpm_current=120;    // current value for the four ( MAX_TRACKS ) tracks
+int bpm=0;              // change from -10 to +10
 int nbcb=0;             // current nb audio callback 
-int last_nbcb=0;
-int nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*tempo); // Weird ?
+int last_nbcb=0;        // number of occurence of AudioEngine callback before changing step
+//int nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm); // Weird ?
+int nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
 int last_nbcb_ch_step=0;// nb audio callback from last step
 int debug=1;
 int t=0;                // index of track
@@ -390,7 +392,7 @@ void display_board()
   char str_down[24];
   char str_divider[8];
   int  cty=SEQ.getCurrentTrackY();
-  int  stepdiv=SEQ.getPatternSequencer(cty).getStepDivider();
+  int  stepdiv=SEQ.getPatternSequencer(cty).getBPMDivider();
   dirty_graphic=0;
 
   SG.clearScreen();
@@ -425,7 +427,7 @@ void display_board()
   if (menu_cursor==M_LS)               sprintf(str_up,"L/S ");
   if (menu_cursor==M_LFO)              sprintf(str_up,"LFO");
   if (menu_cursor==M_FLTR)             sprintf(str_up,"FLTR ");
-  if (menu_cursor==M_BPM)              sprintf(str_up,"BPM %d",tempo);
+  if (menu_cursor==M_BPM)              sprintf(str_up,"BPM %d",bpm_current);
 
 
   SG.guiTTFText(200,40,str_up);
@@ -894,25 +896,25 @@ void handle_key_bpm()
     {
       if (keyState[BUTTON_LEFT] && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%128==0) 
-	  { tempo=tempo-1; 	  dirty_graphic=1; printf("[B+LEFT  t=%d]\n",tempo); }
+	  { bpm=-1; 	  dirty_graphic=1; printf("[B+LEFT  t=%d]\n",bpm_current); }
 
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%128==0) 
-	  { tempo=tempo+1; 	  dirty_graphic=1; printf("[B+RIGHT t=%d]\n",tempo);}
+	  { bpm=1; 	  dirty_graphic=1; printf("[B+RIGHT t=%d]\n",bpm_current);}
 
       if (keyState[BUTTON_DOWN] && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%128==0) 
-	  { tempo=tempo-10; 	  dirty_graphic=1; printf("[B+DOWN  t=%d]\n",tempo); }
+	  { bpm=-10; 	  dirty_graphic=1; printf("[B+DOWN  t=%d]\n",bpm_current); }
 
       if (keyState[BUTTON_UP] && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%128==0) 
-	  { tempo=tempo+10; 	  dirty_graphic=1; printf("[B+UP    t=%d]\n",tempo);}
+	  { bpm=10; 	  dirty_graphic=1; printf("[B+UP    t=%d]\n",bpm_current);}
 
 
-      if (tempo < 20) tempo=20;
-      if (tempo > 260) tempo=260;
+      //if (bpm < 20) bpm=20;
+      //if (bpm > 260) bpm=260;
 
-      nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*tempo);
+      //nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm);
     }  
 
   if (menu        == MENU_OFF && 
@@ -1076,11 +1078,37 @@ int seq_update()
     {
       printf("<==[LOAD]==>\n");
       if (PR.PatternDataExist(loadsave_cursor_x,loadsave_cursor_y)==true)
-	PR.readPatternData(loadsave_cursor_x,loadsave_cursor_y,P[cty]);
+	{
+	  PR.readPatternData(loadsave_cursor_x,loadsave_cursor_y,P[cty]);
+	  bpm_current=P[cty].getBPM();
+	  nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
+
+	  SEQ.getPatternSequencer(cty).setBPMDivider(P[cty].getBPMDivider());
+	}
       else
 	P[cty].init();
       load=false;
     }
+
+
+  // Load save only on pattern change
+  if (loadall)
+    {
+      printf("<==[LOAD_ALL]==>\n");
+      for (t=0;t<TRACK_MAX;t++)
+	if (PR.PatternDataExist(loadsave_cursor_x,t)==true)
+	  {
+	    PR.readPatternData(loadsave_cursor_x,t,P[t]);
+	    bpm_current=P[t].getBPM();
+	    nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
+
+	    SEQ.getPatternSequencer(cty).setBPMDivider(P[cty].getBPMDivider());
+	  }
+	else
+	  P[t].init();
+      loadall=false;
+    }
+
 
   // Load save only on pattern change
   if (saveall)
@@ -1093,17 +1121,6 @@ int seq_update()
       saveall=false;      
     }
 
-  // Load save only on pattern change
-  if (loadall)
-    {
-      printf("<==[LOAD_ALL]==>\n");
-      for (t=0;t<TRACK_MAX;t++)
-	if (PR.PatternDataExist(loadsave_cursor_x,t)==true)
-	  PR.readPatternData(loadsave_cursor_x,t,P[t]);
-	else
-	  P[t].init();
-      loadall=false;
-    }
 
     
   //if (step==16) 
@@ -1298,15 +1315,18 @@ int seq()
 
       if (divider>0)
 	{	  	  
-	  SEQ.getPatternSequencer(cty).setStepDivider(SEQ.getPatternSequencer(cty).getStepDivider()*2);
+	  SEQ.getPatternSequencer(cty).setBPMDivider(SEQ.getPatternSequencer(cty).getBPMDivider()*2);
 	  divider=0;
+	  P[cty].setBPMDivider(SEQ.getPatternSequencer(cty).getBPMDivider());
 	}
 
       if (divider<0)
 	{	  
-	  SEQ.getPatternSequencer(cty).setStepDivider(SEQ.getPatternSequencer(cty).getStepDivider()/2);
+	  SEQ.getPatternSequencer(cty).setBPMDivider(SEQ.getPatternSequencer(cty).getBPMDivider()/2);
 	  //SEQ.getPatternSequencer(cty).setStepDivider(1);
 	  divider=0;
+
+	  P[cty].setBPMDivider(SEQ.getPatternSequencer(cty).getBPMDivider());
 	}
         
       if (osconetype!=0)
@@ -1332,6 +1352,20 @@ int seq()
 	{ 
 	  P[cty].getPatternElement(cursor).setNote(P[cty].getPatternElement(cursor).getNote()+note);
 	  note=0;
+	}
+
+      if (bpm!=0)
+	{
+	  //save the bpm in the 
+	  //change the number of time AudioEngine need to be trigged
+	  //to effectively change pattern step
+
+	  bpm_current=P[cty].getBPM();
+	  for(t=0;t<TRACK_MAX;t++)	    
+	    P[t].setBPM(bpm_current+bpm);
+
+	  bpm=0;
+	  nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
 	}
             
       // if user want to quit via handle_key
@@ -1378,16 +1412,23 @@ int seq()
 
 void load_pattern()
 {
-  int i;
+  int t;
 
   string fileName="data.pic";
   //PR.setFileName("data.pic");
   PR.init();
   PR.setFileName(fileName);
-  for (i=0;i<TRACK_MAX;i++)
+  for (t=0;t<TRACK_MAX;t++)
     {
-      PR.readPatternData(0,i,P[i]);
+      PR.readPatternData(0,t,P[t]);
+      
+      // Ugly hack for BPM management
+      bpm_current=P[t].getBPM();
+      nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
+
+      SEQ.getPatternSequencer(t).setBPMDivider(P[t].getBPMDivider());
     }
+
     //PR.readPatternData(1,i+1,P[i]);
 
 }

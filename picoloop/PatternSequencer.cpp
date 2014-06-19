@@ -3,7 +3,7 @@
 PatternSequencer::PatternSequencer()
 {
   step=0;
-  stepDivider=1;
+  BPMDivider=1;
 }
 
 PatternSequencer::~PatternSequencer()
@@ -14,31 +14,31 @@ PatternSequencer::~PatternSequencer()
 void PatternSequencer::reset()
 {
   step=0;
-  stepDivider=1;
+  BPMDivider=1;
 }
 
 void PatternSequencer::setStep(int s)
 {
-  if(stepDivider==1)
+  if(BPMDivider==1)
     step=s;
-  if(stepDivider==2)
+  if(BPMDivider==2)
     step=s*2;
-  if(stepDivider==4)
+  if(BPMDivider==4)
     step=s*4;
-  if(stepDivider==8)
+  if(BPMDivider==8)
     step=s*8;
 }
 
 
 int PatternSequencer::getStep()
 {
-  if (stepDivider==1)
+  if (BPMDivider==1)
     return step%16;
-  if (stepDivider==2)
+  if (BPMDivider==2)
     return (step/2)%16;
-  if (stepDivider==4)
+  if (BPMDivider==4)
     return (step/4)%16;
-  if (stepDivider==8)
+  if (BPMDivider==8)
     return (step/8)%16;
 }
 
@@ -52,26 +52,26 @@ void PatternSequencer::incStep()
 }
 
 
-void PatternSequencer::setStepDivider(int sd)
+void PatternSequencer::setBPMDivider(int bd)
 {
-  if (sd==1)
-    stepDivider=sd;
+  if (bd==1)
+    BPMDivider=bd;
   else 
-    if (sd==2)
-      stepDivider=sd;
+    if (bd==2)
+      BPMDivider=bd;
     else 
-      if (sd==4)
-	stepDivider=sd;
+      if (bd==4)
+	BPMDivider=bd;
       else 
-	if (sd==8)
-	  stepDivider=sd;
+	if (bd==8)
+	  BPMDivider=bd;
   
-  if (sd!=stepDivider)
-    stepDivider=1;
+  if (bd!=BPMDivider)
+    BPMDivider=1;
 }
 
-int PatternSequencer::getStepDivider()
+int PatternSequencer::getBPMDivider()
 {
-  return stepDivider;
+  return BPMDivider;
 }
 

@@ -104,6 +104,8 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
   int PatNum;
   int TrackNum;
   int PatSize;
+  int PatBPM;
+  int PatBPMDivider;
   int n[16];
   int t[16];
   int i;
@@ -126,14 +128,14 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
       return false;
       //exit(213);
     }
-
+  
   while (match==0 && retcode==true)
     {
       char * catcheof;
       catcheof=fgets(line,512,fd);
       //printf("[%s]\n",st);
       //sleep(1);
-
+      
       //match('Pattern 1 Track 1 Param PatternSize 16')
       sscanf(line,"Pattern %d Track %d Param PatternSize %d",
 	     &PatNum,&TrackNum,&PatSize);
@@ -144,13 +146,38 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
       if ( catcheof==NULL)
 	retcode=false;
     }
+
   if (retcode==false)
     {
       P.setPatternSize(16);
       return false;
     }
-
+  
   P.setPatternSize(PatSize);
+  
+  if (fgets(line,512,fd))
+    {
+      //match('Pattern 1 Track 1 Param PatternBPM 80')
+      sscanf(line,"Pattern %d Track %d Param PatternBPM %d",
+	     &PatNum,&TrackNum,&PatBPM);
+      if (PatNum    ==PatternNumber &&
+	  TrackNum  ==TrackNumber)
+	{
+	  P.setBPM(PatBPM);
+	}
+    }
+
+  if (fgets(line,512,fd))
+    {
+      //match('Pattern 1 Track 1 Param PatternBPMDivider 4')
+      sscanf(line,"Pattern %d Track %d Param PatternBPMDivider %d",
+	     &PatNum,&TrackNum,&PatBPMDivider);
+      if (PatNum    ==PatternNumber &&
+	  TrackNum  ==TrackNumber)
+	{
+	  P.setBPMDivider(PatBPMDivider);
+	}
+    }
 
 
   
@@ -473,6 +500,20 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
 	  TrackNumber, 
 	  P.getSize());
   data.insert(data.end(),line);
+
+
+  sprintf(line,"Pattern %d Track %d Param PatternBPM %d\n",
+	  PatternNumber,
+	  TrackNumber, 
+	  P.getBPM());
+  data.insert(data.end(),line);
+
+  sprintf(line,"Pattern %d Track %d Param PatternBPMDivider %d\n",
+	  PatternNumber,
+	  TrackNumber, 
+	  P.getBPMDivider());
+  data.insert(data.end(),line);
+
 
   //line=""; //Weird ?
 

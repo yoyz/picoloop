@@ -26,8 +26,16 @@ class Pattern
 
   void setLeftVolume(int left);
   void setRightVolume(int right);
+
   int getLeftVolume();
   int getRightVolume();
+
+  int  getBPM();
+  void setBPM(int val);
+
+  int  getBPMDivider();
+  void setBPMDivider(int val);
+
 
  protected:
 
@@ -35,8 +43,8 @@ class Pattern
   int size;
   int leftVolume;
   int rightVolume;
-  int stepDivider;
-
+  int bpmDivider;
+  int bpm;
 
   
 };

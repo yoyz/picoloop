@@ -7,7 +7,8 @@ using namespace std;
 Pattern::Pattern() : pevector(16,PatternElement())
 {
   size=16;
-  stepDivider=1;
+  bpmDivider=1;
+  bpm=120;
 }
 
 Pattern::~Pattern()
@@ -80,4 +81,32 @@ void Pattern::print()
       s=PE.getStr();
       cout << i << ":" << s << "\n";
     }
+}
+
+
+int Pattern::getBPM()
+{
+  return bpm;
+}
+
+void Pattern::setBPM(int val)
+{
+  if (val>=20 && val <= 300)
+    bpm=val;   
+}
+
+int Pattern::getBPMDivider()
+{
+  return bpmDivider;
+}
+
+void Pattern::setBPMDivider(int val)
+{
+  if (val==1  ||
+      val==2  ||
+      val==4  ||
+      val==8)
+    bpmDivider=val;
+  else
+    bpmDivider=1;
 }
