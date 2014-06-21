@@ -112,6 +112,10 @@ int amp=0;              // variation of the amp of monomixer
 int attack=0;
 int release=0;
 
+int attack_allstep=0;
+int release_allstep=0;
+
+
 int cutoff=0;
 int resonance=0;
 
@@ -569,8 +573,13 @@ void handle_key_menu()
 
   //Move into on menu
   //select current active track
-  if (menu==MENU_ON_PAGE1 ||
-      menu==MENU_ON_PAGE2)
+  if (
+      (menu==MENU_ON_PAGE1  ||
+       menu==MENU_ON_PAGE2) &&
+      (!
+       (keyState[BUTTON_B]    ||
+	keyState[BUTTON_A]))
+      )      
     {
       if(keyState[BUTTON_LEFT]) 
 	{
@@ -760,6 +769,32 @@ void handle_key_amp_env()
 	  { attack=-1; 	  dirty_graphic=1; }
     }  
 
+  // M_AD
+  // Move Attack Release 
+  // Insert/Remove Trig
+  if (menu          != MENU_OFF && 
+      menu_cursor   == M_AD     &&
+      menu_env      == MENU_ENV_ATTACK_RELEASE)
+    {
+      //printf("***********************\n");
+      if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A])
+	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>4) 
+	  { release_allstep=-1;   dirty_graphic=1; }
+      
+      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>4) 
+	  { release_allstep=1; 	  dirty_graphic=1; }
+      
+      if (keyState[BUTTON_UP]    && keyState[BUTTON_A]) 
+	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>4) 
+	  { attack_allstep=1;  	  dirty_graphic=1; }
+      
+      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A]) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>4) 
+	  { attack_allstep=-1; 	  dirty_graphic=1; }
+    }  
+
+
   if (menu          == MENU_OFF && 
       menu_cursor   == M_AD     &&
       menu_env      == MENU_ENV_ATTACK_AMP)
@@ -788,6 +823,7 @@ void handle_key_amp_env()
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>4) 
 	  { attack=-1; 	  dirty_graphic=1; }
     }  
+
 
 }
 
@@ -1391,6 +1427,17 @@ int seq()
 	  if (debug)
 	    printf("[attack:%d]\n",P[cty].getPatternElement(cursor).getAttack());
 	}
+
+      // Change Attack
+      if (attack_allstep!=0)
+	{
+	  for(i=0;i<15;i++)
+	    P[cty].getPatternElement(i).setAttack(P[cty].getPatternElement(i).getAttack()+attack_allstep);
+	  attack_allstep=0;
+	  if (debug)
+	    printf("[attack_allstep:%d]\n",P[cty].getPatternElement(cursor).getAttack());
+	}
+
       
       // Change Release
       if (release!=0)
@@ -1403,6 +1450,20 @@ int seq()
 	  //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
 	  
 	}
+
+      // Change Release
+      if (release_allstep!=0)
+	{
+	  //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
+	  for(i=0;i<15;i++)
+	    P[cty].getPatternElement(i).setRelease(P[cty].getPatternElement(i).getRelease()+release_allstep);
+	  release_allstep=0;
+	  if (debug)
+	    printf("[release_allstep:%d]\n",P[cty].getPatternElement(cursor).getRelease());
+	  //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
+	  
+	}
+
       
       // Change VCOMix
       if (vcomix!=0)
