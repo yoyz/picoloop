@@ -11,7 +11,7 @@
 #define SCREEN_WIDTH	320
 #define SCREEN_HEIGHT	240
 #define SCREEN_DEPTH	16
-
+#define WAVETABLE_SIZE  16384
 #define FPU 0
 
 #define TRACK_MAX 4
