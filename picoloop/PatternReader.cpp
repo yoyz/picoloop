@@ -194,6 +194,7 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
 	  TrackNum  ==TrackNumber)
 	for (i=0;i<PatSize;i++)
 	  {
+	    Pe=P.getPatternElement(i);      
 	    Pe.setAmp(n[i]);
 	    P.setPatternElement(i,Pe);      
 	  }
@@ -215,6 +216,7 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
 	  TrackNum  ==TrackNumber)
 	for (i=0;i<PatSize;i++)
 	  {
+	    Pe=P.getPatternElement(i);      
 	    Pe.setNote(n[i]);
 	    P.setPatternElement(i,Pe);      
 	  }
