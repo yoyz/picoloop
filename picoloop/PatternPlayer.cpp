@@ -106,7 +106,10 @@ int t=0;                // index of track
 int repeat=0;
 int quit=0;             // do we need to quit ?
 int cursor=0;           // cursor position in a sequencer track
+
 int note=0;
+int note_all=0;
+
 int amp=0;              // variation of the amp of monomixer
 
 int attack=0;
@@ -876,6 +879,30 @@ void handle_key_note()
 	{ note=-12;  	  dirty_graphic=1;}
     }  
 
+    // M_NOTE
+  // change note
+  if (menu        != MENU_OFF && 
+      menu_cursor == M_NOTE)
+    {
+      
+      if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A]) 
+	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%64==0) 
+	{ note_all=-1; 	  dirty_graphic=1;}
+
+      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%64==0) 
+	  { note_all=1;  	  dirty_graphic=1;}
+
+      if (keyState[BUTTON_UP]    && keyState[BUTTON_A]) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%64==0) 
+	  { note_all=12;   	  dirty_graphic=1;}
+
+      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A])
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%64==0) 
+	{ note_all=-12;  	  dirty_graphic=1;}
+    }  
+
+
   // change note from box to value e.g C3 D4...
   if (lastKey     ==  BUTTON_START  && 
       lastEvent   ==  SDL_KEYUP     && 
@@ -1574,7 +1601,18 @@ int seq()
 	{ 
 	  P[cty].getPatternElement(cursor).setNote(P[cty].getPatternElement(cursor).getNote()+note);
 	  note=0;
+	  printf("[note:%d]\n",P[cty].getPatternElement(cursor).getNote());	  
 	}
+
+      // Change Note
+      if (note_all!=0)
+	{ 
+	  for (i=0;i<15;i++)
+	    P[cty].getPatternElement(i).setNote(P[cty].getPatternElement(i).getNote()+note_all);
+	  note_all=0;
+	  printf("[note_all:%d]\n",P[cty].getPatternElement(cursor).getNote());	  
+	}
+
 
       if (bpm!=0)
 	{
