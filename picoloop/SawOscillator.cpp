@@ -33,7 +33,7 @@ void SawOscillator::init()
   float f;
   Sint16 s;
   Sint16 bitdepth=16;
-  Sint16 dec=(1<<(bitdepth-1))/(table_size/2);
+  Sint16 dec=(1<<(bitdepth-1))/(table_size/4);
   if (table==NULL)
     {
       table=(Sint16*)malloc(sizeof(Sint16)*table_size);
