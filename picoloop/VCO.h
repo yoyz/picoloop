@@ -16,7 +16,7 @@ public:
   ~VCO();
 
   int checkSevenBitBoundarie(int val);
-  void setSynthFreq(int sfreq);
+  void setSynthFreq(float sfreq);
   void setOscillator(int oscillator_number,int oscillator_type);
   /*
   void setSineOsc();
@@ -49,7 +49,7 @@ public:
   Oscillator            * s1;
   Oscillator            * s2;
 
-  int freq;
+  float freq;
   int current;
   int vcomix;
 };

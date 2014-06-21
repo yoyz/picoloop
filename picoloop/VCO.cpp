@@ -109,14 +109,14 @@ Oscillator * VCO::getOscillatorOne()
 }
 
 
-void VCO::setSynthFreq(int sfreq)
+void VCO::setSynthFreq(float sfreq)
 {
   /*
   s1->setSynthFreq(sfreq);
   s2->setSynthFreq(sfreq);
   */
   s1->setFreq(sfreq*1);
-  s2->setFreq(sfreq*2);
+  s2->setFreq(sfreq*1);
   //  s2->setFreq(sfreq*3);
 }
 
