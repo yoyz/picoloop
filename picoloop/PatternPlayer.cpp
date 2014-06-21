@@ -119,6 +119,9 @@ int release_allstep=0;
 int cutoff=0;
 int resonance=0;
 
+int cutoff_all=0;
+int resonance_all=0;
+
 int vcomix=0;
 int osconetype=0;
 int osctwotype=0;
@@ -1020,6 +1023,34 @@ void handle_key_fltr()
 	  { cutoff=-1; 	  dirty_graphic=1; }
     }  
 
+  // M_FLTR
+  // Move Attack Release 
+  // Insert/Remove Trig
+  if (menu          != MENU_OFF && 
+      menu_cursor   == M_FLTR)
+    {
+      if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A])
+	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>128) 
+	  if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%4==1 )  
+	  { resonance_all=-1;   dirty_graphic=1; }
+      
+      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>128)
+	  if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%4==1 )  
+	  { resonance_all=1; 	  dirty_graphic=1; }
+      
+      if (keyState[BUTTON_UP]    && keyState[BUTTON_A]) 
+	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>128) 
+	  if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%4==1 ) 
+	  { cutoff_all=1;  	  dirty_graphic=1; }
+      
+      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A]) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>128 ) 
+	  if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%4==1 ) 
+	  { cutoff_all=-1; 	  dirty_graphic=1; }
+    }  
+
+
 }
 
 void handle_key_bpm()
@@ -1485,11 +1516,28 @@ int seq()
 	  if (debug) printf("[cutoff:%d]\n",P[cty].getPatternElement(cursor).getCutoff());	  
 	}
 
+      if (cutoff_all!=0)
+	{
+	  for (i=0;i<15;i++)
+	    P[cty].getPatternElement(i).setCutoff(P[cty].getPatternElement(i).getCutoff()+cutoff_all);
+	  cutoff_all=0;
+	  if (debug) printf("[cutoff_all:%d]\n",P[cty].getPatternElement(cursor).getCutoff());	  
+	}
+
+
       if (resonance!=0)
 	{
 	  P[cty].getPatternElement(cursor).setResonance(P[cty].getPatternElement(cursor).getResonance()+resonance);
 	  resonance=0;
 	  if (debug) printf("[resonance:%d]\n",P[cty].getPatternElement(cursor).getResonance());	  
+	}
+
+      if (resonance_all!=0)
+	{
+	  for (i=0;i<15;i++)
+	    P[cty].getPatternElement(i).setResonance(P[cty].getPatternElement(i).getResonance()+resonance_all);
+	  resonance_all=0;
+	  if (debug) printf("[resonance_all:%d]\n",P[cty].getPatternElement(cursor).getResonance());	  
 	}
 
       if (divider!=0)
