@@ -126,6 +126,8 @@ int cutoff_all=0;
 int resonance_all=0;
 
 int vcomix=0;
+int vcomix_all=0;
+
 int osconetype=0;
 int osctwotype=0;
 
@@ -945,26 +947,49 @@ void handle_key_vco()
   // VCO Menu
   // Change Value
   if (menu        == MENU_OFF && 
-      menu_cursor == M_VCO    &&
-      keyState[BUTTON_B]
+      menu_cursor == M_VCO    
       )
     {
-      if (keyState[BUTTON_LEFT]) 
+      if (keyState[BUTTON_LEFT] && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%4==0) 
 	  { vcomix=-1; 	  dirty_graphic=1;}
       
-      if (keyState[BUTTON_RIGHT]) 
+      if (keyState[BUTTON_RIGHT]  && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%4==0) 
 	  { vcomix=1;  	  dirty_graphic=1;}
       
-      if (keyState[BUTTON_UP]) 
+      if (keyState[BUTTON_UP]  && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%64==0) 
 	  { attack=1;   	  dirty_graphic=1;}
       
-      if (keyState[BUTTON_DOWN])
+      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B])
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%64==0) 
 	  { attack=-1;  	  dirty_graphic=1;}
     }
+
+  if (menu        != MENU_OFF && 
+      menu_cursor == M_VCO   
+      )
+    {
+      if (keyState[BUTTON_LEFT] && keyState[BUTTON_A]) 
+	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%4==0) 
+	  { vcomix_all=-1; 	  dirty_graphic=1;}
+      
+      if (keyState[BUTTON_RIGHT]  && keyState[BUTTON_A]) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%4==0) 
+	  { vcomix_all=1;  	  dirty_graphic=1;}
+
+      // ????
+      if (keyState[BUTTON_UP]  && keyState[BUTTON_A]) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%64==0) 
+	  { attack=1;   	  dirty_graphic=1;}
+      
+      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A])
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%64==0) 
+	  { attack=-1;  	  dirty_graphic=1;}
+      //????
+    }
+
 }
 
 void handle_key_osc()
@@ -1536,6 +1561,19 @@ int seq()
 	}
 
       // Change VCOMix
+      if (vcomix_all!=0)
+	{
+	  for (i=0;i<15;i++)
+	    P[cty].getPatternElement(i).setVCOMix(P[cty].getPatternElement(i).getVCOMix()+vcomix_all);
+	  vcomix_all=0;
+	  if (debug)
+	    printf("[vcomix_all:%d]\n",P[cty].getPatternElement(cursor).getVCOMix());
+	  //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
+	  
+	}
+
+
+      // Change cutoff
       if (cutoff!=0)
 	{
 	  P[cty].getPatternElement(cursor).setCutoff(P[cty].getPatternElement(cursor).getCutoff()+cutoff);
