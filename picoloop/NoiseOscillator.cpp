@@ -6,7 +6,7 @@ using namespace std;
 NoiseOscillator::NoiseOscillator()
 {
   printf("NoiseOscillator::NoiseOscillator()");
-  table_size=4096;
+  table_size=WAVETABLE_SIZE;
   table=NULL;
   index=0;
 }
