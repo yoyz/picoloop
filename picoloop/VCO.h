@@ -6,6 +6,7 @@
 #include "SawOscillator.h"
 #include "FuzzyPulseOscillator.h"
 #include "PulseOscillator.h"
+#include "TriangleOscillator.h"
 #include "WaveTableSineOscillator.h"
 #include "NoiseOscillator.h"
 
@@ -44,6 +45,8 @@ public:
   NoiseOscillator         noiseOsc2;
   WaveTableSineOscillator waveTableSineOsc1;
   WaveTableSineOscillator waveTableSineOsc2;
+  TriangleOscillator      triangleOsc1;
+  TriangleOscillator      triangleOsc2;
 
   //NoiseOscillator       noiseosc;
   Oscillator            * s1;

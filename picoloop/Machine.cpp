@@ -125,10 +125,15 @@ int Machine::tick()
 
   s_in=adsr.tick();
   s_in=s_in/4;
+  //return s_in;
+
+  //FILTER
   s_out=bq.process(s_in);
+  return s_out;
+
   //  s_out=bq.process(s_out);
   //s_out=bq.process(s_out);
-  return s_out;
+
 
 
   /*
