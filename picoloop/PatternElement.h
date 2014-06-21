@@ -31,6 +31,9 @@ public:
   bool   setTrig(bool Trig);
   bool   getTrig();
 
+  int    getAmp();
+  void   setAmp(int a);
+
   int    getVCOMix();
   void   setVCOMix(int mix);
 
@@ -72,6 +75,8 @@ private:
   int  Channel;
 
   int  vcomix;
+
+  int  amp;
 
   int  amp_attack;
   int  amp_decay;

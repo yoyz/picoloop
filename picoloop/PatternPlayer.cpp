@@ -30,7 +30,45 @@ using namespace std;
 #define DISABLE             0
 #define ENABLE              1
 
+#define BUTTON_B            SDLK_LALT
+#define BUTTON_A            SDLK_LCTRL
+#define BUTTON_X            SDLK_SPACE
+#define BUTTON_Y            SDLK_LSHIFT
 
+#define BUTTON_UP           SDLK_UP
+#define BUTTON_DOWN         SDLK_DOWN
+#define BUTTON_LEFT         SDLK_LEFT
+#define BUTTON_RIGHT        SDLK_RIGHT
+
+#define BUTTON_SELECT       SDLK_ESCAPE
+#define BUTTON_START        SDLK_RETURN
+
+
+//menu
+enum {
+  MENU_OFF,
+  MENU_ON_PAGE1,
+  MENU_ON_PAGE2
+};
+
+//menu_cursor
+enum {
+  M_AD,   // 0
+  M_NOTE, // 1
+  M_OSC,  // 2 
+  M_VCO,  // 3
+
+  M_LS,   // 4
+  M_LFO,  // 5
+  M_FLTR, // 6
+  M_BPM   // 7
+};
+
+enum {
+  MENU_ENV_ATTACK_RELEASE,
+  MENU_ENV_ATTACK_AMP,
+  MENU_ENV_AMP_RELEASE
+};
 
 vector <Pattern>            P(TRACK_MAX);  
 vector <Machine   *>        M(TRACK_MAX);
@@ -69,6 +107,7 @@ int repeat=0;
 int quit=0;             // do we need to quit ?
 int cursor=0;           // cursor position in a sequencer track
 int note=0;
+int amp=0;              // variation of the amp of monomixer
 
 int attack=0;
 int release=0;
@@ -86,9 +125,11 @@ int loadsave_cursor_y=0; // index in the load/save menu
 int start_key=0;        // start key pressed ?
 //int step=0;             // current step in the sequencer
 int divider=0;           // divider - => /1 /2 /4 /8  ; divider + => /8 /4 /2 /1
-int menu=0;             // menu mode
+int menu_cursor=M_AD;      // index int the menu
+int menu=MENU_ON_PAGE1;             // menu mode
 int menu_note=ENABLE;
-int menu_cursor=0;      // index int the menu
+int menu_env=MENU_ENV_ATTACK_RELEASE;
+
 //int ct=0;               // current_track
 int ct_x=0;             
 int ct_y=0;
@@ -96,38 +137,7 @@ int invert_trig=0;
 
 int dirty_graphic=1;
 
-//menu_cursor
-enum {
-  M_AD,   // 0
-  M_NOTE, // 1
-  M_OSC,  // 2 
-  M_VCO,  // 3
-
-  M_LS,   // 4
-  M_LFO,  // 5
-  M_FLTR, // 6
-  M_BPM   // 7
-};
   
-//menu
-enum {
-  MENU_OFF,
-  MENU_ON_PAGE1,
-  MENU_ON_PAGE2
-};
-
-#define BUTTON_B      SDLK_LALT
-#define BUTTON_A      SDLK_LCTRL
-#define BUTTON_X      SDLK_SPACE
-#define BUTTON_Y      SDLK_LSHIFT
-
-#define BUTTON_UP     SDLK_UP
-#define BUTTON_DOWN   SDLK_DOWN
-#define BUTTON_LEFT   SDLK_LEFT
-#define BUTTON_RIGHT  SDLK_RIGHT
-
-#define BUTTON_SELECT SDLK_ESCAPE
-#define BUTTON_START  SDLK_RETURN
 
 
 //char * tmp_str;
@@ -146,24 +156,47 @@ void display_board_amp_env()
       SG.drawBoxNumber(step,STEP_COLOR);  
       //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
       
-
-      for (i=0;i<16;i++)
+      if (menu_env==MENU_ENV_ATTACK_RELEASE)
 	{
-	  // Draw trigged box trig color   
-	  if (P[cty].getPatternElement(i).getTrig())
+	  for (i=0;i<16;i++)
 	    {
-	      SG.drawBoxNumber(i,TRIG_COLOR);
-	      if (i==cursor)
-		SG.drawBoxNumber(cursor,CURSOR_COLOR);
-	      if (i==step)
-		SG.drawBoxNumber(step,STEP_COLOR);  
-		//SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
-
-	      // AdsR
-	      SG.smallBoxNumber(i,P[cty].getPatternElement(i).getRelease(),0,SMALLBOX_COLOR);
-	      SG.smallBoxNumber(i,0,P[cty].getPatternElement(i).getAttack(),SMALLBOX_COLOR);      
+	      // Draw trigged box trig color   
+	      if (P[cty].getPatternElement(i).getTrig())
+		{
+		  SG.drawBoxNumber(i,TRIG_COLOR);
+		  if (i==cursor)
+		    SG.drawBoxNumber(cursor,CURSOR_COLOR);
+		  if (i==step)
+		    SG.drawBoxNumber(step,STEP_COLOR);  
+		  //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
+		  
+		  // AdsR
+		  SG.smallBoxNumber(i,P[cty].getPatternElement(i).getRelease(),0,SMALLBOX_COLOR);
+		  SG.smallBoxNumber(i,0,P[cty].getPatternElement(i).getAttack(),SMALLBOX_COLOR);      
+		}
 	    }
 	}
+      if (menu_env==MENU_ENV_ATTACK_AMP)
+	{
+	  for (i=0;i<16;i++)
+	    {
+	      // Draw trigged box trig color   
+	      if (P[cty].getPatternElement(i).getTrig())
+		{
+		  SG.drawBoxNumber(i,TRIG_COLOR);
+		  if (i==cursor)
+		    SG.drawBoxNumber(cursor,CURSOR_COLOR);
+		  if (i==step)
+		    SG.drawBoxNumber(step,STEP_COLOR);  
+		  //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
+		  
+		  // AdsR
+		  SG.smallBoxNumber(i,P[cty].getPatternElement(i).getAmp(),0,SMALLBOX_COLOR);
+		  SG.smallBoxNumber(i,0,P[cty].getPatternElement(i).getAttack(),SMALLBOX_COLOR);      
+		}
+	    }
+	}
+
     }
 }
 
@@ -391,6 +424,8 @@ void display_board()
   char str_up[8];
   char str_down[24];
   char str_divider[8];
+  char str_submenu[16];
+
   int  cty=SEQ.getCurrentTrackY();
   int  stepdiv=SEQ.getPatternSequencer(cty).getBPMDivider();
   dirty_graphic=0;
@@ -401,8 +436,40 @@ void display_board()
   SG.guiTTFText(200,20,str_up);
 
   sprintf(str_divider,"/%d",stepdiv);
-  SG.guiTTFText(200,60,str_divider);
-  //  sprintf(str_down,"[A/D] Note L/S",cty);
+  SG.guiTTFText(200,80,str_divider);
+
+  if (menu_cursor!=M_AD ||
+      menu_cursor!=M_NOTE)    
+    {
+      sprintf(str_submenu,"               ");
+      SG.guiTTFText(200,60,str_submenu);
+    }
+  if (menu_note==ENABLE &&
+      menu_cursor==M_NOTE)
+    {
+      sprintf(str_submenu,"NOTE");
+      SG.guiTTFText(200,60,str_submenu);
+    }
+  if (menu_note==DISABLE &&
+      menu_cursor==M_NOTE)
+    {
+      sprintf(str_submenu,"DOT");
+      SG.guiTTFText(200,60,str_submenu);
+    }
+  if (menu_env==MENU_ENV_ATTACK_RELEASE &&
+      menu_cursor==M_AD)
+    {
+      sprintf(str_submenu,"ATTACK/RELEASE");
+      SG.guiTTFText(200,60,str_submenu);
+    }
+  if (menu_env==MENU_ENV_ATTACK_AMP &&
+      menu_cursor==M_AD)
+    {
+      sprintf(str_submenu,"ATTACK/AMP");
+      SG.guiTTFText(200,60,str_submenu);
+    }
+
+//  sprintf(str_down,"[A/D] Note L/S",cty);
   
   //  printf("           AD:%d FX:%d\n",AD,FX);
   //  exit(0);
@@ -665,7 +732,8 @@ void handle_key_amp_env()
   // Move Attack Release 
   // Insert/Remove Trig
   if (menu          == MENU_OFF && 
-      menu_cursor   == M_AD)
+      menu_cursor   == M_AD     &&
+      menu_env      == MENU_ENV_ATTACK_RELEASE)
     {
       if (lastKey   == BUTTON_A && 
 	  lastEvent == SDL_KEYDOWN)
@@ -682,6 +750,35 @@ void handle_key_amp_env()
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>4) 
 	  { release=1; 	  dirty_graphic=1; }
+      
+      if (keyState[BUTTON_UP]    && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>4) 
+	  { attack=1;  	  dirty_graphic=1; }
+      
+      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>4) 
+	  { attack=-1; 	  dirty_graphic=1; }
+    }  
+
+  if (menu          == MENU_OFF && 
+      menu_cursor   == M_AD     &&
+      menu_env      == MENU_ENV_ATTACK_AMP)
+    {
+      if (lastKey   == BUTTON_A && 
+	  lastEvent == SDL_KEYDOWN)
+	{
+	  invert_trig=1;
+	  printf("key lalt\n");      
+	  dirty_graphic=1;
+	  IE.clearLastKeyEvent();
+	}
+      if (keyState[BUTTON_LEFT]  && keyState[BUTTON_B])
+	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>4) 
+	  { amp=-1;   dirty_graphic=1; }
+      
+      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>4) 
+	  { amp=1; 	  dirty_graphic=1; }
       
       if (keyState[BUTTON_UP]    && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>4) 
@@ -750,6 +847,18 @@ void handle_key_note()
       dirty_graphic=1;
       IE.clearLastKeyEvent();
       printf("[sub menu note : %d]\n",menu_note);
+    }
+
+  // change note from box to value e.g C3 D4...
+  if (lastKey     ==  BUTTON_START  && 
+      lastEvent   ==  SDL_KEYUP     && 
+      menu_cursor ==  M_AD)
+    {
+      if      (menu_env==0)        { menu_env=1;  }
+      else if (menu_env==1)        { menu_env=0;  }   
+      dirty_graphic=1;
+      IE.clearLastKeyEvent();
+      printf("[sub menu env : %d]\n",menu_env);
     }
 
 }
@@ -1157,12 +1266,15 @@ void seq_update_track(int t)
 	  int     i_r;
 	  float   f_r;
 
+	  // set the amp output for the track
+	  MM[t]->setAmplitude(P[t].getPatternElement(step).getAmp());
+
 	  	 
-	  M[t]->getADSR().reset();;	  
+	  M[t]->getADSR().reset();
 	  M[t]->getVCO().reset();
 	  M[t]->getVCO().getOscillatorOne();
 
-	  M[t]->getVCO().setSynthFreq(i);
+	  M[t]->getVCO().setSynthFreq(f);
 	  M[t]->getADSR().setRelease(P[t].getPatternElement(step).getRelease());		  
 	  M[t]->getADSR().setAttack(P[t].getPatternElement(step).getAttack());		  
 	  M[t]->getVCO().setVCOMix(P[t].getPatternElement(step).getVCOMix());		  
@@ -1173,7 +1285,7 @@ void seq_update_track(int t)
 	  i_r=P[t].getPatternElement(step).getResonance();
 
 	  f_c=i_c;
-	  f_c=f_c/256;
+	  f_c=(f_c/256);
 	  
 	  f_r=i_r;
 	  f_r=f_r/8;
@@ -1261,17 +1373,23 @@ int seq()
 	    }
 	  invert_trig=0;
 	}
+
+      // Change Amplification
+      if (amp!=0)
+	{
+	  P[cty].getPatternElement(cursor).setAmp(P[cty].getPatternElement(cursor).getAmp()+amp);
+	  amp=0;
+	  if (debug)
+	    printf("[amp:%d]\n",P[cty].getPatternElement(cursor).getAmp());
+	}
 	  
       // Change Attack
       if (attack!=0)
 	{
-	  //m0.getADSR().setAttack(m0.getADSR().getAttack()+attack);
 	  P[cty].getPatternElement(cursor).setAttack(P[cty].getPatternElement(cursor).getAttack()+attack);
 	  attack=0;
 	  if (debug)
 	    printf("[attack:%d]\n",P[cty].getPatternElement(cursor).getAttack());
-	  //printf("[attack:%d]\n",P[cty].getPatternElement(cursor).getAttack()+attack);
-	//printf("[attack:%d]\n",M[cty]->getADSR().getAttack());
 	}
       
       // Change Release
@@ -1313,21 +1431,16 @@ int seq()
 	  if (debug) printf("[resonance:%d]\n",P[cty].getPatternElement(cursor).getResonance());	  
 	}
 
-      if (divider>0)
-	{	  	  
-	  SEQ.getPatternSequencer(cty).setBPMDivider(SEQ.getPatternSequencer(cty).getBPMDivider()*2);
-	  divider=0;
-	  P[cty].setBPMDivider(SEQ.getPatternSequencer(cty).getBPMDivider());
-	}
-
-      if (divider<0)
+      if (divider!=0)
 	{	  
-	  SEQ.getPatternSequencer(cty).setBPMDivider(SEQ.getPatternSequencer(cty).getBPMDivider()/2);
-	  //SEQ.getPatternSequencer(cty).setStepDivider(1);
+	  if (divider>0)
+	    SEQ.getPatternSequencer(cty).setBPMDivider(SEQ.getPatternSequencer(cty).getBPMDivider()*2);
+	  if (divider<0)
+	    SEQ.getPatternSequencer(cty).setBPMDivider(SEQ.getPatternSequencer(cty).getBPMDivider()/2);
 	  divider=0;
-
 	  P[cty].setBPMDivider(SEQ.getPatternSequencer(cty).getBPMDivider());
 	}
+
         
       if (osconetype!=0)
 	{

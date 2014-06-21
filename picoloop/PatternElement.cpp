@@ -14,6 +14,8 @@ PatternElement::PatternElement()
   Channel=0;
   vcomix=64;
 
+  amp=127;
+
   amp_attack=0;
   amp_decay=127;
   amp_sustain=127;
@@ -174,6 +176,16 @@ bool PatternElement::setTrig(bool T)
 bool PatternElement::getTrig()
 {
   return Trig;
+}
+
+int PatternElement::getAmp()
+{
+  return amp;
+}
+
+void PatternElement::setAmp(int a)
+{
+  amp=this->checkSevenBitBoundarie(a);
 }
 
 
