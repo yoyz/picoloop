@@ -210,6 +210,7 @@ char * PatternElement::getOscOneTypeCharStar()
   char * str_saw   = "SAW  ";
   char * str_pulse = "PULSE";
   char * str_wtbl  = "WTBL";
+  char * str_trgl  = "TRGL";
   char * str_noise = "NOISE";
 
   switch (oscOneType)
@@ -217,7 +218,8 @@ char * PatternElement::getOscOneTypeCharStar()
     case SINE:  return str_sine;  break;
     case SAW:   return str_saw;   break; 
     case PULSE: return str_pulse; break;      
-    case WTBL:  return str_wtbl;  break;            
+      //case WTBL:  return str_wtbl;  break;            
+    case TRGL:  return str_trgl;  break;            
     case NOISE: return str_noise; break;            
     }
   return str_sine;
@@ -229,7 +231,9 @@ char * PatternElement::getOscTwoTypeCharStar()
   char * str_sine  = "SINE ";
   char * str_saw   = "SAW  ";
   char * str_pulse = "PULSE";
-  char * str_wtbl  = "WTBL";
+  //char * str_wtbl  = "WTBL";
+  //char * str_wtbl  = "WTBL";
+  char * str_trgl  = "TRGL";
   char * str_noise = "NOISE";
 
   switch (oscTwoType)
@@ -237,7 +241,8 @@ char * PatternElement::getOscTwoTypeCharStar()
     case SINE:  return str_sine;  break;
     case SAW:   return str_saw;   break; 
     case PULSE: return str_pulse; break;
-    case WTBL:  return str_wtbl;  break;            
+      //case WTBL:  return str_wtbl;  break;            
+    case TRGL:  return str_trgl;  break;            
     case NOISE: return str_noise; break;                  
     }
   return str_sine;

@@ -1284,7 +1284,7 @@ void seq_update_track(int t)
 	  i_c=P[t].getPatternElement(step).getCutoff();
 	  i_r=P[t].getPatternElement(step).getResonance();
 
-	  f_c=i_c;
+	  f_c=i_c-1;
 	  f_c=(f_c/256);
 	  
 	  f_r=i_r;

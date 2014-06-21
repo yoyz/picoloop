@@ -11,7 +11,8 @@ enum
     SINE,
     SAW,
     PULSE,
-    WTBL,
+    //    WTBL,
+    TRGL,
     NOISE,
   };
 
