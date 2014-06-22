@@ -542,6 +542,24 @@ void display_board()
 }
 
 
+void sub_handle_invert_trig()
+{
+  int    lastEvent;
+  int    lastKey;
+
+  lastEvent=IE.lastEvent();
+  lastKey=IE.lastKey();
+
+  if (lastKey   == BUTTON_A && 
+      lastEvent == SDL_KEYDOWN)
+    {
+      invert_trig=1;
+      printf("key lalt\n");      
+      dirty_graphic=1;
+      IE.clearLastKeyEvent();
+    }  
+}
+
 void handle_key_menu()
 {
   bool * keyState;
@@ -766,6 +784,9 @@ void handle_key_amp_env()
       menu_cursor   == M_AD     &&
       menu_env      == MENU_ENV_ATTACK_RELEASE)
     {
+      // Insert/Remove Trig
+      sub_handle_invert_trig();
+      /*
       if (lastKey   == BUTTON_A && 
 	  lastEvent == SDL_KEYDOWN)
 	{
@@ -774,6 +795,7 @@ void handle_key_amp_env()
 	  dirty_graphic=1;
 	  IE.clearLastKeyEvent();
 	}
+      */
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_B])
 	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>4) 
 	  { release=-1;   dirty_graphic=1; }
@@ -890,6 +912,8 @@ void handle_key_note()
       menu_cursor == M_NOTE)
     {
       // copy/paste/insert/delete trig 
+      sub_handle_invert_trig();
+      /*
       if (lastKey   == BUTTON_A && 
 	  lastEvent ==  SDL_KEYUP)
 	{
@@ -898,7 +922,7 @@ void handle_key_note()
 	  dirty_graphic=1;
 	  IE.clearLastKeyEvent();
 	}
-      
+      */
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%64==0) 
 	{ note=-1; 	  dirty_graphic=1;}
@@ -966,6 +990,68 @@ void handle_key_note()
 
 }
 
+void handle_key_osc()
+{
+  bool * keyState;
+  int  * keyRepeat;
+  int    lastEvent;
+  int    lastKey;
+
+  keyState=IE.keyState();
+  keyRepeat=IE.keyRepeat();
+  lastEvent=IE.lastEvent();
+  lastKey=IE.lastKey();
+
+  // M_OSC
+  // change oscilltor one and two type
+  if (menu        == MENU_OFF && 
+      menu_cursor == M_OSC )
+    {
+      // Insert/Remove Trig
+      sub_handle_invert_trig();
+
+      if (keyState[BUTTON_LEFT] && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%128==0) 
+	  { osconetype=-1; 	  dirty_graphic=1;}
+      
+      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%128==0) 
+	  { osconetype=1;  	  dirty_graphic=1;}
+      
+      if (keyState[BUTTON_UP] && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%128==0) 
+	  { osctwotype=1;   	  dirty_graphic=1;}
+      
+      if (keyState[BUTTON_DOWN] && keyState[BUTTON_B])
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%128==0) 
+	  { osctwotype=-1;  	  dirty_graphic=1;}
+    }
+
+  // M_OSC
+  // change oscilltor one and two type
+  if (menu        != MENU_OFF && 
+      menu_cursor == M_OSC )
+    {
+      if (keyState[BUTTON_LEFT] && keyState[BUTTON_A]) 
+	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%128==0) 
+	  { osconetype_all=-1; 	  dirty_graphic=1;}
+      
+      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%128==0) 
+	  { osconetype_all=1;  	  dirty_graphic=1;}
+      
+      if (keyState[BUTTON_UP] && keyState[BUTTON_A]) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%128==0) 
+	  { osctwotype_all=1;   	  dirty_graphic=1;}
+      
+      if (keyState[BUTTON_DOWN] && keyState[BUTTON_A])
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%128==0) 
+	  { osctwotype_all=-1;  	  dirty_graphic=1;}
+    }
+
+}
+
+
 void handle_key_vco()
 {
   bool * keyState;
@@ -985,6 +1071,8 @@ void handle_key_vco()
       menu_cursor == M_VCO    
       )
     {
+      // Insert/Remove Trig
+      sub_handle_invert_trig();
       if (keyState[BUTTON_LEFT] && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%4==0) 
 	  { vcomix=-1; 	  dirty_graphic=1;}
@@ -1027,63 +1115,6 @@ void handle_key_vco()
 
 }
 
-void handle_key_osc()
-{
-  bool * keyState;
-  int  * keyRepeat;
-  int    lastEvent;
-  int    lastKey;
-
-  keyState=IE.keyState();
-  keyRepeat=IE.keyRepeat();
-  lastEvent=IE.lastEvent();
-  lastKey=IE.lastKey();
-
-  // M_OSC
-  // change oscilltor one and two type
-  if (menu        == MENU_OFF && 
-      menu_cursor == M_OSC )
-    {
-      if (keyState[BUTTON_LEFT] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%128==0) 
-	  { osconetype=-1; 	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%128==0) 
-	  { osconetype=1;  	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_UP] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%128==0) 
-	  { osctwotype=1;   	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_DOWN] && keyState[BUTTON_B])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%128==0) 
-	  { osctwotype=-1;  	  dirty_graphic=1;}
-    }
-
-  // M_OSC
-  // change oscilltor one and two type
-  if (menu        != MENU_OFF && 
-      menu_cursor == M_OSC )
-    {
-      if (keyState[BUTTON_LEFT] && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%128==0) 
-	  { osconetype_all=-1; 	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%128==0) 
-	  { osconetype_all=1;  	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_UP] && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%128==0) 
-	  { osctwotype_all=1;   	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_DOWN] && keyState[BUTTON_A])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%128==0) 
-	  { osctwotype_all=-1;  	  dirty_graphic=1;}
-    }
-
-}
 
 void handle_key_fltr()
 {
