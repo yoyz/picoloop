@@ -91,7 +91,7 @@ int saveall=false;
 int loadall=false;
 
 
-int bpm_current=120;    // current value for the four ( MAX_TRACKS ) tracks
+int bpm_current=120;    // current value for the four ( TRACK_MAX ) tracks
 int bpm=0;              // change from -10 to +10
 int nbcb=0;             // current nb audio callback 
 int last_nbcb=0;        // number of occurence of AudioEngine callback before changing step
@@ -1329,9 +1329,228 @@ void handle_key()
 }
 
 
+void seq_update_multiple_time_by_step()
+{
+  AudioMixer & am=AE.getAudioMixer();
+  int          cty=SEQ.getCurrentTrackY();
+  int          ctx=SEQ.getCurrentTrackX();
+  int          step=SEQ.getPatternSequencer(cty).getStep();
+  int          oldstep=0;
+  int          i=0;
+
+  // invert trig => insert/remove/copy note 
+  if (invert_trig)
+    {
+      if (P[cty].getPatternElement(cursor).getTrig())
+	{
+	  P[cty].getPatternElement(cursor).setTrig(! P[cty].getPatternElement(cursor).getTrig());
+	  PE=P[cty].getPatternElement(cursor);
+	}
+      else
+	{
+	  P[cty].setPatternElement(cursor,PE);
+	  P[cty].getPatternElement(cursor).setTrig(true);
+	  if (P[cty].getPatternElement(cursor).getNote()==0)
+	    {
+	      P[cty].getPatternElement(cursor).setAttack(8);
+	      P[cty].getPatternElement(cursor).setRelease(64);
+	      P[cty].getPatternElement(cursor).setNote(37);
+	    }
+	}
+      invert_trig=0;
+    }
+  
+  // Change Amplification
+  if (amp!=0)
+    {
+      P[cty].getPatternElement(cursor).setAmp(P[cty].getPatternElement(cursor).getAmp()+amp);
+      amp=0;
+      if (debug)
+	printf("[amp:%d]\n",P[cty].getPatternElement(cursor).getAmp());
+    }
+  
+  if (amp_all!=0)
+    {
+      for (i=0;i<15;i++)
+	P[cty].getPatternElement(i).setAmp(P[cty].getPatternElement(i).getAmp()+amp_all);
+      amp_all=0;
+      if (debug)
+	printf("[amp_all:%d]\n",P[cty].getPatternElement(cursor).getAmp());
+    }
+  
+  // Change Attack
+  if (attack!=0)
+    {
+      P[cty].getPatternElement(cursor).setAttack(P[cty].getPatternElement(cursor).getAttack()+attack);
+      attack=0;
+      if (debug)
+	printf("[attack:%d]\n",P[cty].getPatternElement(cursor).getAttack());
+    }
+  
+  // Change Attack
+  if (attack_all!=0)
+    {
+      for(i=0;i<15;i++)
+	P[cty].getPatternElement(i).setAttack(P[cty].getPatternElement(i).getAttack()+attack_all);
+      attack_all=0;
+      if (debug)
+	printf("[attack_all:%d]\n",P[cty].getPatternElement(cursor).getAttack());
+    }
+  
+  
+  // Change Release
+  if (release!=0)
+    {
+      //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
+      P[cty].getPatternElement(cursor).setRelease(P[cty].getPatternElement(cursor).getRelease()+release);
+      release=0;
+      if (debug)
+	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease());
+      //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
+      
+    }
+  
+  // Change Release
+  if (release_all!=0)
+    {
+      //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
+      for(i=0;i<15;i++)
+	P[cty].getPatternElement(i).setRelease(P[cty].getPatternElement(i).getRelease()+release_all);
+      release_all=0;
+      if (debug)
+	printf("[release_all:%d]\n",P[cty].getPatternElement(cursor).getRelease());
+      //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
+      
+    }
+  
+  
+  // Change VCOMix
+  if (vcomix!=0)
+    {
+      //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
+      P[cty].getPatternElement(cursor).setVCOMix(P[cty].getPatternElement(cursor).getVCOMix()+vcomix);
+      vcomix=0;
+      if (debug)
+	printf("[vcomix:%d]\n",P[cty].getPatternElement(cursor).getVCOMix());
+      //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
+      
+    }
+  
+  // Change VCOMix
+  if (vcomix_all!=0)
+    {
+      for (i=0;i<15;i++)
+	P[cty].getPatternElement(i).setVCOMix(P[cty].getPatternElement(i).getVCOMix()+vcomix_all);
+      vcomix_all=0;
+      if (debug)
+	printf("[vcomix_all:%d]\n",P[cty].getPatternElement(cursor).getVCOMix());
+      //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
+      
+    }
+  
+  
+  // Change cutoff
+  if (cutoff!=0)
+    {
+      P[cty].getPatternElement(cursor).setCutoff(P[cty].getPatternElement(cursor).getCutoff()+cutoff);
+      cutoff=0;
+      if (debug) printf("[cutoff:%d]\n",P[cty].getPatternElement(cursor).getCutoff());	  
+    }
+  
+  if (cutoff_all!=0)
+    {
+      for (i=0;i<15;i++)
+	P[cty].getPatternElement(i).setCutoff(P[cty].getPatternElement(i).getCutoff()+cutoff_all);
+      cutoff_all=0;
+      if (debug) printf("[cutoff_all:%d]\n",P[cty].getPatternElement(cursor).getCutoff());	  
+    }
+  
+  
+  if (resonance!=0)
+    {
+      P[cty].getPatternElement(cursor).setResonance(P[cty].getPatternElement(cursor).getResonance()+resonance);
+      resonance=0;
+      if (debug) printf("[resonance:%d]\n",P[cty].getPatternElement(cursor).getResonance());	  
+    }
+  
+  if (resonance_all!=0)
+    {
+      for (i=0;i<15;i++)
+	P[cty].getPatternElement(i).setResonance(P[cty].getPatternElement(i).getResonance()+resonance_all);
+      resonance_all=0;
+      if (debug) printf("[resonance_all:%d]\n",P[cty].getPatternElement(cursor).getResonance());	  
+    }
+  
+  if (divider!=0)
+    {	  
+      if (divider>0)
+	SEQ.getPatternSequencer(cty).setBPMDivider(SEQ.getPatternSequencer(cty).getBPMDivider()*2);
+      if (divider<0)
+	SEQ.getPatternSequencer(cty).setBPMDivider(SEQ.getPatternSequencer(cty).getBPMDivider()/2);
+      divider=0;
+      P[cty].setBPMDivider(SEQ.getPatternSequencer(cty).getBPMDivider());
+    }
+  
+  
+  if (osconetype!=0)
+    {
+      P[cty].getPatternElement(cursor).setOscillatorOneType(P[cty].getPatternElement(cursor).getOscillatorOneType()+osconetype);
+      osconetype=0;
+      if (debug)
+	printf("[osconetype:%d]\n",P[cty].getPatternElement(cursor).getOscillatorOneType());	  
+    }
+  
+  if (osconetype_all!=0)
+    {
+      for (i=0;i<15;i++)
+	P[cty].getPatternElement(i).setOscillatorOneType(P[cty].getPatternElement(i).getOscillatorOneType()+osconetype_all);
+      osconetype_all=0;
+      if (debug)
+	printf("[osconetype_all:%d]\n",P[cty].getPatternElement(cursor).getOscillatorOneType());	  
+    }
+  
+  
+  if (osctwotype!=0)
+    {
+      P[cty].getPatternElement(cursor).setOscillatorTwoType(P[cty].getPatternElement(cursor).getOscillatorTwoType()+osctwotype);
+      osctwotype=0;
+      if (debug)
+	printf("[osctwotype:%d]\n",P[cty].getPatternElement(cursor).getOscillatorTwoType());	  
+    }
+  
+  if (osctwotype_all!=0)
+    {
+      for (i=0;i<15;i++)
+	P[cty].getPatternElement(i).setOscillatorTwoType(P[cty].getPatternElement(i).getOscillatorTwoType()+osctwotype_all);
+      osctwotype_all=0;
+      if (debug)
+	printf("[osctwotype:%d]\n",P[cty].getPatternElement(cursor).getOscillatorTwoType());	  
+    }
+  
+  
+  
+  // Change Note
+  if (note!=0)
+    { 
+      P[cty].getPatternElement(cursor).setNote(P[cty].getPatternElement(cursor).getNote()+note);
+      note=0;
+      printf("[note:%d]\n",P[cty].getPatternElement(cursor).getNote());	  
+    }
+  
+  // Change Note
+  if (note_all!=0)
+    { 
+      for (i=0;i<15;i++)
+	P[cty].getPatternElement(i).setNote(P[cty].getPatternElement(i).getNote()+note_all);
+      note_all=0;
+      printf("[note_all:%d]\n",P[cty].getPatternElement(cursor).getNote());	  
+    }
+  
+}
+
 
 // 
-int seq_update()
+int seq_update_by_step()
 {
   int  cty=SEQ.getCurrentTrackY();
   int  ctx=SEQ.getCurrentTrackX();
@@ -1502,10 +1721,12 @@ int seq()
     }
 
   printf("openAudio start streaming\n");
-  //  sleep(2);
-  AE.startAudio();
+  //sleep(2);
+  for (i=0;i<TRACK_MAX;i++)
+    seq_update_track(i);
 
-  seq_update();  
+  AE.startAudio();
+  seq_update_by_step();  
   while (true)
     {
       cty=SEQ.getCurrentTrackY();
@@ -1519,215 +1740,8 @@ int seq()
 	}
       handle_key();
 
-
-      // invert trig => insert/remove/copy note 
-      if (invert_trig)
-	{
-	  if (P[cty].getPatternElement(cursor).getTrig())
-	    {
-	      P[cty].getPatternElement(cursor).setTrig(! P[cty].getPatternElement(cursor).getTrig());
-	      PE=P[cty].getPatternElement(cursor);
-	    }
-	  else
-	    {
-	      P[cty].setPatternElement(cursor,PE);
-	      P[cty].getPatternElement(cursor).setTrig(true);
-	      if (P[cty].getPatternElement(cursor).getNote()==0)
-		{
-		  P[cty].getPatternElement(cursor).setAttack(8);
-		  P[cty].getPatternElement(cursor).setRelease(64);
-		  P[cty].getPatternElement(cursor).setNote(37);
-		}
-	    }
-	  invert_trig=0;
-	}
-
-      // Change Amplification
-      if (amp!=0)
-	{
-	  P[cty].getPatternElement(cursor).setAmp(P[cty].getPatternElement(cursor).getAmp()+amp);
-	  amp=0;
-	  if (debug)
-	    printf("[amp:%d]\n",P[cty].getPatternElement(cursor).getAmp());
-	}
-
-      if (amp_all!=0)
-	{
-	  for (i=0;i<15;i++)
-	    P[cty].getPatternElement(i).setAmp(P[cty].getPatternElement(i).getAmp()+amp_all);
-	  amp_all=0;
-	  if (debug)
-	    printf("[amp_all:%d]\n",P[cty].getPatternElement(cursor).getAmp());
-	}
-	  
-      // Change Attack
-      if (attack!=0)
-	{
-	  P[cty].getPatternElement(cursor).setAttack(P[cty].getPatternElement(cursor).getAttack()+attack);
-	  attack=0;
-	  if (debug)
-	    printf("[attack:%d]\n",P[cty].getPatternElement(cursor).getAttack());
-	}
-
-      // Change Attack
-      if (attack_all!=0)
-	{
-	  for(i=0;i<15;i++)
-	    P[cty].getPatternElement(i).setAttack(P[cty].getPatternElement(i).getAttack()+attack_all);
-	  attack_all=0;
-	  if (debug)
-	    printf("[attack_all:%d]\n",P[cty].getPatternElement(cursor).getAttack());
-	}
-
-      
-      // Change Release
-      if (release!=0)
-	{
-	  //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
-	  P[cty].getPatternElement(cursor).setRelease(P[cty].getPatternElement(cursor).getRelease()+release);
-	  release=0;
-	  if (debug)
-	    printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease());
-	  //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
-	  
-	}
-
-      // Change Release
-      if (release_all!=0)
-	{
-	  //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
-	  for(i=0;i<15;i++)
-	    P[cty].getPatternElement(i).setRelease(P[cty].getPatternElement(i).getRelease()+release_all);
-	  release_all=0;
-	  if (debug)
-	    printf("[release_all:%d]\n",P[cty].getPatternElement(cursor).getRelease());
-	  //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
-	  
-	}
-
-      
-      // Change VCOMix
-      if (vcomix!=0)
-	{
-	  //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
-	  P[cty].getPatternElement(cursor).setVCOMix(P[cty].getPatternElement(cursor).getVCOMix()+vcomix);
-	  vcomix=0;
-	  if (debug)
-	    printf("[vcomix:%d]\n",P[cty].getPatternElement(cursor).getVCOMix());
-	  //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
-	  
-	}
-
-      // Change VCOMix
-      if (vcomix_all!=0)
-	{
-	  for (i=0;i<15;i++)
-	    P[cty].getPatternElement(i).setVCOMix(P[cty].getPatternElement(i).getVCOMix()+vcomix_all);
-	  vcomix_all=0;
-	  if (debug)
-	    printf("[vcomix_all:%d]\n",P[cty].getPatternElement(cursor).getVCOMix());
-	  //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
-	  
-	}
-
-
-      // Change cutoff
-      if (cutoff!=0)
-	{
-	  P[cty].getPatternElement(cursor).setCutoff(P[cty].getPatternElement(cursor).getCutoff()+cutoff);
-	  cutoff=0;
-	  if (debug) printf("[cutoff:%d]\n",P[cty].getPatternElement(cursor).getCutoff());	  
-	}
-
-      if (cutoff_all!=0)
-	{
-	  for (i=0;i<15;i++)
-	    P[cty].getPatternElement(i).setCutoff(P[cty].getPatternElement(i).getCutoff()+cutoff_all);
-	  cutoff_all=0;
-	  if (debug) printf("[cutoff_all:%d]\n",P[cty].getPatternElement(cursor).getCutoff());	  
-	}
-
-
-      if (resonance!=0)
-	{
-	  P[cty].getPatternElement(cursor).setResonance(P[cty].getPatternElement(cursor).getResonance()+resonance);
-	  resonance=0;
-	  if (debug) printf("[resonance:%d]\n",P[cty].getPatternElement(cursor).getResonance());	  
-	}
-
-      if (resonance_all!=0)
-	{
-	  for (i=0;i<15;i++)
-	    P[cty].getPatternElement(i).setResonance(P[cty].getPatternElement(i).getResonance()+resonance_all);
-	  resonance_all=0;
-	  if (debug) printf("[resonance_all:%d]\n",P[cty].getPatternElement(cursor).getResonance());	  
-	}
-
-      if (divider!=0)
-	{	  
-	  if (divider>0)
-	    SEQ.getPatternSequencer(cty).setBPMDivider(SEQ.getPatternSequencer(cty).getBPMDivider()*2);
-	  if (divider<0)
-	    SEQ.getPatternSequencer(cty).setBPMDivider(SEQ.getPatternSequencer(cty).getBPMDivider()/2);
-	  divider=0;
-	  P[cty].setBPMDivider(SEQ.getPatternSequencer(cty).getBPMDivider());
-	}
-
-        
-      if (osconetype!=0)
-	{
-	  P[cty].getPatternElement(cursor).setOscillatorOneType(P[cty].getPatternElement(cursor).getOscillatorOneType()+osconetype);
-	  osconetype=0;
-	  if (debug)
-	    printf("[osconetype:%d]\n",P[cty].getPatternElement(cursor).getOscillatorOneType());	  
-	}
-
-      if (osconetype_all!=0)
-	{
-	  for (i=0;i<15;i++)
-	    P[cty].getPatternElement(i).setOscillatorOneType(P[cty].getPatternElement(i).getOscillatorOneType()+osconetype_all);
-	  osconetype_all=0;
-	  if (debug)
-	    printf("[osconetype_all:%d]\n",P[cty].getPatternElement(cursor).getOscillatorOneType());	  
-	}
-
-
-      if (osctwotype!=0)
-	{
-	  P[cty].getPatternElement(cursor).setOscillatorTwoType(P[cty].getPatternElement(cursor).getOscillatorTwoType()+osctwotype);
-	  osctwotype=0;
-	  if (debug)
-	    printf("[osctwotype:%d]\n",P[cty].getPatternElement(cursor).getOscillatorTwoType());	  
-	}
-
-      if (osctwotype_all!=0)
-	{
-	  for (i=0;i<15;i++)
-	    P[cty].getPatternElement(i).setOscillatorTwoType(P[cty].getPatternElement(i).getOscillatorTwoType()+osctwotype_all);
-	  osctwotype_all=0;
-	  if (debug)
-	    printf("[osctwotype:%d]\n",P[cty].getPatternElement(cursor).getOscillatorTwoType());	  
-	}
-
-
-
-      // Change Note
-      if (note!=0)
-	{ 
-	  P[cty].getPatternElement(cursor).setNote(P[cty].getPatternElement(cursor).getNote()+note);
-	  note=0;
-	  printf("[note:%d]\n",P[cty].getPatternElement(cursor).getNote());	  
-	}
-
-      // Change Note
-      if (note_all!=0)
-	{ 
-	  for (i=0;i<15;i++)
-	    P[cty].getPatternElement(i).setNote(P[cty].getPatternElement(i).getNote()+note_all);
-	  note_all=0;
-	  printf("[note_all:%d]\n",P[cty].getPatternElement(cursor).getNote());	  
-	}
-
+      // A/D, Note, VCO, BPM, more...
+      seq_update_multiple_time_by_step();
 
       if (bpm!=0)
 	{
@@ -1763,7 +1777,7 @@ int seq()
 	  //**** step++;
 	  //step++;
 
-	  seq_update();
+	  seq_update_by_step();
 
 	  for(i=0;i<TRACK_MAX;i++)
 	    {
