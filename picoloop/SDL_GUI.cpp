@@ -339,7 +339,7 @@ void SDL_GUI::drawTTFTextNumber(int n,char * str)
 }
 */
 
-void SDL_GUI::drawTTFTextNumberFirstLine(int n,char * str)
+void SDL_GUI::drawTTFTextNumberFirstLine(int n,const char * str)
 {
   switch(n)
     {
@@ -366,7 +366,7 @@ void SDL_GUI::drawTTFTextNumberFirstLine(int n,char * str)
     }
 }
 
-void SDL_GUI::drawTTFTextNumberSecondLine(int n,char * str)
+void SDL_GUI::drawTTFTextNumberSecondLine(int n,const char * str)
 {
   switch(n)
     {

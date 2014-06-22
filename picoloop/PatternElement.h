@@ -26,9 +26,9 @@ public:
   bool   setNote(int Note);
   int    getNote();
   float  getNoteFreq();
-  char * getNoteCharStar();
-  char * getOscOneTypeCharStar();
-  char * getOscTwoTypeCharStar();
+  const char * getNoteCharStar();
+  const char * getOscOneTypeCharStar();
+  const char * getOscTwoTypeCharStar();
   bool   setTrig(bool Trig);
   bool   getTrig();
 

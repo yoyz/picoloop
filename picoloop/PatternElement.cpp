@@ -204,14 +204,14 @@ void PatternElement::print()
   cout << getStr() << "\n";
 }
 
-char * PatternElement::getOscOneTypeCharStar()
+const char * PatternElement::getOscOneTypeCharStar()
 {
-  char * str_sine  = "SINE ";
-  char * str_saw   = "SAW  ";
-  char * str_pulse = "PULSE";
-  char * str_wtbl  = "WTBL";
-  char * str_trgl  = "TRGL";
-  char * str_noise = "NOISE";
+  static const char * str_sine  = "SINE ";
+  static const char * str_saw   = "SAW  ";
+  static const char * str_pulse = "PULSE";
+  static const char * str_wtbl  = "WTBL";
+  static const char * str_trgl  = "TRGL";
+  static const char * str_noise = "NOISE";
 
   switch (oscOneType)
     {
@@ -226,16 +226,16 @@ char * PatternElement::getOscOneTypeCharStar()
 }
 
 
-char * PatternElement::getOscTwoTypeCharStar()
+const char * PatternElement::getOscTwoTypeCharStar()
 {
-  char * str_sine  = "SINE ";
-  char * str_saw   = "SAW  ";
-  char * str_pulse = "PULSE";
+  static const char * str_sine  = "SINE ";
+  static const char * str_saw   = "SAW  ";
+  static const char * str_pulse = "PULSE";
   //char * str_wtbl  = "WTBL";
   //char * str_wtbl  = "WTBL";
-  char * str_trgl  = "TRGL";
-  char * str_noise = "NOISE";
-
+  static const char * str_trgl  = "TRGL";
+  static const char * str_noise = "NOISE";
+  
   switch (oscTwoType)
     {
     case SINE:  return str_sine;  break;
@@ -249,105 +249,105 @@ char * PatternElement::getOscTwoTypeCharStar()
 }
 
 
-char * PatternElement::getNoteCharStar()
+const char * PatternElement::getNoteCharStar()
 {
-  char * ret=   "NUL";
-  char * C0=    "C0 ";
-  char * C0plus="C0+";
-  char * D0=    "D0 ";
-  char * D0plus="D0+";
-  char * E0=    "E0 ";
-  char * F0=    "F0 ";
-  char * F0plus="F0+";
-  char * G0=    "G0 ";
-  char * G0plus="G0+";
-  char * A0=    "A0 ";
-  char * A0plus="A0+";
-  char * B1=    "B1 ";
-
-  char * C1=    "C1 ";
-  char * C1plus="C1+";
-  char * D1=    "D1 ";
-  char * D1plus="D1+";
-  char * E1=    "E1 ";
-  char * F1=    "F1 ";
-  char * F1plus="F1+";
-  char * G1=    "G1 ";
-  char * G1plus="G1+";
-  char * A1=    "A1 ";
-  char * A1plus="A1+";
-  char * B2=    "B2 ";
-
-  char * C2=    "C2 ";
-  char * C2plus="C2+";
-  char * D2=    "D2 ";
-  char * D2plus="D2+";
-  char * E2=    "E2 ";
-  char * F2=    "F2 ";
-  char * F2plus="F2+";
-  char * A2=    "A2 ";
-  char * A2plus="A2+";
-  char * G2=    "G2 ";
-  char * G2plus="G2+";
-  char * B3=    "B3 ";
-
-  char * C3=    "C3 ";
-  char * C3plus="C3+";
-  char * D3=    "D3 ";
-  char * D3plus="D3+";
-  char * E3=    "E3 ";
-  char * F3=    "F3 ";
-  char * F3plus="F3+";
-  char * G3=    "G3 ";
-  char * G3plus="G3+";
-  char * A3=    "A3 ";
-  char * A3plus="A3+";
-  char * B4=    "B4 ";
-
-  char * C4=    "C4 ";
-  char * C4plus="C4+";
-  char * D4=    "D4 ";
-  char * D4plus="D4+";
-  char * E4=    "E4 ";
-  char * F4=    "F4 ";
-  char * F4plus="F4+";
-  char * G4=    "G4 ";
-  char * G4plus="G4+";
-  char * A4=    "A4 ";
-  char * A4plus="A4+";
-  char * B5=    "B5 ";
-
-  char * C5=    "C5 ";
-  char * C5plus="C5+";
-  char * D5=    "D5 ";
-  char * D5plus="D5+";
-  char * E5=    "E5 ";
-  char * F5=    "F5 ";
-  char * F5plus="F5+";
-  char * G5=    "G5 ";
-  char * G5plus="G5+";
-  char * A5=    "A5 ";
-  char * A5plus="A5+";
-  char * B6=    "B6 ";
-
-  char * C6=    "C6 ";
-  char * C6plus="C6+";
-  char * D6=    "D6 ";
-  char * D6plus="D6+";
-  char * E6=    "E6 ";
-  char * F6=    "F6 ";
-  char * F6plus="F6+";
-  char * G6=    "G6 ";
-  char * G6plus="G6+";
-  char * A6=    "A6 ";
-  char * A6plus="A6+";
-  char * B7=    "B7 ";
-
-  char * C7=    "C7 ";
-  char * C7plus="C7+";
-  char * D7=    "D7 ";
-  char * D7plus="D7+";
-
+  static const char * ret=   "NUL";
+  static const char * C0=    "C0 ";
+  static const char * C0plus="C0+";
+  static const char * D0=    "D0 ";
+  static const char * D0plus="D0+";
+  static const char * E0=    "E0 ";
+  static const char * F0=    "F0 ";
+  static const char * F0plus="F0+";
+  static const char * G0=    "G0 ";
+  static const char * G0plus="G0+";
+  static const char * A0=    "A0 ";
+  static const char * A0plus="A0+";
+  static const char * B1=    "B1 ";
+  
+  static const char * C1=    "C1 ";
+  static const char * C1plus="C1+";
+  static const char * D1=    "D1 ";
+  static const char * D1plus="D1+";
+  static const char * E1=    "E1 ";
+  static const char * F1=    "F1 ";
+  static const char * F1plus="F1+";
+  static const char * G1=    "G1 ";
+  static const char * G1plus="G1+";
+  static const char * A1=    "A1 ";
+  static const char * A1plus="A1+";
+  static const char * B2=    "B2 ";
+  
+  static const char * C2=    "C2 ";
+  static const char * C2plus="C2+";
+  static const char * D2=    "D2 ";
+  static const char * D2plus="D2+";
+  static const char * E2=    "E2 ";
+  static const char * F2=    "F2 ";
+  static const char * F2plus="F2+";
+  static const char * A2=    "A2 ";
+  static const char * A2plus="A2+";
+  static const char * G2=    "G2 ";
+  static const char * G2plus="G2+";
+  static const char * B3=    "B3 ";
+  
+  static const char * C3=    "C3 ";
+  static const char * C3plus="C3+";
+  static const char * D3=    "D3 ";
+  static const char * D3plus="D3+";
+  static const char * E3=    "E3 ";
+  static const char * F3=    "F3 ";
+  static const char * F3plus="F3+";
+  static const char * G3=    "G3 ";
+  static const char * G3plus="G3+";
+  static const char * A3=    "A3 ";
+  static const char * A3plus="A3+";
+  static const char * B4=    "B4 ";
+  
+  static const char * C4=    "C4 ";
+  static const char * C4plus="C4+";
+  static const char * D4=    "D4 ";
+  static const char * D4plus="D4+";
+  static const char * E4=    "E4 ";
+  static const char * F4=    "F4 ";
+  static const char * F4plus="F4+";
+  static const char * G4=    "G4 ";
+  static const char * G4plus="G4+";
+  static const char * A4=    "A4 ";
+  static const char * A4plus="A4+";
+  static const char * B5=    "B5 ";
+  
+  static const char * C5=    "C5 ";
+  static const char * C5plus="C5+";
+  static const char * D5=    "D5 ";
+  static const char * D5plus="D5+";
+  static const char * E5=    "E5 ";
+  static const char * F5=    "F5 ";
+  static const char * F5plus="F5+";
+  static const char * G5=    "G5 ";
+  static const char * G5plus="G5+";
+  static const char * A5=    "A5 ";
+  static const char * A5plus="A5+";
+  static const char * B6=    "B6 ";
+  
+  static const char * C6=    "C6 ";
+  static const char * C6plus="C6+";
+  static const char * D6=    "D6 ";
+  static const char * D6plus="D6+";
+  static const char * E6=    "E6 ";
+  static const char * F6=    "F6 ";
+  static const char * F6plus="F6+";
+  static const char * G6=    "G6 ";
+  static const char * G6plus="G6+";
+  static const char * A6=    "A6 ";
+  static const char * A6plus="A6+";
+  static const char * B7=    "B7 ";
+  
+  static const char * C7=    "C7 ";
+  static const char * C7plus="C7+";
+  static const char * D7=    "D7 ";
+  static const char * D7plus="D7+";
+  
   switch(Note)
     {
     case 1:   return  C0;      break;

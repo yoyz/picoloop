@@ -42,8 +42,8 @@ class SDL_GUI
 
   int  openTTFFont();
   int  guiTTFText(int x,int y,const char *txt);
-  void drawTTFTextNumberFirstLine(int n,char *txt);
-  void drawTTFTextNumberSecondLine(int n,char *txt);
+  void drawTTFTextNumberFirstLine(int n,const char *txt);
+  void drawTTFTextNumberSecondLine(int n,const char *txt);
   //  void drawTTFTextNumber(int n,char *txt);
 
   void refresh();
