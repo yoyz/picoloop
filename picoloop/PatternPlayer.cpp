@@ -1806,8 +1806,8 @@ int seq()
 	  //	      seq_update_track(i);	  	  
 	      //}
 	}
-      if (AE.bufferIsGenerated()==0)
-	AE.processBuffer();
+      //if (AE.bufferIsGenerated()==0)
+      //AE.processBuffer();
     }
 }
 

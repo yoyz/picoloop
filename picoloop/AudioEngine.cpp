@@ -46,7 +46,7 @@ void AudioEngine::processBuffer()
     {
       buffer_out[i]=AM.tick();      
     }
-  bufferGenerated=1;
+  bufferGenerated=0;
 }
 
 int AudioEngine::bufferIsGenerated()
@@ -222,8 +222,8 @@ int AudioEngine::callback( void *outputBuffer,
   MY_TYPE *buffer = (MY_TYPE *) outputBuffer;
   
   //  this->bufferGenerated=0;
-  //  if (bufferGenerated==0)
-  this->processBuffer();
+  if (bufferGenerated==0)
+    this->processBuffer();
 
 #ifdef LINUX_DESKTOP
   if (debug_audio)
@@ -259,6 +259,7 @@ int AudioEngine::callback( void *outputBuffer,
   //fwrite(buffer,sizeof(MY_TYPE)*nBufferFrames,sizeof(MY_TYPE),fd);
 
   //  printf("AudioEngine::calback() end\n");
+  //bufferGenerated=0;
   return nbCallback++;  
 }
 
