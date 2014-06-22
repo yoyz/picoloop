@@ -111,12 +111,13 @@ int note=0;
 int note_all=0;
 
 int amp=0;              // variation of the amp of monomixer
+int amp_all=0;              // variation of the amp of monomixer
 
 int attack=0;
 int release=0;
 
-int attack_allstep=0;
-int release_allstep=0;
+int attack_all=0;
+int release_all=0;
 
 
 int cutoff=0;
@@ -791,19 +792,19 @@ void handle_key_amp_env()
       //printf("***********************\n");
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A])
 	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>4) 
-	  { release_allstep=-1;   dirty_graphic=1; }
+	  { release_all=-1;   dirty_graphic=1; }
       
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>4) 
-	  { release_allstep=1; 	  dirty_graphic=1; }
+	  { release_all=1; 	  dirty_graphic=1; }
       
       if (keyState[BUTTON_UP]    && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>4) 
-	  { attack_allstep=1;  	  dirty_graphic=1; }
+	  { attack_all=1;  	  dirty_graphic=1; }
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>4) 
-	  { attack_allstep=-1; 	  dirty_graphic=1; }
+	  { attack_all=-1; 	  dirty_graphic=1; }
     }  
 
 
@@ -834,6 +835,27 @@ void handle_key_amp_env()
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>4) 
 	  { attack=-1; 	  dirty_graphic=1; }
+    }  
+
+  if (menu          != MENU_OFF && 
+      menu_cursor   == M_AD     &&
+      menu_env      == MENU_ENV_ATTACK_AMP)
+    {
+      if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A])
+	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>4) 
+	  { amp_all=-1;   dirty_graphic=1; }
+      
+      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>4) 
+	  { amp_all=1; 	  dirty_graphic=1; }
+      
+      if (keyState[BUTTON_UP]    && keyState[BUTTON_A]) 
+	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>4) 
+	  { attack_all=1;  	  dirty_graphic=1; }
+      
+      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A]) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>4) 
+	  { attack_all=-1; 	  dirty_graphic=1; }
     }  
 
 
@@ -1528,6 +1550,15 @@ int seq()
 	  if (debug)
 	    printf("[amp:%d]\n",P[cty].getPatternElement(cursor).getAmp());
 	}
+
+      if (amp_all!=0)
+	{
+	  for (i=0;i<15;i++)
+	    P[cty].getPatternElement(i).setAmp(P[cty].getPatternElement(i).getAmp()+amp_all);
+	  amp_all=0;
+	  if (debug)
+	    printf("[amp_all:%d]\n",P[cty].getPatternElement(cursor).getAmp());
+	}
 	  
       // Change Attack
       if (attack!=0)
@@ -1539,13 +1570,13 @@ int seq()
 	}
 
       // Change Attack
-      if (attack_allstep!=0)
+      if (attack_all!=0)
 	{
 	  for(i=0;i<15;i++)
-	    P[cty].getPatternElement(i).setAttack(P[cty].getPatternElement(i).getAttack()+attack_allstep);
-	  attack_allstep=0;
+	    P[cty].getPatternElement(i).setAttack(P[cty].getPatternElement(i).getAttack()+attack_all);
+	  attack_all=0;
 	  if (debug)
-	    printf("[attack_allstep:%d]\n",P[cty].getPatternElement(cursor).getAttack());
+	    printf("[attack_all:%d]\n",P[cty].getPatternElement(cursor).getAttack());
 	}
 
       
@@ -1562,14 +1593,14 @@ int seq()
 	}
 
       // Change Release
-      if (release_allstep!=0)
+      if (release_all!=0)
 	{
 	  //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
 	  for(i=0;i<15;i++)
-	    P[cty].getPatternElement(i).setRelease(P[cty].getPatternElement(i).getRelease()+release_allstep);
-	  release_allstep=0;
+	    P[cty].getPatternElement(i).setRelease(P[cty].getPatternElement(i).getRelease()+release_all);
+	  release_all=0;
 	  if (debug)
-	    printf("[release_allstep:%d]\n",P[cty].getPatternElement(cursor).getRelease());
+	    printf("[release_all:%d]\n",P[cty].getPatternElement(cursor).getRelease());
 	  //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
 	  
 	}
