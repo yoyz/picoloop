@@ -159,11 +159,16 @@ Sint16 VCO::tick()
   //  sa=(s1->tick()*((128-vcomix))/128);
   //  sb=(s2->tick()*((vcomix-128))/128);
   
-  sa=(s1->tick()*((128-vcomix))/(128));
+  //sa=(s1->tick()*((128-vcomix))/(128));
+  sa=(s1->tick()*((128-vcomix)));
 
-  sb=(s2->tick()*((vcomix))/(128));
+  //sb=(s2->tick()*((vcomix))/(128));
+  sb=(s2->tick()*((vcomix)));
 
-  sc=sa+sb;
+  //sc=sa+sb;
+  //sc=(sa+sb)/128;
+  sc=(sa+sb)>>7;
+
   s=sc;
   //  sb=(s2->tick())
 
