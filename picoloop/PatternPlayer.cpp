@@ -302,14 +302,22 @@ void display_board_note()
 
 void display_board_load_save()
 {
+  int x,y;
+  static const char * txt_tab[] = 
+    { 
+    "0","1","2","3",
+    "4","5","6","7",
+    "8","9","A","B",
+    "C","D","E","F" 
+    }; 
+
   if (menu==MENU_OFF && 
       menu_cursor==M_LS)
     {
       printf("HIT\n");
-      int x,y;
-      const char * txt="0";
-      const char * tmp_txt;
-      tmp_txt="0";
+      //      const char * tmp_txt;
+
+      //tmp_txt="0";
       
       SG.clearScreen();
       for (x=0;x<16;x++)
@@ -325,7 +333,8 @@ void display_board_load_save()
       
       for (x=0;x<16;x++)
 	for (y=0;y<4;y++)
-	  SG.drawTTFTextLoadSaveBoxNumer(x,y,tmp_txt);
+	  SG.drawTTFTextLoadSaveBoxNumer(x,y,txt_tab[x]);
+      //SG.drawTTFTextLoadSaveBoxNumer(x,y,tmp_txt);
     }
 }
 
