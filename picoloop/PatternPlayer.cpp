@@ -131,6 +131,10 @@ int vcomix_all=0;
 int osconetype=0;
 int osctwotype=0;
 
+int osconetype_all=0;
+int osctwotype_all=0;
+
+
 int loadsave_cursor_x=0; // index in the load/save menu
 int loadsave_cursor_y=0; // index in the load/save menu
 
@@ -1025,6 +1029,29 @@ void handle_key_osc()
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%128==0) 
 	  { osctwotype=-1;  	  dirty_graphic=1;}
     }
+
+  // M_OSC
+  // change oscilltor one and two type
+  if (menu        != MENU_OFF && 
+      menu_cursor == M_OSC )
+    {
+      if (keyState[BUTTON_LEFT] && keyState[BUTTON_A]) 
+	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%128==0) 
+	  { osconetype_all=-1; 	  dirty_graphic=1;}
+      
+      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%128==0) 
+	  { osconetype_all=1;  	  dirty_graphic=1;}
+      
+      if (keyState[BUTTON_UP] && keyState[BUTTON_A]) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%128==0) 
+	  { osctwotype_all=1;   	  dirty_graphic=1;}
+      
+      if (keyState[BUTTON_DOWN] && keyState[BUTTON_A])
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%128==0) 
+	  { osctwotype_all=-1;  	  dirty_graphic=1;}
+    }
+
 }
 
 void handle_key_fltr()
@@ -1624,10 +1651,29 @@ int seq()
 	    printf("[osconetype:%d]\n",P[cty].getPatternElement(cursor).getOscillatorOneType());	  
 	}
 
+      if (osconetype_all!=0)
+	{
+	  for (i=0;i<15;i++)
+	    P[cty].getPatternElement(i).setOscillatorOneType(P[cty].getPatternElement(i).getOscillatorOneType()+osconetype_all);
+	  osconetype_all=0;
+	  if (debug)
+	    printf("[osconetype_all:%d]\n",P[cty].getPatternElement(cursor).getOscillatorOneType());	  
+	}
+
+
       if (osctwotype!=0)
 	{
 	  P[cty].getPatternElement(cursor).setOscillatorTwoType(P[cty].getPatternElement(cursor).getOscillatorTwoType()+osctwotype);
 	  osctwotype=0;
+	  if (debug)
+	    printf("[osctwotype:%d]\n",P[cty].getPatternElement(cursor).getOscillatorTwoType());	  
+	}
+
+      if (osctwotype_all!=0)
+	{
+	  for (i=0;i<15;i++)
+	    P[cty].getPatternElement(i).setOscillatorTwoType(P[cty].getPatternElement(i).getOscillatorTwoType()+osctwotype_all);
+	  osctwotype_all=0;
 	  if (debug)
 	    printf("[osctwotype:%d]\n",P[cty].getPatternElement(cursor).getOscillatorTwoType());	  
 	}
