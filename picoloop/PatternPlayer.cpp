@@ -1338,29 +1338,8 @@ void seq_update_multiple_time_by_step()
   int          oldstep=0;
   int          i=0;
 
-  // invert trig => insert/remove/copy note 
-  if (invert_trig)
-    {
-      if (P[cty].getPatternElement(cursor).getTrig())
-	{
-	  P[cty].getPatternElement(cursor).setTrig(! P[cty].getPatternElement(cursor).getTrig());
-	  PE=P[cty].getPatternElement(cursor);
-	}
-      else
-	{
-	  P[cty].setPatternElement(cursor,PE);
-	  P[cty].getPatternElement(cursor).setTrig(true);
-	  if (P[cty].getPatternElement(cursor).getNote()==0)
-	    {
-	      P[cty].getPatternElement(cursor).setAttack(8);
-	      P[cty].getPatternElement(cursor).setRelease(64);
-	      P[cty].getPatternElement(cursor).setNote(37);
-	    }
-	}
-      invert_trig=0;
-    }
   
-  // Change Amplification
+  // Change amp Amplification
   if (amp!=0)
     {
       P[cty].getPatternElement(cursor).setAmp(P[cty].getPatternElement(cursor).getAmp()+amp);
@@ -1369,6 +1348,7 @@ void seq_update_multiple_time_by_step()
 	printf("[amp:%d]\n",P[cty].getPatternElement(cursor).getAmp());
     }
   
+  // Change amp Amplification
   if (amp_all!=0)
     {
       for (i=0;i<15;i++)
@@ -1378,7 +1358,7 @@ void seq_update_multiple_time_by_step()
 	printf("[amp_all:%d]\n",P[cty].getPatternElement(cursor).getAmp());
     }
   
-  // Change Attack
+  // Change amp env Attack
   if (attack!=0)
     {
       P[cty].getPatternElement(cursor).setAttack(P[cty].getPatternElement(cursor).getAttack()+attack);
@@ -1387,7 +1367,7 @@ void seq_update_multiple_time_by_step()
 	printf("[attack:%d]\n",P[cty].getPatternElement(cursor).getAttack());
     }
   
-  // Change Attack
+  // Change amp env Attack
   if (attack_all!=0)
     {
       for(i=0;i<15;i++)
@@ -1398,7 +1378,7 @@ void seq_update_multiple_time_by_step()
     }
   
   
-  // Change Release
+  // Change amp env Release
   if (release!=0)
     {
       //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
@@ -1410,7 +1390,7 @@ void seq_update_multiple_time_by_step()
       
     }
   
-  // Change Release
+  // Change amp env Release
   if (release_all!=0)
     {
       //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
@@ -1449,7 +1429,7 @@ void seq_update_multiple_time_by_step()
     }
   
   
-  // Change cutoff
+  // Change filter cutoff
   if (cutoff!=0)
     {
       P[cty].getPatternElement(cursor).setCutoff(P[cty].getPatternElement(cursor).getCutoff()+cutoff);
@@ -1457,6 +1437,7 @@ void seq_update_multiple_time_by_step()
       if (debug) printf("[cutoff:%d]\n",P[cty].getPatternElement(cursor).getCutoff());	  
     }
   
+  // Change filter cutoff
   if (cutoff_all!=0)
     {
       for (i=0;i<15;i++)
@@ -1465,7 +1446,7 @@ void seq_update_multiple_time_by_step()
       if (debug) printf("[cutoff_all:%d]\n",P[cty].getPatternElement(cursor).getCutoff());	  
     }
   
-  
+  // Change filter resonance
   if (resonance!=0)
     {
       P[cty].getPatternElement(cursor).setResonance(P[cty].getPatternElement(cursor).getResonance()+resonance);
@@ -1473,6 +1454,7 @@ void seq_update_multiple_time_by_step()
       if (debug) printf("[resonance:%d]\n",P[cty].getPatternElement(cursor).getResonance());	  
     }
   
+  // Change filter resonance
   if (resonance_all!=0)
     {
       for (i=0;i<15;i++)
@@ -1481,6 +1463,7 @@ void seq_update_multiple_time_by_step()
       if (debug) printf("[resonance_all:%d]\n",P[cty].getPatternElement(cursor).getResonance());	  
     }
   
+    // Change step divider
   if (divider!=0)
     {	  
       if (divider>0)
@@ -1491,7 +1474,7 @@ void seq_update_multiple_time_by_step()
       P[cty].setBPMDivider(SEQ.getPatternSequencer(cty).getBPMDivider());
     }
   
-  
+  // Change oscillator one
   if (osconetype!=0)
     {
       P[cty].getPatternElement(cursor).setOscillatorOneType(P[cty].getPatternElement(cursor).getOscillatorOneType()+osconetype);
@@ -1500,6 +1483,7 @@ void seq_update_multiple_time_by_step()
 	printf("[osconetype:%d]\n",P[cty].getPatternElement(cursor).getOscillatorOneType());	  
     }
   
+  // Change oscillator one
   if (osconetype_all!=0)
     {
       for (i=0;i<15;i++)
@@ -1509,7 +1493,7 @@ void seq_update_multiple_time_by_step()
 	printf("[osconetype_all:%d]\n",P[cty].getPatternElement(cursor).getOscillatorOneType());	  
     }
   
-  
+  // Change oscillator two
   if (osctwotype!=0)
     {
       P[cty].getPatternElement(cursor).setOscillatorTwoType(P[cty].getPatternElement(cursor).getOscillatorTwoType()+osctwotype);
@@ -1518,6 +1502,7 @@ void seq_update_multiple_time_by_step()
 	printf("[osctwotype:%d]\n",P[cty].getPatternElement(cursor).getOscillatorTwoType());	  
     }
   
+  // Change oscillator two
   if (osctwotype_all!=0)
     {
       for (i=0;i<15;i++)
@@ -1743,6 +1728,29 @@ int seq()
       // A/D, Note, VCO, BPM, more...
       seq_update_multiple_time_by_step();
 
+      // invert trig => insert/remove/copy note 
+      if (invert_trig)
+	{
+	  if (P[cty].getPatternElement(cursor).getTrig())
+	    {
+	      P[cty].getPatternElement(cursor).setTrig(! P[cty].getPatternElement(cursor).getTrig());
+	      PE=P[cty].getPatternElement(cursor);
+	    }
+	  else
+	    {
+	      P[cty].setPatternElement(cursor,PE);
+	      P[cty].getPatternElement(cursor).setTrig(true);
+	      if (P[cty].getPatternElement(cursor).getNote()==0)
+		{
+		  P[cty].getPatternElement(cursor).setAttack(8);
+		  P[cty].getPatternElement(cursor).setRelease(64);
+		  P[cty].getPatternElement(cursor).setNote(37);
+		}
+	    }
+	  invert_trig=0;
+	}
+      
+      
       if (bpm!=0)
 	{
 	  //save the bpm in the 
