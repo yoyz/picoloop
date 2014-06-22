@@ -1705,11 +1705,12 @@ int seq()
       //M[t].getVCO().setSineOsc();
     }
 
-  printf("openAudio start streaming\n");
   //sleep(2);
+  // Init all track to the current step, step0 in this particular case 
   for (i=0;i<TRACK_MAX;i++)
     seq_update_track(i);
 
+  printf("openAudio start streaming\n");
   AE.startAudio();
   seq_update_by_step();  
   while (true)
@@ -1717,15 +1718,10 @@ int seq()
       cty=SEQ.getCurrentTrackY();
       ctx=SEQ.getCurrentTrackX();
 
-      nbcb=AE.getNbCallback();
-
-      if (nbcb>last_nbcb)
-	{
-	  last_nbcb=nbcb;
-	}
       handle_key();
 
-      // A/D, Note, VCO, BPM, more...
+      // A/D, Note, VCO, BPM, more handling...
+      // apply the modification done by the user on the gui
       seq_update_multiple_time_by_step();
 
       // invert trig => insert/remove/copy note 
@@ -1773,9 +1769,27 @@ int seq()
       if (dirty_graphic)
 	display_board();
 
+      nbcb=AE.getNbCallback();
+
+      if (nbcb>last_nbcb)
+	{
+	  last_nbcb=nbcb;
+	}
+
+
       // change step in the pattern
       if (nbcb-last_nbcb_ch_step>nb_cb_ch_step)
 	{
+	  for(i=0;i<TRACK_MAX;i++)
+	    {
+	      oldstep=0;
+	      
+	      oldstep=SEQ.getPatternSequencer(i).getStep();
+	      SEQ.getPatternSequencer(i).incStep();
+	      if (oldstep!=SEQ.getPatternSequencer(i).getStep())
+		seq_update_track(i);	  	  
+	    }
+
 	  dirty_graphic=1;
 	  display_board();
 	  //printf("[cursor:%d]\n",cursor);
@@ -1786,16 +1800,6 @@ int seq()
 	  //step++;
 
 	  seq_update_by_step();
-
-	  for(i=0;i<TRACK_MAX;i++)
-	    {
-	      oldstep=0;
-
-	      oldstep=SEQ.getPatternSequencer(i).getStep();
-	      SEQ.getPatternSequencer(i).incStep();
-	      if (oldstep!=SEQ.getPatternSequencer(i).getStep())
-		seq_update_track(i);	  	  
-	    }
 
 	  //for(i=0;i<TRACK_MAX;i++)
 	  //	    {
