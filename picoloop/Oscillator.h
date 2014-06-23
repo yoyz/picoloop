@@ -35,6 +35,9 @@ class Oscillator
   int    sample_num_index;
   int    table_fill;
   int    table_size;
+  int    offset_next_index; // index=index+(this->getFreq()*table_size)/44100;
+                            // index=index+(offset_next)
+                            // offset_next=(this->getFreq()*table_size)/44100;
   Uint16 u;
   Uint16 last_u;
   Sint16 s;

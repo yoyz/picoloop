@@ -51,7 +51,8 @@ void SawOscillator::init()
 Sint16 SawOscillator::tick()
 {
 
-  index=index+(this->getFreq()*table_size)/44100;
+  //index=index+(this->getFreq()*table_size)/44100;
+  index=index+offset_next_index;
   if (index>table_size)
     index=index-table_size;
   //printf("freq=%d index=%d table[index]=%d\n",this->getFreq(),index,table[index]);

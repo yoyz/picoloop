@@ -42,7 +42,8 @@ void WaveTableSineOscillator::init()
 
 Sint16 WaveTableSineOscillator::tick()
 { 
-  index=index+(this->getFreq()*1024)/44100;
+  //index=index+(this->getFreq()*1024)/44100;
+  index=index+offset_next_index;
   if (index>table_size)
     index=index-table_size;
   //printf("freq=%d index=%d table[index]=%d\n",this->getFreq(),index,table[index]);
