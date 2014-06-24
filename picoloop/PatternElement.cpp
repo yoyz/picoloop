@@ -24,6 +24,10 @@ PatternElement::PatternElement()
   fltr_cutoff=64;
   fltr_resonance=80;
 
+  lfo_depth=0;
+  lfo_speed=0;
+    
+
   oscOneType=SAW;
   oscTwoType=PULSE;
 }
@@ -187,6 +191,28 @@ void PatternElement::setAmp(int a)
 {
   amp=this->checkSevenBitBoundarie(a);
 }
+
+
+int PatternElement::getLfoDepth()
+{
+  return lfo_depth;
+}
+
+void PatternElement::setLfoDepth(int val)
+{
+  lfo_depth=this->checkSevenBitBoundarie(val);
+}
+
+int PatternElement::getLfoSpeed()
+{
+  return lfo_speed;
+}
+
+void PatternElement::setLfoSpeed(int val)
+{
+  lfo_speed=this->checkSevenBitBoundarie(val);
+}
+
 
 
 string PatternElement::getStr()

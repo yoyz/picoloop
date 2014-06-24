@@ -56,6 +56,12 @@ public:
   int    getResonance();
   void   setResonance(int res);
 
+  int    getLfoDepth();
+  void   setLfoDepth(int val);
+
+  int    getLfoSpeed();
+  void   setLfoSpeed(int val);
+
 
   int    getOscillatorOneType();
   int    getOscillatorTwoType();
@@ -87,6 +93,8 @@ private:
   int fltr_cutoff;
   int fltr_resonance;
 
+  int lfo_depth;
+  int lfo_speed;
 
   int oscOneType;
   int oscTwoType;

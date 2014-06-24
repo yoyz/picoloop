@@ -31,6 +31,8 @@ public:
   Sint16                tick();
   void                  init();
   void                  setVCOMix(int mix);
+  void                  setLfoDepth(int val);
+  void                  setLfoSpeed(int val);
   Oscillator          * getOscillatorOne();
 
   SawOscillator           sawOsc1;
@@ -61,12 +63,19 @@ public:
   int freqOsc1;
   int freqOsc2;
 
+
   int current;
   int vcomix;
+
+  int lfo_depth;
+  int lfo_depth_shift;
+
+  int lfo_speed;
 
   int lfo_refresh;
   int lfo_counter;
     
+  int tmp_i;
 };
 
 #endif

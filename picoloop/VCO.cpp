@@ -7,8 +7,14 @@ VCO::VCO() : sineOsc1(), sineOsc2(), sawOsc1(), sawOsc2(), pulseOsc1(), pulseOsc
   s1=NULL;
   s2=NULL;
   vcomix=64;
+
   lfo_counter=0;
-  lfo_refresh=128;
+  lfo_refresh=0;
+
+  lfo_depth=0;
+  lfo_depth_shift=20;
+
+  lfo_speed=0;
 
   freqOsc1=0;
   freqOsc2=0;
@@ -40,8 +46,8 @@ void VCO::init()
 
   lfo1=&sineLfoOsc1;
 
-  lfo1->setFreq(1024);
-  lfo1->setAmplitude(4);
+  lfo1->setFreq(0);
+  lfo1->setAmplitude(0);
 
   //  s1 = &sineosc;
   s1 = &pulseOsc1;
@@ -109,7 +115,27 @@ void VCO::setOscillator(int oscillator_number,int oscillator_type)
   s2->setFreq(s2freq);
 }
 
+void VCO::setLfoDepth(int val)
+{
+  //lfo_depth=val;
+  if (val <= 0              )  { lfo_depth=val ; lfo_depth_shift=20;       }
+  if (val > 0   && val < 16 )  { lfo_depth=val ; lfo_depth_shift=12;       }
+  if (val > 17  && val < 32 )  { lfo_depth=val ; lfo_depth_shift=11;       } 
+  if (val > 33  && val < 48 )  { lfo_depth=val ; lfo_depth_shift=10;       }
+  if (val > 49  && val < 64 )  { lfo_depth=val ; lfo_depth_shift=9;        }
+  if (val > 65  && val < 80 )  { lfo_depth=val ; lfo_depth_shift=8;        }
+  if (val > 81  && val < 96 )  { lfo_depth=val ; lfo_depth_shift=7;        }
+  if (val > 97  && val < 112 ) { lfo_depth=val ; lfo_depth_shift=6;        }
+  if (val > 113 && val < 128 ) { lfo_depth=val ; lfo_depth_shift=5;        }
 
+}
+
+void VCO::setLfoSpeed(int val)
+{
+  lfo_speed=val;
+  lfo1->setFreq(val);
+  //lfo1->setAmplitude(0);
+}
 
 void VCO::reset()
 {
@@ -183,10 +209,20 @@ Sint16 VCO::tick()
   
   if (lfo_counter==0)
     {
-      tmp=lfo1->tick() >> 9;
+      //tmp=lfo1->tick() >> ( lfo_depth >> 4 ) ;
+      //tmp=lfo1->tick() >> (lfo_depth /32 ) ;
+      if (lfo_depth==0)
+	tmp=0;
+      else
+	tmp=lfo1->tick() >> lfo_depth_shift;
       s1->setFreq(freqOsc1+tmp);
       s2->setFreq(freqOsc2+tmp);
-      //printf("tmp:%d\n");
+      tmp_i++;
+      if (tmp_i>=128)
+      	{
+	  printf("tmp:%d speed:%d depth:%d shift:%d\n",tmp,lfo_speed,lfo_depth,lfo_depth_shift);
+	  tmp_i=0;
+	}
     }
 
 

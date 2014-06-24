@@ -37,7 +37,11 @@ void Oscillator::setFreq(int freq)
   if (freq==frequency)
     return;
 
-  if (freq <= 0)          freq=0;
+  if (freq <= 0)          
+    {
+      freq=0;
+      offset_next_index=(table_size)/44100;
+    }
   else 
     if (freq > 20000) freq=20000;
   frequency=freq;

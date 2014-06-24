@@ -119,6 +119,8 @@ int release=0;
 int attack_all=0;
 int release_all=0;
 
+int lfo_depth=0;
+int lfo_speed=0;
 
 int cutoff=0;
 int resonance=0;
@@ -384,6 +386,46 @@ void display_board_vco()
     }
 }
 
+
+void display_board_lfo()
+{
+  int  i;
+  int  cty=SEQ.getCurrentTrackY();
+  int  step=SEQ.getPatternSequencer(cty).getStep();
+
+  // LFO
+
+  if (menu_cursor==M_LFO)
+    {
+      // Cursor & step postion      
+      SG.drawBoxNumber(cursor,CURSOR_COLOR);
+      SG.drawBoxNumber(step,STEP_COLOR);  
+      //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
+      
+      if (menu_env==MENU_ENV_ATTACK_RELEASE)
+	{
+	  for (i=0;i<16;i++)
+	    {
+	      // Draw trigged box trig color   
+	      if (P[cty].getPatternElement(i).getTrig())
+		{
+		  SG.drawBoxNumber(i,TRIG_COLOR);
+		  if (i==cursor)
+		    SG.drawBoxNumber(cursor,CURSOR_COLOR);
+		  if (i==step)
+		    SG.drawBoxNumber(step,STEP_COLOR);  
+		  //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
+		  
+		  // LFO
+		  SG.smallBoxNumber(i,P[cty].getPatternElement(i).getLfoDepth(),0,SMALLBOX_COLOR);
+		  SG.smallBoxNumber(i,0,P[cty].getPatternElement(i).getLfoSpeed(),SMALLBOX_COLOR);
+		}
+	    }
+	}
+      
+    }
+}
+
 void display_board_osc()
 {
   int  i;
@@ -535,6 +577,7 @@ void display_board()
   display_board_note();
   display_board_load_save();
   display_board_vco();
+  display_board_lfo();
   display_board_osc();
   display_board_fltr();
 
@@ -892,6 +935,7 @@ void handle_key_amp_env()
 
 }
 
+
 void handle_key_note()
 {
 
@@ -1114,6 +1158,72 @@ void handle_key_vco()
     }
 
 }
+
+
+void handle_key_lfo()
+{
+  bool * keyState;
+  int  * keyRepeat;
+  int    lastEvent;
+  int    lastKey;
+
+  keyState=IE.keyState();
+  keyRepeat=IE.keyRepeat();
+  lastEvent=IE.lastEvent();
+  lastKey=IE.lastKey();
+
+  // M_VCO
+  // VCO Menu
+  // Change Value
+  if (menu        == MENU_OFF && 
+      menu_cursor == M_LFO    
+      )
+    {
+      // Insert/Remove Trig
+      sub_handle_invert_trig();
+      if (keyState[BUTTON_LEFT] && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%4==0) 
+	  { lfo_depth=-1; 	  dirty_graphic=1;}
+      
+      if (keyState[BUTTON_RIGHT]  && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%4==0) 
+	  { lfo_depth=1;  	  dirty_graphic=1;}
+      
+      if (keyState[BUTTON_UP]  && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%4==0) 
+	  { lfo_speed=1;   	  dirty_graphic=1;}
+      
+      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B])
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%4==0) 
+	  { lfo_speed=-1;  	  dirty_graphic=1;}
+    }
+
+  /*
+  if (menu        != MENU_OFF && 
+      menu_cursor == M_VCO   
+      )
+    {
+      if (keyState[BUTTON_LEFT] && keyState[BUTTON_A]) 
+	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%4==0) 
+	  { _all=-1; 	  dirty_graphic=1;}
+      
+      if (keyState[BUTTON_RIGHT]  && keyState[BUTTON_A]) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%4==0) 
+	  { vcomix_all=1;  	  dirty_graphic=1;}
+
+      // ????
+      if (keyState[BUTTON_UP]  && keyState[BUTTON_A]) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%64==0) 
+	  { attack=1;   	  dirty_graphic=1;}
+      
+      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A])
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%64==0) 
+	  { attack=-1;  	  dirty_graphic=1;}
+      //????
+    }
+  */
+}
+
 
 
 void handle_key_fltr()
@@ -1359,6 +1469,7 @@ void handle_key()
   handle_key_note();
   handle_key_load_save();
   handle_key_vco();
+  handle_key_lfo();
   handle_key_osc(); 
   handle_key_fltr();
   handle_key_bpm();
@@ -1467,6 +1578,33 @@ void seq_update_multiple_time_by_step()
       //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
       
     }
+
+
+  // Change lfo depth
+  if (lfo_depth!=0)
+    {
+      //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
+      P[cty].getPatternElement(cursor).setLfoDepth(P[cty].getPatternElement(cursor).getLfoDepth()+lfo_depth);
+      lfo_depth=0;
+      if (debug)
+	printf("[lfo_depth:%d]\n",P[cty].getPatternElement(cursor).getLfoDepth());
+      //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
+      
+    }
+
+
+  // Change lfo speed
+  if (lfo_speed!=0)
+    {
+      //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
+      P[cty].getPatternElement(cursor).setLfoSpeed(P[cty].getPatternElement(cursor).getLfoSpeed()+lfo_speed);
+      lfo_speed=0;
+      if (debug)
+	printf("[lfo_speed:%d]\n",P[cty].getPatternElement(cursor).getLfoSpeed());
+      //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
+      
+    }
+
   
   
   // Change filter cutoff
@@ -1692,6 +1830,9 @@ void seq_update_track(int t)
 	  M[t]->getVCO().setVCOMix(P[t].getPatternElement(step).getVCOMix());		  
 	  M[t]->getVCO().setOscillator(0,P[t].getPatternElement(step).getOscillatorOneType());
 	  M[t]->getVCO().setOscillator(1,P[t].getPatternElement(step).getOscillatorTwoType());
+
+	  M[t]->getVCO().setLfoDepth(P[t].getPatternElement(step).getLfoDepth());
+	  M[t]->getVCO().setLfoSpeed(P[t].getPatternElement(step).getLfoSpeed());
 	  
 	  i_c=P[t].getPatternElement(step).getCutoff();
 	  i_r=P[t].getPatternElement(step).getResonance();
