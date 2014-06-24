@@ -9,7 +9,7 @@ VCO::VCO() : sineOsc1(), sineOsc2(), sawOsc1(), sawOsc2(), pulseOsc1(), pulseOsc
   vcomix=64;
 
   lfo_counter=0;
-  lfo_refresh=0;
+  lfo_refresh=1;
 
   lfo_depth=0;
   lfo_depth_shift=20;
@@ -142,6 +142,11 @@ void VCO::reset()
   printf("VCO::reset() this=0x%08.8X\n",this); // <==== FAILS allways the same this pointers
   s1->reset();
   s2->reset();
+  lfo1->reset();
+  
+  //this->setLfoDepth(0);
+  //  this->setLfoSpeed(0);
+  //  lfo_counter=0;
 }
 
 Oscillator * VCO::getOscillatorOne()
@@ -215,14 +220,16 @@ Sint16 VCO::tick()
 	tmp=0;
       else
 	tmp=lfo1->tick() >> lfo_depth_shift;
+
       s1->setFreq(freqOsc1+tmp);
       s2->setFreq(freqOsc2+tmp);
-      tmp_i++;
-      if (tmp_i>=128)
-      	{
-	  printf("tmp:%d speed:%d depth:%d shift:%d\n",tmp,lfo_speed,lfo_depth,lfo_depth_shift);
-	  tmp_i=0;
-	}
+      //      tmp_i++;
+      //      if (tmp_i>=128)
+      //      	{
+      //	  if (tmp!=0)
+      //	    printf("tmp:\t%.5d speed:%.5d depth:%.5d shift:%.5d\n",tmp,lfo_speed,lfo_depth,lfo_depth_shift);
+      //	  tmp_i=0;
+      //	}
     }
 
 

@@ -402,8 +402,8 @@ void display_board_lfo()
       SG.drawBoxNumber(step,STEP_COLOR);  
       //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
       
-      if (menu_env==MENU_ENV_ATTACK_RELEASE)
-	{
+      //if (menu_env==MENU_ENV_ATTACK_RELEASE)
+      //	{
 	  for (i=0;i<16;i++)
 	    {
 	      // Draw trigged box trig color   
@@ -421,7 +421,7 @@ void display_board_lfo()
 		  SG.smallBoxNumber(i,0,P[cty].getPatternElement(i).getLfoSpeed(),SMALLBOX_COLOR);
 		}
 	    }
-	}
+	  //}
       
     }
 }
