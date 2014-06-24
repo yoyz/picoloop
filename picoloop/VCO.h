@@ -48,13 +48,25 @@ public:
   TriangleOscillator      triangleOsc1;
   TriangleOscillator      triangleOsc2;
 
+  SineOscillator          sineLfoOsc1;
+
   //NoiseOscillator       noiseosc;
   Oscillator            * s1;
   Oscillator            * s2;
 
+  Oscillator            * lfo1;
+
   float freq;
+
+  int freqOsc1;
+  int freqOsc2;
+
   int current;
   int vcomix;
+
+  int lfo_refresh;
+  int lfo_counter;
+    
 };
 
 #endif

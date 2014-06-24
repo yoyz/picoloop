@@ -1,12 +1,17 @@
 #include "VCO.h"
 
 
-VCO::VCO() : sineOsc1(), sineOsc2(), sawOsc1(), sawOsc2(), pulseOsc1(), pulseOsc2(), triangleOsc1(), triangleOsc2(), waveTableSineOsc1(), waveTableSineOsc2(), noiseOsc1(), noiseOsc2() //, noiseosc()
+VCO::VCO() : sineOsc1(), sineOsc2(), sawOsc1(), sawOsc2(), pulseOsc1(), pulseOsc2(), triangleOsc1(), triangleOsc2(), waveTableSineOsc1(), waveTableSineOsc2(), noiseOsc1(), noiseOsc2(), sineLfoOsc1() //, noiseosc()
 {
   printf("VCO::VCO()\n");
   s1=NULL;
   s2=NULL;
   vcomix=64;
+  lfo_counter=0;
+  lfo_refresh=128;
+
+  freqOsc1=0;
+  freqOsc2=0;
 }
 
 void VCO::init()
@@ -31,6 +36,12 @@ void VCO::init()
   noiseOsc1.init();
   noiseOsc2.init();
 
+  sineLfoOsc1.init();
+
+  lfo1=&sineLfoOsc1;
+
+  lfo1->setFreq(1024);
+  lfo1->setAmplitude(4);
 
   //  s1 = &sineosc;
   s1 = &pulseOsc1;
@@ -116,12 +127,15 @@ Oscillator * VCO::getOscillatorOne()
 
 void VCO::setSynthFreq(float sfreq)
 {
+
+  freqOsc1=sfreq;
+  freqOsc2=sfreq;
   /*
   s1->setSynthFreq(sfreq);
   s2->setSynthFreq(sfreq);
   */
-  s1->setFreq(sfreq*1);
-  s2->setFreq(sfreq*1);
+  s1->setFreq(freqOsc1);
+  s2->setFreq(freqOsc2);
   //  s2->setFreq(sfreq*3);
 }
 
@@ -136,6 +150,7 @@ Sint16 VCO::tick()
   Sint32 sb;
   Sint32 sc;
   Sint16 s;
+  int    tmp;
   if (vcomix==0) vcomix=1;
   if (s1==NULL)
     { 
@@ -160,6 +175,21 @@ Sint16 VCO::tick()
   //  sb=(s2->tick()*((vcomix-128))/128);
   
   //sa=(s1->tick()*((128-vcomix))/(128));
+  lfo_counter++;
+  if (lfo_counter>lfo_refresh)
+    lfo_counter=0;
+
+  //lfo_counter=0;
+  
+  if (lfo_counter==0)
+    {
+      tmp=lfo1->tick() >> 9;
+      s1->setFreq(freqOsc1+tmp);
+      s2->setFreq(freqOsc2+tmp);
+      //printf("tmp:%d\n");
+    }
+
+
   sa=(s1->tick()*((128-vcomix)));
 
   //sb=(s2->tick()*((vcomix))/(128));
