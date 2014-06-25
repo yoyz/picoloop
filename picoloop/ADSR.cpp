@@ -98,20 +98,36 @@ void ADSR::reset()
 {
   printf("ADSR::reset() this=0x%08.8X\n",this);
   sample_num=0;
-  ca=attack;
+
+
   cd=decay;
   cs=sustain;
-  cr=release;
+
+  ca=attack  << 10;
+  cr=release << 10;
+
+  car=ca+cr;
+
+  ca_segment=ca/127;
+  cr_segment=cr/127;
+  
+  ca_next_segment=ca_segment;
+  cr_next_segment=cr_segment+ca;
+
+  ca_div=127;
+  cr_div=1;
   //fseconds=(float)release/16+(float(attack/16);
-  fseconds_release=(float)release/128;
-  fseconds_attack=(float)attack/128;
-  size_release=fseconds_release*44100;
-  size_attack=fseconds_attack*44100;
+  //fseconds_release=(float)release/128;
+  //fseconds_attack=(float)attack/128;
+  //size_release=fseconds_release*44100;
+  //size_attack=fseconds_attack*44100;
 }
 
 int ADSR::getSize()
 {
-  return size_release;
+  //return size_release;
+
+  return car;
 }
 
 Sint16 ADSR::tick()
@@ -119,48 +135,76 @@ Sint16 ADSR::tick()
   //  return S->tick();
 
   Sint16 s=0;
-  float f1=0.0;
-  float f2=0.0;
-  int debug=1;
-  int index_inverse=0;
+  Sint16 s_in;
+  //float  f1=0.0;
+  //float  f2=0.0;
+  int    debug=1;
+  int    index_inverse=0;
+  int    tmp1;
+  int    tmp2;
   //if (debug) fprintf(stderr,"begin Sint16 ADSR::tick()\n");
+  /*
   if (sample_num==0)  
     {      
       this->reset(); vco->reset(); 
+      
     }
+  */
+
+  if (sample_num>car)
+    return 0;
+
+
   sample_num++;
+  
 
   //s=S->tick();
   //  s=S->tick();
-  s=vco->tick();
-
+  s_in=vco->tick();
+  //return s_in;
   
   //(size-sample_num)
 
   //We are in the attack phase
-  if (sample_num<size_attack)
+  //if (sample_num<size_attack)
+
+  if (sample_num < ca)    
     {
-      f1=s;
-      index_inverse=sample_num;
-      f2=f1*((float)(index_inverse)/(size_attack));      
+      if (sample_num>ca_next_segment)
+	{
+	  ca_next_segment=ca_next_segment+ca_segment;
+	  ca_div=ca_div-1;
+	  
+	  if(ca_div<2)
+	    ca_div=2;
+	}
+      return s_in/ca_div;
     }
 
-  //We are in the release phase
-  if (sample_num>size_attack)
+  if (sample_num >= ca)
     {
-      f1=s;
-      index_inverse=(size_release+size_attack)-sample_num;
-      if (index_inverse<=0) { return 0; }
+      if (sample_num>cr_next_segment)
+	{
+	  cr_next_segment=cr_next_segment+cr_segment;
+	  cr_div=cr_div+1;
+	}
+
+      return s_in/cr_div;
       
-      if (sample_num>size_attack)
-	f2=f1*((float)(index_inverse)/(size_release));
-      //  printf("size:%d sample_num:%d s:%d f1:%f f2:%f\n",size,sample_num,s,f1,f2);
     }
-  s=f2;
+
+
+
+  //We are in the release phase
+  if (sample_num>ca)
+    {
+    }
+       
+  //s=f2;
 
 
   //if (debug) fprintf(stderr,"end Sint16 ADSR::tick()\n");
-  return s;  
+  //return s;  
 }
 
 /*

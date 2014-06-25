@@ -46,10 +46,22 @@ class ADSR
   //  Oscillator * S;
   VCO * vco;
 
-  int ca;
-  int cd;
-  int cs;
-  int cr;
+  Sint32 ca;
+  Sint32 cd;
+  Sint32 cs;
+  Sint32 cr;
+
+  Sint32 car;
+
+  Sint32 ca_segment;
+  Sint32 ca_next_segment;
+  Sint32 cr_segment;
+  Sint32 cr_next_segment;
+
+  Sint32 ca_div;
+  Sint32 cr_div;
+  //Sint32 cr_div;
+
   int playing;
 
   int size_release;
