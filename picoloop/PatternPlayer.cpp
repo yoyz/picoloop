@@ -120,7 +120,9 @@ int attack_all=0;
 int release_all=0;
 
 int lfo_depth=0;
+int lfo_depth_all=0;
 int lfo_speed=0;
+int lfo_speed_all=0;
 
 int cutoff=0;
 int resonance=0;
@@ -1198,30 +1200,30 @@ void handle_key_lfo()
 	  { lfo_speed=-1;  	  dirty_graphic=1;}
     }
 
-  /*
+
   if (menu        != MENU_OFF && 
-      menu_cursor == M_VCO   
+      menu_cursor == M_LFO
       )
     {
       if (keyState[BUTTON_LEFT] && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%4==0) 
-	  { _all=-1; 	  dirty_graphic=1;}
+	  { lfo_depth_all=-1; 	  dirty_graphic=1;}
       
       if (keyState[BUTTON_RIGHT]  && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%4==0) 
-	  { vcomix_all=1;  	  dirty_graphic=1;}
+	  { lfo_depth_all=1;  	  dirty_graphic=1;}
 
       // ????
       if (keyState[BUTTON_UP]  && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%64==0) 
-	  { attack=1;   	  dirty_graphic=1;}
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%4==0) 
+	  { lfo_speed_all=1;   	  dirty_graphic=1;}
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%64==0) 
-	  { attack=-1;  	  dirty_graphic=1;}
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%4==0) 
+	  { lfo_speed_all=-1;  	  dirty_graphic=1;}
       //????
     }
-  */
+
 }
 
 
@@ -1593,12 +1595,39 @@ void seq_update_multiple_time_by_step()
     }
 
 
+  // Change lfo depth
+  if (lfo_depth_all!=0)
+    {
+      //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
+      for (i=0;i<15;i++)
+	P[cty].getPatternElement(i).setLfoDepth(P[cty].getPatternElement(i).getLfoDepth()+lfo_depth_all);
+      lfo_depth_all=0;
+      if (debug)
+	printf("[lfo_depth_all:%d]\n",P[cty].getPatternElement(cursor).getLfoDepth());
+      //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
+      
+    }
+
+
   // Change lfo speed
   if (lfo_speed!=0)
     {
       //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
       P[cty].getPatternElement(cursor).setLfoSpeed(P[cty].getPatternElement(cursor).getLfoSpeed()+lfo_speed);
       lfo_speed=0;
+      if (debug)
+	printf("[lfo_speed:%d]\n",P[cty].getPatternElement(cursor).getLfoSpeed());
+      //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
+      
+    }
+
+  // Change lfo speed
+  if (lfo_speed_all!=0)
+    {
+      //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
+      for (i=0;i<15;i++)
+	P[cty].getPatternElement(i).setLfoSpeed(P[cty].getPatternElement(i).getLfoSpeed()+lfo_speed_all);
+      lfo_speed_all=0;
       if (debug)
 	printf("[lfo_speed:%d]\n",P[cty].getPatternElement(cursor).getLfoSpeed());
       //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
@@ -1919,9 +1948,10 @@ int seq()
 	      P[cty].getPatternElement(cursor).setTrig(true);
 	      if (P[cty].getPatternElement(cursor).getNote()==0)
 		{
-		  P[cty].getPatternElement(cursor).setAttack(8);
+		  P[cty].getPatternElement(cursor).setAttack(0);
 		  P[cty].getPatternElement(cursor).setRelease(64);
-		  P[cty].getPatternElement(cursor).setNote(37);
+		  //P[cty].getPatternElement(cursor).setNote(37);
+		  P[cty].getPatternElement(cursor).setNote(25);
 		}
 	    }
 	  invert_trig=0;
