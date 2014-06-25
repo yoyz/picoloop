@@ -52,12 +52,14 @@ Sint16 AudioMixer::tick()
 {
   Sint32 val=0;
   int i;
+  Sint16 sint16tick;
+
   for (i=0;i<TRACK_MAX;i++)
     val=val+T[i].tick();
   //Sint16 inttick=T.tick();
   //Sint32 sint32tick=(T0.tick()/2)+(T1.tick()/2);
   //Sint32 sint32tick=this->twoChannel(T[0].tick(),T[1].tick());
-  Sint16 sint16tick;
+
   
   //  sint16tick=sint32tick;
   sint16tick=val;

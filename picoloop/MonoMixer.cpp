@@ -48,7 +48,8 @@ Sint16 MonoMixer::tick()
   tick=M.tick();
   res32=tick*amplitude;
   //  res32=tick*127;
-  res32=res32/127;
+  //res32=res32/127;
+  res32=res32>>7;
   if (res32>32000)  res32=32000;
   if (res32<-32000) res32=-32000;
   //  return M->tick();
