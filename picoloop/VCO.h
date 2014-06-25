@@ -51,6 +51,7 @@ public:
   TriangleOscillator      triangleOsc2;
 
   SineOscillator          sineLfoOsc1;
+  SawOscillator           sawLfoOsc1;
 
   //NoiseOscillator       noiseosc;
   Oscillator            * s1;

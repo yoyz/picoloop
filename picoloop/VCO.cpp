@@ -1,7 +1,7 @@
 #include "VCO.h"
 
 
-VCO::VCO() : sineOsc1(), sineOsc2(), sawOsc1(), sawOsc2(), pulseOsc1(), pulseOsc2(), triangleOsc1(), triangleOsc2(), waveTableSineOsc1(), waveTableSineOsc2(), noiseOsc1(), noiseOsc2(), sineLfoOsc1() //, noiseosc()
+VCO::VCO() : sineOsc1(), sineOsc2(), sawOsc1(), sawOsc2(), pulseOsc1(), pulseOsc2(), triangleOsc1(), triangleOsc2(), waveTableSineOsc1(), waveTableSineOsc2(), noiseOsc1(), noiseOsc2(), sineLfoOsc1(), sawLfoOsc1() //, noiseosc()
 {
   printf("VCO::VCO()\n");
   s1=NULL;
@@ -9,7 +9,7 @@ VCO::VCO() : sineOsc1(), sineOsc2(), sawOsc1(), sawOsc2(), pulseOsc1(), pulseOsc
   vcomix=64;
 
   lfo_counter=0;
-  lfo_refresh=4;
+  lfo_refresh=2;
 
   lfo_depth=0;
   lfo_depth_shift=20;
@@ -50,8 +50,10 @@ void VCO::init()
   noiseOsc2.init();
 
   sineLfoOsc1.init();
+  sawLfoOsc1.init();
 
-  lfo1=&sineLfoOsc1;
+  //lfo1=&sineLfoOsc1;
+  lfo1=&sawLfoOsc1;
 
   lfo1->setFreq(0);
   lfo1->setAmplitude(32);
@@ -125,15 +127,15 @@ void VCO::setOscillator(int oscillator_number,int oscillator_type)
 void VCO::setLfoDepth(int val)
 {
   lfo_depth=val;
-  if (val > 0   && val <=  8           )  { lfo_depth=val ; lfo_depth_shift=20;       }
-  if (val > 8   && val <= 16 )  { lfo_depth=val ; lfo_depth_shift=12;       }
-  if (val > 17  && val <= 32 )  { lfo_depth=val ; lfo_depth_shift=11;       } 
-  if (val > 33  && val <= 48 )  { lfo_depth=val ; lfo_depth_shift=10;       }
-  if (val > 49  && val <= 64 )  { lfo_depth=val ; lfo_depth_shift=9;        }
-  if (val > 65  && val <= 80 )  { lfo_depth=val ; lfo_depth_shift=8;        }
-  if (val > 81  && val <= 96 )  { lfo_depth=val ; lfo_depth_shift=7;        }
-  if (val > 97  && val <= 112 ) { lfo_depth=val ; lfo_depth_shift=6;        }
-  if (val > 113 && val <= 128 ) { lfo_depth=val ; lfo_depth_shift=5;        }
+  if (val > 0   && val <=  8  )  { lfo_depth=val ; lfo_depth_shift=20;       }
+  if (val > 8   && val <= 16  )  { lfo_depth=val ; lfo_depth_shift=12;       }
+  if (val > 17  && val <= 32  )  { lfo_depth=val ; lfo_depth_shift=11;       } 
+  if (val > 33  && val <= 48  )  { lfo_depth=val ; lfo_depth_shift=10;       }
+  if (val > 49  && val <= 64  )  { lfo_depth=val ; lfo_depth_shift=9;        }
+  if (val > 65  && val <= 80  )  { lfo_depth=val ; lfo_depth_shift=8;        }
+  if (val > 81  && val <= 96  )  { lfo_depth=val ; lfo_depth_shift=7;        }
+  if (val > 97  && val <= 112 )  { lfo_depth=val ; lfo_depth_shift=6;        }
+  if (val > 113 && val <= 128 )  { lfo_depth=val ; lfo_depth_shift=5;        }
 
 }
 
