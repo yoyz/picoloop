@@ -183,6 +183,51 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
   fgets(line,512,fd);
   //match('Pattern 1 Track 1 Param Note 41 0 52 0 22 0 12 0 21 11 14 12 43 12 54')
   sscanf(line,
+	 "Pattern %d Track %d Param PitchLfoDepth %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
+	 &PatNum,&TrackNum,
+	 &n[0], &n[1], &n[2], &n[3],
+	 &n[4], &n[5], &n[6], &n[7],
+	 &n[8], &n[9], &n[10],&n[11],
+	 &n[12],&n[13],&n[14],&n[15]);
+
+      if (PatNum    ==PatternNumber &&
+	  TrackNum  ==TrackNumber)
+	for (i=0;i<PatSize;i++)
+	  {
+	    Pe=P.getPatternElement(i);      
+	    Pe.setLfoDepth(n[i]);
+	    P.setPatternElement(i,Pe);      
+	  }
+      else
+	retcode=false;
+
+
+  fgets(line,512,fd);
+  //match('Pattern 1 Track 1 Param Note 41 0 52 0 22 0 12 0 21 11 14 12 43 12 54')
+  sscanf(line,
+	 "Pattern %d Track %d Param PitchLfoSpeed %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
+	 &PatNum,&TrackNum,
+	 &n[0], &n[1], &n[2], &n[3],
+	 &n[4], &n[5], &n[6], &n[7],
+	 &n[8], &n[9], &n[10],&n[11],
+	 &n[12],&n[13],&n[14],&n[15]);
+
+      if (PatNum    ==PatternNumber &&
+	  TrackNum  ==TrackNumber)
+	for (i=0;i<PatSize;i++)
+	  {
+	    Pe=P.getPatternElement(i);      
+	    Pe.setLfoSpeed(n[i]);
+	    P.setPatternElement(i,Pe);      
+	  }
+      else
+	retcode=false;
+
+
+
+  fgets(line,512,fd);
+  //match('Pattern 1 Track 1 Param Note 41 0 52 0 22 0 12 0 21 11 14 12 43 12 54')
+  sscanf(line,
 	 "Pattern %d Track %d Param Amp %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
 	 &PatNum,&TrackNum,
 	 &n[0], &n[1], &n[2], &n[3],
@@ -538,6 +583,29 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
 
 
   //line=""; //Weird ?
+
+
+  //insert 'Pattern 2 Track 2 Param Note 84 0 52 0 22 0 12 0 21 11 14 12 43 12 54 13'
+  for (int i=0; i< P.getSize();i++)
+    {
+      if (i==0)
+	sprintf(line,"Pattern %d Track %d Param PitchLfoDepth ",PatternNumber,TrackNumber);
+      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).getLfoDepth());
+    }
+  sprintf(line+strlen(line),"\n");
+  data.insert(data.end(),line);
+
+
+  //insert 'Pattern 2 Track 2 Param Note 84 0 52 0 22 0 12 0 21 11 14 12 43 12 54 13'
+  for (int i=0; i< P.getSize();i++)
+    {
+      if (i==0)
+	sprintf(line,"Pattern %d Track %d Param PitchLfoSpeed ",PatternNumber,TrackNumber);
+      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).getLfoSpeed());
+    }
+  sprintf(line+strlen(line),"\n");
+  data.insert(data.end(),line);
+
 
   //insert 'Pattern 2 Track 2 Param Note 84 0 52 0 22 0 12 0 21 11 14 12 43 12 54 13'
   for (int i=0; i< P.getSize();i++)
