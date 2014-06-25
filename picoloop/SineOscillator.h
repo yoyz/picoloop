@@ -24,7 +24,7 @@ class SineOscillator : public Oscillator
   void     init();
   Sint16   tick();
   int      table_size;
-  int      index;
+  //int      index;
 };
 
 #endif

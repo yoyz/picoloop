@@ -24,6 +24,7 @@ void Oscillator::reset()
     {
       sample_num=0;
     }
+  index=0;
 }
 
 

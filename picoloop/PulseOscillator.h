@@ -24,7 +24,7 @@ class PulseOscillator : public Oscillator
 
 
   int      table_size;
-  int      index;
+  //int      index;
  
 };
 

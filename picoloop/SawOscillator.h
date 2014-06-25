@@ -23,7 +23,6 @@ class SawOscillator : public Oscillator
   Sint16   tick();
   //  int      phase;  
   int      table_size;
-  int      index;
   
 };
 

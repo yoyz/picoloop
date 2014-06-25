@@ -41,6 +41,9 @@ class Oscillator
   Uint16 u;
   Uint16 last_u;
   Sint16 s;
+
+  int      index;
+
   
 };
 
