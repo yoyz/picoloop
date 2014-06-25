@@ -307,6 +307,10 @@ void display_board_note()
 void display_board_load_save()
 {
   int x,y;
+  int  i;
+  int  cty=SEQ.getCurrentTrackY();
+  int  step=SEQ.getPatternSequencer(cty).getStep();
+
   static const char * txt_tab[] = 
     { 
     "0","1","2","3",
@@ -315,6 +319,39 @@ void display_board_load_save()
     "C","D","E","F" 
     }; 
 
+
+  if (menu!=MENU_OFF && 
+      menu_cursor==M_LS)
+    {
+
+      // Cursor & step postion      
+      SG.drawBoxNumber(cursor,CURSOR_COLOR);
+      SG.drawBoxNumber(step,STEP_COLOR);  
+      //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
+      
+      //if (menu_env==MENU_ENV_ATTACK_RELEASE)
+      //	{
+      for (i=0;i<16;i++)
+	{
+	  // Draw trigged box trig color   
+	  if (P[cty].getPatternElement(i).getTrig())
+	    {
+	      SG.drawBoxNumber(i,TRIG_COLOR);
+	      if (i==cursor)
+		SG.drawBoxNumber(cursor,CURSOR_COLOR);
+	      if (i==step)
+		SG.drawBoxNumber(step,STEP_COLOR);  
+		  //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
+	      
+		  // LFO
+	      SG.smallBoxNumber(i,P[cty].getPatternElement(i).getLfoDepth(),0,SMALLBOX_COLOR);
+	      SG.smallBoxNumber(i,0,P[cty].getPatternElement(i).getLfoSpeed(),SMALLBOX_COLOR);
+	    }
+	}
+    }
+      
+      
+      
   if (menu==MENU_OFF && 
       menu_cursor==M_LS)
     {
@@ -373,17 +410,6 @@ void display_board_vco()
 	      SG.smallBoxNumber(i,P[cty].getPatternElement(i).getVCOMix(),0,SMALLBOX_COLOR);
 	    }
 
-	  /*	  
-	  else
-	    {
-	      
-	      if (i==step)    
-		SG.drawBoxNumber(step,  STEP_COLOR);  
-	      if (i==cursor) 
-		SG.drawBoxNumber(cursor,CURSOR_COLOR);
-	      
-	    }
-	  */
 	}
     }
 }
@@ -1790,7 +1816,7 @@ int seq_update_by_step()
 	    bpm_current=P[t].getBPM();
 	    nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
 
-	    SEQ.getPatternSequencer(cty).setBPMDivider(P[cty].getBPMDivider());
+	    SEQ.getPatternSequencer(t).setBPMDivider(P[t].getBPMDivider());
 	  }
 	else
 	  P[t].init();
