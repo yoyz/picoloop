@@ -40,19 +40,29 @@ PatternElement::~PatternElement()
 
 void PatternElement::init()
 {
-  printf("====PatternElement::init()====\n");
   Note=0;
   Trig=false;
   Channel=0;
   vcomix=64;
+
+  amp=127;
 
   amp_attack=0;
   amp_decay=127;
   amp_sustain=127;
   amp_release=8;
 
+  fltr_cutoff=64;
+  fltr_resonance=80;
+
+  lfo_depth=0;
+  lfo_speed=0;
+    
+
   oscOneType=SAW;
   oscTwoType=PULSE;
+
+  printf("====PatternElement::init()====\n");
 }
 
 int PatternElement::getOscillatorOneType()

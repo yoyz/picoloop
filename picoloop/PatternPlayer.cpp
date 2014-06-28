@@ -1810,16 +1810,18 @@ int seq_update_by_step()
     {
       printf("<==[LOAD_ALL]==>\n");
       for (t=0;t<TRACK_MAX;t++)
-	if (PR.PatternDataExist(loadsave_cursor_x,t)==true)
-	  {
-	    PR.readPatternData(loadsave_cursor_x,t,P[t]);
-	    bpm_current=P[t].getBPM();
-	    nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
-
-	    SEQ.getPatternSequencer(t).setBPMDivider(P[t].getBPMDivider());
-	  }
-	else
-	  P[t].init();
+	{
+	  if (PR.PatternDataExist(loadsave_cursor_x,t)==true)
+	    {
+	      PR.readPatternData(loadsave_cursor_x,t,P[t]);
+	      bpm_current=P[t].getBPM();
+	      nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
+	      
+	      SEQ.getPatternSequencer(t).setBPMDivider(P[t].getBPMDivider());
+	    }
+	  else
+	    P[t].init();
+	}
       loadall=false;
     }
 

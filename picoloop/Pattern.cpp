@@ -19,8 +19,12 @@ Pattern::~Pattern()
 void Pattern::init()
 {
   int i;
+  size=16;
+  bpmDivider=1;
+  bpm=120;
+
   printf("====Pattern::init()====\n");
-  for (i=0;i<16-1;i++)
+  for (i=0;i<16;i++)
     {
       pevector[i].init();
     }
