@@ -1530,7 +1530,7 @@ void seq_update_multiple_time_by_step()
   // Change amp Amplification
   if (amp_all!=0)
     {
-      for (i=0;i<15;i++)
+      for (i=0;i<16;i++)
 	P[cty].getPatternElement(i).setAmp(P[cty].getPatternElement(i).getAmp()+amp_all);
       amp_all=0;
       if (debug)
@@ -1549,7 +1549,7 @@ void seq_update_multiple_time_by_step()
   // Change amp env Attack
   if (attack_all!=0)
     {
-      for(i=0;i<15;i++)
+      for(i=0;i<16;i++)
 	P[cty].getPatternElement(i).setAttack(P[cty].getPatternElement(i).getAttack()+attack_all);
       attack_all=0;
       if (debug)
@@ -1573,7 +1573,7 @@ void seq_update_multiple_time_by_step()
   if (release_all!=0)
     {
       //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
-      for(i=0;i<15;i++)
+      for(i=0;i<16;i++)
 	P[cty].getPatternElement(i).setRelease(P[cty].getPatternElement(i).getRelease()+release_all);
       release_all=0;
       if (debug)
@@ -1598,7 +1598,7 @@ void seq_update_multiple_time_by_step()
   // Change VCOMix
   if (vcomix_all!=0)
     {
-      for (i=0;i<15;i++)
+      for (i=0;i<16;i++)
 	P[cty].getPatternElement(i).setVCOMix(P[cty].getPatternElement(i).getVCOMix()+vcomix_all);
       vcomix_all=0;
       if (debug)
@@ -1625,7 +1625,7 @@ void seq_update_multiple_time_by_step()
   if (lfo_depth_all!=0)
     {
       //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
-      for (i=0;i<15;i++)
+      for (i=0;i<16;i++)
 	P[cty].getPatternElement(i).setLfoDepth(P[cty].getPatternElement(i).getLfoDepth()+lfo_depth_all);
       lfo_depth_all=0;
       if (debug)
@@ -1651,7 +1651,7 @@ void seq_update_multiple_time_by_step()
   if (lfo_speed_all!=0)
     {
       //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
-      for (i=0;i<15;i++)
+      for (i=0;i<16;i++)
 	P[cty].getPatternElement(i).setLfoSpeed(P[cty].getPatternElement(i).getLfoSpeed()+lfo_speed_all);
       lfo_speed_all=0;
       if (debug)
@@ -1673,7 +1673,7 @@ void seq_update_multiple_time_by_step()
   // Change filter cutoff
   if (cutoff_all!=0)
     {
-      for (i=0;i<15;i++)
+      for (i=0;i<16;i++)
 	P[cty].getPatternElement(i).setCutoff(P[cty].getPatternElement(i).getCutoff()+cutoff_all);
       cutoff_all=0;
       if (debug) printf("[cutoff_all:%d]\n",P[cty].getPatternElement(cursor).getCutoff());	  
@@ -1690,7 +1690,7 @@ void seq_update_multiple_time_by_step()
   // Change filter resonance
   if (resonance_all!=0)
     {
-      for (i=0;i<15;i++)
+      for (i=0;i<16;i++)
 	P[cty].getPatternElement(i).setResonance(P[cty].getPatternElement(i).getResonance()+resonance_all);
       resonance_all=0;
       if (debug) printf("[resonance_all:%d]\n",P[cty].getPatternElement(cursor).getResonance());	  
@@ -1719,7 +1719,7 @@ void seq_update_multiple_time_by_step()
   // Change oscillator one
   if (osconetype_all!=0)
     {
-      for (i=0;i<15;i++)
+      for (i=0;i<16;i++)
 	P[cty].getPatternElement(i).setOscillatorOneType(P[cty].getPatternElement(i).getOscillatorOneType()+osconetype_all);
       osconetype_all=0;
       if (debug)
@@ -1738,7 +1738,7 @@ void seq_update_multiple_time_by_step()
   // Change oscillator two
   if (osctwotype_all!=0)
     {
-      for (i=0;i<15;i++)
+      for (i=0;i<16;i++)
 	P[cty].getPatternElement(i).setOscillatorTwoType(P[cty].getPatternElement(i).getOscillatorTwoType()+osctwotype_all);
       osctwotype_all=0;
       if (debug)
@@ -1758,7 +1758,7 @@ void seq_update_multiple_time_by_step()
   // Change Note
   if (note_all!=0)
     { 
-      for (i=0;i<15;i++)
+      for (i=0;i<16;i++)
 	P[cty].getPatternElement(i).setNote(P[cty].getPatternElement(i).getNote()+note_all);
       note_all=0;
       printf("[note_all:%d]\n",P[cty].getPatternElement(cursor).getNote());	  
@@ -1875,14 +1875,19 @@ void seq_update_track(int t)
 	  MM[t]->setAmplitude(P[t].getPatternElement(step).getAmp());
 
 	  	 
-	  M[t]->getADSR().reset();
-	  M[t]->getVCO().reset();
-	  M[t]->getVCO().getOscillatorOne();
+	  //M[t]->getVCO().getOscillatorOne();
+
+	  //M[t]->getADSR().reset();
+	  //M[t]->getVCO().reset();
+
 
 	  M[t]->getVCO().setSynthFreq(f);
-	  M[t]->getADSR().setRelease(P[t].getPatternElement(step).getRelease());		  
+
 	  M[t]->getADSR().setAttack(P[t].getPatternElement(step).getAttack());		  
+	  M[t]->getADSR().setRelease(P[t].getPatternElement(step).getRelease());	      
+
 	  M[t]->getVCO().setVCOMix(P[t].getPatternElement(step).getVCOMix());		  
+
 	  M[t]->getVCO().setOscillator(0,P[t].getPatternElement(step).getOscillatorOneType());
 	  M[t]->getVCO().setOscillator(1,P[t].getPatternElement(step).getOscillatorTwoType());
 
@@ -1892,14 +1897,22 @@ void seq_update_track(int t)
 	  i_c=P[t].getPatternElement(step).getCutoff();
 	  i_r=P[t].getPatternElement(step).getResonance();
 
+	  M[t]->getADSR().reset();
+	  M[t]->getVCO().reset();
+
+
 	  f_c=i_c-1;
 	  f_c=(f_c/256);
 	  
 	  f_r=i_r;
 	  f_r=f_r/8;
 
-	  printf("==================================================================[ %f ]==================================================================\n",f_c);
-	  printf("==================================================================[ %f ]==================================================================\n",f_r);
+
+	  printf("***Attack:%d\tRelease:%d\n",
+		 P[t].getPatternElement(step).getAttack(),
+		 P[t].getPatternElement(step).getRelease());
+	  //printf("==================================================================[ %f ]==================================================================\n",f_c);
+	  //printf("==================================================================[ %f ]==================================================================\n",f_r);
 	  //M[t]->getBiquad().setFc(f_c);
 	  M[t]->getBiquad().reset();
 	  M[t]->getBiquad().setBiquad(0, f_c+0.005, (f_r+0.005), 0.0);
