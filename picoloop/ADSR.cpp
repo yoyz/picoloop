@@ -11,9 +11,17 @@ ADSR::ADSR()
   attack=0;
   decay=127;
   sustain=0;
-  release=2;
+  release=0;
   sample_num=-1;
   playing=1;
+
+  ca=0;
+  cr=0;
+  ca_segment=0;
+  cr_segment=0;
+  ca_next_segment=0;
+  cr_next_segment=0;
+
 }
 
 ADSR::~ADSR()
@@ -27,9 +35,17 @@ void ADSR::init()
   attack=0;
   decay=127;
   sustain=0;
-  release=2;
+  release=0;
   sample_num=-1;
   playing=1;
+
+  ca=0;
+  cr=0;
+  ca_segment=0;
+  cr_segment=0;
+  ca_next_segment=0;
+  cr_next_segment=0;
+
 }
 
 
@@ -103,8 +119,15 @@ void ADSR::reset()
   cd=decay;
   cs=sustain;
 
-  ca=attack  << 10;
-  cr=release << 10;
+  if (attack>0)
+    ca=attack  << 10;
+  else
+    ca=0;
+
+  if (release>0)
+    cr=release << 10;
+  else
+    cr=0;
 
   car=ca+cr;
 
