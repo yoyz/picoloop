@@ -34,6 +34,14 @@ AudioEngine::AudioEngine() : AM()
     }
   buffer_out=(Sint16*)malloc(sizeof(Sint16)*BUFFER_FRAME);
   bufferGenerated=0;
+  PP=NULL;
+  nb_tick=0;
+  nb_tick_before_step_change=0;
+}
+
+int AudioEngine::setNbTickBeforeStepChange(int val)
+{
+  nb_tick_before_step_change=val;
 }
 
 int AudioEngine::getNbCallback()
@@ -43,12 +51,27 @@ int AudioEngine::getNbCallback()
 
 void AudioEngine::processBuffer()
 {
+
   for (int i=0;i<BUFFER_FRAME-1;i++)
     {
-      buffer_out[i]=AM.tick();      
+      nb_tick++;
+      if (nb_tick<nb_tick_before_step_change)
+	buffer_out[i]=AM.tick();   
+      else
+	{
+	  //printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!CALLL\n");
+	  PP->seq_callback_update_step();
+	  nb_tick=0;
+	}
     }
   bufferGenerated=0;
 }
+
+void AudioEngine::setPatternPlayerObject(PatternPlayer * pp)
+{
+  PP=pp;
+}
+
 
 int AudioEngine::bufferIsGenerated()
 {
@@ -59,7 +82,6 @@ Sint16 * AudioEngine::getBufferOut()
 {
   return buffer_out;
 }
-
 
 
 /*
