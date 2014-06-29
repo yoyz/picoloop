@@ -1,7 +1,8 @@
 #include "AudioEngine.h"
 #include "SineOscillator.h"
 
-AudioEngine::AudioEngine() : inst(), AM()
+//AudioEngine::AudioEngine() : inst(), AM()
+AudioEngine::AudioEngine() : AM()
 {
   freq=DEFAULTFREQ;
   samples=DEFAULTSAMPLES;
@@ -282,11 +283,12 @@ int fakecallback(
     }
 
 
-
+/*
 void AudioEngine::set_instrument(Instrument instru)
 {
   inst=inst;
 }
+*/
 /*
 void AudioEngine::callback()
 {

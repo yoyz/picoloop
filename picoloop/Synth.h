@@ -7,14 +7,6 @@
 #define __SYNTH____
 
 
-const int AMPLITUDE = 28000;
-const int FREQUENCY = 44100;
-
-struct BeepObject
-{
-    double freq;
-    int samplesLeft;
-};
 
 class Synth
 {

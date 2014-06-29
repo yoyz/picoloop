@@ -6,7 +6,7 @@ using namespace std;
 #include <math.h>
 #include <SDL/SDL.h>
 
-#include "PatternElement.h"
+//#include "PatternElement.h"
 #include "Master.h"
 #ifndef __OSCILLATOR__
 #define __OSCILLATOR__

@@ -3,9 +3,9 @@ using namespace std;
 #ifndef __AUDIOENGINE____
 #define __AUDIOENGINE____
 #include "Master.h"
-#include "Instrument.h"
-#include "Synth.h"
-#include "Wave.h"
+//#include "Instrument.h"
+//#include "Synth.h"
+//#include "Wave.h"
 #include <SDL/SDL.h>
 #include <iostream>
 #include <map>
@@ -50,7 +50,7 @@ class AudioEngine
 	       double streamTime, 
 	       RtAudioStreamStatus status, 
 	       void *data );
-  void set_instrument(Instrument inst);
+  //void set_instrument(Instrument inst);
   void setSynthFreq(int sfreq);
   int  getNbCallback();
 
@@ -72,7 +72,7 @@ class AudioEngine
 
   int          FORMAT;
   int          tick;
-  Instrument   inst;
+  //Instrument   inst;
   //  SineOscillator S;
   AudioMixer   AM;
   int          nbCallback;
