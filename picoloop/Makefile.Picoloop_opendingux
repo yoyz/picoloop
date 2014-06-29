@@ -1,0 +1,24 @@
+CC=g++
+CC=/opt/opendingux-toolchain/usr/bin/mipsel-linux-g++
+
+CFLAGS=-c -DLINUX -I. -LSDL/lib -ggdb -pg
+LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf -lpthread  RtAudio.o  -pg
+
+CFLAGS=-c -DLINUX -I. -LSDL/lib
+CFLAGS=-c -O3 -DLINUX -DOPENDINGUX -I. -I/opt/opendingux-toolchain/usr/include/ -L/opt/opendingux-toolchain/usr/lib/ -lSDL -lSDL_ttf
+
+LDFLAGS=-L/opt/opendingux-toolchain/usr/lib/ -lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread  RtAudio.o 
+SOURCES=Wave.cpp Synth.cpp Instrument.cpp Machine.cpp Track.cpp AudioMixer.cpp AudioEngine.cpp PatternElement.cpp Pattern.cpp PatternPlayer.cpp PatternReader.cpp Oscillator.cpp SineOscillator.cpp SawOscillator.cpp  FuzzyPulseOscillator.cpp  TriangleOscillator.cpp MonoMixer.cpp ADSR.cpp SDL_GUI.cpp InputManager.cpp VCO.cpp Sequencer.cpp PulseOscillator.cpp WaveTableSineOscillator.cpp NoiseOscillator.cpp Biquad.cpp PatternSequencer.cpp
+OBJECTS=$(SOURCES:.cpp=.o)
+EXECUTABLE=PatternPlayer
+
+all: $(SOURCES) $(EXECUTABLE)
+
+$(EXECUTABLE): $(OBJECTS)
+	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
+
+.cpp.o:
+	$(CC) $(CFLAGS) $< -o $@
+
+clean:
+	-rm -f $(OBJECTS) $(EXECUTABLE)
