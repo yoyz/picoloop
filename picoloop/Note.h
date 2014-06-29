@@ -1,4 +1,7 @@
 
+#ifndef NOTE_H
+#define NOTE_H
+
 enum note {
   BMINUSONE,
   C0,
@@ -109,3 +112,4 @@ enum note {
 
 
 
+#endif
