@@ -1,7 +1,6 @@
 using namespace std;
 
-#ifndef __AUDIOENGINE____
-#define __AUDIOENGINE____
+
 #include "Master.h"
 //#include "Instrument.h"
 //#include "Synth.h"
@@ -11,9 +10,15 @@ using namespace std;
 #include <map>
 #include "RtAudio.h"
 
-#include "Oscillator.h"
-#include "SineOscillator.h"
+//#include "Oscillator.h"
+//#include "SineOscillator.h"
 #include "AudioMixer.h"
+
+
+
+#ifndef __AUDIOENGINE____
+#define __AUDIOENGINE____
+
 /*
   Purpose : 
   mix all channel

@@ -17,7 +17,7 @@ using namespace std;
 #include "PatternReader.h"
 //#include "PatternPlayer.h"
 
-#include "Wave.h"
+//#include "Wave.h"
 #include "MonoMixer.h"
 #include "SDL_GUI.h"
 #include "InputManager.h"
