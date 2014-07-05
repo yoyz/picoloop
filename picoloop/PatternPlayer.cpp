@@ -90,7 +90,6 @@ int load=false;
 int saveall=false;
 int loadall=false;
 
-int patternRemove=false;
 
 int bpm_current=120;    // current value for the four ( TRACK_MAX ) tracks
 int bpm=0;              // change from -10 to +10
@@ -1449,19 +1448,6 @@ void handle_key_load_save()
       // in the load/save view 
       // move loasavecursor position 
       // Save/load Pattern
-
-
-      if (menu        == MENU_OFF && 
-	  keyState[BUTTON_B]      &&
-	  keyState[BUTTON_A]      &&
-	  keyState[BUTTON_DOWN])
-
-	{
-	  patternRemove=true;
-	  return;
-	}
-
-
       if (menu        == MENU_OFF && 
 	  keyState[BUTTON_B])
 	{
@@ -1892,26 +1878,6 @@ int seq_update_by_step()
       saveall=false;      
     }
 
-
-  // Load save only on pattern change
-  if (patternRemove)
-    {
-      printf("<==[REMOVE]==>\n");
-      if (PR.PatternDataExist(loadsave_cursor_x,loadsave_cursor_y)==true)
-	{
-	  if (PR.PatternRemove(loadsave_cursor_x,loadsave_cursor_y))
-	    {
-	      printf("<==[REMOVE==Success]==>\n");
-	      dirty_graphic=1;
-	    }
-	}
-      else
-	{
-	  P[cty].init();
-	  printf("<==[Remove==Failed]==>\n");
-	}
-      patternRemove=false;
-    }
 
     
   //if (step==16) 

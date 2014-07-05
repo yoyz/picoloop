@@ -22,7 +22,6 @@ class PatternReader
   ~PatternReader();
 
   void setFileName(string filename);
-  bool PatternRemove(int PatternNumber,int TrackNumber);
   bool PatternDataExist(int PatternNumber,int TrackNumber);
   bool readPatternData(int PatternNumber,int TrackNumber, Pattern & P);
   bool writePattern(int PatternNumber,int TrackNumber,Pattern & P);
