@@ -160,14 +160,41 @@ int ct_y=0;
 int invert_trig=0;
 
 int dirty_graphic=1;
+int seq_update_by_step_next=0;
+  
+int current_swing=64;
+int swing;
+
+
+void refresh_swing()
+{
+
+  // Swing
+  // 0    => 50/50
+  // 64   => 66/66
+  // 127  => 75/25
 
   
+  int  swing_inv=127-current_swing;
+  int  step=SEQ.getPatternSequencer(0).getStepWithoutDivider();
+  if (step%2)
+    {
+      //printf("odd\n");
+      AE.setNbTickBeforeStepChange((nb_tick_before_step_change*current_swing)/64);
+    }
+  else
+    {
+      //printf("even\n");
+      AE.setNbTickBeforeStepChange((nb_tick_before_step_change*swing_inv)/64);
+    }
+}
 
 void refresh_bpm()
 {
+
   nb_cb_ch_step=(60*DEFAULT_FREQ)/(BUFFER_FRAME*4*bpm_current);
   nb_tick_before_step_change=(60*DEFAULT_FREQ)/(bpm_current*4);
-  AE.setNbTickBeforeStepChange(nb_tick_before_step_change);
+  refresh_swing();
 }
 
 //char * tmp_str;
@@ -1435,6 +1462,21 @@ void handle_key_bpm()
 	  { divider=1; 	  dirty_graphic=1; printf("[A+UP    t=%d] divider\n",divider);}
     }  
 
+
+  if (menu        == MENU_OFF && 
+      menu_cursor == M_BPM )
+    {
+
+      if (keyState[BUTTON_LEFT] && keyState[BUTTON_A])
+	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%128==0)
+	  { swing=-1; 	  dirty_graphic=1; printf("[A+DOWN  t=%d] swing\n",current_swing); }
+
+      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_LEFT]%128==0) 
+	  { swing=1; 	  dirty_graphic=1; printf("[A+UP    t=%d] swing\n",current_swing);}
+    }  
+
+
 }
 
 void handle_key_load_save()
@@ -1846,6 +1888,26 @@ void seq_update_multiple_time_by_step()
 
 	}
 
+      if (swing!=0)
+	{
+	  //save the bpm in the 
+	  //change the number of time AudioEngine need to be trigged
+	  //to effectively change pattern step
+
+	  current_swing=current_swing+swing;
+	  swing=0;
+	  if (current_swing>96)
+	    current_swing=96;
+	  if (current_swing<32)
+	    current_swing=32;
+	  
+	  //nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
+	  //nb_tick_before_step_change=(60*DEFAULT_FREQ)/(bpm_current*4);
+	  //AE.setNbTickBeforeStepChange(nb_tick_before_step_change);
+	  refresh_bpm();
+	}
+
+
 
       // invert trig => insert/remove/copy note 
       if (invert_trig)
@@ -2079,6 +2141,8 @@ void seq_callback_update_step()
         seq_update_track(i);
     }
   dirty_graphic=1;
+  seq_update_by_step_next=1;
+  refresh_bpm();
 }
 
 
@@ -2147,7 +2211,8 @@ int seq()
 
 
       // change step in the pattern
-      if (nbcb-last_nbcb_ch_step>nb_cb_ch_step)
+      //if (nbcb-last_nbcb_ch_step>nb_cb_ch_step)
+      if (seq_update_by_step_next)
 	{	 
 	  /*
 	  for(i=0;i<TRACK_MAX;i++)
@@ -2173,6 +2238,7 @@ int seq()
 	  //step++;
 
 	  seq_update_by_step();
+	  seq_update_by_step_next=0;
 
 	  //for(i=0;i<TRACK_MAX;i++)
 	  //	    {

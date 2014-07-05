@@ -13,6 +13,7 @@ class PatternSequencer
 
   void setStep(int s);
   int  getStep();
+  int  getStepWithoutDivider();
 
   void setBPMDivider(int bd);
   int  getBPMDivider();

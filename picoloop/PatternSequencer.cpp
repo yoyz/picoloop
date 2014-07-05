@@ -42,6 +42,11 @@ int PatternSequencer::getStep()
     return (step/8)%16;
 }
 
+int PatternSequencer::getStepWithoutDivider()
+{
+  return step;
+}
+
 
 void PatternSequencer::incStep()
 {
