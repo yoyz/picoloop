@@ -3,6 +3,31 @@ using namespace std;
 #include "PatternPlayer.h"
 
 
+//menu
+enum {
+  MENU_OFF,
+  MENU_ON_PAGE1,
+  MENU_ON_PAGE2
+};
+
+//menu_cursor
+enum {
+  M_AD,   // 0
+  M_NOTE, // 1
+  M_OSC,  // 2 
+  M_VCO,  // 3
+
+  M_LS,   // 4
+  M_LFO,  // 5
+  M_FLTR, // 6
+  M_BPM   // 7
+};
+
+enum {
+  MENU_ENV_ATTACK_RELEASE,
+  MENU_ENV_ATTACK_AMP,
+  MENU_ENV_AMP_RELEASE
+};
 
 
 
@@ -1924,6 +1949,22 @@ void PatternPlayer::seq_update_track(int t)
 }
 
 
+int PatternPlayer::seq_callback_update_step()
+{
+  int i;
+  int oldstep;
+
+  for(i=0;i<TRACK_MAX;i++)
+    {
+      oldstep=0;
+      
+      oldstep=SEQ.getPatternSequencer(i).getStep();
+      SEQ.getPatternSequencer(i).incStep();
+      if (oldstep!=SEQ.getPatternSequencer(i).getStep())
+	seq_update_track(i);	  	  
+    }  
+}
+
 int PatternPlayer::seq()
 {
   AudioMixer & am=AE.getAudioMixer();
@@ -2029,6 +2070,9 @@ int PatternPlayer::seq()
       // change step in the pattern
       if (nbcb-last_nbcb_ch_step>nb_cb_ch_step)
 	{
+	  //!!!tocomment
+	  seq_callback_update_step();
+	  /*
 	  for(i=0;i<TRACK_MAX;i++)
 	    {
 	      oldstep=0;
@@ -2038,7 +2082,7 @@ int PatternPlayer::seq()
 	      if (oldstep!=SEQ.getPatternSequencer(i).getStep())
 		seq_update_track(i);	  	  
 	    }
-
+	  */
 	  dirty_graphic=1;
 	  display_board();
 	  //printf("[cursor:%d]\n",cursor);
@@ -2102,6 +2146,7 @@ int PatternPlayer::old_main()
   if (SG.openTTFFont()==false) { printf("ttf font error\n"); exit(1); }
   display_board();
 
+  //  AE
   printf("[openAudio output]\n");
   AE.openAudio();
 
