@@ -40,6 +40,19 @@ void PatternReader::init()
       }
 }
 
+bool PatternReader::PatternRemove(int PatternNumber,int TrackNumber)
+{
+  char filename[1024];
+  sprintf(filename,"dataP%dT%d.pic",PatternNumber,TrackNumber);
+  if (unlink(filename)==0)
+    {
+      loadedData[PatternNumber][TrackNumber]=DATA_DOES_NOT_EXIST_ON_STORAGE;
+      return true;
+    }
+  else
+    return false;
+}
+
 
 bool PatternReader::PatternDataExist(int PatternNumber,int TrackNumber)
 {
