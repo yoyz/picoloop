@@ -45,7 +45,6 @@ PatternPlayer::PatternPlayer() : P(TRACK_MAX), M(TRACK_MAX), MM(TRACK_MAX)
   nbcb=0;
   last_nbcb=0;
   nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
-  nb_tick_before_step_change=(60*DEFAULT_FREQ)/(bpm_current*4);
   last_nbcb_ch_step=0;
   debug=1;
   t=0;
@@ -1796,9 +1795,6 @@ int PatternPlayer::seq_update_by_step()
 	  PR.readPatternData(loadsave_cursor_x,loadsave_cursor_y,P[cty]);
 	  bpm_current=P[cty].getBPM();
 	  nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
-	  nb_tick_before_step_change=(60*DEFAULT_FREQ)/(bpm_current*4);
-	  AE.setNbTickBeforeStepChange(nb_tick_before_step_change);
-
 
 	  SEQ.getPatternSequencer(cty).setBPMDivider(P[cty].getBPMDivider());
 	}
@@ -1819,9 +1815,6 @@ int PatternPlayer::seq_update_by_step()
 	      PR.readPatternData(loadsave_cursor_x,t,P[t]);
 	      bpm_current=P[t].getBPM();
 	      nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
-	      nb_tick_before_step_change=(60*DEFAULT_FREQ)/(bpm_current*4);
-	      AE.setNbTickBeforeStepChange(nb_tick_before_step_change);
-      
 	      
 	      SEQ.getPatternSequencer(t).setBPMDivider(P[t].getBPMDivider());
 	    }
@@ -1970,7 +1963,6 @@ int PatternPlayer::seq_callback_update_step()
       if (oldstep!=SEQ.getPatternSequencer(i).getStep())
 	seq_update_track(i);	  	  
     }  
-  dirty_graphic=1;
 }
 
 int PatternPlayer::seq()
@@ -2014,7 +2006,6 @@ int PatternPlayer::seq()
 
       handle_key();
 
-
       // A/D, Note, VCO, BPM, more handling...
       // apply the modification done by the user on the gui
       seq_update_multiple_time_by_step();
@@ -2055,9 +2046,6 @@ int PatternPlayer::seq()
 
 	  bpm=0;
 	  nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
-	  nb_tick_before_step_change=(60*DEFAULT_FREQ)/(bpm_current*4);
-	  AE.setNbTickBeforeStepChange(nb_tick_before_step_change);
-
 	}
             
       // if user want to quit via handle_key
@@ -2069,9 +2057,7 @@ int PatternPlayer::seq()
       
       //display graphic if something has change : handle_key 
       if (dirty_graphic)
-	{
-	  display_board();
-	}
+	display_board();
 
       nbcb=AE.getNbCallback();
 
@@ -2082,11 +2068,10 @@ int PatternPlayer::seq()
 
 
       // change step in the pattern
-
       if (nbcb-last_nbcb_ch_step>nb_cb_ch_step)
 	{
 	  //!!!tocomment
-	  //seq_callback_update_step();
+	  seq_callback_update_step();
 	  /*
 	  for(i=0;i<TRACK_MAX;i++)
 	    {
@@ -2134,9 +2119,6 @@ void PatternPlayer::load_pattern()
       // Ugly hack for BPM management
       bpm_current=P[t].getBPM();
       nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
-      nb_tick_before_step_change=(60*DEFAULT_FREQ)/(bpm_current*4);
-      AE.setNbTickBeforeStepChange(nb_tick_before_step_change);
-      
 
       SEQ.getPatternSequencer(t).setBPMDivider(P[t].getBPMDivider());
     }
@@ -2166,8 +2148,6 @@ int PatternPlayer::old_main()
 
   //  AE
   printf("[openAudio output]\n");
-  AE.setPatternPlayerObject(this);
-  AE.setNbTickBeforeStepChange(nb_tick_before_step_change);
   AE.openAudio();
 
   seq();
