@@ -97,8 +97,8 @@ int bpm=0;              // change from -10 to +10
 int nbcb=0;             // current nb audio callback 
 int last_nbcb=0;        // number of occurence of AudioEngine callback before changing step
 //int nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm); // Weird ?
-int nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
-int nb_tick_before_step_change=(60*DEFAULT_FREQ)/(bpm_current*4);
+int nb_cb_ch_step;              //=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
+int nb_tick_before_step_change; //=(60*DEFAULT_FREQ)/(bpm_current*4);
 
 int last_nbcb_ch_step=0;// nb audio callback from last step
 int debug=1;
@@ -163,6 +163,12 @@ int dirty_graphic=1;
 
   
 
+void refresh_bpm()
+{
+  nb_cb_ch_step=(60*DEFAULT_FREQ)/(BUFFER_FRAME*4*bpm_current);
+  nb_tick_before_step_change=(60*DEFAULT_FREQ)/(bpm_current*4);
+  AE.setNbTickBeforeStepChange(nb_tick_before_step_change);
+}
 
 //char * tmp_str;
 
@@ -1833,12 +1839,36 @@ void seq_update_multiple_time_by_step()
 
 	  bpm_current=bpm_current+bpm;
 	  bpm=0;
-	  nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
-	  nb_tick_before_step_change=(60*DEFAULT_FREQ)/(bpm_current*4);
-	  AE.setNbTickBeforeStepChange(nb_tick_before_step_change);
+	  //nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
+	  //nb_tick_before_step_change=(60*DEFAULT_FREQ)/(bpm_current*4);
+	  //AE.setNbTickBeforeStepChange(nb_tick_before_step_change);
+	  refresh_bpm();
 
 	}
 
+
+      // invert trig => insert/remove/copy note 
+      if (invert_trig)
+	{
+	  if (P[cty].getPatternElement(cursor).getTrig())
+	    {
+	      P[cty].getPatternElement(cursor).setTrig(! P[cty].getPatternElement(cursor).getTrig());
+	      PE=P[cty].getPatternElement(cursor);
+	    }
+	  else
+	    {
+	      P[cty].setPatternElement(cursor,PE);
+	      P[cty].getPatternElement(cursor).setTrig(true);
+	      if (P[cty].getPatternElement(cursor).getNote()==0)
+		{
+		  P[cty].getPatternElement(cursor).setAttack(0);
+		  P[cty].getPatternElement(cursor).setRelease(64);
+		  //P[cty].getPatternElement(cursor).setNote(37);
+		  P[cty].getPatternElement(cursor).setNote(25);
+		}
+	    }
+	  invert_trig=0;
+	}
   
 }
 
@@ -1871,9 +1901,10 @@ int seq_update_by_step()
 	{
 	  PR.readPatternData(loadsave_cursor_x,loadsave_cursor_y,P[cty]);
 	  bpm_current=P[cty].getBPM();
-	  nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
-	  nb_tick_before_step_change=(60*DEFAULT_FREQ)/(bpm_current*4);
-	  AE.setNbTickBeforeStepChange(nb_tick_before_step_change);
+	  //nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
+	  //nb_tick_before_step_change=(60*DEFAULT_FREQ)/(bpm_current*4);
+	  //AE.setNbTickBeforeStepChange(nb_tick_before_step_change);
+	  refresh_bpm();
 
 
 	  SEQ.getPatternSequencer(cty).setBPMDivider(P[cty].getBPMDivider());
@@ -1894,9 +1925,10 @@ int seq_update_by_step()
 	    {
 	      PR.readPatternData(loadsave_cursor_x,t,P[t]);
 	      bpm_current=P[t].getBPM();
-	      nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
-	      nb_tick_before_step_change=(60*DEFAULT_FREQ)/(bpm_current*4);
-	      AE.setNbTickBeforeStepChange(nb_tick_before_step_change);
+	      //nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
+	      //nb_tick_before_step_change=(60*DEFAULT_FREQ)/(bpm_current*4);
+	      //AE.setNbTickBeforeStepChange(nb_tick_before_step_change);
+	      refresh_bpm();
 
 	      
 	      SEQ.getPatternSequencer(t).setBPMDivider(P[t].getBPMDivider());
@@ -2095,28 +2127,6 @@ int seq()
       // apply the modification done by the user on the gui
       seq_update_multiple_time_by_step();
 
-      // invert trig => insert/remove/copy note 
-      if (invert_trig)
-	{
-	  if (P[cty].getPatternElement(cursor).getTrig())
-	    {
-	      P[cty].getPatternElement(cursor).setTrig(! P[cty].getPatternElement(cursor).getTrig());
-	      PE=P[cty].getPatternElement(cursor);
-	    }
-	  else
-	    {
-	      P[cty].setPatternElement(cursor,PE);
-	      P[cty].getPatternElement(cursor).setTrig(true);
-	      if (P[cty].getPatternElement(cursor).getNote()==0)
-		{
-		  P[cty].getPatternElement(cursor).setAttack(0);
-		  P[cty].getPatternElement(cursor).setRelease(64);
-		  //P[cty].getPatternElement(cursor).setNote(37);
-		  P[cty].getPatternElement(cursor).setNote(25);
-		}
-	    }
-	  invert_trig=0;
-	}
       
       
             
@@ -2153,8 +2163,8 @@ int seq()
 	  dirty_graphic=1;
 	  */
 
-
-	  display_board();
+	  if (dirty_graphic)
+	    display_board();
 	  //printf("[cursor:%d]\n",cursor);
 	  
 	  //printf("loop\n");    
@@ -2188,9 +2198,10 @@ void load_pattern()
       
       // Ugly hack for BPM management
       bpm_current=P[t].getBPM();
-      nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
-      nb_tick_before_step_change=(60*DEFAULT_FREQ)/(bpm_current*4);
-      AE.setNbTickBeforeStepChange(nb_tick_before_step_change);
+      //nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
+      //nb_tick_before_step_change=(60*DEFAULT_FREQ)/(bpm_current*4);
+      //AE.setNbTickBeforeStepChange(nb_tick_before_step_change);
+      refresh_bpm();
 
       SEQ.getPatternSequencer(t).setBPMDivider(P[t].getBPMDivider());
     }
@@ -2199,10 +2210,7 @@ void load_pattern()
 
 }
 
-void printme()
-{
-  printf("*******************************hello\n");
-}
+
 
 int main()
 {
@@ -2222,6 +2230,7 @@ int main()
 
   printf("[openAudio output]\n");
   //AE.setupSequencerCallback(printme);
+  refresh_bpm();
   AE.setupSequencerCallback(seq_callback_update_step);
   AE.openAudio();
 
