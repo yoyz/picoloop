@@ -180,12 +180,12 @@ void refresh_swing()
   if (step%2)
     {
       //printf("odd\n");
-      AE.setNbTickBeforeStepChange((nb_tick_before_step_change*current_swing)/64);
+      AE.setNbTickBeforeStepChange((nb_tick_before_step_change*swing_inv)/64);
     }
   else
     {
       //printf("even\n");
-      AE.setNbTickBeforeStepChange((nb_tick_before_step_change*swing_inv)/64);
+     AE.setNbTickBeforeStepChange((nb_tick_before_step_change*current_swing)/64);
     }
 }
 
@@ -641,6 +641,12 @@ void display_board()
       SG.guiTTFText(200,60,str_submenu);
     }
 
+  if (menu_cursor==M_BPM)
+    {
+      sprintf(str_submenu,"SWING %d",(current_swing*100)/127);
+      SG.guiTTFText(200,60,str_submenu);
+    }
+
 //  sprintf(str_down,"[A/D] Note L/S",cty);
   
   //  printf("           AD:%d FX:%d\n",AD,FX);
@@ -667,6 +673,8 @@ void display_board()
   if (menu_cursor==M_LFO)              sprintf(str_up,"LFO");
   if (menu_cursor==M_FLTR)             sprintf(str_up,"FLTR ");
   if (menu_cursor==M_BPM)              sprintf(str_up,"BPM %d",bpm_current);
+
+
 
 
   SG.guiTTFText(200,40,str_up);
@@ -1472,7 +1480,7 @@ void handle_key_bpm()
 	  { swing=-1; 	  dirty_graphic=1; printf("[A+DOWN  t=%d] swing\n",current_swing); }
 
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_LEFT]%128==0) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%128==0) 
 	  { swing=1; 	  dirty_graphic=1; printf("[A+UP    t=%d] swing\n",current_swing);}
     }  
 
