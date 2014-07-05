@@ -11,6 +11,7 @@ class InputManager
 {
 public:
   InputManager();
+  void   init();
   int    handleKey();
   int    shouldExit();
   int    updateState(int symbol,bool state);

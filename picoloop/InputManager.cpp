@@ -3,6 +3,7 @@
 InputManager::InputManager()
 {
   int i;
+  quit=false;
   key_state=(bool*)malloc(sizeof(bool)*MAX_KEY);
   for (i=0;i<MAX_KEY;i++)
     key_state[i]=false;
@@ -12,6 +13,18 @@ InputManager::InputManager()
     key_repeat[i]=0;
 }
 
+
+void InputManager::init()
+{
+  int i;
+  key_state=(bool*)malloc(sizeof(bool)*MAX_KEY);
+  for (i=0;i<MAX_KEY;i++)
+    key_state[i]=false;
+
+  key_repeat=(int*)malloc(sizeof(int)*MAX_KEY);
+  for (i=0;i<MAX_KEY;i++)
+    key_repeat[i]=0;
+}
 
 
 
