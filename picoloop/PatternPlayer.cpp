@@ -161,8 +161,9 @@ int invert_trig=0;
 
 int dirty_graphic=1;
 int seq_update_by_step_next=0;
-  
-int current_swing=64;
+
+int current_swing=50;  
+//int current_swing=64;
 int swing;
 
 
@@ -174,18 +175,18 @@ void refresh_swing()
   // 64   => 66/66
   // 127  => 75/25
 
-  
-  int  swing_inv=127-current_swing;
+  int  swing_sevenbit=(current_swing*127)/100;
+  int  swing_inv_sevenbit=127-swing_sevenbit;
   int  step=SEQ.getPatternSequencer(0).getStepWithoutDivider();
   if (step%2)
     {
       //printf("odd\n");
-      AE.setNbTickBeforeStepChange((nb_tick_before_step_change*swing_inv)/64);
+      AE.setNbTickBeforeStepChange((nb_tick_before_step_change*swing_inv_sevenbit)/64);
     }
   else
     {
       //printf("even\n");
-     AE.setNbTickBeforeStepChange((nb_tick_before_step_change*current_swing)/64);
+     AE.setNbTickBeforeStepChange((nb_tick_before_step_change*swing_sevenbit)/64);
     }
 }
 
@@ -643,7 +644,8 @@ void display_board()
 
   if (menu_cursor==M_BPM)
     {
-      sprintf(str_submenu,"SWING %d",(current_swing*100)/127);
+      //sprintf(str_submenu,"SWING %d",(current_swing*100)/127);
+      sprintf(str_submenu,"SWING %d",current_swing);
       SG.guiTTFText(200,60,str_submenu);
     }
 
@@ -1904,10 +1906,10 @@ void seq_update_multiple_time_by_step()
 
 	  current_swing=current_swing+swing;
 	  swing=0;
-	  if (current_swing>96)
-	    current_swing=96;
-	  if (current_swing<32)
-	    current_swing=32;
+	  if (current_swing>75)
+	    current_swing=75;
+	  if (current_swing<25)
+	    current_swing=25;
 	  
 	  //nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
 	  //nb_tick_before_step_change=(60*DEFAULT_FREQ)/(bpm_current*4);

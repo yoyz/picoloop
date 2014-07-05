@@ -19,6 +19,7 @@ Pattern::~Pattern()
 void Pattern::init()
 {
   int i;
+
   size=16;
   bpmDivider=1;
   bpm=120;
