@@ -1406,7 +1406,7 @@ void handle_key_bpm()
 	  { bpm=-10; 	  dirty_graphic=1; printf("[B+DOWN  t=%d]\n",bpm_current); }
 
       if (keyState[BUTTON_UP] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_UP]%128==0) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%128==0) 
 	  { bpm=10; 	  dirty_graphic=1; printf("[B+UP    t=%d]\n",bpm_current);}
 
 
@@ -1820,6 +1820,25 @@ void seq_update_multiple_time_by_step()
       note_all=0;
       printf("[note_all:%d]\n",P[cty].getPatternElement(cursor).getNote());	  
     }
+
+      if (bpm!=0)
+	{
+	  //save the bpm in the 
+	  //change the number of time AudioEngine need to be trigged
+	  //to effectively change pattern step
+
+	  bpm_current=P[cty].getBPM();
+	  for(t=0;t<TRACK_MAX;t++)	    
+	    P[t].setBPM(bpm_current+bpm);
+
+	  bpm_current=bpm_current+bpm;
+	  bpm=0;
+	  nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
+	  nb_tick_before_step_change=(60*DEFAULT_FREQ)/(bpm_current*4);
+	  AE.setNbTickBeforeStepChange(nb_tick_before_step_change);
+
+	}
+
   
 }
 
@@ -2031,8 +2050,6 @@ void seq_callback_update_step()
 }
 
 
-
-
 int seq()
 {
   AudioMixer & am=AE.getAudioMixer();
@@ -2102,23 +2119,6 @@ int seq()
 	}
       
       
-      if (bpm!=0)
-	{
-	  //save the bpm in the 
-	  //change the number of time AudioEngine need to be trigged
-	  //to effectively change pattern step
-
-	  bpm_current=P[cty].getBPM();
-	  for(t=0;t<TRACK_MAX;t++)	    
-	    P[t].setBPM(bpm_current+bpm);
-
-	  bpm_current=bpm_current+bpm;
-	  bpm=0;
-	  nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
-	  nb_tick_before_step_change=(60*DEFAULT_FREQ)/(bpm_current*4);
-	  AE.setNbTickBeforeStepChange(nb_tick_before_step_change);
-
-	}
             
       // if user want to quit via handle_key
       if (quit)
