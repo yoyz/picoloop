@@ -14,7 +14,7 @@ LDFLAGS=-lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread -pg
 
 OBJTOLINK=RtAudio.o
 
-SOURCES=Machine.cpp Track.cpp AudioMixer.cpp AudioEngine.cpp PatternElement.cpp Pattern.cpp PatternPlayer.cpp PatternReader.cpp Oscillator.cpp SineOscillator.cpp SawOscillator.cpp  FuzzyPulseOscillator.cpp PulseOscillator.cpp  TriangleOscillator.cpp MonoMixer.cpp ADSR.cpp SDL_GUI.cpp VCO.cpp Sequencer.cpp InputManager.cpp WaveTableSineOscillator.cpp NoiseOscillator.cpp Biquad.cpp PatternSequencer.cpp Picoloop.cpp
+SOURCES=Wave.cpp Machine.cpp Track.cpp AudioMixer.cpp AudioEngine.cpp PatternElement.cpp Pattern.cpp PatternPlayer.cpp PatternReader.cpp Oscillator.cpp SineOscillator.cpp SawOscillator.cpp  FuzzyPulseOscillator.cpp PulseOscillator.cpp  TriangleOscillator.cpp MonoMixer.cpp ADSR.cpp SDL_GUI.cpp VCO.cpp Sequencer.cpp InputManager.cpp WaveTableSineOscillator.cpp NoiseOscillator.cpp Biquad.cpp PatternSequencer.cpp Picoloop.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=Picoloop
 
