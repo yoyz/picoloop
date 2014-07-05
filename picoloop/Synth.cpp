@@ -1,15 +1,5 @@
 #include "Synth.h"
 
-const int AMPLITUDE = 28000;
-const int FREQUENCY = 44100;
-
-struct BeepObject
-{
-    double freq;
-    int samplesLeft;
-};
-
-
 Synth::Synth()
 {
   /*

@@ -1,6 +1,47 @@
 using namespace std;
 
+#include <stdio.h>
+#include <unistd.h>
+#include <iostream>
+#include <string.h>
+
+#include "Master.h"
+#include "Note.h"
+#include "PatternReader.h"
 #include "PatternPlayer.h"
+#include "AudioEngine.h"
+#include "Wave.h"
+#include "MonoMixer.h"
+#include "SDL_GUI.h"
+#include "InputManager.h"
+#include "Machine.h"
+#include "Sequencer.h"
+
+#define KEY_REPEAT_INTERVAL 400
+
+#define BOX_COLOR           0xAECD15
+#define TRIG_COLOR          0x0E4C15
+#define NOTE_COLOR          0x46DC65
+#define CURSOR_COLOR        0x1515CD
+#define STEP_COLOR          0x242C45
+
+#define SMALLBOX_COLOR      0x442233
+
+#define DISABLE             0
+#define ENABLE              1
+
+#define BUTTON_B            SDLK_LALT
+#define BUTTON_A            SDLK_LCTRL
+#define BUTTON_X            SDLK_SPACE
+#define BUTTON_Y            SDLK_LSHIFT
+
+#define BUTTON_UP           SDLK_UP
+#define BUTTON_DOWN         SDLK_DOWN
+#define BUTTON_LEFT         SDLK_LEFT
+#define BUTTON_RIGHT        SDLK_RIGHT
+
+#define BUTTON_SELECT       SDLK_ESCAPE
+#define BUTTON_START        SDLK_RETURN
 
 
 //menu
@@ -29,88 +70,102 @@ enum {
   MENU_ENV_AMP_RELEASE
 };
 
+vector <Pattern>            P(TRACK_MAX);  
+vector <Machine   *>        M(TRACK_MAX);
+vector <MonoMixer *>        MM(TRACK_MAX);
+
+Sequencer      SEQ;         // used to  store/get information about sequencer 
+AudioEngine    AE;          // used to  init alsa/rtaudio
+PatternReader  PR;          // used to  read data.pic file
+PatternElement PE;          // used for copy paste PatternElement
+InputManager   IE;          // used to  fetch key
+SDL_GUI        SG;          // used to  open a gui and display stuff
+Wave           cowbell;     // used ?
+Instrument     inst;        // used ?
+
+
+int save=false;
+int load=false;
+
+int saveall=false;
+int loadall=false;
+
+int patternRemove=false;
+
+int bpm_current=120;    // current value for the four ( TRACK_MAX ) tracks
+int bpm=0;              // change from -10 to +10
+int nbcb=0;             // current nb audio callback 
+int last_nbcb=0;        // number of occurence of AudioEngine callback before changing step
+//int nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm); // Weird ?
+int nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
+int last_nbcb_ch_step=0;// nb audio callback from last step
+int debug=1;
+int t=0;                // index of track
 
 
 
-PatternPlayer::PatternPlayer() : P(TRACK_MAX), M(TRACK_MAX), MM(TRACK_MAX)
-{
-  save=false;
-  load=false;
-  saveall=false;
-  loadall=false;
-  patternRemove=false;
+int repeat=0;
+int quit=0;             // do we need to quit ?
+int cursor=0;           // cursor position in a sequencer track
 
-  bpm_current=120;
-  bpm=0;
-  nbcb=0;
-  last_nbcb=0;
-  nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
-  nb_tick_before_step_change=(60*DEFAULT_FREQ)/(bpm_current*4);
-  last_nbcb_ch_step=0;
-  debug=1;
-  t=0;
+int note=0;
+int note_all=0;
 
-  repeat=0;
-  quit=0;
-  cursor=0;           // cursor position in a sequencer track
+int amp=0;              // variation of the amp of monomixer
+int amp_all=0;              // variation of the amp of monomixer
+
+int attack=0;
+int release=0;
+
+int attack_all=0;
+int release_all=0;
+
+int lfo_depth=0;
+int lfo_depth_all=0;
+int lfo_speed=0;
+int lfo_speed_all=0;
+
+int cutoff=0;
+int resonance=0;
+
+int cutoff_all=0;
+int resonance_all=0;
+
+int vcomix=0;
+int vcomix_all=0;
+
+int osconetype=0;
+int osctwotype=0;
+
+int osconetype_all=0;
+int osctwotype_all=0;
+
+
+int loadsave_cursor_x=0; // index in the load/save menu
+int loadsave_cursor_y=0; // index in the load/save menu
+
+int start_key=0;        // start key pressed ?
+//int step=0;             // current step in the sequencer
+int divider=0;           // divider - => /1 /2 /4 /8  ; divider + => /8 /4 /2 /1
+int menu_cursor=M_AD;      // index int the menu
+int menu=MENU_ON_PAGE1;             // menu mode
+int menu_note=ENABLE;
+int menu_env=MENU_ENV_ATTACK_RELEASE;
+
+//int ct=0;               // current_track
+int ct_x=0;             
+int ct_y=0;
+int invert_trig=0;
+
+int dirty_graphic=1;
+
   
-  note=0;
-  note_all=0;
-  
-  amp=0;              // variation of the amp of monomixer
-  amp_all=0;              // variation of the amp of monomixer
-  
-  attack=0;
-  release=0;
-  
-  attack_all=0;
-  release_all=0;
-  
-  lfo_depth=0;
-  lfo_depth_all=0;
-  lfo_speed=0;
-  lfo_speed_all=0;
-  
-  cutoff=0;
-  resonance=0;
-  
-  cutoff_all=0;
-  resonance_all=0;
-  
-  vcomix=0;
-  vcomix_all=0;
-  
-  osconetype=0;
-  osctwotype=0;
-  
-  osconetype_all=0;
-  osctwotype_all=0;
-  
-  
-  loadsave_cursor_x=0; // index in the load/save menu
-  loadsave_cursor_y=0; // index in the load/save menu
-  
-  start_key=0;        // start key pressed ?
-  //int step=0;             // current step in the sequencer
-  divider=0;           // divider - => /1 /2 /4 /8  ; divider + => /8 /4 /2 /1
-  menu_cursor=M_AD;      // index int the menu
-  menu=MENU_ON_PAGE1;             // menu mode
-  menu_note=ENABLE;
-  menu_env=MENU_ENV_ATTACK_RELEASE;
-  
-  //int ct=0;               // current_track
-  ct_x=0;             
-  ct_y=0;
-  invert_trig=0;
-  
-  dirty_graphic=1;
-}  
 
 
 //char * tmp_str;
 
 
-void PatternPlayer::display_board_amp_env()
+void display_board_amp_env()
 {
   int  i;
   int  cty=SEQ.getCurrentTrackY();
@@ -168,7 +223,7 @@ void PatternPlayer::display_board_amp_env()
 }
 
 
-void PatternPlayer::display_board_note()
+void display_board_note()
 {
   int  i;
   int  cty=SEQ.getCurrentTrackY();
@@ -251,7 +306,7 @@ void PatternPlayer::display_board_note()
 
 
 
-void PatternPlayer::display_board_bpm()
+void display_board_bpm()
 {
   int x,y;
   int  i;
@@ -290,7 +345,7 @@ void PatternPlayer::display_board_bpm()
   
 }
 
-void PatternPlayer::display_board_load_save()
+void display_board_load_save()
 {
   int x,y;
   int  i;
@@ -365,7 +420,7 @@ void PatternPlayer::display_board_load_save()
     }
 }
 
-void PatternPlayer::display_board_vco()
+void display_board_vco()
 {
   int  i;
   int  cty=SEQ.getCurrentTrackY();
@@ -401,7 +456,7 @@ void PatternPlayer::display_board_vco()
 }
 
 
-void PatternPlayer::display_board_lfo()
+void display_board_lfo()
 {
   int  i;
   int  cty=SEQ.getCurrentTrackY();
@@ -440,7 +495,7 @@ void PatternPlayer::display_board_lfo()
     }
 }
 
-void PatternPlayer::display_board_osc()
+void display_board_osc()
 {
   int  i;
   int  cty=SEQ.getCurrentTrackY();
@@ -468,7 +523,7 @@ void PatternPlayer::display_board_osc()
     }
 }
 
-void PatternPlayer::display_board_fltr()
+void display_board_fltr()
 {
   int  i;
   int  cty=SEQ.getCurrentTrackY();
@@ -500,7 +555,7 @@ void PatternPlayer::display_board_fltr()
 }
 
 
-void PatternPlayer::display_board()
+void display_board()
 {
   int  i;
   char str_up[8];
@@ -600,7 +655,7 @@ void PatternPlayer::display_board()
 }
 
 
-void PatternPlayer::sub_handle_invert_trig()
+void sub_handle_invert_trig()
 {
   int    lastEvent;
   int    lastKey;
@@ -618,7 +673,7 @@ void PatternPlayer::sub_handle_invert_trig()
     }  
 }
 
-void PatternPlayer::handle_key_menu()
+void handle_key_menu()
 {
   bool * keyState;
   int  * keyRepeat;
@@ -749,7 +804,7 @@ void PatternPlayer::handle_key_menu()
 }
 
 
-void PatternPlayer::handle_key_sixteenbox()
+void handle_key_sixteenbox()
 {
   bool * keyState;
   int  * keyRepeat;
@@ -822,7 +877,7 @@ void PatternPlayer::handle_key_sixteenbox()
 }
 
 
-void PatternPlayer::handle_key_amp_env()
+void handle_key_amp_env()
 {
   bool * keyState;
   int  * keyRepeat;
@@ -951,7 +1006,7 @@ void PatternPlayer::handle_key_amp_env()
 }
 
 
-void PatternPlayer::handle_key_note()
+void handle_key_note()
 {
 
   bool * keyState;
@@ -1049,7 +1104,7 @@ void PatternPlayer::handle_key_note()
 
 }
 
-void PatternPlayer::handle_key_osc()
+void handle_key_osc()
 {
   bool * keyState;
   int  * keyRepeat;
@@ -1111,7 +1166,7 @@ void PatternPlayer::handle_key_osc()
 }
 
 
-void PatternPlayer::handle_key_vco()
+void handle_key_vco()
 {
   bool * keyState;
   int  * keyRepeat;
@@ -1175,7 +1230,7 @@ void PatternPlayer::handle_key_vco()
 }
 
 
-void PatternPlayer::handle_key_lfo()
+void handle_key_lfo()
 {
   bool * keyState;
   int  * keyRepeat;
@@ -1241,7 +1296,7 @@ void PatternPlayer::handle_key_lfo()
 
 
 
-void PatternPlayer::handle_key_fltr()
+void handle_key_fltr()
 {
   bool * keyState;
   int  * keyRepeat;
@@ -1319,7 +1374,7 @@ void PatternPlayer::handle_key_fltr()
 
 }
 
-void PatternPlayer::handle_key_bpm()
+void handle_key_bpm()
 {
   bool * keyState;
   int  * keyRepeat;
@@ -1374,7 +1429,7 @@ void PatternPlayer::handle_key_bpm()
 
 }
 
-void PatternPlayer::handle_key_load_save()
+void handle_key_load_save()
 {
   bool * keyState;
   int  * keyRepeat;
@@ -1466,7 +1521,7 @@ void PatternPlayer::handle_key_load_save()
 }
 
 
-void PatternPlayer::handle_key()
+void handle_key()
 {
   
   bool * keyState;
@@ -1508,7 +1563,7 @@ void PatternPlayer::handle_key()
 }
 
 
-void PatternPlayer::seq_update_multiple_time_by_step()
+void seq_update_multiple_time_by_step()
 {
   AudioMixer & am=AE.getAudioMixer();
   int          cty=SEQ.getCurrentTrackY();
@@ -1768,7 +1823,7 @@ void PatternPlayer::seq_update_multiple_time_by_step()
 
 
 // 
-int PatternPlayer::seq_update_by_step()
+int seq_update_by_step()
 {
   int  cty=SEQ.getCurrentTrackY();
   int  ctx=SEQ.getCurrentTrackX();
@@ -1796,9 +1851,6 @@ int PatternPlayer::seq_update_by_step()
 	  PR.readPatternData(loadsave_cursor_x,loadsave_cursor_y,P[cty]);
 	  bpm_current=P[cty].getBPM();
 	  nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
-	  nb_tick_before_step_change=(60*DEFAULT_FREQ)/(bpm_current*4);
-	  AE.setNbTickBeforeStepChange(nb_tick_before_step_change);
-
 
 	  SEQ.getPatternSequencer(cty).setBPMDivider(P[cty].getBPMDivider());
 	}
@@ -1819,9 +1871,6 @@ int PatternPlayer::seq_update_by_step()
 	      PR.readPatternData(loadsave_cursor_x,t,P[t]);
 	      bpm_current=P[t].getBPM();
 	      nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
-	      nb_tick_before_step_change=(60*DEFAULT_FREQ)/(bpm_current*4);
-	      AE.setNbTickBeforeStepChange(nb_tick_before_step_change);
-      
 	      
 	      SEQ.getPatternSequencer(t).setBPMDivider(P[t].getBPMDivider());
 	    }
@@ -1876,7 +1925,7 @@ int PatternPlayer::seq_update_by_step()
 
 
 
-void PatternPlayer::seq_update_track(int t)
+void seq_update_track(int t)
 {
   int  cty=SEQ.getCurrentTrackY();
   int  ctx=SEQ.getCurrentTrackX();
@@ -1956,24 +2005,7 @@ void PatternPlayer::seq_update_track(int t)
 }
 
 
-int PatternPlayer::seq_callback_update_step()
-{
-  int i;
-  int oldstep;
-
-  for(i=0;i<TRACK_MAX;i++)
-    {
-      oldstep=0;
-      
-      oldstep=SEQ.getPatternSequencer(i).getStep();
-      SEQ.getPatternSequencer(i).incStep();
-      if (oldstep!=SEQ.getPatternSequencer(i).getStep())
-	seq_update_track(i);	  	  
-    }  
-  dirty_graphic=1;
-}
-
-int PatternPlayer::seq()
+int seq()
 {
   AudioMixer & am=AE.getAudioMixer();
   int          cty=SEQ.getCurrentTrackY();
@@ -2013,7 +2045,6 @@ int PatternPlayer::seq()
       ctx=SEQ.getCurrentTrackX();
 
       handle_key();
-
 
       // A/D, Note, VCO, BPM, more handling...
       // apply the modification done by the user on the gui
@@ -2055,23 +2086,15 @@ int PatternPlayer::seq()
 
 	  bpm=0;
 	  nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
-	  nb_tick_before_step_change=(60*DEFAULT_FREQ)/(bpm_current*4);
-	  AE.setNbTickBeforeStepChange(nb_tick_before_step_change);
-
 	}
             
       // if user want to quit via handle_key
       if (quit)
-	{
-	  printf("quit!=0 so exit\n");
-	  return(0);
-	}
+	return(0);
       
       //display graphic if something has change : handle_key 
       if (dirty_graphic)
-	{
-	  display_board();
-	}
+	display_board();
 
       nbcb=AE.getNbCallback();
 
@@ -2082,12 +2105,8 @@ int PatternPlayer::seq()
 
 
       // change step in the pattern
-
       if (nbcb-last_nbcb_ch_step>nb_cb_ch_step)
 	{
-	  //!!!tocomment
-	  //seq_callback_update_step();
-	  /*
 	  for(i=0;i<TRACK_MAX;i++)
 	    {
 	      oldstep=0;
@@ -2097,7 +2116,7 @@ int PatternPlayer::seq()
 	      if (oldstep!=SEQ.getPatternSequencer(i).getStep())
 		seq_update_track(i);	  	  
 	    }
-	  */
+
 	  dirty_graphic=1;
 	  display_board();
 	  //printf("[cursor:%d]\n",cursor);
@@ -2119,7 +2138,7 @@ int PatternPlayer::seq()
     }
 }
 
-void PatternPlayer::load_pattern()
+void load_pattern()
 {
   int t;
 
@@ -2134,9 +2153,6 @@ void PatternPlayer::load_pattern()
       // Ugly hack for BPM management
       bpm_current=P[t].getBPM();
       nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
-      nb_tick_before_step_change=(60*DEFAULT_FREQ)/(bpm_current*4);
-      AE.setNbTickBeforeStepChange(nb_tick_before_step_change);
-      
 
       SEQ.getPatternSequencer(t).setBPMDivider(P[t].getBPMDivider());
     }
@@ -2147,7 +2163,7 @@ void PatternPlayer::load_pattern()
 
 
 
-int PatternPlayer::old_main()
+int main()
 {
   //  exit(0);
   //string wave="808-cowbell.wav";
@@ -2155,7 +2171,6 @@ int PatternPlayer::old_main()
   //tmp_str=(char*)malloc(sizeof(char)*4);
   //cowbell.loadWave(str);
   load_pattern();
-  IE.init();
   printf("[openVideo output]\n");
   SG.initVideo();
   //handle_key();
@@ -2164,10 +2179,7 @@ int PatternPlayer::old_main()
   if (SG.openTTFFont()==false) { printf("ttf font error\n"); exit(1); }
   display_board();
 
-  //  AE
   printf("[openAudio output]\n");
-  AE.setPatternPlayerObject(this);
-  AE.setNbTickBeforeStepChange(nb_tick_before_step_change);
   AE.openAudio();
 
   seq();
