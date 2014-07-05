@@ -33,21 +33,62 @@ AudioEngine::AudioEngine() : inst(), AM()
     }
   buffer_out=(Sint16*)malloc(sizeof(Sint16)*BUFFER_FRAME);
   bufferGenerated=0;
+
+  nb_tick=0;
+  nb_tick_before_step_change=0;
+  seqCallback=0;
 }
+
+
 
 int AudioEngine::getNbCallback()
 {
   return nbCallback;
 }
 
-void AudioEngine::processBuffer()
+/*void AudioEngine::processBuffer()
 {
   for (int i=0;i<BUFFER_FRAME-1;i++)
     {
       buffer_out[i]=AM.tick();      
     }
   bufferGenerated=0;
+  }*/
+
+
+// related to  sequencer callbackw
+int AudioEngine::setNbTickBeforeStepChange(int val) 
+{
+  nb_tick_before_step_change=val;
 }
+
+
+// a function which need to be trigged when "nb_tick_before_step_change" sample are generated
+void AudioEngine::setupSequencerCallback(void (*ptrfunc)(void)) 
+{
+  seqCallback=ptrfunc;
+}
+
+// process BUFFER_FRAME sample and call the callback when needed
+void AudioEngine::processBuffer()
+{
+  for (int i=0;i<BUFFER_FRAME-1;i++)
+    {
+      nb_tick++;
+      if (nb_tick<nb_tick_before_step_change)
+        buffer_out[i]=AM.tick();
+      else
+        {
+          //printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!CALLL\n");                                                                                                                      
+          //PP->seq_callback_update_step();
+	  if (seqCallback)
+	    (*seqCallback)();
+          nb_tick=0;
+        }
+    }
+  bufferGenerated=0;
+}
+
 
 int AudioEngine::bufferIsGenerated()
 {

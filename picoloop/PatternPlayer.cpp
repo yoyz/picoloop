@@ -98,6 +98,8 @@ int nbcb=0;             // current nb audio callback
 int last_nbcb=0;        // number of occurence of AudioEngine callback before changing step
 //int nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm); // Weird ?
 int nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
+int nb_tick_before_step_change=(60*DEFAULT_FREQ)/(bpm_current*4);
+
 int last_nbcb_ch_step=0;// nb audio callback from last step
 int debug=1;
 int t=0;                // index of track
@@ -1851,6 +1853,9 @@ int seq_update_by_step()
 	  PR.readPatternData(loadsave_cursor_x,loadsave_cursor_y,P[cty]);
 	  bpm_current=P[cty].getBPM();
 	  nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
+	  nb_tick_before_step_change=(60*DEFAULT_FREQ)/(bpm_current*4);
+	  AE.setNbTickBeforeStepChange(nb_tick_before_step_change);
+
 
 	  SEQ.getPatternSequencer(cty).setBPMDivider(P[cty].getBPMDivider());
 	}
@@ -1871,6 +1876,9 @@ int seq_update_by_step()
 	      PR.readPatternData(loadsave_cursor_x,t,P[t]);
 	      bpm_current=P[t].getBPM();
 	      nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
+	      nb_tick_before_step_change=(60*DEFAULT_FREQ)/(bpm_current*4);
+	      AE.setNbTickBeforeStepChange(nb_tick_before_step_change);
+
 	      
 	      SEQ.getPatternSequencer(t).setBPMDivider(P[t].getBPMDivider());
 	    }
@@ -2005,6 +2013,26 @@ void seq_update_track(int t)
 }
 
 
+void seq_callback_update_step()
+{
+  int i;
+  int oldstep;
+
+  for(i=0;i<TRACK_MAX;i++)
+    {
+      oldstep=0;
+
+      oldstep=SEQ.getPatternSequencer(i).getStep();
+      SEQ.getPatternSequencer(i).incStep();
+      if (oldstep!=SEQ.getPatternSequencer(i).getStep())
+        seq_update_track(i);
+    }
+  dirty_graphic=1;
+}
+
+
+
+
 int seq()
 {
   AudioMixer & am=AE.getAudioMixer();
@@ -2086,6 +2114,9 @@ int seq()
 
 	  bpm=0;
 	  nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
+	  nb_tick_before_step_change=(60*DEFAULT_FREQ)/(bpm_current*4);
+	  AE.setNbTickBeforeStepChange(nb_tick_before_step_change);
+
 	}
             
       // if user want to quit via handle_key
@@ -2106,7 +2137,8 @@ int seq()
 
       // change step in the pattern
       if (nbcb-last_nbcb_ch_step>nb_cb_ch_step)
-	{
+	{	 
+	  /*
 	  for(i=0;i<TRACK_MAX;i++)
 	    {
 	      oldstep=0;
@@ -2118,6 +2150,9 @@ int seq()
 	    }
 
 	  dirty_graphic=1;
+	  */
+
+
 	  display_board();
 	  //printf("[cursor:%d]\n",cursor);
 	  
@@ -2153,6 +2188,8 @@ void load_pattern()
       // Ugly hack for BPM management
       bpm_current=P[t].getBPM();
       nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
+      nb_tick_before_step_change=(60*DEFAULT_FREQ)/(bpm_current*4);
+      AE.setNbTickBeforeStepChange(nb_tick_before_step_change);
 
       SEQ.getPatternSequencer(t).setBPMDivider(P[t].getBPMDivider());
     }
@@ -2161,7 +2198,10 @@ void load_pattern()
 
 }
 
-
+void printme()
+{
+  printf("*******************************hello\n");
+}
 
 int main()
 {
@@ -2180,6 +2220,8 @@ int main()
   display_board();
 
   printf("[openAudio output]\n");
+  //AE.setupSequencerCallback(printme);
+  AE.setupSequencerCallback(seq_callback_update_step);
   AE.openAudio();
 
   seq();

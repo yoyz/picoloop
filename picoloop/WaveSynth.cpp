@@ -58,7 +58,7 @@ PatternElement PE;
 void openaudio()
 {
   int t;
-
+  AE.setNbTickBeforeStepChange(1000);
   AE.openAudio();
   for (t=0;t<TRACK_MAX;t++)
     {

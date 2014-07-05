@@ -51,12 +51,15 @@ class AudioEngine
 	       RtAudioStreamStatus status, 
 	       void *data );
   void set_instrument(Instrument inst);
+  int setNbTickBeforeStepChange(int val);
   void setSynthFreq(int sfreq);
   int  getNbCallback();
 
   int bufferIsGenerated();
   void processBuffer();
   Sint16 * getBufferOut();
+
+  void setupSequencerCallback(void (*ptrfunc)(void));
 
  private:
   int          freq;
@@ -72,6 +75,8 @@ class AudioEngine
 
   int          FORMAT;
   int          tick;
+  int          nb_tick;
+  int          nb_tick_before_step_change;
   Instrument   inst;
   //  SineOscillator S;
   AudioMixer   AM;
@@ -81,6 +86,8 @@ class AudioEngine
   Sint16     * buffer_out;
   RtAudio dac;
   int          bufferGenerated;
+
+  void       (*seqCallback)(void);
   RtAudio::StreamParameters rtAudioOutputParams;
   RtAudio::StreamOptions    rtAudioStreamOptions;
 
