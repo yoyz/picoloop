@@ -32,9 +32,9 @@ using namespace std;
 
 //#define BUFFER_FRAME 8192
 //#define BUFFER_FRAME 512
-#define BUFFER_FRAME DEFAULTSAMPLES
-#define DEFAULT_FREQ 44100
 
+
+class PatternPlayer;
 
 class AudioEngine
 {
@@ -52,6 +52,9 @@ class AudioEngine
   void setTick(int t);
   int  getTick();
   AudioMixer   & getAudioMixer();
+
+  void setPatternPlayerObject(PatternPlayer * pp);
+
   //void callback();
   //  void sdl_callback();
   //void  sdl_audio_callback(void *user_data, Uint8 *audio, int length);
@@ -63,6 +66,7 @@ class AudioEngine
 	       void *data );
   //void set_instrument(Instrument inst);
   void setSynthFreq(int sfreq);
+  int setNbTickBeforeStepChange(int val);
   int  getNbCallback();
 
   int bufferIsGenerated();
@@ -70,6 +74,7 @@ class AudioEngine
   Sint16 * getBufferOut();
 
  private:
+  int          bpm;
   int          freq;
   int          samples;
   int          channels;
@@ -83,14 +88,17 @@ class AudioEngine
 
   int          FORMAT;
   int          tick;
+  int          nb_tick;
+  int          nb_tick_before_step_change;
   //Instrument   inst;
   //  SineOscillator S;
+  PatternPlayer * PP;
   AudioMixer   AM;
   int          nbCallback;
   FILE       * fd;
   int          debug_audio;
   Sint16     * buffer_out;
-  RtAudio dac;
+  RtAudio      dac;
   int          bufferGenerated;
   RtAudio::StreamParameters rtAudioOutputParams;
   RtAudio::StreamOptions    rtAudioStreamOptions;
@@ -182,6 +190,8 @@ class PatternPlayer
   int nb_cb_ch_step; //=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
   //int last_nbcb_ch_step=0;// nb audio callback from last step
   int last_nbcb_ch_step;// nb audio callback from last step
+
+  int nb_tick_before_step_change;
   //int debug=1;
   int debug;
   //int t=0;                // index of track
