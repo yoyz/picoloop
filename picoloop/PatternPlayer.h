@@ -120,8 +120,8 @@ class PatternPlayer
   PatternElement PE;          // used for copy paste PatternElement
   InputManager   IE;          // used to  fetch key
   SDL_GUI        SG;          // used to  open a gui and display stuff
-  //Wave           cowbell;     // used ?
-  //Instrument     inst;        // used ?
+  Wave           cowbell;     // used ?
+  Instrument     inst;        // used ?
   
 
   //int save=false;

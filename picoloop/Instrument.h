@@ -1,12 +1,11 @@
 using namespace std;
 
 #include <string>
-#include "Wave.h"
-#include "Synth.h"
-
 #ifndef __INSTRUMENT__
 #define __INSTRUMENT__
 
+#include "Wave.h"
+#include "Synth.h"
 
 class Instrument
 {
