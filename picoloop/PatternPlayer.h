@@ -1,22 +1,17 @@
 using namespace std;
 
-
+#include "PatternElement.h"
+#include "Pattern.h"
 #include <stdio.h>
 #include <unistd.h>
 #include <iostream>
 #include <string.h>
 
-
-#include "AudioEngine.h"
-
-
-#include "PatternElement.h"
-#include "Pattern.h"
 #include "Master.h"
 #include "Note.h"
 #include "PatternReader.h"
 //#include "PatternPlayer.h"
-
+#include "AudioEngine.h"
 #include "Wave.h"
 #include "MonoMixer.h"
 #include "SDL_GUI.h"
@@ -26,16 +21,8 @@ using namespace std;
 #include "Machine.h"
 
 
-
-
 #ifndef __PATTERNPLAYER__
 #define __PATTERNPLAYER__
-
-
-
-
-
-
 
 
 #define KEY_REPEAT_INTERVAL 400
@@ -65,6 +52,31 @@ using namespace std;
 #define BUTTON_START        SDLK_RETURN
 
 
+//menu
+enum {
+  MENU_OFF,
+  MENU_ON_PAGE1,
+  MENU_ON_PAGE2
+};
+
+//menu_cursor
+enum {
+  M_AD,   // 0
+  M_NOTE, // 1
+  M_OSC,  // 2 
+  M_VCO,  // 3
+
+  M_LS,   // 4
+  M_LFO,  // 5
+  M_FLTR, // 6
+  M_BPM   // 7
+};
+
+enum {
+  MENU_ENV_ATTACK_RELEASE,
+  MENU_ENV_ATTACK_AMP,
+  MENU_ENV_AMP_RELEASE
+};
 
 
 
@@ -96,7 +108,7 @@ class PatternPlayer
   void handle_key_load_save();
   void handle_key();
 
-  int  seq_callback_update_step();
+
   void seq_update_multiple_time_by_step();
   int  seq_update_by_step();
   void seq_update_track(int t);
