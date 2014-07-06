@@ -23,6 +23,7 @@ void Pattern::init()
   size=16;
   bpmDivider=1;
   bpm=120;
+  swing=50;
 
   printf("====Pattern::init()====\n");
   for (i=0;i<16;i++)
@@ -115,3 +116,22 @@ void Pattern::setBPMDivider(int val)
   else
     bpmDivider=1;
 }
+
+int Pattern::getSwing()
+{
+  return swing;
+}
+
+
+void Pattern::setSwing(int val)
+{
+  if (val<25)
+    swing=25;
+  if (val>75)
+    swing=75;
+  if (val>25 &&
+      val<75)
+    swing=val;
+  
+}
+

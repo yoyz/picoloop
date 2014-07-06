@@ -1900,16 +1900,21 @@ void seq_update_multiple_time_by_step()
 
       if (swing!=0)
 	{
-	  //save the bpm in the 
+	  //save the swing in the Pattern
 	  //change the number of time AudioEngine need to be trigged
 	  //to effectively change pattern step
 
 	  current_swing=current_swing+swing;
 	  swing=0;
+
 	  if (current_swing>75)
 	    current_swing=75;
 	  if (current_swing<25)
 	    current_swing=25;
+
+	  for(t=0;t<TRACK_MAX;t++)	    
+	    P[t].setSwing(current_swing);
+
 	  
 	  //nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
 	  //nb_tick_before_step_change=(60*DEFAULT_FREQ)/(bpm_current*4);
@@ -2274,12 +2279,14 @@ void load_pattern()
       
       // Ugly hack for BPM management
       bpm_current=P[t].getBPM();
+      current_swing=P[t].getSwing();
       //nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
       //nb_tick_before_step_change=(60*DEFAULT_FREQ)/(bpm_current*4);
       //AE.setNbTickBeforeStepChange(nb_tick_before_step_change);
       refresh_bpm();
 
       SEQ.getPatternSequencer(t).setBPMDivider(P[t].getBPMDivider());
+
     }
 
     //PR.readPatternData(1,i+1,P[i]);

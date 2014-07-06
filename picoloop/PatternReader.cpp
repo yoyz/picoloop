@@ -119,6 +119,7 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
   int PatSize;
   int PatBPM;
   int PatBPMDivider;
+  int PatSwing;
   int n[16];
   int t[16];
   int i;
@@ -189,6 +190,19 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
 	  TrackNum  ==TrackNumber)
 	{
 	  P.setBPMDivider(PatBPMDivider);
+	}
+    }
+
+
+  if (fgets(line,512,fd))
+    {
+      //match('Pattern 1 Track 1 Param PatternBPMDivider 4')
+      sscanf(line,"Pattern %d Track %d Param PatternSwing %d",
+	     &PatNum,&TrackNum,&PatSwing);
+      if (PatNum    ==PatternNumber &&
+	  TrackNum  ==TrackNumber)
+	{
+	  P.setSwing(PatSwing);
 	}
     }
 
@@ -592,6 +606,13 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
 	  PatternNumber,
 	  TrackNumber, 
 	  P.getBPMDivider());
+  data.insert(data.end(),line);
+
+
+  sprintf(line,"Pattern %d Track %d Param PatternSwing %d\n",
+	  PatternNumber,
+	  TrackNumber, 
+	  P.getSwing());
   data.insert(data.end(),line);
 
 

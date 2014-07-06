@@ -36,6 +36,8 @@ class Pattern
   int  getBPMDivider();
   void setBPMDivider(int val);
 
+  int  getSwing();
+  void setSwing(int val);
 
  protected:
 
@@ -45,6 +47,7 @@ class Pattern
   int rightVolume;
   int bpmDivider;
   int bpm;
+  int swing;
 
   
 };
