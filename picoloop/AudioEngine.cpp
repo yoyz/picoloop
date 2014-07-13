@@ -420,7 +420,7 @@ int rtcallback(
 {
   //printf("callback\n");
   ((AudioEngine*)user_data)->callback(user_data,
-				      outputBuffer,
+				      (Uint8*)outputBuffer,
 				      nBufferFrames);
 
   return 0;
