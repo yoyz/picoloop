@@ -1,0 +1,36 @@
+CC=g++
+CC=/opt/open2x/gcc-4.1.1-glibc-2.3.6/bin/arm-open2x-linux-g++
+
+#CFLAGS=-c -DLINUX -I. -LSDL/lib -ggdb -pg
+#LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf -lpthread  RtAudio.o  -pg
+#LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf -lpthread  RtAudio.o 
+
+#CFLAGS=-c -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP
+
+CFLAGS=-c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb -ffast-math
+CFLAGS=-c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb  
+CFLAGS=-c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb  -pg
+CFLAGS=-c -O3 -DLINUX -I. -DGP2X -D__SDL_AUDIO__ -I/opt/open2x/include/SDL/ -I/opt/open2x/include/ -L/opt/open2x/lib/ -g
+
+LDFLAGS=-lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread 
+LDFLAGS=-lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread -pg
+LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf -L/opt/open2x/lib/ -lfreetype -lz
+
+
+#OBJTOLINK=RtAudio.o
+
+SOURCES=Wave.cpp Synth.cpp Instrument.cpp Machine.cpp Track.cpp AudioMixer.cpp AudioEngine.cpp PatternElement.cpp Pattern.cpp PatternPlayer.cpp PatternReader.cpp Oscillator.cpp SineOscillator.cpp SawOscillator.cpp  FuzzyPulseOscillator.cpp PulseOscillator.cpp  TriangleOscillator.cpp MonoMixer.cpp ADSR.cpp SDL_GUI.cpp VCO.cpp Sequencer.cpp InputManager.cpp WaveTableSineOscillator.cpp NoiseOscillator.cpp Biquad.cpp PatternSequencer.cpp AudioDriverSDL.cpp
+OBJECTS=$(SOURCES:.cpp=.o)
+EXECUTABLE=PatternPlayer
+
+all: $(SOURCES) $(EXECUTABLE)
+
+$(EXECUTABLE): $(OBJECTS)
+	$(CC) $(OBJTOLINK)  $(OBJECTS) -o $@ $(LDFLAGS)
+#	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
+
+.cpp.o:
+	$(CC) $(CFLAGS) $< -o $@
+
+clean:
+	-rm -f $(OBJECTS) $(EXECUTABLE)
