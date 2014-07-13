@@ -1,9 +1,10 @@
 #include "InputManager.h"
 
-InputManager::InputManager()
+InputManager::InputManager() : key_state(new  bool[MAX_KEY]),
+			       key_repeat(new int[MAX_KEY])
 {
-  key_state=NULL;
-  key_repeat=NULL;
+  //  key_state=NULL;
+  //  key_repeat=NULL;
   last_key=0;
   last_event=0;
   quit=false;
@@ -13,10 +14,10 @@ InputManager::InputManager()
 
 InputManager::~InputManager()
 {
-  if (key_state!=NULL)
-    free(key_state);
-  if (key_repeat!=NULL)
-    free(key_repeat);
+  //  if (key_state!=NULL)
+  //    free(key_state);
+  //  if (key_repeat!=NULL)
+  //    free(key_repeat);
 }
 
 void InputManager::init()
@@ -25,19 +26,19 @@ void InputManager::init()
 
   printf("InputManager::init()\n");
 
-  key_state=NULL;
-  key_repeat=NULL;
+  //key_state=NULL;
+  //  key_repeat=NULL;
   last_key=0;
   last_event=0;
   quit=false;
   escape=false;
   //max_key=0;
 
-  if (key_state==NULL)
-    key_state=(bool*)malloc(sizeof(bool)*MAX_KEY);
+  //  if (key_state==NULL)
+  //    key_state=(bool*)malloc(sizeof(bool)*MAX_KEY);
 
-  if (key_repeat==NULL)
-    key_repeat=(int*)malloc(sizeof(int)*MAX_KEY);
+  //  if (key_repeat==NULL)
+  //    key_repeat=(int*)malloc(sizeof(int)*MAX_KEY);
 
   for (i=0;i<MAX_KEY;i++)
     key_state[i]=false;

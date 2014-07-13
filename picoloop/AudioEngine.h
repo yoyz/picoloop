@@ -14,6 +14,16 @@ using namespace std;
 #include "Oscillator.h"
 #include "SineOscillator.h"
 #include "AudioMixer.h"
+
+#ifdef   __SDL_AUDIO__
+#include "AudioDriverSDL.h"
+#endif
+
+#ifdef   __RTAUDIO__
+#include "AudioDriverRTAudio.h"
+#endif
+
+
 /*
   Purpose : 
   mix all channel
@@ -22,8 +32,6 @@ using namespace std;
 
 //#define BUFFER_FRAME 8192
 //#define BUFFER_FRAME 512
-#define BUFFER_FRAME DEFAULTSAMPLES
-#define DEFAULT_FREQ 44100
 
 class AudioEngine
 {
@@ -32,7 +40,7 @@ class AudioEngine
   void setDefault();
   void setEngineFreq(int frequency);
 
-  int probeDevice();
+  //int probeDevice();
 
   int  startAudio();
   int  startAudioSdl();
@@ -48,14 +56,17 @@ class AudioEngine
   //void callback();
   //  void sdl_callback();
   //void  sdl_audio_callback(void *user_data, Uint8 *audio, int length);
+  void  callback(void *user_data, Uint8 *audio, int length);
+  /*
   int callback(void *outputBuffer, 
 	       void *inputBuffer, 
 	       unsigned int nBufferFrames,
 	       double streamTime, 
 	       RtAudioStreamStatus status, 
 	       void *data );
-
-  void sdlcallback(void *unused, Uint8 *stream, int len);
+  */
+  
+  //void sdlcallback(void *unused, Uint8 *stream, int len);
 
   //void set_instrument(Instrument inst);
   int setNbTickBeforeStepChange(int val);
@@ -91,15 +102,15 @@ class AudioEngine
   FILE       * fd;
   int          debug_audio;
   Sint16     * buffer_out;
-  RtAudio dac;
+  //RtAudio dac;
   int          bufferGenerated;
 
   void       (*seqCallback)(void);
-  RtAudio::StreamParameters rtAudioOutputParams;
-  RtAudio::StreamOptions    rtAudioStreamOptions;
-
-  SDL_AudioSpec * sdlAudioSpecWanted;
-  SDL_AudioSpec * sdlAudioSpecObtained;
+  //RtAudio::StreamParameters rtAudioOutputParams;
+  //RtAudio::StreamOptions    rtAudioStreamOptions;
+  AudioDriver  AD;
+  //SDL_AudioSpec * sdlAudioSpecWanted;
+  //  SDL_AudioSpec * sdlAudioSpecObtained;
 };
 
 #endif

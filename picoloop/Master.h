@@ -16,4 +16,8 @@
 
 #define TRACK_MAX 4
 
+#define BUFFER_FRAME DEFAULTSAMPLES
+#define DEFAULT_FREQ 44100
+
+
 #endif

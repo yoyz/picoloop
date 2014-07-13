@@ -2194,8 +2194,8 @@ int seq()
 
   printf("openAudio start streaming\n");
   //AE.startAudio();
-  AE.startAudioSdl();
-  //AE.startAudio();
+  //AE.startAudioSdl();
+  AE.startAudio();
   seq_update_by_step();  
   while (true)
     {
@@ -2327,8 +2327,8 @@ int main()
   //AE.setupSequencerCallback(printme);
   refresh_bpm();
   AE.setupSequencerCallback(seq_callback_update_step);
-  //AE.openAudio();
-  AE.openAudioSdl();
+  AE.openAudio();
+  //AE.openAudioSdl();
   
   seq();
 
