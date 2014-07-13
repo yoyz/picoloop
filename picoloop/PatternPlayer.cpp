@@ -2335,7 +2335,7 @@ int main()
   printf("[closeAudio output]\n");
   //AE.stopAudioSdl();
 
-  //AE.closeAudio();
+  AE.closeAudio();
   
   //AE.closeAudioSdl();
 
