@@ -554,6 +554,7 @@ int AudioEngine::openAudio()
 int AudioEngine::closeAudio()
 {
   //dac.closeStream();  
+  AD.closeAudio();
 }
 
 int AudioEngine::closeAudioSdl()
