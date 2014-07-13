@@ -3,11 +3,11 @@
 using namespace std;
 
 
-SawOscillator::SawOscillator()
+SawOscillator::SawOscillator() : table(new Sint16[WAVETABLE_SIZE])
 {
   printf("SawOscillator::SawOscillator()");
   table_size=WAVETABLE_SIZE;
-  table=NULL;
+  //table=NULL;
   index=0;
 
 
@@ -35,8 +35,8 @@ void SawOscillator::init()
   Sint16 s;
   Sint16 bitdepth=16;
   Sint16 dec=(1<<(bitdepth-1))/(table_size/4);
-  if (table==NULL)
-    {
+  //if (table==NULL)
+  //{
       table=(Sint16*)malloc(sizeof(Sint16)*table_size);
       s=(1<<(bitdepth-1))-((table_size/2));
       for (i=0;i<table_size;i++)
@@ -45,7 +45,7 @@ void SawOscillator::init()
 	  s=s-dec;
 	  //printf("SawOscillator::init() table[%d]=%d\n",i,table[i]);
 	}
-    }  
+      //}  
 }
 
 

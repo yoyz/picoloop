@@ -3,19 +3,19 @@
 using namespace std;
 
 
-NoiseOscillator::NoiseOscillator()
+NoiseOscillator::NoiseOscillator() : table(new Sint16[WAVETABLE_SIZE])
 {
   printf("NoiseOscillator::NoiseOscillator()");
   table_size=WAVETABLE_SIZE;
-  table=NULL;
+  //table=NULL;
   index=0;
 }
 
 NoiseOscillator::~NoiseOscillator()
 {
   printf("NoiseOscillator::~NoiseOscillator()\n");
-  if (table!=NULL)
-    free(table);
+  //  if (table!=NULL)
+  //free(table);
   table=NULL;
 }
 
@@ -26,15 +26,15 @@ void NoiseOscillator::init()
   Sint16 s;
   Sint16 bitdepth=16;
   srand(1<<(bitdepth-2));
-  if (table==NULL)
-    {
-      table=(Sint16*)malloc(sizeof(Sint16)*table_size);
+  //  if (table==NULL)
+  //    {
+  //      table=(Sint16*)malloc(sizeof(Sint16)*table_size);
       for (i=0;i<table_size;i++)
 	{
 	  table[i]=rand();
 	  //printf("NoiseOscillator::init() table[%d]=%d\n",i,table[i]);
 	}
-    }  
+      //}  
 }
 
 

@@ -3,11 +3,11 @@
 using namespace std;
 
 
-PulseOscillator::PulseOscillator()
+PulseOscillator::PulseOscillator() : table(new Sint16[WAVETABLE_SIZE])
 {
   printf("PulseOscillator::PulseOscillator()");
   table_size=WAVETABLE_SIZE;
-  table=NULL;
+  //table=NULL;
   index=0;
 
   frequency=440;
@@ -18,8 +18,8 @@ PulseOscillator::PulseOscillator()
 PulseOscillator::~PulseOscillator()
 {
   printf("PulseOscillator::~PulseOscillator()\n");
-  if (table!=NULL)
-    free(table);
+  //if (table!=NULL)
+  //    free(table);
   table=NULL;
 }
 
@@ -31,9 +31,9 @@ void PulseOscillator::init()
   Sint16 s;
   Sint16 bitdepth=16;
   Sint16 dec=(1<<(bitdepth-1))/(table_size/2);
-  if (table==NULL)
-    {
-      table=(Sint16*)malloc(sizeof(Sint16)*table_size);
+  //  if (table==NULL)
+  //    {
+  //      table=(Sint16*)malloc(sizeof(Sint16)*table_size);
       for (i=0;i<table_size/2;i++)
 	{
 	  table[i]=(1<<(bitdepth-2));
@@ -47,7 +47,7 @@ void PulseOscillator::init()
 	  //printf("PulseOscillator::init table[%d]=%d\n",i,table[i]);
 	}
 
-    }  
+      //    }  
 }
 
 Sint16 PulseOscillator::tick()

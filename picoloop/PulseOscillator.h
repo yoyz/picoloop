@@ -4,7 +4,7 @@ using namespace std;
 #include <stdio.h>
 #include <math.h>
 #include <limits>
-#include "Wave.h"
+//#include "Wave.h"
 //#include "AudioEngine.h"
 #include "Oscillator.h"
 

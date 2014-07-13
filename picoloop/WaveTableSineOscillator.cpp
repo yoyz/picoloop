@@ -3,19 +3,19 @@
 using namespace std;
 
 
-WaveTableSineOscillator::WaveTableSineOscillator()
+WaveTableSineOscillator::WaveTableSineOscillator() : table(new Sint16[WAVETABLE_SIZE])
 {
   printf("WaveTableSineOscillator::WaveTableSineOscillator()");
   table_size=WAVETABLE_SIZE;
-  table=NULL;
+  //table=NULL;
   index=0;
 }
 
 WaveTableSineOscillator::~WaveTableSineOscillator()
 {
   printf("WaveTableSineOscillator::~WaveTableSineOscillator()\n");
-  if (table!=NULL)
-    free(table);
+  //if (table!=NULL)
+  //    free(table);
   table=NULL;
 }
 
@@ -24,9 +24,9 @@ void WaveTableSineOscillator::init()
   int i;
   float f;
   Sint16 s;
-  if (table==NULL)
-    {
-      table=(Sint16*)malloc(sizeof(Sint16)*table_size);
+  //  if (table==NULL)
+  //    {
+  //  table=(Sint16*)malloc(sizeof(Sint16)*table_size);
       //  table=NULL;
       for (i=0;i<table_size;i++)
 	{
@@ -37,7 +37,7 @@ void WaveTableSineOscillator::init()
 	  //printf("fvalue = %f ",f);
 	  //printf("WaveTableSineOscillator::init() table[%d]=%d\n",i,table[i]);
 	}
-    }  
+      //}  
 }
 
 Sint16 WaveTableSineOscillator::tick()

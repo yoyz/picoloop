@@ -3,12 +3,12 @@
 using namespace std;
 
 
-SineOscillator::SineOscillator()
+SineOscillator::SineOscillator() : table(new Sint16[WAVETABLE_SIZE])
 {
   printf("SineOscillator::SineOscillator()");
   table_size=WAVETABLE_SIZE;
   //table=NULL;
-  table=(Sint16*)malloc(sizeof(Sint16)*table_size);
+  //table=(Sint16*)malloc(sizeof(Sint16)*table_size);
   //table=new Sint16[table_size];
   index=0;
   //table = (Sint16*)malloc(sizeof(Sint16)*table_size);
@@ -30,17 +30,17 @@ void SineOscillator::init()
   float f;
   Sint16 s;
   Sint16 bitdepth=16-1;
-  if (table==NULL)
-    {
-      table=(Sint16*)malloc(sizeof(Sint16)*table_size);
+  //if (table==NULL)
+  //{
+  //  table=(Sint16*)malloc(sizeof(Sint16)*table_size);
       printf("SineOscillator::init() 0x%08.8X\n",table);
       //table=new Sint16[table_size];
-      if (table==NULL)
-	{
-	  printf("ERROR\n");
-	  exit(1);
-	}
-    }
+      //      if (table==NULL)
+      //{
+      //	  printf("ERROR\n");
+      //	  exit(1);
+      //	}
+      //    }
       //  table=NULL;
       for (i=0;i<table_size;i++)
 	{
