@@ -23,8 +23,9 @@ SawOscillator::SawOscillator()
 SawOscillator::~SawOscillator()
 {
   printf("SawOscillator::~SawOscillator()\n");
-  if (table!=NULL)
-    free(table);
+  //  if (table!=NULL)
+  //free(table);
+  //table=NULL;
 }
 
 void SawOscillator::init()

@@ -16,6 +16,7 @@ NoiseOscillator::~NoiseOscillator()
   printf("NoiseOscillator::~NoiseOscillator()\n");
   if (table!=NULL)
     free(table);
+  table=NULL;
 }
 
 void NoiseOscillator::init()

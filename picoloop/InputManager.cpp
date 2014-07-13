@@ -2,27 +2,60 @@
 
 InputManager::InputManager()
 {
+  key_state=NULL;
+  key_repeat=NULL;
+  last_key=0;
+  last_event=0;
+  quit=false;
+  escape=false;
+  //max_key=0;
+}
+
+InputManager::~InputManager()
+{
+  if (key_state!=NULL)
+    free(key_state);
+  if (key_repeat!=NULL)
+    free(key_repeat);
+}
+
+void InputManager::init()
+{
   int i;
-  key_state=(bool*)malloc(sizeof(bool)*MAX_KEY);
+
+  printf("InputManager::init()\n");
+
+  key_state=NULL;
+  key_repeat=NULL;
+  last_key=0;
+  last_event=0;
+  quit=false;
+  escape=false;
+  //max_key=0;
+
+  if (key_state==NULL)
+    key_state=(bool*)malloc(sizeof(bool)*MAX_KEY);
+
+  if (key_repeat==NULL)
+    key_repeat=(int*)malloc(sizeof(int)*MAX_KEY);
+
   for (i=0;i<MAX_KEY;i++)
     key_state[i]=false;
 
-  key_repeat=(int*)malloc(sizeof(int)*MAX_KEY);
   for (i=0;i<MAX_KEY;i++)
     key_repeat[i]=0;
 }
-
-
-
 
 void InputManager::printState()
 {
   int symbol;
   
-  symbol=SDLK_LEFT;  printf("%d[%d %d]",symbol,key_state[symbol],key_repeat[symbol]);
-  symbol=SDLK_RIGHT; printf("%d[%d %d]",symbol,key_state[symbol],key_repeat[symbol]);
-  symbol=SDLK_UP;    printf("%d[%d %d]",symbol,key_state[symbol],key_repeat[symbol]);
-  symbol=SDLK_DOWN;  printf("%d[%d %d]",symbol,key_state[symbol],key_repeat[symbol]);
+  symbol=SDLK_ESCAPE;  printf("%d[%d %d]\n",symbol,key_state[symbol],key_repeat[symbol]);
+  symbol=SDLK_RETURN;  printf("%d[%d %d]\n",symbol,key_state[symbol],key_repeat[symbol]);
+  symbol=SDLK_LEFT;    printf("%d[%d %d]\n",symbol,key_state[symbol],key_repeat[symbol]);
+  symbol=SDLK_RIGHT;   printf("%d[%d %d]\n",symbol,key_state[symbol],key_repeat[symbol]);
+  symbol=SDLK_UP;      printf("%d[%d %d]\n",symbol,key_state[symbol],key_repeat[symbol]);
+  symbol=SDLK_DOWN;    printf("%d[%d %d]\n",symbol,key_state[symbol],key_repeat[symbol]);
   printf("\n");
 }
 
@@ -44,7 +77,11 @@ int InputManager::updateState(int symbol,bool state)
 int InputManager::shouldExit()
 {
   if (key_state[SDLK_ESCAPE] && key_state[SDLK_RETURN])
-    return(1);
+    {
+      this->printState();
+      printf("SDLK_ESCAPE] + SDLK_RETURN\n");
+      return(1);
+    }
   if (quit)
     return(1);
   return(0);

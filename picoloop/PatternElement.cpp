@@ -34,7 +34,7 @@ PatternElement::PatternElement()
 
 PatternElement::~PatternElement()
 {
-  printf("PatternElement::~PatternElement()\n");
+  //printf("PatternElement::~PatternElement()\n");
 }
 
 
@@ -62,7 +62,7 @@ void PatternElement::init()
   oscOneType=SAW;
   oscTwoType=PULSE;
 
-  printf("====PatternElement::init()====\n");
+  //printf("====PatternElement::init()====\n");
 }
 
 int PatternElement::getOscillatorOneType()

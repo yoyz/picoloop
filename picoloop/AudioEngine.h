@@ -3,9 +3,9 @@ using namespace std;
 #ifndef __AUDIOENGINE____
 #define __AUDIOENGINE____
 #include "Master.h"
-#include "Instrument.h"
-#include "Synth.h"
-#include "Wave.h"
+//#include "Instrument.h"
+//#include "Synth.h"
+//#include "Wave.h"
 #include <SDL/SDL.h>
 #include <iostream>
 #include <map>
@@ -35,9 +35,13 @@ class AudioEngine
   int probeDevice();
 
   int  startAudio();
+  int  startAudioSdl();
   int  stopAudio();
+  int  stopAudioSdl();
   int  openAudio();
+  int  openAudioSdl();
   int  closeAudio();
+  int  closeAudioSdl();
   void setTick(int t);
   int  getTick();
   AudioMixer   & getAudioMixer();
@@ -50,9 +54,12 @@ class AudioEngine
 	       double streamTime, 
 	       RtAudioStreamStatus status, 
 	       void *data );
-  void set_instrument(Instrument inst);
+
+  void sdlcallback(void *unused, Uint8 *stream, int len);
+
+  //void set_instrument(Instrument inst);
   int setNbTickBeforeStepChange(int val);
-  void setSynthFreq(int sfreq);
+  //void setSynthFreq(int sfreq);
   int  getNbCallback();
 
   int bufferIsGenerated();
@@ -77,7 +84,7 @@ class AudioEngine
   int          tick;
   int          nb_tick;
   int          nb_tick_before_step_change;
-  Instrument   inst;
+  //Instrument   inst;
   //  SineOscillator S;
   AudioMixer   AM;
   int          nbCallback;
@@ -91,6 +98,8 @@ class AudioEngine
   RtAudio::StreamParameters rtAudioOutputParams;
   RtAudio::StreamOptions    rtAudioStreamOptions;
 
+  SDL_AudioSpec * sdlAudioSpecWanted;
+  SDL_AudioSpec * sdlAudioSpecObtained;
 };
 
 #endif

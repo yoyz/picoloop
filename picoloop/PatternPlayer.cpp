@@ -10,7 +10,7 @@ using namespace std;
 #include "PatternReader.h"
 #include "PatternPlayer.h"
 #include "AudioEngine.h"
-#include "Wave.h"
+//#include "Wave.h"
 #include "MonoMixer.h"
 #include "SDL_GUI.h"
 #include "InputManager.h"
@@ -80,8 +80,8 @@ PatternReader  PR;          // used to  read data.pic file
 PatternElement PE;          // used for copy paste PatternElement
 InputManager   IE;          // used to  fetch key
 SDL_GUI        SG;          // used to  open a gui and display stuff
-Wave           cowbell;     // used ?
-Instrument     inst;        // used ?
+//Wave           cowbell;     // used ?
+//Instrument     inst;        // used ?
 
 
 int save=false;
@@ -2193,7 +2193,9 @@ int seq()
     seq_update_track(i);
 
   printf("openAudio start streaming\n");
-  AE.startAudio();
+  //AE.startAudio();
+  AE.startAudioSdl();
+  //AE.startAudio();
   seq_update_by_step();  
   while (true)
     {
@@ -2211,7 +2213,10 @@ int seq()
             
       // if user want to quit via handle_key
       if (quit)
-	return(0);
+	{
+	  printf("user want to quit\n");
+	  return(0);
+	}
       
       //display graphic if something has change : handle_key 
       if (dirty_graphic)
@@ -2302,9 +2307,16 @@ int main()
   //  char * str="808-cowbell.wav";
   //tmp_str=(char*)malloc(sizeof(char)*4);
   //cowbell.loadWave(str);
+  IE.init();
+  IE.printState();
+  //IE.handle_key();
+  //IE.init();
+  //IE.printState();
+  //exit(0);
   load_pattern();
   printf("[openVideo output]\n");
   SG.initVideo();
+  //SDL_InitSubSystem(SDL_INIT_AUDIO);
   //handle_key();
   //  SDL_EnableKeyRepeat(500,500);
   SG.openBMPFont();
@@ -2315,14 +2327,20 @@ int main()
   //AE.setupSequencerCallback(printme);
   refresh_bpm();
   AE.setupSequencerCallback(seq_callback_update_step);
-  AE.openAudio();
-
+  //AE.openAudio();
+  AE.openAudioSdl();
+  
   seq();
+
+  printf("[closeAudio output]\n");
+  //AE.stopAudioSdl();
+
+  //AE.closeAudio();
+  
+  //AE.closeAudioSdl();
 
   printf("[closeVideo output]\n");
   SG.closeVideo();
-  printf("[closeAudio output]\n");
-  AE.closeAudio();
   //sleep(10);
   //PE.print();
   printf("Exiting PatternPlayer\n");

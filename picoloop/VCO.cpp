@@ -1,7 +1,20 @@
 #include "VCO.h"
 
 
-VCO::VCO() : sineOsc1(), sineOsc2(), sawOsc1(), sawOsc2(), pulseOsc1(), pulseOsc2(), triangleOsc1(), triangleOsc2(), waveTableSineOsc1(), waveTableSineOsc2(), noiseOsc1(), noiseOsc2(), sineLfoOsc1(), sawLfoOsc1() //, noiseosc()
+VCO::VCO() : sineOsc1(), 
+	     sineOsc2(), 
+	     sawOsc1(), 
+	     sawOsc2(), 
+	     pulseOsc1(), 
+	     pulseOsc2(), 
+	     triangleOsc1(), 
+	     triangleOsc2(), 
+	     waveTableSineOsc1(), 
+	     waveTableSineOsc2(), 
+	     noiseOsc1(), 
+	     noiseOsc2(), 
+	     sineLfoOsc1(), 
+	     sawLfoOsc1() //, noiseosc()
 {
   printf("VCO::VCO()\n");
   s1=NULL;
@@ -31,8 +44,6 @@ void VCO::init()
   lfo_speed=0;
 
 
-  waveTableSineOsc1.init();
-  waveTableSineOsc2.init();
 
   sineOsc1.init();
   sineOsc2.init();
@@ -40,11 +51,14 @@ void VCO::init()
   sawOsc1.init();
   sawOsc2.init();
 
+  pulseOsc1.init();
+  pulseOsc2.init();
+
   triangleOsc1.init();
   triangleOsc2.init();
 
-  pulseOsc1.init();
-  pulseOsc2.init();
+  waveTableSineOsc1.init();
+  waveTableSineOsc2.init();
 
   noiseOsc1.init();
   noiseOsc2.init();

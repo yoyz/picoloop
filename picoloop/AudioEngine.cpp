@@ -1,7 +1,10 @@
 #include "AudioEngine.h"
-#include "SineOscillator.h"
+//#include "SineOscillator.h"
 
-AudioEngine::AudioEngine() : inst(), AM()
+void fakesdlcallback(void *unused, Uint8 *stream, int len);
+
+//AudioEngine::AudioEngine() : inst(), AM()
+AudioEngine::AudioEngine() : AM()
 {
   freq=DEFAULTFREQ;
   samples=DEFAULTSAMPLES;
@@ -12,6 +15,23 @@ AudioEngine::AudioEngine() : inst(), AM()
   FORMAT=RTAUDIO_SINT16;
   bufferFrames = 512;          // Weird ?
   bufferFrames = BUFFER_FRAME; // Weird ?
+
+  sdlAudioSpecWanted   = (SDL_AudioSpec *) malloc(sizeof(SDL_AudioSpec));  
+  sdlAudioSpecObtained = (SDL_AudioSpec *) malloc(sizeof(SDL_AudioSpec));
+
+  if (sdlAudioSpecWanted==NULL)
+    exit(1);
+
+  if (sdlAudioSpecObtained==NULL)
+    exit(1);
+
+  sdlAudioSpecWanted->freq = 48000;
+  sdlAudioSpecWanted->format = AUDIO_S16;
+  sdlAudioSpecWanted->channels = 2;    /* 1 = mono, 2 = stereo */
+  sdlAudioSpecWanted->samples = BUFFER_FRAME;  /* Good low-latency value for callback */
+  sdlAudioSpecWanted->callback = fakesdlcallback;
+  sdlAudioSpecWanted->userdata = this;
+
 
   rtAudioOutputParams.deviceId=dac.getDefaultOutputDevice();
   rtAudioOutputParams.firstChannel=0;
@@ -304,6 +324,65 @@ int AudioEngine::callback( void *outputBuffer,
   return nbCallback++;  
 }
 
+
+void AudioEngine::sdlcallback(void *unused, Uint8 *stream, int len)
+{
+  //  printf("AudioEngine::calback() begin nBufferFrame=%d nbCallback=%d\n",nBufferFrames,nbCallback);
+  typedef Sint16 MY_TYPE;
+  MY_TYPE *buffer = (MY_TYPE *) stream;
+  
+  //  this->bufferGenerated=0;
+  if (bufferGenerated==0)
+    this->processBuffer();
+
+#ifdef LINUX_DESKTOP
+  if (debug_audio)
+    fwrite(buffer_out,len,sizeof(Sint16),fd);
+#endif
+
+  
+  for (int i=0;i<len-1;i++)
+    {
+      //int tick = S.tick();
+      //      int tick = AM.tick();
+      //Sint16 tick = AM.tick();
+      tick=buffer_out[i];
+      //      printf("%d\n",tick);
+      /*
+      #ifdef LINUX_DESKTOP
+      if (debug_audio)
+	{	  
+	  fwrite(&tick,1,sizeof(Sint16),fd);
+	  fwrite(&tick,1,sizeof(Sint16),fd);
+	  //printf("%d\t",tick);
+	}
+      #endif
+      */
+      buffer[(2*i)]=    tick;
+      buffer[(2*i)+1]=  tick;
+
+      //buffer[i+1]=tick;
+      //buffer[i+1]=0;
+      i++;
+    }
+  //if (debug_audio)
+  //fwrite(buffer,sizeof(MY_TYPE)*nBufferFrames,sizeof(MY_TYPE),fd);
+
+  //  printf("AudioEngine::calback() end\n");
+  //bufferGenerated=0;
+  //return nbCallback++;  
+}
+
+
+
+
+void fakesdlcallback(void *unused, Uint8 *stream, int len)
+{
+  ((AudioEngine*)unused)->sdlcallback(unused,stream,len);
+}
+
+
+
 int fakecallback( 
 	       void *outputBuffer, 
 	       void *inputBuffer, 
@@ -324,16 +403,23 @@ int fakecallback(
 
 
 
-void AudioEngine::set_instrument(Instrument instru)
-{
-  inst=inst;
-}
+//void AudioEngine::set_instrument(Instrument instru)
+//{
+//  inst=inst;
+//}
 /*
 void AudioEngine::callback()
 {
   printf("AudioEngine::callback\n");  
 }
 */
+
+
+int AudioEngine::startAudioSdl()
+{
+  //return 1;
+  SDL_PauseAudio(0);
+}
 
 // enable audio callback
 int AudioEngine::startAudio()
@@ -347,6 +433,26 @@ int AudioEngine::stopAudio()
   dac.stopStream();
 }
 
+
+// disable audio callback
+int AudioEngine::stopAudioSdl()
+{
+  //SDL_CloseAudio();
+  //return 1;
+  SDL_PauseAudio(1);
+}
+
+
+int AudioEngine::openAudioSdl()
+{
+  SDL_InitSubSystem(SDL_INIT_AUDIO);
+  if ( SDL_OpenAudio(sdlAudioSpecWanted, sdlAudioSpecObtained) < 0 ) 
+    {
+      fprintf(stderr, "Couldn't open audio: %s\n", SDL_GetError());
+      return(-1);
+    }
+  //SDL_PauseAudio(1);
+}
 
 int AudioEngine::openAudio()
 {
@@ -391,4 +497,11 @@ int AudioEngine::openAudio()
 int AudioEngine::closeAudio()
 {
   dac.closeStream();  
+}
+
+int AudioEngine::closeAudioSdl()
+{
+  //SDL_LockAudio();
+  SDL_CloseAudio();
+  SDL_QuitSubSystem(SDL_INIT_AUDIO);
 }

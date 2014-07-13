@@ -35,23 +35,30 @@ public:
   void                  setLfoSpeed(int val);
   Oscillator          * getOscillatorOne();
 
-  SawOscillator           sawOsc1;
-  SawOscillator           sawOsc2;
   SineOscillator          sineOsc1;
   SineOscillator          sineOsc2;
-  FuzzyPulseOscillator    fuzzyPulseOsc1;
-  FuzzyPulseOscillator    fuzzyPulseOsc2;
+
+  SawOscillator           sawOsc1;
+  SawOscillator           sawOsc2;
+
   PulseOscillator         pulseOsc1;
   PulseOscillator         pulseOsc2;
-  NoiseOscillator         noiseOsc1;
-  NoiseOscillator         noiseOsc2;
-  WaveTableSineOscillator waveTableSineOsc1;
-  WaveTableSineOscillator waveTableSineOsc2;
+
   TriangleOscillator      triangleOsc1;
   TriangleOscillator      triangleOsc2;
 
+  WaveTableSineOscillator waveTableSineOsc1;
+  WaveTableSineOscillator waveTableSineOsc2;
+
+  NoiseOscillator         noiseOsc1;
+  NoiseOscillator         noiseOsc2;
+
   SineOscillator          sineLfoOsc1;
   SawOscillator           sawLfoOsc1;
+
+  //  FuzzyPulseOscillator    fuzzyPulseOsc1;
+  //  FuzzyPulseOscillator    fuzzyPulseOsc2;
+
 
   //NoiseOscillator       noiseosc;
   Oscillator            * s1;

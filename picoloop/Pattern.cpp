@@ -13,7 +13,7 @@ Pattern::Pattern() : pevector(16,PatternElement())
 
 Pattern::~Pattern()
 {
-  printf("Pattern::~Pattern()\n");
+  //printf("Pattern::~Pattern()\n");
 }
 
 void Pattern::init()

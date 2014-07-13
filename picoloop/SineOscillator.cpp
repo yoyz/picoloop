@@ -7,15 +7,21 @@ SineOscillator::SineOscillator()
 {
   printf("SineOscillator::SineOscillator()");
   table_size=WAVETABLE_SIZE;
-  table=NULL;
+  //table=NULL;
+  table=(Sint16*)malloc(sizeof(Sint16)*table_size);
+  //table=new Sint16[table_size];
   index=0;
+  //table = (Sint16*)malloc(sizeof(Sint16)*table_size);
 }
 
 SineOscillator::~SineOscillator()
 {
-  printf("SineOscillator::~SineOscillator()\n");
-  if (table!=NULL)
-    free(table);
+  printf("SineOscillator::~SineOscillator() 0x%08.8X\n",table);
+  //if (table!=NULL)
+    //&& index!=0)
+    //free(table);
+    //delete(table);
+  //table=NULL;
 }
 
 void SineOscillator::init()
@@ -27,6 +33,14 @@ void SineOscillator::init()
   if (table==NULL)
     {
       table=(Sint16*)malloc(sizeof(Sint16)*table_size);
+      printf("SineOscillator::init() 0x%08.8X\n",table);
+      //table=new Sint16[table_size];
+      if (table==NULL)
+	{
+	  printf("ERROR\n");
+	  exit(1);
+	}
+    }
       //  table=NULL;
       for (i=0;i<table_size;i++)
 	{
@@ -37,7 +51,7 @@ void SineOscillator::init()
 	  //printf("fvalue = %f ",f);
 	  //printf("SineOscillator::init() table[%d]=%d\n",i,table[i]);
 	}
-    }
+      //}
   
 }
 

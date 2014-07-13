@@ -11,6 +11,8 @@ class InputManager
 {
 public:
   InputManager();
+  ~InputManager();
+  void   init();
   int    handleKey();
   int    shouldExit();
   int    updateState(int symbol,bool state);
@@ -29,7 +31,7 @@ public:
   int    last_event;           // the last event : SDL_KEYUP || SDL_KEYDOWN || 0 if event cleared 
   bool    quit;
   bool    escape;
-  int     max_key;
+  //int     max_key;
 };
 
 #endif

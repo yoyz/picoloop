@@ -16,6 +16,7 @@ WaveTableSineOscillator::~WaveTableSineOscillator()
   printf("WaveTableSineOscillator::~WaveTableSineOscillator()\n");
   if (table!=NULL)
     free(table);
+  table=NULL;
 }
 
 void WaveTableSineOscillator::init()
@@ -36,8 +37,7 @@ void WaveTableSineOscillator::init()
 	  //printf("fvalue = %f ",f);
 	  //printf("WaveTableSineOscillator::init() table[%d]=%d\n",i,table[i]);
 	}
-    }
-  
+    }  
 }
 
 Sint16 WaveTableSineOscillator::tick()

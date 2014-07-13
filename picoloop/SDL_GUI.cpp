@@ -28,11 +28,21 @@ SDL_GUI::~SDL_GUI()
 
 int SDL_GUI::initVideo()
 {
-  if ( SDL_Init(SDL_INIT_VIDEO) < 0 )
+  if ( SDL_Init(SDL_INIT_VIDEO)
+       //|SDL_INIT_TIMER|SDL_INIT_AUDIO) 
+       
+  //if ( SDL_Init(SDL_INIT_VIDEO) 
+       //sleep(1);
+       //|
+       //		SDL_INIT_AUDIO|
+       //SDL_INIT_TIMER
+       //) < 0 )
+       <0)
     {
       fprintf(stderr, "Couldn't initialize SDL: %s\n", SDL_GetError());
       return 0;
     }
+  
   
   printf("SDL initialized.\n");
   #ifdef OPENDINGUX
@@ -70,7 +80,7 @@ void SDL_GUI::clearScreen()
 
 int SDL_GUI::closeVideo()
 {
-  SDL_Quit();
+  //SDL_Quit();
 }
 
 
