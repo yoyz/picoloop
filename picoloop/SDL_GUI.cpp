@@ -57,6 +57,13 @@ int SDL_GUI::initVideo()
 			    SCREEN_DEPTH,			
 			    SDL_HWSURFACE|SDL_DOUBLEBUF);
   #endif
+  #ifdef GP2X
+  screen = SDL_SetVideoMode(SCREEN_WIDTH, 
+			    SCREEN_HEIGHT, 
+			    8,			
+			    SDL_SWSURFACE);
+  #endif
+
   if (screen == NULL)
     {
       fprintf(stderr, "Couldn't set video mode: %s\n", SDL_GetError());
