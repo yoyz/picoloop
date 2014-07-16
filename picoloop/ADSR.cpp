@@ -158,7 +158,8 @@ Sint16 ADSR::tick()
   //  return S->tick();
 
   Sint16 s=0;
-  Sint16 s_in;
+  //Sint16 s_in;
+  Sint32 s_in;
   //float  f1=0.0;
   //float  f2=0.0;
   int    debug=1;
@@ -201,7 +202,7 @@ Sint16 ADSR::tick()
 	  if(ca_div<2)
 	    ca_div=2;
 	}
-      return s_in/ca_div;
+      return s_in/((ca_div/4)+1);
     }
 
   if (sample_num >= ca)
@@ -212,7 +213,7 @@ Sint16 ADSR::tick()
 	  cr_div=cr_div+1;
 	}
 
-      return s_in/cr_div;
+      return s_in/((cr_div/4)+1);
       
     }
 
