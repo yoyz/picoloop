@@ -12,8 +12,8 @@
 
 using namespace std;
 
-PatternReader::PatternReader() : twoDPVector(16,vector <Pattern>(TRACK_MAX)), 
-				 loadedData(16,vector      <int>(TRACK_MAX))
+PatternReader::PatternReader() : twoDPVector(MAX_PATTERN_BY_PROJECT,vector <Pattern>(TRACK_MAX)), 
+				 loadedData(MAX_PATTERN_BY_PROJECT,vector      <int>(TRACK_MAX))
 
 				 //, 
 				 //				 savedData(16,vector       <int>(TRACK_MAX))
@@ -31,7 +31,7 @@ void PatternReader::init()
   int x;
   int y;
   
-  for (x=0;x<16;x++)
+  for (x=0;x<MAX_PATTERN_BY_PROJECT;x++)
     for (y=0;y<TRACK_MAX-1;y++)
       {
 	loadedData[x][y]=DATA_HAS_NOT_BEEN_CHECK;
@@ -64,6 +64,7 @@ bool PatternReader::PatternDataExist(int PatternNumber,int TrackNumber)
   char line[1024];
   char filename[1024];
 
+  //printf("?EXIST (%d %d)\n");
   if (loadedData[PatternNumber][TrackNumber]==DATA_EXIST_ON_STORAGE)
     return true;
   if (loadedData[PatternNumber][TrackNumber]==DATA_DOES_NOT_EXIST_ON_STORAGE)

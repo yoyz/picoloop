@@ -386,7 +386,18 @@ void display_board_load_save()
   int x,y;
   int  i;
   int  cty=SEQ.getCurrentTrackY();
+  //int  ctx=SEQ.getCurrentTrackX();
   int  step=SEQ.getPatternSequencer(cty).getStep();
+
+  int loadsave_cursor_x_div_sixteen=loadsave_cursor_x/16;
+  //int loadsave_cursor_x_mod_sixteen=loadsave_cursor_x/16;
+  //int loadsave_cursor_y_div_sixteen=loadsave_cursor_y/16;
+
+  int loadsave_cursor_x_divmul_sixteen=loadsave_cursor_x_div_sixteen*16;
+  //int loadsave_cursor_y_divmul_sixteen=loadsave_cursor_y_divmul_sixteen*16;
+
+  //printf("*************************** loadsave_cursor_x_divmul_sixteen=%d\n",loadsave_cursor_x_divmul_sixteen);
+  //printf("*************************** loadsave_cursor_x                %d\n",loadsave_cursor_x);
 
   static const char * txt_tab[] = 
     { 
@@ -438,20 +449,30 @@ void display_board_load_save()
       //tmp_txt="0";
       
       SG.clearScreen();
-      for (x=0;x<16;x++)
-	for (y=0;y<4;y++)
+
+      // Display box loaded/unloaded
+      for (x=loadsave_cursor_x_divmul_sixteen;
+	   x<(loadsave_cursor_x_divmul_sixteen)+16;
+	   x++)
+	for (y=0;y<TRACK_MAX;y++)
 	  {
 	    if (PR.PatternDataExist(x,y))
-	      SG.middleBoxNumber(x,y,NOTE_COLOR);
+	      SG.middleBoxNumber(x%16,y,NOTE_COLOR);
 	    else
-	      SG.middleBoxNumber(x,y,STEP_COLOR);
+	      SG.middleBoxNumber(x%16,y,STEP_COLOR);
 	  }
       
-      SG.middleBoxNumber(loadsave_cursor_x,loadsave_cursor_y,TRIG_COLOR);
+      // Display your current position
+      SG.middleBoxNumber(loadsave_cursor_x%16,
+			 loadsave_cursor_y,
+			 TRIG_COLOR);
       
-      for (x=0;x<16;x++)
-	for (y=0;y<4;y++)
-	  SG.drawTTFTextLoadSaveBoxNumer(x,y,txt_tab[x]);
+      // Display text 0..9..F
+      for (x=loadsave_cursor_x_divmul_sixteen;
+	   x<(loadsave_cursor_x_divmul_sixteen)+16;
+	   x++)
+	for (y=0;y<TRACK_MAX;y++)
+	  SG.drawTTFTextLoadSaveBoxNumer(x%16,y,txt_tab[x%16]);
       //SG.drawTTFTextLoadSaveBoxNumer(x,y,tmp_txt);
     }
 }
@@ -1569,10 +1590,11 @@ void handle_key_load_save()
 	    if (keyRepeat[BUTTON_DOWN]==1  || keyRepeat[BUTTON_DOWN]%64==0)  
 	      { loadsave_cursor_y++;  dirty_graphic=1;}
 	  
-	  if (loadsave_cursor_x>15)          { loadsave_cursor_x=0;           }
-	  if (loadsave_cursor_x<0)           { loadsave_cursor_x=15;          }
-	  if (loadsave_cursor_y>TRACK_MAX-1) { loadsave_cursor_y=0;           }
-	  if (loadsave_cursor_y<0)           { loadsave_cursor_y=TRACK_MAX-1; }  
+	  if (loadsave_cursor_x>MAX_PATTERN_BY_PROJECT-1)        { loadsave_cursor_x=0;           }
+	  if (loadsave_cursor_x<0)                               { loadsave_cursor_x=MAX_PATTERN_BY_PROJECT-1;    }
+
+	  if (loadsave_cursor_y>TRACK_MAX-1)                     { loadsave_cursor_y=0;           }
+	  if (loadsave_cursor_y<0)                               { loadsave_cursor_y=TRACK_MAX-1; }  
 	  
 	  SEQ.setCurrentTrackY(loadsave_cursor_y);
 	}
