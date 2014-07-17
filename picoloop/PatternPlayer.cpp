@@ -2000,6 +2000,7 @@ int seq_update_by_step()
 	{
 	  PR.readPatternData(loadsave_cursor_x,loadsave_cursor_y,P[cty]);
 	  bpm_current=P[cty].getBPM();
+	  current_swing=P[t].getSwing();
 	  //nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
 	  //nb_tick_before_step_change=(60*DEFAULT_FREQ)/(bpm_current*4);
 	  //AE.setNbTickBeforeStepChange(nb_tick_before_step_change);
@@ -2024,9 +2025,11 @@ int seq_update_by_step()
 	    {
 	      PR.readPatternData(loadsave_cursor_x,t,P[t]);
 	      bpm_current=P[t].getBPM();
+	      current_swing=P[t].getSwing();
 	      //nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
 	      //nb_tick_before_step_change=(60*DEFAULT_FREQ)/(bpm_current*4);
 	      //AE.setNbTickBeforeStepChange(nb_tick_before_step_change);
+	      
 	      refresh_bpm();
 
 	      

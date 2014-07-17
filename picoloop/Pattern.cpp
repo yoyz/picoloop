@@ -9,6 +9,7 @@ Pattern::Pattern() : pevector(16,PatternElement())
   size=16;
   bpmDivider=1;
   bpm=120;
+  swing=50;
 }
 
 Pattern::~Pattern()
