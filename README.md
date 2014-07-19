@@ -7,11 +7,11 @@ It use RtAudio to render audio out.
 
 # PACKAGE DEPENDENCY & DEVEL PACKAGE
 
-libsdl*	     => version 1.2 the 2.0 was not tested "ttf" and "gfx" needed
-libasound2*  => alsa
-libpthread*  => pthread
-g++	     => I use the g++ 4.7.2  
-make	     => U use the make 3.81
+     - libsdl*      => version 1.2 the 2.0 was not tested "ttf" and "gfx" needed
+     - libasound2*  => alsa
+     - libpthread*  => pthread
+     - g++          => I use the g++ 4.7.2  
+     - make         => U use the make 3.81
 
 
 # LASTEST SOURCE
