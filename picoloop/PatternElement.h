@@ -62,6 +62,9 @@ public:
   int    getLfoSpeed();
   void   setLfoSpeed(int val);
 
+  int    getPhaseOsc1();
+  void   setPhaseOsc1(int val);
+
 
   int    getOscillatorOneType();
   int    getOscillatorTwoType();
@@ -98,6 +101,8 @@ private:
 
   int oscOneType;
   int oscTwoType;
+
+  int phaseOsc1;
   
 };
 

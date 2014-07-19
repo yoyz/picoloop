@@ -142,6 +142,8 @@ int osctwotype=0;
 int osconetype_all=0;
 int osctwotype_all=0;
 
+int phase_osc1=0;
+int phase_osc1_all=0;
 
 int loadsave_cursor_x=0; // index in the load/save menu
 int loadsave_cursor_y=0; // index in the load/save menu
@@ -501,11 +503,11 @@ void display_board_vco()
 
 	      
 	      if (i==step)
-		SG.smallBoxNumber(i,P[cty].getPatternElement(i).getVCOMix(),0,STEP_COLOR);
+		SG.smallBoxNumber(i,P[cty].getPatternElement(i).getVCOMix(),P[cty].getPatternElement(i).getPhaseOsc1(),STEP_COLOR);
 	      if (i==cursor)
-		SG.smallBoxNumber(i,P[cty].getPatternElement(i).getVCOMix(),0,CURSOR_COLOR);
+		SG.smallBoxNumber(i,P[cty].getPatternElement(i).getVCOMix(),P[cty].getPatternElement(i).getPhaseOsc1(),CURSOR_COLOR);
 
-	      SG.smallBoxNumber(i,P[cty].getPatternElement(i).getVCOMix(),0,SMALLBOX_COLOR);
+	      SG.smallBoxNumber(i,P[cty].getPatternElement(i).getVCOMix(),P[cty].getPatternElement(i).getPhaseOsc1(),SMALLBOX_COLOR);
 	    }
 
 	}
@@ -1262,12 +1264,12 @@ void handle_key_vco()
 	  { vcomix=1;  	  dirty_graphic=1;}
       
       if (keyState[BUTTON_UP]  && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%64==0) 
-	  { attack=1;   	  dirty_graphic=1;}
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%4==0) 
+	  { phase_osc1=1;   	  dirty_graphic=1;}
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%64==0) 
-	  { attack=-1;  	  dirty_graphic=1;}
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%4==0) 
+	  { phase_osc1=-1;  	  dirty_graphic=1;}
     }
 
   if (menu        != MENU_OFF && 
@@ -1284,12 +1286,12 @@ void handle_key_vco()
 
       // ????
       if (keyState[BUTTON_UP]  && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%64==0) 
-	  { attack=1;   	  dirty_graphic=1;}
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%4==0) 
+	  { phase_osc1_all=1;   	  dirty_graphic=1;}
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%64==0) 
-	  { attack=-1;  	  dirty_graphic=1;}
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%4==0) 
+	  { phase_osc1_all=-1;  	  dirty_graphic=1;}
       //????
     }
 
@@ -1745,6 +1747,33 @@ void seq_update_multiple_time_by_step()
     }
 
 
+  // Change phase osc1
+  if (phase_osc1!=0)
+    {
+      //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
+      P[cty].getPatternElement(cursor).setPhaseOsc1(P[cty].getPatternElement(cursor).getPhaseOsc1()+phase_osc1);
+      phase_osc1=0;
+      if (debug)
+	printf("[phase_osc1:%d]\n",P[cty].getPatternElement(cursor).getPhaseOsc1());
+      //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
+      
+    }
+
+  // Change phase osc1
+  if (phase_osc1_all!=0)
+    {
+      //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
+      for (i=0;i<16;i++)
+	P[cty].getPatternElement(i).setPhaseOsc1(P[cty].getPatternElement(i).getPhaseOsc1()+phase_osc1_all);
+      phase_osc1_all=0;
+      if (debug)
+	printf("[phase_osc1_all:%d]\n",P[cty].getPatternElement(cursor).getPhaseOsc1());
+      //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
+      
+    }
+
+
+
   // Change lfo depth
   if (lfo_depth!=0)
     {
@@ -2132,11 +2161,16 @@ void seq_update_track(int t)
 	  M[t]->getVCO().setLfoDepth(P[t].getPatternElement(step).getLfoDepth());
 	  M[t]->getVCO().setLfoSpeed(P[t].getPatternElement(step).getLfoSpeed());
 	  
+	  
 	  i_c=P[t].getPatternElement(step).getCutoff();
 	  i_r=P[t].getPatternElement(step).getResonance();
 
 	  M[t]->getADSR().reset();
 	  M[t]->getVCO().reset();
+
+	  //printf("*************phase:%d\n",P[t].getPatternElement(step).getPhaseOsc1());
+	  //phase need to be reset after vco cause vco reset oscillator
+	  M[t]->getVCO().getOscillatorOne()->setPhase(P[t].getPatternElement(step).getPhaseOsc1());
 
 
 	  f_c=i_c-1;

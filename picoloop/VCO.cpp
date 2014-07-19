@@ -165,6 +165,7 @@ void VCO::reset()
   printf("VCO::reset() this=0x%08.8X\n",this); // <==== FAILS allways the same this pointers
   s1->reset();
   s2->reset();
+  //s2->setPhase(72);
   lfo1->reset();
   
   //this->setLfoDepth(0);

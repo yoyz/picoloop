@@ -223,6 +223,16 @@ void PatternElement::setLfoSpeed(int val)
   lfo_speed=this->checkSevenBitBoundarie(val);
 }
 
+void PatternElement::setPhaseOsc1(int val)
+{
+  phaseOsc1=this->checkSevenBitBoundarie(val);
+}
+
+int PatternElement::getPhaseOsc1()
+{
+  return phaseOsc1;
+}
+
 
 
 string PatternElement::getStr()
