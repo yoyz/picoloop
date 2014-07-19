@@ -18,6 +18,7 @@ class Oscillator
   ~Oscillator();
   void   setAmplitude(int amp);
   void   reset();
+  void   setPhase(int phase);
   void   setFreq(int freq);
   int    getFreq();
 

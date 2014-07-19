@@ -27,6 +27,14 @@ void Oscillator::reset()
   index=0;
 }
 
+// phase is from 0 to 127
+void Oscillator::setPhase(int phase)
+{
+  int coeff=table_size/128;
+  index=coeff*phase;
+}
+
+
 
 int Oscillator::getFreq()
 {
