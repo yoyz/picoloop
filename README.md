@@ -21,12 +21,11 @@ It use RtAudio to render audio out.
 
 # COMPILATION
 
-<tt> # cd      picoloop 			                </tt> <br>
-<tt> # make -f Makefile.Makefile.RtAudio_debian      clean 	</tt> <br>
-<tt> # make -f Makefile.PatternPlayer_debian_RtAudio clean 	</tt> <br>
-
-<tt> # make -f Makefile.RtAudio_debian 		                </tt> <br>
-<tt> # make -f Makefile.PatternPlayer_debian_RtAudio            </tt> <br>
+     # cd      picoloop
+     # make -f Makefile.Makefile.RtAudio_debian      clean
+     # make -f Makefile.PatternPlayer_debian_RtAudio clean
+     # make -f Makefile.RtAudio_debian
+     # make -f Makefile.PatternPlayer_debian_RtAudio
 
 # LAUNCHING
 
