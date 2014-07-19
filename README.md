@@ -5,6 +5,15 @@ It use SDL     to render graphics.
 It use RtAudio to render audio out.
 
 
+# PACKAGE DEPENDENCY & DEVEL PACKAGE
+
+libsdl*	     => version 1.2 the 2.0 was not tested "ttf" and "gfx" needed
+libasound2*  => alsa
+libpthread*  => pthread
+g++	     => I use the g++ 4.7.2  
+make	     => U use the make 3.81
+
+
 # LASTEST SOURCE
 
 <tt> # git clone https://github.com/yoyz/audio.git </tt> </br>
@@ -12,12 +21,12 @@ It use RtAudio to render audio out.
 
 # COMPILATION
 
-<tt> # cd picoloop 				</tt> <br>
-<tt> # make -f Makefile.RtAudio clean 		</tt> <br>
-<tt> # make -f Makefile.PatternPlayer clean 	</tt> <br>
+<tt> # cd      picoloop 			                </tt> <br>
+<tt> # make -f Makefile.Makefile.RtAudio_debian      clean 	</tt> <br>
+<tt> # make -f Makefile.PatternPlayer_debian_RtAudio clean 	</tt> <br>
 
-<tt> # make -f Makefile.RtAudio  		</tt> <br>
-<tt> # make -f Makefile.PatternPlayer		</tt> <br>
+<tt> # make -f Makefile.RtAudio_debian 		                </tt> <br>
+<tt> # make -f Makefile.PatternPlayer_debian_RtAudio            </tt> <br>
 
 # LAUNCHING
 
