@@ -3,7 +3,7 @@
 using namespace std;
 
 
-TriangleOscillator::TriangleOscillator()
+TriangleOscillator::TriangleOscillator() : table(new Sint16[WAVETABLE_SIZE])
 {
   printf("TriangleOscillator::TriangleOscillator()");
   table_size=WAVETABLE_SIZE;
@@ -35,9 +35,9 @@ void TriangleOscillator::init()
   Sint16 bitdepth=16;
   //Sint16 dec=(1<<(bitdepth))/(table_size/4);
   Sint16 dec=(1<<(bitdepth-2))/(table_size/4);
-  if (table==NULL)
-    {
-
+  //if (table==NULL)
+  //{
+      
       table=(Sint16*)malloc(sizeof(Sint16)*table_size);      
       for (i=0;i<(table_size*1)/4;i++)
 	{
@@ -56,7 +56,7 @@ void TriangleOscillator::init()
 	  s=s+dec;
 	}
 
-    }  
+      //}  
 }
 
 

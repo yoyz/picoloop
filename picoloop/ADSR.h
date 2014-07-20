@@ -10,14 +10,15 @@
 #ifndef __ADSR__
 #define __ADSR__
 
-class ADSR
+class ADSR : public Oscillator
 {
  public:
   ADSR();
   ~ADSR();
   //  void setInput(Oscillator * S);
   void   init();
-  void   setInput(VCO * vcoosc);
+  //void   setInput(VCO * vcoosc);
+  void   setInput(Oscillator * vcoosc);
 
   void   setAttack(int atk);
   void   setDecay(int dc);

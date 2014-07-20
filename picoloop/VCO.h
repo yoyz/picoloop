@@ -10,7 +10,7 @@
 #include "WaveTableSineOscillator.h"
 #include "NoiseOscillator.h"
 
-class VCO
+class VCO : public Oscillator
 {
 public:
   VCO();

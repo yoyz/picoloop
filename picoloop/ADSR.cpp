@@ -150,7 +150,8 @@ void ADSR::setOscillator(Oscillator * osc)
 */
 
  //void ADSR::setOscillator(VCO * vcoosc)
-void ADSR::setInput(VCO * vcoosc)
+ //void ADSR::setInput(VCO * vcoosc)
+void ADSR::setInput(Oscillator * vcoosc)
 {
   //  exit(0);
   printf("ADSR::setVCO(0x%08.8X\n",vcoosc);
@@ -345,6 +346,7 @@ Sint16 ADSR::tick()
       //printf("OK\n");
       //exit(1);
       current_segment=ADSR_RELEASE;
+      cr_next_segment=sample_num;
       printf("***************************** RELEASE  noteOn:%d\n",noteOn_value);
     }
   

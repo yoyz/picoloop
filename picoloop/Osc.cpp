@@ -59,7 +59,9 @@ void openaudio()
       MM[t]=AE.getAudioMixer().getTrack(t).getMonoMixer();
       M[t]=MM[t]->getInput();
       M[t]->init();
-      M[t]->getADSR().init();
+      M[t]->reset();
+      M[t]->getADSRAmp().init();
+      M[t]->getADSRFltr().init();
       M[t]->getVCO().init();
       M[t]->getVCO().setSynthFreq(0);      
     }
@@ -95,17 +97,38 @@ void func()
       printf("[Freq:%d]\n",i);
       //M[t]->getVCO().setOscillator(0,0);
       //      M[t]->getVCO().setOscillator(1,2);
-      M[t]->getVCO().init();
+
+      //M[t]->getVCO().setSynthFreq(i);
+
+      M[t]->getBiquad().reset();
+
+      M[t]->getVCO().setSynthFreq(i);
+      M[t]->getVCO().setOscillator(0,1);
+      M[t]->getVCO().setOscillator(1,1);
+      M[t]->getVCO().setVCOMix(vcomix);		  
+
+      M[t]->getADSRAmp().setRelease(127);
+      M[t]->getADSRAmp().setAttack(0);
+
+      M[t]->getADSRFltr().setAttack(0);
+      M[t]->getADSRFltr().setRelease(127);
+
+      M[t]->getBiquad().setBiquad(0, 0.5+0.005, (0.5+0.005), 0.0);
+      M[t]->getBiquad().calcBiquad();
+
+
       M[t]->getVCO().setVCOMix(64);
-      M[t]->getADSR().reset();;	  
+      M[t]->getADSRAmp().reset();;	  
       M[t]->getVCO().reset();
       M[t]->getVCO().getOscillatorOne();
       M[t]->getVCO().reset();
       
-      M[t]->getVCO().setSynthFreq(i);
+
       M[t]->getVCO().setVCOMix(vcomix);		  
-      M[t]->getADSR().setRelease(release);
-      M[t]->getADSR().setAttack(attack);
+      M[t]->getADSRAmp().setRelease(release);
+      M[t]->getADSRAmp().setAttack(attack);
+      M[t]->getVCO().init();
+      M[t]->getVCO().setSynthFreq(i);
     }     
   //sleep(4);
   usleep(1000);
@@ -126,6 +149,7 @@ int main(int argc,char ** argv)
   struct stat fileStat;
 
   openaudio();
+
 
   attack=0;
   release=128;

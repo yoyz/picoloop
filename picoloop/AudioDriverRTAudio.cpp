@@ -9,8 +9,8 @@ AudioDriver::AudioDriver()
   rtAudioOutputParams.firstChannel=0;
   rtAudioOutputParams.nChannels=2;
 
-  rtAudioStreamOptions.flags  = RTAUDIO_HOG_DEVICE;
-  rtAudioStreamOptions.flags |= RTAUDIO_SCHEDULE_REALTIME;
+  //rtAudioStreamOptions.flags  = RTAUDIO_HOG_DEVICE;
+  //rtAudioStreamOptions.flags |= RTAUDIO_SCHEDULE_REALTIME;
 }
 
 

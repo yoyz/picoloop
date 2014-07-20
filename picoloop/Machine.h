@@ -11,6 +11,7 @@ using namespace std;
 
 #include "ADSR.h"
 #include "Biquad.h"
+#include "OneOscillator.h"
 
 #ifndef __MACHINE____
 #define __MACHINE____
@@ -29,18 +30,25 @@ class Machine
   void setFuzzyPulseOsc();
   */
   void init();
-  ADSR   & getADSR();
+  ADSR   & getADSRAmp();
+  ADSR   & getADSRFltr();
   VCO    & getVCO();
   Biquad & getBiquad();
   //  Oscillator * getOscillator();
 
-  int tick();
+  void reset();
+  int  tick();
 
   //  VCO                   vco_osc;
   //  VCO                 * vco_pointer;
   VCO                   vco;
-  ADSR                  adsr;
+  ADSR                  adsr_amp;
+  ADSR                  adsr_fltr;
   Biquad                bq;
+
+  OneOscillator         one_osc;
+
+  int                   sample_num;
   /*
   Oscillator          * s;
   SawOscillator         sawosc;

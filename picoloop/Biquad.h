@@ -17,6 +17,9 @@
 //
 
 
+#include "Oscillator.h"
+#include "SDL/SDL.h"
+
 #include <stdint.h>
 #include <stdio.h>
 #define    DECAL 32768
@@ -38,7 +41,7 @@ enum {
     bq_type_highshelf
 };
 
-class Biquad {
+class Biquad  {
 public:
     Biquad();
 
@@ -46,21 +49,26 @@ public:
     ~Biquad();
     void reset();
     void setType(int type);
+    float getFc();
+    float getQ();
     void setQ(float Q);
     void setFc(float Fc);
     void setPeakGain(float peakGainDB);
     void setBiquad(int type, float Fc, float Q, float peakGain);
-    float process(float in);
+    float   process(float in);
     int16_t process(int16_t in);
-
+    Sint16  tick();
+    void    setInput(Oscillator * vcoosc);
+    void calcBiquad(void);
     
 protected:
-    void calcBiquad(void);
+
 
     int type;
 
     float a0, a1, a2, b1, b2;
     float Fc, Q, peakGain;
+    float base_Fc, base_Q, base_peakGain;
     float z1, z2;
 
     int64_t   i_a0, i_a1, i_a2, i_b1, i_b2;
@@ -68,6 +76,7 @@ protected:
     int64_t   i_z1, i_z2;
 
 };
+
 
 inline float Biquad::process(float in) {
     float out = in * a0 + z1;
@@ -78,6 +87,7 @@ inline float Biquad::process(float in) {
 
 
 inline int16_t Biquad::process(int16_t in) 
+//Sint16 Biquad::tick(Sint16 in) 
 {
   int64_t i_in;
   int64_t i_out;
@@ -130,7 +140,6 @@ inline int16_t Biquad::process(int16_t in)
 
   return out;
 }
-
 
 
 #endif // Biquad_h

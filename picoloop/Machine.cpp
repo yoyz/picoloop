@@ -5,7 +5,7 @@
 
 //Machine::Machine()// : adsr(), vco()
 //Machine::Machine() : adsr(), vco_osc()
-Machine::Machine() : adsr(), vco(), bq()
+Machine::Machine() : adsr_amp(), adsr_fltr(), vco(), bq(), one_osc()
 {
   printf("Machine::Machine()\n");  
   //  adsr=new ADSR();
@@ -36,8 +36,27 @@ Machine::~Machine()
 
 void Machine::init()
 {
-  adsr.setInput(&vco);
+  /*
+  adsr_amp.setInput(&vco); 
+  bq.setInput(&adsr_amp);
+  adsr_fltr.setInput(&bq);
+  */
+  //adsr_fltr.setInput(&vco);
+  //bq.setInput(&adsr_fltr);
+  //adsr_amp.setInput(&bq); 
+
+  adsr_amp.init();
+  adsr_fltr.init();
+
+  adsr_amp.setInput(&vco); 
+  adsr_fltr.setInput(&one_osc);
+
+  one_osc.setFreq(100);
+  one_osc.init();
+  one_osc.reset();
+  //adsr_fltr.setInput(bq
   bq.setBiquad(0, 0.2, 0.5, 0.1);
+  sample_num=0;
 }
 
 
@@ -48,10 +67,17 @@ void Machine::setOscillator(SineOscillator NS)
 }
 */
 
-ADSR & Machine::getADSR()
+ADSR & Machine::getADSRAmp()
 {
-  return adsr;
+  return adsr_amp;
 }
+
+
+ADSR & Machine::getADSRFltr()
+{
+  return adsr_fltr;
+}
+
 
 VCO & Machine::getVCO()
 {
@@ -63,6 +89,11 @@ VCO & Machine::getVCO()
 Biquad & Machine::getBiquad()
 {
   return bq;
+}
+
+void Machine::reset()
+{
+  sample_num=0;
 }
 
 /*
@@ -119,16 +150,64 @@ int Machine::tick()
   //  return s->tick();
   float  f_in;
   float  f_out;
+
+  float  f_Fc;
+  float  f_Q;
+
   Sint16 s_in;
   Sint16 s_out;
 
+  Sint16 s_test;
+  int    num=2048;
+  int    i;
+  //s_out=adsr_fltr.tick();
+  //s_out=adsr_amp.tick();
 
-  s_in=adsr.tick();
+  sample_num++;
+
+  s_in=adsr_amp.tick();
   s_in=s_in/4;
-  //return s_in;
+
+  if (sample_num==num)
+    {
+      for (i=0;i<num;i++)
+	adsr_fltr.tick();
+
+      s_test=adsr_fltr.tick();
+
+      f_Fc=bq.getFc()*s_test;
+      f_Fc=f_Fc/16384;
+
+      f_Q=bq.getFc()*s_test;
+      f_Q=f_Q/16384;
+
+      //if (f_Fc<0.01)
+      bq.setFc(f_Fc);
+      //if (f_Q<0.01)
+      bq.setQ(f_Q);
+      bq.calcBiquad();
+      //bq.setBiquad(0,f_Fc,f_Q,0.0);
+
+      if (0)
+	{
+	  printf("s_test:%d\n",s_test);
+	  printf("Fc:%f\n",bq.getFc());
+	  printf("Q:%f\n",bq.getQ());
+	  printf("f_Fc:%f\n",f_Fc);
+	  printf("f_Q:%f\n",f_Q);
+	}
+
+
+      //bq.setQ((float)((bq.getQ()*s_test))/16384);
+      sample_num=0;
+    }
+  return s_in;
 
   //FILTER
-  s_out=bq.process(s_in);
+  //s_in=s_in/4;
+  //s_out=bq.process(s_in);
+  
+  
   return s_out;
 
   //  s_out=bq.process(s_out);

@@ -60,29 +60,43 @@ void Biquad::setType(int type) {
 }
 
 
+
+float Biquad::getQ() {
+    return this->base_Q;
+}
+
+
+float Biquad::getFc() {
+  return this->base_Fc;
+}
+
+
 void Biquad::setQ(float Q) {
     this->Q = Q;
-    calcBiquad();
+    //calcBiquad();
 }
 
 
 void Biquad::setFc(float Fc) {
     this->Fc = Fc;
-    calcBiquad();
+    //calcBiquad();
 }
 
 
 void Biquad::setPeakGain(float peakGainDB) {
     this->peakGain = peakGainDB;
-    calcBiquad();
+    //calcBiquad();
 }
     
 
 void Biquad::setBiquad(int type, float Fc, float Q, float peakGainDB) {
     this->type = type;
     this->Q = Q;
+    this->base_Q=Q;
     this->Fc = Fc;
+    this->base_Fc = Fc;
     setPeakGain(peakGainDB);
+    //this.calcBiquad();
 }
 
 void Biquad::calcBiquad(void) {
@@ -204,3 +218,4 @@ void Biquad::calcBiquad(void) {
 
     return;
 }
+

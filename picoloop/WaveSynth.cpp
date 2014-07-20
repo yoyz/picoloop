@@ -30,8 +30,13 @@ int offset=0;
 float zoom=1.0;
 int quit;
 
-int attack=0;
-int release=63;
+int attack_amp=0;
+int release_amp=63;
+
+int attack_fltr=0;
+int release_fltr=63;
+
+
 int vcomix=63;
 
 int cutoff=120;
@@ -66,7 +71,9 @@ void openaudio()
       MM[t]=AE.getAudioMixer().getTrack(t).getMonoMixer();
       M[t]=MM[t]->getInput();
       M[t]->init();
-      M[t]->getADSR().init();
+      M[t]->reset();
+      M[t]->getADSRAmp().init();
+      M[t]->getADSRFltr().init();
       M[t]->getVCO().init();
       M[t]->getVCO().setSynthFreq(0);      
     }
@@ -148,17 +155,19 @@ void handle_key()
     }
 
 
-  // AMP ENV ATTACK
+
+
+  // AMP ENV ATTACK_AMP
   if (keyRepeat[SDLK_x]%4   && 
       keyRepeat[SDLK_DOWN]%4 
       //&& 
       //lastEvent ==  SDL_KEYDOWN)
       )
     {
-      attack=attack-1;
-      if (attack <=1) attack=0;
+      attack_amp=attack_amp-1;
+      if (attack_amp <=1) attack_amp=0;
       redraw=true;
-      printf("[x]+[down] => attack:%d\n",attack);
+      printf("[x]+[down] => attack_amp:%d\n",attack_amp);
     }
 
 
@@ -167,23 +176,23 @@ void handle_key()
       //lastEvent ==  SDL_KEYDOWN)
       )
     {
-      attack=attack+1;
-      if (attack >=127) attack=127;
+      attack_amp=attack_amp+1;
+      if (attack_amp >=127) attack_amp=127;
       redraw=true;
-      printf("[x]+[up] => attack:%d\n",attack);
+      printf("[x]+[up] => attack_amp:%d\n",attack_amp);
     }
 
-  // AMP ENV RELEASE
+  // AMP ENV RELEASE_AMP
   if (keyRepeat[SDLK_x]%64    && 
       keyRepeat[SDLK_RIGHT]%64 
       )
       //&& 
       //lastEvent ==  SDL_KEYDOWN)
     {
-      release=release+1;
-      if (release >=127) release=127;
+      release_amp=release_amp+1;
+      if (release_amp >=127) release_amp=127;
       redraw=true;
-      printf("[x]+[right] => release:%d\n",release);
+      printf("[x]+[right] => release_amp:%d\n",release_amp);
     }
 
 
@@ -192,11 +201,72 @@ void handle_key()
       //lastEvent ==  SDL_KEYDOWN)
       )
     {
-      release=release-1;
-      if (release <=1) release=1;
+      release_amp=release_amp-1;
+      if (release_amp <=1) release_amp=1;
       redraw=true;
-      printf("[x]+[left] => release:%d\n",release);
+      printf("[x]+[left] => release_amp:%d\n",release_amp);
     }
+
+
+
+
+
+
+
+  // AMP ENV ATTACK_FLTR
+  if (keyRepeat[SDLK_b]%4   && 
+      keyRepeat[SDLK_DOWN]%4 
+      //&& 
+      //lastEvent ==  SDL_KEYDOWN)
+      )
+    {
+      attack_fltr=attack_fltr-1;
+      if (attack_fltr <=1) attack_fltr=0;
+      redraw=true;
+      printf("[x]+[down] => attack_fltr:%d\n",attack_fltr);
+    }
+
+
+  if (keyRepeat[SDLK_b]%64   && 
+      keyRepeat[SDLK_UP]%64   
+      //lastEvent ==  SDL_KEYDOWN)
+      )
+    {
+      attack_fltr=attack_fltr+1;
+      if (attack_fltr >=127) attack_fltr=127;
+      redraw=true;
+      printf("[x]+[up] => attack_fltr:%d\n",attack_fltr);
+    }
+
+  // AMP ENV RELEASE
+  if (keyRepeat[SDLK_b]%64    && 
+      keyRepeat[SDLK_RIGHT]%64 
+      )
+      //&& 
+      //lastEvent ==  SDL_KEYDOWN)
+    {
+      release_fltr=release_fltr+1;
+      if (release_fltr >=127) release_fltr=127;
+      redraw=true;
+      printf("[x]+[right] => release_fltr:%d\n",release_fltr);
+    }
+
+  
+  if (keyRepeat[SDLK_b]%64    && 
+      keyRepeat[SDLK_LEFT]%64   //&& 
+      //lastEvent ==  SDL_KEYDOWN)
+      )
+    {
+      release_fltr=release_fltr-1;
+      if (release_fltr <=1) release_fltr=1;
+      redraw=true;
+      printf("[x]+[left] => release_fltr:%d\n",release_fltr);
+    }
+
+
+
+
+
 
 
 
@@ -356,11 +426,11 @@ void handle_key()
   IE.clearLastKeyEvent(); 
 
   //  printf("%%%%%%%%%%%%%%%%%%%%%%%% noteon:%d\n",noteon);
-
+  
   //noteon=0;
 
   if (noteon &&
-      M[t]->getADSR().getNoteOn()==0)
+      M[t]->getADSRAmp().getNoteOn()==0)
     {
 
       for (t=0;t<1;t++)
@@ -381,21 +451,33 @@ void handle_key()
 	  //M[t]->getVCO().getOscillatorOne();
 	  //M[t]->getVCO().reset();
 
+	  M[t]->getBiquad().reset();
+
 	  M[t]->getVCO().setSynthFreq(i);
 	  M[t]->getVCO().setOscillator(0,1);
-	  M[t]->getVCO().setOscillator(1,2);
+	  M[t]->getVCO().setOscillator(1,1);
 	  M[t]->getVCO().setVCOMix(vcomix);		  
 
-	  M[t]->getADSR().setRelease(release);
-	  M[t]->getADSR().setAttack(attack);
+	  M[t]->getADSRAmp().setRelease(release_amp);
+	  M[t]->getADSRAmp().setAttack(attack_amp);
 
-	  M[t]->getADSR().reset();;	  
-	  M[t]->getVCO().reset();
-	  M[t]->getBiquad().reset();
+	  M[t]->getADSRFltr().setAttack(attack_fltr);
+	  M[t]->getADSRFltr().setRelease(release_fltr);
+
+
+
 
 
 	  M[t]->getBiquad().setBiquad(0, f_c+0.005, (f_r+0.005), 0.0);
-	  M[t]->getADSR().setNoteOn();
+	  M[t]->getBiquad().calcBiquad();
+
+	  M[t]->getADSRAmp().reset();	  
+	  M[t]->getADSRFltr().reset();
+
+	  M[t]->getVCO().reset();
+
+	  M[t]->getADSRAmp().setNoteOn();
+	  M[t]->getADSRFltr().setNoteOn();
 
 	  //M[t]->getADSR().setRelease(P[t].getPatternElement(step).getRelease());		  
 	  //	  M[t]->getADSR().setAttack(P[t].getPatternElement(step).getAttack());		  
@@ -411,8 +493,14 @@ void handle_key()
       //exit(0);
       for (t=0;t<1;t++)
 	{
-	  M[t]->getADSR().setNoteOff();
-	  M[t]->getADSR().setADSRRelease();
+	  M[t]->getADSRAmp().setNoteOff();
+	  //M[t]->getADSRAmp().setADSRRelease();
+
+	  M[t]->getADSRFltr().setNoteOff();
+	  //M[t]->getADSRFltr().setADSRRelease();
+
+
+	  M[t]->reset();
 	}
     }
 
