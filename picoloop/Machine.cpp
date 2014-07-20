@@ -201,11 +201,11 @@ int Machine::tick()
       //bq.setQ((float)((bq.getQ()*s_test))/16384);
       sample_num=0;
     }
-  return s_in;
+  //  return s_in;
 
   //FILTER
   //s_in=s_in/4;
-  //s_out=bq.process(s_in);
+  s_out=bq.process(s_in);
   
   
   return s_out;

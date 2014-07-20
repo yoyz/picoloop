@@ -115,11 +115,11 @@ void AudioEngine::setupSequencerCallback(void (*ptrfunc)(void))
 // process BUFFER_FRAME sample and call the callback when needed
 void AudioEngine::processBuffer()
 {
-  for (int i=0;i<BUFFER_FRAME-1;i++)
+  for (int i=0;i<BUFFER_FRAME;i++)
     {
       nb_tick++;
       if (nb_tick<nb_tick_before_step_change)
-        buffer_out[i]=AM.tick();
+	buffer_out[i]=AM.tick();
       else
         {
           //printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!CALLL\n");                                                                                                                      
@@ -127,6 +127,7 @@ void AudioEngine::processBuffer()
 	  if (seqCallback)
 	    (*seqCallback)();
           nb_tick=0;
+	  buffer_out[i]=AM.tick();
         }
     }
   bufferGenerated=0;
@@ -372,7 +373,7 @@ void AudioEngine::callback(void *unused, Uint8 *stream, int len)
 #endif
 
   
-  for (int i=0;i<len-1;i++)
+  for (int i=0;i<len;i++)
     {
       //int tick = S.tick();
       //      int tick = AM.tick();
