@@ -51,7 +51,8 @@ SDL_Surface *screen=NULL;
 bool left_key=false;
 bool right_key=false;
 
-
+int    noteon=0;
+int    note=0;
 
 PatternElement PE;
 
@@ -97,7 +98,6 @@ void handle_key()
   int  * keyRepeat;
   int    lastEvent;
   int    lastKey;
-  int    noteon=0;
   int t;
 
   IE.handleKey();
@@ -123,8 +123,10 @@ void handle_key()
 
   // OCTAVE
   if (keyRepeat[SDLK_w]%64    && 
-      keyRepeat[SDLK_DOWN]%64 && 
-      lastEvent ==  SDL_KEYDOWN)
+      keyRepeat[SDLK_DOWN]%64 
+      //&& 
+      //lastEvent ==  SDL_KEYDOWN)
+      )
     {
       octave=octave-12;
       if (octave <=1) octave=1;
@@ -133,9 +135,11 @@ void handle_key()
     }
 
 
-  if (keyState[SDLK_w]%64    && 
-      keyState[SDLK_UP]%64   && 
-      lastEvent ==  SDL_KEYDOWN)
+  if (keyRepeat[SDLK_w]%64    && 
+      keyRepeat[SDLK_UP]%64   
+      //&& 
+      //lastEvent ==  SDL_KEYDOWN)
+      )
     {
       octave=octave+12;
       if (octave >=73) octave=73;
@@ -145,20 +149,23 @@ void handle_key()
 
 
   // AMP ENV ATTACK
-  if (keyRepeat[SDLK_x]%64    && 
-      keyRepeat[SDLK_DOWN]%64 && 
-      lastEvent ==  SDL_KEYDOWN)
+  if (keyRepeat[SDLK_x]%4   && 
+      keyRepeat[SDLK_DOWN]%4 
+      //&& 
+      //lastEvent ==  SDL_KEYDOWN)
+      )
     {
       attack=attack-1;
-      if (attack <=1) attack=1;
+      if (attack <=1) attack=0;
       redraw=true;
       printf("[x]+[down] => attack:%d\n",attack);
     }
 
 
-  if (keyState[SDLK_x]%64    && 
-      keyState[SDLK_UP]%64   && 
-      lastEvent ==  SDL_KEYDOWN)
+  if (keyRepeat[SDLK_x]%64   && 
+      keyRepeat[SDLK_UP]%64   
+      //lastEvent ==  SDL_KEYDOWN)
+      )
     {
       attack=attack+1;
       if (attack >=127) attack=127;
@@ -168,8 +175,10 @@ void handle_key()
 
   // AMP ENV RELEASE
   if (keyRepeat[SDLK_x]%64    && 
-      keyRepeat[SDLK_RIGHT]%64 && 
-      lastEvent ==  SDL_KEYDOWN)
+      keyRepeat[SDLK_RIGHT]%64 
+      )
+      //&& 
+      //lastEvent ==  SDL_KEYDOWN)
     {
       release=release+1;
       if (release >=127) release=127;
@@ -178,9 +187,10 @@ void handle_key()
     }
 
 
-  if (keyState[SDLK_x]%64    && 
-      keyState[SDLK_LEFT]%64   && 
-      lastEvent ==  SDL_KEYDOWN)
+  if (keyRepeat[SDLK_x]%64    && 
+      keyRepeat[SDLK_LEFT]%64   //&& 
+      //lastEvent ==  SDL_KEYDOWN)
+      )
     {
       release=release-1;
       if (release <=1) release=1;
@@ -193,8 +203,10 @@ void handle_key()
   // FILTER Cutoff/Resonance
 
   if (keyRepeat[SDLK_c]%64    && 
-      keyRepeat[SDLK_DOWN]%64 && 
-      lastEvent ==  SDL_KEYDOWN)
+      keyRepeat[SDLK_DOWN]%64 
+      //&& 
+      //lastEvent ==  SDL_KEYDOWN)
+      )
     {
       cutoff=cutoff-12;
       if (cutoff <=1) cutoff=1;
@@ -203,9 +215,11 @@ void handle_key()
     }
 
 
-  if (keyState[SDLK_c]%64    && 
-      keyState[SDLK_UP]%64   && 
-      lastEvent ==  SDL_KEYDOWN)
+  if (keyRepeat[SDLK_c]%64    && 
+      keyRepeat[SDLK_UP]%64   
+      //&& 
+      //lastEvent ==  SDL_KEYDOWN)
+      )
     {
       cutoff=cutoff+1;
       if (cutoff >=126) cutoff=126;
@@ -215,8 +229,10 @@ void handle_key()
 
 
   if (keyRepeat[SDLK_c]%64    && 
-      keyRepeat[SDLK_RIGHT]%64 && 
-      lastEvent ==  SDL_KEYDOWN)
+      keyRepeat[SDLK_RIGHT]%64 
+      //&& 
+      //lastEvent ==  SDL_KEYDOWN)
+      )
     {
       resonance=resonance+1;
       if (resonance >=127) resonance=127;
@@ -225,9 +241,11 @@ void handle_key()
     }
 
 
-  if (keyState[SDLK_c]%64    && 
-      keyState[SDLK_LEFT]%64   && 
-      lastEvent ==  SDL_KEYDOWN)
+  if (keyRepeat[SDLK_c]%64    && 
+      keyRepeat[SDLK_LEFT]%64   
+      //&& 
+      //lastEvent ==  SDL_KEYDOWN)
+      )
     {
       resonance=resonance-1;
       if (resonance <=1) resonance=1;
@@ -240,8 +258,10 @@ void handle_key()
 
   // VCO MIX
   if (keyRepeat[SDLK_v]%64    && 
-      keyRepeat[SDLK_DOWN]%64 && 
-      lastEvent ==  SDL_KEYDOWN)
+      keyRepeat[SDLK_DOWN]%64 
+      //&& 
+      //lastEvent ==  SDL_KEYDOWN)
+      )
     {
       vcomix=vcomix-1;
       if (vcomix <=1) vcomix=1;
@@ -250,9 +270,11 @@ void handle_key()
     }
 
 
-  if (keyState[SDLK_v]%64    && 
-      keyState[SDLK_UP]%64   && 
-      lastEvent ==  SDL_KEYDOWN)
+  if (keyRepeat[SDLK_v]%64    && 
+      keyRepeat[SDLK_UP]%64   
+      //&& 
+      //lastEvent ==  SDL_KEYDOWN)
+      )
     {
       vcomix=vcomix+1;
       if (vcomix >=127) vcomix=127;
@@ -288,32 +310,59 @@ void handle_key()
   //  if (lastKey==SDLK_n) { vcomix++; printf("vco %d\n",vcomix); if (vcomix>=127) vcomix=127; }
 
 
-  if (lastEvent ==  SDL_KEYUP)
+  if (lastEvent ==  SDL_KEYDOWN)
     {
-      if (lastKey==SDLK_q) { printf("key q\n"); PE.setNote(0+octave);  noteon=1; }
-      if (lastKey==SDLK_z) { printf("key z\n"); PE.setNote(1+octave);  noteon=1; }
-      if (lastKey==SDLK_s) { printf("key s\n"); PE.setNote(2+octave);  noteon=1; }
-      if (lastKey==SDLK_e) { printf("key e\n"); PE.setNote(3+octave);  noteon=1; }
-      if (lastKey==SDLK_d) { printf("key d\n"); PE.setNote(4+octave);  noteon=1; }
-      if (lastKey==SDLK_f) { printf("key f\n"); PE.setNote(5+octave);  noteon=1; }
-      if (lastKey==SDLK_t) { printf("key t\n"); PE.setNote(6+octave);  noteon=1; }
-      if (lastKey==SDLK_g) { printf("key g\n"); PE.setNote(7+octave);  noteon=1; }
-      if (lastKey==SDLK_y) { printf("key y\n"); PE.setNote(8+octave);  noteon=1; }
-      if (lastKey==SDLK_h) { printf("key h\n"); PE.setNote(9+octave);  noteon=1; }
-      if (lastKey==SDLK_u) { printf("key u\n"); PE.setNote(10+octave);  noteon=1; }
-      if (lastKey==SDLK_j) { printf("key j\n"); PE.setNote(11+octave);  noteon=1; }
+      if (lastKey==SDLK_q) { printf("key q\n"); PE.setNote(0+octave);  note=0+octave;  noteon=1; }
+      if (lastKey==SDLK_z) { printf("key z\n"); PE.setNote(1+octave);  note=1+octave;  noteon=1; }
+      if (lastKey==SDLK_s) { printf("key s\n"); PE.setNote(2+octave);  note=2+octave;  noteon=1; }
+      if (lastKey==SDLK_e) { printf("key e\n"); PE.setNote(3+octave);  note=3+octave;  noteon=1; }
+      if (lastKey==SDLK_d) { printf("key d\n"); PE.setNote(4+octave);  note=4+octave;  noteon=1; }
+      if (lastKey==SDLK_f) { printf("key f\n"); PE.setNote(5+octave);  note=5+octave;  noteon=1; }
+      if (lastKey==SDLK_t) { printf("key t\n"); PE.setNote(6+octave);  note=6+octave;  noteon=1; }
+      if (lastKey==SDLK_g) { printf("key g\n"); PE.setNote(7+octave);  note=7+octave;  noteon=1; }
+      if (lastKey==SDLK_y) { printf("key y\n"); PE.setNote(8+octave);  note=8+octave;  noteon=1; }
+      if (lastKey==SDLK_h) { printf("key h\n"); PE.setNote(9+octave);  note=9+octave;  noteon=1; }
+      if (lastKey==SDLK_u) { printf("key u\n"); PE.setNote(10+octave); note=10+octave; noteon=1; }
+      if (lastKey==SDLK_j) { printf("key j\n"); PE.setNote(11+octave); note=11+octave; noteon=1; }
       
-      if (lastKey==SDLK_k) { printf("key k\n"); PE.setNote(12+octave);  noteon=1; }
-      if (lastKey==SDLK_o) { printf("key o\n"); PE.setNote(13+octave);  noteon=1; }
-      if (lastKey==SDLK_l) { printf("key l\n"); PE.setNote(14+octave);  noteon=1; }
-      if (lastKey==SDLK_p) { printf("key p\n"); PE.setNote(15+octave);  noteon=1; }
-      if (lastKey==SDLK_m) { printf("key m\n"); PE.setNote(16+octave);  noteon=1; }
-
-      IE.clearLastKeyEvent(); 
+      if (lastKey==SDLK_k) { printf("key k\n"); PE.setNote(12+octave); note=12+octave; noteon=1; }
+      if (lastKey==SDLK_o) { printf("key o\n"); PE.setNote(13+octave); note=13+octave; noteon=1; }
+      if (lastKey==SDLK_l) { printf("key l\n"); PE.setNote(14+octave); note=14+octave; noteon=1; }
+      if (lastKey==SDLK_p) { printf("key p\n"); PE.setNote(15+octave); note=15+octave; noteon=1; }
+      if (lastKey==SDLK_m) { printf("key m\n"); PE.setNote(16+octave); note=16+octave; noteon=1; }
     }
 
-  if (noteon)
+  if (lastEvent ==  SDL_KEYUP)
     {
+      if (lastKey==SDLK_q) { printf("key q\n"); PE.setNote(0+octave);  note=0+octave;  noteon=0; }
+      if (lastKey==SDLK_z) { printf("key z\n"); PE.setNote(1+octave);  note=1+octave;  noteon=0; }
+      if (lastKey==SDLK_s) { printf("key s\n"); PE.setNote(2+octave);  note=2+octave;  noteon=0; }
+      if (lastKey==SDLK_e) { printf("key e\n"); PE.setNote(3+octave);  note=3+octave;  noteon=0; }
+      if (lastKey==SDLK_d) { printf("key d\n"); PE.setNote(4+octave);  note=4+octave;  noteon=0; }
+      if (lastKey==SDLK_f) { printf("key f\n"); PE.setNote(5+octave);  note=5+octave;  noteon=0; }
+      if (lastKey==SDLK_t) { printf("key t\n"); PE.setNote(6+octave);  note=6+octave;  noteon=0; }
+      if (lastKey==SDLK_g) { printf("key g\n"); PE.setNote(7+octave);  note=7+octave;  noteon=0; }
+      if (lastKey==SDLK_y) { printf("key y\n"); PE.setNote(8+octave);  note=8+octave;  noteon=0; }
+      if (lastKey==SDLK_h) { printf("key h\n"); PE.setNote(9+octave);  note=9+octave;  noteon=0; }
+      if (lastKey==SDLK_u) { printf("key u\n"); PE.setNote(10+octave); note=10+octave; noteon=0; }
+      if (lastKey==SDLK_j) { printf("key j\n"); PE.setNote(11+octave); note=11+octave; noteon=0; }
+     
+      if (lastKey==SDLK_k) { printf("key k\n"); PE.setNote(12+octave); note=12+octave; noteon=0; }
+      if (lastKey==SDLK_o) { printf("key o\n"); PE.setNote(13+octave); note=13+octave; noteon=0; }
+      if (lastKey==SDLK_l) { printf("key l\n"); PE.setNote(14+octave); note=14+octave; noteon=0; }
+      if (lastKey==SDLK_p) { printf("key p\n"); PE.setNote(15+octave); note=15+octave; noteon=0; }
+      if (lastKey==SDLK_m) { printf("key m\n"); PE.setNote(16+octave); note=16+octave; noteon=0; }
+    }
+  IE.clearLastKeyEvent(); 
+
+  //  printf("%%%%%%%%%%%%%%%%%%%%%%%% noteon:%d\n",noteon);
+
+  //noteon=0;
+
+  if (noteon &&
+      M[t]->getADSR().getNoteOn()==0)
+    {
+
       for (t=0;t<1;t++)
 	{
 	  float f=PE.getNoteFreq();
@@ -329,24 +378,44 @@ void handle_key()
 	  f_r=f_r/8;
 	  
 	  printf("[Freq:%d]\n",i);
-	  M[t]->getADSR().reset();;	  
-	  M[t]->getVCO().reset();
-	  M[t]->getVCO().getOscillatorOne();
-	  M[t]->getVCO().reset();
+	  //M[t]->getVCO().getOscillatorOne();
+	  //M[t]->getVCO().reset();
 
 	  M[t]->getVCO().setSynthFreq(i);
+	  M[t]->getVCO().setOscillator(0,1);
+	  M[t]->getVCO().setOscillator(1,2);
 	  M[t]->getVCO().setVCOMix(vcomix);		  
+
 	  M[t]->getADSR().setRelease(release);
 	  M[t]->getADSR().setAttack(attack);
 
+	  M[t]->getADSR().reset();;	  
+	  M[t]->getVCO().reset();
 	  M[t]->getBiquad().reset();
+
+
 	  M[t]->getBiquad().setBiquad(0, f_c+0.005, (f_r+0.005), 0.0);
+	  M[t]->getADSR().setNoteOn();
 
 	  //M[t]->getADSR().setRelease(P[t].getPatternElement(step).getRelease());		  
 	  //	  M[t]->getADSR().setAttack(P[t].getPatternElement(step).getAttack());		  
 	  //M[t]->getVCO().setVCOMix(P[t].getPatternElement(step).getVCOMix());	
 	}
-    }  
+    }
+
+  if (noteon==0 
+      //&& 
+      //M[t]->getADSR().getNoteOn()==1)
+      )
+    {
+      //exit(0);
+      for (t=0;t<1;t++)
+	{
+	  M[t]->getADSR().setNoteOff();
+	  M[t]->getADSR().setADSRRelease();
+	}
+    }
+
   
   //printf("key pressed sleeping 10ms\n");
   redraw=true;

@@ -2,26 +2,57 @@ using namespace std;
 
 #include "ADSR.h"
 
+enum  
+  {
+    ADSR_INIT,
+    ADSR_ATTACK,
+    ADSR_DECAY,
+    ADSR_SUSTAIN,
+    ADSR_RELEASE,
+    ADSR_FINISH
+  };
 
 
-
-ADSR::ADSR()
+ADSR::ADSR() : tanh_table(new Sint16[128])
 {
+  float fi;
+  int   i;
+
   printf("ADSR::ADSR()\n");
-  attack=0;
-  decay=127;
-  sustain=0;
+  attack=32;
+  decay=10;
+  sustain=64;
   release=0;
+
   sample_num=-1;
-  playing=1;
+  //playing=1;
 
   ca=0;
+  cd=0;
   cr=0;
+
+  cr_div=0;
+  ca_div=0;
+
   ca_segment=0;
+  cd_segment=0;
   cr_segment=0;
+
+
   ca_next_segment=0;
+  cd_next_segment=0;
   cr_next_segment=0;
 
+  current_segment=ADSR_INIT;
+  noteOn_value=0;
+
+  for (i=0;i<256;i++)
+    {
+      fi=i;
+      fi=tanh(fi/128);
+      tanh_table[i/2]=fi*1024;
+      printf("tanh[%d]=%d\n",i,tanh_table[i/2]);
+    }
 }
 
 ADSR::~ADSR()
@@ -32,24 +63,32 @@ ADSR::~ADSR()
 void ADSR::init()
 {
   printf("ADSR::init()\n");
-  attack=0;
-  decay=127;
-  sustain=0;
+  attack=32;
+  decay=10;
+  sustain=64;
   release=0;
   sample_num=-1;
-  playing=1;
+  //playing=1;
 
+  cr_div=0;
+  ca_div=0;
+
+  
   ca=0;
   cr=0;
   ca_segment=0;
-  cr_segment=0;
+  cd_segment=0;
+  cr_segment=0;  
   ca_next_segment=0;
+  cd_next_segment=0;
   cr_next_segment=0;
 
+  current_segment=ADSR_INIT;
+  noteOn_value=0;
 }
 
 
- void ADSR::setAttack(int atk)
+void ADSR::setAttack(int atk)
 {
   attack=atk;
 }
@@ -90,6 +129,19 @@ int ADSR::getRelease()
   return release;
 }
 
+
+int ADSR::setSegment(int segment)
+{
+  if (segment==ADSR_INIT     ||
+      segment==ADSR_ATTACK   ||
+      segment==ADSR_DECAY    ||
+      segment==ADSR_SUSTAIN  ||
+      segment==ADSR_RELEASE  ||
+      segment==ADSR_FINISH   
+      )
+    current_segment=segment;
+}
+
 /*
 void ADSR::setOscillator(Oscillator * osc)
 {
@@ -104,10 +156,35 @@ void ADSR::setInput(VCO * vcoosc)
   printf("ADSR::setVCO(0x%08.8X\n",vcoosc);
   vco=vcoosc;
 }
-
+/*
 int ADSR::getPlaying()
 {
   return playing;
+}
+*/
+
+void ADSR::setNoteOn()
+{
+  //printf("NOTEONNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN\n");
+  noteOn_value=1;
+}
+
+void ADSR::setNoteOff()
+{
+  //printf("NOTEOFFFFFFFFFFFFFFFFFFFFFFF\n");
+  noteOn_value=0;
+}
+
+void ADSR::setADSRRelease()
+{
+  //printf("NOTEOFFFFFFFFFFFFFFFFFFFFFFF\n");
+  current_segment=ADSR_RELEASE;
+}
+
+
+int ADSR::getNoteOn()
+{
+  return noteOn_value;
 }
 
 void ADSR::reset()
@@ -115,8 +192,8 @@ void ADSR::reset()
   printf("ADSR::reset() this=0x%08.8X\n",this);
   sample_num=0;
 
+  //cd=decay;
 
-  cd=decay;
   cs=sustain;
 
   if (attack>0)
@@ -124,34 +201,53 @@ void ADSR::reset()
   else
     ca=0;
 
+  if (decay>0)
+    cd=decay  << 10;
+  else
+    cd=0;
+
   if (release>0)
     cr=release << 10;
   else
     cr=0;
 
-  car=ca+cr;
+  cadr=ca+cd+cr;
 
   ca_segment=ca/127;
+  cd_segment=cd/127;
   cr_segment=cr/127;
   
   ca_next_segment=ca_segment;
-  cr_next_segment=cr_segment+ca;
+  cd_next_segment=cd_segment;
+  cr_next_segment=cr_segment;
 
   ca_div=127;
+  cd_div=1;
   cr_div=1;
   //fseconds=(float)release/16+(float(attack/16);
   //fseconds_release=(float)release/128;
   //fseconds_attack=(float)attack/128;
   //size_release=fseconds_release*44100;
   //size_attack=fseconds_attack*44100;
+  current_segment=ADSR_INIT;
+  noteOn_value=0;
 }
+ 
+ 
 
+
+/*
 int ADSR::getSize()
 {
   //return size_release;
 
-  return car;
+  return cadr;
 }
+*/
+
+
+
+
 
 Sint16 ADSR::tick()
 {
@@ -175,10 +271,27 @@ Sint16 ADSR::tick()
     }
   */
 
-  if (sample_num>car)
+
+
+  if (current_segment==ADSR_FINISH)
     return 0;
 
+  if (current_segment==ADSR_INIT &&
+      noteOn_value==0                    
+      )
+    {
+      //printf("***********WHY THE HELL I AM HERE\n");
+      return(0);
+    }
 
+
+
+  if (current_segment==ADSR_INIT &&
+      noteOn_value==1                  
+      )
+    current_segment=ADSR_ATTACK;
+  
+      
   sample_num++;
   
 
@@ -192,7 +305,61 @@ Sint16 ADSR::tick()
   //We are in the attack phase
   //if (sample_num<size_attack)
 
-  if (sample_num < ca)    
+
+    
+
+  if (sample_num%8192==0)
+    {
+      if(current_segment==ADSR_INIT)
+	  printf("***************************** INIT     noteOn:%d\n",noteOn_value);
+
+      if(current_segment==ADSR_ATTACK)
+	  printf("***************************** ATTACK   noteOn:%d\n",noteOn_value);
+
+      if(current_segment==ADSR_DECAY)
+	  printf("***************************** DECAY    noteOn:%d\n",noteOn_value);
+
+      if(current_segment==ADSR_SUSTAIN)
+	  printf("***************************** SUSTAIN  noteOn:%d\n",noteOn_value);
+
+    }
+
+  if (current_segment==ADSR_ATTACK &&
+      sample_num > ca)
+    {
+      printf("***************************** DECAY noteOn:%d\n",noteOn_value);
+      current_segment=ADSR_DECAY;
+    }
+
+  if (current_segment==ADSR_DECAY &&      
+      sample_num >= ca+cd)
+    {
+      current_segment=ADSR_SUSTAIN;
+      printf("***************************** SUSTAIN  noteOn:%d\n",noteOn_value);
+    }
+
+  
+  if (current_segment==ADSR_SUSTAIN &&
+      noteOn_value==0)
+    {
+      //printf("OK\n");
+      //exit(1);
+      current_segment=ADSR_RELEASE;
+      printf("***************************** RELEASE  noteOn:%d\n",noteOn_value);
+    }
+  
+  /*
+  if (current_segment==ADSR_SUSTAIN &&
+      noteOn_value==1)
+    {
+      //printf("SUSTAIN!!!!!!");
+    }
+  */
+
+
+
+  // ATTACK
+  if (current_segment==ADSR_ATTACK)    
     {
       if (sample_num>ca_next_segment)
 	{
@@ -202,26 +369,40 @@ Sint16 ADSR::tick()
 	  if(ca_div<2)
 	    ca_div=2;
 	}
-      return s_in/((ca_div/4)+1);
+      //return s_in/((ca_div)+1);
+      return (s_in*tanh_table[128-ca_div])/1024;
     }
 
-  if (sample_num >= ca)
+
+  // DECAY
+  if (current_segment==ADSR_DECAY)
+    {
+      return s_in;
+    }
+
+
+  // SUSTAIN
+  if (current_segment==ADSR_SUSTAIN)
+    {
+      return s_in;
+    }
+
+
+
+  // RELEASE
+  if (current_segment==ADSR_RELEASE)
     {
       if (sample_num>cr_next_segment)
 	{
 	  cr_next_segment=cr_next_segment+cr_segment;
 	  cr_div=cr_div+1;
+	  if (cr_div>127)
+	    cr_div=127;
 	}
 
-      return s_in/((cr_div/4)+1);
-      
-    }
-
-
-
-  //We are in the release phase
-  if (sample_num>ca)
-    {
+      //return s_in/((cr_div/4)+1);            
+      //      return (s_in*tanh[cr_div])/1024;
+      return (s_in*tanh_table[127-cr_div])/1024;
     }
        
   //s=f2;
