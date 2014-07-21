@@ -116,11 +116,15 @@ int note_all=0;
 int amp=0;              // variation of the amp of monomixer
 int amp_all=0;              // variation of the amp of monomixer
 
-int attack=0;
-int release=0;
+int attack_amp=0;
+int release_amp=0;
 
-int attack_all=0;
-int release_all=0;
+int attack_fltr=0;
+int release_fltr=0;
+
+
+int attack_amp_all=0;
+int release_amp_all=0;
 
 int lfo_depth=0;
 int lfo_depth_all=0;
@@ -168,6 +172,7 @@ int current_swing=50;
 //int current_swing=64;
 int swing;
 
+int noteOffTrigger[TRACK_MAX];
 
 void refresh_swing()
 {
@@ -195,8 +200,8 @@ void refresh_swing()
 void refresh_bpm()
 {
 
-  nb_cb_ch_step=(60*DEFAULT_FREQ)/(BUFFER_FRAME*4*bpm_current);
-  nb_tick_before_step_change=(60*DEFAULT_FREQ)/(bpm_current*4);
+  nb_cb_ch_step=(60*DEFAULTFREQ)/(BUFFER_FRAME*4*bpm_current);
+  nb_tick_before_step_change=(60*DEFAULTFREQ)/(bpm_current*4);
   refresh_swing();
 }
 
@@ -231,8 +236,8 @@ void display_board_amp_env()
 		  //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
 		  
 		  // AdsR
-		  SG.smallBoxNumber(i,P[cty].getPatternElement(i).getRelease(),0,SMALLBOX_COLOR);
-		  SG.smallBoxNumber(i,0,P[cty].getPatternElement(i).getAttack(),SMALLBOX_COLOR);      
+		  SG.smallBoxNumber(i,P[cty].getPatternElement(i).getRelease_amp(),0,SMALLBOX_COLOR);
+		  SG.smallBoxNumber(i,0,P[cty].getPatternElement(i).getAttack_amp(),SMALLBOX_COLOR);      
 		}
 	    }
 	}
@@ -252,7 +257,7 @@ void display_board_amp_env()
 		  
 		  // AdsR
 		  SG.smallBoxNumber(i,P[cty].getPatternElement(i).getAmp(),0,SMALLBOX_COLOR);
-		  SG.smallBoxNumber(i,0,P[cty].getPatternElement(i).getAttack(),SMALLBOX_COLOR);      
+		  SG.smallBoxNumber(i,0,P[cty].getPatternElement(i).getAttack_amp(),SMALLBOX_COLOR);      
 		}
 	    }
 	}
@@ -979,19 +984,19 @@ void handle_key_amp_env()
       */
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_B])
 	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>4) 
-	  { release=-1;   dirty_graphic=1; }
+	  { release_amp=-1;   dirty_graphic=1; }
       
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>4) 
-	  { release=1; 	  dirty_graphic=1; }
+	  { release_amp=1; 	  dirty_graphic=1; }
       
       if (keyState[BUTTON_UP]    && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>4) 
-	  { attack=1;  	  dirty_graphic=1; }
+	  { attack_amp=1;  	  dirty_graphic=1; }
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>4) 
-	  { attack=-1; 	  dirty_graphic=1; }
+	  { attack_amp=-1; 	  dirty_graphic=1; }
     }  
 
   // M_AD
@@ -1004,19 +1009,19 @@ void handle_key_amp_env()
       //printf("***********************\n");
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A])
 	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>4) 
-	  { release_all=-1;   dirty_graphic=1; }
+	  { release_amp_all=-1;   dirty_graphic=1; }
       
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>4) 
-	  { release_all=1; 	  dirty_graphic=1; }
+	  { release_amp_all=1; 	  dirty_graphic=1; }
       
       if (keyState[BUTTON_UP]    && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>4) 
-	  { attack_all=1;  	  dirty_graphic=1; }
+	  { attack_amp_all=1;  	  dirty_graphic=1; }
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>4) 
-	  { attack_all=-1; 	  dirty_graphic=1; }
+	  { attack_amp_all=-1; 	  dirty_graphic=1; }
     }  
 
 
@@ -1042,11 +1047,11 @@ void handle_key_amp_env()
       
       if (keyState[BUTTON_UP]    && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>4) 
-	  { attack=1;  	  dirty_graphic=1; }
+	  { attack_amp=1;  	  dirty_graphic=1; }
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>4) 
-	  { attack=-1; 	  dirty_graphic=1; }
+	  { attack_amp=-1; 	  dirty_graphic=1; }
     }  
 
   if (menu          != MENU_OFF && 
@@ -1063,11 +1068,11 @@ void handle_key_amp_env()
       
       if (keyState[BUTTON_UP]    && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>4) 
-	  { attack_all=1;  	  dirty_graphic=1; }
+	  { attack_amp_all=1;  	  dirty_graphic=1; }
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>4) 
-	  { attack_all=-1; 	  dirty_graphic=1; }
+	  { attack_amp_all=-1; 	  dirty_graphic=1; }
     }  
 
 
@@ -1677,46 +1682,46 @@ void seq_update_multiple_time_by_step()
     }
   
   // Change amp env Attack
-  if (attack!=0)
+  if (attack_amp!=0)
     {
-      P[cty].getPatternElement(cursor).setAttack(P[cty].getPatternElement(cursor).getAttack()+attack);
-      attack=0;
+      P[cty].getPatternElement(cursor).setAttack_amp(P[cty].getPatternElement(cursor).getAttack_amp()+attack_amp);
+      attack_amp=0;
       if (debug)
-	printf("[attack:%d]\n",P[cty].getPatternElement(cursor).getAttack());
+	printf("[attack_amp:%d]\n",P[cty].getPatternElement(cursor).getAttack_amp());
     }
   
   // Change amp env Attack
-  if (attack_all!=0)
+  if (attack_amp_all!=0)
     {
       for(i=0;i<16;i++)
-	P[cty].getPatternElement(i).setAttack(P[cty].getPatternElement(i).getAttack()+attack_all);
-      attack_all=0;
+	P[cty].getPatternElement(i).setAttack_amp(P[cty].getPatternElement(i).getAttack_amp()+attack_amp_all);
+      attack_amp_all=0;
       if (debug)
-	printf("[attack_all:%d]\n",P[cty].getPatternElement(cursor).getAttack());
+	printf("[attack_all:%d]\n",P[cty].getPatternElement(cursor).getAttack_amp());
     }
   
   
   // Change amp env Release
-  if (release!=0)
+  if (release_amp!=0)
     {
       //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
-      P[cty].getPatternElement(cursor).setRelease(P[cty].getPatternElement(cursor).getRelease()+release);
-      release=0;
+      P[cty].getPatternElement(cursor).setRelease_amp(P[cty].getPatternElement(cursor).getRelease_amp()+release_amp);
+      release_amp=0;
       if (debug)
-	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease());
+	printf("[release_amp:%d]\n",P[cty].getPatternElement(cursor).getRelease_amp());
       //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
       
     }
   
   // Change amp env Release
-  if (release_all!=0)
+  if (release_amp_all!=0)
     {
       //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
       for(i=0;i<16;i++)
-	P[cty].getPatternElement(i).setRelease(P[cty].getPatternElement(i).getRelease()+release_all);
-      release_all=0;
+	P[cty].getPatternElement(i).setRelease_amp(P[cty].getPatternElement(i).getRelease_amp()+release_amp_all);
+      release_amp_all=0;
       if (debug)
-	printf("[release_all:%d]\n",P[cty].getPatternElement(cursor).getRelease());
+	printf("[release_amp_all:%d]\n",P[cty].getPatternElement(cursor).getRelease_amp());
       //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
       
     }
@@ -1989,8 +1994,8 @@ void seq_update_multiple_time_by_step()
 	      P[cty].getPatternElement(cursor).setTrig(true);
 	      if (P[cty].getPatternElement(cursor).getNote()==0)
 		{
-		  P[cty].getPatternElement(cursor).setAttack(0);
-		  P[cty].getPatternElement(cursor).setRelease(64);
+		  P[cty].getPatternElement(cursor).setAttack_amp(0);
+		  P[cty].getPatternElement(cursor).setRelease_amp(64);
 		  //P[cty].getPatternElement(cursor).setNote(37);
 		  P[cty].getPatternElement(cursor).setNote(25);
 		}
@@ -2154,8 +2159,23 @@ void seq_update_track(int t)
 
 	  M[t]->getVCO().setSynthFreq(f);
 
-	  M[t]->getADSR().setAttack(P[t].getPatternElement(step).getAttack());		  
-	  M[t]->getADSR().setRelease(P[t].getPatternElement(step).getRelease());	      
+	  //M[t]->getADSR().setAttack(P[t].getPatternElement(step).getAttack());		  
+	  //M[t]->getADSR().setRelease(P[t].getPatternElement(step).getRelease());	      
+
+	  noteOffTrigger[t]=
+	    P[t].getPatternElement(step).getAttack_amp()+
+	    P[t].getPatternElement(step).getRelease_amp();
+
+	  M[t]->getADSRAmp().setAttack(P[t].getPatternElement(step).getAttack_amp());
+	  M[t]->getADSRAmp().setRelease(P[t].getPatternElement(step).getRelease_amp());
+
+	  M[t]->getADSRFltr().setAttack(0);
+	  M[t]->getADSRFltr().setRelease(127);
+
+
+	  //M[t]->getADSRAmp().reset();	  
+	  //M[t]->getADSRFltr().reset();
+
 
 	  M[t]->getVCO().setVCOMix(P[t].getPatternElement(step).getVCOMix());		  
 
@@ -2169,8 +2189,10 @@ void seq_update_track(int t)
 	  i_c=P[t].getPatternElement(step).getCutoff();
 	  i_r=P[t].getPatternElement(step).getResonance();
 
-	  M[t]->getADSR().reset();
 	  M[t]->getVCO().reset();
+	  M[t]->getADSRAmp().reset();
+	  M[t]->getADSRFltr().reset();
+
 
 	  //printf("*************phase:%d\n",P[t].getPatternElement(step).getPhaseOsc1());
 	  //phase need to be reset after vco cause vco reset oscillator
@@ -2185,17 +2207,29 @@ void seq_update_track(int t)
 
 
 	  printf("***Attack:%d\tRelease:%d\n",
-		 P[t].getPatternElement(step).getAttack(),
-		 P[t].getPatternElement(step).getRelease());
+		 P[t].getPatternElement(step).getAttack_amp(),
+		 P[t].getPatternElement(step).getRelease_amp());
 	  //printf("==================================================================[ %f ]==================================================================\n",f_c);
 	  //printf("==================================================================[ %f ]==================================================================\n",f_r);
 	  //M[t]->getBiquad().setFc(f_c);
 	  M[t]->getBiquad().reset();
 	  M[t]->getBiquad().setBiquad(0, f_c+0.005, (f_r+0.005), 0.0);
 	  
+
+	  M[t]->getADSRAmp().setNoteOn();
+	  M[t]->getADSRFltr().setNoteOn();
+
 	}
       else
 	{
+	  if (noteOffTrigger[t]<0)
+	    {
+	      M[t]->getADSRAmp().setNoteOff();
+	      M[t]->getADSRFltr().setNoteOff();
+	    }
+	  else
+	    noteOffTrigger[t]=noteOffTrigger[t]-32;
+	  //M[t]->reset();
 	  //m.setSynthFreq(800);
 	  //printf("m.setSynthFreq(0);\n");
 	  //m0.setSynthFreq(0);
@@ -2242,7 +2276,8 @@ int seq()
       
       M[t]=MM[t]->getInput();
       M[t]->init();
-      M[t]->getADSR().init();
+      M[t]->getADSRAmp().init();
+      M[t]->getADSRFltr().init();
       M[t]->getVCO().init();
       //M[t]->getVCO().init();
       //M[t]->getVCO().tick();
@@ -2365,6 +2400,7 @@ void load_pattern()
 
 int main()
 {
+  int i;
   //  exit(0);
   //string wave="808-cowbell.wav";
   //  char * str="808-cowbell.wav";
@@ -2376,6 +2412,8 @@ int main()
   //IE.init();
   //IE.printState();
   //exit(0);
+  for (i=0;i<TRACK_MAX;i++)
+    noteOffTrigger[i]=0;
   load_pattern();
   printf("[openVideo output]\n");
   SG.initVideo();

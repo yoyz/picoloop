@@ -21,6 +21,13 @@ PatternElement::PatternElement()
   amp_sustain=127;
   amp_release=8;
 
+  fltr_attack=0;
+  fltr_decay=127;
+  fltr_sustain=127;
+  fltr_release=8;
+
+
+
   fltr_cutoff=64;
   fltr_resonance=80;
 
@@ -51,6 +58,13 @@ void PatternElement::init()
   amp_decay=127;
   amp_sustain=127;
   amp_release=8;
+
+  fltr_attack=0;
+  fltr_decay=127;
+  fltr_sustain=127;
+  fltr_release=8;
+
+
 
   fltr_cutoff=64;
   fltr_resonance=80;
@@ -113,47 +127,112 @@ int PatternElement::getVCOMix()
   return vcomix;
 }
 
-int PatternElement::getAttack()
+
+
+int PatternElement::getAttack_amp()
 {
   return amp_attack;
 }
 
-void PatternElement::setAttack(int atk)
+void PatternElement::setAttack_amp(int atk)
 {
   amp_attack=this->checkSevenBitBoundarie(atk);  
 }
 
-int PatternElement::getDecay()
+int PatternElement::getDecay_amp()
 {
   return amp_decay;
 }
 
-void PatternElement::setDecay(int dcy)
+void PatternElement::setDecay_amp(int dcy)
 {
   amp_decay=this->checkSevenBitBoundarie(dcy);
 }
 
 
-int PatternElement::getSustain()
+int PatternElement::getSustain_amp()
 {
   return amp_sustain;
 }
 
-void PatternElement::setSustain(int sus)
+void PatternElement::setSustain_amp(int sus)
 {
   amp_sustain=this->checkSevenBitBoundarie(sus);
 }
 
 
-int PatternElement::getRelease()
+int PatternElement::getRelease_amp()
 {
   return amp_release;
 }
 
-void PatternElement::setRelease(int rls)
+void PatternElement::setRelease_amp(int rls)
 {
   amp_release=this->checkSevenBitBoundarie(rls);
 }
+
+
+
+
+
+int PatternElement::getAttack_fltr()
+{
+  return fltr_attack;
+}
+
+void PatternElement::setAttack_fltr(int atk)
+{
+  fltr_attack=this->checkSevenBitBoundarie(atk);  
+}
+
+int PatternElement::getDecay_fltr()
+{
+  return fltr_decay;
+}
+
+void PatternElement::setDecay_fltr(int dcy)
+{
+  fltr_decay=this->checkSevenBitBoundarie(dcy);
+}
+
+
+int PatternElement::getSustain_fltr()
+{
+  return fltr_sustain;
+}
+
+void PatternElement::setSustain_fltr(int sus)
+{
+  fltr_sustain=this->checkSevenBitBoundarie(sus);
+}
+
+
+int PatternElement::getRelease_fltr()
+{
+  return fltr_release;
+}
+
+void PatternElement::setRelease_fltr(int rls)
+{
+  fltr_release=this->checkSevenBitBoundarie(rls);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 int PatternElement::getCutoff()
 {

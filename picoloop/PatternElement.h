@@ -38,17 +38,32 @@ public:
   int    getVCOMix();
   void   setVCOMix(int mix);
 
-  int    getAttack();
-  void   setAttack(int atk);
+  int    getAttack_amp();
+  void   setAttack_amp(int atk);
 
-  int    getDecay();
-  void   setDecay(int dc);
+  int    getDecay_amp();
+  void   setDecay_amp(int dc);
 
-  int    getSustain();
-  void   setSustain(int sus);
+  int    getSustain_amp();
+  void   setSustain_amp(int sus);
 
-  int    getRelease();
-  void   setRelease(int rls);
+  int    getRelease_amp();
+  void   setRelease_amp(int rls);
+
+
+
+  int    getAttack_fltr();
+  void   setAttack_fltr(int atk);
+
+  int    getDecay_fltr();
+  void   setDecay_fltr(int dc);
+
+  int    getSustain_fltr();
+  void   setSustain_fltr(int sus);
+
+  int    getRelease_fltr();
+  void   setRelease_fltr(int rls);
+
 
   int    getCutoff();
   void   setCutoff(int cut);
@@ -92,6 +107,11 @@ private:
   int  amp_decay;
   int  amp_sustain;
   int  amp_release;
+
+  int  fltr_attack;
+  int  fltr_decay;
+  int  fltr_sustain;
+  int  fltr_release;
 
   int fltr_cutoff;
   int fltr_resonance;
