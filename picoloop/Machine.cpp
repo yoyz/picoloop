@@ -167,7 +167,7 @@ int Machine::tick()
   sample_num++;
   
   s_in=adsr_amp.tick();
-  //s_in=s_in/4;
+  s_in=s_in/2;
 
   //if (sample_num==num)
   if (sample_num==num)

@@ -24,12 +24,12 @@ PatternElement::PatternElement()
   fltr_attack=0;
   fltr_decay=127;
   fltr_sustain=127;
-  fltr_release=8;
+  fltr_release=127;
 
 
 
   fltr_cutoff=64;
-  fltr_resonance=80;
+  fltr_resonance=30;
 
   lfo_depth=0;
   lfo_speed=0;
