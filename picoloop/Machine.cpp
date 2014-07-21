@@ -159,7 +159,7 @@ int Machine::tick()
   Sint16 s_out;
 
   Sint16 s_test;
-  int    num=2048;
+  int    num=1024;
   int    i;
   //s_out=adsr_fltr.tick();
   //s_out=adsr_amp.tick();
@@ -180,7 +180,7 @@ int Machine::tick()
       f_Fc=bq.getFc()*s_test;
       f_Fc=f_Fc/16384;
 
-      f_Q=bq.getFc()*s_test;
+      f_Q=bq.getQ()*s_test;
       f_Q=f_Q/16384;
       
       //bq.reset();
