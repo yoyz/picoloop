@@ -159,7 +159,7 @@ int Machine::tick()
   Sint16 s_out;
 
   Sint16 s_test;
-  int    num=1024;
+  int    num=2048;
   int    i;
   //s_out=adsr_fltr.tick();
   //s_out=adsr_amp.tick();
@@ -167,7 +167,7 @@ int Machine::tick()
   sample_num++;
   
   s_in=adsr_amp.tick();
-  s_in=s_in/2;
+  s_in=s_in/4;
 
   //if (sample_num==num)
   if (sample_num==num)
@@ -205,17 +205,35 @@ int Machine::tick()
 
 
       //bq.setQ((float)((bq.getQ()*s_test))/16384);
-      sample_num=0;
+      //sample_num=0;
     }
 
 
+  if (sample_num>num &&
+      sample_num < num+32)
+    {
+      s_out=(last_sample+bq.process(s_in))/2;
+    }
+  else
+    {
+        s_out=bq.process(s_in);
+    }
+
+  if (sample_num==sample_num+8)
+    sample_num=0;
+
+  
+  
   //FILTER
   //s_in=s_in/4;
-  s_in=s_in/2;
-  s_out=bq.process(s_in);
+  //s_in=s_in/2;
+
+
+  //s_out=bq.process(s_in);
 
   //if (1) printf("s_in:%d s_out:%d\n",s_in,s_out);
   //return s_in;  
+  last_sample=s_out;
   return s_out;
 
   //  s_out=bq.process(s_out);

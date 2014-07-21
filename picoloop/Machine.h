@@ -49,6 +49,7 @@ class Machine
   OneOscillator         one_osc;
 
   int                   sample_num;
+  Sint16                last_sample;
   /*
   Oscillator          * s;
   SawOscillator         sawosc;
