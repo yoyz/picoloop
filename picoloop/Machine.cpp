@@ -165,7 +165,7 @@ int Machine::tick()
   //s_out=adsr_amp.tick();
 
   sample_num++;
-
+  
   s_in=adsr_amp.tick();
   //s_in=s_in/4;
 
@@ -182,14 +182,17 @@ int Machine::tick()
 
       f_Q=bq.getFc()*s_test;
       f_Q=f_Q/16384;
-
-      bq.reset();
+      
+      //bq.reset();
       //if (f_Fc<0.01)
-      bq.setFc(f_Fc);
-      //if (f_Q<0.01)
-      bq.setQ(f_Q);
-      bq.calcBiquad();
-      //bq.setBiquad(0,f_Fc,f_Q,0.0);
+      if (1)
+	{
+	  bq.setFc(f_Fc);
+	  //if (f_Q<0.01)
+	  bq.setQ(f_Q);
+	  bq.calcBiquad();
+	  //bq.setBiquad(0,f_Fc,f_Q,0.0);
+	}
 
       if (0)
 	{
@@ -208,8 +211,9 @@ int Machine::tick()
 
   //FILTER
   //s_in=s_in/4;
+  s_in=s_in/2;
   s_out=bq.process(s_in);
-  
+
   //if (1) printf("s_in:%d s_out:%d\n",s_in,s_out);
   //return s_in;  
   return s_out;

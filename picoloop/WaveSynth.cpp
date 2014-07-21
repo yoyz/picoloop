@@ -158,8 +158,8 @@ void handle_key()
 
 
   // AMP ENV ATTACK_AMP
-  if (keyRepeat[SDLK_x]%4   && 
-      keyRepeat[SDLK_DOWN]%4 
+  if (keyRepeat[SDLK_x]%16   && 
+      keyRepeat[SDLK_DOWN]%16 
       //&& 
       //lastEvent ==  SDL_KEYDOWN)
       )
@@ -171,8 +171,8 @@ void handle_key()
     }
 
 
-  if (keyRepeat[SDLK_x]%64   && 
-      keyRepeat[SDLK_UP]%64   
+  if (keyRepeat[SDLK_x]%16   && 
+      keyRepeat[SDLK_UP]%16   
       //lastEvent ==  SDL_KEYDOWN)
       )
     {
@@ -183,8 +183,8 @@ void handle_key()
     }
 
   // AMP ENV RELEASE_AMP
-  if (keyRepeat[SDLK_x]%64    && 
-      keyRepeat[SDLK_RIGHT]%64 
+  if (keyRepeat[SDLK_x]%16    && 
+      keyRepeat[SDLK_RIGHT]%16 
       )
       //&& 
       //lastEvent ==  SDL_KEYDOWN)
@@ -196,8 +196,8 @@ void handle_key()
     }
 
 
-  if (keyRepeat[SDLK_x]%64    && 
-      keyRepeat[SDLK_LEFT]%64   //&& 
+  if (keyRepeat[SDLK_x]%16    && 
+      keyRepeat[SDLK_LEFT]%16   //&& 
       //lastEvent ==  SDL_KEYDOWN)
       )
     {
@@ -214,8 +214,8 @@ void handle_key()
 
 
   // AMP ENV ATTACK_FLTR
-  if (keyRepeat[SDLK_b]%4   && 
-      keyRepeat[SDLK_DOWN]%4 
+  if (keyRepeat[SDLK_b]%16   && 
+      keyRepeat[SDLK_DOWN]%16 
       //&& 
       //lastEvent ==  SDL_KEYDOWN)
       )
@@ -227,8 +227,8 @@ void handle_key()
     }
 
 
-  if (keyRepeat[SDLK_b]%64   && 
-      keyRepeat[SDLK_UP]%64   
+  if (keyRepeat[SDLK_b]%16   && 
+      keyRepeat[SDLK_UP]%16   
       //lastEvent ==  SDL_KEYDOWN)
       )
     {
@@ -239,8 +239,8 @@ void handle_key()
     }
 
   // AMP ENV RELEASE
-  if (keyRepeat[SDLK_b]%64    && 
-      keyRepeat[SDLK_RIGHT]%64 
+  if (keyRepeat[SDLK_b]%16    && 
+      keyRepeat[SDLK_RIGHT]%16 
       )
       //&& 
       //lastEvent ==  SDL_KEYDOWN)
@@ -252,8 +252,8 @@ void handle_key()
     }
 
   
-  if (keyRepeat[SDLK_b]%64    && 
-      keyRepeat[SDLK_LEFT]%64   //&& 
+  if (keyRepeat[SDLK_b]%16    && 
+      keyRepeat[SDLK_LEFT]%16   //&& 
       //lastEvent ==  SDL_KEYDOWN)
       )
     {
@@ -272,8 +272,8 @@ void handle_key()
 
   // FILTER Cutoff/Resonance
 
-  if (keyRepeat[SDLK_c]%64    && 
-      keyRepeat[SDLK_DOWN]%64 
+  if (keyRepeat[SDLK_c]%16    && 
+      keyRepeat[SDLK_DOWN]%16 
       //&& 
       //lastEvent ==  SDL_KEYDOWN)
       )
@@ -285,8 +285,8 @@ void handle_key()
     }
 
 
-  if (keyRepeat[SDLK_c]%64    && 
-      keyRepeat[SDLK_UP]%64   
+  if (keyRepeat[SDLK_c]%16    && 
+      keyRepeat[SDLK_UP]%16   
       //&& 
       //lastEvent ==  SDL_KEYDOWN)
       )
@@ -452,6 +452,7 @@ void handle_key()
 	  //M[t]->getVCO().reset();
 
 	  //M[t]->getBiquad().reset();
+	  //M[t]->getBiquad().init();
 
 	  M[t]->getVCO().setSynthFreq(i);
 	  M[t]->getVCO().setOscillator(0,1);
