@@ -64,7 +64,7 @@ Sint16 TriangleOscillator::tick()
 {
 
   index=index+(this->getFreq()*table_size)/44100;
-  if (index>table_size)
+  if (index>=table_size)
     index=index-table_size;
   //printf("freq=%d index=%d table[index]=%d\n",this->getFreq(),index,table[index]);
   return table[index];

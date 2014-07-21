@@ -3,6 +3,7 @@
 InputManager::InputManager() : key_state(new  bool[MAX_KEY]),
 			       key_repeat(new int[MAX_KEY])
 {
+  int i;
   //  key_state=NULL;
   //  key_repeat=NULL;
   last_key=0;
@@ -10,6 +11,12 @@ InputManager::InputManager() : key_state(new  bool[MAX_KEY]),
   quit=false;
   escape=false;
   //max_key=0;
+
+  for (i=0;i<MAX_KEY;i++)
+    key_state[i]=false;
+
+  for (i=0;i<MAX_KEY;i++)
+    key_repeat[i]=0;
 }
 
 InputManager::~InputManager()

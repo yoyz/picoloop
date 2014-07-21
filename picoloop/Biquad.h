@@ -89,13 +89,13 @@ inline float Biquad::process(float in) {
 inline int16_t Biquad::process(int16_t in) 
 //Sint16 Biquad::tick(Sint16 in) 
 {
-  int64_t i_in;
-  int64_t i_out;
-  int64_t i_out_tmp;
-  int16_t out;
+  int64_t i_in=0;
+  int64_t i_out=0;
+  int64_t i_out_tmp=0;
+  int16_t out=0;
   
 
-  if (in==0) return 0;
+  //if (in==0) return 0;
 
   i_in=in;
   i_in=i_in<<SHIFT;

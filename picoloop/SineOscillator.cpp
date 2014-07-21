@@ -32,7 +32,7 @@ void SineOscillator::init()
   Sint16 bitdepth=16-1;
   //if (table==NULL)
   //{
-  //  table=(Sint16*)malloc(sizeof(Sint16)*table_size);
+  //table=(Sint16*)malloc(sizeof(Sint16)*table_size);
       printf("SineOscillator::init() 0x%08.8X\n",table);
       //table=new Sint16[table_size];
       //      if (table==NULL)
@@ -59,7 +59,7 @@ Sint16 SineOscillator::tick()
 { 
   //index=index+(this->getFreq()*table_size)/44100;
   index=index+offset_next_index;
-  if (index>table_size)
+  if (index>=table_size)
     index=index-table_size;
     //index=0;
 

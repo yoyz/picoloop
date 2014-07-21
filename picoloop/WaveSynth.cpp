@@ -131,8 +131,8 @@ void handle_key()
   // OCTAVE
   if (keyRepeat[SDLK_w]%64    && 
       keyRepeat[SDLK_DOWN]%64 
-      //&& 
-      //lastEvent ==  SDL_KEYDOWN)
+      && 
+      lastEvent ==  SDL_KEYDOWN
       )
     {
       octave=octave-12;
@@ -144,9 +144,9 @@ void handle_key()
 
   if (keyRepeat[SDLK_w]%64    && 
       keyRepeat[SDLK_UP]%64   
-      //&& 
-      //lastEvent ==  SDL_KEYDOWN)
-      )
+      && 
+      lastEvent ==  SDL_KEYDOWN)
+      
     {
       octave=octave+12;
       if (octave >=73) octave=73;
@@ -278,7 +278,7 @@ void handle_key()
       //lastEvent ==  SDL_KEYDOWN)
       )
     {
-      cutoff=cutoff-12;
+      cutoff=cutoff-1;
       if (cutoff <=1) cutoff=1;
       redraw=true;
       printf("[c]+[down] => cutoff:%d\n",cutoff);
@@ -451,11 +451,11 @@ void handle_key()
 	  //M[t]->getVCO().getOscillatorOne();
 	  //M[t]->getVCO().reset();
 
-	  M[t]->getBiquad().reset();
+	  //M[t]->getBiquad().reset();
 
 	  M[t]->getVCO().setSynthFreq(i);
 	  M[t]->getVCO().setOscillator(0,1);
-	  M[t]->getVCO().setOscillator(1,1);
+	  M[t]->getVCO().setOscillator(1,2);
 	  M[t]->getVCO().setVCOMix(vcomix);		  
 
 	  M[t]->getADSRAmp().setRelease(release_amp);

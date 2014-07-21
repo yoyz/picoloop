@@ -257,6 +257,7 @@ Sint16 ADSR::tick()
   Sint16 s=0;
   //Sint16 s_in;
   Sint32 s_in;
+  Sint16 s_out=0;;
   //float  f1=0.0;
   //float  f2=0.0;
   int    debug=1;
@@ -275,14 +276,20 @@ Sint16 ADSR::tick()
 
 
   if (current_segment==ADSR_FINISH)
-    return 0;
+    {
+      if (0) printf("ADSR_FINISH\n");
+      //return 0;
+      s_out=0;
+    }
 
   if (current_segment==ADSR_INIT &&
       noteOn_value==0                    
       )
     {
       //printf("***********WHY THE HELL I AM HERE\n");
-      return(0);
+      if (0) printf("ADSR_INIT\n");
+      //return(0);
+      s_out=0;
     }
 
 
@@ -290,13 +297,15 @@ Sint16 ADSR::tick()
   if (current_segment==ADSR_INIT &&
       noteOn_value==1                  
       )
-    current_segment=ADSR_ATTACK;
+    {
+      current_segment=ADSR_ATTACK;
+    }
   
       
   sample_num++;
   
 
-  //s=S->tick();
+  //  s=S->tick();
   //  s=S->tick();
   s_in=vco->tick();
   //return s_in;
@@ -322,6 +331,12 @@ Sint16 ADSR::tick()
 
       if(current_segment==ADSR_SUSTAIN)
 	  printf("***************************** SUSTAIN  noteOn:%d\n",noteOn_value);
+
+      if(current_segment==ADSR_RELEASE)
+	  printf("***************************** RELEASE  noteOn:%d\n",noteOn_value);
+
+      if(current_segment==ADSR_FINISH)
+	  printf("***************************** FINISH  noteOn:%d\n",noteOn_value);
 
     }
 
@@ -372,21 +387,26 @@ Sint16 ADSR::tick()
 	    ca_div=2;
 	}
       //return s_in/((ca_div)+1);
-      return (s_in*tanh_table[128-ca_div])/1024;
+      //return (s_in*tanh_table[127-ca_div])/1024;
+      s_out=(s_in*tanh_table[127-ca_div])/1024;
+
     }
 
 
   // DECAY
   if (current_segment==ADSR_DECAY)
     {
-      return s_in;
+      //return s_in;
+      s_out=s_in;
+      //if (1) printf("s_in:%d s_out:%d\n",s_in,s_out);
     }
 
 
   // SUSTAIN
   if (current_segment==ADSR_SUSTAIN)
     {
-      return s_in;
+      //return s_in;
+      s_out=s_in;
     }
 
 
@@ -399,16 +419,22 @@ Sint16 ADSR::tick()
 	  cr_next_segment=cr_next_segment+cr_segment;
 	  cr_div=cr_div+1;
 	  if (cr_div>127)
-	    cr_div=127;
+	    {
+	      cr_div=127;
+	      current_segment=ADSR_FINISH;
+	    }
 	}
 
       //return s_in/((cr_div/4)+1);            
       //      return (s_in*tanh[cr_div])/1024;
-      return (s_in*tanh_table[127-cr_div])/1024;
+      //return (s_in*tanh_table[127-cr_div])/1024;
+      s_out=(s_in*tanh_table[127-cr_div])/1024;
     }
        
   //s=f2;
 
+  
+  return s_out;
 
   //if (debug) fprintf(stderr,"end Sint16 ADSR::tick()\n");
   //return s;  

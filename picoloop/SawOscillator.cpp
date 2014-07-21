@@ -34,31 +34,37 @@ void SawOscillator::init()
   float f;
   Sint16 s;
   Sint16 bitdepth=16;
-  Sint16 dec=(1<<(bitdepth-1))/(table_size/4);
+  Sint16 dec=(1<<(bitdepth-2))/(table_size/4);
   //if (table==NULL)
   //{
-  table=(Sint16*)malloc(sizeof(Sint16)*table_size);
+  //table=(Sint16*)malloc(sizeof(Sint16)*table_size);
       s=(1<<(bitdepth-1))-((table_size/2));
       for (i=0;i<table_size-1;i++)
 	{
 	  table[i]=s;
 	  s=s-dec;
-	  //printf("SawOscillator::init() table[%d]=%d\n",i,table[i]);
-	  //exit(0);
+	  if (0) printf("SawOscillator::init() table[%d]=%d\n",i,table[i]);
+	  
 	}
-      //}  
+      //} 
+      //exit(0); 
 }
 
 
 Sint16 SawOscillator::tick()
 {
-
+  Sint16 s_out;
   //index=index+(this->getFreq()*table_size)/44100;
   index=index+offset_next_index;
-  if (index>table_size)
+  if (index>=table_size)
     index=index-table_size;
   //index=0;
   //printf("freq=%d index=%d table[index]=%d\n",this->getFreq(),index,table[index]);
-  return table[index];
+  //return table[index];
+  s_out=table[index];
+  //if (s_out==0)
+  //printf("freq=%d index=%d table[index]=%d\n",this->getFreq(),index,table[index]);
+  return s_out;
 
 }
+

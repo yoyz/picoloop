@@ -256,21 +256,23 @@ Sint16 VCO::tick()
       //	}
     }
 
-
+  
   sa=(s1->tick()*((128-vcomix)));
 
   //sb=(s2->tick()*((vcomix))/(128));
+  //sb=(s2->tick()*((vcomix)));
   sb=(s2->tick()*((vcomix)));
 
   //sc=sa+sb;
   //sc=(sa+sb)/128;
   sc=(sa+sb)>>7;
 
+  //s=s1->tick();
   s=sc;
   //  sb=(s2->tick())
 
   //return s1->tick()/(128-vcomix)+s2->tick()/(vcomix);  
-    
+  //if (1) printf("sa:%d sb:%d sc:%d\n",sa,sb,sc);    
   
   //return s1->tick()+s2->tick();
   return s;

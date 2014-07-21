@@ -62,7 +62,12 @@ void openaudio()
       M[t]->reset();
       M[t]->getADSRAmp().init();
       M[t]->getADSRFltr().init();
+
+      M[t]->getADSRAmp().reset();
+      M[t]->getADSRFltr().reset();
+
       M[t]->getVCO().init();
+      M[t]->getVCO().reset();
       M[t]->getVCO().setSynthFreq(0);      
     }
 

@@ -45,6 +45,7 @@ void Machine::init()
   //bq.setInput(&adsr_fltr);
   //adsr_amp.setInput(&bq); 
 
+  bq.reset();
   adsr_amp.init();
   adsr_fltr.init();
 
@@ -166,8 +167,9 @@ int Machine::tick()
   sample_num++;
 
   s_in=adsr_amp.tick();
-  s_in=s_in/4;
+  //s_in=s_in/4;
 
+  //if (sample_num==num)
   if (sample_num==num)
     {
       for (i=0;i<num;i++)
@@ -181,6 +183,7 @@ int Machine::tick()
       f_Q=bq.getFc()*s_test;
       f_Q=f_Q/16384;
 
+      bq.reset();
       //if (f_Fc<0.01)
       bq.setFc(f_Fc);
       //if (f_Q<0.01)
@@ -201,13 +204,14 @@ int Machine::tick()
       //bq.setQ((float)((bq.getQ()*s_test))/16384);
       sample_num=0;
     }
-  //  return s_in;
+
 
   //FILTER
   //s_in=s_in/4;
   s_out=bq.process(s_in);
   
-  
+  //if (1) printf("s_in:%d s_out:%d\n",s_in,s_out);
+  //return s_in;  
   return s_out;
 
   //  s_out=bq.process(s_out);

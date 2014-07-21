@@ -42,7 +42,7 @@ Sint16 NoiseOscillator::tick()
 {
   //index=index+(this->getFreq()*table_size)/44100;
   index=index+offset_next_index;
-  if (index>table_size)
+  if (index>=table_size)
     index=index-table_size;
   //index=0;
 
