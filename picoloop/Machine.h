@@ -45,6 +45,7 @@ class Machine
   ADSR                  adsr_amp;
   ADSR                  adsr_fltr;
   Biquad                bq;
+  Biquad                bq2;
 
   OneOscillator         one_osc;
 

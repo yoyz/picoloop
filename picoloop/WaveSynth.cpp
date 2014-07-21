@@ -30,17 +30,17 @@ int offset=0;
 float zoom=1.0;
 int quit;
 
-int attack_amp=0;
-int release_amp=63;
+int attack_amp=96;
+int release_amp=96;
 
-int attack_fltr=0;
-int release_fltr=63;
+int attack_fltr=96;
+int release_fltr=96;
 
 
 int vcomix=63;
 
-int cutoff=120;
-int resonance=1;
+int cutoff=16;
+int resonance=96;
 
 char * filename;
 

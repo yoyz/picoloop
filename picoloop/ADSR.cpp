@@ -289,7 +289,7 @@ Sint16 ADSR::tick()
       //printf("***********WHY THE HELL I AM HERE\n");
       if (0) printf("ADSR_INIT\n");
       //return(0);
-      s_out=0;
+      current_segment=ADSR_RELEASE;
     }
 
 

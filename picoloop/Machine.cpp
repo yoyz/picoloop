@@ -5,7 +5,7 @@
 
 //Machine::Machine()// : adsr(), vco()
 //Machine::Machine() : adsr(), vco_osc()
-Machine::Machine() : adsr_amp(), adsr_fltr(), vco(), bq(), one_osc()
+Machine::Machine() : adsr_amp(), adsr_fltr(), vco(), bq(), bq2(), one_osc()
 {
   printf("Machine::Machine()\n");  
   //  adsr=new ADSR();
@@ -58,6 +58,10 @@ void Machine::init()
   //adsr_fltr.setInput(bq
   bq.setBiquad(0, 0.2, 0.5, 0.1);
   sample_num=0;
+
+  bq2.reset();
+  bq2.setBiquad(0, 0.5, 0.05, 0.0);
+  bq2.calcBiquad();
 }
 
 
@@ -159,7 +163,7 @@ int Machine::tick()
   Sint16 s_out;
 
   Sint16 s_test;
-  int    num=2048;
+  int    num=1024;
   int    i;
   //s_out=adsr_fltr.tick();
   //s_out=adsr_amp.tick();
@@ -234,7 +238,7 @@ int Machine::tick()
   //if (1) printf("s_in:%d s_out:%d\n",s_in,s_out);
   //return s_in;  
   last_sample=s_out;
-  return s_out;
+  return bq2.process(s_out);
 
   //  s_out=bq.process(s_out);
   //s_out=bq.process(s_out);
