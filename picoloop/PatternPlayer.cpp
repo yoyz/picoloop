@@ -66,8 +66,8 @@ enum {
 
 enum {
   MENU_ENV_ATTACK_RELEASE,
-  MENU_ENV_ATTACK_AMP,
-  MENU_ENV_AMP_RELEASE
+  //MENU_ENV_ATTACK_AMP,
+  MENU_FLTR_ATTACK_RELEASE
 };
 
 vector <Pattern>            P(TRACK_MAX);  
@@ -125,6 +125,11 @@ int release_fltr=0;
 
 int attack_amp_all=0;
 int release_amp_all=0;
+
+int attack_fltr_all=0;
+int release_fltr_all=0;
+
+
 
 int lfo_depth=0;
 int lfo_depth_all=0;
@@ -241,6 +246,29 @@ void display_board_amp_env()
 		}
 	    }
 	}
+
+      if (menu_env==MENU_FLTR_ATTACK_RELEASE)
+	{
+	  for (i=0;i<16;i++)
+	    {
+	      // Draw trigged box trig color   
+	      if (P[cty].getPatternElement(i).getTrig())
+		{
+		  SG.drawBoxNumber(i,TRIG_COLOR);
+		  if (i==cursor)
+		    SG.drawBoxNumber(cursor,CURSOR_COLOR);
+		  if (i==step)
+		    SG.drawBoxNumber(step,STEP_COLOR);  
+		  //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
+		  
+		  // AdsR
+		  SG.smallBoxNumber(i,P[cty].getPatternElement(i).getRelease_fltr(),0,SMALLBOX_COLOR);
+		  SG.smallBoxNumber(i,0,P[cty].getPatternElement(i).getAttack_fltr(),SMALLBOX_COLOR);      
+		}
+	    }
+	}
+
+      /*
       if (menu_env==MENU_ENV_ATTACK_AMP)
 	{
 	  for (i=0;i<16;i++)
@@ -261,6 +289,7 @@ void display_board_amp_env()
 		}
 	    }
 	}
+      */
 
     }
 }
@@ -660,16 +689,25 @@ void display_board()
   if (menu_env==MENU_ENV_ATTACK_RELEASE &&
       menu_cursor==M_AD)
     {
-      sprintf(str_submenu,"ATTACK/RELEASE");
+      sprintf(str_submenu,"AMP  A/R");
       SG.guiTTFText(200,60,str_submenu);
     }
+
+  if (menu_env==MENU_FLTR_ATTACK_RELEASE &&
+      menu_cursor==M_AD)
+    {
+      sprintf(str_submenu,"FLTR A/R");
+      SG.guiTTFText(200,60,str_submenu);
+    }
+
+  /*
   if (menu_env==MENU_ENV_ATTACK_AMP &&
       menu_cursor==M_AD)
     {
       sprintf(str_submenu,"ATTACK/AMP");
       SG.guiTTFText(200,60,str_submenu);
     }
-
+  */
   if (menu_cursor==M_BPM)
     {
       //sprintf(str_submenu,"SWING %d",(current_swing*100)/127);
@@ -963,7 +1001,7 @@ void handle_key_amp_env()
   lastKey=IE.lastKey();
 
 
-  // M_AD
+  // M_AD AMP
   // Move Attack Release 
   // Insert/Remove Trig
   if (menu          == MENU_OFF && 
@@ -972,16 +1010,6 @@ void handle_key_amp_env()
     {
       // Insert/Remove Trig
       sub_handle_invert_trig();
-      /*
-      if (lastKey   == BUTTON_A && 
-	  lastEvent == SDL_KEYDOWN)
-	{
-	  invert_trig=1;
-	  printf("key lalt\n");      
-	  dirty_graphic=1;
-	  IE.clearLastKeyEvent();
-	}
-      */
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_B])
 	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>4) 
 	  { release_amp=-1;   dirty_graphic=1; }
@@ -999,7 +1027,7 @@ void handle_key_amp_env()
 	  { attack_amp=-1; 	  dirty_graphic=1; }
     }  
 
-  // M_AD
+  // M_AD AMP
   // Move Attack Release 
   // Insert/Remove Trig
   if (menu          != MENU_OFF && 
@@ -1025,6 +1053,59 @@ void handle_key_amp_env()
     }  
 
 
+  // M_AD FLTR
+  // Move Attack Release 
+  // Insert/Remove Trig
+  if (menu          == MENU_OFF && 
+      menu_cursor   == M_AD     &&
+      menu_env      == MENU_FLTR_ATTACK_RELEASE)
+    {
+      // Insert/Remove Trig
+      sub_handle_invert_trig();
+      if (keyState[BUTTON_LEFT]  && keyState[BUTTON_B])
+	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>4) 
+	  { release_fltr=-1;   dirty_graphic=1; }
+      
+      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>4) 
+	  { release_fltr=1; 	  dirty_graphic=1; }
+      
+      if (keyState[BUTTON_UP]    && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>4) 
+	  { attack_fltr=1;  	  dirty_graphic=1; }
+      
+      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>4) 
+	  { attack_fltr=-1; 	  dirty_graphic=1; }
+    }  
+
+  // M_AD FLTR
+  // Move Attack Release 
+  // Insert/Remove Trig
+  if (menu          != MENU_OFF && 
+      menu_cursor   == M_AD     &&
+      menu_env      == MENU_FLTR_ATTACK_RELEASE)
+    {
+      //printf("***********************\n");
+      if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A])
+	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>4) 
+	  { release_fltr_all=-1;   dirty_graphic=1; }
+      
+      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>4) 
+	  { release_fltr_all=1; 	  dirty_graphic=1; }
+      
+      if (keyState[BUTTON_UP]    && keyState[BUTTON_A]) 
+	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>4) 
+	  { attack_fltr_all=1;  	  dirty_graphic=1; }
+      
+      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A]) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>4) 
+	  { attack_fltr_all=-1; 	  dirty_graphic=1; }
+    }  
+
+
+  /*
   if (menu          == MENU_OFF && 
       menu_cursor   == M_AD     &&
       menu_env      == MENU_ENV_ATTACK_AMP)
@@ -1053,7 +1134,8 @@ void handle_key_amp_env()
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>4) 
 	  { attack_amp=-1; 	  dirty_graphic=1; }
     }  
-
+  */
+  /*
   if (menu          != MENU_OFF && 
       menu_cursor   == M_AD     &&
       menu_env      == MENU_ENV_ATTACK_AMP)
@@ -1074,7 +1156,7 @@ void handle_key_amp_env()
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>4) 
 	  { attack_amp_all=-1; 	  dirty_graphic=1; }
     }  
-
+  */
 
 }
 
@@ -1726,6 +1808,59 @@ void seq_update_multiple_time_by_step()
       
     }
   
+
+
+
+
+  // Change fltr env Attack
+  if (attack_fltr!=0)
+    {
+      P[cty].getPatternElement(cursor).setAttack_fltr(P[cty].getPatternElement(cursor).getAttack_fltr()+attack_fltr);
+      attack_fltr=0;
+      if (debug)
+	printf("[attack_fltr:%d]\n",P[cty].getPatternElement(cursor).getAttack_fltr());
+    }
+  
+  // Change fltr env Attack
+  if (attack_fltr_all!=0)
+    {
+      for(i=0;i<16;i++)
+	P[cty].getPatternElement(i).setAttack_fltr(P[cty].getPatternElement(i).getAttack_fltr()+attack_fltr_all);
+      attack_fltr_all=0;
+      if (debug)
+	printf("[attack_all:%d]\n",P[cty].getPatternElement(cursor).getAttack_amp());
+    }
+  
+  
+  // Change fltr env Release
+  if (release_fltr!=0)
+    {
+      //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
+      P[cty].getPatternElement(cursor).setRelease_fltr(P[cty].getPatternElement(cursor).getRelease_fltr()+release_fltr);
+      release_fltr=0;
+      if (debug)
+	printf("[release_fltr:%d]\n",P[cty].getPatternElement(cursor).getRelease_fltr());
+      //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
+      
+    }
+  
+  // Change fltr env Release
+  if (release_fltr_all!=0)
+    {
+      //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
+      for(i=0;i<16;i++)
+	P[cty].getPatternElement(i).setRelease_fltr(P[cty].getPatternElement(i).getRelease_fltr()+release_fltr_all);
+      release_fltr_all=0;
+      if (debug)
+	printf("[release_fltr_all:%d]\n",P[cty].getPatternElement(cursor).getRelease_fltr());
+      //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
+      
+    }
+  
+
+
+
+
   
   // Change VCOMix
   if (vcomix!=0)
@@ -2169,8 +2304,8 @@ void seq_update_track(int t)
 	  M[t]->getADSRAmp().setAttack(P[t].getPatternElement(step).getAttack_amp());
 	  M[t]->getADSRAmp().setRelease(P[t].getPatternElement(step).getRelease_amp());
 
-	  M[t]->getADSRFltr().setAttack(0);
-	  M[t]->getADSRFltr().setRelease(127);
+	  M[t]->getADSRFltr().setAttack(P[t].getPatternElement(step).getAttack_fltr());
+	  M[t]->getADSRFltr().setRelease(P[t].getPatternElement(step).getRelease_fltr());
 
 
 	  //M[t]->getADSRAmp().reset();	  
@@ -2213,8 +2348,8 @@ void seq_update_track(int t)
 	  //printf("==================================================================[ %f ]==================================================================\n",f_r);
 	  //M[t]->getBiquad().setFc(f_c);
 	  M[t]->getBiquad().reset();
-	  M[t]->getBiquad().setBiquad(0, f_c+0.005, (f_r+0.005), 0.0);
-	  
+	  M[t]->getBiquad().setBiquad(0, f_c+0.005, (f_r+0.005), 0.0);	 
+	  M[t]->getBiquad().calcBiquad();
 
 	  M[t]->getADSRAmp().setNoteOn();
 	  M[t]->getADSRFltr().setNoteOn();
