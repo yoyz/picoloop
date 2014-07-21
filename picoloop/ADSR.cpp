@@ -198,17 +198,17 @@ void ADSR::reset()
   cs=sustain;
 
   if (attack>0)
-    ca=attack  << 10;
+    ca=attack  << 9;
   else
     ca=0;
 
   if (decay>0)
-    cd=decay  << 10;
+    cd=decay  << 9;
   else
     cd=0;
 
   if (release>0)
-    cr=release << 10;
+    cr=release << 9;
   else
     cr=0;
 

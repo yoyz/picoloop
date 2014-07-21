@@ -214,7 +214,7 @@ int Machine::tick()
 
 
   if (sample_num>num &&
-      sample_num < num+32)
+      sample_num < num+64)
     {
       s_out=(last_sample+bq.process(s_in))/2;
     }
@@ -223,7 +223,7 @@ int Machine::tick()
         s_out=bq.process(s_in);
     }
 
-  if (sample_num==sample_num+8)
+  if (sample_num>=sample_num+64)
     sample_num=0;
 
   
@@ -238,7 +238,8 @@ int Machine::tick()
   //if (1) printf("s_in:%d s_out:%d\n",s_in,s_out);
   //return s_in;  
   last_sample=s_out;
-  return bq2.process(s_out);
+  //return bq2.process(s_out);
+  return s_out;
 
   //  s_out=bq.process(s_out);
   //s_out=bq.process(s_out);

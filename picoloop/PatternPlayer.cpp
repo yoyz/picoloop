@@ -2324,9 +2324,6 @@ void seq_update_track(int t)
 	  i_c=P[t].getPatternElement(step).getCutoff();
 	  i_r=P[t].getPatternElement(step).getResonance();
 
-	  M[t]->getVCO().reset();
-	  M[t]->getADSRAmp().reset();
-	  M[t]->getADSRFltr().reset();
 
 
 	  //printf("*************phase:%d\n",P[t].getPatternElement(step).getPhaseOsc1());
@@ -2347,9 +2344,16 @@ void seq_update_track(int t)
 	  //printf("==================================================================[ %f ]==================================================================\n",f_c);
 	  //printf("==================================================================[ %f ]==================================================================\n",f_r);
 	  //M[t]->getBiquad().setFc(f_c);
-	  M[t]->getBiquad().reset();
+	  //M[t]->getBiquad().reset();
+
 	  M[t]->getBiquad().setBiquad(0, f_c+0.005, (f_r+0.005), 0.0);	 
 	  M[t]->getBiquad().calcBiquad();
+
+	  M[t]->getADSRAmp().reset();
+	  M[t]->getADSRFltr().reset();
+
+
+	  M[t]->getVCO().reset();
 
 	  M[t]->getADSRAmp().setNoteOn();
 	  M[t]->getADSRFltr().setNoteOn();
@@ -2361,6 +2365,7 @@ void seq_update_track(int t)
 	    {
 	      M[t]->getADSRAmp().setNoteOff();
 	      M[t]->getADSRFltr().setNoteOff();
+	      M[t]->reset();
 	    }
 	  else
 	    noteOffTrigger[t]=noteOffTrigger[t]-32;
