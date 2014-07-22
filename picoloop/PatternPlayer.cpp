@@ -2325,6 +2325,7 @@ void seq_update_track(int t)
 	  float   f_r;
 
 	  // set the amp output for the track
+	  M[t]->reset();
 	  MM[t]->setAmplitude(P[t].getPatternElement(step).getAmp());
 
 	  	 
@@ -2345,6 +2346,7 @@ void seq_update_track(int t)
 	    ;
 	    //P[t].getPatternElement(step).getRelease_amp();
 	  M[t]->getADSRAmp().setNoteADSR(P[t].getPatternElement(step).getNoteADSR());
+	  M[t]->getADSRFltr().setNoteADSR(P[t].getPatternElement(step).getNoteADSR());
 	  M[t]->getADSRAmp().setAttack(P[t].getPatternElement(step).getAttack_amp());
 	  M[t]->getADSRAmp().setRelease(P[t].getPatternElement(step).getRelease_amp());
 
@@ -2460,6 +2462,8 @@ int seq()
       //MM[t]=AE.getAudioMixer().getTrack(t).getMonoMixer().getInput().init();
       
       M[t]=MM[t]->getInput();
+      MM[t]->setAmplitude(0);  // set the amplitude to 0 to avoid trashing speakers
+                               // there is some noise at the begining
       M[t]->init();
       M[t]->getADSRAmp().init();
       M[t]->getADSRFltr().init();

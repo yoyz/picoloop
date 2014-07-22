@@ -69,9 +69,10 @@ void openaudio()
   for (t=0;t<TRACK_MAX;t++)
     {
       MM[t]=AE.getAudioMixer().getTrack(t).getMonoMixer();
+      MM[t]->setAmplitude(0);
       M[t]=MM[t]->getInput();
       M[t]->init();
-      M[t]->reset();
+      M[t]->reset();      
       M[t]->getADSRAmp().init();
       M[t]->getADSRFltr().init();
       M[t]->getVCO().init();
@@ -448,6 +449,7 @@ void handle_key()
 	  f_r=f_r/8;
 	  
 	  printf("[Freq:%d]\n",i);
+	  MM[t]->setAmplitude(127);
 	  //M[t]->getVCO().getOscillatorOne();
 	  //M[t]->getVCO().reset();
 
@@ -459,6 +461,8 @@ void handle_key()
 	  M[t]->getVCO().setOscillator(1,2);
 	  M[t]->getVCO().setVCOMix(vcomix);		  
 
+	  M[t]->getADSRAmp().setNoteADSR(1);
+	  M[t]->getADSRFltr().setNoteADSR(1);
 	  M[t]->getADSRAmp().setRelease(release_amp);
 	  M[t]->getADSRAmp().setAttack(attack_amp);
 
@@ -501,7 +505,7 @@ void handle_key()
 	  //M[t]->getADSRFltr().setADSRRelease();
 
 
-	  M[t]->reset();
+	  //M[t]->reset();
 	}
     }
 
