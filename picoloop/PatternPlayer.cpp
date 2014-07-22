@@ -66,8 +66,8 @@ enum {
 
 enum {
   MENU_ENV_ATTACK_RELEASE,
-  //MENU_ENV_ATTACK_AMP,
-  MENU_FLTR_ATTACK_RELEASE
+  MENU_FLTR_ATTACK_RELEASE,
+  MENU_ENV_ADSRNOTE_AMP,
 };
 
 vector <Pattern>            P(TRACK_MAX);  
@@ -129,7 +129,8 @@ int release_amp_all=0;
 int attack_fltr_all=0;
 int release_fltr_all=0;
 
-
+int adsr_note=0;
+int adsr_note_all=0;
 
 int lfo_depth=0;
 int lfo_depth_all=0;
@@ -268,8 +269,8 @@ void display_board_amp_env()
 	    }
 	}
 
-      /*
-      if (menu_env==MENU_ENV_ATTACK_AMP)
+
+      if (menu_env==MENU_ENV_ADSRNOTE_AMP)
 	{
 	  for (i=0;i<16;i++)
 	    {
@@ -285,11 +286,11 @@ void display_board_amp_env()
 		  
 		  // AdsR
 		  SG.smallBoxNumber(i,P[cty].getPatternElement(i).getAmp(),0,SMALLBOX_COLOR);
-		  SG.smallBoxNumber(i,0,P[cty].getPatternElement(i).getAttack_amp(),SMALLBOX_COLOR);      
+		  SG.smallBoxNumber(i,0,P[cty].getPatternElement(i).getNoteADSR()*127,SMALLBOX_COLOR);      
 		}
 	    }
 	}
-      */
+
 
     }
 }
@@ -700,6 +701,14 @@ void display_board()
       SG.guiTTFText(200,60,str_submenu);
     }
 
+  if (menu_env==MENU_ENV_ADSRNOTE_AMP &&
+      menu_cursor==M_AD)
+    {
+      sprintf(str_submenu,"T/N AMP");
+      SG.guiTTFText(200,60,str_submenu);
+    }
+
+
   /*
   if (menu_env==MENU_ENV_ATTACK_AMP &&
       menu_cursor==M_AD)
@@ -1105,10 +1114,10 @@ void handle_key_amp_env()
     }  
 
 
-  /*
+
   if (menu          == MENU_OFF && 
       menu_cursor   == M_AD     &&
-      menu_env      == MENU_ENV_ATTACK_AMP)
+      menu_env      == MENU_ENV_ADSRNOTE_AMP)
     {
       if (lastKey   == BUTTON_A && 
 	  lastEvent == SDL_KEYDOWN)
@@ -1128,17 +1137,17 @@ void handle_key_amp_env()
       
       if (keyState[BUTTON_UP]    && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>4) 
-	  { attack_amp=1;  	  dirty_graphic=1; }
+	  { adsr_note=1;  	  dirty_graphic=1; }
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>4) 
-	  { attack_amp=-1; 	  dirty_graphic=1; }
+	  { adsr_note=-1; 	  dirty_graphic=1; }
     }  
-  */
-  /*
+
+
   if (menu          != MENU_OFF && 
       menu_cursor   == M_AD     &&
-      menu_env      == MENU_ENV_ATTACK_AMP)
+      menu_env      == MENU_ENV_ADSRNOTE_AMP)
     {
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A])
 	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>4) 
@@ -1150,13 +1159,13 @@ void handle_key_amp_env()
       
       if (keyState[BUTTON_UP]    && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>4) 
-	  { attack_amp_all=1;  	  dirty_graphic=1; }
+	  { adsr_note_all=1;  	  dirty_graphic=1; }
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>4) 
-	  { attack_amp_all=-1; 	  dirty_graphic=1; }
+	  { adsr_note_all=-1; 	  dirty_graphic=1; }
     }  
-  */
+
 
 }
 
@@ -1250,8 +1259,9 @@ void handle_key_note()
       lastEvent   ==  SDL_KEYUP     && 
       menu_cursor ==  M_AD)
     {
-      if      (menu_env==0)        { menu_env=1;  }
-      else if (menu_env==1)        { menu_env=0;  }   
+      if      (menu_env==MENU_ENV_ATTACK_RELEASE)      { menu_env=MENU_FLTR_ATTACK_RELEASE;  }
+      else if (menu_env==MENU_FLTR_ATTACK_RELEASE)     { menu_env=MENU_ENV_ADSRNOTE_AMP;     }   
+      else if (menu_env==MENU_ENV_ADSRNOTE_AMP)        { menu_env=MENU_ENV_ATTACK_RELEASE;   }   
       dirty_graphic=1;
       IE.clearLastKeyEvent();
       printf("[sub menu env : %d]\n",menu_env);
@@ -1887,6 +1897,38 @@ void seq_update_multiple_time_by_step()
     }
 
 
+  // Change ADSRNote from trig to adsr
+  if (adsr_note!=0)
+    {
+      if (adsr_note==1)
+	P[cty].getPatternElement(cursor).setNoteADSR(1);
+      if (adsr_note==-1)
+	P[cty].getPatternElement(cursor).setNoteADSR(0);
+
+      adsr_note=0;
+      if (debug)
+	printf("[adsr_note:%d]\n",P[cty].getPatternElement(cursor).getNoteADSR());
+      
+    }
+
+
+  // Change ADSRNote from trig to adsr
+  if (adsr_note_all!=0)
+    {
+      if (adsr_note_all==1)
+	for (i=0;i<16;i++)
+	  P[cty].getPatternElement(i).setNoteADSR(1);
+      if (adsr_note_all==-1)
+	for (i=0;i<16;i++)
+	  P[cty].getPatternElement(i).setNoteADSR(0);
+
+      adsr_note_all=0;
+      if (debug)
+	printf("[adsr_note_all:%d]\n",P[cty].getPatternElement(cursor).getNoteADSR());
+    }
+
+
+
   // Change phase osc1
   if (phase_osc1!=0)
     {
@@ -2302,7 +2344,7 @@ void seq_update_track(int t)
 	    P[t].getPatternElement(step).getAttack_fltr()
 	    ;
 	    //P[t].getPatternElement(step).getRelease_amp();
-
+	  M[t]->getADSRAmp().setNoteADSR(P[t].getPatternElement(step).getNoteADSR());
 	  M[t]->getADSRAmp().setAttack(P[t].getPatternElement(step).getAttack_amp());
 	  M[t]->getADSRAmp().setRelease(P[t].getPatternElement(step).getRelease_amp());
 
