@@ -39,11 +39,14 @@ class ADSR : public Oscillator
   void   setOscillator(Oscillator * osc);
   int    getPlaying();
   Sint16 tick();
+  Sint16 tick_note();
+  Sint16 tick_trig();
   void   reset();  
   int    getSize();
 
  private:
 
+  int adsr_note;
 
   int attack;
   int decay;

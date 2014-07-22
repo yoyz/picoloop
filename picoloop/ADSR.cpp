@@ -12,6 +12,8 @@ enum
     ADSR_FINISH
   };
 
+#define SHIFT_TRIG 10
+#define SHIFT_NOTE 8 
 
 ADSR::ADSR() : tanh_table(new Sint16[128])
 {
@@ -19,6 +21,9 @@ ADSR::ADSR() : tanh_table(new Sint16[128])
   int   i;
 
   printf("ADSR::ADSR()\n");
+
+  adsr_note=0;
+
   attack=32;
   decay=10;
   sustain=64;
@@ -189,26 +194,36 @@ int ADSR::getNoteOn()
 }
 
 void ADSR::reset()
-{
-  printf("ADSR::reset() this=0x%08.8X\n",this);
+{ 
+  int numsample_shift;
+  printf("ADSR::reset() this=0x%08.8X\n",this);  
+  
+  if (adsr_note==0)
+    numsample_shift=SHIFT_TRIG;
+
+  if (adsr_note==1)
+    numsample_shift=SHIFT_NOTE;
+
+    
   sample_num=0;
 
   //cd=decay;
 
   cs=sustain;
 
+
   if (attack>0)
-    ca=attack  << 8;
+    ca=attack  << numsample_shift;
   else
     ca=0;
 
   if (decay>0)
-    cd=decay  << 8;
+    cd=decay  << numsample_shift;
   else
     cd=0;
 
   if (release>0)
-    cr=release << 8;
+    cr=release << numsample_shift;
   else
     cr=0;
 
@@ -251,6 +266,15 @@ int ADSR::getSize()
 
 
 Sint16 ADSR::tick()
+{
+  if (adsr_note==1)
+    return this->tick_note();
+  else
+    return this->tick_trig();
+}
+
+
+Sint16 ADSR::tick_note()
 {
   //  return S->tick();
 
@@ -438,6 +462,72 @@ Sint16 ADSR::tick()
 
   //if (debug) fprintf(stderr,"end Sint16 ADSR::tick()\n");
   //return s;  
+}
+
+
+Sint16 ADSR::tick_trig()
+{
+  //  return S->tick();                                                                                                                                                                                                                     
+
+  Sint16 s=0;
+  //Sint16 s_in;                                                                                                                                                                                                                            
+  Sint32 s_in;
+  //float  f1=0.0;                                                                                                                                                                                                                          
+  //float  f2=0.0;                                                                                                                                                                                                                          
+  int    debug=1;
+  int    index_inverse=0;
+  int    tmp1;
+  int    tmp2;
+  //if (debug) fprintf(stderr,"begin Sint16 ADSR::tick()\n");                                                                                                                                                                               
+  /*                                                                                                                                                                                                                                        
+  if (sample_num==0)                                                                                                                                                                                                                        
+    {                                                                                                                                                                                                                                       
+      this->reset(); vco->reset();                                                                                                                                                                                                          
+                                                                                                                                                                                                                                            
+    }                                                                                                                                                                                                                                       
+  */
+
+  if (sample_num>cadr)
+    return 0;
+
+
+  sample_num++;
+
+
+  //s=S->tick();                                                                                                                                                                                                                            
+  //  s=S->tick();                                                                                                                                                                                                                          
+  s_in=vco->tick();
+  //return s_in;                                                                                                                                                                                                                            
+
+  //(size-sample_num)                                                                                                                                                                                                                       
+
+  //We are in the attack phase                                                                                                                                                                                                              
+  //if (sample_num<size_attack)                                                                                                                                                                                                             
+
+  if (sample_num < ca)
+    {
+      if (sample_num>ca_next_segment)
+        {
+          ca_next_segment=ca_next_segment+ca_segment;
+          ca_div=ca_div-1;
+
+          if(ca_div<2)
+            ca_div=2;
+        }
+      return s_in/((ca_div/4)+1);
+    }
+  
+  if (sample_num >= ca)
+    {
+      if (sample_num>cr_next_segment)
+        {
+          cr_next_segment=cr_next_segment+cr_segment;
+          cr_div=cr_div+1;
+        }
+
+      return s_in/((cr_div/4)+1);
+
+    }
 }
 
 /*
