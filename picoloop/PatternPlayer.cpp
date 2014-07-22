@@ -2299,7 +2299,9 @@ void seq_update_track(int t)
 
 	  noteOffTrigger[t]=
 	    P[t].getPatternElement(step).getAttack_amp()+
-	    P[t].getPatternElement(step).getRelease_amp();
+	    P[t].getPatternElement(step).getAttack_fltr()
+	    ;
+	    //P[t].getPatternElement(step).getRelease_amp();
 
 	  M[t]->getADSRAmp().setAttack(P[t].getPatternElement(step).getAttack_amp());
 	  M[t]->getADSRAmp().setRelease(P[t].getPatternElement(step).getRelease_amp());
@@ -2363,6 +2365,7 @@ void seq_update_track(int t)
 	{
 	  if (noteOffTrigger[t]<0)
 	    {
+	      printf("$$$NOTEOFF\n");
 	      M[t]->getADSRAmp().setNoteOff();
 	      M[t]->getADSRFltr().setNoteOff();
 	      M[t]->reset();
