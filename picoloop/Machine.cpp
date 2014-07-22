@@ -163,6 +163,7 @@ int Machine::tick()
   Sint16 s_out;
 
   Sint16 s_test;
+  //int    num=1024;
   int    num=1024;
   int    i;
   //s_out=adsr_fltr.tick();
@@ -213,18 +214,26 @@ int Machine::tick()
     }
 
 
+  if (sample_num<=num)
+    {
+      s_out=bq.process(s_in);
+    }
+  
+
   if (sample_num>num &&
-      sample_num < num+64)
+      sample_num < num+128)
     {
       s_out=(last_sample+bq.process(s_in))/2;
-    }
-  else
-    {
-        s_out=bq.process(s_in);
+      //s_out=bq.process(s_in);
+      
     }
 
-  if (sample_num>=sample_num+64)
-    sample_num=0;
+
+  if (sample_num>=num+128)
+    {
+      s_out=bq.process(s_in);
+      sample_num=0;
+    }
 
   
   
