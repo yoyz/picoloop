@@ -87,6 +87,10 @@ public:
   void   setOscillatorOneType(int type);
   void   setOscillatorTwoType(int type);
 
+  int    getNoteADSR();
+  void   setNoteADSR(int val);
+
+
   bool   setChannel(int Channel);
   bool   setKeyValue(string key, string value);
   string getValueOfKey(string key);
@@ -123,6 +127,8 @@ private:
   int oscTwoType;
 
   int phaseOsc1;
+
+  int adsr_note;
   
 };
 

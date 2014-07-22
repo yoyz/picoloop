@@ -37,6 +37,8 @@ PatternElement::PatternElement()
 
   oscOneType=SAW;
   oscTwoType=PULSE;
+
+  adsr_note=1;
 }
 
 PatternElement::~PatternElement()
@@ -219,16 +221,15 @@ void PatternElement::setRelease_fltr(int rls)
 
 
 
+int PatternElement::getNoteADSR()
+{
+  return adsr_note;
+}
 
-
-
-
-
-
-
-
-
-
+void PatternElement::setNoteADSR(int val)
+{
+  adsr_note=val;
+}
 
 
 
