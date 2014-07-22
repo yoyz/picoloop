@@ -51,6 +51,8 @@ class Machine
 
   int                   sample_num;
   Sint16                last_sample;
+
+  Sint16              * tanh_table;
   /*
   Oscillator          * s;
   SawOscillator         sawosc;

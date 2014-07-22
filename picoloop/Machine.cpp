@@ -5,8 +5,11 @@
 
 //Machine::Machine()// : adsr(), vco()
 //Machine::Machine() : adsr(), vco_osc()
-Machine::Machine() : adsr_amp(), adsr_fltr(), vco(), bq(), bq2(), one_osc()
+Machine::Machine() : adsr_amp(), adsr_fltr(), vco(), bq(), bq2(), one_osc(), tanh_table(new Sint16[128])
 {
+  float fi;
+  int   i;
+
   printf("Machine::Machine()\n");  
   //  adsr=new ADSR();
   //  vco=new VCO();
@@ -24,6 +27,13 @@ Machine::Machine() : adsr_amp(), adsr_fltr(), vco(), bq(), bq2(), one_osc()
   //  adsr.setVCO(vco_pointer);
 
   //  printf("&S:%d\n",S);
+  for (i=0;i<256;i++)
+    {
+      fi=i;
+      fi=tanh(fi/128);
+      tanh_table[i/2]=fi*1024;
+      printf("tanh[%d]=%d\n",i,tanh_table[i/2]);
+    }
 }
 
 
@@ -163,8 +173,15 @@ int Machine::tick()
   Sint16 s_out;
 
   Sint16 s_test;
+
+  Sint32 tmp1;
+  Sint32 tmp2;
+  Sint32 tmp3;
+  Sint16 index;
   //int    num=1024;
-  int    num=1024;
+  //int    num=2048;
+  int      num=3192;
+  //int    num=4096;
   int    i;
   //s_out=adsr_fltr.tick();
   //s_out=adsr_amp.tick();
@@ -223,7 +240,15 @@ int Machine::tick()
   if (sample_num>num &&
       sample_num < num+128)
     {
-      s_out=(last_sample+bq.process(s_in))/2;
+      index=num-sample_num;
+      //tmp1=(Sint32)(tanh_table[index-128]*bq.process(s_in))/1024;
+      //tmp2=(Sint32)(tanh_table[index]*last_sample)/1024;
+      //tmp3=(tmp1+tmp2)/2;
+      //printf("");
+      //tmp3=((last_sample+tmp1))/2;
+      //s_out=tmp3;
+      s_out=bq.process(s_in);
+      //s_out=(last_sample+bq.process(s_in))/2;
       //s_out=bq.process(s_in);
       
     }

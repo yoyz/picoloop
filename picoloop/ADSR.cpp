@@ -13,7 +13,7 @@ enum
   };
 
 #define SHIFT_TRIG 10
-#define SHIFT_NOTE 8 
+#define SHIFT_NOTE 10
 
 ADSR::ADSR() : tanh_table(new Sint16[128])
 {
