@@ -25,6 +25,10 @@ class ADSR : public Oscillator
   void   setSustain(int sust);
   void   setRelease(int rls);
 
+  void   setNoteADSR(int mode);
+  int    getNoteADSR();
+
+
   void   setNoteOn();
   void   setNoteOff();
   int    getNoteOn();

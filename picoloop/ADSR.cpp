@@ -68,6 +68,9 @@ ADSR::~ADSR()
 void ADSR::init()
 {
   printf("ADSR::init()\n");
+
+  adsr_note=0;
+
   attack=32;
   decay=10;
   sustain=64;
@@ -90,6 +93,17 @@ void ADSR::init()
 
   current_segment=ADSR_INIT;
   noteOn_value=0;
+}
+
+void ADSR::setNoteADSR(int mode)
+{
+  adsr_note=mode;
+}
+
+
+int ADSR::getNoteADSR()
+{
+  return adsr_note;
 }
 
 
