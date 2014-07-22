@@ -198,17 +198,17 @@ void ADSR::reset()
   cs=sustain;
 
   if (attack>0)
-    ca=attack  << 9;
+    ca=attack  << 8;
   else
     ca=0;
 
   if (decay>0)
-    cd=decay  << 9;
+    cd=decay  << 8;
   else
     cd=0;
 
   if (release>0)
-    cr=release << 9;
+    cr=release << 8;
   else
     cr=0;
 
@@ -361,7 +361,7 @@ Sint16 ADSR::tick()
       //printf("OK\n");
       //exit(1);
       current_segment=ADSR_RELEASE;
-      cr_next_segment=sample_num;
+      cr_next_segment=sample_num+cr_segment;
       printf("***************************** RELEASE  noteOn:%d\n",noteOn_value);
     }
   
