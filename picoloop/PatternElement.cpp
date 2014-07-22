@@ -78,6 +78,8 @@ void PatternElement::init()
   oscOneType=SAW;
   oscTwoType=PULSE;
 
+  adsr_note=1;
+
   //printf("====PatternElement::init()====\n");
 }
 
