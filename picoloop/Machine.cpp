@@ -5,7 +5,8 @@
 
 //Machine::Machine()// : adsr(), vco()
 //Machine::Machine() : adsr(), vco_osc()
-Machine::Machine() : adsr_amp(), adsr_fltr(), vco(), bq(), bq2(), one_osc(), tanh_table(new Sint16[128])
+//Machine::Machine() : adsr_amp(), adsr_fltr(), vco(), bq(), bq2(), one_osc(), tanh_table(new Sint16[128])
+Machine::Machine() : adsr_amp(), adsr_fltr(), vco(), bq(), bq2(), one_osc(), tanh_table(new Sint16[256])
 {
   float fi;
   int   i;
@@ -30,9 +31,11 @@ Machine::Machine() : adsr_amp(), adsr_fltr(), vco(), bq(), bq2(), one_osc(), tan
   for (i=0;i<256;i++)
     {
       fi=i;
+      //fi=tanh(fi/256);
       fi=tanh(fi/128);
-      tanh_table[i/2]=fi*1024;
-      printf("tanh[%d]=%d\n",i,tanh_table[i/2]);
+      //tanh_table[i/2]=fi*1024;
+      tanh_table[i]=fi*1024;
+      //printf("MACHINE tanh[%d]=%d\n",i,tanh_table[i]);
     }
 }
 
@@ -109,6 +112,7 @@ Biquad & Machine::getBiquad()
 void Machine::reset()
 {
   sample_num=0;
+  last_sample=0;
 }
 
 /*
@@ -179,7 +183,8 @@ int Machine::tick()
   Sint32 tmp3;
   Sint16 index;
   //int    num=1024;
-  int    num=2048;
+  //int    num=2048;
+  int    num=8192;
   //int      num=3192;
   //int    num=4096;
   int    i;
@@ -231,33 +236,61 @@ int Machine::tick()
     }
 
 
-  if (sample_num<=num)
-    {
-      s_out=bq.process(s_in);
-    }
   
 
-  if (sample_num>num &&
-      sample_num < num+128)
+  if (sample_num>=0 &&
+      //sample_num < 128)
+      sample_num < 256)
     {
-      index=num-sample_num;
-      //tmp1=(Sint32)(tanh_table[index-128]*bq.process(s_in))/1024;
-      //tmp2=(Sint32)(tanh_table[index]*last_sample)/1024;
-      //tmp3=(tmp1+tmp2)/2;
+
+      /*
+      index=sample_num;
+      tmp1=(tanh_table[index]*bq.process(s_in))/1024;
+      tmp2=(tanh_table[256-index]*last_sample)/1024;
+      tmp3=(tmp1+tmp2)/2;
+      s_out=tmp3;
+      */
+
+      /*
+      index=sample_num;
+      tmp1=(bq.process(s_in)*index)/256;
+      tmp2=((last_sample)*(256-index))/256;
+      tmp3=((tmp1+tmp2))/2;
+      s_out=tmp3;
+      */
+
+      //printf("$$$$$$$$ index:%d last_sample:%d tmp1 :%d tmp2 :%d tmp3:%d s_out:%d\n",index,last_sample,tmp1,tmp2,tmp3,s_out);
+
       //printf("");
       //tmp3=((last_sample+tmp1))/2;
-      //s_out=tmp3;
-      s_out=bq.process(s_in);
-      //s_out=(last_sample+bq.process(s_in))/2;
+
       //s_out=bq.process(s_in);
+
+      /*
+      if (sample_num<256)
+	{
+	s_out=(last_sample+bq.process(s_in))/2;
+	}
+      else
+	s_out=bq.process(s_in);
+      */
+      s_out=bq.process(s_in);
       
     }
 
 
-  if (sample_num>=num+128)
+  if (sample_num>=256 &&
+      sample_num<=num+256)
     {
       s_out=bq.process(s_in);
-      sample_num=0;
+    }
+
+
+  if (sample_num>=num+256)
+    {
+      //s_out=bq.process(s_in);
+      //printf("$$$$$$$$$$$$$$reset\n");
+      sample_num=-1;
     }
 
   
