@@ -1480,14 +1480,8 @@ void handle_key_fltr()
   if (menu          == MENU_OFF && 
       menu_cursor   == M_FLTR)
     {
-      if (lastKey   == BUTTON_A && 
-	  lastEvent == SDL_KEYDOWN)
-	{
-	  invert_trig=1;
-	  printf("key lalt\n");      
-	  dirty_graphic=1;
-	  IE.clearLastKeyEvent();
-	}
+      sub_handle_invert_trig();
+
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_B])
 	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>128) 
 	  if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%4==1 )  
@@ -2124,9 +2118,6 @@ void seq_update_multiple_time_by_step()
 
 	  bpm_current=bpm_current+bpm;
 	  bpm=0;
-	  //nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
-	  //nb_tick_before_step_change=(60*DEFAULT_FREQ)/(bpm_current*4);
-	  //AE.setNbTickBeforeStepChange(nb_tick_before_step_change);
 	  refresh_bpm();
 
 	}
@@ -2148,10 +2139,6 @@ void seq_update_multiple_time_by_step()
 	  for(t=0;t<TRACK_MAX;t++)	    
 	    P[t].setSwing(current_swing);
 
-	  
-	  //nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
-	  //nb_tick_before_step_change=(60*DEFAULT_FREQ)/(bpm_current*4);
-	  //AE.setNbTickBeforeStepChange(nb_tick_before_step_change);
 	  refresh_bpm();
 	}
 
@@ -2521,19 +2508,6 @@ int seq()
       //if (nbcb-last_nbcb_ch_step>nb_cb_ch_step)
       if (seq_update_by_step_next)
 	{	 
-	  /*
-	  for(i=0;i<TRACK_MAX;i++)
-	    {
-	      oldstep=0;
-	      
-	      oldstep=SEQ.getPatternSequencer(i).getStep();
-	      SEQ.getPatternSequencer(i).incStep();
-	      if (oldstep!=SEQ.getPatternSequencer(i).getStep())
-		seq_update_track(i);	  	  
-	    }
-
-	  dirty_graphic=1;
-	  */
 
 	  if (dirty_graphic)
 	    display_board();
@@ -2547,13 +2521,7 @@ int seq()
 	  seq_update_by_step();
 	  seq_update_by_step_next=0;
 
-	  //for(i=0;i<TRACK_MAX;i++)
-	  //	    {
-	  //	      seq_update_track(i);	  	  
-	      //}
 	}
-      //if (AE.bufferIsGenerated()==0)
-      //AE.processBuffer();
     }
 }
 
@@ -2572,9 +2540,6 @@ void load_pattern()
       // Ugly hack for BPM management
       bpm_current=P[t].getBPM();
       current_swing=P[t].getSwing();
-      //nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
-      //nb_tick_before_step_change=(60*DEFAULT_FREQ)/(bpm_current*4);
-      //AE.setNbTickBeforeStepChange(nb_tick_before_step_change);
       refresh_bpm();
 
       SEQ.getPatternSequencer(t).setBPMDivider(P[t].getBPMDivider());
@@ -2591,10 +2556,6 @@ int main()
 {
   int i;
   //  exit(0);
-  //string wave="808-cowbell.wav";
-  //  char * str="808-cowbell.wav";
-  //tmp_str=(char*)malloc(sizeof(char)*4);
-  //cowbell.loadWave(str);
   IE.init();
   IE.printState();
   //IE.handle_key();
