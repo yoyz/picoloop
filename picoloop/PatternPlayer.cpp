@@ -242,8 +242,8 @@ void display_board_amp_env()
 		  //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
 		  
 		  // AdsR
-		  SG.smallBoxNumber(i,P[cty].getPatternElement(i).getRelease_amp(),0,SMALLBOX_COLOR);
-		  SG.smallBoxNumber(i,0,P[cty].getPatternElement(i).getAttack_amp(),SMALLBOX_COLOR);      
+		  SG.smallBoxNumber(i,P[cty].getPatternElement(i).getRelease_amp(),128,SMALLBOX_COLOR);
+		  SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).getAttack_amp(),SMALLBOX_COLOR);      
 		}
 	    }
 	}
@@ -263,8 +263,8 @@ void display_board_amp_env()
 		  //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
 		  
 		  // AdsR
-		  SG.smallBoxNumber(i,P[cty].getPatternElement(i).getRelease_fltr(),0,SMALLBOX_COLOR);
-		  SG.smallBoxNumber(i,0,P[cty].getPatternElement(i).getAttack_fltr(),SMALLBOX_COLOR);      
+		  SG.smallBoxNumber(i,P[cty].getPatternElement(i).getRelease_fltr(),128,SMALLBOX_COLOR);
+		  SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).getAttack_fltr(),SMALLBOX_COLOR);      
 		}
 	    }
 	}
@@ -285,8 +285,8 @@ void display_board_amp_env()
 		  //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
 		  
 		  // AdsR
-		  SG.smallBoxNumber(i,P[cty].getPatternElement(i).getAmp(),0,SMALLBOX_COLOR);
-		  SG.smallBoxNumber(i,0,P[cty].getPatternElement(i).getNoteADSR()*127,SMALLBOX_COLOR);      
+		  SG.smallBoxNumber(i,P[cty].getPatternElement(i).getAmp(),128,SMALLBOX_COLOR);
+		  SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).getNoteADSR()*127,SMALLBOX_COLOR);      
 		}
 	    }
 	}
@@ -366,7 +366,7 @@ void display_board_note()
 
 		  SG.smallBoxNumber(i,
 				    (P[cty].getPatternElement(i).getNote()%12)*10,
-				    (P[cty].getPatternElement(i).getNote()/12)*10,
+				    (128-(P[cty].getPatternElement(i).getNote()/12)*10),
 				    SMALLBOX_COLOR);
 
 		  
@@ -410,8 +410,8 @@ void display_board_bpm()
 		  //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
 	      
 		  // LFO
-	      SG.smallBoxNumber(i,P[cty].getPatternElement(i).getLfoDepth(),0,SMALLBOX_COLOR);
-	      SG.smallBoxNumber(i,0,P[cty].getPatternElement(i).getLfoSpeed(),SMALLBOX_COLOR);
+	      SG.smallBoxNumber(i,P[cty].getPatternElement(i).getLfoDepth(),128,SMALLBOX_COLOR);
+	      SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).getLfoSpeed(),SMALLBOX_COLOR);
 	    }
 	}
     }
@@ -469,8 +469,8 @@ void display_board_load_save()
 		  //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
 	      
 		  // LFO
-	      SG.smallBoxNumber(i,P[cty].getPatternElement(i).getLfoDepth(),0,SMALLBOX_COLOR);
-	      SG.smallBoxNumber(i,0,P[cty].getPatternElement(i).getLfoSpeed(),SMALLBOX_COLOR);
+	      SG.smallBoxNumber(i,P[cty].getPatternElement(i).getLfoDepth(),128,SMALLBOX_COLOR);
+	      SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).getLfoSpeed(),SMALLBOX_COLOR);
 	    }
 	}
     }
@@ -538,11 +538,11 @@ void display_board_vco()
 
 	      
 	      if (i==step)
-		SG.smallBoxNumber(i,P[cty].getPatternElement(i).getVCOMix(),P[cty].getPatternElement(i).getPhaseOsc1(),STEP_COLOR);
+		SG.smallBoxNumber(i,P[cty].getPatternElement(i).getVCOMix(),128-P[cty].getPatternElement(i).getPhaseOsc1(),STEP_COLOR);
 	      if (i==cursor)
-		SG.smallBoxNumber(i,P[cty].getPatternElement(i).getVCOMix(),P[cty].getPatternElement(i).getPhaseOsc1(),CURSOR_COLOR);
+		SG.smallBoxNumber(i,P[cty].getPatternElement(i).getVCOMix(),128-P[cty].getPatternElement(i).getPhaseOsc1(),CURSOR_COLOR);
 
-	      SG.smallBoxNumber(i,P[cty].getPatternElement(i).getVCOMix(),P[cty].getPatternElement(i).getPhaseOsc1(),SMALLBOX_COLOR);
+	      SG.smallBoxNumber(i,P[cty].getPatternElement(i).getVCOMix(),128-P[cty].getPatternElement(i).getPhaseOsc1(),SMALLBOX_COLOR);
 	    }
 
 	}
@@ -580,8 +580,8 @@ void display_board_lfo()
 		  //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
 		  
 		  // LFO
-		  SG.smallBoxNumber(i,P[cty].getPatternElement(i).getLfoDepth(),0,SMALLBOX_COLOR);
-		  SG.smallBoxNumber(i,0,P[cty].getPatternElement(i).getLfoSpeed(),SMALLBOX_COLOR);
+		  SG.smallBoxNumber(i,P[cty].getPatternElement(i).getLfoDepth(),128,SMALLBOX_COLOR);
+		  SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).getLfoSpeed(),SMALLBOX_COLOR);
 		}
 	    }
 	  //}
@@ -641,8 +641,8 @@ void display_board_fltr()
 		SG.drawBoxNumber(step,STEP_COLOR);  
 
 	      // AdsR
-	      SG.smallBoxNumber(i,P[cty].getPatternElement(i).getResonance(),0,SMALLBOX_COLOR);
-	      SG.smallBoxNumber(i,0,P[cty].getPatternElement(i).getCutoff(),SMALLBOX_COLOR);      
+	      SG.smallBoxNumber(i,P[cty].getPatternElement(i).getResonance(),128,SMALLBOX_COLOR);
+	      SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).getCutoff(),SMALLBOX_COLOR);      
 	    }
 	}
     }
