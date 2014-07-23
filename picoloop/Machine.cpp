@@ -179,20 +179,20 @@ int Machine::tick()
   Sint32 tmp3;
   Sint16 index;
   //int    num=1024;
-  //int    num=2048;
-  int      num=3192;
+  int    num=2048;
+  //int      num=3192;
   //int    num=4096;
   int    i;
   //s_out=adsr_fltr.tick();
   //s_out=adsr_amp.tick();
 
-  sample_num++;
+  //  sample_num++;
   
   s_in=adsr_amp.tick();
   s_in=s_in/4;
 
   //if (sample_num==num)
-  if (sample_num==num)
+  if (sample_num==0)
     {
       for (i=0;i<num;i++)
 	adsr_fltr.tick();
@@ -271,6 +271,7 @@ int Machine::tick()
 
   //if (1) printf("s_in:%d s_out:%d\n",s_in,s_out);
   //return s_in;  
+  sample_num++;
   last_sample=s_out;
   //return bq2.process(s_out);
   return s_out;
