@@ -2412,7 +2412,7 @@ void seq_update_track(int t)
 	      printf("$$$NOTEOFF\n");
 	      M[t]->getADSRAmp().setNoteOff();
 	      M[t]->getADSRFltr().setNoteOff();
-	      M[t]->reset();
+	      //M[t]->reset();
 	    }
 	  else
 	    noteOffTrigger[t]=noteOffTrigger[t]-32;
