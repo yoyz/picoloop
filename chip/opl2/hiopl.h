@@ -50,12 +50,13 @@ class Hiopl {
 		void _WriteReg(Bit32u reg, Bit8u value, Bit8u mask=0x0);
 		void _ClearRegBits(Bit32u reg, Bit8u mask);
 		~Hiopl();
+		int _GetOffset(int ch, int osc);
 	private:
 		Adlib::Handler *adlib;
 		Bit8u regCache[256];
 		Bit32s *Buf32;
 		bool _CheckParams(int ch, int osc);
-		int _GetOffset(int ch, int osc);
+
 		int _GetOffset(int ch);
 		void _milliHertzToFnum(unsigned int milliHertz, unsigned int *fnum, unsigned int *block, unsigned int conversionFactor=49716);
 		std::map<int, int> _op1offset;
