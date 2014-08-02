@@ -23,8 +23,8 @@ TriangleOscillator::TriangleOscillator() : table(new Sint16[WAVETABLE_SIZE])
 TriangleOscillator::~TriangleOscillator()
 {
   printf("TriangleOscillator::~TriangleOscillator()\n");
-  if (table!=NULL)
-    free(table);
+  //if (table!=NULL)
+  //free(table);
 }
 
 void TriangleOscillator::init()

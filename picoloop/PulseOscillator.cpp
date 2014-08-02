@@ -20,7 +20,7 @@ PulseOscillator::~PulseOscillator()
   printf("PulseOscillator::~PulseOscillator()\n");
   //if (table!=NULL)
   //    free(table);
-  table=NULL;
+  //table=NULL;
 }
 
 
