@@ -244,6 +244,7 @@ Sint16 VCO::tick()
 	tmp=0;
       else
 	tmp=lfo1->tick() >> lfo_depth_shift;
+	//tmp=lfo1->tick() * (lfo_depth_shift*127)/;
 
       s1->setFreq(freqOsc1+tmp);
       s2->setFreq(freqOsc2+tmp);
