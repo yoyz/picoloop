@@ -60,7 +60,7 @@ int SDL_GUI::initVideo()
   #ifdef GP2X
   screen = SDL_SetVideoMode(SCREEN_WIDTH, 
 			    SCREEN_HEIGHT, 
-			    8,			
+			    SCREEN_DEPTH,			
 			    SDL_SWSURFACE);
   #endif
 
