@@ -18,6 +18,7 @@ enum
 ADSR::ADSR() : tanh_table(new Sint16[128])
 {
   float fi;
+  int   ii;
   int   i;
 
   printf("ADSR::ADSR()\n");
@@ -55,7 +56,9 @@ ADSR::ADSR() : tanh_table(new Sint16[128])
     {
       fi=i;
       fi=tanh(fi/128);
-      tanh_table[i/2]=fi*1024;
+      fi=fi*1024;
+      ii=fi;
+      tanh_table[i/2]=ii;
       printf("tanh[%d]=%d\n",i,tanh_table[i/2]);
     }
 }
@@ -174,7 +177,7 @@ void ADSR::setInput(Oscillator * vcoosc)
 {
   //  exit(0);
   printf("ADSR::setVCO(0x%08.8X\n",vcoosc);
-  vco=vcoosc;
+  vco=(VCO*)vcoosc;
 }
 /*
 int ADSR::getPlaying()
