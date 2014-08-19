@@ -472,6 +472,11 @@ Sint16 ADSR::tick_note()
       s_out=(s_in*tanh_table[127-cr_div])/1024;
     }
        
+  if (current_segment==ADSR_FINISH)
+    {
+      noteOn_value=0;
+    }
+
   //s=f2;
 
   
