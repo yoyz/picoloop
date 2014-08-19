@@ -479,9 +479,8 @@ void handle_key()
 	}
     }
 
-  if (noteon==0 &&
-    //M[t]->get(NOTE_ON)==1)
-      1)
+  if (noteon==0)      
+      
       //&& 
       //M[t]->getADSR().getNoteOn()==1)
       //M[t]->set(NOTE_ON,0);
@@ -489,8 +488,11 @@ void handle_key()
       //exit(0);
       for (t=0;t<1;t++)
 	{
-	  printf("Trig note off\n");
-	  M[t]->set(NOTE_ON,0);
+	  if (M[t]->get(NOTE_ON)==1)
+	    {
+	      printf("Trig note off\n");
+	      M[t]->set(NOTE_ON,0);
+	    }
 	}
     }
 

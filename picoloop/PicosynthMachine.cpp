@@ -37,6 +37,8 @@ PicosynthMachine::PicosynthMachine() : adsr_amp(), adsr_fltr(), vco(), bq(), bq2
       tanh_table[i]=fi*1024;
       //printf("MACHINE tanh[%d]=%d\n",i,tanh_table[i]);
     }
+  cutoff=125;
+  resonance=10;
 }
 
 
@@ -102,7 +104,8 @@ int PicosynthMachine::get(int what)
 
 void PicosynthMachine::set(int what,int val)
 {
-  float f_val;
+  float f_val_cutoff;
+  float f_val_resonance;
 
   if (what==NOTE_ON && val==1) 
     { 
@@ -131,15 +134,26 @@ void PicosynthMachine::set(int what,int val)
 
   if (what==FILTER1_CUTOFF)      
     { 
-      f_val=val;
-      this->getBiquad().setFc((f_val/256)+0.005);  
+      f_val_cutoff=val;
+      f_val_resonance=resonance;
+      cutoff=val;
+      this->getBiquad().setBiquad(0, (f_val_cutoff/256)+0.005, (f_val_resonance/8)+0.005, 0.0);
+      //this->getBiquad().setFc((f_val/256)+0.005);  
       this->getBiquad().calcBiquad(); 
+      this->getADSRAmp().reset();
+      this->getADSRFltr().reset();
+
   }
   if (what==FILTER1_RES)         
     { 
-      f_val=val;
-      this->getBiquad().setQ((f_val/8)+0.005);   
+      f_val_cutoff=cutoff;
+      f_val_resonance=val;
+      resonance=val;
+      //this->getBiquad().setQ((f_val/8)+0.005);   
+      this->getBiquad().setBiquad(0, (f_val_cutoff/256)+0.005, (f_val_resonance/8)+0.005, 0.0);
       this->getBiquad().calcBiquad(); 
+      this->getADSRAmp().reset();
+      this->getADSRFltr().reset();
     }
 
   

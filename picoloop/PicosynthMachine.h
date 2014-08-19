@@ -30,6 +30,8 @@ class PicosynthMachine : public Machine
   Biquad & getBiquad();
   //  Oscillator * getOscillator();
 
+  int                   cutoff;
+  int                   resonance;
 
   VCO                   vco;
   ADSR                  adsr_amp;
