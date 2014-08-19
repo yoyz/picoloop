@@ -1,17 +1,60 @@
 using namespace std;
+#include <stdio.h>
 
+#define ADSR_ENV0_ATTACK    0 
+#define ADSR_ENV0_DECAY     1  
+#define ADSR_ENV0_SUSTAIN   2  
+#define ADSR_ENV0_RELEASE   3  
 
-#include "VCO.h"
-/*
-#include "Oscillator.h"
-#include "SineOscillator.h"
-#include "SawOscillator.h"
-#include "FuzzyPulseOscillator.h"
-*/
+#define ADSR_ENV1_ATTACK    4 
+#define ADSR_ENV1_DECAY     5  
+#define ADSR_ENV1_SUSTAIN   6  
+#define ADSR_ENV1_RELEASE   7  
 
-#include "ADSR.h"
-#include "Biquad.h"
-#include "OneOscillator.h"
+#define ADSR_ENV2_ATTACK    8 
+#define ADSR_ENV2_DECAY     9  
+#define ADSR_ENV2_SUSTAIN   10  
+#define ADSR_ENV2_RELEASE   11 
+
+#define ADSR_ENV3_ATTACK    12
+#define ADSR_ENV3_DECAY     13 
+#define ADSR_ENV3_SUSTAIN   14 
+#define ADSR_ENV3_RELEASE   15 
+
+#define ADSR_ENV4_ATTACK    16
+#define ADSR_ENV4_DECAY     17  
+#define ADSR_ENV4_SUSTAIN   18  
+#define ADSR_ENV4_RELEASE   19  
+
+#define OSC1_TYPE           20
+#define OSC2_TYPE           21
+#define OSC3_TYPE           22  
+#define OSC4_TYPE           23
+
+#define OSC1_PHASE          24
+#define OSC2_PHASE          25
+#define OSC3_PHASE          26
+#define OSC4_PHASE          27
+
+#define OSC12_MIX           28
+#define OSC34_MIX           29
+#define OSC1234_MIX         30
+
+#define FILTER1_TYPE        31
+#define FILTER1_CUTOFF      32
+#define FILTER1_RES         33
+
+#define FILTER2_TYPE        34
+#define FILTER2_CUTOFF      35
+#define FILTER2_RES         36
+
+#define OSC1_FREQ           37
+#define OSC2_FREQ           38
+#define OSC3_FREQ           39
+#define OSC4_FREQ           40
+
+#define NOTE_ON             100
+
 
 #ifndef __MACHINE____
 #define __MACHINE____
@@ -22,60 +65,13 @@ class Machine
   Machine();
   ~Machine();
 
-  //  void setOscillator(SineOscillator NS);
-  /*
-  void setSynthFreq(int sfreq);
-  void setSineOsc();
-  void setSawOsc();
-  void setFuzzyPulseOsc();
-  */
-  void init();
-  ADSR   & getADSRAmp();
-  ADSR   & getADSRFltr();
-  VCO    & getVCO();
-  Biquad & getBiquad();
-  //  Oscillator * getOscillator();
+  virtual void set(int what,int val);
+  virtual int  get(int what);
 
-  void reset();
-  int  tick();
+  virtual void init();
+  virtual void reset();
+  virtual int  tick();
 
-  //  VCO                   vco_osc;
-  //  VCO                 * vco_pointer;
-  VCO                   vco;
-  ADSR                  adsr_amp;
-  ADSR                  adsr_fltr;
-  Biquad                bq;
-  Biquad                bq2;
-
-  OneOscillator         one_osc;
-
-  int                   sample_num;
-  Sint16                last_sample;
-
-  Sint16              * tanh_table;
-  /*
-  Oscillator          * s;
-  SawOscillator         sawosc;
-  SineOscillator        sineosc;
-  FuzzyPulseOscillator  fuzzypulseosc;
-  ADSR                  adsr;
-  //SineOscillator SINEOSC;
-  //  Oscillator S;
-  //  SineOscillator S;
-   //SineOscillator S;
-  //SineOscillator S;
-
-  int freq;
-  int current;
-  */
-  /*
-  enum OSC 
-  { 
-    NOOSC,
-    SINE,
-    SAW,
-  };
-  */
 
 };
 

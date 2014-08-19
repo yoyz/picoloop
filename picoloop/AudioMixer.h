@@ -1,7 +1,9 @@
 using namespace std;
 
 #include "Track.h"
-
+#include <SDL/SDL_types.h>
+#include <vector>
+#include "Master.h"
 #ifndef __AUDIOMIXER____
 #define __AUDIOMIXER____
 

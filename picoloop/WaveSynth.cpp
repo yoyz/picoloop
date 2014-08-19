@@ -68,15 +68,16 @@ void openaudio()
   AE.openAudio();
   for (t=0;t<TRACK_MAX;t++)
     {
-      MM[t]=AE.getAudioMixer().getTrack(t).getMonoMixer();
+      MM[t]=AE.getAudioMixer().getTrack(t).getMonoMixer();      
+      MM[t]->init();
       MM[t]->setAmplitude(0);
       M[t]=MM[t]->getInput();
       M[t]->init();
-      M[t]->reset();      
-      M[t]->getADSRAmp().init();
-      M[t]->getADSRFltr().init();
-      M[t]->getVCO().init();
-      M[t]->getVCO().setSynthFreq(0);      
+      //M[t]->reset();      
+      //M[t]->getADSRAmp().init();
+      //M[t]->getADSRFltr().init();
+      //M[t]->getVCO().init();
+      //M[t]->getVCO().setSynthFreq(0);      
     }
 
 
@@ -431,9 +432,83 @@ void handle_key()
   //noteon=0;
 
   if (noteon &&
-      M[t]->getADSRAmp().getNoteOn()==0)
+    //M[t]->getADSRAmp().getNoteOn()==0)
+      M[t]->get(NOTE_ON)==0)
     {
+      printf("Trig note on\n");
 
+      for (t=0;t<1;t++)
+	{
+	  float f=PE.getNoteFreq();
+	  int   i=f;
+	  float   f_c;
+	  float   f_r;
+
+	  f_c=cutoff;
+	  f_r=resonance;
+
+
+	  f_c=f_c/256;
+	  f_r=f_r/8;
+	  
+	  printf("[Freq:%d]\n",i);
+	  MM[t]->setAmplitude(127);
+	  //M[t]->getVCO().getOscillatorOne();
+	  //M[t]->getVCO().reset();
+
+	  //M[t]->getBiquad().reset();
+	  //M[t]->getBiquad().init();
+
+	  //M[t]->getVCO().setSynthFreq(i);
+	  M[t]->set(OSC1_FREQ,i);
+	  //M[t]->getVCO().setOscillator(0,1);
+	  M[t]->set(OSC1_TYPE,1);
+	  //M[t]->getVCO().setOscillator(1,2);
+	  M[t]->set(OSC2_TYPE,2);
+
+	  
+	  //M[t]->getVCO().setVCOMix(vcomix);		  
+	  M[t]->set(OSC12_MIX,vcomix);
+
+	  //M[t]->getADSRAmp().setNoteADSR(1);
+	  //M[t]->getADSRFltr().setNoteADSR(1);
+
+	  
+	  //M[t]->getADSRAmp().setRelease(release_amp);
+	  //M[t]->getADSRAmp().setAttack(attack_amp);
+
+	  M[t]->set(ADSR_ENV0_ATTACK,attack_amp);
+	  M[t]->set(ADSR_ENV0_RELEASE,release_amp);
+
+	  //M[t]->getADSRFltr().setAttack(attack_fltr);
+	  //M[t]->getADSRFltr().setRelease(release_fltr);
+	  M[t]->set(ADSR_ENV1_ATTACK,attack_fltr);
+	  M[t]->set(ADSR_ENV1_RELEASE,release_fltr);
+
+
+
+
+
+	  //M[t]->getBiquad().setBiquad(0, f_c+0.005, (f_r+0.005), 0.0);
+	  //M[t]->getBiquad().calcBiquad();
+
+	  //M[t]->getADSRAmp().reset();	  
+	  //M[t]->getADSRFltr().reset();
+
+	  // M[t]->getVCO().reset();
+
+	  //M[t]->getADSRAmp().setNoteOn();
+	  //M[t]->getADSRFltr().setNoteOn();
+	  M[t]->set(NOTE_ON,1);
+
+	  //M[t]->getADSR().setRelease(P[t].getPatternElement(step).getRelease());		  
+	  //	  M[t]->getADSR().setAttack(P[t].getPatternElement(step).getAttack());		  
+	  //M[t]->getVCO().setVCOMix(P[t].getPatternElement(step).getVCOMix());	
+
+
+
+
+      /*
       for (t=0;t<1;t++)
 	{
 	  float f=PE.getNoteFreq();
@@ -487,21 +562,26 @@ void handle_key()
 	  //M[t]->getADSR().setRelease(P[t].getPatternElement(step).getRelease());		  
 	  //	  M[t]->getADSR().setAttack(P[t].getPatternElement(step).getAttack());		  
 	  //M[t]->getVCO().setVCOMix(P[t].getPatternElement(step).getVCOMix());	
+
+	  */
 	}
     }
 
   if (noteon==0 
       //&& 
       //M[t]->getADSR().getNoteOn()==1)
+      //M[t]->set(NOTE_ON,0);
       )
     {
       //exit(0);
       for (t=0;t<1;t++)
 	{
-	  M[t]->getADSRAmp().setNoteOff();
+	  M[t]->set(NOTE_ON,0);
+	  //M[t]->getADSRAmp().setNoteOff();
 	  //M[t]->getADSRAmp().setADSRRelease();
 
-	  M[t]->getADSRFltr().setNoteOff();
+	  //M[t]->getADSRFltr().setNoteOff();
+
 	  //M[t]->getADSRFltr().setADSRRelease();
 
 

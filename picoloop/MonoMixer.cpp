@@ -1,17 +1,28 @@
 #include "MonoMixer.h"
 
 
-MonoMixer::MonoMixer(): M()
+
+			//MonoMixer::MonoMixer(): M()
 //MonoMixer::MonoMixer()
+MonoMixer::MonoMixer(): PM()
 {
   printf("MonoMixer::MonoMixer()\n");  
   amplitude=127;
   //  M=NULL;
+  //M=&PM;
+  //printf("MonoMixer::MonoMixer()  PM=0x%08.8X\n",PM);
+  //printf("MonoMixer::MonoMixer()  M=0x%08.8X\n",M);
 }
 
 MonoMixer::~MonoMixer()
 {
   printf("MonoMixer::~MonoMixer()\n");  
+}
+
+
+void MonoMixer::init()
+{
+  M=&PM;
 }
 
 
@@ -34,7 +45,9 @@ void MonoMixer::setInput(Machine * Mach)
 */
 Machine * MonoMixer::getInput()
 {
-  return &M;
+  //M->init();
+  return M;
+  
 }
 
 
@@ -45,7 +58,7 @@ Sint16 MonoMixer::tick()
   Sint32 res32=0;
   Sint16 res16=0;
   Sint16 tick=0;
-  tick=M.tick();
+  tick=M->tick();
   res32=tick*amplitude*2;
   //  res32=tick*127;
   //res32=res32/127;
