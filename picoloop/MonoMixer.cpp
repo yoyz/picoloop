@@ -4,7 +4,7 @@
 
 			//MonoMixer::MonoMixer(): M()
 //MonoMixer::MonoMixer()
-MonoMixer::MonoMixer(): PM(), OPLM()
+MonoMixer::MonoMixer(): PD(), PM(), OPLM()
 {
   printf("MonoMixer::MonoMixer()\n");  
   amplitude=127;
@@ -26,13 +26,18 @@ MonoMixer::~MonoMixer()
 void MonoMixer::init()
 {
   PM.init();
+  PD.init();
   OPLM.init();
+  
 
   if (machine_type==0)
     M=&PM;
   if (machine_type==1)
     M=&OPLM;
-  M=&OPLM;
+  if (machine_type==2)
+    M=&PD;
+
+  //M=&OPLM;
   //M=&PM;
 }
 
@@ -41,14 +46,16 @@ void MonoMixer::setMachineType(int type)
 {
   printf("MonoMixer::setMachineType :%d\n",type);  
   machine_type=type;
+
   if (type==0)
-    {
       M=&PM;
-    }
+
   if (type==1)
-    {
       M=&OPLM;
-    }
+
+  if (type==2)
+      M=&PD;
+
 }
 
 void MonoMixer::setAmplitude(int amp)

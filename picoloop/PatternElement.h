@@ -19,7 +19,8 @@ enum
 enum 
   {
     PICOSYNTH,
-    OPL2
+    OPL2,
+    PICODRUM
   };
 
 

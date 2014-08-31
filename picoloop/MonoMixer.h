@@ -2,6 +2,7 @@ using namespace std;
 
 #include "Machine.h"
 #include "PicosynthMachine.h"
+#include "PicodrumMachine.h"
 #include "dboplMachine.h"
 #include <SDL/SDL_types.h>
 
@@ -23,6 +24,7 @@ class MonoMixer
  private:
   Machine              *M;
   PicosynthMachine      PM;
+  PicodrumMachine       PD;
   dboplMachine          OPLM;
   Sint16                amplitude;
   int                   machine_type;

@@ -243,8 +243,8 @@ int PatternElement::getMachineType()
 
 void PatternElement::setMachineType(int val)
 {
-  if      (val>1) val=0;
-  else if (val<0) val=1;
+  if      (val>2) val=0;
+  else if (val<0) val=2;
   machine_type=val;
 }
 
@@ -350,12 +350,14 @@ void PatternElement::print()
 
 const char * PatternElement::getMachineTypeCharStar()
 {
-  static const char * str_picosynth   = "PICO ";
+  static const char * str_picosynth   = "PSYNTH ";
+  static const char * str_picodrum    = "PDRUM  ";
   static const char * str_opl2        = "OPL2 ";
 
   switch (machine_type)
     {
     case PICOSYNTH:  return str_picosynth;   break;
+    case PICODRUM:   return str_picodrum;    break;
     case OPL2:       return str_opl2;        break; 
     }
   return str_picosynth;
