@@ -41,6 +41,8 @@ PatternElement::PatternElement()
   adsr_note=1;
 
   machine_type=0;
+
+  trig_time=0;
 }
 
 PatternElement::~PatternElement()
@@ -246,6 +248,16 @@ void PatternElement::setMachineType(int val)
   if      (val>2) val=0;
   else if (val<0) val=2;
   machine_type=val;
+}
+
+int PatternElement::getTrigTime()
+{
+  return trig_time;
+}
+
+void PatternElement::setTrigTime(int val)
+{
+  trig_time=this->checkSevenBitBoundarie(val);
 }
 
 

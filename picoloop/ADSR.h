@@ -72,16 +72,21 @@ class ADSR : public Oscillator
   Sint32 ca_segment;
   Sint32 ca_next_segment;
 
+  Sint32 cd_segment;
+  Sint32 cd_next_segment;
+
+  Sint32 cs_segment;
+  Sint32 cs_next_segment;
+
   Sint32 cr_segment;
   Sint32 cr_next_segment;
 
-  Sint32 cd_segment;
-  Sint32 cd_next_segment;
 
   Sint32 sustain_index_begin;
 
   Sint32 ca_div;
   Sint32 cd_div;
+  Sint32 cs_div;
   Sint32 cr_div;
   //Sint32 cr_div;
 

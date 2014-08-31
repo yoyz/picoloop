@@ -103,6 +103,9 @@ public:
   int    getMachineType();
   void   setMachineType(int val);
 
+  int    getTrigTime();
+  void   setTrigTime(int val);
+
 
   bool   setChannel(int Channel);
   bool   setKeyValue(string key, string value);
@@ -144,6 +147,8 @@ private:
   int adsr_note;
 
   int machine_type;
+
+  int trig_time;
   
 };
 

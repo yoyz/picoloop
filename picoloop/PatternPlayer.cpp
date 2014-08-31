@@ -141,8 +141,11 @@ int decay_fltr_all=0;
 int sustain_fltr_all=0;
 int release_fltr_all=0;
 
-int adsr_note=0;
-int adsr_note_all=0;
+//int adsr_note=0;
+//int adsr_note_all=0;
+int trig_time=0;
+int trig_time_all=0;
+
 
 int lfo_depth=0;
 int lfo_depth_all=0;
@@ -349,7 +352,7 @@ void display_board_amp_env()
 		  
 		  // AdsR
 		  SG.smallBoxNumber(i,P[cty].getPatternElement(i).getAmp(),128,SMALLBOX_COLOR);
-		  SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).getNoteADSR()*127,SMALLBOX_COLOR);      
+		  SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).getTrigTime(),SMALLBOX_COLOR);      
 		}
 	    }
 	}
@@ -1362,11 +1365,11 @@ void handle_key_amp_env()
       
       if (keyState[BUTTON_UP]    && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>4) 
-	  { adsr_note=1;  	  dirty_graphic=1; }
+	  { trig_time=1;  	  dirty_graphic=1; }
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>4) 
-	  { adsr_note=-1; 	  dirty_graphic=1; }
+	  { trig_time=-1; 	  dirty_graphic=1; }
     }  
 
 
@@ -1384,11 +1387,11 @@ void handle_key_amp_env()
       
       if (keyState[BUTTON_UP]    && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>4) 
-	  { adsr_note_all=1;  	  dirty_graphic=1; }
+	  { trig_time_all=1;  	  dirty_graphic=1; }
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>4) 
-	  { adsr_note_all=-1; 	  dirty_graphic=1; }
+	  { trig_time_all=-1; 	  dirty_graphic=1; }
     }  
 
 
@@ -1691,7 +1694,7 @@ void handle_key_mac()
   // M_MAC
   // change machine type
   if (menu        != MENU_OFF && 
-      menu_cursor == M_OSC )
+      menu_cursor == M_MAC )
     {
       
       if (keyState[BUTTON_UP] && keyState[BUTTON_A]) 
@@ -1994,11 +1997,11 @@ void handle_key_load_save()
 	    if (keyRepeat[BUTTON_DOWN]==1  || keyRepeat[BUTTON_DOWN]%64==0)  
 	      { loadsave_cursor_y++;  dirty_graphic=1;}
 	  
-	  if (loadsave_cursor_x>MAX_PATTERN_BY_PROJECT-1)        { loadsave_cursor_x=0;           }
+	  if (loadsave_cursor_x>MAX_PATTERN_BY_PROJECT-1)        { loadsave_cursor_x=0;                           }
 	  if (loadsave_cursor_x<0)                               { loadsave_cursor_x=MAX_PATTERN_BY_PROJECT-1;    }
 
-	  if (loadsave_cursor_y>TRACK_MAX-1)                     { loadsave_cursor_y=0;           }
-	  if (loadsave_cursor_y<0)                               { loadsave_cursor_y=TRACK_MAX-1; }  
+	  if (loadsave_cursor_y>TRACK_MAX-1)                     { loadsave_cursor_y=0;                           }
+	  if (loadsave_cursor_y<0)                               { loadsave_cursor_y=TRACK_MAX-1;                 }  
 	  
 	  SEQ.setCurrentTrackY(loadsave_cursor_y);
 	}
@@ -2287,35 +2290,27 @@ void seq_update_multiple_time_by_step()
     }
 
 
-  // Change ADSRNote from trig to adsr
-  if (adsr_note!=0)
-    {
-      if (adsr_note==1)
-	P[cty].getPatternElement(cursor).setNoteADSR(1);
-      if (adsr_note==-1)
-	P[cty].getPatternElement(cursor).setNoteADSR(0);
 
-      adsr_note=0;
+
+  // Change trig time
+  if (trig_time!=0)
+    {
+      P[cty].getPatternElement(cursor).setTrigTime(P[cty].getPatternElement(cursor).getTrigTime()+trig_time);
+      trig_time=0;
       if (debug)
-	printf("[adsr_note:%d]\n",P[cty].getPatternElement(cursor).getNoteADSR());
-      
+	printf("[trig_time:%d]\n",P[cty].getPatternElement(cursor).getTrigTime());      
+    }
+  
+  // Change all trig time
+  if (trig_time_all!=0)
+    {
+      for (i=0;i<16;i++)
+	P[cty].getPatternElement(i).setTrigTime(P[cty].getPatternElement(i).getTrigTime()+trig_time_all);
+      trig_time_all=0;
+      if (debug)
+	printf("[trig_time_all:%d]\n",P[cty].getPatternElement(cursor).getTrigTime());      
     }
 
-
-  // Change ADSRNote from trig to adsr
-  if (adsr_note_all!=0)
-    {
-      if (adsr_note_all==1)
-	for (i=0;i<16;i++)
-	  P[cty].getPatternElement(i).setNoteADSR(1);
-      if (adsr_note_all==-1)
-	for (i=0;i<16;i++)
-	  P[cty].getPatternElement(i).setNoteADSR(0);
-
-      adsr_note_all=0;
-      if (debug)
-	printf("[adsr_note_all:%d]\n",P[cty].getPatternElement(cursor).getNoteADSR());
-    }
 
 
 
@@ -2586,7 +2581,7 @@ void seq_update_multiple_time_by_step()
 }
 
 
-// 
+
 int seq_update_by_step()
 {
   int  cty=SEQ.getCurrentTrackY();
@@ -2727,118 +2722,46 @@ void seq_update_track(int t)
 	  int     i_r;
 	  float   f_r;
 
-	  // set the amp output for the track
-	  //M[t]->reset();
-	  //MM[t]->setAmplitude(P[t].getPatternElement(step).getAmp());
+	  //M[t]->set(NOTE_ON,0);
 	  MM[t]->setAmplitude(P[t].getPatternElement(step).getAmp());
 	  MM[t]->setMachineType(P[t].getPatternElement(step).getMachineType());
 	  M[t]=MM[t]->getInput();                             
 
-	  	 
-	  //M[t]->getVCO().getOscillatorOne();
 
-	  //M[t]->getADSR().reset();
-	  //M[t]->getVCO().reset();
-
-
-	  //M[t]->getVCO().setSynthFreq(f);
 	  printf("[Freq:%d]\n",i);
 	  M[t]->set(OSC1_FREQ,i);
 
-	  //M[t]->getADSR().setAttack(P[t].getPatternElement(step).getAttack());		  
-	  //M[t]->getADSR().setRelease(P[t].getPatternElement(step).getRelease());	      
-
+	  /*
 	  noteOffTrigger[t]=
 	    P[t].getPatternElement(step).getAttack_amp()+
 	    P[t].getPatternElement(step).getAttack_fltr()
 	    ;
+	  */
+	  noteOffTrigger[t]=P[t].getPatternElement(step).getTrigTime()/8;
 
-
-	    //P[t].getPatternElement(step).getRelease_amp();
-	  //M[t]->getADSRAmp().setNoteADSR(P[t].getPatternElement(step).getNoteADSR());
-	  //M[t]->getADSRFltr().setNoteADSR(P[t].getPatternElement(step).getNoteADSR());
-	  //M[t]->getADSRAmp().setAttack(P[t].getPatternElement(step).getAttack_amp());
-	  //M[t]->getADSRAmp().setRelease(P[t].getPatternElement(step).getRelease_amp());
-
-	  M[t]->set(ADSR_ENV0_ATTACK,P[t].getPatternElement(step).getAttack_amp());
-	  M[t]->set(ADSR_ENV0_DECAY,P[t].getPatternElement(step).getDecay_amp());
+	  M[t]->set(ADSR_ENV0_ATTACK, P[t].getPatternElement(step).getAttack_amp());
+	  M[t]->set(ADSR_ENV0_DECAY,  P[t].getPatternElement(step).getDecay_amp());
 	  M[t]->set(ADSR_ENV0_SUSTAIN,P[t].getPatternElement(step).getSustain_amp());
 	  M[t]->set(ADSR_ENV0_RELEASE,P[t].getPatternElement(step).getRelease_amp());
 
-	  M[t]->set(ADSR_ENV1_ATTACK,P[t].getPatternElement(step).getAttack_fltr());
-	  M[t]->set(ADSR_ENV1_ATTACK,P[t].getPatternElement(step).getDecay_fltr());
-	  M[t]->set(ADSR_ENV1_ATTACK,P[t].getPatternElement(step).getSustain_fltr());
+	  M[t]->set(ADSR_ENV1_ATTACK, P[t].getPatternElement(step).getAttack_fltr());
+	  M[t]->set(ADSR_ENV1_ATTACK, P[t].getPatternElement(step).getDecay_fltr());
+	  M[t]->set(ADSR_ENV1_ATTACK, P[t].getPatternElement(step).getSustain_fltr());
 	  M[t]->set(ADSR_ENV1_RELEASE,P[t].getPatternElement(step).getRelease_fltr());
 
 
 
-	  //M[t]->getADSRFltr().setAttack(P[t].getPatternElement(step).getAttack_fltr());
-	  //M[t]->getADSRFltr().setRelease(P[t].getPatternElement(step).getRelease_fltr());
-
-
-	  //M[t]->getADSRAmp().reset();	  
-	  //M[t]->getADSRFltr().reset();
-
-
-	  //M[t]->getVCO().setVCOMix(P[t].getPatternElement(step).getVCOMix());		  
-	  M[t]->set(OSC12_MIX,vcomix);
-
-	  //M[t]->getVCO().setOscillator(0,P[t].getPatternElement(step).getOscillatorOneType());
-	  //M[t]->getVCO().setOscillator(1,P[t].getPatternElement(step).getOscillatorTwoType());
+	  M[t]->set(OSC12_MIX,P[cty].getPatternElement(step).getVCOMix());
+	  M[t]->set(OSC1_PHASE,P[cty].getPatternElement(step).getPhaseOsc1());
+	  //M[t]->set(OSC12_MIX,phase);
 
 	  M[t]->set(OSC1_TYPE,P[t].getPatternElement(step).getOscillatorOneType());
 	  M[t]->set(OSC2_TYPE,P[t].getPatternElement(step).getOscillatorTwoType());
 
 
-	  //M[t]->set(OSC1_TYPE,0);
-	  //M[t]->set(OSC2_TYPE,0);
-
-
-
-	  //M[t]->getVCO().setLfoDepth(P[t].getPatternElement(step).getLfoDepth());
-	  //M[t]->getVCO().setLfoSpeed(P[t].getPatternElement(step).getLfoSpeed());
-	  
-	  
-	  //i_c=P[t].getPatternElement(step).getCutoff();
-	  //i_r=P[t].getPatternElement(step).getResonance();
-
-
-
-	  //printf("*************phase:%d\n",P[t].getPatternElement(step).getPhaseOsc1());
-	  //phase need to be reset after vco cause vco reset oscillator
-	  //M[t]->getVCO().getOscillatorOne()->setPhase(P[t].getPatternElement(step).getPhaseOsc1());
-
 	  M[t]->set(FILTER1_CUTOFF,P[t].getPatternElement(step).getCutoff());
 	  M[t]->set(FILTER1_RES,P[t].getPatternElement(step).getResonance());
 
-
-
-	  //f_c=i_c-1;
-	  //f_c=(f_c/256);
-	  
-	  //f_r=i_r;
-	  //f_r=f_r/8;
-
-
-	  //printf("***Attack:%d\tRelease:%d\n",
-	  //		 P[t].getPatternElement(step).getAttack_amp(),
-	  //		 P[t].getPatternElement(step).getRelease_amp());
-	  //printf("==================================================================[ %f ]==================================================================\n",f_c);
-	  //printf("==================================================================[ %f ]==================================================================\n",f_r);
-	  //M[t]->getBiquad().setFc(f_c);
-	  //M[t]->getBiquad().reset();
-
-	  //M[t]->getBiquad().setBiquad(0, f_c+0.005, (f_r+0.005), 0.0);	 
-	  //M[t]->getBiquad().calcBiquad();
-
-	  //M[t]->getADSRAmp().reset();
-	  //M[t]->getADSRFltr().reset();
-
-
-	  //M[t]->getVCO().reset();
-
-	  //M[t]->getADSRAmp().setNoteOn();
-	  //M[t]->getADSRFltr().setNoteOn();
 
 	  M[t]->set(NOTE_ON,1);
 
@@ -2855,13 +2778,11 @@ void seq_update_track(int t)
 	      M[t]->set(NOTE_ON,0);
 	    }
 	  else
-	    noteOffTrigger[t]=noteOffTrigger[t]-32;
-	  //M[t]->reset();
-	  //m.setSynthFreq(800);
-	  //printf("m.setSynthFreq(0);\n");
-	  //m0.setSynthFreq(0);
+	    {
+	      noteOffTrigger[t]=noteOffTrigger[t]-1;
+	      printf("noteOffTrigger[%d]=%d\n",noteOffTrigger[t],t);
+	    }
 	}
-      //}		  
 }
 
 
@@ -2901,20 +2822,13 @@ int seq()
       MM[t]=AE.getAudioMixer().getTrack(t).getMonoMixer();
       MM[t]->init();
       MM[t]->setAmplitude(0);  // set the amplitude to 0 to avoid trashing speakers
-      //MM[t]=AE.getAudioMixer().getTrack(t).getMonoMixer().getInput().init();
+
       
       M[t]=MM[t]->getInput();                             
       M[t]->init();
-      //M[t]->getADSRAmp().init();
-      //M[t]->getADSRFltr().init();
-      //M[t]->getVCO().init();
-      //M[t]->getVCO().init();
-      //M[t]->getVCO().tick();
-      //M[t]->getVCO().setSynthFreq(0);      
-      //M[t].getVCO().setSineOsc();
     }
 
-  //sleep(2);
+
   // Init all track to the current step, step0 in this particular case 
   for (i=0;i<TRACK_MAX;i++)
     seq_update_track(i);

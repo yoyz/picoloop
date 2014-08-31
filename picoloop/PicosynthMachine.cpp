@@ -129,9 +129,13 @@ void PicosynthMachine::set(int what,int val)
   if (what==OSC12_MIX)           this->getVCO().setVCOMix(val);
 
   if (what==ADSR_ENV0_ATTACK)    this->getADSRAmp().setAttack(val);
+  if (what==ADSR_ENV0_DECAY)     this->getADSRAmp().setDecay(val);
+  if (what==ADSR_ENV0_SUSTAIN)   this->getADSRAmp().setSustain(val);
   if (what==ADSR_ENV0_RELEASE)   this->getADSRAmp().setRelease(val);
 
   if (what==ADSR_ENV1_ATTACK)    this->getADSRFltr().setAttack(val);
+  if (what==ADSR_ENV1_DECAY)     this->getADSRFltr().setDecay(val);
+  if (what==ADSR_ENV1_SUSTAIN)   this->getADSRFltr().setSustain(val);
   if (what==ADSR_ENV1_RELEASE)   this->getADSRFltr().setRelease(val);
 
 
@@ -272,7 +276,9 @@ int PicosynthMachine::tick()
   //  sample_num++;
   
   s_in=adsr_amp.tick();
-  s_in=s_in/4;
+  //s_in=s_in/4;
+  //  s_out=bq.process(s_in);
+  //  return s_out;
 
   //if (sample_num==num)
   if (sample_num==0)

@@ -12,8 +12,8 @@ enum
     ADSR_FINISH
   };
 
-#define SHIFT_TRIG 10
-#define SHIFT_NOTE 10
+#define SHIFT_TRIG 6  // for drum
+#define SHIFT_NOTE 9  // for synth
 
 ADSR::ADSR() : tanh_table(new Sint16[128])
 {
@@ -248,14 +248,17 @@ void ADSR::reset()
 
   ca_segment=ca/127;
   cd_segment=cd/127;
+  cs_segment=cs/127;
   cr_segment=cr/127;
   
   ca_next_segment=ca_segment;
   cd_next_segment=cd_segment;
+  cs_next_segment=cs_segment;
   cr_next_segment=cr_segment;
 
   ca_div=127;
-  cd_div=1;
+  cd_div=127;
+  cs_div=1;
   cr_div=1;
   //fseconds=(float)release/16+(float(attack/16);
   //fseconds_release=(float)release/128;
@@ -386,6 +389,7 @@ Sint16 ADSR::tick_note()
     {
       printf("***************************** DECAY noteOn:%d\n",noteOn_value);
       current_segment=ADSR_DECAY;
+      cd_next_segment=sample_num+cd_segment;
     }
 
   if (current_segment==ADSR_DECAY &&      
@@ -403,6 +407,7 @@ Sint16 ADSR::tick_note()
       //exit(1);
       current_segment=ADSR_RELEASE;
       cr_next_segment=sample_num+cr_segment;
+      cr_div=127-cd_div;
       printf("***************************** RELEASE  noteOn:%d\n",noteOn_value);
     }
   
@@ -433,7 +438,7 @@ Sint16 ADSR::tick_note()
 
     }
 
-
+  /*
   // DECAY
   if (current_segment==ADSR_DECAY)
     {
@@ -441,13 +446,43 @@ Sint16 ADSR::tick_note()
       s_out=s_in;
       //if (1) printf("s_in:%d s_out:%d\n",s_in,s_out);
     }
+  */
+
+
+  // DECAY
+  if (current_segment==ADSR_DECAY)
+    {
+
+      if (sample_num>cd_next_segment)
+	{
+	  cd_next_segment=cd_next_segment+cd_segment;
+	  cd_div=cd_div-1;
+	  if (cd_div<sustain)
+	    {
+	      cd_div=sustain;
+	      //current_segment=ADSR_SUSTAIN;
+	    }
+	}
+
+      //return s_in/((cr_div/4)+1);            
+      //      return (s_in*tanh[cr_div])/1024;
+      //return (s_in*tanh_table[127-cr_div])/1024;
+      s_out=(s_in*tanh_table[cd_div])/1024;
+
+      //return s_in;
+      //s_out=s_in;
+      //if (1) printf("s_in:%d s_out:%d\n",s_in,s_out);
+    }
+
+
 
 
   // SUSTAIN
   if (current_segment==ADSR_SUSTAIN)
     {
       //return s_in;
-      s_out=s_in;
+      s_out=(s_in*tanh_table[cd_div])/1024;
+      //s_out=s_in;
     }
 
 
@@ -485,6 +520,19 @@ Sint16 ADSR::tick_note()
   //if (debug) fprintf(stderr,"end Sint16 ADSR::tick()\n");
   //return s;  
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 Sint16 ADSR::tick_trig()

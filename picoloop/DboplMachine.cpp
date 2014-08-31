@@ -40,7 +40,9 @@ void dboplMachine::init()
 
   bq.setBiquad(0, 0.2, 0.5, 0.1);
 
+  //HO->SetSampleRate(22050);
   HO->SetSampleRate(44100);
+  //HO->SetSampleRate(88200);
 
   HO->SetWaveform(1,1,QUART_SIN);
   HO->SetWaveform(1,2,SIN);
@@ -84,6 +86,28 @@ void dboplMachine::set(int what,int val)
 {
   float f_val_cutoff;
   float f_val_resonance;
+  FreqMultiple freqM[15];
+  Waveform w[4];
+  w[0]=SIN;
+  w[0]=HALF_SIN;
+  w[0]=ABS_SIN;
+  w[0]=QUART_SIN;
+
+  freqM[0]=xHALF;
+  freqM[1]=x1;
+  freqM[2]=x2;
+  freqM[3]=x3;
+  freqM[4]=x4;
+  freqM[5]=x5;
+  freqM[6]=x6;
+  freqM[7]=x7;
+  freqM[8]=x8;
+  freqM[9]=x9;
+  freqM[10]=x10;
+  freqM[11]=x12;
+  freqM[12]=x15;
+
+  
 
     if (what==NOTE_ON && val==1) 
     { 
@@ -97,6 +121,11 @@ void dboplMachine::set(int what,int val)
       HO->KeyOff(1);
     }
 
+    if (what==OSC1_TYPE)           HO->SetWaveform(1,1,w[val]);
+    if (what==OSC2_TYPE)           HO->SetWaveform(1,2,w[val]);
+    HO->EnableWaveformControl();
+
+
     if (what==ADSR_ENV0_ATTACK)    HO->SetEnvelopeAttack(1,1,val/16);
     if (what==ADSR_ENV0_DECAY)     HO->SetEnvelopeDecay(1,1,val/16);
     if (what==ADSR_ENV0_SUSTAIN)   HO->SetEnvelopeSustain(1,1,val/16);
@@ -106,6 +135,9 @@ void dboplMachine::set(int what,int val)
     if (what==ADSR_ENV1_DECAY)     HO->SetEnvelopeDecay(1,2,val/16);
     if (what==ADSR_ENV1_SUSTAIN)   HO->SetEnvelopeSustain(1,2,val/16);
     if (what==ADSR_ENV1_RELEASE)   HO->SetEnvelopeRelease(1,2,val/16);
+
+    if (what==OSC12_MIX)           HO->SetFrequencyMultiple(1,1,freqM[val/11]);
+    if (what==OSC1_PHASE)          HO->SetFrequencyMultiple(1,2,freqM[val/11]);
 
   if (what==FILTER1_CUTOFF)      
     { 
@@ -149,9 +181,12 @@ int dboplMachine::tick()
   //HO.Generate(SAM,buffer);
 
 
+  //s_in=buffer[index];
+  //s_out=s_in;
 
   s_in=buffer[index];
   s_out=bq.process(s_in);
+
   index++;
   sample_num++;
 
