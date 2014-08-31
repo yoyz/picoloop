@@ -31,9 +31,13 @@ float zoom=1.0;
 int quit;
 
 int attack_amp=96;
+int decay_amp=96;
+int sustain_amp=96;
 int release_amp=96;
 
 int attack_fltr=96;
+int decay_fltr=96;
+int sustain_fltr=96;
 int release_fltr=96;
 
 
@@ -215,7 +219,65 @@ void handle_key()
 
 
 
-  // AMP ENV ATTACK_FLTR
+
+
+  // AMP ENV 
+  if (keyRepeat[SDLK_COMMA]%16   && 
+      keyRepeat[SDLK_DOWN]%16 
+      //&& 
+      //lastEvent ==  SDL_KEYDOWN)
+      )
+    {
+      decay_amp=decay_amp-1;
+      if (decay_amp <=1) decay_amp=0;
+      redraw=true;
+      printf("[x]+[down] => decay_amp:%d\n",decay_amp);
+    }
+
+
+  if (keyRepeat[SDLK_COMMA]%16   && 
+      keyRepeat[SDLK_UP]%16   
+      //lastEvent ==  SDL_KEYDOWN)
+      )
+    {
+      decay_amp=decay_amp+1;
+      if (decay_amp >=127) decay_amp=127;
+      redraw=true;
+      printf("[x]+[up] => decay_amp:%d\n",decay_amp);
+    }
+
+  // AMP ENV 
+  if (keyRepeat[SDLK_COMMA]%16    && 
+      keyRepeat[SDLK_RIGHT]%16 
+      )
+      //&& 
+      //lastEvent ==  SDL_KEYDOWN)
+    {
+      sustain_amp=sustain_amp+1;
+      if (sustain_amp >=127) sustain_amp=127;
+      redraw=true;
+      printf("[x]+[right] => sustain_amp:%d\n",sustain_amp);
+    }
+
+
+  if (keyRepeat[SDLK_COMMA]%16    && 
+      keyRepeat[SDLK_LEFT]%16   //&& 
+      //lastEvent ==  SDL_KEYDOWN)
+      )
+    {
+      sustain_amp=sustain_amp-1;
+      if (sustain_amp <=1) sustain_amp=1;
+      redraw=true;
+      printf("[x]+[left] => sustain_amp:%d\n",sustain_amp);
+    }
+
+
+
+
+
+
+
+  // FLTR ENV 
   if (keyRepeat[SDLK_b]%16   && 
       keyRepeat[SDLK_DOWN]%16 
       //&& 
@@ -228,7 +290,7 @@ void handle_key()
       printf("[x]+[down] => attack_fltr:%d\n",attack_fltr);
     }
 
-
+  // FLTR ENV 
   if (keyRepeat[SDLK_b]%16   && 
       keyRepeat[SDLK_UP]%16   
       //lastEvent ==  SDL_KEYDOWN)
@@ -240,7 +302,7 @@ void handle_key()
       printf("[x]+[up] => attack_fltr:%d\n",attack_fltr);
     }
 
-  // AMP ENV RELEASE
+  // FLTR ENV 
   if (keyRepeat[SDLK_b]%16    && 
       keyRepeat[SDLK_RIGHT]%16 
       )
@@ -253,7 +315,7 @@ void handle_key()
       printf("[x]+[right] => release_fltr:%d\n",release_fltr);
     }
 
-  
+    // FLTR ENV 
   if (keyRepeat[SDLK_b]%16    && 
       keyRepeat[SDLK_LEFT]%16   //&& 
       //lastEvent ==  SDL_KEYDOWN)
@@ -263,6 +325,61 @@ void handle_key()
       if (release_fltr <=1) release_fltr=1;
       redraw=true;
       printf("[x]+[left] => release_fltr:%d\n",release_fltr);
+    }
+
+
+
+
+
+
+  // FLTR ENV 
+  if (keyRepeat[SDLK_n]%16   && 
+      keyRepeat[SDLK_DOWN]%16 
+      //&& 
+      //lastEvent ==  SDL_KEYDOWN)
+      )
+    {
+      decay_fltr=decay_fltr-1;
+      if (decay_fltr <=1) decay_fltr=0;
+      redraw=true;
+      printf("[x]+[down] => decay_fltr:%d\n",decay_fltr);
+    }
+
+  // FLTR ENV 
+  if (keyRepeat[SDLK_n]%16   && 
+      keyRepeat[SDLK_UP]%16   
+      //lastEvent ==  SDL_KEYDOWN)
+      )
+    {
+      decay_fltr=decay_fltr+1;
+      if (decay_fltr >=127) decay_fltr=127;
+      redraw=true;
+      printf("[x]+[up] => decay_fltr:%d\n",decay_fltr);
+    }
+
+  // FLTR ENV 
+  if (keyRepeat[SDLK_n]%16    && 
+      keyRepeat[SDLK_RIGHT]%16 
+      )
+      //&& 
+      //lastEvent ==  SDL_KEYDOWN)
+    {
+      sustain_fltr=sustain_fltr+1;
+      if (sustain_fltr >=127) sustain_fltr=127;
+      redraw=true;
+      printf("[x]+[right] => sustain_fltr:%d\n",sustain_fltr);
+    }
+
+    // FLTR ENV 
+  if (keyRepeat[SDLK_n]%16    && 
+      keyRepeat[SDLK_LEFT]%16   //&& 
+      //lastEvent ==  SDL_KEYDOWN)
+      )
+    {
+      sustain_fltr=sustain_fltr-1;
+      if (sustain_fltr <=1) sustain_fltr=1;
+      redraw=true;
+      printf("[x]+[left] => sustain_fltr:%d\n",sustain_fltr);
     }
 
 
@@ -461,9 +578,13 @@ void handle_key()
 	  M[t]->set(OSC12_MIX,vcomix);
 
 	  M[t]->set(ADSR_ENV0_ATTACK,attack_amp);
+	  M[t]->set(ADSR_ENV0_DECAY,decay_amp);
+	  M[t]->set(ADSR_ENV0_SUSTAIN,sustain_amp);
 	  M[t]->set(ADSR_ENV0_RELEASE,release_amp);
 
 	  M[t]->set(ADSR_ENV1_ATTACK,attack_fltr);
+	  M[t]->set(ADSR_ENV1_ATTACK,decay_fltr);
+	  M[t]->set(ADSR_ENV1_ATTACK,sustain_fltr);
 	  M[t]->set(ADSR_ENV1_RELEASE,release_fltr);
 
 

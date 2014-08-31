@@ -117,9 +117,13 @@ int amp=0;              // variation of the amp of monomixer
 int amp_all=0;              // variation of the amp of monomixer
 
 int attack_amp=0;
+int decay_amp=0;
+int sustain_amp=0;
 int release_amp=0;
 
 int attack_fltr=0;
+int decay_fltr=0;
+int sustain_fltr=0;
 int release_fltr=0;
 
 
@@ -2312,7 +2316,8 @@ void seq_update_track(int t)
 	  float   f_r;
 
 	  // set the amp output for the track
-	  M[t]->reset();
+	  //M[t]->reset();
+	  //MM[t]->setAmplitude(P[t].getPatternElement(step).getAmp());
 	  MM[t]->setAmplitude(P[t].getPatternElement(step).getAmp());
 
 	  	 
@@ -2322,7 +2327,9 @@ void seq_update_track(int t)
 	  //M[t]->getVCO().reset();
 
 
-	  M[t]->getVCO().setSynthFreq(f);
+	  //M[t]->getVCO().setSynthFreq(f);
+	  printf("[Freq:%d]\n",i);
+	  M[t]->set(OSC1_FREQ,i);
 
 	  //M[t]->getADSR().setAttack(P[t].getPatternElement(step).getAttack());		  
 	  //M[t]->getADSR().setRelease(P[t].getPatternElement(step).getRelease());	      
@@ -2331,65 +2338,91 @@ void seq_update_track(int t)
 	    P[t].getPatternElement(step).getAttack_amp()+
 	    P[t].getPatternElement(step).getAttack_fltr()
 	    ;
-	    //P[t].getPatternElement(step).getRelease_amp();
-	  M[t]->getADSRAmp().setNoteADSR(P[t].getPatternElement(step).getNoteADSR());
-	  M[t]->getADSRFltr().setNoteADSR(P[t].getPatternElement(step).getNoteADSR());
-	  M[t]->getADSRAmp().setAttack(P[t].getPatternElement(step).getAttack_amp());
-	  M[t]->getADSRAmp().setRelease(P[t].getPatternElement(step).getRelease_amp());
 
-	  M[t]->getADSRFltr().setAttack(P[t].getPatternElement(step).getAttack_fltr());
-	  M[t]->getADSRFltr().setRelease(P[t].getPatternElement(step).getRelease_fltr());
+
+	    //P[t].getPatternElement(step).getRelease_amp();
+	  //M[t]->getADSRAmp().setNoteADSR(P[t].getPatternElement(step).getNoteADSR());
+	  //M[t]->getADSRFltr().setNoteADSR(P[t].getPatternElement(step).getNoteADSR());
+	  //M[t]->getADSRAmp().setAttack(P[t].getPatternElement(step).getAttack_amp());
+	  //M[t]->getADSRAmp().setRelease(P[t].getPatternElement(step).getRelease_amp());
+
+	  M[t]->set(ADSR_ENV0_ATTACK,P[t].getPatternElement(step).getAttack_amp());
+	  M[t]->set(ADSR_ENV0_DECAY,P[t].getPatternElement(step).getDecay_amp());
+	  M[t]->set(ADSR_ENV0_SUSTAIN,P[t].getPatternElement(step).getSustain_amp());
+	  M[t]->set(ADSR_ENV0_RELEASE,P[t].getPatternElement(step).getRelease_amp());
+
+	  M[t]->set(ADSR_ENV1_ATTACK,P[t].getPatternElement(step).getAttack_fltr());
+	  M[t]->set(ADSR_ENV1_ATTACK,P[t].getPatternElement(step).getDecay_fltr());
+	  M[t]->set(ADSR_ENV1_ATTACK,P[t].getPatternElement(step).getSustain_fltr());
+	  M[t]->set(ADSR_ENV1_RELEASE,P[t].getPatternElement(step).getRelease_fltr());
+
+
+
+	  //M[t]->getADSRFltr().setAttack(P[t].getPatternElement(step).getAttack_fltr());
+	  //M[t]->getADSRFltr().setRelease(P[t].getPatternElement(step).getRelease_fltr());
 
 
 	  //M[t]->getADSRAmp().reset();	  
 	  //M[t]->getADSRFltr().reset();
 
 
-	  M[t]->getVCO().setVCOMix(P[t].getPatternElement(step).getVCOMix());		  
+	  //M[t]->getVCO().setVCOMix(P[t].getPatternElement(step).getVCOMix());		  
+	  M[t]->set(OSC12_MIX,vcomix);
 
-	  M[t]->getVCO().setOscillator(0,P[t].getPatternElement(step).getOscillatorOneType());
-	  M[t]->getVCO().setOscillator(1,P[t].getPatternElement(step).getOscillatorTwoType());
+	  //M[t]->getVCO().setOscillator(0,P[t].getPatternElement(step).getOscillatorOneType());
+	  //M[t]->getVCO().setOscillator(1,P[t].getPatternElement(step).getOscillatorTwoType());
 
-	  M[t]->getVCO().setLfoDepth(P[t].getPatternElement(step).getLfoDepth());
-	  M[t]->getVCO().setLfoSpeed(P[t].getPatternElement(step).getLfoSpeed());
+	  M[t]->set(OSC1_TYPE,1);
+	  M[t]->set(OSC2_TYPE,2);
+
+
+
+	  //M[t]->getVCO().setLfoDepth(P[t].getPatternElement(step).getLfoDepth());
+	  //M[t]->getVCO().setLfoSpeed(P[t].getPatternElement(step).getLfoSpeed());
 	  
 	  
-	  i_c=P[t].getPatternElement(step).getCutoff();
-	  i_r=P[t].getPatternElement(step).getResonance();
+	  //i_c=P[t].getPatternElement(step).getCutoff();
+	  //i_r=P[t].getPatternElement(step).getResonance();
 
 
 
 	  //printf("*************phase:%d\n",P[t].getPatternElement(step).getPhaseOsc1());
 	  //phase need to be reset after vco cause vco reset oscillator
-	  M[t]->getVCO().getOscillatorOne()->setPhase(P[t].getPatternElement(step).getPhaseOsc1());
+	  //M[t]->getVCO().getOscillatorOne()->setPhase(P[t].getPatternElement(step).getPhaseOsc1());
+
+	  M[t]->set(FILTER1_CUTOFF,P[t].getPatternElement(step).getCutoff());
+	  M[t]->set(FILTER1_RES,P[t].getPatternElement(step).getResonance());
 
 
-	  f_c=i_c-1;
-	  f_c=(f_c/256);
+
+	  //f_c=i_c-1;
+	  //f_c=(f_c/256);
 	  
-	  f_r=i_r;
-	  f_r=f_r/8;
+	  //f_r=i_r;
+	  //f_r=f_r/8;
 
 
-	  printf("***Attack:%d\tRelease:%d\n",
-		 P[t].getPatternElement(step).getAttack_amp(),
-		 P[t].getPatternElement(step).getRelease_amp());
+	  //printf("***Attack:%d\tRelease:%d\n",
+	  //		 P[t].getPatternElement(step).getAttack_amp(),
+	  //		 P[t].getPatternElement(step).getRelease_amp());
 	  //printf("==================================================================[ %f ]==================================================================\n",f_c);
 	  //printf("==================================================================[ %f ]==================================================================\n",f_r);
 	  //M[t]->getBiquad().setFc(f_c);
 	  //M[t]->getBiquad().reset();
 
-	  M[t]->getBiquad().setBiquad(0, f_c+0.005, (f_r+0.005), 0.0);	 
-	  M[t]->getBiquad().calcBiquad();
+	  //M[t]->getBiquad().setBiquad(0, f_c+0.005, (f_r+0.005), 0.0);	 
+	  //M[t]->getBiquad().calcBiquad();
 
-	  M[t]->getADSRAmp().reset();
-	  M[t]->getADSRFltr().reset();
+	  //M[t]->getADSRAmp().reset();
+	  //M[t]->getADSRFltr().reset();
 
 
-	  M[t]->getVCO().reset();
+	  //M[t]->getVCO().reset();
 
-	  M[t]->getADSRAmp().setNoteOn();
-	  M[t]->getADSRFltr().setNoteOn();
+	  //M[t]->getADSRAmp().setNoteOn();
+	  //M[t]->getADSRFltr().setNoteOn();
+
+	  M[t]->set(NOTE_ON,1);
 
 	}
       else
@@ -2397,9 +2430,11 @@ void seq_update_track(int t)
 	  if (noteOffTrigger[t]<0)
 	    {
 	      printf("$$$NOTEOFF\n");
-	      M[t]->getADSRAmp().setNoteOff();
-	      M[t]->getADSRFltr().setNoteOff();
+	      //M[t]->getADSRAmp().setNoteOff();
+	      //M[t]->getADSRFltr().setNoteOff();
 	      //M[t]->reset();
+
+	      M[t]->set(NOTE_ON,0);
 	    }
 	  else
 	    noteOffTrigger[t]=noteOffTrigger[t]-32;
@@ -2446,18 +2481,18 @@ int seq()
     {
 
       MM[t]=AE.getAudioMixer().getTrack(t).getMonoMixer();
+      MM[t]->init();
+      MM[t]->setAmplitude(0);  // set the amplitude to 0 to avoid trashing speakers
       //MM[t]=AE.getAudioMixer().getTrack(t).getMonoMixer().getInput().init();
       
-      M[t]=MM[t]->getInput();
-      MM[t]->setAmplitude(0);  // set the amplitude to 0 to avoid trashing speakers
-                               // there is some noise at the begining
+      M[t]=MM[t]->getInput();                             
       M[t]->init();
-      M[t]->getADSRAmp().init();
-      M[t]->getADSRFltr().init();
-      M[t]->getVCO().init();
+      //M[t]->getADSRAmp().init();
+      //M[t]->getADSRFltr().init();
+      //M[t]->getVCO().init();
       //M[t]->getVCO().init();
       //M[t]->getVCO().tick();
-      M[t]->getVCO().setSynthFreq(0);      
+      //M[t]->getVCO().setSynthFreq(0);      
       //M[t].getVCO().setSineOsc();
     }
 

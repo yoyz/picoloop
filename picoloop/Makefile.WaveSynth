@@ -1,7 +1,7 @@
 CC=g++
-CFLAGS=-c -O3 -DLINUX -D__RTAUDIO__ -DLINUX_DESKTOP -I. -LSDL/lib -g -fpermissive
+CFLAGS=-c -O1 -DLINUX -D__RTAUDIO__ -DLINUX_DESKTOP -I. -LSDL/lib -g -fpermissive
 LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf RtAudio.o  
-SOURCES=WaveSynth.cpp SDL_GUI.cpp AudioEngine.cpp AudioDriverRTAudio.cpp Instrument.cpp Synth.cpp Oscillator.cpp TriangleOscillator.cpp FuzzyPulseOscillator.cpp SineOscillator.cpp SawOscillator.cpp NoiseOscillator.cpp OneOscillator.cpp WaveTableSineOscillator.cpp Biquad.cpp AudioMixer.cpp  Wave.cpp Track.cpp Machine.cpp MonoMixer.cpp ADSR.cpp PatternElement.cpp VCO.cpp PulseOscillator.cpp InputManager.cpp PicosynthMachine.cpp
+SOURCES=WaveSynth.cpp SDL_GUI.cpp AudioEngine.cpp AudioDriverRTAudio.cpp Instrument.cpp Synth.cpp Oscillator.cpp TriangleOscillator.cpp FuzzyPulseOscillator.cpp SineOscillator.cpp SawOscillator.cpp NoiseOscillator.cpp OneOscillator.cpp WaveTableSineOscillator.cpp Biquad.cpp AudioMixer.cpp  Wave.cpp Track.cpp Machine.cpp MonoMixer.cpp ADSR.cpp PatternElement.cpp VCO.cpp PulseOscillator.cpp InputManager.cpp PicosynthMachine.cpp dbopl/dbopl.cpp dbopl/hiopl.cpp dboplMachine.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=WaveSynth
 

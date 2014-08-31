@@ -4,7 +4,7 @@
 
 			//MonoMixer::MonoMixer(): M()
 //MonoMixer::MonoMixer()
-MonoMixer::MonoMixer(): PM()
+MonoMixer::MonoMixer(): PM(), OPLM()
 {
   printf("MonoMixer::MonoMixer()\n");  
   amplitude=127;
@@ -23,6 +23,8 @@ MonoMixer::~MonoMixer()
 void MonoMixer::init()
 {
   M=&PM;
+  M=&OPLM;
+  //M=&PM;
 }
 
 

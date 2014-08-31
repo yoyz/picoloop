@@ -126,11 +126,14 @@ void PicosynthMachine::set(int what,int val)
   if (what==OSC1_TYPE)           this->getVCO().setOscillator(0,val);
   if (what==OSC2_TYPE)           this->getVCO().setOscillator(1,val);
 
+  if (what==OSC12_MIX)           this->getVCO().setVCOMix(val);
+
   if (what==ADSR_ENV0_ATTACK)    this->getADSRAmp().setAttack(val);
   if (what==ADSR_ENV0_RELEASE)   this->getADSRAmp().setRelease(val);
 
   if (what==ADSR_ENV1_ATTACK)    this->getADSRFltr().setAttack(val);
   if (what==ADSR_ENV1_RELEASE)   this->getADSRFltr().setRelease(val);
+
 
   if (what==FILTER1_CUTOFF)      
     { 
@@ -365,6 +368,7 @@ int PicosynthMachine::tick()
     {
       //s_out=bq.process(s_in);
       //printf("$$$$$$$$$$$$$$reset\n");
+      s_out=bq.process(s_in);
       sample_num=-1;
     }
 
