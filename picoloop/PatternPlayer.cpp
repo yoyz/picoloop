@@ -66,7 +66,9 @@ enum {
 
 enum {
   MENU_ENV_ATTACK_RELEASE,
+  MENU_ENV_DECAY_SUSTAIN,
   MENU_FLTR_ATTACK_RELEASE,
+  MENU_FLTR_DECAY_SUSTAIN,
   MENU_ENV_ADSRNOTE_AMP,
 };
 
@@ -128,9 +130,13 @@ int release_fltr=0;
 
 
 int attack_amp_all=0;
+int decay_amp_all=0;
+int sustain_amp_all=0;
 int release_amp_all=0;
 
 int attack_fltr_all=0;
+int decay_fltr_all=0;
+int sustain_fltr_all=0;
 int release_fltr_all=0;
 
 int adsr_note=0;
@@ -169,6 +175,8 @@ int menu_cursor=M_AD;      // index int the menu
 int menu=MENU_ON_PAGE1;             // menu mode
 int menu_note=ENABLE;
 int menu_env=MENU_ENV_ATTACK_RELEASE;
+
+int menu_env_dirty_keyboard=0;
 
 //int ct=0;               // current_track
 int ct_x=0;             
@@ -252,6 +260,29 @@ void display_board_amp_env()
 	    }
 	}
 
+      if (menu_env==MENU_ENV_DECAY_SUSTAIN)
+	{
+	  for (i=0;i<16;i++)
+	    {
+	      // Draw trigged box trig color   
+	      if (P[cty].getPatternElement(i).getTrig())
+		{
+		  SG.drawBoxNumber(i,TRIG_COLOR);
+		  if (i==cursor)
+		    SG.drawBoxNumber(cursor,CURSOR_COLOR);
+		  if (i==step)
+		    SG.drawBoxNumber(step,STEP_COLOR);  
+		  //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
+		  
+		  // AdsR
+		  SG.smallBoxNumber(i,P[cty].getPatternElement(i).getDecay_amp(),128,SMALLBOX_COLOR);
+		  SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).getSustain_amp(),SMALLBOX_COLOR);      
+		}
+	    }
+	}
+
+
+
       if (menu_env==MENU_FLTR_ATTACK_RELEASE)
 	{
 	  for (i=0;i<16;i++)
@@ -274,6 +305,29 @@ void display_board_amp_env()
 	}
 
 
+      if (menu_env==MENU_FLTR_DECAY_SUSTAIN)
+	{
+	  for (i=0;i<16;i++)
+	    {
+	      // Draw trigged box trig color   
+	      if (P[cty].getPatternElement(i).getTrig())
+		{
+		  SG.drawBoxNumber(i,TRIG_COLOR);
+		  if (i==cursor)
+		    SG.drawBoxNumber(cursor,CURSOR_COLOR);
+		  if (i==step)
+		    SG.drawBoxNumber(step,STEP_COLOR);  
+		  //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
+		  
+		  // AdsR
+		  SG.smallBoxNumber(i,P[cty].getPatternElement(i).getDecay_fltr(),128,SMALLBOX_COLOR);
+		  SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).getSustain_fltr(),SMALLBOX_COLOR);      
+		}
+	    }
+	}
+
+
+
       if (menu_env==MENU_ENV_ADSRNOTE_AMP)
 	{
 	  for (i=0;i<16;i++)
@@ -294,8 +348,6 @@ void display_board_amp_env()
 		}
 	    }
 	}
-
-
     }
 }
 
@@ -698,12 +750,28 @@ void display_board()
       SG.guiTTFText(200,60,str_submenu);
     }
 
+  if (menu_env==MENU_ENV_DECAY_SUSTAIN &&
+      menu_cursor==M_AD)
+    {
+      sprintf(str_submenu,"AMP  D/S");
+      SG.guiTTFText(200,60,str_submenu);
+    }
+
+
   if (menu_env==MENU_FLTR_ATTACK_RELEASE &&
       menu_cursor==M_AD)
     {
       sprintf(str_submenu,"FLTR A/R");
       SG.guiTTFText(200,60,str_submenu);
     }
+
+  if (menu_env==MENU_FLTR_DECAY_SUSTAIN &&
+      menu_cursor==M_AD)
+    {
+      sprintf(str_submenu,"FLTR D/S");
+      SG.guiTTFText(200,60,str_submenu);
+    }
+
 
   if (menu_env==MENU_ENV_ADSRNOTE_AMP &&
       menu_cursor==M_AD)
@@ -855,7 +923,8 @@ void handle_key_menu()
        menu==MENU_ON_PAGE2) &&
       (!
        (keyState[BUTTON_B]    ||
-	keyState[BUTTON_A]))
+	keyState[BUTTON_A]    ||
+	keyState[BUTTON_START]))
       )      
     {
       if(keyState[BUTTON_LEFT]) 
@@ -950,7 +1019,8 @@ void handle_key_sixteenbox()
        menu==MENU_OFF && menu_cursor==M_BPM   
        ) &&
       !keyState[BUTTON_B]                   &&
-      !keyState[BUTTON_A]
+      !keyState[BUTTON_A]                   &&
+      !keyState[BUTTON_START]               
       )
     {                 
       if(keyState[BUTTON_UP] && 
@@ -1040,6 +1110,34 @@ void handle_key_amp_env()
 	  { attack_amp=-1; 	  dirty_graphic=1; }
     }  
 
+
+  // M_DS AMP
+  // Move Decay Sustain
+  // Insert/Remove Trig
+  if (menu          == MENU_OFF && 
+      menu_cursor   == M_AD     &&
+      menu_env      == MENU_ENV_DECAY_SUSTAIN)
+    {
+      // Insert/Remove Trig
+      sub_handle_invert_trig();
+      if (keyState[BUTTON_LEFT]  && keyState[BUTTON_B])
+	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>4) 
+	  { decay_amp=-1;   dirty_graphic=1; }
+      
+      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>4) 
+	  { decay_amp=1; 	  dirty_graphic=1; }
+      
+      if (keyState[BUTTON_UP]    && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>4) 
+	  { sustain_amp=1;  	  dirty_graphic=1; }
+      
+      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>4) 
+	  { sustain_amp=-1; 	  dirty_graphic=1; }
+    }  
+
+
   // M_AD AMP
   // Move Attack Release 
   // Insert/Remove Trig
@@ -1064,6 +1162,33 @@ void handle_key_amp_env()
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>4) 
 	  { attack_amp_all=-1; 	  dirty_graphic=1; }
     }  
+
+  // M_AD AMP
+  // Move Decay Sustain
+  // Insert/Remove Trig
+  if (menu          != MENU_OFF && 
+      menu_cursor   == M_AD     &&
+      menu_env      == MENU_ENV_DECAY_SUSTAIN)
+    {
+      //printf("***********************\n");
+      if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A])
+	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>4) 
+	  { decay_amp_all=-1;   dirty_graphic=1; }
+      
+      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>4) 
+	  { decay_amp_all=1; 	  dirty_graphic=1; }
+      
+      if (keyState[BUTTON_UP]    && keyState[BUTTON_A]) 
+	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>4) 
+	  { sustain_amp_all=1;  	  dirty_graphic=1; }
+      
+      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A]) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>4) 
+	  { sustain_amp_all=-1; 	  dirty_graphic=1; }
+    }  
+
+
 
 
   // M_AD FLTR
@@ -1093,6 +1218,34 @@ void handle_key_amp_env()
     }  
 
   // M_AD FLTR
+  // Move Decay Sustain
+  // Insert/Remove Trig
+  if (menu          == MENU_OFF && 
+      menu_cursor   == M_AD     &&
+      menu_env      == MENU_FLTR_DECAY_SUSTAIN)
+    {
+      // Insert/Remove Trig
+      sub_handle_invert_trig();
+      if (keyState[BUTTON_LEFT]  && keyState[BUTTON_B])
+	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>4) 
+	  { decay_fltr=-1;   dirty_graphic=1; }
+      
+      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>4) 
+	  { decay_fltr=1; 	  dirty_graphic=1; }
+      
+      if (keyState[BUTTON_UP]    && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>4) 
+	  { sustain_fltr=1;  	  dirty_graphic=1; }
+      
+      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>4) 
+	  { sustain_fltr=-1; 	  dirty_graphic=1; }
+    }  
+
+
+
+  // M_AD FLTR
   // Move Attack Release 
   // Insert/Remove Trig
   if (menu          != MENU_OFF && 
@@ -1116,6 +1269,32 @@ void handle_key_amp_env()
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>4) 
 	  { attack_fltr_all=-1; 	  dirty_graphic=1; }
     }  
+
+  // M_AD FLTR
+  // Move Decay Sustain
+  // Insert/Remove Trig
+  if (menu          != MENU_OFF && 
+      menu_cursor   == M_AD     &&
+      menu_env      == MENU_FLTR_DECAY_SUSTAIN)
+    {
+      //printf("***********************\n");
+      if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A])
+	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>4) 
+	  { decay_fltr_all=-1;   dirty_graphic=1; }
+      
+      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>4) 
+	  { decay_fltr_all=1; 	  dirty_graphic=1; }
+      
+      if (keyState[BUTTON_UP]    && keyState[BUTTON_A]) 
+	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>4) 
+	  { sustain_fltr_all=1;  	  dirty_graphic=1; }
+      
+      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A]) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>4) 
+	  { sustain_fltr_all=-1; 	  dirty_graphic=1; }
+    }  
+
 
 
 
@@ -1169,6 +1348,56 @@ void handle_key_amp_env()
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>4) 
 	  { adsr_note_all=-1; 	  dirty_graphic=1; }
     }  
+
+
+
+
+  // change M_AD SUBMENU
+  if (keyState[BUTTON_START]       &&
+      keyRepeat[BUTTON_UP]%128==127   &&
+      menu_cursor ==  M_AD)
+    {
+      menu_env--;
+      if (menu_env<=-1)
+	menu_env=4;
+      dirty_graphic=1;
+      IE.clearLastKeyEvent();
+      menu_env_dirty_keyboard=1;
+      printf("[sub menu env : %d]\n",menu_env);
+    }
+
+  // change M_AD SUBMENU
+  if (keyState[BUTTON_START] &&
+      keyRepeat[BUTTON_DOWN]%128==127  &&
+      menu_cursor ==  M_AD)
+    {
+      menu_env++;
+      if (menu_env>=4)
+	menu_env=0;
+      dirty_graphic=1;
+      IE.clearLastKeyEvent();
+      menu_env_dirty_keyboard=1;
+      printf("[sub menu env : %d]\n",menu_env);
+    }
+
+  // change M_AD SUBMENU
+  if (lastKey     ==  BUTTON_START  && 
+      lastEvent   ==  SDL_KEYUP     && 
+      menu_cursor ==  M_AD)
+    {
+      if (menu_env_dirty_keyboard==0)
+	{
+	  if      (menu_env==MENU_ENV_ATTACK_RELEASE)      { menu_env=MENU_ENV_DECAY_SUSTAIN;       }
+	  else if (menu_env==MENU_ENV_DECAY_SUSTAIN)       { menu_env=MENU_FLTR_ATTACK_RELEASE;     }   
+	  else if (menu_env==MENU_FLTR_ATTACK_RELEASE)     { menu_env=MENU_FLTR_DECAY_SUSTAIN;      }   
+	  else if (menu_env==MENU_FLTR_DECAY_SUSTAIN)      { menu_env=MENU_ENV_ADSRNOTE_AMP;        }   
+	  else if (menu_env==MENU_ENV_ADSRNOTE_AMP)        { menu_env=MENU_ENV_ATTACK_RELEASE;      }   
+	  dirty_graphic=1;
+	}
+      menu_env_dirty_keyboard=0;
+      IE.clearLastKeyEvent();
+      printf("[sub menu env : %d]\n",menu_env);
+    }
 
 
 }
@@ -1258,18 +1487,6 @@ void handle_key_note()
       printf("[sub menu note : %d]\n",menu_note);
     }
 
-  // change note from box to value e.g C3 D4...
-  if (lastKey     ==  BUTTON_START  && 
-      lastEvent   ==  SDL_KEYUP     && 
-      menu_cursor ==  M_AD)
-    {
-      if      (menu_env==MENU_ENV_ATTACK_RELEASE)      { menu_env=MENU_FLTR_ATTACK_RELEASE;  }
-      else if (menu_env==MENU_FLTR_ATTACK_RELEASE)     { menu_env=MENU_ENV_ADSRNOTE_AMP;     }   
-      else if (menu_env==MENU_ENV_ADSRNOTE_AMP)        { menu_env=MENU_ENV_ATTACK_RELEASE;   }   
-      dirty_graphic=1;
-      IE.clearLastKeyEvent();
-      printf("[sub menu env : %d]\n",menu_env);
-    }
 
 }
 
@@ -1789,6 +2006,47 @@ void seq_update_multiple_time_by_step()
       if (debug)
 	printf("[attack_all:%d]\n",P[cty].getPatternElement(cursor).getAttack_amp());
     }
+
+
+  // Change amp env Decay
+  if (decay_amp!=0)
+    {
+      P[cty].getPatternElement(cursor).setDecay_amp(P[cty].getPatternElement(cursor).getDecay_amp()+decay_amp);
+      decay_amp=0;
+      if (debug)
+	printf("[decay_amp:%d]\n",P[cty].getPatternElement(cursor).getDecay_amp());
+    }
+  
+  // Change amp env Decay
+  if (decay_amp_all!=0)
+    {
+      for(i=0;i<16;i++)
+	P[cty].getPatternElement(i).setDecay_amp(P[cty].getPatternElement(i).getDecay_amp()+decay_amp_all);
+      decay_amp_all=0;
+      if (debug)
+	printf("[decay_all:%d]\n",P[cty].getPatternElement(cursor).getDecay_amp());
+    }
+
+
+
+  // Change amp env Sustain
+  if (sustain_amp!=0)
+    {
+      P[cty].getPatternElement(cursor).setSustain_amp(P[cty].getPatternElement(cursor).getSustain_amp()+sustain_amp);
+      sustain_amp=0;
+      if (debug)
+	printf("[sustain_amp:%d]\n",P[cty].getPatternElement(cursor).getSustain_amp());
+    }
+  
+  // Change amp env Sustain
+  if (sustain_amp_all!=0)
+    {
+      for(i=0;i<16;i++)
+	P[cty].getPatternElement(i).setSustain_amp(P[cty].getPatternElement(i).getSustain_amp()+sustain_amp_all);
+      sustain_amp_all=0;
+      if (debug)
+	printf("[sustain_all:%d]\n",P[cty].getPatternElement(cursor).getSustain_amp());
+    }
   
   
   // Change amp env Release
@@ -1838,6 +2096,47 @@ void seq_update_multiple_time_by_step()
       if (debug)
 	printf("[attack_all:%d]\n",P[cty].getPatternElement(cursor).getAttack_amp());
     }
+
+
+  // Change fltr env Decay
+  if (decay_fltr!=0)
+    {
+      P[cty].getPatternElement(cursor).setDecay_fltr(P[cty].getPatternElement(cursor).getDecay_fltr()+decay_fltr);
+      decay_fltr=0;
+      if (debug)
+	printf("[decay_fltr:%d]\n",P[cty].getPatternElement(cursor).getDecay_fltr());
+    }
+  
+  // Change fltr env Decay
+  if (decay_fltr_all!=0)
+    {
+      for(i=0;i<16;i++)
+	P[cty].getPatternElement(i).setDecay_fltr(P[cty].getPatternElement(i).getDecay_fltr()+decay_fltr_all);
+      decay_fltr_all=0;
+      if (debug)
+	printf("[decay_all:%d]\n",P[cty].getPatternElement(cursor).getDecay_amp());
+    }
+
+
+  // Change fltr env Sustain
+  if (sustain_fltr!=0)
+    {
+      P[cty].getPatternElement(cursor).setSustain_fltr(P[cty].getPatternElement(cursor).getSustain_fltr()+sustain_fltr);
+      sustain_fltr=0;
+      if (debug)
+	printf("[sustain_fltr:%d]\n",P[cty].getPatternElement(cursor).getSustain_fltr());
+    }
+  
+  // Change fltr env Sustain
+  if (sustain_fltr_all!=0)
+    {
+      for(i=0;i<16;i++)
+	P[cty].getPatternElement(i).setSustain_fltr(P[cty].getPatternElement(i).getSustain_fltr()+sustain_fltr_all);
+      sustain_fltr_all=0;
+      if (debug)
+	printf("[sustain_all:%d]\n",P[cty].getPatternElement(cursor).getSustain_amp());
+    }
+
   
   
   // Change fltr env Release
