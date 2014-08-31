@@ -57,11 +57,13 @@ enum {
   M_NOTE, // 1
   M_OSC,  // 2 
   M_VCO,  // 3
+  M_MAC,  // 4
 
-  M_LS,   // 4
-  M_LFO,  // 5
-  M_FLTR, // 6
-  M_BPM   // 7
+  M_LS,   // 5
+  M_LFO,  // 6
+  M_FLTR, // 7
+  M_BPM,  // 8
+  M_FX    // 9
 };
 
 enum {
@@ -161,6 +163,9 @@ int osctwotype=0;
 
 int osconetype_all=0;
 int osctwotype_all=0;
+
+int machine_type=0;
+int machine_type_all=0;
 
 int phase_osc1=0;
 int phase_osc1_all=0;
@@ -673,6 +678,35 @@ void display_board_osc()
     }
 }
 
+
+void display_board_mac()
+{
+  int  i;
+  int  cty=SEQ.getCurrentTrackY();
+  int  step=SEQ.getPatternSequencer(cty).getStep();
+
+    if (menu_cursor==M_MAC)
+    {
+      for (i=0;i<16;i++)
+	{
+	  if (P[cty].getPatternElement(i).getTrig())
+	    {
+	      SG.drawBoxNumber(i,TRIG_COLOR);
+	      if (i==cursor)       SG.drawBoxNumber(cursor,CURSOR_COLOR);
+	      if (i==step)         SG.drawBoxNumber(step,STEP_COLOR);  
+	      SG.drawTTFTextNumberFirstLine(i, P[cty].getPatternElement(i).getMachineTypeCharStar());
+	    }
+	  else
+	    {
+	      if (i==cursor)SG.drawBoxNumber(cursor,CURSOR_COLOR);
+	      if (i==step)  SG.drawBoxNumber(step,STEP_COLOR);  
+	    }
+
+	}
+    }
+}
+
+
 void display_board_fltr()
 {
   int  i;
@@ -801,27 +835,31 @@ void display_board()
   //  printf("           AD:%d FX:%d\n",AD,FX);
   //  exit(0);
 
-  if (menu==MENU_ON_PAGE1 && menu_cursor==M_AD)    sprintf(str_down,"[A/R] Note  OSC   VCO ",cty);  
-  if (menu==MENU_ON_PAGE1 && menu_cursor==M_NOTE)  sprintf(str_down," A/R [Note] OSC   VCO ",cty);
-  if (menu==MENU_ON_PAGE1 && menu_cursor==M_OSC)   sprintf(str_down," A/R  Note [OSC]  VCO ",cty);
-  if (menu==MENU_ON_PAGE1 && menu_cursor==M_VCO)   sprintf(str_down," A/R  Note  OSC  [VCO]",cty);
+  if (menu==MENU_ON_PAGE1 && menu_cursor==M_AD)    sprintf(str_down,"[A/R] Note  OSC   VCO   MAC ",cty);  
+  if (menu==MENU_ON_PAGE1 && menu_cursor==M_NOTE)  sprintf(str_down," A/R [Note] OSC   VCO   MAC ",cty);
+  if (menu==MENU_ON_PAGE1 && menu_cursor==M_OSC)   sprintf(str_down," A/R  Note [OSC]  VCO   MAC ",cty);
+  if (menu==MENU_ON_PAGE1 && menu_cursor==M_VCO)   sprintf(str_down," A/R  Note  OSC  [VCO]  MAC ",cty);
+  if (menu==MENU_ON_PAGE1 && menu_cursor==M_MAC)   sprintf(str_down," A/R  Note  OSC   VCO  [MAC]",cty);
 
-  if (menu==MENU_ON_PAGE2 && menu_cursor==M_LS)    sprintf(str_down,"[L/S] LFO   FLTR  BPM ",cty);  
-  if (menu==MENU_ON_PAGE2 && menu_cursor==M_LFO)   sprintf(str_down," L/S [LFO]  FLTR  BPM ",cty);
-  if (menu==MENU_ON_PAGE2 && menu_cursor==M_FLTR)  sprintf(str_down," L/S  LFO  [FLTR] BPM ",cty);
-  if (menu==MENU_ON_PAGE2 && menu_cursor==M_BPM)   sprintf(str_down," L/S  LFO   FLTR [BPM]",cty);
+  if (menu==MENU_ON_PAGE2 && menu_cursor==M_LS)    sprintf(str_down,"[L/S] LFO   FLTR  BPM   FX ",cty);  
+  if (menu==MENU_ON_PAGE2 && menu_cursor==M_LFO)   sprintf(str_down," L/S [LFO]  FLTR  BPM   FX ",cty);
+  if (menu==MENU_ON_PAGE2 && menu_cursor==M_FLTR)  sprintf(str_down," L/S  LFO  [FLTR] BPM   FX ",cty);
+  if (menu==MENU_ON_PAGE2 && menu_cursor==M_BPM)   sprintf(str_down," L/S  LFO   FLTR [BPM]  FX ",cty);
+  if (menu==MENU_ON_PAGE2 && menu_cursor==M_FX)    sprintf(str_down," L/S  LFO   FLTR  BPM  [FX]",cty);
 
   if (menu==0)                         sprintf(str_down,"                     ",cty);
 
-  if (menu_cursor==M_AD)               sprintf(str_up,"A/R ");
-  if (menu_cursor==M_NOTE)             sprintf(str_up,"Note");
-  if (menu_cursor==M_OSC)              sprintf(str_up,"OSC ");
-  if (menu_cursor==M_VCO)              sprintf(str_up,"VCO ");
+  if (menu_cursor==M_AD)               sprintf(str_up,"A/R   ");
+  if (menu_cursor==M_NOTE)             sprintf(str_up,"Note  ");
+  if (menu_cursor==M_OSC)              sprintf(str_up,"OSC   ");
+  if (menu_cursor==M_VCO)              sprintf(str_up,"VCO   ");
+  if (menu_cursor==M_MAC)              sprintf(str_up,"MAC   ");
 
-  if (menu_cursor==M_LS)               sprintf(str_up,"L/S ");
-  if (menu_cursor==M_LFO)              sprintf(str_up,"LFO");
-  if (menu_cursor==M_FLTR)             sprintf(str_up,"FLTR ");
+  if (menu_cursor==M_LS)               sprintf(str_up,"L/S   ");
+  if (menu_cursor==M_LFO)              sprintf(str_up,"LFO   ");
+  if (menu_cursor==M_FLTR)             sprintf(str_up,"FLTR  ");
   if (menu_cursor==M_BPM)              sprintf(str_up,"BPM %d",bpm_current);
+  if (menu_cursor==M_FX)               sprintf(str_up,"FX    ");
 
 
 
@@ -836,10 +874,12 @@ void display_board()
 
   display_board_amp_env();
   display_board_note();
-  display_board_load_save();
-  display_board_vco();
-  display_board_lfo();
   display_board_osc();
+  display_board_vco();
+  display_board_mac();
+
+  display_board_load_save();
+  display_board_lfo();
   display_board_fltr();
   display_board_bpm();
 
@@ -885,24 +925,24 @@ void handle_key_menu()
       switch (menu)
 	{
 	case MENU_OFF:      
-	  if (menu_cursor<4) 
+	  if (menu_cursor<5) 
 	    menu=MENU_ON_PAGE1;
-	  if (menu_cursor>=4)
+	  if (menu_cursor>=5)
 	    menu=MENU_ON_PAGE2;
 	  break;
 
 	case MENU_ON_PAGE1: 
 	  menu=MENU_ON_PAGE2;
-	  if (menu_cursor<=3)
-	    menu_cursor+=4; 
+	  if (menu_cursor<5)
+	    menu_cursor+=5; 
 	  else
-	    menu_cursor=4;
+	    menu_cursor=5;
 	  break;
 
 	case MENU_ON_PAGE2: 
 	  menu=MENU_ON_PAGE1; 
-	  if (menu_cursor>=4)
-	    menu_cursor-=4; 
+	  if (menu_cursor>=5)
+	    menu_cursor-=5; 
 	  else
 	    menu_cursor=0;
 	  break;
@@ -934,8 +974,8 @@ void handle_key_menu()
 	    menu_cursor--;
 	  //	  if (menu_cursor<M_AD  && menu==MENU_ON_PAGE1) menu_cursor=M_VCO;
 	  //	  if (menu_cursor<M_OSC && menu==MENU_ON_PAGE2) menu_cursor=M_BPM;
-	  if (menu_cursor<0     && menu==MENU_ON_PAGE1) menu_cursor=3;
-	  if (menu_cursor<4     && menu==MENU_ON_PAGE2) menu_cursor=7;
+	  if (menu_cursor<0     && menu==MENU_ON_PAGE1) menu_cursor=4;
+	  if (menu_cursor<5     && menu==MENU_ON_PAGE2) menu_cursor=9;
 
 	  dirty_graphic=1;
 	  printf("\t\t[menu_cursor:%d]\n",menu_cursor);
@@ -949,8 +989,8 @@ void handle_key_menu()
 	    menu_cursor++;
 	  //if (menu_cursor>M_VCO  && menu==MENU_ON_PAGE1) menu_cursor=M_AD;
 	  //if (menu_cursor>M_BPM  && menu==MENU_ON_PAGE2) menu_cursor=M_OSC;
-	  if (menu_cursor>3      && menu==MENU_ON_PAGE1) menu_cursor=0;
-	  if (menu_cursor>7      && menu==MENU_ON_PAGE2) menu_cursor=4;
+	  if (menu_cursor>4      && menu==MENU_ON_PAGE1) menu_cursor=0;
+	  if (menu_cursor>9      && menu==MENU_ON_PAGE2) menu_cursor=5;
 
 	  dirty_graphic=1;
 	  printf("\t\t[menu_cursor:%d]\n",menu_cursor);
@@ -1014,9 +1054,11 @@ void handle_key_sixteenbox()
        menu==MENU_OFF && menu_cursor==M_NOTE  ||
        menu==MENU_OFF && menu_cursor==M_VCO   ||
        menu==MENU_OFF && menu_cursor==M_OSC   ||
+       menu==MENU_OFF && menu_cursor==M_MAC   ||
        menu==MENU_OFF && menu_cursor==M_LFO   ||
        menu==MENU_OFF && menu_cursor==M_FLTR  ||
-       menu==MENU_OFF && menu_cursor==M_BPM   
+       menu==MENU_OFF && menu_cursor==M_BPM   ||
+       menu==MENU_OFF && menu_cursor==M_FX   
        ) &&
       !keyState[BUTTON_B]                   &&
       !keyState[BUTTON_A]                   &&
@@ -1616,6 +1658,54 @@ void handle_key_vco()
 }
 
 
+void handle_key_mac()
+{
+  bool * keyState;
+  int  * keyRepeat;
+  int    lastEvent;
+  int    lastKey;
+
+  keyState=IE.keyState();
+  keyRepeat=IE.keyRepeat();
+  lastEvent=IE.lastEvent();
+  lastKey=IE.lastKey();
+
+  // M_MAC
+  // change machine type
+  if (menu        == MENU_OFF && 
+      menu_cursor == M_MAC )
+    {
+      // Insert/Remove Trig
+      sub_handle_invert_trig();
+
+      
+      if (keyState[BUTTON_UP] && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%128==0) 
+	  { machine_type=1;   	  dirty_graphic=1;}
+      
+      if (keyState[BUTTON_DOWN] && keyState[BUTTON_B])
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%128==0) 
+	  { machine_type=-1;  	  dirty_graphic=1;}
+    }
+
+  // M_MAC
+  // change machine type
+  if (menu        != MENU_OFF && 
+      menu_cursor == M_OSC )
+    {
+      
+      if (keyState[BUTTON_UP] && keyState[BUTTON_A]) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%128==0) 
+	  { machine_type_all=1;   	  dirty_graphic=1;}
+      
+      if (keyState[BUTTON_DOWN] && keyState[BUTTON_A])
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%128==0) 
+	  { machine_type_all=-1;  	  dirty_graphic=1;}
+    }
+
+}
+
+
 void handle_key_lfo()
 {
   bool * keyState;
@@ -1944,13 +2034,16 @@ void handle_key()
   handle_key_menu();
   
   handle_key_sixteenbox();
+
   handle_key_amp_env();
   handle_key_note();
-  handle_key_load_save();
   handle_key_vco();
-  handle_key_lfo();
   handle_key_osc(); 
+  handle_key_mac(); 
+
+  handle_key_load_save();
   handle_key_fltr();
+  handle_key_lfo();
   handle_key_bpm();
  
   int delay=1;
@@ -2390,6 +2483,26 @@ void seq_update_multiple_time_by_step()
 	printf("[osctwotype:%d]\n",P[cty].getPatternElement(cursor).getOscillatorTwoType());	  
     }
   
+
+
+  // Change oscillator one
+  if (machine_type!=0)
+    {
+      P[cty].getPatternElement(cursor).setMachineType(P[cty].getPatternElement(cursor).getMachineType()+machine_type);
+      machine_type=0;
+      if (debug)
+	printf("[machine_type:%d]\n",P[cty].getPatternElement(cursor).getMachineType());	  
+    }
+  
+  // Change oscillator one
+  if (machine_type_all!=0)
+    {
+      for (i=0;i<16;i++)
+	P[cty].getPatternElement(i).setMachineType(P[cty].getPatternElement(i).getMachineType()+machine_type_all);
+      machine_type_all=0;
+      if (debug)
+	printf("[machine_type_all:%d]\n",P[cty].getPatternElement(cursor).getMachineType());	  
+    }
   
   
   // Change Note
@@ -2618,6 +2731,8 @@ void seq_update_track(int t)
 	  //M[t]->reset();
 	  //MM[t]->setAmplitude(P[t].getPatternElement(step).getAmp());
 	  MM[t]->setAmplitude(P[t].getPatternElement(step).getAmp());
+	  MM[t]->setMachineType(P[t].getPatternElement(step).getMachineType());
+	  M[t]=MM[t]->getInput();                             
 
 	  	 
 	  //M[t]->getVCO().getOscillatorOne();
@@ -2671,8 +2786,12 @@ void seq_update_track(int t)
 	  //M[t]->getVCO().setOscillator(0,P[t].getPatternElement(step).getOscillatorOneType());
 	  //M[t]->getVCO().setOscillator(1,P[t].getPatternElement(step).getOscillatorTwoType());
 
-	  M[t]->set(OSC1_TYPE,1);
-	  M[t]->set(OSC2_TYPE,2);
+	  M[t]->set(OSC1_TYPE,P[t].getPatternElement(step).getOscillatorOneType());
+	  M[t]->set(OSC2_TYPE,P[t].getPatternElement(step).getOscillatorTwoType());
+
+
+	  //M[t]->set(OSC1_TYPE,0);
+	  //M[t]->set(OSC2_TYPE,0);
 
 
 

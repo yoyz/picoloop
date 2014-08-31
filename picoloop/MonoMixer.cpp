@@ -12,6 +12,9 @@ MonoMixer::MonoMixer(): PM(), OPLM()
   //M=&PM;
   //printf("MonoMixer::MonoMixer()  PM=0x%08.8X\n",PM);
   //printf("MonoMixer::MonoMixer()  M=0x%08.8X\n",M);
+  //M=&OPLM;
+  machine_type=0;
+  M=&PM;
 }
 
 MonoMixer::~MonoMixer()
@@ -22,11 +25,31 @@ MonoMixer::~MonoMixer()
 
 void MonoMixer::init()
 {
-  M=&PM;
+  PM.init();
+  OPLM.init();
+
+  if (machine_type==0)
+    M=&PM;
+  if (machine_type==1)
+    M=&OPLM;
   M=&OPLM;
   //M=&PM;
 }
 
+
+void MonoMixer::setMachineType(int type)
+{
+  printf("MonoMixer::setMachineType :%d\n",type);  
+  machine_type=type;
+  if (type==0)
+    {
+      M=&PM;
+    }
+  if (type==1)
+    {
+      M=&OPLM;
+    }
+}
 
 void MonoMixer::setAmplitude(int amp)
 {

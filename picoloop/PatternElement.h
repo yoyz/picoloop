@@ -16,6 +16,14 @@ enum
     NOISE,
   };
 
+enum 
+  {
+    PICOSYNTH,
+    OPL2
+  };
+
+
+
 class PatternElement
 {
 public:
@@ -26,6 +34,7 @@ public:
   bool   setNote(int Note);
   int    getNote();
   float  getNoteFreq();
+  const char * getMachineTypeCharStar();
   const char * getNoteCharStar();
   const char * getOscOneTypeCharStar();
   const char * getOscTwoTypeCharStar();
@@ -90,6 +99,9 @@ public:
   int    getNoteADSR();
   void   setNoteADSR(int val);
 
+  int    getMachineType();
+  void   setMachineType(int val);
+
 
   bool   setChannel(int Channel);
   bool   setKeyValue(string key, string value);
@@ -129,6 +141,8 @@ private:
   int phaseOsc1;
 
   int adsr_note;
+
+  int machine_type;
   
 };
 

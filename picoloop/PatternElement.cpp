@@ -39,6 +39,8 @@ PatternElement::PatternElement()
   oscTwoType=PULSE;
 
   adsr_note=1;
+
+  machine_type=0;
 }
 
 PatternElement::~PatternElement()
@@ -234,6 +236,19 @@ void PatternElement::setNoteADSR(int val)
 }
 
 
+int PatternElement::getMachineType()
+{
+  return machine_type;
+}
+
+void PatternElement::setMachineType(int val)
+{
+  if      (val>1) val=0;
+  else if (val<0) val=1;
+  machine_type=val;
+}
+
+
 
 
 
@@ -331,6 +346,21 @@ void PatternElement::print()
 {
   cout << getStr() << "\n";
 }
+
+
+const char * PatternElement::getMachineTypeCharStar()
+{
+  static const char * str_picosynth   = "PICO ";
+  static const char * str_opl2        = "OPL2 ";
+
+  switch (machine_type)
+    {
+    case PICOSYNTH:  return str_picosynth;   break;
+    case OPL2:       return str_opl2;        break; 
+    }
+  return str_picosynth;
+}
+
 
 const char * PatternElement::getOscOneTypeCharStar()
 {

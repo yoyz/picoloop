@@ -14,6 +14,7 @@ class MonoMixer
   MonoMixer();
   ~MonoMixer();
   void        init();
+  void        setMachineType(int type);
   void        setAmplitude(int amp);
   //  void        setInput(Machine * M);
   Machine *   getInput();
@@ -24,6 +25,7 @@ class MonoMixer
   PicosynthMachine      PM;
   dboplMachine          OPLM;
   Sint16                amplitude;
+  int                   machine_type;
 };
 
 
