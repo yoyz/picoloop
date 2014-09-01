@@ -2701,8 +2701,8 @@ int seq_update_by_step()
 
 void seq_update_track(int t)
 {
-  int  cty=SEQ.getCurrentTrackY();
-  int  ctx=SEQ.getCurrentTrackX();
+  //int  cty=SEQ.getCurrentTrackY();
+  //int  ctx=SEQ.getCurrentTrackX();
   //int  step=SEQ.getPatternSequencer(cty).getStep();
   int  step=SEQ.getPatternSequencer(t).getStep();
 
@@ -2751,8 +2751,8 @@ void seq_update_track(int t)
 
 
 
-	  M[t]->set(OSC12_MIX,P[cty].getPatternElement(step).getVCOMix());
-	  M[t]->set(OSC1_PHASE,P[cty].getPatternElement(step).getPhaseOsc1());
+	  M[t]->set(OSC12_MIX,P[t].getPatternElement(step).getVCOMix());
+	  M[t]->set(OSC1_PHASE,P[t].getPatternElement(step).getPhaseOsc1());
 	  //M[t]->set(OSC12_MIX,phase);
 
 	  M[t]->set(OSC1_TYPE,P[t].getPatternElement(step).getOscillatorOneType());

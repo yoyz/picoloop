@@ -36,13 +36,13 @@ void PulseOscillator::init()
   //      table=(Sint16*)malloc(sizeof(Sint16)*table_size);
       for (i=0;i<table_size/2;i++)
 	{
-	  table[i]=(1<<(bitdepth-2));
+	  table[i]=(1<<(bitdepth-2)/2);
 	  //	  table[i]=s;
 	  //printf("PulseOscillator::init table[%d]=%d\n",i,table[i]);
 	}
       for (i=table_size/2;i<table_size;i++)
 	{
-	  table[i]=(1<<(bitdepth-2))*-1;
+	  table[i]=((1<<(bitdepth-2))*-1)/2;
 	  //	  table[i]=s;
 	  //printf("PulseOscillator::init table[%d]=%d\n",i,table[i]);
 	}

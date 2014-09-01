@@ -41,7 +41,7 @@ void SawOscillator::init()
       s=(1<<(bitdepth-1))-((table_size/2));
       for (i=0;i<table_size-1;i++)
 	{
-	  table[i]=s;
+	  table[i]=s/2;
 	  s=s-dec;
 	  if (0) printf("SawOscillator::init() table[%d]=%d\n",i,table[i]);
 	  
