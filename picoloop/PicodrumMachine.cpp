@@ -163,58 +163,9 @@ void PicodrumMachine::reset()
   last_sample=0;
 }
 
-/*
-void PicodrumMachine::setSynthFreq(int sfreq)
-{
-  freq=sfreq;
-  vco->setFreq(sfreq);
-  //adsr.setOscillator(s);
-  adsr.setVCO(vco);
-}
-*/
-
-/*
-
-void PicodrumMachine::setSynthFreq(int sfreq)
-{
-  freq=sfreq;
-  s->setFreq(sfreq);
-  adsr.setOscillator(s);
-}
-
-
-Oscillator * PicodrumMachine::getOscillator()
-{
-  return s;
-}
-
-void PicodrumMachine::setSineOsc()
-{
-  s=&sineosc;
-  s->setFreq(freq);
-  adsr.setOscillator(s);
-}
-
-
-void PicodrumMachine::setSawOsc()
-{
-  s=&sawosc;
-  s->setFreq(freq);
-  adsr.setOscillator(s);
-}
-
-void PicodrumMachine::setFuzzyPulseOsc()
-{
-  s=&fuzzypulseosc;
-  s->setFreq(freq);
-  adsr.setOscillator(s);
-}
-*/
 
 int PicodrumMachine::tick()
 {
-  //if (&s==0) { printf("sine:%d\n",sineosc.tick()); exit(0);  }
-  //  return s->tick();
   float  f_in;
   float  f_out;
   Sint16 s_in;
@@ -222,7 +173,7 @@ int PicodrumMachine::tick()
 
 
   s_in=adsr_amp.tick();
-  s_in=s_in/2;
+  s_in=s_in;
   //return s_in;
 
   //FILTER
