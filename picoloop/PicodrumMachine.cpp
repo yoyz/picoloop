@@ -222,7 +222,7 @@ int PicodrumMachine::tick()
 
 
   s_in=adsr_amp.tick();
-  s_in=s_in/4;
+  s_in=s_in/2;
   //return s_in;
 
   //FILTER

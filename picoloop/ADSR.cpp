@@ -12,8 +12,8 @@ enum
     ADSR_FINISH
   };
 
-#define SHIFT_TRIG 6  // for drum
-#define SHIFT_NOTE 9  // for synth
+#define SHIFT_TRIG 8  // for drum
+#define SHIFT_NOTE 4  // for synth
 
 ADSR::ADSR() : tanh_table(new Sint16[128])
 {

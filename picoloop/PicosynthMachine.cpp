@@ -276,6 +276,7 @@ int PicosynthMachine::tick()
   //  sample_num++;
   
   s_in=adsr_amp.tick();
+  s_in=s_in/2;
   //s_in=s_in/4;
   //  s_out=bq.process(s_in);
   //  return s_out;
@@ -298,7 +299,7 @@ int PicosynthMachine::tick()
       //if (f_Fc<0.01)
       if (1)
 	{
-	  bq.setFc(f_Fc);
+	  bq.setFc(f_Fc+0.005);
 	  //if (f_Q<0.01)
 	  bq.setQ(f_Q);
 	  bq.calcBiquad();
