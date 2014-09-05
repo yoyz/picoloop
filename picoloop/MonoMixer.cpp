@@ -91,7 +91,7 @@ Sint16 MonoMixer::tick()
   Sint16 res16=0;
   Sint16 tick=0;
   tick=M->tick();
-  res32=tick*amplitude*2;
+  res32=tick*amplitude;
   //  res32=tick*127;
   //res32=res32/127;
   
