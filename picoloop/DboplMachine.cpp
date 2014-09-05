@@ -144,7 +144,8 @@ void dboplMachine::set(int what,int val)
       f_val_cutoff=val;
       f_val_resonance=resonance;
       cutoff=val;
-      this->getBiquad().setBiquad(0, (f_val_cutoff/256)-0.005, (f_val_resonance/8)+0.005, 0.0);
+      //this->getBiquad().setBiquad(0, (f_val_cutoff/256)-0.005, (f_val_resonance/8)+0.005, 0.0);
+      this->getBiquad().setBiquad(0, (f_val_cutoff/256), (f_val_resonance/8)+0.005, 0.0);
       //this->getBiquad().setFc((f_val/256)+0.005);  
       this->getBiquad().calcBiquad(); 
 
@@ -155,7 +156,8 @@ void dboplMachine::set(int what,int val)
       f_val_resonance=val;
       resonance=val;
       //this->getBiquad().setQ((f_val/8)+0.005);   
-      this->getBiquad().setBiquad(0, (f_val_cutoff/256)-0.005, (f_val_resonance/8)+0.005, 0.0);
+      //this->getBiquad().setBiquad(0, (f_val_cutoff/256)-0.005, (f_val_resonance/8)+0.005, 0.0);
+      this->getBiquad().setBiquad(0, (f_val_cutoff/256), (f_val_resonance/8)+0.005, 0.0);
       this->getBiquad().calcBiquad(); 
     }
 
