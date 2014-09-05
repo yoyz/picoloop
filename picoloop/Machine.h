@@ -53,6 +53,13 @@ using namespace std;
 #define OSC3_FREQ           39
 #define OSC4_FREQ           40
 
+
+#define LFO1_DEPTH           41
+#define LFO1_FREQ            42
+#define LFO2_DEPTH           43
+#define LFO2_FREQ            44
+
+
 #define NOTE_ON             100
 
 

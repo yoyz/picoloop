@@ -106,6 +106,10 @@ void PicodrumMachine::set(int what,int val)
 
   if (what==OSC12_MIX)           this->getVCO().setVCOMix(val);
 
+  if (what==LFO1_DEPTH)          this->getVCO().setLfoDepth(val);
+  if (what==LFO1_FREQ)           this->getVCO().setLfoSpeed(val);
+
+
   if (what==ADSR_ENV0_ATTACK)    this->getADSRAmp().setAttack(val);
   if (what==ADSR_ENV0_RELEASE)   this->getADSRAmp().setRelease(val);
 

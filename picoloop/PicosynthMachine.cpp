@@ -90,6 +90,9 @@ void PicosynthMachine::set(int what,int val)
 
   if (what==OSC12_MIX)           this->getVCO().setVCOMix(val);
 
+  if (what==LFO1_DEPTH)          this->getVCO().setLfoDepth(val);
+  if (what==LFO1_FREQ)           this->getVCO().setLfoSpeed(val);
+
   if (what==ADSR_ENV0_ATTACK)    this->getADSRAmp().setAttack(val);
   if (what==ADSR_ENV0_DECAY)     this->getADSRAmp().setDecay(val);
   if (what==ADSR_ENV0_SUSTAIN)   this->getADSRAmp().setSustain(val);
