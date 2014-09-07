@@ -3,7 +3,7 @@ using namespace std;
 #include "Machine.h"
 #include "VCO.h"
 #include "ADSR.h"
-#include "Biquad.h"
+#include "Filter.h"
 #include "OneOscillator.h"
 
 #ifndef __PICOSYNTHMACHINE____
@@ -27,8 +27,6 @@ class PicosynthMachine : public Machine
   ADSR   & getADSRAmp();
   ADSR   & getADSRFltr();
   VCO    & getVCO();
-  Biquad & getBiquad();
-  //  Oscillator * getOscillator();
 
   int                   cutoff;
   int                   resonance;
@@ -36,8 +34,7 @@ class PicosynthMachine : public Machine
   VCO                   vco;
   ADSR                  adsr_amp;
   ADSR                  adsr_fltr;
-  Biquad                bq;
-  Biquad                bq2;
+  Filter                filter;
 
   OneOscillator         one_osc;
 

@@ -3,7 +3,7 @@
 #define SAM 512
 
 
-dboplMachine::dboplMachine() : bq()
+dboplMachine::dboplMachine() : filter()
 {
   printf("dboplMachine::dboplMachine()\n");  
   buffer=0;
@@ -38,7 +38,8 @@ void dboplMachine::init()
   freq=110;
   keyon=0;
 
-  bq.setBiquad(0, 0.2, 0.5, 0.1);
+
+  filter.init();
 
   //HO->SetSampleRate(22050);
   HO->SetSampleRate(44100);
@@ -60,7 +61,7 @@ void dboplMachine::init()
   HO->SetEnvelopeDecay(1,2,2);
   HO->SetEnvelopeSustain(1,2,12);
   HO->SetEnvelopeRelease(1,2,15);
-  //HO->KeyOn(1,freq);
+
 }
 
 void dboplMachine::reset()
@@ -70,10 +71,6 @@ void dboplMachine::reset()
  keyon=0;
 }
 
-Biquad & dboplMachine::getBiquad()
-{
-  return bq;
-}
 
 
 int dboplMachine::get(int what)
@@ -141,24 +138,14 @@ void dboplMachine::set(int what,int val)
 
   if (what==FILTER1_CUTOFF)      
     { 
-      f_val_cutoff=val;
-      f_val_resonance=resonance;
       cutoff=val;
-      //this->getBiquad().setBiquad(0, (f_val_cutoff/256)-0.005, (f_val_resonance/8)+0.005, 0.0);
-      this->getBiquad().setBiquad(0, (f_val_cutoff/256), (f_val_resonance/8)+0.005, 0.0);
-      //this->getBiquad().setFc((f_val/256)+0.005);  
-      this->getBiquad().calcBiquad(); 
+      filter.setCutoff(cutoff);
+    }
 
-  }
   if (what==FILTER1_RES)         
     { 
-      f_val_cutoff=cutoff;
-      f_val_resonance=val;
       resonance=val;
-      //this->getBiquad().setQ((f_val/8)+0.005);   
-      //this->getBiquad().setBiquad(0, (f_val_cutoff/256)-0.005, (f_val_resonance/8)+0.005, 0.0);
-      this->getBiquad().setBiquad(0, (f_val_cutoff/256), (f_val_resonance/8)+0.005, 0.0);
-      this->getBiquad().calcBiquad(); 
+      filter.setResonance(resonance);
     }
 
 
@@ -174,20 +161,15 @@ int dboplMachine::tick()
   if (index>=SAM)
     index=0;
 
-  //float f_out;
+
   if (sample_num==0 || 
       index==0 )
     HO->Generate(SAM,buffer);
 
-  //  if (index>SAM)
-  //HO.Generate(SAM,buffer);
 
-
-  //s_in=buffer[index];
-  //s_out=s_in;
 
   s_in=buffer[index];
-  s_out=bq.process(s_in);
+  s_out=filter.process(s_in);
 
   index++;
   sample_num++;

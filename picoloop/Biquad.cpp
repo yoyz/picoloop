@@ -44,7 +44,8 @@ Biquad::~Biquad() {
 
 void Biquad::reset()
 {
-    type = bq_type_lowpass;
+  //type = bq_type_lowpass;
+  type = bq_type_lowpass;
     a0 = 1.0;
     a1 = a2 = b1 = b2 = 0.0;
     Fc = 0.50;
@@ -90,7 +91,8 @@ void Biquad::setPeakGain(float peakGainDB) {
     
 
 void Biquad::setBiquad(int type, float Fc, float Q, float peakGainDB) {
-    this->type = type;
+  //this->type = type;
+    this->type = bq_type_lowpass;
     this->Q = Q;
     this->base_Q=Q;
     this->Fc = Fc;

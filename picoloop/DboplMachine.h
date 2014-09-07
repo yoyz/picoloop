@@ -2,7 +2,8 @@ using namespace std;
 
 #include "Machine.h"
 #include "dbopl/hiopl.h"
-#include "Biquad.h"
+//#include "Biquad.h"
+#include "Filter.h"
 #include <SDL/SDL.h>
 //#include "dbopl/mixer.h"
 //#include "dbopl/dbopl.h"
@@ -28,12 +29,13 @@ class dboplMachine : public Machine
   void set(int what,int val);
   int  get(int what);
 
-  Biquad & getBiquad();
+  //Biquad & getBiquad();
 
  protected:
   Hiopl                 * HO;
 
-  Biquad                bq;
+  //Biquad                bq;
+  Filter                filter;
 
   int                   cutoff;
   int                   resonance;

@@ -1,8 +1,7 @@
 #include "PicosynthMachine.h"
 
 
-
-PicosynthMachine::PicosynthMachine() : adsr_amp(), adsr_fltr(), vco(), bq(), bq2(), one_osc(), tanh_table(new Sint16[256])
+PicosynthMachine::PicosynthMachine() : adsr_amp(), adsr_fltr(), vco(), filter(), one_osc(), tanh_table(new Sint16[256])
 {
   float fi;
   int   i;
@@ -29,7 +28,7 @@ PicosynthMachine::~PicosynthMachine()
 void PicosynthMachine::init()
 {
 
-  bq.reset();
+  //bq.reset();
   adsr_amp.init();
   adsr_fltr.init();
 
@@ -40,12 +39,9 @@ void PicosynthMachine::init()
   one_osc.init();
   one_osc.reset();
 
-  bq.setBiquad(0, 0.2, 0.5, 0.1);
-  sample_num=0;
 
-  bq2.reset();
-  bq2.setBiquad(0, 0.5, 0.05, 0.0);
-  bq2.calcBiquad();
+  filter.init();
+  sample_num=0;
 
   this->reset();
   this->getADSRAmp().init();
@@ -71,7 +67,6 @@ void PicosynthMachine::set(int what,int val)
 
   if (what==NOTE_ON && val==1) 
     { 
-      this->getBiquad().reset();
       this->getADSRAmp().reset();
       this->getADSRFltr().reset();
       this->getVCO().reset();
@@ -106,26 +101,17 @@ void PicosynthMachine::set(int what,int val)
 
   if (what==FILTER1_CUTOFF)      
     { 
-      f_val_cutoff=val;
-      f_val_resonance=resonance;
       cutoff=val;
-      //this->getBiquad().setBiquad(0, (f_val_cutoff/256)-0.005, (f_val_resonance/8)+0.005, 0.0);
-      this->getBiquad().setBiquad(0, (f_val_cutoff/256), (f_val_resonance/8)+0.005, 0.0);
-      //this->getBiquad().setFc((f_val/256)+0.005);  
-      this->getBiquad().calcBiquad(); 
+      filter.setCutoff(cutoff);
       this->getADSRAmp().reset();
       this->getADSRFltr().reset();
+
 
   }
   if (what==FILTER1_RES)         
     { 
-      f_val_cutoff=cutoff;
-      f_val_resonance=val;
       resonance=val;
-      //this->getBiquad().setQ((f_val/8)+0.005);   
-      //this->getBiquad().setBiquad(0, (f_val_cutoff/256)-0.005, (f_val_resonance/8)+0.005, 0.0);
-      this->getBiquad().setBiquad(0, (f_val_cutoff/256), (f_val_resonance/8)+0.005, 0.0);
-      this->getBiquad().calcBiquad(); 
+      filter.setResonance(resonance);
       this->getADSRAmp().reset();
       this->getADSRFltr().reset();
     }
@@ -148,15 +134,9 @@ ADSR & PicosynthMachine::getADSRFltr()
 
 VCO & PicosynthMachine::getVCO()
 {
-  //  printf("PicosynthMachine::getVCO() this=0x%08.8X\n",this);
-  //  return vco_pointer;
   return vco;
 }
 
-Biquad & PicosynthMachine::getBiquad()
-{
-  return bq;
-}
 
 void PicosynthMachine::reset()
 {
@@ -181,6 +161,9 @@ int PicosynthMachine::tick()
   Sint32 tmp2;
   Sint32 tmp3;
   Sint16 index;
+
+  Sint32 cutoff_tmp;
+  Sint32 resonance_tmp;
   int    num=8192;
   int    i;
   
@@ -190,50 +173,37 @@ int PicosynthMachine::tick()
     {
       for (i=0;i<num;i++)
 	adsr_fltr.tick();
-
+      
       s_test=adsr_fltr.tick();
-
-      f_Fc=bq.getFc()*s_test;
-      f_Fc=f_Fc/16384;
-
-      f_Q=bq.getQ()*s_test;
-      f_Q=f_Q/16384;
+      
+      cutoff_tmp=(cutoff*s_test)/16384;
+      resonance_tmp=(resonance*s_test)/16384;
       
       if (1)
-	{
-	  bq.setFc(f_Fc+0.005);
-	  bq.setQ(f_Q);
-	  bq.calcBiquad();
-	}
-
-      if (0)
-	{
-	  printf("s_test:%d\n",s_test);
-	  printf("Fc:%f\n",bq.getFc());
-	  printf("Q:%f\n",bq.getQ());
-	  printf("f_Fc:%f\n",f_Fc);
-	  printf("f_Q:%f\n",f_Q);
-	}
+      	{
+	  filter.setCutoff(cutoff_tmp);
+	  filter.setResonance(resonance_tmp);
+      	}
     }
   
 
   if (sample_num>=0 &&
       sample_num < 256)
     {
-      s_out=bq.process(s_in);      
+      s_out=filter.process(s_in);      
     }
 
 
   if (sample_num>=256 &&
       sample_num<=num+256)
     {
-      s_out=bq.process(s_in);
+      s_out=filter.process(s_in);
     }
 
 
   if (sample_num>=num+256)
     {
-      s_out=bq.process(s_in);
+      s_out=filter.process(s_in);
       sample_num=-1;
     }
 
