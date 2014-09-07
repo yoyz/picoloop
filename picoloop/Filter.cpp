@@ -6,8 +6,8 @@ Filter::Filter() : bq(), lp()
   cutoff=120;
   resonance=10;
   needCalc=1;
-  //filterAlgo=ALGO_AMSYNTH;
-  filterAlgo=ALGO_BIQUAD;
+  filterAlgo=ALGO_AMSYNTH;
+  //filterAlgo=ALGO_BIQUAD;
   //filterAlgo=ALGO_NOFILTER;
 }
 
@@ -132,12 +132,17 @@ int16_t Filter::process_amsynth(int16_t in)
   //float f_in[0];
   float    f_in;
   float    f_out;
+
+  int      i_in;
+  int      i_out;
+
   float    f_val_cutoff=cutoff;
   float    f_val_resonance=resonance;
   int16_t    out;
 
   //f_in[0]=in;
   f_in=in;
+  i_in=in;
   if (needCalc)
     {
       //needCalc=1;
@@ -153,11 +158,13 @@ int16_t Filter::process_amsynth(int16_t in)
   //return bq.process(in);
   //lp.ProcessSamples(f_in,1,f_val_cutoff/127,f_val_resonance/127);
 
-  f_out=lp.ProcessSample(f_in);
+  //f_out=lp.ProcessSample(f_in);
+  i_out=lp.ProcessSample(i_in);
   //printf("f_in:%.8f f_out:%.8f\n",f_in,f_out);
   //lp.ProcessSamples(f_in,1);
   //f_out=f_in[0];
   out=f_out;
+  out=i_out;
   
   return out;
 }
