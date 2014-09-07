@@ -1,7 +1,7 @@
 /* amSynth
  * (c) 2001-2005 Nick Dowell
  */
-
+#include <stdio.h>
 #ifndef _AMSYNTHLOWPASSFILTER_H
 #define _AMSYNTHLOWPASSFILTER_H
 
@@ -22,14 +22,16 @@ public:
 
 	void calc(float fc, float res);
 	void	ProcessSamples	(float*, int);
+	float	ProcessSample	(float);
 private:
 	float rate;
 	float nyquist;
-	double d1, d2, d3, d4;
-	double a0, a1, a2, b0, b1, b2;
-	double x,y;
-	double k, k2, bh;
-	double r;
+	float d1, d2, d3, d4;
+	float a0, a1, a2;
+	float b1, b2;
+	float x,y;
+	float k, k2, bh;
+	float r;
 	float w;
 };
 

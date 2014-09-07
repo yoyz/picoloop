@@ -7,9 +7,13 @@ using namespace std;
 #define __FILTER____
 
 
-#define LOWPASS   0
-#define BANDPASS  1
-#define HIPASS    2
+#define TYPE_LOWPASS   0
+#define TYPE_BANDPASS  1
+#define TYPE_HIPASS    2
+
+#define ALGO_NOFILTER  0
+#define ALGO_BIQUAD    1
+#define ALGO_AMSYNTH   2
 
 class Filter
 {
@@ -30,10 +34,13 @@ class Filter
 
  protected:
 
+  int16_t process_biquad(int16_t in);
+  int16_t process_amsynth(int16_t in);
+
   int cutoff;
   int resonance;
   int type;
-  int algo;
+  int filterAlgo;
   int needCalc;
 
   Biquad                bq;
