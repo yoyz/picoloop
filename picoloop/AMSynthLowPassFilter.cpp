@@ -10,12 +10,15 @@ AMSynthLowPassFilter::AMSynthLowPassFilter() :
 	rate (4100.0)
 ,	nyquist (22050.0)
 {
+  d1=d2=d3=d4=0;
+  i_d1=i_d2=i_d3=i_d4=0;
 }
 
 void
 AMSynthLowPassFilter::reset()
 {
 	d1 = d2 = d3 = d4 = 0;
+	i_d1=i_d2=i_d3=i_d4=0;
 }
 
 
