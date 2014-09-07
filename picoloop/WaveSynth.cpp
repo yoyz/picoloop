@@ -569,7 +569,8 @@ void handle_key()
 	  f_r=f_r/8;
 	  
 	  printf("[Freq:%d]\n",i);
-	  MM[t]->setAmplitude(127);
+	  MM[t]->setMachineType(0);
+	  MM[t]->setAmplitude(32);
 	  M[t]->set(OSC1_FREQ,i);
 
 	  M[t]->set(OSC1_TYPE,1);

@@ -2,6 +2,7 @@ using namespace std;
 #include <stdio.h>
 #include <stdint.h>
 #include "Biquad.h"
+#include "AMSynthLowPassFilter.h"
 #ifndef __FILTER____
 #define __FILTER____
 
@@ -36,6 +37,7 @@ class Filter
   int needCalc;
 
   Biquad                bq;
+  AMSynthLowPassFilter  lp;
 };
 
 #endif
