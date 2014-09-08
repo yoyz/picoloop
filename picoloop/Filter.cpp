@@ -58,6 +58,8 @@ void Filter::setFilterType(int val)
 {
   if (filterType!=val)
     {
+      this->bq.reset();
+      lp.reset();
       filterType=val;  
       needCalc=1;
     }
