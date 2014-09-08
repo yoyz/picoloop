@@ -116,6 +116,9 @@ void PicosynthMachine::set(int what,int val)
       this->getADSRFltr().reset();
     }
 
+  if (what==FILTER1_TYPE)     filter.setFilterType(val);
+  if (what==FILTER1_ALGO)     filter.setFilterAlgo(val);
+
   
 }
 
@@ -144,6 +147,7 @@ void PicosynthMachine::reset()
   last_sample=0;
 }
 
+
 int PicosynthMachine::tick()
 {
   float  f_in;
@@ -167,8 +171,50 @@ int PicosynthMachine::tick()
   int    num=8192;
   int    i;
   
+  num=1024;
+
   s_in=adsr_amp.tick();
-  s_in=s_in/2;
+  s_in=s_in/6;
+ 
+  s_out=filter.process(s_in);      
+  
+
+  
+  sample_num++;
+  last_sample=s_out;
+
+  return s_out;
+
+}
+
+/*
+int PicosynthMachine::tick()
+{
+  float  f_in;
+  float  f_out;
+
+  float  f_Fc;
+  float  f_Q;
+
+  Sint16 s_in;
+  Sint16 s_out;
+
+  Sint16 s_test;
+
+  Sint32 tmp1;
+  Sint32 tmp2;
+  Sint32 tmp3;
+  Sint16 index;
+
+  Sint32 cutoff_tmp;
+  Sint32 resonance_tmp;
+  int    num=8192;
+  int    i;
+  
+  num=1024;
+
+  s_in=adsr_amp.tick();
+  s_in=s_in/6;
   if (sample_num==0)
     {
       for (i=0;i<num;i++)
@@ -214,3 +260,4 @@ int PicosynthMachine::tick()
   return s_out;
 
 }
+*/

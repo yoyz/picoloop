@@ -24,4 +24,15 @@
 //#define DEFAULT_FREQ 44100
 
 
+//INTERNAL
+
+#define FILTER_TYPE_LOWPASS   0
+#define FILTER_TYPE_BANDPASS  1
+#define FILTER_TYPE_HIPASS    2
+
+#define FILTER_ALGO_NOFILTER  0
+#define FILTER_ALGO_BIQUAD    1
+#define FILTER_ALGO_AMSYNTH   2
+
+
 #endif

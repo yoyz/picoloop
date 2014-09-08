@@ -136,21 +136,25 @@ void dboplMachine::set(int what,int val)
     if (what==OSC12_MIX)           HO->SetFrequencyMultiple(1,1,freqM[val/11]);
     if (what==OSC1_PHASE)          HO->SetFrequencyMultiple(1,2,freqM[val/11]);
 
-  if (what==FILTER1_CUTOFF)      
-    { 
-      cutoff=val;
-      filter.setCutoff(cutoff);
-    }
-
-  if (what==FILTER1_RES)         
-    { 
-      resonance=val;
-      filter.setResonance(resonance);
-    }
-
-
-
     if (what==OSC1_FREQ)           freq=val;
+
+    if (what==FILTER1_CUTOFF)      
+      { 
+	cutoff=val;
+	filter.setCutoff(cutoff);
+      }
+    
+    if (what==FILTER1_RES)         
+      { 
+	resonance=val;
+	filter.setResonance(resonance);
+      }
+    
+    if (what==FILTER1_TYPE)     filter.setFilterType(val);
+    if (what==FILTER1_ALGO)     filter.setFilterAlgo(val);
+    
+    
+  
 }
 
 int dboplMachine::tick()

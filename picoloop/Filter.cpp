@@ -6,7 +6,8 @@ Filter::Filter() : bq(), lp()
   cutoff=120;
   resonance=10;
   needCalc=1;
-  filterAlgo=ALGO_AMSYNTH;
+  filterType=FILTER_TYPE_LOWPASS;
+  filterAlgo=FILTER_ALGO_AMSYNTH;
   //filterAlgo=ALGO_BIQUAD;
   //filterAlgo=ALGO_NOFILTER;
 }
@@ -20,15 +21,17 @@ void Filter::init()
 {
   cutoff=120;
   resonance=10;
-  type=TYPE_LOWPASS;
+  filterType=FILTER_TYPE_LOWPASS;
+  filterAlgo=FILTER_ALGO_AMSYNTH;
   needCalc=1;
 }
 
 void Filter::reset()
 {
-  cutoff=120;
-  resonance=10;
-  type=TYPE_LOWPASS;
+  //cutoff=120;
+  //resonance=10;
+  //type=TYPE_LOWPASS;
+  //filterAlgo=ALGO_AMSYNTH;
   needCalc=1;
 }
 
@@ -51,11 +54,20 @@ void Filter::setResonance(int val)
     }
 }
 
-void Filter::setType(int val)
+void Filter::setFilterType(int val)
 {
-  if (type!=val)
+  if (filterType!=val)
     {
-      type=val;  
+      filterType=val;  
+      needCalc=1;
+    }
+}
+
+void Filter::setFilterAlgo(int val)
+{
+  if (filterAlgo!=val)
+    {
+      filterAlgo=val;  
       needCalc=1;
     }
 }
@@ -82,11 +94,11 @@ int16_t Filter::process(int16_t in)
   //return this->process_amsynth(in);
 
   
-  if (filterAlgo==ALGO_NOFILTER)
+  if (filterAlgo==FILTER_ALGO_NOFILTER)
     return in;
-  if (filterAlgo==ALGO_BIQUAD)
+  if (filterAlgo==FILTER_ALGO_BIQUAD)
     return this->process_biquad(in);
-  if (filterAlgo==ALGO_AMSYNTH)
+  if (filterAlgo==FILTER_ALGO_AMSYNTH)
     return this->process_amsynth(in);
   
     

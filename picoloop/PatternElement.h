@@ -3,6 +3,7 @@ using namespace std;
 //#include "Note.h"
 
 #include <string>
+#include "Master.h"
 #ifndef __PATTERNELEMENT__
 #define __PATTERNELEMENT__
 
@@ -90,6 +91,14 @@ public:
   int    getPhaseOsc1();
   void   setPhaseOsc1(int val);
 
+  int    getFilterType();
+  void   setFilterType(int val);
+  const char * getFilterTypeCharStar();
+
+
+  int    getFilterAlgo();
+  void   setFilterAlgo(int val);
+  const char * getFilterAlgoCharStar();
 
   int    getOscillatorOneType();
   int    getOscillatorTwoType();
@@ -149,6 +158,9 @@ private:
   int machine_type;
 
   int trig_time;
+
+  int filterType;
+  int filterAlgo;
   
 };
 

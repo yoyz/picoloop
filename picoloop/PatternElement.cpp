@@ -43,6 +43,9 @@ PatternElement::PatternElement()
   machine_type=0;
 
   trig_time=0;
+
+  filterType=FILTER_TYPE_LOWPASS;
+  filterAlgo=FILTER_ALGO_AMSYNTH;
 }
 
 PatternElement::~PatternElement()
@@ -83,6 +86,9 @@ void PatternElement::init()
   oscTwoType=PULSE;
 
   adsr_note=1;
+
+  filterType=FILTER_TYPE_LOWPASS;
+  filterAlgo=FILTER_ALGO_AMSYNTH;
 
   //printf("====PatternElement::init()====\n");
 }
@@ -343,6 +349,58 @@ int PatternElement::getPhaseOsc1()
 }
 
 
+void PatternElement::setFilterType(int val)
+{
+  if (val>2) val=0;
+  if (val<0) val=2;
+  filterType=this->checkSevenBitBoundarie(val);
+
+}
+
+int PatternElement::getFilterType()
+{
+  return filterType;
+}
+
+const char * PatternElement::getFilterTypeCharStar()
+{
+  static const char * str_filter_type_unknown  = "UKNW";
+  static const char * str_filter_type_lowpass  = "LP";
+  static const char * str_filter_type_bandpass = "BP";
+  static const char * str_filter_type_hipass   = "HP";
+
+  if (filterType==FILTER_ALGO_NOFILTER) return str_filter_type_lowpass;
+  if (filterType==FILTER_ALGO_BIQUAD)   return str_filter_type_bandpass;
+  if (filterType==FILTER_ALGO_AMSYNTH)  return str_filter_type_hipass;
+  return str_filter_type_unknown;
+}
+
+
+void PatternElement::setFilterAlgo(int val)
+{
+  if (val>2) val=0;
+  if (val<0) val=2;
+
+  filterAlgo=this->checkSevenBitBoundarie(val);
+}
+
+int PatternElement::getFilterAlgo()
+{
+  return filterAlgo;
+}
+
+const char * PatternElement::getFilterAlgoCharStar()
+{
+  static const char * str_filter_algo_unknown  = "UKNW";
+  static const char * str_filter_algo_nofilter = "NOFL";
+  static const char * str_filter_algo_biquad   = "BIQU";
+  static const char * str_filter_algo_amsynth  = "AMST";
+
+  if (filterAlgo==FILTER_ALGO_NOFILTER) return str_filter_algo_nofilter;
+  if (filterAlgo==FILTER_ALGO_BIQUAD)   return str_filter_algo_biquad;
+  if (filterAlgo==FILTER_ALGO_AMSYNTH)  return str_filter_algo_amsynth;
+  return str_filter_algo_unknown;
+}
 
 string PatternElement::getStr()
 {

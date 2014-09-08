@@ -92,6 +92,9 @@ void PicodrumMachine::set(int what,int val)
       this->getADSRAmp().reset();
     }
 
+  if (what==FILTER1_TYPE)     filter.setFilterType(val);
+  if (what==FILTER1_ALGO)     filter.setFilterAlgo(val);
+
   
 }
 

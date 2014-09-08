@@ -74,6 +74,12 @@ enum {
   MENU_ENV_ADSRNOTE_AMP,
 };
 
+enum {
+  MENU_FLTR_CUTOFF_RESONANCE,
+  MENU_FLTR_ALGO_TYPE, 
+};
+
+
 vector <Pattern>            P(TRACK_MAX);  
 vector <Machine   *>        M(TRACK_MAX);
 vector <MonoMixer *>        MM(TRACK_MAX);
@@ -173,6 +179,13 @@ int machine_type_all=0;
 int phase_osc1=0;
 int phase_osc1_all=0;
 
+int filter_algo=0;
+int filter_algo_all=0;
+
+int filter_type=0;
+int filter_type_all=0;
+
+
 int loadsave_cursor_x=0; // index in the load/save menu
 int loadsave_cursor_y=0; // index in the load/save menu
 
@@ -183,6 +196,7 @@ int menu_cursor=M_AD;      // index int the menu
 int menu=MENU_ON_PAGE1;             // menu mode
 int menu_note=ENABLE;
 int menu_env=MENU_ENV_ATTACK_RELEASE;
+int menu_fltr=MENU_FLTR_CUTOFF_RESONANCE;
 
 int menu_env_dirty_keyboard=0;
 
@@ -718,26 +732,53 @@ void display_board_fltr()
 
   if (menu_cursor==M_FLTR)
     {
-      // Cursor & step postion      
-      SG.drawBoxNumber(cursor,CURSOR_COLOR);
-      SG.drawBoxNumber(step,STEP_COLOR);  
 
-      for (i=0;i<16;i++)
+      if (menu_fltr==MENU_FLTR_CUTOFF_RESONANCE)
 	{
-	  // Draw trigged box trig color   
-	  if (P[cty].getPatternElement(i).getTrig())
+	  // Cursor & step postion      
+	  SG.drawBoxNumber(cursor,CURSOR_COLOR);
+	  SG.drawBoxNumber(step,STEP_COLOR);  
+	  
+	  for (i=0;i<16;i++)
 	    {
-	      SG.drawBoxNumber(i,TRIG_COLOR);
-	      if (i==cursor)
-		SG.drawBoxNumber(cursor,CURSOR_COLOR);
-	      if (i==step)
-		SG.drawBoxNumber(step,STEP_COLOR);  
-
-	      // AdsR
-	      SG.smallBoxNumber(i,P[cty].getPatternElement(i).getResonance(),128,SMALLBOX_COLOR);
-	      SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).getCutoff(),SMALLBOX_COLOR);      
+	      // Draw trigged box trig color   
+	      if (P[cty].getPatternElement(i).getTrig())
+		{
+		  SG.drawBoxNumber(i,TRIG_COLOR);
+		  if (i==cursor)
+		    SG.drawBoxNumber(cursor,CURSOR_COLOR);
+		  if (i==step)
+		    SG.drawBoxNumber(step,STEP_COLOR);  
+		  
+		  // AdsR
+		  SG.smallBoxNumber(i,P[cty].getPatternElement(i).getResonance(),128,SMALLBOX_COLOR);
+		  SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).getCutoff(),SMALLBOX_COLOR);      
+		}
 	    }
 	}
+      if (menu_fltr==MENU_FLTR_ALGO_TYPE)
+	{
+	  // Cursor & step postion      
+	  SG.drawBoxNumber(cursor,CURSOR_COLOR);
+	  SG.drawBoxNumber(step,STEP_COLOR);  
+	  
+	  for (i=0;i<16;i++)
+	    {
+	      // Draw trigged box trig color   
+	      if (P[cty].getPatternElement(i).getTrig())
+		{
+		  SG.drawBoxNumber(i,TRIG_COLOR);
+		  if (i==cursor)
+		    SG.drawBoxNumber(cursor,CURSOR_COLOR);
+		  if (i==step)
+		    SG.drawBoxNumber(step,STEP_COLOR);  
+		  
+		  SG.drawTTFTextNumberFirstLine(i,P[cty].getPatternElement(i).getFilterAlgoCharStar()); 
+		  SG.drawTTFTextNumberSecondLine(i,P[cty].getPatternElement(i).getFilterTypeCharStar()); 
+		}
+	    }
+	}
+
     }
 }
 
@@ -816,6 +857,21 @@ void display_board()
       sprintf(str_submenu,"T/N AMP");
       SG.guiTTFText(200,60,str_submenu);
     }
+
+  if (menu_fltr==MENU_FLTR_CUTOFF_RESONANCE &&
+      menu_cursor==M_FLTR)
+    {
+      sprintf(str_submenu,"CUTOFF/RES");
+      SG.guiTTFText(200,60,str_submenu);
+    }
+
+  if (menu_fltr==MENU_FLTR_CUTOFF_RESONANCE &&
+      menu_cursor==M_FLTR)
+    {
+      sprintf(str_submenu,"ALGO/TYPE");
+      SG.guiTTFText(200,60,str_submenu);
+    }
+
 
 
   /*
@@ -1788,11 +1844,33 @@ void handle_key_fltr()
   lastKey=IE.lastKey();
 
 
+  // change M_FLTR SUBMENU
+  if (lastKey     ==  BUTTON_START  && 
+      lastEvent   ==  SDL_KEYUP     && 
+      menu_cursor ==  M_FLTR)
+    {
+      if (menu_env_dirty_keyboard==0)
+	{
+	  if      (menu_fltr==MENU_FLTR_CUTOFF_RESONANCE)   { menu_fltr=MENU_FLTR_ALGO_TYPE;            }
+	  else if (menu_fltr==MENU_FLTR_ALGO_TYPE)          { menu_fltr=MENU_FLTR_CUTOFF_RESONANCE;     }   
+	  dirty_graphic=1;
+	}
+      menu_env_dirty_keyboard=0;
+      IE.clearLastKeyEvent();
+      printf("[sub menu env : %d]\n",menu_env);
+    }
+
+
+
+
+
+
   // M_FLTR
-  // Move Attack Release 
+  // Move Cutoff Resonance
   // Insert/Remove Trig
   if (menu          == MENU_OFF && 
-      menu_cursor   == M_FLTR)
+      menu_cursor   == M_FLTR   &&
+      menu_fltr     == MENU_FLTR_CUTOFF_RESONANCE)
     {
       sub_handle_invert_trig();
 
@@ -1821,7 +1899,8 @@ void handle_key_fltr()
   // Move Attack Release 
   // Insert/Remove Trig
   if (menu          != MENU_OFF && 
-      menu_cursor   == M_FLTR)
+      menu_cursor   == M_FLTR   &&
+      menu_fltr     == MENU_FLTR_CUTOFF_RESONANCE)
     {
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A])
 	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>128) 
@@ -1842,6 +1921,67 @@ void handle_key_fltr()
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>128 ) 
 	  if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%4==1 ) 
 	  { cutoff_all=-1; 	  dirty_graphic=1; }
+    }  
+
+  // M_FLTR
+  // Move filterAlgo filterType
+  // Insert/Remove Trig
+  if (menu          == MENU_OFF && 
+      menu_cursor   == M_FLTR   &&
+      menu_fltr     == MENU_FLTR_ALGO_TYPE)
+    {
+      sub_handle_invert_trig();
+
+      if (keyState[BUTTON_LEFT]  && keyState[BUTTON_B])
+	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>128) 
+	  if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%4==1 )  
+	  { filter_algo=-1;   dirty_graphic=1; }
+      
+      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>128)
+	  if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%4==1 )  
+	  { filter_algo=1; 	  dirty_graphic=1; }
+      
+      if (keyState[BUTTON_UP]    && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>128) 
+	  if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%4==1 ) 
+	  { filter_type=1;  	  dirty_graphic=1; }
+      
+      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>128 ) 
+	  if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%4==1 ) 
+	  { filter_type=-1; 	  dirty_graphic=1; }
+    }  
+
+
+  // M_FLTR
+  // Move filterAlgo filterType
+  // Insert/Remove Trig
+  if (menu          != MENU_OFF && 
+      menu_cursor   == M_FLTR   &&
+      menu_fltr     == MENU_FLTR_ALGO_TYPE)
+    {
+      sub_handle_invert_trig();
+
+      if (keyState[BUTTON_LEFT]  && keyState[BUTTON_B])
+	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>128) 
+	  if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%4==1 )  
+	  { filter_algo_all=-1;   dirty_graphic=1; }
+      
+      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>128)
+	  if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%4==1 )  
+	  { filter_algo_all=1; 	  dirty_graphic=1; }
+      
+      if (keyState[BUTTON_UP]    && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>128) 
+	  if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%4==1 ) 
+	  { filter_type_all=1;  	  dirty_graphic=1; }
+      
+      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>128 ) 
+	  if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%4==1 ) 
+	  { filter_type_all=-1; 	  dirty_graphic=1; }
     }  
 
 
@@ -2260,6 +2400,44 @@ void seq_update_multiple_time_by_step()
       
     }
   
+
+  // Change fltr env Attack
+  if (filter_type!=0)
+    {
+      P[cty].getPatternElement(cursor).setFilterType(P[cty].getPatternElement(cursor).getFilterType()+filter_type);
+      filter_type=0;
+      if (debug)
+	printf("[filter_type:%d]\n",P[cty].getPatternElement(cursor).getFilterType());
+    }
+  
+  // Change fltr env Attack
+  if (filter_type_all!=0)
+    {
+      for(i=0;i<16;i++)
+	P[cty].getPatternElement(i).setFilterType(P[cty].getPatternElement(i).getFilterType()+filter_type_all);
+      filter_type_all=0;
+      if (debug)
+	printf("[filter_type:%d]\n",P[cty].getPatternElement(cursor).getFilterType());
+    }
+
+  // Change fltr env Attack
+  if (filter_algo!=0)
+    {
+      P[cty].getPatternElement(cursor).setFilterAlgo(P[cty].getPatternElement(cursor).getFilterAlgo()+filter_algo);
+      filter_algo=0;
+      if (debug)
+	printf("[filter_algo:%d]\n",P[cty].getPatternElement(cursor).getFilterAlgo());
+    }
+  
+  // Change fltr env Attack
+  if (filter_algo_all!=0)
+    {
+      for(i=0;i<16;i++)
+	P[cty].getPatternElement(i).setFilterAlgo(P[cty].getPatternElement(i).getFilterAlgo()+filter_algo_all);
+      filter_algo_all=0;
+      if (debug)
+	printf("[filter_algo:%d]\n",P[cty].getPatternElement(cursor).getFilterAlgo());
+    }
 
 
 
@@ -2762,8 +2940,14 @@ void seq_update_track(int t)
 	  M[t]->set(OSC2_TYPE,P[t].getPatternElement(step).getOscillatorTwoType());
 
 
+	  M[t]->set(FILTER1_TYPE,P[t].getPatternElement(step).getFilterType());
+	  M[t]->set(FILTER1_ALGO,P[t].getPatternElement(step).getFilterAlgo());
+
+
 	  M[t]->set(FILTER1_CUTOFF,P[t].getPatternElement(step).getCutoff());
 	  M[t]->set(FILTER1_RES,P[t].getPatternElement(step).getResonance());
+
+
 
 
 	  M[t]->set(NOTE_ON,1);

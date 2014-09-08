@@ -40,24 +40,28 @@ using namespace std;
 #define OSC34_MIX           29
 #define OSC1234_MIX         30
 
-#define FILTER1_TYPE        31
-#define FILTER1_CUTOFF      32
-#define FILTER1_RES         33
-
-#define FILTER2_TYPE        34
-#define FILTER2_CUTOFF      35
-#define FILTER2_RES         36
-
 #define OSC1_FREQ           37
 #define OSC2_FREQ           38
 #define OSC3_FREQ           39
 #define OSC4_FREQ           40
 
 
-#define LFO1_DEPTH           41
-#define LFO1_FREQ            42
-#define LFO2_DEPTH           43
-#define LFO2_FREQ            44
+#define LFO1_DEPTH          41
+#define LFO1_FREQ           42
+#define LFO2_DEPTH          43
+#define LFO2_FREQ           44
+
+
+#define FILTER1_TYPE        50
+#define FILTER1_ALGO        51
+#define FILTER1_CUTOFF      52
+#define FILTER1_RES         53
+
+#define FILTER2_TYPE        54
+#define FILTER2_ALGO        55
+#define FILTER2_CUTOFF      56
+#define FILTER2_RES         57
+
 
 
 #define NOTE_ON             100

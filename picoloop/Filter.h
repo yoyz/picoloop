@@ -2,18 +2,12 @@ using namespace std;
 #include <stdio.h>
 #include <stdint.h>
 #include "Biquad.h"
+#include "Master.h"
 #include "AMSynthLowPassFilter.h"
 #ifndef __FILTER____
 #define __FILTER____
 
 
-#define TYPE_LOWPASS   0
-#define TYPE_BANDPASS  1
-#define TYPE_HIPASS    2
-
-#define ALGO_NOFILTER  0
-#define ALGO_BIQUAD    1
-#define ALGO_AMSYNTH   2
 
 class Filter
 {
@@ -28,6 +22,8 @@ class Filter
   void    setType(int val);       // LOWPASS, HIPASS
   void    setCutoff(int val);     // 0..127
   void    setResonance(int val);  // 0..127
+  void    setFilterType(int val);
+  void    setFilterAlgo(int val);
   
 
   int16_t process(int16_t in);
@@ -39,7 +35,7 @@ class Filter
 
   int cutoff;
   int resonance;
-  int type;
+  int filterType;
   int filterAlgo;
   int needCalc;
 
