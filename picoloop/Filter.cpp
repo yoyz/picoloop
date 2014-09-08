@@ -118,7 +118,8 @@ int16_t Filter::process_biquad(int16_t in)
   if (needCalc)
     {
       //needCalc=1;
-      bq.setBiquad(0, (f_val_cutoff/256), (f_val_resonance/8)+0.005, 0.0);
+      //bq.setType(filterType);
+      bq.setBiquad(filterType, (f_val_cutoff/256), (f_val_resonance/8)+0.005, 0.0);
       bq.calcBiquad(); 
       
       needCalc=0;      

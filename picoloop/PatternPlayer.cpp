@@ -865,8 +865,9 @@ void display_board()
       SG.guiTTFText(200,60,str_submenu);
     }
 
-  if (menu_fltr==MENU_FLTR_CUTOFF_RESONANCE &&
-      menu_cursor==M_FLTR)
+  if (menu_fltr==MENU_FLTR_ALGO_TYPE &&
+      menu_cursor==M_FLTR
+      )
     {
       sprintf(str_submenu,"ALGO/TYPE");
       SG.guiTTFText(200,60,str_submenu);
@@ -1896,7 +1897,7 @@ void handle_key_fltr()
     }  
 
   // M_FLTR
-  // Move Attack Release 
+  // Move Cutoff Resonance
   // Insert/Remove Trig
   if (menu          != MENU_OFF && 
       menu_cursor   == M_FLTR   &&
@@ -1936,8 +1937,7 @@ void handle_key_fltr()
 	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>128) 
 	  if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%4==1 )  
 	  { filter_algo=-1;   dirty_graphic=1; }
-      
-      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
+            if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>128)
 	  if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%4==1 )  
 	  { filter_algo=1; 	  dirty_graphic=1; }
@@ -1961,24 +1961,24 @@ void handle_key_fltr()
       menu_cursor   == M_FLTR   &&
       menu_fltr     == MENU_FLTR_ALGO_TYPE)
     {
-      sub_handle_invert_trig();
+      //sub_handle_invert_trig();
 
-      if (keyState[BUTTON_LEFT]  && keyState[BUTTON_B])
+      if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A])
 	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>128) 
 	  if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%4==1 )  
 	  { filter_algo_all=-1;   dirty_graphic=1; }
       
-      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
+      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>128)
 	  if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%4==1 )  
 	  { filter_algo_all=1; 	  dirty_graphic=1; }
       
-      if (keyState[BUTTON_UP]    && keyState[BUTTON_B]) 
+      if (keyState[BUTTON_UP]    && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>128) 
 	  if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%4==1 ) 
 	  { filter_type_all=1;  	  dirty_graphic=1; }
       
-      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B]) 
+      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>128 ) 
 	  if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%4==1 ) 
 	  { filter_type_all=-1; 	  dirty_graphic=1; }
