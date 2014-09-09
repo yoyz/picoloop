@@ -61,7 +61,14 @@ void dboplMachine::init()
   HO->SetEnvelopeDecay(1,2,2);
   HO->SetEnvelopeSustain(1,2,12);
   HO->SetEnvelopeRelease(1,2,15);
-
+  //HO->EnableAdditiveSynthesis(1,true);
+  //HO->SetModulatorFeedback(1,3);
+  //HO->EnableKsr(1,1,true);
+  //HO->EnableKsr(1,2,true);
+  //HO->SetKsl(1,1,3);
+  //HO->SetKsl(1,2,3);
+  HO->SetAttenuation(1,1,20);
+  HO->SetAttenuation(1,2,8);
 }
 
 void dboplMachine::reset()
