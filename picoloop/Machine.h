@@ -40,6 +40,11 @@ using namespace std;
 #define OSC34_MIX           29
 #define OSC1234_MIX         30
 
+#define OSC1_AMP            31
+#define OSC2_AMP            32
+#define OSC3_AMP            33
+#define OSC4_AMP            34
+
 #define OSC1_FREQ           37
 #define OSC2_FREQ           38
 #define OSC3_FREQ           39

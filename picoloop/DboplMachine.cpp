@@ -143,6 +143,10 @@ void dboplMachine::set(int what,int val)
     if (what==OSC12_MIX)           HO->SetFrequencyMultiple(1,1,freqM[val/11]);
     if (what==OSC1_PHASE)          HO->SetFrequencyMultiple(1,2,freqM[val/11]);
 
+    if (what==OSC1_AMP)            HO->SetAttenuation(1,1,32-(val/4));
+    if (what==OSC2_AMP)            HO->SetAttenuation(1,2,32-(val/4));
+
+
     if (what==OSC1_FREQ)           freq=val;
 
     if (what==FILTER1_CUTOFF)      

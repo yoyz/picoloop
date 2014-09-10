@@ -26,6 +26,8 @@ PatternElement::PatternElement()
   fltr_sustain=127;
   fltr_release=127;
 
+  osc1_amp=64;
+  osc2_amp=64;
 
 
   fltr_cutoff=64;
@@ -347,6 +349,31 @@ int PatternElement::getPhaseOsc1()
 {
   return phaseOsc1;
 }
+
+
+
+void PatternElement::setOsc1Amp(int val)
+{
+  osc1_amp=this->checkSevenBitBoundarie(val);
+}
+
+int PatternElement::getOsc1Amp()
+{
+  return osc1_amp;
+}
+
+void PatternElement::setOsc2Amp(int val)
+{
+  osc2_amp=this->checkSevenBitBoundarie(val);
+}
+
+int PatternElement::getOsc2Amp()
+{
+  return osc2_amp;
+}
+
+
+
 
 
 void PatternElement::setFilterType(int val)

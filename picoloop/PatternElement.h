@@ -91,6 +91,13 @@ public:
   int    getPhaseOsc1();
   void   setPhaseOsc1(int val);
 
+  int    getOsc1Amp();
+  void   setOsc1Amp(int val);
+
+  int    getOsc2Amp();
+  void   setOsc2Amp(int val);
+
+
   int    getFilterType();
   void   setFilterType(int val);
   const char * getFilterTypeCharStar();
@@ -141,6 +148,9 @@ private:
   int  fltr_decay;
   int  fltr_sustain;
   int  fltr_release;
+
+  int osc1_amp;
+  int osc2_amp;
 
   int fltr_cutoff;
   int fltr_resonance;

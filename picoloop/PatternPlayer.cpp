@@ -79,6 +79,11 @@ enum {
   MENU_FLTR_ALGO_TYPE, 
 };
 
+enum {
+  MENU_VCO_OSCMIX_PHASE,
+  MENU_VCO_OSCAMP
+};
+  
 
 vector <Pattern>            P(TRACK_MAX);  
 vector <Machine   *>        M(TRACK_MAX);
@@ -185,6 +190,13 @@ int filter_algo_all=0;
 int filter_type=0;
 int filter_type_all=0;
 
+int osc1_amp=0;
+int osc1_amp_all=0;
+
+int osc2_amp=0;
+int osc2_amp_all=0;
+
+
 
 int loadsave_cursor_x=0; // index in the load/save menu
 int loadsave_cursor_y=0; // index in the load/save menu
@@ -197,6 +209,7 @@ int menu=MENU_ON_PAGE1;             // menu mode
 int menu_note=ENABLE;
 int menu_env=MENU_ENV_ATTACK_RELEASE;
 int menu_fltr=MENU_FLTR_CUTOFF_RESONANCE;
+int menu_vco=MENU_VCO_OSCMIX_PHASE;
 
 int menu_env_dirty_keyboard=0;
 
@@ -599,13 +612,14 @@ void display_board_vco()
   int  step=SEQ.getPatternSequencer(cty).getStep();
 
   // VCO
-  if (menu_cursor==M_VCO)
+  if (menu_cursor == M_VCO  && 
+      menu_vco    == MENU_VCO_OSCMIX_PHASE)
     {
       SG.drawBoxNumber(cursor,CURSOR_COLOR);
       SG.drawBoxNumber(step,STEP_COLOR);        
       for (i=0;i<16;i++)
 	{
-	  // AdsR
+	  // MIX / PHASE
 	  if (P[cty].getPatternElement(i).getTrig())
 	    {	      
 	      SG.drawBoxNumber(i,NOTE_COLOR);
@@ -625,6 +639,36 @@ void display_board_vco()
 
 	}
     }
+
+  // VCO
+  if (menu_cursor == M_VCO  && 
+      menu_vco    == MENU_VCO_OSCAMP)
+    {
+      SG.drawBoxNumber(cursor,CURSOR_COLOR);
+      SG.drawBoxNumber(step,STEP_COLOR);        
+      for (i=0;i<16;i++)
+	{
+	  // OSC1AMP OSC2AMP
+	  if (P[cty].getPatternElement(i).getTrig())
+	    {	      
+	      SG.drawBoxNumber(i,NOTE_COLOR);
+	      if (i==cursor)
+		SG.drawBoxNumber(cursor,CURSOR_COLOR);
+	      if (i==step)
+		SG.drawBoxNumber(step,STEP_COLOR);  
+
+	      
+	      if (i==step)
+		SG.smallBoxNumber(i,P[cty].getPatternElement(i).getOsc1Amp(),128-P[cty].getPatternElement(i).getOsc2Amp(),STEP_COLOR);
+	      if (i==cursor)
+		SG.smallBoxNumber(i,P[cty].getPatternElement(i).getOsc1Amp(),128-P[cty].getPatternElement(i).getOsc2Amp(),CURSOR_COLOR);
+
+	      SG.smallBoxNumber(i,P[cty].getPatternElement(i).getOsc1Amp(),128-P[cty].getPatternElement(i).getOsc2Amp(),SMALLBOX_COLOR);
+	    }
+	}
+    }
+
+
 }
 
 
@@ -870,6 +914,23 @@ void display_board()
       )
     {
       sprintf(str_submenu,"ALGO/TYPE");
+      SG.guiTTFText(200,60,str_submenu);
+    }
+
+
+  if (menu_vco==MENU_VCO_OSCAMP &&
+      menu_cursor==M_VCO
+      )
+    {
+      sprintf(str_submenu,"OP1AMP/AP2AMP");
+      SG.guiTTFText(200,60,str_submenu);
+    }
+
+  if (menu_vco==MENU_VCO_OSCMIX_PHASE &&
+      menu_cursor==M_VCO
+      )
+    {
+      sprintf(str_submenu,"OP1Mult/OP2Mult");
       SG.guiTTFText(200,60,str_submenu);
     }
 
@@ -1666,11 +1727,30 @@ void handle_key_vco()
   lastEvent=IE.lastEvent();
   lastKey=IE.lastKey();
 
+
+  // change M_VCO SUBMENU
+  if (lastKey     ==  BUTTON_START  && 
+      lastEvent   ==  SDL_KEYUP     && 
+      menu_cursor ==  M_VCO)
+    {
+      if (menu_env_dirty_keyboard==0)
+	{
+	  if      (menu_vco==MENU_VCO_OSCMIX_PHASE)        { menu_vco=MENU_VCO_OSCAMP;            }
+	  else if (menu_vco==MENU_VCO_OSCAMP)              { menu_vco=MENU_VCO_OSCMIX_PHASE;      }   
+	  dirty_graphic=1;
+	}
+      menu_env_dirty_keyboard=0;
+      IE.clearLastKeyEvent();
+      printf("[sub menu env : %d]\n",menu_env);
+    }
+
+
   // M_VCO
   // VCO Menu
   // Change Value
   if (menu        == MENU_OFF && 
-      menu_cursor == M_VCO    
+      menu_cursor == M_VCO    &&
+      menu_vco    == MENU_VCO_OSCMIX_PHASE
       )
     {
       // Insert/Remove Trig
@@ -1693,7 +1773,8 @@ void handle_key_vco()
     }
 
   if (menu        != MENU_OFF && 
-      menu_cursor == M_VCO   
+      menu_cursor == M_VCO   &&
+      menu_vco    == MENU_VCO_OSCMIX_PHASE
       )
     {
       if (keyState[BUTTON_LEFT] && keyState[BUTTON_A]) 
@@ -1714,6 +1795,59 @@ void handle_key_vco()
 	  { phase_osc1_all=-1;  	  dirty_graphic=1;}
       //????
     }
+
+
+  // M_VCO
+  // VCO Menu
+  // Change Value
+  if (menu        == MENU_OFF && 
+      menu_cursor == M_VCO    &&
+      menu_vco    == MENU_VCO_OSCAMP
+      )
+    {
+      // Insert/Remove Trig
+      sub_handle_invert_trig();
+      if (keyState[BUTTON_LEFT] && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%4==0) 
+	  { osc1_amp=-1; 	  dirty_graphic=1;}
+      
+      if (keyState[BUTTON_RIGHT]  && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%4==0) 
+	  { osc1_amp=1;  	  dirty_graphic=1;}
+      
+      if (keyState[BUTTON_UP]  && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%4==0) 
+	  { osc2_amp=1;   	  dirty_graphic=1;}
+      
+      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B])
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%4==0) 
+	  { osc2_amp=-1;  	  dirty_graphic=1;}
+    }
+
+  if (menu        != MENU_OFF && 
+      menu_cursor == M_VCO   &&
+      menu_vco    == MENU_VCO_OSCAMP
+      )
+    {
+      if (keyState[BUTTON_LEFT] && keyState[BUTTON_A]) 
+	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%4==0) 
+	  { osc1_amp_all=-1; 	  dirty_graphic=1;}
+      
+      if (keyState[BUTTON_RIGHT]  && keyState[BUTTON_A]) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%4==0) 
+	  { osc1_amp_all=1;  	  dirty_graphic=1;}
+
+      // ????
+      if (keyState[BUTTON_UP]  && keyState[BUTTON_A]) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%4==0) 
+	  { osc2_amp_all=1;   	  dirty_graphic=1;}
+      
+      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A])
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%4==0) 
+	  { osc2_amp_all=-1;  	  dirty_graphic=1;}
+      //????
+    }
+
 
 }
 
@@ -2468,6 +2602,56 @@ void seq_update_multiple_time_by_step()
     }
 
 
+  // Change osc1 amp
+  if (osc1_amp!=0)
+    {
+      //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
+      P[cty].getPatternElement(cursor).setOsc1Amp(P[cty].getPatternElement(cursor).getOsc1Amp()+osc1_amp);
+      osc1_amp=0;
+      if (debug)
+	printf("[osc1_amp:%d]\n",P[cty].getPatternElement(cursor).getOsc1Amp());
+      //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
+      
+    }
+  
+  // Change osc1 amp all
+  if (osc1_amp_all!=0)
+    {
+      for (i=0;i<16;i++)
+	P[cty].getPatternElement(i).setOsc1Amp(P[cty].getPatternElement(i).getOsc1Amp()+osc1_amp_all);
+      osc1_amp_all=0;
+      if (debug)
+	printf("[osc1_amp_all:%d]\n",P[cty].getPatternElement(cursor).getOsc1Amp());
+      //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
+      
+    }
+
+  // Change osc2 amp
+  if (osc2_amp!=0)
+    {
+      //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
+      P[cty].getPatternElement(cursor).setOsc2Amp(P[cty].getPatternElement(cursor).getOsc2Amp()+osc2_amp);
+      osc2_amp=0;
+      if (debug)
+	printf("[osc2_amp:%d]\n",P[cty].getPatternElement(cursor).getOsc2Amp());
+      //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
+      
+    }
+  
+  // Change osc2 amp all
+  if (osc2_amp_all!=0)
+    {
+      for (i=0;i<16;i++)
+	P[cty].getPatternElement(i).setOsc2Amp(P[cty].getPatternElement(i).getOsc2Amp()+osc2_amp_all);
+      osc2_amp_all=0;
+      if (debug)
+	printf("[osc2_amp_all:%d]\n",P[cty].getPatternElement(cursor).getOsc2Amp());
+      //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
+      
+    }
+
+
+
 
 
   // Change trig time
@@ -2938,6 +3122,9 @@ void seq_update_track(int t)
 
 	  M[t]->set(OSC1_TYPE,P[t].getPatternElement(step).getOscillatorOneType());
 	  M[t]->set(OSC2_TYPE,P[t].getPatternElement(step).getOscillatorTwoType());
+
+	  M[t]->set(OSC1_AMP,P[t].getPatternElement(step).getOsc1Amp());
+	  M[t]->set(OSC2_AMP,P[t].getPatternElement(step).getOsc2Amp());
 
 
 	  M[t]->set(FILTER1_TYPE,P[t].getPatternElement(step).getFilterType());
