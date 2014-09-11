@@ -53,25 +53,25 @@ enum {
 
 //menu_cursor
 enum {
-  M_AD,   // 0
-  M_NOTE, // 1
-  M_OSC,  // 2 
-  M_VCO,  // 3
-  M_MAC,  // 4
+  GLOBALMENU_AD,   // 0
+  GLOBALMENU_NOTE, // 1
+  GLOBALMENU_OSC,  // 2 
+  GLOBALMENU_VCO,  // 3
+  GLOBALMENU_MAC,  // 4
 
-  M_LS,   // 5
-  M_LFO,  // 6
-  M_FLTR, // 7
-  M_BPM,  // 8
-  M_FX    // 9
+  GLOBALMENU_LS,   // 5
+  GLOBALMENU_LFO,  // 6
+  GLOBALMENU_FLTR, // 7
+  GLOBALMENU_BPM,  // 8
+  GLOBALMENU_FX    // 9
 };
 
 enum {
-  MENU_ENV_ATTACK_RELEASE,
-  MENU_ENV_DECAY_SUSTAIN,
-  MENU_FLTR_ATTACK_RELEASE,
-  MENU_FLTR_DECAY_SUSTAIN,
-  MENU_ENV_ADSRNOTE_AMP,
+  MENU_AD_AMP_ATTACK_RELEASE_,
+  MENU_AD_AMP_DECAY_SUSTAIN,
+  MENU_AD_FLTR_ATTACK_RELEASE,
+  MENU_AD_FLTR_DECAY_SUSTAIN,
+  MENU_AD_TRIGTIME_AMP,
 };
 
 enum {
@@ -204,10 +204,10 @@ int loadsave_cursor_y=0; // index in the load/save menu
 int start_key=0;        // start key pressed ?
 //int step=0;             // current step in the sequencer
 int divider=0;           // divider - => /1 /2 /4 /8  ; divider + => /8 /4 /2 /1
-int menu_cursor=M_AD;      // index int the menu
+int menu_cursor=GLOBALMENU_AD;      // index int the menu
 int menu=MENU_ON_PAGE1;             // menu mode
 int menu_note=ENABLE;
-int menu_env=MENU_ENV_ATTACK_RELEASE;
+int menu_env=MENU_AD_AMP_ATTACK_RELEASE_;
 int menu_fltr=MENU_FLTR_CUTOFF_RESONANCE;
 int menu_vco=MENU_VCO_OSCMIX_PHASE;
 
@@ -267,14 +267,14 @@ void display_board_amp_env()
   int  cty=SEQ.getCurrentTrackY();
   int  step=SEQ.getPatternSequencer(cty).getStep();
   // Attack/Release
-  if (menu_cursor==M_AD)
+  if (menu_cursor==GLOBALMENU_AD)
     {
       // Cursor & step postion      
       SG.drawBoxNumber(cursor,CURSOR_COLOR);
       SG.drawBoxNumber(step,STEP_COLOR);  
       //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
       
-      if (menu_env==MENU_ENV_ATTACK_RELEASE)
+      if (menu_env==MENU_AD_AMP_ATTACK_RELEASE_)
 	{
 	  for (i=0;i<16;i++)
 	    {
@@ -295,7 +295,7 @@ void display_board_amp_env()
 	    }
 	}
 
-      if (menu_env==MENU_ENV_DECAY_SUSTAIN)
+      if (menu_env==MENU_AD_AMP_DECAY_SUSTAIN)
 	{
 	  for (i=0;i<16;i++)
 	    {
@@ -318,7 +318,7 @@ void display_board_amp_env()
 
 
 
-      if (menu_env==MENU_FLTR_ATTACK_RELEASE)
+      if (menu_env==MENU_AD_FLTR_ATTACK_RELEASE)
 	{
 	  for (i=0;i<16;i++)
 	    {
@@ -340,7 +340,7 @@ void display_board_amp_env()
 	}
 
 
-      if (menu_env==MENU_FLTR_DECAY_SUSTAIN)
+      if (menu_env==MENU_AD_FLTR_DECAY_SUSTAIN)
 	{
 	  for (i=0;i<16;i++)
 	    {
@@ -363,7 +363,7 @@ void display_board_amp_env()
 
 
 
-      if (menu_env==MENU_ENV_ADSRNOTE_AMP)
+      if (menu_env==MENU_AD_TRIGTIME_AMP)
 	{
 	  for (i=0;i<16;i++)
 	    {
@@ -393,7 +393,7 @@ void display_board_note()
   int  cty=SEQ.getCurrentTrackY();
   int  step=SEQ.getPatternSequencer(cty).getStep();
   // Note
-  if (menu_cursor==M_NOTE)
+  if (menu_cursor==GLOBALMENU_NOTE)
     {
 
       if (menu_note==DISABLE)
@@ -478,7 +478,7 @@ void display_board_bpm()
   int  step=SEQ.getPatternSequencer(cty).getStep();
 
 
-  if (menu_cursor==M_BPM)
+  if (menu_cursor==GLOBALMENU_BPM)
     {
 
       // Cursor & step postion      
@@ -486,7 +486,7 @@ void display_board_bpm()
       SG.drawBoxNumber(step,STEP_COLOR);  
       //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
       
-      //if (menu_env==MENU_ENV_ATTACK_RELEASE)
+      //if (menu_env==MENU_AD_AMP_ATTACK_RELEASE_)
       //	{
       for (i=0;i<16;i++)
 	{
@@ -537,7 +537,7 @@ void display_board_load_save()
 
 
   if (menu!=MENU_OFF && 
-      menu_cursor==M_LS)
+      menu_cursor==GLOBALMENU_LS)
     {
 
       // Cursor & step postion      
@@ -545,7 +545,7 @@ void display_board_load_save()
       SG.drawBoxNumber(step,STEP_COLOR);  
       //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
       
-      //if (menu_env==MENU_ENV_ATTACK_RELEASE)
+      //if (menu_env==MENU_AD_AMP_ATTACK_RELEASE_)
       //	{
       for (i=0;i<16;i++)
 	{
@@ -569,7 +569,7 @@ void display_board_load_save()
       
       
   if (menu==MENU_OFF && 
-      menu_cursor==M_LS)
+      menu_cursor==GLOBALMENU_LS)
     {
       printf("HIT\n");
       //      const char * tmp_txt;
@@ -612,7 +612,7 @@ void display_board_vco()
   int  step=SEQ.getPatternSequencer(cty).getStep();
 
   // VCO
-  if (menu_cursor == M_VCO  && 
+  if (menu_cursor == GLOBALMENU_VCO  && 
       menu_vco    == MENU_VCO_OSCMIX_PHASE)
     {
       SG.drawBoxNumber(cursor,CURSOR_COLOR);
@@ -641,7 +641,7 @@ void display_board_vco()
     }
 
   // VCO
-  if (menu_cursor == M_VCO  && 
+  if (menu_cursor == GLOBALMENU_VCO  && 
       menu_vco    == MENU_VCO_OSCAMP)
     {
       SG.drawBoxNumber(cursor,CURSOR_COLOR);
@@ -680,14 +680,14 @@ void display_board_lfo()
 
   // LFO
 
-  if (menu_cursor==M_LFO)
+  if (menu_cursor==GLOBALMENU_LFO)
     {
       // Cursor & step postion      
       SG.drawBoxNumber(cursor,CURSOR_COLOR);
       SG.drawBoxNumber(step,STEP_COLOR);  
       //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
       
-      //if (menu_env==MENU_ENV_ATTACK_RELEASE)
+      //if (menu_env==MENU_AD_AMP_ATTACK_RELEASE_)
       //	{
 	  for (i=0;i<16;i++)
 	    {
@@ -717,7 +717,7 @@ void display_board_osc()
   int  cty=SEQ.getCurrentTrackY();
   int  step=SEQ.getPatternSequencer(cty).getStep();
 
-    if (menu_cursor==M_OSC)
+    if (menu_cursor==GLOBALMENU_OSC)
     {
       for (i=0;i<16;i++)
 	{
@@ -746,7 +746,7 @@ void display_board_mac()
   int  cty=SEQ.getCurrentTrackY();
   int  step=SEQ.getPatternSequencer(cty).getStep();
 
-    if (menu_cursor==M_MAC)
+    if (menu_cursor==GLOBALMENU_MAC)
     {
       for (i=0;i<16;i++)
 	{
@@ -774,7 +774,7 @@ void display_board_fltr()
   int  cty=SEQ.getCurrentTrackY();
   int  step=SEQ.getPatternSequencer(cty).getStep();
 
-  if (menu_cursor==M_FLTR)
+  if (menu_cursor==GLOBALMENU_FLTR)
     {
 
       if (menu_fltr==MENU_FLTR_CUTOFF_RESONANCE)
@@ -847,70 +847,70 @@ void display_board()
   sprintf(str_divider,"/%d",stepdiv);
   SG.guiTTFText(200,80,str_divider);
 
-  if (menu_cursor!=M_AD ||
-      menu_cursor!=M_NOTE)    
+  if (menu_cursor!=GLOBALMENU_AD ||
+      menu_cursor!=GLOBALMENU_NOTE)    
     {
       sprintf(str_submenu,"               ");
       SG.guiTTFText(200,60,str_submenu);
     }
   if (menu_note==ENABLE &&
-      menu_cursor==M_NOTE)
+      menu_cursor==GLOBALMENU_NOTE)
     {
       sprintf(str_submenu,"NOTE");
       SG.guiTTFText(200,60,str_submenu);
     }
   if (menu_note==DISABLE &&
-      menu_cursor==M_NOTE)
+      menu_cursor==GLOBALMENU_NOTE)
     {
       sprintf(str_submenu,"DOT");
       SG.guiTTFText(200,60,str_submenu);
     }
-  if (menu_env==MENU_ENV_ATTACK_RELEASE &&
-      menu_cursor==M_AD)
+  if (menu_env==MENU_AD_AMP_ATTACK_RELEASE_ &&
+      menu_cursor==GLOBALMENU_AD)
     {
       sprintf(str_submenu,"AMP  A/R");
       SG.guiTTFText(200,60,str_submenu);
     }
 
-  if (menu_env==MENU_ENV_DECAY_SUSTAIN &&
-      menu_cursor==M_AD)
+  if (menu_env==MENU_AD_AMP_DECAY_SUSTAIN &&
+      menu_cursor==GLOBALMENU_AD)
     {
       sprintf(str_submenu,"AMP  D/S");
       SG.guiTTFText(200,60,str_submenu);
     }
 
 
-  if (menu_env==MENU_FLTR_ATTACK_RELEASE &&
-      menu_cursor==M_AD)
+  if (menu_env==MENU_AD_FLTR_ATTACK_RELEASE &&
+      menu_cursor==GLOBALMENU_AD)
     {
       sprintf(str_submenu,"FLTR A/R");
       SG.guiTTFText(200,60,str_submenu);
     }
 
-  if (menu_env==MENU_FLTR_DECAY_SUSTAIN &&
-      menu_cursor==M_AD)
+  if (menu_env==MENU_AD_FLTR_DECAY_SUSTAIN &&
+      menu_cursor==GLOBALMENU_AD)
     {
       sprintf(str_submenu,"FLTR D/S");
       SG.guiTTFText(200,60,str_submenu);
     }
 
 
-  if (menu_env==MENU_ENV_ADSRNOTE_AMP &&
-      menu_cursor==M_AD)
+  if (menu_env==MENU_AD_TRIGTIME_AMP &&
+      menu_cursor==GLOBALMENU_AD)
     {
       sprintf(str_submenu,"T/N AMP");
       SG.guiTTFText(200,60,str_submenu);
     }
 
   if (menu_fltr==MENU_FLTR_CUTOFF_RESONANCE &&
-      menu_cursor==M_FLTR)
+      menu_cursor==GLOBALMENU_FLTR)
     {
       sprintf(str_submenu,"CUTOFF/RES");
       SG.guiTTFText(200,60,str_submenu);
     }
 
   if (menu_fltr==MENU_FLTR_ALGO_TYPE &&
-      menu_cursor==M_FLTR
+      menu_cursor==GLOBALMENU_FLTR
       )
     {
       sprintf(str_submenu,"ALGO/TYPE");
@@ -919,7 +919,7 @@ void display_board()
 
 
   if (menu_vco==MENU_VCO_OSCAMP &&
-      menu_cursor==M_VCO
+      menu_cursor==GLOBALMENU_VCO
       )
     {
       sprintf(str_submenu,"OP1AMP/AP2AMP");
@@ -927,7 +927,7 @@ void display_board()
     }
 
   if (menu_vco==MENU_VCO_OSCMIX_PHASE &&
-      menu_cursor==M_VCO
+      menu_cursor==GLOBALMENU_VCO
       )
     {
       sprintf(str_submenu,"OP1Mult/OP2Mult");
@@ -938,13 +938,13 @@ void display_board()
 
   /*
   if (menu_env==MENU_ENV_ATTACK_AMP &&
-      menu_cursor==M_AD)
+      menu_cursor==GLOBALMENU_AD)
     {
       sprintf(str_submenu,"ATTACK/AMP");
       SG.guiTTFText(200,60,str_submenu);
     }
   */
-  if (menu_cursor==M_BPM)
+  if (menu_cursor==GLOBALMENU_BPM)
     {
       //sprintf(str_submenu,"SWING %d",(current_swing*100)/127);
       sprintf(str_submenu,"SWING %d",current_swing);
@@ -956,31 +956,31 @@ void display_board()
   //  printf("           AD:%d FX:%d\n",AD,FX);
   //  exit(0);
 
-  if (menu==MENU_ON_PAGE1 && menu_cursor==M_AD)    sprintf(str_down,"[A/R] Note  OSC   VCO   MAC ",cty);  
-  if (menu==MENU_ON_PAGE1 && menu_cursor==M_NOTE)  sprintf(str_down," A/R [Note] OSC   VCO   MAC ",cty);
-  if (menu==MENU_ON_PAGE1 && menu_cursor==M_OSC)   sprintf(str_down," A/R  Note [OSC]  VCO   MAC ",cty);
-  if (menu==MENU_ON_PAGE1 && menu_cursor==M_VCO)   sprintf(str_down," A/R  Note  OSC  [VCO]  MAC ",cty);
-  if (menu==MENU_ON_PAGE1 && menu_cursor==M_MAC)   sprintf(str_down," A/R  Note  OSC   VCO  [MAC]",cty);
+  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_AD)    sprintf(str_down,"[A/R] Note  OSC   VCO   MAC ",cty);  
+  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_NOTE)  sprintf(str_down," A/R [Note] OSC   VCO   MAC ",cty);
+  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_OSC)   sprintf(str_down," A/R  Note [OSC]  VCO   MAC ",cty);
+  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_VCO)   sprintf(str_down," A/R  Note  OSC  [VCO]  MAC ",cty);
+  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_MAC)   sprintf(str_down," A/R  Note  OSC   VCO  [MAC]",cty);
 
-  if (menu==MENU_ON_PAGE2 && menu_cursor==M_LS)    sprintf(str_down,"[L/S] LFO   FLTR  BPM   FX ",cty);  
-  if (menu==MENU_ON_PAGE2 && menu_cursor==M_LFO)   sprintf(str_down," L/S [LFO]  FLTR  BPM   FX ",cty);
-  if (menu==MENU_ON_PAGE2 && menu_cursor==M_FLTR)  sprintf(str_down," L/S  LFO  [FLTR] BPM   FX ",cty);
-  if (menu==MENU_ON_PAGE2 && menu_cursor==M_BPM)   sprintf(str_down," L/S  LFO   FLTR [BPM]  FX ",cty);
-  if (menu==MENU_ON_PAGE2 && menu_cursor==M_FX)    sprintf(str_down," L/S  LFO   FLTR  BPM  [FX]",cty);
+  if (menu==MENU_ON_PAGE2 && menu_cursor==GLOBALMENU_LS)    sprintf(str_down,"[L/S] LFO   FLTR  BPM   FX ",cty);  
+  if (menu==MENU_ON_PAGE2 && menu_cursor==GLOBALMENU_LFO)   sprintf(str_down," L/S [LFO]  FLTR  BPM   FX ",cty);
+  if (menu==MENU_ON_PAGE2 && menu_cursor==GLOBALMENU_FLTR)  sprintf(str_down," L/S  LFO  [FLTR] BPM   FX ",cty);
+  if (menu==MENU_ON_PAGE2 && menu_cursor==GLOBALMENU_BPM)   sprintf(str_down," L/S  LFO   FLTR [BPM]  FX ",cty);
+  if (menu==MENU_ON_PAGE2 && menu_cursor==GLOBALMENU_FX)    sprintf(str_down," L/S  LFO   FLTR  BPM  [FX]",cty);
 
   if (menu==0)                         sprintf(str_down,"                     ",cty);
 
-  if (menu_cursor==M_AD)               sprintf(str_up,"A/R   ");
-  if (menu_cursor==M_NOTE)             sprintf(str_up,"Note  ");
-  if (menu_cursor==M_OSC)              sprintf(str_up,"OSC   ");
-  if (menu_cursor==M_VCO)              sprintf(str_up,"VCO   ");
-  if (menu_cursor==M_MAC)              sprintf(str_up,"MAC   ");
+  if (menu_cursor==GLOBALMENU_AD)               sprintf(str_up,"A/R   ");
+  if (menu_cursor==GLOBALMENU_NOTE)             sprintf(str_up,"Note  ");
+  if (menu_cursor==GLOBALMENU_OSC)              sprintf(str_up,"OSC   ");
+  if (menu_cursor==GLOBALMENU_VCO)              sprintf(str_up,"VCO   ");
+  if (menu_cursor==GLOBALMENU_MAC)              sprintf(str_up,"MAC   ");
 
-  if (menu_cursor==M_LS)               sprintf(str_up,"L/S   ");
-  if (menu_cursor==M_LFO)              sprintf(str_up,"LFO   ");
-  if (menu_cursor==M_FLTR)             sprintf(str_up,"FLTR  ");
-  if (menu_cursor==M_BPM)              sprintf(str_up,"BPM %d",bpm_current);
-  if (menu_cursor==M_FX)               sprintf(str_up,"FX    ");
+  if (menu_cursor==GLOBALMENU_LS)               sprintf(str_up,"L/S   ");
+  if (menu_cursor==GLOBALMENU_LFO)              sprintf(str_up,"LFO   ");
+  if (menu_cursor==GLOBALMENU_FLTR)             sprintf(str_up,"FLTR  ");
+  if (menu_cursor==GLOBALMENU_BPM)              sprintf(str_up,"BPM %d",bpm_current);
+  if (menu_cursor==GLOBALMENU_FX)               sprintf(str_up,"FX    ");
 
 
 
@@ -1093,8 +1093,8 @@ void handle_key_menu()
 	  if (keyRepeat[BUTTON_LEFT]    == 1 || 
 	      keyRepeat[BUTTON_LEFT]%64 == 0)
 	    menu_cursor--;
-	  //	  if (menu_cursor<M_AD  && menu==MENU_ON_PAGE1) menu_cursor=M_VCO;
-	  //	  if (menu_cursor<M_OSC && menu==MENU_ON_PAGE2) menu_cursor=M_BPM;
+	  //	  if (menu_cursor<GLOBALMENU_AD  && menu==MENU_ON_PAGE1) menu_cursor=GLOBALMENU_VCO;
+	  //	  if (menu_cursor<GLOBALMENU_OSC && menu==MENU_ON_PAGE2) menu_cursor=GLOBALMENU_BPM;
 	  if (menu_cursor<0     && menu==MENU_ON_PAGE1) menu_cursor=4;
 	  if (menu_cursor<5     && menu==MENU_ON_PAGE2) menu_cursor=9;
 
@@ -1108,8 +1108,8 @@ void handle_key_menu()
 	  if (keyRepeat[BUTTON_RIGHT]    == 1 || 
 	      keyRepeat[BUTTON_RIGHT]%64 == 0)
 	    menu_cursor++;
-	  //if (menu_cursor>M_VCO  && menu==MENU_ON_PAGE1) menu_cursor=M_AD;
-	  //if (menu_cursor>M_BPM  && menu==MENU_ON_PAGE2) menu_cursor=M_OSC;
+	  //if (menu_cursor>GLOBALMENU_VCO  && menu==MENU_ON_PAGE1) menu_cursor=GLOBALMENU_AD;
+	  //if (menu_cursor>GLOBALMENU_BPM  && menu==MENU_ON_PAGE2) menu_cursor=GLOBALMENU_OSC;
 	  if (menu_cursor>4      && menu==MENU_ON_PAGE1) menu_cursor=0;
 	  if (menu_cursor>9      && menu==MENU_ON_PAGE2) menu_cursor=5;
 
@@ -1171,15 +1171,15 @@ void handle_key_sixteenbox()
   lastKey=IE.lastKey();
 
   //MOVE the cursor in the sixteen box : LEFT UP DOWN RIGHT   
-  if ((menu==MENU_OFF && menu_cursor==M_AD    ||
-       menu==MENU_OFF && menu_cursor==M_NOTE  ||
-       menu==MENU_OFF && menu_cursor==M_VCO   ||
-       menu==MENU_OFF && menu_cursor==M_OSC   ||
-       menu==MENU_OFF && menu_cursor==M_MAC   ||
-       menu==MENU_OFF && menu_cursor==M_LFO   ||
-       menu==MENU_OFF && menu_cursor==M_FLTR  ||
-       menu==MENU_OFF && menu_cursor==M_BPM   ||
-       menu==MENU_OFF && menu_cursor==M_FX   
+  if ((menu==MENU_OFF && menu_cursor==GLOBALMENU_AD    ||
+       menu==MENU_OFF && menu_cursor==GLOBALMENU_NOTE  ||
+       menu==MENU_OFF && menu_cursor==GLOBALMENU_VCO   ||
+       menu==MENU_OFF && menu_cursor==GLOBALMENU_OSC   ||
+       menu==MENU_OFF && menu_cursor==GLOBALMENU_MAC   ||
+       menu==MENU_OFF && menu_cursor==GLOBALMENU_LFO   ||
+       menu==MENU_OFF && menu_cursor==GLOBALMENU_FLTR  ||
+       menu==MENU_OFF && menu_cursor==GLOBALMENU_BPM   ||
+       menu==MENU_OFF && menu_cursor==GLOBALMENU_FX   
        ) &&
       !keyState[BUTTON_B]                   &&
       !keyState[BUTTON_A]                   &&
@@ -1247,12 +1247,12 @@ void handle_key_amp_env()
   lastKey=IE.lastKey();
 
 
-  // M_AD AMP
+  // GLOBALMENU_AD AMP
   // Move Attack Release 
   // Insert/Remove Trig
   if (menu          == MENU_OFF && 
-      menu_cursor   == M_AD     &&
-      menu_env      == MENU_ENV_ATTACK_RELEASE)
+      menu_cursor   == GLOBALMENU_AD     &&
+      menu_env      == MENU_AD_AMP_ATTACK_RELEASE_)
     {
       // Insert/Remove Trig
       sub_handle_invert_trig();
@@ -1278,8 +1278,8 @@ void handle_key_amp_env()
   // Move Decay Sustain
   // Insert/Remove Trig
   if (menu          == MENU_OFF && 
-      menu_cursor   == M_AD     &&
-      menu_env      == MENU_ENV_DECAY_SUSTAIN)
+      menu_cursor   == GLOBALMENU_AD     &&
+      menu_env      == MENU_AD_AMP_DECAY_SUSTAIN)
     {
       // Insert/Remove Trig
       sub_handle_invert_trig();
@@ -1301,12 +1301,12 @@ void handle_key_amp_env()
     }  
 
 
-  // M_AD AMP
+  // GLOBALMENU_AD AMP
   // Move Attack Release 
   // Insert/Remove Trig
   if (menu          != MENU_OFF && 
-      menu_cursor   == M_AD     &&
-      menu_env      == MENU_ENV_ATTACK_RELEASE)
+      menu_cursor   == GLOBALMENU_AD     &&
+      menu_env      == MENU_AD_AMP_ATTACK_RELEASE_)
     {
       //printf("***********************\n");
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A])
@@ -1326,12 +1326,12 @@ void handle_key_amp_env()
 	  { attack_amp_all=-1; 	  dirty_graphic=1; }
     }  
 
-  // M_AD AMP
+  // GLOBALMENU_AD AMP
   // Move Decay Sustain
   // Insert/Remove Trig
   if (menu          != MENU_OFF && 
-      menu_cursor   == M_AD     &&
-      menu_env      == MENU_ENV_DECAY_SUSTAIN)
+      menu_cursor   == GLOBALMENU_AD     &&
+      menu_env      == MENU_AD_AMP_DECAY_SUSTAIN)
     {
       //printf("***********************\n");
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A])
@@ -1354,12 +1354,12 @@ void handle_key_amp_env()
 
 
 
-  // M_AD FLTR
+  // GLOBALMENU_AD FLTR
   // Move Attack Release 
   // Insert/Remove Trig
   if (menu          == MENU_OFF && 
-      menu_cursor   == M_AD     &&
-      menu_env      == MENU_FLTR_ATTACK_RELEASE)
+      menu_cursor   == GLOBALMENU_AD     &&
+      menu_env      == MENU_AD_FLTR_ATTACK_RELEASE)
     {
       // Insert/Remove Trig
       sub_handle_invert_trig();
@@ -1380,12 +1380,12 @@ void handle_key_amp_env()
 	  { attack_fltr=-1; 	  dirty_graphic=1; }
     }  
 
-  // M_AD FLTR
+  // GLOBALMENU_AD FLTR
   // Move Decay Sustain
   // Insert/Remove Trig
   if (menu          == MENU_OFF && 
-      menu_cursor   == M_AD     &&
-      menu_env      == MENU_FLTR_DECAY_SUSTAIN)
+      menu_cursor   == GLOBALMENU_AD     &&
+      menu_env      == MENU_AD_FLTR_DECAY_SUSTAIN)
     {
       // Insert/Remove Trig
       sub_handle_invert_trig();
@@ -1408,12 +1408,12 @@ void handle_key_amp_env()
 
 
 
-  // M_AD FLTR
+  // GLOBALMENU_AD FLTR
   // Move Attack Release 
   // Insert/Remove Trig
   if (menu          != MENU_OFF && 
-      menu_cursor   == M_AD     &&
-      menu_env      == MENU_FLTR_ATTACK_RELEASE)
+      menu_cursor   == GLOBALMENU_AD     &&
+      menu_env      == MENU_AD_FLTR_ATTACK_RELEASE)
     {
       //printf("***********************\n");
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A])
@@ -1433,12 +1433,12 @@ void handle_key_amp_env()
 	  { attack_fltr_all=-1; 	  dirty_graphic=1; }
     }  
 
-  // M_AD FLTR
+  // GLOBALMENU_AD FLTR
   // Move Decay Sustain
   // Insert/Remove Trig
   if (menu          != MENU_OFF && 
-      menu_cursor   == M_AD     &&
-      menu_env      == MENU_FLTR_DECAY_SUSTAIN)
+      menu_cursor   == GLOBALMENU_AD     &&
+      menu_env      == MENU_AD_FLTR_DECAY_SUSTAIN)
     {
       //printf("***********************\n");
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A])
@@ -1462,8 +1462,8 @@ void handle_key_amp_env()
 
 
   if (menu          == MENU_OFF && 
-      menu_cursor   == M_AD     &&
-      menu_env      == MENU_ENV_ADSRNOTE_AMP)
+      menu_cursor   == GLOBALMENU_AD     &&
+      menu_env      == MENU_AD_TRIGTIME_AMP)
     {
       if (lastKey   == BUTTON_A && 
 	  lastEvent == SDL_KEYDOWN)
@@ -1492,8 +1492,8 @@ void handle_key_amp_env()
 
 
   if (menu          != MENU_OFF && 
-      menu_cursor   == M_AD     &&
-      menu_env      == MENU_ENV_ADSRNOTE_AMP)
+      menu_cursor   == GLOBALMENU_AD     &&
+      menu_env      == MENU_AD_TRIGTIME_AMP)
     {
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A])
 	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>4) 
@@ -1515,10 +1515,10 @@ void handle_key_amp_env()
 
 
 
-  // change M_AD SUBMENU
+  // change GLOBALMENU_AD SUBMENU
   if (keyState[BUTTON_START]       &&
       keyRepeat[BUTTON_UP]%128==127   &&
-      menu_cursor ==  M_AD)
+      menu_cursor ==  GLOBALMENU_AD)
     {
       menu_env--;
       if (menu_env<=-1)
@@ -1529,10 +1529,10 @@ void handle_key_amp_env()
       printf("[sub menu env : %d]\n",menu_env);
     }
 
-  // change M_AD SUBMENU
+  // change GLOBALMENU_AD SUBMENU
   if (keyState[BUTTON_START] &&
       keyRepeat[BUTTON_DOWN]%128==127  &&
-      menu_cursor ==  M_AD)
+      menu_cursor ==  GLOBALMENU_AD)
     {
       menu_env++;
       if (menu_env>=4)
@@ -1543,18 +1543,18 @@ void handle_key_amp_env()
       printf("[sub menu env : %d]\n",menu_env);
     }
 
-  // change M_AD SUBMENU
+  // change GLOBALMENU_AD SUBMENU
   if (lastKey     ==  BUTTON_START  && 
       lastEvent   ==  SDL_KEYUP     && 
-      menu_cursor ==  M_AD)
+      menu_cursor ==  GLOBALMENU_AD)
     {
       if (menu_env_dirty_keyboard==0)
 	{
-	  if      (menu_env==MENU_ENV_ATTACK_RELEASE)      { menu_env=MENU_ENV_DECAY_SUSTAIN;       }
-	  else if (menu_env==MENU_ENV_DECAY_SUSTAIN)       { menu_env=MENU_FLTR_ATTACK_RELEASE;     }   
-	  else if (menu_env==MENU_FLTR_ATTACK_RELEASE)     { menu_env=MENU_FLTR_DECAY_SUSTAIN;      }   
-	  else if (menu_env==MENU_FLTR_DECAY_SUSTAIN)      { menu_env=MENU_ENV_ADSRNOTE_AMP;        }   
-	  else if (menu_env==MENU_ENV_ADSRNOTE_AMP)        { menu_env=MENU_ENV_ATTACK_RELEASE;      }   
+	  if      (menu_env==MENU_AD_AMP_ATTACK_RELEASE_)      { menu_env=MENU_AD_AMP_DECAY_SUSTAIN;       }
+	  else if (menu_env==MENU_AD_AMP_DECAY_SUSTAIN)       { menu_env=MENU_AD_FLTR_ATTACK_RELEASE;     }   
+	  else if (menu_env==MENU_AD_FLTR_ATTACK_RELEASE)     { menu_env=MENU_AD_FLTR_DECAY_SUSTAIN;      }   
+	  else if (menu_env==MENU_AD_FLTR_DECAY_SUSTAIN)      { menu_env=MENU_AD_TRIGTIME_AMP;        }   
+	  else if (menu_env==MENU_AD_TRIGTIME_AMP)        { menu_env=MENU_AD_AMP_ATTACK_RELEASE_;      }   
 	  dirty_graphic=1;
 	}
       menu_env_dirty_keyboard=0;
@@ -1579,11 +1579,11 @@ void handle_key_note()
   lastEvent=IE.lastEvent();
   lastKey=IE.lastKey();
 
-    // M_NOTE
+    // GLOBALMENU_NOTE
   // change note
   // copy/paste
   if (menu        == MENU_OFF && 
-      menu_cursor == M_NOTE)
+      menu_cursor == GLOBALMENU_NOTE)
     {
       // copy/paste/insert/delete trig 
       sub_handle_invert_trig();
@@ -1614,10 +1614,10 @@ void handle_key_note()
 	{ note=-12;  	  dirty_graphic=1;}
     }  
 
-    // M_NOTE
+    // GLOBALMENU_NOTE
   // change note
   if (menu        != MENU_OFF && 
-      menu_cursor == M_NOTE)
+      menu_cursor == GLOBALMENU_NOTE)
     {
       
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A]) 
@@ -1641,7 +1641,7 @@ void handle_key_note()
   // change note from box to value e.g C3 D4...
   if (lastKey     ==  BUTTON_START  && 
       lastEvent   ==  SDL_KEYUP     && 
-      menu_cursor ==  M_NOTE)
+      menu_cursor ==  GLOBALMENU_NOTE)
     {
       if      (menu_note==0)        { menu_note=1;  }
       else if (menu_note==1)        { menu_note=0;  }   
@@ -1665,10 +1665,10 @@ void handle_key_osc()
   lastEvent=IE.lastEvent();
   lastKey=IE.lastKey();
 
-  // M_OSC
+  // GLOBALMENU_OSC
   // change oscilltor one and two type
   if (menu        == MENU_OFF && 
-      menu_cursor == M_OSC )
+      menu_cursor == GLOBALMENU_OSC )
     {
       // Insert/Remove Trig
       sub_handle_invert_trig();
@@ -1690,10 +1690,10 @@ void handle_key_osc()
 	  { osctwotype=-1;  	  dirty_graphic=1;}
     }
 
-  // M_OSC
+  // GLOBALMENU_OSC
   // change oscilltor one and two type
   if (menu        != MENU_OFF && 
-      menu_cursor == M_OSC )
+      menu_cursor == GLOBALMENU_OSC )
     {
       if (keyState[BUTTON_LEFT] && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%128==0) 
@@ -1728,10 +1728,10 @@ void handle_key_vco()
   lastKey=IE.lastKey();
 
 
-  // change M_VCO SUBMENU
+  // change GLOBALMENU_VCO SUBMENU
   if (lastKey     ==  BUTTON_START  && 
       lastEvent   ==  SDL_KEYUP     && 
-      menu_cursor ==  M_VCO)
+      menu_cursor ==  GLOBALMENU_VCO)
     {
       if (menu_env_dirty_keyboard==0)
 	{
@@ -1745,11 +1745,11 @@ void handle_key_vco()
     }
 
 
-  // M_VCO
+  // GLOBALMENU_VCO
   // VCO Menu
   // Change Value
   if (menu        == MENU_OFF && 
-      menu_cursor == M_VCO    &&
+      menu_cursor == GLOBALMENU_VCO    &&
       menu_vco    == MENU_VCO_OSCMIX_PHASE
       )
     {
@@ -1773,7 +1773,7 @@ void handle_key_vco()
     }
 
   if (menu        != MENU_OFF && 
-      menu_cursor == M_VCO   &&
+      menu_cursor == GLOBALMENU_VCO   &&
       menu_vco    == MENU_VCO_OSCMIX_PHASE
       )
     {
@@ -1797,11 +1797,11 @@ void handle_key_vco()
     }
 
 
-  // M_VCO
+  // GLOBALMENU_VCO
   // VCO Menu
   // Change Value
   if (menu        == MENU_OFF && 
-      menu_cursor == M_VCO    &&
+      menu_cursor == GLOBALMENU_VCO    &&
       menu_vco    == MENU_VCO_OSCAMP
       )
     {
@@ -1825,7 +1825,7 @@ void handle_key_vco()
     }
 
   if (menu        != MENU_OFF && 
-      menu_cursor == M_VCO   &&
+      menu_cursor == GLOBALMENU_VCO   &&
       menu_vco    == MENU_VCO_OSCAMP
       )
     {
@@ -1864,10 +1864,10 @@ void handle_key_mac()
   lastEvent=IE.lastEvent();
   lastKey=IE.lastKey();
 
-  // M_MAC
+  // GLOBALMENU_MAC
   // change machine type
   if (menu        == MENU_OFF && 
-      menu_cursor == M_MAC )
+      menu_cursor == GLOBALMENU_MAC )
     {
       // Insert/Remove Trig
       sub_handle_invert_trig();
@@ -1882,10 +1882,10 @@ void handle_key_mac()
 	  { machine_type=-1;  	  dirty_graphic=1;}
     }
 
-  // M_MAC
+  // GLOBALMENU_MAC
   // change machine type
   if (menu        != MENU_OFF && 
-      menu_cursor == M_MAC )
+      menu_cursor == GLOBALMENU_MAC )
     {
       
       if (keyState[BUTTON_UP] && keyState[BUTTON_A]) 
@@ -1912,11 +1912,11 @@ void handle_key_lfo()
   lastEvent=IE.lastEvent();
   lastKey=IE.lastKey();
 
-  // M_VCO
+  // GLOBALMENU_VCO
   // VCO Menu
   // Change Value
   if (menu        == MENU_OFF && 
-      menu_cursor == M_LFO    
+      menu_cursor == GLOBALMENU_LFO    
       )
     {
       // Insert/Remove Trig
@@ -1940,7 +1940,7 @@ void handle_key_lfo()
 
 
   if (menu        != MENU_OFF && 
-      menu_cursor == M_LFO
+      menu_cursor == GLOBALMENU_LFO
       )
     {
       if (keyState[BUTTON_LEFT] && keyState[BUTTON_A]) 
@@ -1979,10 +1979,10 @@ void handle_key_fltr()
   lastKey=IE.lastKey();
 
 
-  // change M_FLTR SUBMENU
+  // change GLOBALMENU_FLTR SUBMENU
   if (lastKey     ==  BUTTON_START  && 
       lastEvent   ==  SDL_KEYUP     && 
-      menu_cursor ==  M_FLTR)
+      menu_cursor ==  GLOBALMENU_FLTR)
     {
       if (menu_env_dirty_keyboard==0)
 	{
@@ -2000,11 +2000,11 @@ void handle_key_fltr()
 
 
 
-  // M_FLTR
+  // GLOBALMENU_FLTR
   // Move Cutoff Resonance
   // Insert/Remove Trig
   if (menu          == MENU_OFF && 
-      menu_cursor   == M_FLTR   &&
+      menu_cursor   == GLOBALMENU_FLTR   &&
       menu_fltr     == MENU_FLTR_CUTOFF_RESONANCE)
     {
       sub_handle_invert_trig();
@@ -2030,11 +2030,11 @@ void handle_key_fltr()
 	  { cutoff=-1; 	  dirty_graphic=1; }
     }  
 
-  // M_FLTR
+  // GLOBALMENU_FLTR
   // Move Cutoff Resonance
   // Insert/Remove Trig
   if (menu          != MENU_OFF && 
-      menu_cursor   == M_FLTR   &&
+      menu_cursor   == GLOBALMENU_FLTR   &&
       menu_fltr     == MENU_FLTR_CUTOFF_RESONANCE)
     {
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A])
@@ -2058,11 +2058,11 @@ void handle_key_fltr()
 	  { cutoff_all=-1; 	  dirty_graphic=1; }
     }  
 
-  // M_FLTR
+  // GLOBALMENU_FLTR
   // Move filterAlgo filterType
   // Insert/Remove Trig
   if (menu          == MENU_OFF && 
-      menu_cursor   == M_FLTR   &&
+      menu_cursor   == GLOBALMENU_FLTR   &&
       menu_fltr     == MENU_FLTR_ALGO_TYPE)
     {
       sub_handle_invert_trig();
@@ -2088,11 +2088,11 @@ void handle_key_fltr()
     }  
 
 
-  // M_FLTR
+  // GLOBALMENU_FLTR
   // Move filterAlgo filterType
   // Insert/Remove Trig
   if (menu          != MENU_OFF && 
-      menu_cursor   == M_FLTR   &&
+      menu_cursor   == GLOBALMENU_FLTR   &&
       menu_fltr     == MENU_FLTR_ALGO_TYPE)
     {
       //sub_handle_invert_trig();
@@ -2133,10 +2133,10 @@ void handle_key_bpm()
   lastEvent=IE.lastEvent();
   lastKey=IE.lastKey();
 
-  // M_BPM
+  // GLOBALMENU_BPM
   // change bpm speed
   if (menu        == MENU_OFF && 
-      menu_cursor == M_BPM )
+      menu_cursor == GLOBALMENU_BPM )
     {
       if (keyState[BUTTON_LEFT] && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%128==0) 
@@ -2162,7 +2162,7 @@ void handle_key_bpm()
     }  
 
   if (menu        == MENU_OFF && 
-      menu_cursor == M_BPM )
+      menu_cursor == GLOBALMENU_BPM )
     {
 
       if (keyState[BUTTON_DOWN] && keyState[BUTTON_A]) 
@@ -2176,7 +2176,7 @@ void handle_key_bpm()
 
 
   if (menu        == MENU_OFF && 
-      menu_cursor == M_BPM )
+      menu_cursor == GLOBALMENU_BPM )
     {
 
       if (keyState[BUTTON_LEFT] && keyState[BUTTON_A])
@@ -2204,9 +2204,9 @@ void handle_key_load_save()
   lastKey=IE.lastKey();
 
 
-  // M_LS
+  // GLOBALMENU_LS
   // Load/Save 
-  if (menu_cursor == M_LS)
+  if (menu_cursor == GLOBALMENU_LS)
     {
       // in the load/save view 
       // move loasavecursor position 
@@ -2233,7 +2233,7 @@ void handle_key_load_save()
 	    load=true;
 	}
       
-      // M_LS
+      // GLOBALMENU_LS
       // in the load/save view 
       // move loasavecursor position 
       // Save/load bund of Pattern
@@ -2247,7 +2247,7 @@ void handle_key_load_save()
 	    loadall=true;
 	}
       
-      // M_LS
+      // GLOBALMENU_LS
       // in the load/save view 
       // move load/save cursor position 
       if (menu        == MENU_OFF && 	  
