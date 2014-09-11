@@ -1084,7 +1084,7 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
   for (int i=0; i< P.getSize();i++)
     {
       if (i==0)
-	sprintf(line,"Pattern %d Track %d Param Filtertype ",PatternNumber,TrackNumber);
+	sprintf(line,"Pattern %d Track %d Param FilterType ",PatternNumber,TrackNumber);
       sprintf(line+strlen(line),"%d ",P.getPatternElement(i).getFilterType());
     }
   sprintf(line+strlen(line),"\n");
