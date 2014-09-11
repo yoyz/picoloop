@@ -66,6 +66,8 @@ enum {
   GLOBALMENU_FX    // 9
 };
 
+
+//menu_ad
 enum {
   MENU_AD_AMP_ATTACK_RELEASE_,
   MENU_AD_AMP_DECAY_SUSTAIN,
@@ -207,11 +209,11 @@ int divider=0;           // divider - => /1 /2 /4 /8  ; divider + => /8 /4 /2 /1
 int menu_cursor=GLOBALMENU_AD;      // index int the menu
 int menu=MENU_ON_PAGE1;             // menu mode
 int menu_note=ENABLE;
-int menu_env=MENU_AD_AMP_ATTACK_RELEASE_;
+int menu_ad=MENU_AD_AMP_ATTACK_RELEASE_;
 int menu_fltr=MENU_FLTR_CUTOFF_RESONANCE;
 int menu_vco=MENU_VCO_OSCMIX_PHASE;
 
-int menu_env_dirty_keyboard=0;
+int menu_ad_dirty_keyboard=0;
 
 //int ct=0;               // current_track
 int ct_x=0;             
@@ -274,7 +276,7 @@ void display_board_amp_env()
       SG.drawBoxNumber(step,STEP_COLOR);  
       //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
       
-      if (menu_env==MENU_AD_AMP_ATTACK_RELEASE_)
+      if (menu_ad==MENU_AD_AMP_ATTACK_RELEASE_)
 	{
 	  for (i=0;i<16;i++)
 	    {
@@ -295,7 +297,7 @@ void display_board_amp_env()
 	    }
 	}
 
-      if (menu_env==MENU_AD_AMP_DECAY_SUSTAIN)
+      if (menu_ad==MENU_AD_AMP_DECAY_SUSTAIN)
 	{
 	  for (i=0;i<16;i++)
 	    {
@@ -318,7 +320,7 @@ void display_board_amp_env()
 
 
 
-      if (menu_env==MENU_AD_FLTR_ATTACK_RELEASE)
+      if (menu_ad==MENU_AD_FLTR_ATTACK_RELEASE)
 	{
 	  for (i=0;i<16;i++)
 	    {
@@ -340,7 +342,7 @@ void display_board_amp_env()
 	}
 
 
-      if (menu_env==MENU_AD_FLTR_DECAY_SUSTAIN)
+      if (menu_ad==MENU_AD_FLTR_DECAY_SUSTAIN)
 	{
 	  for (i=0;i<16;i++)
 	    {
@@ -363,7 +365,7 @@ void display_board_amp_env()
 
 
 
-      if (menu_env==MENU_AD_TRIGTIME_AMP)
+      if (menu_ad==MENU_AD_TRIGTIME_AMP)
 	{
 	  for (i=0;i<16;i++)
 	    {
@@ -486,7 +488,7 @@ void display_board_bpm()
       SG.drawBoxNumber(step,STEP_COLOR);  
       //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
       
-      //if (menu_env==MENU_AD_AMP_ATTACK_RELEASE_)
+      //if (menu_ad==MENU_AD_AMP_ATTACK_RELEASE_)
       //	{
       for (i=0;i<16;i++)
 	{
@@ -545,7 +547,7 @@ void display_board_load_save()
       SG.drawBoxNumber(step,STEP_COLOR);  
       //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
       
-      //if (menu_env==MENU_AD_AMP_ATTACK_RELEASE_)
+      //if (menu_ad==MENU_AD_AMP_ATTACK_RELEASE_)
       //	{
       for (i=0;i<16;i++)
 	{
@@ -687,7 +689,7 @@ void display_board_lfo()
       SG.drawBoxNumber(step,STEP_COLOR);  
       //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
       
-      //if (menu_env==MENU_AD_AMP_ATTACK_RELEASE_)
+      //if (menu_ad==MENU_AD_AMP_ATTACK_RELEASE_)
       //	{
 	  for (i=0;i<16;i++)
 	    {
@@ -865,14 +867,14 @@ void display_board()
       sprintf(str_submenu,"DOT");
       SG.guiTTFText(200,60,str_submenu);
     }
-  if (menu_env==MENU_AD_AMP_ATTACK_RELEASE_ &&
+  if (menu_ad==MENU_AD_AMP_ATTACK_RELEASE_ &&
       menu_cursor==GLOBALMENU_AD)
     {
       sprintf(str_submenu,"AMP  A/R");
       SG.guiTTFText(200,60,str_submenu);
     }
 
-  if (menu_env==MENU_AD_AMP_DECAY_SUSTAIN &&
+  if (menu_ad==MENU_AD_AMP_DECAY_SUSTAIN &&
       menu_cursor==GLOBALMENU_AD)
     {
       sprintf(str_submenu,"AMP  D/S");
@@ -880,14 +882,14 @@ void display_board()
     }
 
 
-  if (menu_env==MENU_AD_FLTR_ATTACK_RELEASE &&
+  if (menu_ad==MENU_AD_FLTR_ATTACK_RELEASE &&
       menu_cursor==GLOBALMENU_AD)
     {
       sprintf(str_submenu,"FLTR A/R");
       SG.guiTTFText(200,60,str_submenu);
     }
 
-  if (menu_env==MENU_AD_FLTR_DECAY_SUSTAIN &&
+  if (menu_ad==MENU_AD_FLTR_DECAY_SUSTAIN &&
       menu_cursor==GLOBALMENU_AD)
     {
       sprintf(str_submenu,"FLTR D/S");
@@ -895,7 +897,7 @@ void display_board()
     }
 
 
-  if (menu_env==MENU_AD_TRIGTIME_AMP &&
+  if (menu_ad==MENU_AD_TRIGTIME_AMP &&
       menu_cursor==GLOBALMENU_AD)
     {
       sprintf(str_submenu,"T/N AMP");
@@ -937,7 +939,7 @@ void display_board()
 
 
   /*
-  if (menu_env==MENU_ENV_ATTACK_AMP &&
+  if (menu_ad==MENU_AD_ATTACK_AMP &&
       menu_cursor==GLOBALMENU_AD)
     {
       sprintf(str_submenu,"ATTACK/AMP");
@@ -1252,7 +1254,7 @@ void handle_key_amp_env()
   // Insert/Remove Trig
   if (menu          == MENU_OFF && 
       menu_cursor   == GLOBALMENU_AD     &&
-      menu_env      == MENU_AD_AMP_ATTACK_RELEASE_)
+      menu_ad       == MENU_AD_AMP_ATTACK_RELEASE_)
     {
       // Insert/Remove Trig
       sub_handle_invert_trig();
@@ -1279,7 +1281,7 @@ void handle_key_amp_env()
   // Insert/Remove Trig
   if (menu          == MENU_OFF && 
       menu_cursor   == GLOBALMENU_AD     &&
-      menu_env      == MENU_AD_AMP_DECAY_SUSTAIN)
+      menu_ad      == MENU_AD_AMP_DECAY_SUSTAIN)
     {
       // Insert/Remove Trig
       sub_handle_invert_trig();
@@ -1306,7 +1308,7 @@ void handle_key_amp_env()
   // Insert/Remove Trig
   if (menu          != MENU_OFF && 
       menu_cursor   == GLOBALMENU_AD     &&
-      menu_env      == MENU_AD_AMP_ATTACK_RELEASE_)
+      menu_ad      == MENU_AD_AMP_ATTACK_RELEASE_)
     {
       //printf("***********************\n");
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A])
@@ -1331,7 +1333,7 @@ void handle_key_amp_env()
   // Insert/Remove Trig
   if (menu          != MENU_OFF && 
       menu_cursor   == GLOBALMENU_AD     &&
-      menu_env      == MENU_AD_AMP_DECAY_SUSTAIN)
+      menu_ad      == MENU_AD_AMP_DECAY_SUSTAIN)
     {
       //printf("***********************\n");
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A])
@@ -1359,7 +1361,7 @@ void handle_key_amp_env()
   // Insert/Remove Trig
   if (menu          == MENU_OFF && 
       menu_cursor   == GLOBALMENU_AD     &&
-      menu_env      == MENU_AD_FLTR_ATTACK_RELEASE)
+      menu_ad      == MENU_AD_FLTR_ATTACK_RELEASE)
     {
       // Insert/Remove Trig
       sub_handle_invert_trig();
@@ -1385,7 +1387,7 @@ void handle_key_amp_env()
   // Insert/Remove Trig
   if (menu          == MENU_OFF && 
       menu_cursor   == GLOBALMENU_AD     &&
-      menu_env      == MENU_AD_FLTR_DECAY_SUSTAIN)
+      menu_ad      == MENU_AD_FLTR_DECAY_SUSTAIN)
     {
       // Insert/Remove Trig
       sub_handle_invert_trig();
@@ -1413,7 +1415,7 @@ void handle_key_amp_env()
   // Insert/Remove Trig
   if (menu          != MENU_OFF && 
       menu_cursor   == GLOBALMENU_AD     &&
-      menu_env      == MENU_AD_FLTR_ATTACK_RELEASE)
+      menu_ad      == MENU_AD_FLTR_ATTACK_RELEASE)
     {
       //printf("***********************\n");
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A])
@@ -1438,7 +1440,7 @@ void handle_key_amp_env()
   // Insert/Remove Trig
   if (menu          != MENU_OFF && 
       menu_cursor   == GLOBALMENU_AD     &&
-      menu_env      == MENU_AD_FLTR_DECAY_SUSTAIN)
+      menu_ad      == MENU_AD_FLTR_DECAY_SUSTAIN)
     {
       //printf("***********************\n");
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A])
@@ -1463,7 +1465,7 @@ void handle_key_amp_env()
 
   if (menu          == MENU_OFF && 
       menu_cursor   == GLOBALMENU_AD     &&
-      menu_env      == MENU_AD_TRIGTIME_AMP)
+      menu_ad      == MENU_AD_TRIGTIME_AMP)
     {
       if (lastKey   == BUTTON_A && 
 	  lastEvent == SDL_KEYDOWN)
@@ -1493,7 +1495,7 @@ void handle_key_amp_env()
 
   if (menu          != MENU_OFF && 
       menu_cursor   == GLOBALMENU_AD     &&
-      menu_env      == MENU_AD_TRIGTIME_AMP)
+      menu_ad      == MENU_AD_TRIGTIME_AMP)
     {
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A])
 	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>4) 
@@ -1520,13 +1522,13 @@ void handle_key_amp_env()
       keyRepeat[BUTTON_UP]%128==127   &&
       menu_cursor ==  GLOBALMENU_AD)
     {
-      menu_env--;
-      if (menu_env<=-1)
-	menu_env=4;
+      menu_ad--;
+      if (menu_ad<=-1)
+	menu_ad=4;
       dirty_graphic=1;
       IE.clearLastKeyEvent();
-      menu_env_dirty_keyboard=1;
-      printf("[sub menu env : %d]\n",menu_env);
+      menu_ad_dirty_keyboard=1;
+      printf("[sub menu env : %d]\n",menu_ad);
     }
 
   // change GLOBALMENU_AD SUBMENU
@@ -1534,13 +1536,13 @@ void handle_key_amp_env()
       keyRepeat[BUTTON_DOWN]%128==127  &&
       menu_cursor ==  GLOBALMENU_AD)
     {
-      menu_env++;
-      if (menu_env>=4)
-	menu_env=0;
+      menu_ad++;
+      if (menu_ad>=4)
+	menu_ad=0;
       dirty_graphic=1;
       IE.clearLastKeyEvent();
-      menu_env_dirty_keyboard=1;
-      printf("[sub menu env : %d]\n",menu_env);
+      menu_ad_dirty_keyboard=1;
+      printf("[sub menu env : %d]\n",menu_ad);
     }
 
   // change GLOBALMENU_AD SUBMENU
@@ -1548,18 +1550,18 @@ void handle_key_amp_env()
       lastEvent   ==  SDL_KEYUP     && 
       menu_cursor ==  GLOBALMENU_AD)
     {
-      if (menu_env_dirty_keyboard==0)
+      if (menu_ad_dirty_keyboard==0)
 	{
-	  if      (menu_env==MENU_AD_AMP_ATTACK_RELEASE_)      { menu_env=MENU_AD_AMP_DECAY_SUSTAIN;       }
-	  else if (menu_env==MENU_AD_AMP_DECAY_SUSTAIN)       { menu_env=MENU_AD_FLTR_ATTACK_RELEASE;     }   
-	  else if (menu_env==MENU_AD_FLTR_ATTACK_RELEASE)     { menu_env=MENU_AD_FLTR_DECAY_SUSTAIN;      }   
-	  else if (menu_env==MENU_AD_FLTR_DECAY_SUSTAIN)      { menu_env=MENU_AD_TRIGTIME_AMP;        }   
-	  else if (menu_env==MENU_AD_TRIGTIME_AMP)        { menu_env=MENU_AD_AMP_ATTACK_RELEASE_;      }   
+	  if      (menu_ad==MENU_AD_AMP_ATTACK_RELEASE_)      { menu_ad=MENU_AD_AMP_DECAY_SUSTAIN;       }
+	  else if (menu_ad==MENU_AD_AMP_DECAY_SUSTAIN)       { menu_ad=MENU_AD_FLTR_ATTACK_RELEASE;     }   
+	  else if (menu_ad==MENU_AD_FLTR_ATTACK_RELEASE)     { menu_ad=MENU_AD_FLTR_DECAY_SUSTAIN;      }   
+	  else if (menu_ad==MENU_AD_FLTR_DECAY_SUSTAIN)      { menu_ad=MENU_AD_TRIGTIME_AMP;        }   
+	  else if (menu_ad==MENU_AD_TRIGTIME_AMP)        { menu_ad=MENU_AD_AMP_ATTACK_RELEASE_;      }   
 	  dirty_graphic=1;
 	}
-      menu_env_dirty_keyboard=0;
+      menu_ad_dirty_keyboard=0;
       IE.clearLastKeyEvent();
-      printf("[sub menu env : %d]\n",menu_env);
+      printf("[sub menu env : %d]\n",menu_ad);
     }
 
 
@@ -1733,15 +1735,15 @@ void handle_key_vco()
       lastEvent   ==  SDL_KEYUP     && 
       menu_cursor ==  GLOBALMENU_VCO)
     {
-      if (menu_env_dirty_keyboard==0)
+      if (menu_ad_dirty_keyboard==0)
 	{
 	  if      (menu_vco==MENU_VCO_OSCMIX_PHASE)        { menu_vco=MENU_VCO_OSCAMP;            }
 	  else if (menu_vco==MENU_VCO_OSCAMP)              { menu_vco=MENU_VCO_OSCMIX_PHASE;      }   
 	  dirty_graphic=1;
 	}
-      menu_env_dirty_keyboard=0;
+      menu_ad_dirty_keyboard=0;
       IE.clearLastKeyEvent();
-      printf("[sub menu env : %d]\n",menu_env);
+      printf("[sub menu env : %d]\n",menu_ad);
     }
 
 
@@ -1984,15 +1986,15 @@ void handle_key_fltr()
       lastEvent   ==  SDL_KEYUP     && 
       menu_cursor ==  GLOBALMENU_FLTR)
     {
-      if (menu_env_dirty_keyboard==0)
+      if (menu_ad_dirty_keyboard==0)
 	{
 	  if      (menu_fltr==MENU_FLTR_CUTOFF_RESONANCE)   { menu_fltr=MENU_FLTR_ALGO_TYPE;            }
 	  else if (menu_fltr==MENU_FLTR_ALGO_TYPE)          { menu_fltr=MENU_FLTR_CUTOFF_RESONANCE;     }   
 	  dirty_graphic=1;
 	}
-      menu_env_dirty_keyboard=0;
+      menu_ad_dirty_keyboard=0;
       IE.clearLastKeyEvent();
-      printf("[sub menu env : %d]\n",menu_env);
+      printf("[sub menu_fltr : %d]\n",menu_fltr);
     }
 
 
