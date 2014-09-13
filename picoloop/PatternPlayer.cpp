@@ -222,6 +222,7 @@ int menu=MENU_ON_PAGE1;             // menu mode
 int menu_note=ENABLE;
 int menu_ad=MENU_AD_AMP_ATTACK_RELEASE_;
 int menu_fltr=MENU_FLTR_CUTOFF_RESONANCE;
+int menu_fx=MENU_FX_DEPTH_SPEED;
 int menu_vco=MENU_VCO_OSCMIX_PHASE;
 
 int menu_ad_dirty_keyboard=0;
@@ -851,7 +852,7 @@ void display_board_fx()
   if (menu_cursor==GLOBALMENU_FX)
     {
 
-      if (menu_fltr==MENU_FX_DEPTH_SPEED)
+      if (menu_fx==MENU_FX_DEPTH_SPEED)
 	{
 	  // Cursor & step postion      
 	  SG.drawBoxNumber(cursor,CURSOR_COLOR);
