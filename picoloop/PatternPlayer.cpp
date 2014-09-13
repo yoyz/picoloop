@@ -1837,21 +1837,21 @@ void handle_key_fx()
       menu_cursor == GLOBALMENU_FX)
     {
       // Insert/Remove Trig
-      sub_handle_invert_trig();
+      //sub_handle_invert_trig();
 
-      if (keyState[BUTTON_LEFT] && keyState[BUTTON_B]) 
+      if (keyState[BUTTON_LEFT] && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]>4) 
 	  { fx_depth_all=-1; 	  dirty_graphic=1;}
       
-      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
+      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>4) 
 	  { fx_depth_all=1;  	  dirty_graphic=1;}
       
-      if (keyState[BUTTON_UP] && keyState[BUTTON_B]) 
+      if (keyState[BUTTON_UP] && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]>4) 
 	  { fx_speed_all=1;   	  dirty_graphic=1;}
       
-      if (keyState[BUTTON_DOWN] && keyState[BUTTON_B])
+      if (keyState[BUTTON_DOWN] && keyState[BUTTON_A])
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>4) 
 	  { fx_speed_all=-1;  	  dirty_graphic=1;}
     }
@@ -2755,7 +2755,7 @@ void seq_update_multiple_time_by_step()
 	printf("[fx_depth:%d]\n",P[cty].getPatternElement(cursor).getFxDepth());      
     }
   
-  // Change Fx Depth
+  // Change Fx Depth All
   if (fx_depth_all!=0)
     {
       for (i=0;i<16;i++)
@@ -2766,7 +2766,7 @@ void seq_update_multiple_time_by_step()
     }
 
 
-  // Change Fx Depth
+  // Change Fx Speed
   if (fx_speed!=0)
     {
       P[cty].getPatternElement(cursor).setFxSpeed(P[cty].getPatternElement(cursor).getFxSpeed()+fx_speed);
@@ -2775,11 +2775,11 @@ void seq_update_multiple_time_by_step()
 	printf("[fx_speed:%d]\n",P[cty].getPatternElement(cursor).getFxSpeed());      
     }
   
-  // Change Fx Depth
+  // Change Fx Speed
   if (fx_speed_all!=0)
     {
       for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).setFxDepth(P[cty].getPatternElement(i).getFxSpeed()+fx_speed_all);
+	P[cty].getPatternElement(i).setFxSpeed(P[cty].getPatternElement(i).getFxSpeed()+fx_speed_all);
       fx_speed_all=0;
       if (debug)
 	printf("[fx_speed_all:%d]\n",P[cty].getPatternElement(cursor).getFxSpeed());      

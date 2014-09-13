@@ -128,7 +128,8 @@ int16_t EffectDelay::process(int16_t in)
   //int 
   //int out;
   int32_t out;
-  out=(((buffer[indexOffset])*depth)/127)+in;
+  //out=(((buffer[indexOffset])*depth)/127)+in;
+  out=(((buffer[indexOffset])*depth)>>8)+in;
   //buffer[index]=in;
   //out=(buffer[indexOffset]/2)+buffer[index];
   //if (buffer==0) 
