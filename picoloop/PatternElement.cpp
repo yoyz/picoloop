@@ -48,6 +48,9 @@ PatternElement::PatternElement()
 
   filterType=FILTER_TYPE_LOWPASS;
   filterAlgo=FILTER_ALGO_AMSYNTH;
+
+  fx_depth=0;
+  fx_speed=0;
 }
 
 PatternElement::~PatternElement()
@@ -348,6 +351,27 @@ void PatternElement::setPhaseOsc1(int val)
 int PatternElement::getPhaseOsc1()
 {
   return phaseOsc1;
+}
+
+void PatternElement::setFxDepth(int val)
+{
+  fx_depth=this->checkSevenBitBoundarie(val);
+}
+
+int PatternElement::getFxDepth()
+{
+  return fx_depth;
+}
+
+
+void PatternElement::setFxSpeed(int val)
+{
+  fx_speed=this->checkSevenBitBoundarie(val);
+}
+
+int PatternElement::getFxSpeed()
+{
+  return fx_speed;
 }
 
 

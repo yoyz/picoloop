@@ -4,7 +4,7 @@
 
 			//MonoMixer::MonoMixer(): M()
 //MonoMixer::MonoMixer()
-MonoMixer::MonoMixer(): PD(), PM(), OPLM()
+MonoMixer::MonoMixer(): PD(), PM(), OPLM(), FXDelay()
 {
   printf("MonoMixer::MonoMixer()\n");  
   amplitude=127;
@@ -15,6 +15,12 @@ MonoMixer::MonoMixer(): PD(), PM(), OPLM()
   //M=&OPLM;
   machine_type=0;
   M=&PM;
+
+
+  //FX=&FXDelay;
+
+  fx_depth=125;
+  fx_speed=90;
 }
 
 MonoMixer::~MonoMixer()
@@ -28,6 +34,18 @@ void MonoMixer::init()
   PM.init();
   PD.init();
   OPLM.init();
+
+  //FX=&FXDelay;
+  FX=&FXDelay;
+  FX->init();
+  FX->setDepth(fx_depth);
+  FX->setSpeed(fx_speed);
+  
+  //FXDelay.init();
+
+  //FXDelay.setDepth(fx_depth);
+  //FXDelay.setSpeed(fx_speed);
+
   
 
   if (machine_type==0)
@@ -82,15 +100,25 @@ Machine * MonoMixer::getInput()
   
 }
 
+Effect * MonoMixer::getEffect()
+{
+  //M->init();
+  return FX;
+  
+}
+
 
 Sint16 MonoMixer::tick()
 {
   int debug=0;
   //  /*
   Sint32 res32=0;
-  Sint16 res16=0;
   Sint16 tick=0;
-  tick=M->tick();
+  Sint16 res16=0;
+  //tick=M->tick();
+  //tick=FX.process(M->tick());
+  //tick=FXDelay.process(M->tick());
+  tick=FX->process(M->tick());
   res32=tick*amplitude;
   //  res32=tick*127;
   //res32=res32/127;

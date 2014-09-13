@@ -91,6 +91,14 @@ public:
   int    getPhaseOsc1();
   void   setPhaseOsc1(int val);
 
+  int    getFxDepth();
+  void   setFxDepth(int val);
+
+  int    getFxSpeed();
+  void   setFxSpeed(int val);
+
+
+
   int    getOsc1Amp();
   void   setOsc1Amp(int val);
 
@@ -171,6 +179,9 @@ private:
 
   int filterType;
   int filterAlgo;
+
+  int fx_depth;
+  int fx_speed;
   
 };
 

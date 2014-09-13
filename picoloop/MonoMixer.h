@@ -4,6 +4,8 @@ using namespace std;
 #include "PicosynthMachine.h"
 #include "PicodrumMachine.h"
 #include "DboplMachine.h"
+//#include "Effect.h"
+#include "EffectDelay.h"
 #include <SDL/SDL_types.h>
 
 #ifndef __MONOMIXER____
@@ -19,15 +21,24 @@ class MonoMixer
   void        setAmplitude(int amp);
   //  void        setInput(Machine * M);
   Machine *   getInput();
+  Effect  *   getEffect();
   Sint16      tick();
 
  private:
+
   Machine              *M;
   PicosynthMachine      PM;
   PicodrumMachine       PD;
   dboplMachine          OPLM;
+
+  Effect                *FX;
+  EffectDelay           FXDelay;
+
   Sint16                amplitude;
   int                   machine_type;
+
+  int                   fx_depth;
+  int                   fx_speed;
 };
 
 

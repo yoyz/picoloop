@@ -85,11 +85,16 @@ enum {
   MENU_VCO_OSCMIX_PHASE,
   MENU_VCO_OSCAMP
 };
+
+enum {
+  MENU_FX_DEPTH_SPEED
+};
   
 
 vector <Pattern>            P(TRACK_MAX);  
 vector <Machine   *>        M(TRACK_MAX);
 vector <MonoMixer *>        MM(TRACK_MAX);
+vector <Effect    *>        FX(TRACK_MAX);
 
 Sequencer      SEQ;         // used to  store/get information about sequencer 
 AudioEngine    AE;          // used to  init alsa/rtaudio
@@ -170,6 +175,12 @@ int resonance=0;
 
 int cutoff_all=0;
 int resonance_all=0;
+
+int fx_depth=0;
+int fx_speed=0;
+
+int fx_depth_all=0;
+int fx_speed_all=0;
 
 int vcomix=0;
 int vcomix_all=0;
@@ -674,6 +685,8 @@ void display_board_vco()
 }
 
 
+
+
 void display_board_lfo()
 {
   int  i;
@@ -827,6 +840,69 @@ void display_board_fltr()
 
     }
 }
+
+
+void display_board_fx()
+{
+  int  i;
+  int  cty=SEQ.getCurrentTrackY();
+  int  step=SEQ.getPatternSequencer(cty).getStep();
+
+  if (menu_cursor==GLOBALMENU_FX)
+    {
+
+      if (menu_fltr==MENU_FX_DEPTH_SPEED)
+	{
+	  // Cursor & step postion      
+	  SG.drawBoxNumber(cursor,CURSOR_COLOR);
+	  SG.drawBoxNumber(step,STEP_COLOR);  
+	  
+	  for (i=0;i<16;i++)
+	    {
+	      // Draw trigged box trig color   
+	      if (P[cty].getPatternElement(i).getTrig())
+		{
+		  SG.drawBoxNumber(i,TRIG_COLOR);
+		  if (i==cursor)
+		    SG.drawBoxNumber(cursor,CURSOR_COLOR);
+		  if (i==step)
+		    SG.drawBoxNumber(step,STEP_COLOR);  
+		  
+		  // AdsR
+		  SG.smallBoxNumber(i,P[cty].getPatternElement(i).getFxDepth(),128,SMALLBOX_COLOR);
+		  SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).getFxSpeed(),SMALLBOX_COLOR);      
+		}
+	    }
+	}
+      /*
+      if (menu_fltr==MENU_FX_ALGO)
+	{
+	  // Cursor & step postion      
+	  SG.drawBoxNumber(cursor,CURSOR_COLOR);
+	  SG.drawBoxNumber(step,STEP_COLOR);  
+	  
+	  for (i=0;i<16;i++)
+	    {
+	      // Draw trigged box trig color   
+	      if (P[cty].getPatternElement(i).getTrig())
+		{
+		  SG.drawBoxNumber(i,TRIG_COLOR);
+		  if (i==cursor)
+		    SG.drawBoxNumber(cursor,CURSOR_COLOR);
+		  if (i==step)
+		    SG.drawBoxNumber(step,STEP_COLOR);  
+		  
+		  SG.drawTTFTextNumberFirstLine(i,P[cty].getPatternElement(i).getFilterAlgoCharStar()); 
+		  SG.drawTTFTextNumberSecondLine(i,P[cty].getPatternElement(i).getFilterTypeCharStar()); 
+		}
+	    }
+	}
+      */
+
+    }
+}
+
+
 
 
 void display_board()
@@ -1005,6 +1081,7 @@ void display_board()
   display_board_lfo();
   display_board_fltr();
   display_board_bpm();
+  display_board_fx();
 
   SG.refresh();
 }
@@ -1717,6 +1794,70 @@ void handle_key_osc()
 }
 
 
+void handle_key_fx()
+{
+  bool * keyState;
+  int  * keyRepeat;
+  int    lastEvent;
+  int    lastKey;
+
+  keyState=IE.keyState();
+  keyRepeat=IE.keyRepeat();
+  lastEvent=IE.lastEvent();
+  lastKey=IE.lastKey();
+
+  // GLOBALMENU_FX
+  // change fx_depth and fx_speed
+  if (menu        == MENU_OFF && 
+      menu_cursor == GLOBALMENU_FX)
+    {
+      // Insert/Remove Trig
+      sub_handle_invert_trig();
+
+      if (keyState[BUTTON_LEFT] && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]>4) 
+	  { fx_depth=-1; 	  dirty_graphic=1;}
+      
+      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>4) 
+	  { fx_depth=1;  	  dirty_graphic=1;}
+      
+      if (keyState[BUTTON_UP] && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]>4) 
+	  { fx_speed=1;   	  dirty_graphic=1;}
+      
+      if (keyState[BUTTON_DOWN] && keyState[BUTTON_B])
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>4) 
+	  { fx_speed=-1;  	  dirty_graphic=1;}
+    }
+
+  // GLOBALMENU_FX
+  // change fx_depth and fx_speed
+  if (menu        != MENU_OFF && 
+      menu_cursor == GLOBALMENU_FX)
+    {
+      // Insert/Remove Trig
+      sub_handle_invert_trig();
+
+      if (keyState[BUTTON_LEFT] && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]>4) 
+	  { fx_depth_all=-1; 	  dirty_graphic=1;}
+      
+      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>4) 
+	  { fx_depth_all=1;  	  dirty_graphic=1;}
+      
+      if (keyState[BUTTON_UP] && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]>4) 
+	  { fx_speed_all=1;   	  dirty_graphic=1;}
+      
+      if (keyState[BUTTON_DOWN] && keyState[BUTTON_B])
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>4) 
+	  { fx_speed_all=-1;  	  dirty_graphic=1;}
+    }
+
+}
+
 void handle_key_vco()
 {
   bool * keyState;
@@ -2324,6 +2465,7 @@ void handle_key()
   handle_key_fltr();
   handle_key_lfo();
   handle_key_bpm();
+  handle_key_fx();
  
   int delay=1;
   //printf("sleeping %dms\n",delay);
@@ -2602,6 +2744,47 @@ void seq_update_multiple_time_by_step()
       //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
       
     }
+
+
+  // Change Fx Depth
+  if (fx_depth!=0)
+    {
+      P[cty].getPatternElement(cursor).setFxDepth(P[cty].getPatternElement(cursor).getFxDepth()+fx_depth);
+      fx_depth=0;
+      if (debug)
+	printf("[fx_depth:%d]\n",P[cty].getPatternElement(cursor).getFxDepth());      
+    }
+  
+  // Change Fx Depth
+  if (fx_depth_all!=0)
+    {
+      for (i=0;i<16;i++)
+	P[cty].getPatternElement(i).setFxDepth(P[cty].getPatternElement(i).getFxDepth()+fx_depth_all);
+      fx_depth_all=0;
+      if (debug)
+	printf("[fx_depth_all:%d]\n",P[cty].getPatternElement(cursor).getFxDepth());      
+    }
+
+
+  // Change Fx Depth
+  if (fx_speed!=0)
+    {
+      P[cty].getPatternElement(cursor).setFxSpeed(P[cty].getPatternElement(cursor).getFxSpeed()+fx_speed);
+      fx_speed=0;
+      if (debug)
+	printf("[fx_speed:%d]\n",P[cty].getPatternElement(cursor).getFxSpeed());      
+    }
+  
+  // Change Fx Depth
+  if (fx_speed_all!=0)
+    {
+      for (i=0;i<16;i++)
+	P[cty].getPatternElement(i).setFxDepth(P[cty].getPatternElement(i).getFxSpeed()+fx_speed_all);
+      fx_speed_all=0;
+      if (debug)
+	printf("[fx_speed_all:%d]\n",P[cty].getPatternElement(cursor).getFxSpeed());      
+    }
+
 
 
   // Change osc1 amp
@@ -3089,8 +3272,12 @@ void seq_update_track(int t)
 	  //M[t]->set(NOTE_ON,0);
 	  MM[t]->setAmplitude(P[t].getPatternElement(step).getAmp());
 	  MM[t]->setMachineType(P[t].getPatternElement(step).getMachineType());
-	  M[t]=MM[t]->getInput();                             
+	  M[t]  = MM[t]->getInput();                             
+	  FX[t] = MM[t]->getEffect();                             
 
+
+	  FX[t]->setDepth(P[t].getPatternElement(step).getFxDepth());
+	  FX[t]->setSpeed(P[t].getPatternElement(step).getFxSpeed());
 
 	  printf("[Freq:%d]\n",i);
 	  M[t]->set(OSC1_FREQ,i);
