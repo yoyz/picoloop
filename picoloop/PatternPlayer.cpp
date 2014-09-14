@@ -174,6 +174,9 @@ int decay_fltr_all=0;
 int sustain_fltr_all=0;
 int release_fltr_all=0;
 
+
+int pshift_all=0;
+
 //int adsr_note=0;
 //int adsr_note_all=0;
 int trig_time=0;
@@ -648,6 +651,49 @@ void display_board_load_save()
     }                  
 }
 
+
+void display_board_psh()
+{
+  int x,y;
+  int  i;
+  int  cty=SEQ.getCurrentTrackY();
+  int  step=SEQ.getPatternSequencer(cty).getStep();
+
+
+
+
+  //Draw LFO when load/save is not selected
+  // Why ? need to display something, so why not ?
+  if (menu!=MENU_OFF && 
+      menu_cursor==GLOBALMENU_PSH
+      )
+    {
+
+      // Cursor & step postion      
+      SG.drawBoxNumber(cursor,CURSOR_COLOR);
+      SG.drawBoxNumber(step,STEP_COLOR);  
+      for (i=0;i<16;i++)
+	{
+	  // Draw trigged box trig color   
+	  if (P[cty].getPatternElement(i).getTrig())
+	    {
+	      SG.drawBoxNumber(i,TRIG_COLOR);
+	      if (i==cursor)
+		SG.drawBoxNumber(cursor,CURSOR_COLOR);
+	      if (i==step)
+		SG.drawBoxNumber(step,STEP_COLOR);  
+		  //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
+	      
+		  // LFO
+	      SG.smallBoxNumber(i,P[cty].getPatternElement(i).getLfoDepth(),128,SMALLBOX_COLOR);
+	      SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).getLfoSpeed(),SMALLBOX_COLOR);
+	    }
+	}
+    }                  
+}
+
+
+
 void display_board_vco()
 {
   int  i;
@@ -1114,6 +1160,7 @@ void display_board()
   display_board_fltr();
 
   display_board_load_save();
+  display_board_psh();
   display_board_mac();
   display_board_fx();
   display_board_bpm();
@@ -2144,6 +2191,51 @@ void handle_key_lfo()
 
 
 
+void handle_key_psh()
+{
+  bool * keyState;
+  int  * keyRepeat;
+  int    lastEvent;
+  int    lastKey;
+
+  keyState=IE.keyState();
+  keyRepeat=IE.keyRepeat();
+  lastEvent=IE.lastEvent();
+  lastKey=IE.lastKey();
+
+
+
+  if (menu        != MENU_OFF && 
+      menu_cursor == GLOBALMENU_PSH
+      )
+    {
+      if (keyState[BUTTON_LEFT] && keyState[BUTTON_A]) 
+	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_LONGEST==0) 
+	  { pshift_all=-1; 	  dirty_graphic=1;}
+      
+      if (keyState[BUTTON_RIGHT]  && keyState[BUTTON_A]) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_LONGEST==0) 
+	  { pshift_all=1;  	  dirty_graphic=1;}
+
+      /*
+      // ????
+      if (keyState[BUTTON_UP]  && keyState[BUTTON_A]) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALL==0) 
+	  { lfo_speed_all=1;   	  dirty_graphic=1;}
+      
+      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A])
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALL==0) 
+	  { lfo_speed_all=-1;  	  dirty_graphic=1;}
+      //????
+      */
+    }
+
+}
+
+
+
+
+
 void handle_key_fltr()
 {
   bool * keyState;
@@ -2494,13 +2586,15 @@ void handle_key()
   handle_key_note();
   handle_key_vco();
   handle_key_osc(); 
-  handle_key_mac(); 
+  handle_key_lfo();
+  handle_key_fltr();
 
   handle_key_load_save();
-  handle_key_fltr();
-  handle_key_lfo();
-  handle_key_bpm();
+  handle_key_mac();
+  handle_key_psh();
   handle_key_fx();
+  handle_key_bpm();
+
  
   int delay=1;
   //printf("sleeping %dms\n",delay);
@@ -3098,6 +3192,42 @@ void seq_update_multiple_time_by_step()
       note_all=0;
       printf("[note_all:%d]\n",P[cty].getPatternElement(cursor).getNote());	  
     }
+
+
+  // shift PatternEntry
+  if (pshift_all!=0)
+    {       
+      PatternElement Pe;
+
+      if (pshift_all<0)
+	{
+	  Pe=P[cty].getPatternElement(0);
+	  for (i=0;i<15;i++)
+	    {	    
+	      P[cty].getPatternElement(i)=P[cty].getPatternElement(i+1);	    
+	    }
+	  i++;
+	  P[cty].getPatternElement(15)=Pe;	    
+	}
+
+      if (pshift_all>0)
+	{
+	  Pe=P[cty].getPatternElement(15);
+	  for (i=15;i>0;i--)
+	    {	    
+	      P[cty].getPatternElement(i)=P[cty].getPatternElement(i-1);	    
+	    }
+	  i--;
+	  P[cty].getPatternElement(0)=Pe;	    
+	}
+
+      pshift_all=0;
+      dirty_graphic=1;
+      printf("[pshift_all:left]\n");	  
+    }
+
+
+
 
       if (bpm!=0)
 	{
