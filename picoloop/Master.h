@@ -15,8 +15,9 @@
 //#define WAVETABLE_SIZE  128
 #define FPU 0
 
+//#define MAX_PATTERN_BY_PROJECT 256
+//#define MAX_PATTERN_BY_PROJECT 16
 #define MAX_PATTERN_BY_PROJECT 256
-
 
 #define TRACK_MAX 4
 
