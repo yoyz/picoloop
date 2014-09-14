@@ -60,17 +60,20 @@ enum {
 
 //menu_cursor
 enum {
-  GLOBALMENU_AD,   // 0
-  GLOBALMENU_NOTE, // 1
-  GLOBALMENU_OSC,  // 2 
-  GLOBALMENU_VCO,  // 3
-  GLOBALMENU_MAC,  // 4
+  GLOBALMENU_AD,         // 0
+  GLOBALMENU_NOTE,       // 1
+  GLOBALMENU_OSC,        // 2 
+  GLOBALMENU_VCO,        // 3
+  GLOBALMENU_LFO,        // 4
+  GLOBALMENU_FLTR,       // 5
 
-  GLOBALMENU_LS,   // 5
-  GLOBALMENU_LFO,  // 6
-  GLOBALMENU_FLTR, // 7
-  GLOBALMENU_BPM,  // 8
-  GLOBALMENU_FX    // 9
+  GLOBALMENU_LS,         // 6
+  GLOBALMENU_BANK,       // 7
+  GLOBALMENU_PSH,        // 8
+  GLOBALMENU_MAC,        // 9
+  GLOBALMENU_FX,         // 10
+  GLOBALMENU_BPM,        // 11
+
 };
 
 
@@ -1061,31 +1064,36 @@ void display_board()
   //  printf("           AD:%d FX:%d\n",AD,FX);
   //  exit(0);
 
-  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_AD)    sprintf(str_down,"[A/R] Note  OSC   VCO   MAC ",cty);  
-  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_NOTE)  sprintf(str_down," A/R [Note] OSC   VCO   MAC ",cty);
-  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_OSC)   sprintf(str_down," A/R  Note [OSC]  VCO   MAC ",cty);
-  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_VCO)   sprintf(str_down," A/R  Note  OSC  [VCO]  MAC ",cty);
-  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_MAC)   sprintf(str_down," A/R  Note  OSC   VCO  [MAC]",cty);
+  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_AD)    sprintf(str_down,"[A/R] Note  OSC   VCO   LFO   FLTR   ",cty);  
+  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_NOTE)  sprintf(str_down," A/R [Note] OSC   VCO   LFO   FLTR   ",cty);
+  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_OSC)   sprintf(str_down," A/R  Note [OSC]  VCO   LFO   FLTR   ",cty);
+  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_VCO)   sprintf(str_down," A/R  Note  OSC  [VCO]  LFO   FLTR   ",cty);
+  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_LFO)   sprintf(str_down," A/R  Note  OSC   VCO  [LFO]  FLTR   ",cty);
+  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_FLTR)  sprintf(str_down," A/R  Note  OSC   VCO   LFO  [FLTR]  ",cty);
 
-  if (menu==MENU_ON_PAGE2 && menu_cursor==GLOBALMENU_LS)    sprintf(str_down,"[L/S] LFO   FLTR  BPM   FX ",cty);  
-  if (menu==MENU_ON_PAGE2 && menu_cursor==GLOBALMENU_LFO)   sprintf(str_down," L/S [LFO]  FLTR  BPM   FX ",cty);
-  if (menu==MENU_ON_PAGE2 && menu_cursor==GLOBALMENU_FLTR)  sprintf(str_down," L/S  LFO  [FLTR] BPM   FX ",cty);
-  if (menu==MENU_ON_PAGE2 && menu_cursor==GLOBALMENU_BPM)   sprintf(str_down," L/S  LFO   FLTR [BPM]  FX ",cty);
-  if (menu==MENU_ON_PAGE2 && menu_cursor==GLOBALMENU_FX)    sprintf(str_down," L/S  LFO   FLTR  BPM  [FX]",cty);
+  if (menu==MENU_ON_PAGE2 && menu_cursor==GLOBALMENU_LS)    sprintf(str_down,"[L/S] BANK  PSH   MAC   FX    BPM    ",cty);  
+  if (menu==MENU_ON_PAGE2 && menu_cursor==GLOBALMENU_BANK)  sprintf(str_down," L/S [BANK] PSH   MAC   FX    BPM    ",cty);
+  if (menu==MENU_ON_PAGE2 && menu_cursor==GLOBALMENU_PSH)   sprintf(str_down," L/S  BANK [PSH]  MAC   FX    BPM    ",cty);
+  if (menu==MENU_ON_PAGE2 && menu_cursor==GLOBALMENU_MAC)   sprintf(str_down," L/S  BANK  PSH  [MAC]  FX    BPM    ",cty);
+  if (menu==MENU_ON_PAGE2 && menu_cursor==GLOBALMENU_FX)    sprintf(str_down," L/S  BANK  PSH   MAC  [FX]   BPM    ",cty);
+  if (menu==MENU_ON_PAGE2 && menu_cursor==GLOBALMENU_BPM)   sprintf(str_down," L/S  BANK  PSH   MAC   FX   [BPM]   ",cty);
 
   if (menu==0)                         sprintf(str_down,"                     ",cty);
 
-  if (menu_cursor==GLOBALMENU_AD)               sprintf(str_up,"A/R   ");
-  if (menu_cursor==GLOBALMENU_NOTE)             sprintf(str_up,"Note  ");
-  if (menu_cursor==GLOBALMENU_OSC)              sprintf(str_up,"OSC   ");
-  if (menu_cursor==GLOBALMENU_VCO)              sprintf(str_up,"VCO   ");
-  if (menu_cursor==GLOBALMENU_MAC)              sprintf(str_up,"MAC   ");
+  if (menu_cursor==GLOBALMENU_AD)               sprintf(str_up,"A/R     ");
+  if (menu_cursor==GLOBALMENU_NOTE)             sprintf(str_up,"Note    ");
+  if (menu_cursor==GLOBALMENU_OSC)              sprintf(str_up,"OSC     ");
+  if (menu_cursor==GLOBALMENU_VCO)              sprintf(str_up,"VCO     ");
+  if (menu_cursor==GLOBALMENU_LFO)              sprintf(str_up,"LFO     ");
+  if (menu_cursor==GLOBALMENU_FLTR)             sprintf(str_up,"FLTR    ");
 
-  if (menu_cursor==GLOBALMENU_LS)               sprintf(str_up,"L/S   ");
-  if (menu_cursor==GLOBALMENU_LFO)              sprintf(str_up,"LFO   ");
-  if (menu_cursor==GLOBALMENU_FLTR)             sprintf(str_up,"FLTR  ");
+
+  if (menu_cursor==GLOBALMENU_LS)               sprintf(str_up,"L/S     ");
+  if (menu_cursor==GLOBALMENU_BANK)             sprintf(str_up,"BANK    ");
+  if (menu_cursor==GLOBALMENU_PSH)              sprintf(str_up,"PSH     ");
+  if (menu_cursor==GLOBALMENU_MAC)              sprintf(str_up,"MAC     ");
   if (menu_cursor==GLOBALMENU_BPM)              sprintf(str_up,"BPM %d",bpm_current);
-  if (menu_cursor==GLOBALMENU_FX)               sprintf(str_up,"FX    ");
+  if (menu_cursor==GLOBALMENU_FX)               sprintf(str_up,"FX      ");
 
 
 
@@ -1102,13 +1110,13 @@ void display_board()
   display_board_note();
   display_board_osc();
   display_board_vco();
-  display_board_mac();
-
-  display_board_load_save();
   display_board_lfo();
   display_board_fltr();
-  display_board_bpm();
+
+  display_board_load_save();
+  display_board_mac();
   display_board_fx();
+  display_board_bpm();
 
   SG.refresh();
 }
@@ -1154,22 +1162,22 @@ void handle_key_menu()
 	case MENU_OFF:      
 	  if (menu_cursor<5) 
 	    menu=MENU_ON_PAGE1;
-	  if (menu_cursor>=5)
+	  if (menu_cursor>=6)
 	    menu=MENU_ON_PAGE2;
 	  break;
 
 	case MENU_ON_PAGE1: 
 	  menu=MENU_ON_PAGE2;
-	  if (menu_cursor<5)
-	    menu_cursor+=5; 
+	  if (menu_cursor<6)
+	    menu_cursor+=6; 
 	  else
-	    menu_cursor=5;
+	    menu_cursor=6;
 	  break;
 
 	case MENU_ON_PAGE2: 
 	  menu=MENU_ON_PAGE1; 
-	  if (menu_cursor>=5)
-	    menu_cursor-=5; 
+	  if (menu_cursor>=6)
+	    menu_cursor-=6; 
 	  else
 	    menu_cursor=0;
 	  break;
@@ -1201,8 +1209,8 @@ void handle_key_menu()
 	    menu_cursor--;
 	  //	  if (menu_cursor<GLOBALMENU_AD  && menu==MENU_ON_PAGE1) menu_cursor=GLOBALMENU_VCO;
 	  //	  if (menu_cursor<GLOBALMENU_OSC && menu==MENU_ON_PAGE2) menu_cursor=GLOBALMENU_BPM;
-	  if (menu_cursor<0     && menu==MENU_ON_PAGE1) menu_cursor=4;
-	  if (menu_cursor<5     && menu==MENU_ON_PAGE2) menu_cursor=9;
+	  if (menu_cursor<0     && menu==MENU_ON_PAGE1) menu_cursor=5;
+	  if (menu_cursor<6     && menu==MENU_ON_PAGE2) menu_cursor=11;
 
 	  dirty_graphic=1;
 	  printf("\t\t[menu_cursor:%d]\n",menu_cursor);
@@ -1212,12 +1220,12 @@ void handle_key_menu()
       if(keyState[BUTTON_RIGHT])
 	{
 	  if (keyRepeat[BUTTON_RIGHT]    == 1 || 
-	      keyRepeat[BUTTON_RIGHT]%64 == 0)
+	      keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_LONG == 0)
 	    menu_cursor++;
 	  //if (menu_cursor>GLOBALMENU_VCO  && menu==MENU_ON_PAGE1) menu_cursor=GLOBALMENU_AD;
 	  //if (menu_cursor>GLOBALMENU_BPM  && menu==MENU_ON_PAGE2) menu_cursor=GLOBALMENU_OSC;
-	  if (menu_cursor>4      && menu==MENU_ON_PAGE1) menu_cursor=0;
-	  if (menu_cursor>9      && menu==MENU_ON_PAGE2) menu_cursor=5;
+	  if (menu_cursor>5      && menu==MENU_ON_PAGE1) menu_cursor=0;
+	  if (menu_cursor>11     && menu==MENU_ON_PAGE2) menu_cursor=6;
 
 	  dirty_graphic=1;
 	  printf("\t\t[menu_cursor:%d]\n",menu_cursor);
@@ -1227,7 +1235,7 @@ void handle_key_menu()
       if(keyState[BUTTON_UP])
 	{
 	  if (keyRepeat[BUTTON_UP]    == 1 || 
-	      keyRepeat[BUTTON_UP]%64 == 0)
+	      keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONG == 0)
 	    {
 	      if (SEQ.getCurrentTrackY()>0)
 		SEQ.setCurrentTrackY(SEQ.getCurrentTrackY()-1);
