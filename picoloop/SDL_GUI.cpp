@@ -95,23 +95,36 @@ int SDL_GUI::closeVideo()
 
 void SDL_GUI::middleBox(int x,int y,Uint32 c)
 {
-  this->fullBox(x,y,boxSize/3,boxSize/3,c);
+  this->fullBox(x,y,boxSize/2,boxSize/2,c);
 }
 
-void SDL_GUI::middleBoxNumber(int x,int y,Uint32 c)
+void SDL_GUI::middleBoxNumberUp(int x,int y,Uint32 c)
+{
+  //this->middleBox(35+15*x,60+15*y,c);
+  //this->middleBox(35+15*x,30+15*y,c);
+  //this->middleBox(35+15*x,OFFSET_Y_MIDDLE_BOX+15*y,c);
+  this->middleBox(OFFSET_X_MIDDLEBOX_UP+15*x,OFFSET_Y_MIDDLEBOX_UP+15*y,c);
+}
+/*
+void SDL_GUI::middleBoxNumber_second(int x,int y,Uint32 c)
 {
   this->middleBox(35+15*x,60+15*y,c);
 }
+*/
 
-
+ /*
 void SDL_GUI::loadSaveBoxNumber(int x,int y,Uint32 c)
 {
   this->middleBoxNumber(x,y,c);
 }
+ */
 
-void SDL_GUI::drawTTFTextLoadSaveBoxNumer(int x,int y,const char *txt)
+void SDL_GUI::drawTTFTextLoadSaveBoxNumberUp(int x,int y,const char *txt)
 {
-  this->guiTTFText(35+15*x,60+15*y,txt);
+  //this->guiTTFText(35+15*x,60+15*y,txt);
+  //this->guiTTFText(35+15*x,30+15*y,txt);
+  //this->guiTTFText(35+15*x,OFFSET_Y_MIDDLE_BOX+15*y,txt);
+  this->guiTTFText(OFFSET_X_MIDDLEBOX_UP+15*x,OFFSET_Y_MIDDLEBOX_UP+15*y,txt);
 } 
 
 

@@ -11,6 +11,9 @@
 #define   FONT_CW         16
 #define   FONT_CH         16
 
+#define   OFFSET_Y_MIDDLEBOX_UP 30
+#define   OFFSET_X_MIDDLEBOX_UP 35
+
 using namespace std;
 
 class SDL_GUI
@@ -23,9 +26,10 @@ class SDL_GUI
   int  closeVideo();
 
   void middleBox(int x, int y,Uint32 c);
-  void middleBoxNumber(int x, int y,Uint32 c);
-  void loadSaveBoxNumber(int x, int y,Uint32 c);
-  void drawTTFTextLoadSaveBoxNumer(int x,int y,const char *txt);
+  void middleBoxNumberUp(int x, int y,Uint32 c);
+
+  //void loadSaveBoxNumber(int x, int y,Uint32 c);
+  void drawTTFTextLoadSaveBoxNumberUp(int x,int y,const char *txt);
 
   void smallBox(int x, int y,Uint32 c);
   void smallBoxNumber(int n,int x,int y,Uint32 c);

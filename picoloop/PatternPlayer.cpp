@@ -89,6 +89,11 @@ enum {
 enum {
   MENU_FX_DEPTH_SPEED
 };
+
+enum {
+  MENU_LS_PATTERN,
+  MENU_LS_SONG,
+};
   
 
 vector <Pattern>            P(TRACK_MAX);  
@@ -224,6 +229,7 @@ int menu_ad=MENU_AD_AMP_ATTACK_RELEASE_;
 int menu_fltr=MENU_FLTR_CUTOFF_RESONANCE;
 int menu_fx=MENU_FX_DEPTH_SPEED;
 int menu_vco=MENU_VCO_OSCMIX_PHASE;
+int menu_ls=MENU_LS_PATTERN;
 
 int menu_ad_dirty_keyboard=0;
 
@@ -566,7 +572,9 @@ void display_board_load_save()
 
 
   if (menu==MENU_OFF && 
-      menu_cursor==GLOBALMENU_LS)
+      menu_cursor==GLOBALMENU_LS && 
+      menu_ls==MENU_LS_PATTERN
+      )
     {
       printf("HIT\n");
       SG.clearScreen();
@@ -580,13 +588,13 @@ void display_board_load_save()
 	for (y=0;y<TRACK_MAX;y++)
 	  {
 	    if (PR.PatternDataExist(x,y))
-	      SG.middleBoxNumber(x%16,y,NOTE_COLOR);
+	      SG.middleBoxNumberUp(x%16,y,NOTE_COLOR);
 	    else
-	      SG.middleBoxNumber(x%16,y,STEP_COLOR);
+	      SG.middleBoxNumberUp(x%16,y,STEP_COLOR);
 	  }
       
       // Display your current position
-      SG.middleBoxNumber(loadsave_cursor_x%16,
+      SG.middleBoxNumberUp(loadsave_cursor_x%16,
 			 loadsave_cursor_y,
 			 TRIG_COLOR);
       
@@ -595,7 +603,7 @@ void display_board_load_save()
 	   x<(loadsave_cursor_x_divmul_sixteen)+16;
 	   x++)
 	for (y=0;y<TRACK_MAX;y++)
-	  SG.drawTTFTextLoadSaveBoxNumer(x%16,y,txt_tab[x%16]);
+	  SG.drawTTFTextLoadSaveBoxNumberUp(x%16,y,txt_tab[x%16]);
       //SG.drawTTFTextLoadSaveBoxNumer(x,y,tmp_txt);
     }
 
@@ -603,7 +611,8 @@ void display_board_load_save()
   //Draw LFO when load/save is not selected
   // Why ? need to display something, so why not ?
   if (menu!=MENU_OFF && 
-      menu_cursor==GLOBALMENU_LS)
+      menu_cursor==GLOBALMENU_LS
+      )
     {
 
       // Cursor & step postion      
@@ -626,11 +635,7 @@ void display_board_load_save()
 	      SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).getLfoSpeed(),SMALLBOX_COLOR);
 	    }
 	}
-    }
-      
-      
-      
-
+    }                  
 }
 
 void display_board_vco()
