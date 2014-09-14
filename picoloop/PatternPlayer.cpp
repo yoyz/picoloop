@@ -26,6 +26,7 @@ using namespace std;
 #define KEY_REPEAT_INTERVAL_LONG      64
 #define KEY_REPEAT_INTERVAL_LONGEST   128
 
+#define DISABLEDBOX_COLOR   0x0AF0FE
 #define BOX_COLOR           0xAECD15
 #define TRIG_COLOR          0x0E4C15
 #define NOTE_COLOR          0x46DC65
@@ -176,6 +177,7 @@ int release_fltr_all=0;
 
 
 int pshift_all=0;
+int plength_all=0;
 
 //int adsr_note=0;
 //int adsr_note_all=0;
@@ -1148,8 +1150,11 @@ void display_board()
   SG.guiTTFText(10,200,str_down);
 
   // Draw all box default color   
-  for (i=0;i<16;i++)
+  //for (i=0;i<16;i++)
+  for (i=0;i<SEQ.getPatternSequencer(cty).getPatternLenght();i++)
     { SG.drawBoxNumber(i,BOX_COLOR); }
+  for (i=i;i<16;i++)
+    { SG.drawBoxNumber(i,DISABLEDBOX_COLOR); }
      
 
   display_board_amp_env();
@@ -2217,17 +2222,13 @@ void handle_key_psh()
 	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_LONGEST==0) 
 	  { pshift_all=1;  	  dirty_graphic=1;}
 
-      /*
-      // ????
       if (keyState[BUTTON_UP]  && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALL==0) 
-	  { lfo_speed_all=1;   	  dirty_graphic=1;}
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONGEST==0) 
+	  { plength_all=1;   	  dirty_graphic=1;}
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALL==0) 
-	  { lfo_speed_all=-1;  	  dirty_graphic=1;}
-      //????
-      */
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONGEST==0) 
+	  { plength_all=-1;  	  dirty_graphic=1;}
     }
 
 }
@@ -3192,6 +3193,15 @@ void seq_update_multiple_time_by_step()
       note_all=0;
       printf("[note_all:%d]\n",P[cty].getPatternElement(cursor).getNote());	  
     }
+
+
+  // Change Note
+  if (plength_all!=0)
+    { 
+      SEQ.getPatternSequencer(cty).setPatternLenght(SEQ.getPatternSequencer(cty).getPatternLenght()+plength_all);
+      plength_all=0;
+    }
+
 
 
   // shift PatternEntry

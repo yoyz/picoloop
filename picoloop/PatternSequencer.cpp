@@ -4,6 +4,7 @@ PatternSequencer::PatternSequencer()
 {
   step=0;
   BPMDivider=1;
+  PatternLength=16;
 }
 
 PatternSequencer::~PatternSequencer()
@@ -33,14 +34,28 @@ void PatternSequencer::setStep(int s)
 int PatternSequencer::getStep()
 {
   if (BPMDivider==1)
-    return step%16;
+    return step%PatternLength;
   if (BPMDivider==2)
-    return (step/2)%16;
+    return (step/2)%PatternLength;
   if (BPMDivider==4)
-    return (step/4)%16;
+    return (step/4)%PatternLength;
   if (BPMDivider==8)
-    return (step/8)%16;
+    return (step/8)%PatternLength;
 }
+
+void PatternSequencer::setPatternLenght(int pl)
+{
+  if (pl>0 && pl<=16)
+    PatternLength=pl;
+}
+
+
+int PatternSequencer::getPatternLenght()
+{
+  return PatternLength;
+}
+
+
 
 int PatternSequencer::getStepWithoutDivider()
 {
@@ -61,15 +76,12 @@ void PatternSequencer::setBPMDivider(int bd)
 {
   if (bd==1)
     BPMDivider=bd;
-  else 
-    if (bd==2)
-      BPMDivider=bd;
-    else 
-      if (bd==4)
-	BPMDivider=bd;
-      else 
-	if (bd==8)
-	  BPMDivider=bd;
+  else if (bd==2)
+    BPMDivider=bd;
+  else if (bd==4)
+    BPMDivider=bd;
+  else if (bd==8)
+    BPMDivider=bd;
   
   if (bd!=BPMDivider)
     BPMDivider=1;

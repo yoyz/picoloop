@@ -18,11 +18,17 @@ class PatternSequencer
   void setBPMDivider(int bd);
   int  getBPMDivider();
 
+  void setPatternLenght(int pl);
+  int  getPatternLenght();
+
   void incStep();
 
  protected:
   int BPMDivider;
   int step;
+
+  int PatternLength;
+
 
 };
 
