@@ -19,6 +19,13 @@ using namespace std;
 
 #define KEY_REPEAT_INTERVAL 400
 
+
+#define KEY_REPEAT_INTERVAL_SMALLEST  4
+#define KEY_REPEAT_INTERVAL_SMALL     16
+#define KEY_REPEAT_INTERVAL_MIDDLE    32
+#define KEY_REPEAT_INTERVAL_LONG      64
+#define KEY_REPEAT_INTERVAL_LONGEST   128
+
 #define BOX_COLOR           0xAECD15
 #define TRIG_COLOR          0x0E4C15
 #define NOTE_COLOR          0x46DC65
@@ -69,7 +76,7 @@ enum {
 
 //menu_ad
 enum {
-  MENU_AD_AMP_ATTACK_RELEASE_,
+  MENU_AD_AMP_ATTACK_RELEASE,
   MENU_AD_AMP_DECAY_SUSTAIN,
   MENU_AD_FLTR_ATTACK_RELEASE,
   MENU_AD_FLTR_DECAY_SUSTAIN,
@@ -225,7 +232,7 @@ int divider=0;           // divider - => /1 /2 /4 /8  ; divider + => /8 /4 /2 /1
 int menu_cursor=GLOBALMENU_AD;      // index int the menu
 int menu=MENU_ON_PAGE1;             // menu mode
 int menu_note=ENABLE;
-int menu_ad=MENU_AD_AMP_ATTACK_RELEASE_;
+int menu_ad=MENU_AD_AMP_ATTACK_RELEASE;
 int menu_fltr=MENU_FLTR_CUTOFF_RESONANCE;
 int menu_fx=MENU_FX_DEPTH_SPEED;
 int menu_vco=MENU_VCO_OSCMIX_PHASE;
@@ -294,7 +301,7 @@ void display_board_amp_env()
       SG.drawBoxNumber(step,STEP_COLOR);  
       //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
       
-      if (menu_ad==MENU_AD_AMP_ATTACK_RELEASE_)
+      if (menu_ad==MENU_AD_AMP_ATTACK_RELEASE)
 	{
 	  for (i=0;i<16;i++)
 	    {
@@ -963,7 +970,7 @@ void display_board()
       sprintf(str_submenu,"DOT");
       SG.guiTTFText(200,60,str_submenu);
     }
-  if (menu_ad==MENU_AD_AMP_ATTACK_RELEASE_ &&
+  if (menu_ad==MENU_AD_AMP_ATTACK_RELEASE &&
       menu_cursor==GLOBALMENU_AD)
     {
       sprintf(str_submenu,"AMP  A/R");
@@ -1289,7 +1296,7 @@ void handle_key_sixteenbox()
 	 !keyState[BUTTON_B])
 	{
 	  if (keyRepeat[BUTTON_UP]   ==1 || 
-	      keyRepeat[BUTTON_UP]%64==0)
+	      keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONG==0)
 	    cursor=cursor-4;
 	  if (cursor < 0) cursor=cursor +16;
 	  printf("key down : up \n");
@@ -1299,7 +1306,7 @@ void handle_key_sixteenbox()
       if(keyState[BUTTON_DOWN] && 
 	 !keyState[BUTTON_B])
 	{
-	  if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%64==0)
+	  if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONG==0)
 	    cursor=( cursor+4 ) %16;
 	  printf("key down : down\n");
 	  dirty_graphic=1;
@@ -1309,7 +1316,7 @@ void handle_key_sixteenbox()
 	 !keyState[BUTTON_B])
 	{
 	  if (keyRepeat[BUTTON_LEFT]==1 || 
-	      keyRepeat[BUTTON_LEFT]%64==0)
+	      keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_LONG==0)
 	    cursor--;
 	  
 	  if (cursor<0) cursor=15;
@@ -1321,7 +1328,7 @@ void handle_key_sixteenbox()
 	  !keyState[BUTTON_B])
 	{
 	  if (keyRepeat[BUTTON_RIGHT]   ==1 || 
-	      keyRepeat[BUTTON_RIGHT]%64==0)
+	      keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_LONG==0)
 	    cursor++;
 	  if (cursor>15) cursor=0;
 	  printf("key right\n");      
@@ -1351,24 +1358,24 @@ void handle_key_amp_env()
   // Insert/Remove Trig
   if (menu          == MENU_OFF && 
       menu_cursor   == GLOBALMENU_AD     &&
-      menu_ad       == MENU_AD_AMP_ATTACK_RELEASE_)
+      menu_ad       == MENU_AD_AMP_ATTACK_RELEASE)
     {
       // Insert/Remove Trig
       sub_handle_invert_trig();
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_B])
-	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>4) 
+	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST) 
 	  { release_amp=-1;   dirty_graphic=1; }
       
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>4) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST) 
 	  { release_amp=1; 	  dirty_graphic=1; }
       
       if (keyState[BUTTON_UP]    && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>4) 
+	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST) 
 	  { attack_amp=1;  	  dirty_graphic=1; }
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>4) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST) 
 	  { attack_amp=-1; 	  dirty_graphic=1; }
     }  
 
@@ -1383,19 +1390,19 @@ void handle_key_amp_env()
       // Insert/Remove Trig
       sub_handle_invert_trig();
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_B])
-	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>4) 
+	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST) 
 	  { decay_amp=-1;   dirty_graphic=1; }
       
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>4) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST) 
 	  { decay_amp=1; 	  dirty_graphic=1; }
       
       if (keyState[BUTTON_UP]    && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>4) 
+	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST) 
 	  { sustain_amp=1;  	  dirty_graphic=1; }
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>4) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST) 
 	  { sustain_amp=-1; 	  dirty_graphic=1; }
     }  
 
@@ -1405,23 +1412,23 @@ void handle_key_amp_env()
   // Insert/Remove Trig
   if (menu          != MENU_OFF && 
       menu_cursor   == GLOBALMENU_AD     &&
-      menu_ad      == MENU_AD_AMP_ATTACK_RELEASE_)
+      menu_ad      == MENU_AD_AMP_ATTACK_RELEASE)
     {
       //printf("***********************\n");
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A])
-	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>4) 
+	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST) 
 	  { release_amp_all=-1;   dirty_graphic=1; }
       
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>4) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST) 
 	  { release_amp_all=1; 	  dirty_graphic=1; }
       
       if (keyState[BUTTON_UP]    && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>4) 
+	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST) 
 	  { attack_amp_all=1;  	  dirty_graphic=1; }
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>4) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST) 
 	  { attack_amp_all=-1; 	  dirty_graphic=1; }
     }  
 
@@ -1434,19 +1441,19 @@ void handle_key_amp_env()
     {
       //printf("***********************\n");
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A])
-	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>4) 
+	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST) 
 	  { decay_amp_all=-1;   dirty_graphic=1; }
       
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>4) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST) 
 	  { decay_amp_all=1; 	  dirty_graphic=1; }
       
       if (keyState[BUTTON_UP]    && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>4) 
+	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST) 
 	  { sustain_amp_all=1;  	  dirty_graphic=1; }
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>4) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST) 
 	  { sustain_amp_all=-1; 	  dirty_graphic=1; }
     }  
 
@@ -1463,19 +1470,19 @@ void handle_key_amp_env()
       // Insert/Remove Trig
       sub_handle_invert_trig();
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_B])
-	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>4) 
+	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST) 
 	  { release_fltr=-1;   dirty_graphic=1; }
       
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>4) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST) 
 	  { release_fltr=1; 	  dirty_graphic=1; }
       
       if (keyState[BUTTON_UP]    && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>4) 
+	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST) 
 	  { attack_fltr=1;  	  dirty_graphic=1; }
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>4) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST) 
 	  { attack_fltr=-1; 	  dirty_graphic=1; }
     }  
 
@@ -1489,19 +1496,19 @@ void handle_key_amp_env()
       // Insert/Remove Trig
       sub_handle_invert_trig();
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_B])
-	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>4) 
+	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST) 
 	  { decay_fltr=-1;   dirty_graphic=1; }
       
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>4) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST) 
 	  { decay_fltr=1; 	  dirty_graphic=1; }
       
       if (keyState[BUTTON_UP]    && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>4) 
+	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST) 
 	  { sustain_fltr=1;  	  dirty_graphic=1; }
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>4) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST) 
 	  { sustain_fltr=-1; 	  dirty_graphic=1; }
     }  
 
@@ -1516,19 +1523,19 @@ void handle_key_amp_env()
     {
       //printf("***********************\n");
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A])
-	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>4) 
+	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST) 
 	  { release_fltr_all=-1;   dirty_graphic=1; }
       
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>4) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST) 
 	  { release_fltr_all=1; 	  dirty_graphic=1; }
       
       if (keyState[BUTTON_UP]    && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>4) 
+	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST) 
 	  { attack_fltr_all=1;  	  dirty_graphic=1; }
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>4) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST) 
 	  { attack_fltr_all=-1; 	  dirty_graphic=1; }
     }  
 
@@ -1541,19 +1548,19 @@ void handle_key_amp_env()
     {
       //printf("***********************\n");
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A])
-	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>4) 
+	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST) 
 	  { decay_fltr_all=-1;   dirty_graphic=1; }
       
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>4) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST) 
 	  { decay_fltr_all=1; 	  dirty_graphic=1; }
       
       if (keyState[BUTTON_UP]    && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>4) 
+	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST) 
 	  { sustain_fltr_all=1;  	  dirty_graphic=1; }
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>4) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST) 
 	  { sustain_fltr_all=-1; 	  dirty_graphic=1; }
     }  
 
@@ -1573,19 +1580,19 @@ void handle_key_amp_env()
 	  IE.clearLastKeyEvent();
 	}
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_B])
-	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>4) 
+	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST) 
 	  { amp=-1;   dirty_graphic=1; }
       
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>4) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST) 
 	  { amp=1; 	  dirty_graphic=1; }
       
       if (keyState[BUTTON_UP]    && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>4) 
+	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST) 
 	  { trig_time=1;  	  dirty_graphic=1; }
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>4) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST) 
 	  { trig_time=-1; 	  dirty_graphic=1; }
     }  
 
@@ -1595,19 +1602,19 @@ void handle_key_amp_env()
       menu_ad      == MENU_AD_TRIGTIME_AMP)
     {
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A])
-	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>4) 
+	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST) 
 	  { amp_all=-1;   dirty_graphic=1; }
       
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>4) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST) 
 	  { amp_all=1; 	  dirty_graphic=1; }
       
       if (keyState[BUTTON_UP]    && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>4) 
+	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST) 
 	  { trig_time_all=1;  	  dirty_graphic=1; }
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>4) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST) 
 	  { trig_time_all=-1; 	  dirty_graphic=1; }
     }  
 
@@ -1616,7 +1623,7 @@ void handle_key_amp_env()
 
   // change GLOBALMENU_AD SUBMENU
   if (keyState[BUTTON_START]       &&
-      keyRepeat[BUTTON_UP]%128==127   &&
+      keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONGEST==127   &&
       menu_cursor ==  GLOBALMENU_AD)
     {
       menu_ad--;
@@ -1630,7 +1637,7 @@ void handle_key_amp_env()
 
   // change GLOBALMENU_AD SUBMENU
   if (keyState[BUTTON_START] &&
-      keyRepeat[BUTTON_DOWN]%128==127  &&
+      keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONGEST==127  &&
       menu_cursor ==  GLOBALMENU_AD)
     {
       menu_ad++;
@@ -1649,11 +1656,11 @@ void handle_key_amp_env()
     {
       if (menu_ad_dirty_keyboard==0)
 	{
-	  if      (menu_ad==MENU_AD_AMP_ATTACK_RELEASE_)      { menu_ad=MENU_AD_AMP_DECAY_SUSTAIN;       }
-	  else if (menu_ad==MENU_AD_AMP_DECAY_SUSTAIN)       { menu_ad=MENU_AD_FLTR_ATTACK_RELEASE;     }   
-	  else if (menu_ad==MENU_AD_FLTR_ATTACK_RELEASE)     { menu_ad=MENU_AD_FLTR_DECAY_SUSTAIN;      }   
-	  else if (menu_ad==MENU_AD_FLTR_DECAY_SUSTAIN)      { menu_ad=MENU_AD_TRIGTIME_AMP;        }   
-	  else if (menu_ad==MENU_AD_TRIGTIME_AMP)        { menu_ad=MENU_AD_AMP_ATTACK_RELEASE_;      }   
+	  if      (menu_ad==MENU_AD_AMP_ATTACK_RELEASE)       { menu_ad=MENU_AD_AMP_DECAY_SUSTAIN;        }
+	  else if (menu_ad==MENU_AD_AMP_DECAY_SUSTAIN)        { menu_ad=MENU_AD_FLTR_ATTACK_RELEASE;      }   
+	  else if (menu_ad==MENU_AD_FLTR_ATTACK_RELEASE)      { menu_ad=MENU_AD_FLTR_DECAY_SUSTAIN;       }   
+	  else if (menu_ad==MENU_AD_FLTR_DECAY_SUSTAIN)       { menu_ad=MENU_AD_TRIGTIME_AMP;             }   
+	  else if (menu_ad==MENU_AD_TRIGTIME_AMP)             { menu_ad=MENU_AD_AMP_ATTACK_RELEASE;      }   
 	  dirty_graphic=1;
 	}
       menu_ad_dirty_keyboard=0;
@@ -1697,19 +1704,19 @@ void handle_key_note()
 	}
       */
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%64==0) 
+	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_LONG==0) 
 	{ note=-1; 	  dirty_graphic=1;}
 
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%64==0) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_LONG==0) 
 	  { note=1;  	  dirty_graphic=1;}
 
       if (keyState[BUTTON_UP]    && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%64==0) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONG==0) 
 	  { note=12;   	  dirty_graphic=1;}
 
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%64==0) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONG==0) 
 	{ note=-12;  	  dirty_graphic=1;}
     }  
 
@@ -1720,19 +1727,19 @@ void handle_key_note()
     {
       
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%64==0) 
+	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_LONG==0) 
 	{ note_all=-1; 	  dirty_graphic=1;}
 
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%64==0) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_LONG==0) 
 	  { note_all=1;  	  dirty_graphic=1;}
 
       if (keyState[BUTTON_UP]    && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%64==0) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONG==0) 
 	  { note_all=12;   	  dirty_graphic=1;}
 
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%64==0) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONG==0) 
 	{ note_all=-12;  	  dirty_graphic=1;}
     }  
 
@@ -1773,19 +1780,19 @@ void handle_key_osc()
       sub_handle_invert_trig();
 
       if (keyState[BUTTON_LEFT] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%128==0) 
+	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_LONG==0) 
 	  { osconetype=-1; 	  dirty_graphic=1;}
       
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%128==0) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_LONG==0) 
 	  { osconetype=1;  	  dirty_graphic=1;}
       
       if (keyState[BUTTON_UP] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%128==0) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONG==0) 
 	  { osctwotype=1;   	  dirty_graphic=1;}
       
       if (keyState[BUTTON_DOWN] && keyState[BUTTON_B])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%128==0) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONG==0) 
 	  { osctwotype=-1;  	  dirty_graphic=1;}
     }
 
@@ -1795,19 +1802,19 @@ void handle_key_osc()
       menu_cursor == GLOBALMENU_OSC )
     {
       if (keyState[BUTTON_LEFT] && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%128==0) 
+	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_LONG==0) 
 	  { osconetype_all=-1; 	  dirty_graphic=1;}
       
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%128==0) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_LONG==0) 
 	  { osconetype_all=1;  	  dirty_graphic=1;}
       
       if (keyState[BUTTON_UP] && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%128==0) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONG==0) 
 	  { osctwotype_all=1;   	  dirty_graphic=1;}
       
       if (keyState[BUTTON_DOWN] && keyState[BUTTON_A])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%128==0) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONG==0) 
 	  { osctwotype_all=-1;  	  dirty_graphic=1;}
     }
 
@@ -1835,19 +1842,19 @@ void handle_key_fx()
       sub_handle_invert_trig();
 
       if (keyState[BUTTON_LEFT] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]>4) 
+	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST) 
 	  { fx_depth=-1; 	  dirty_graphic=1;}
       
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>4) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST) 
 	  { fx_depth=1;  	  dirty_graphic=1;}
       
       if (keyState[BUTTON_UP] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]>4) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST) 
 	  { fx_speed=1;   	  dirty_graphic=1;}
       
       if (keyState[BUTTON_DOWN] && keyState[BUTTON_B])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>4) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST) 
 	  { fx_speed=-1;  	  dirty_graphic=1;}
     }
 
@@ -1860,19 +1867,19 @@ void handle_key_fx()
       //sub_handle_invert_trig();
 
       if (keyState[BUTTON_LEFT] && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]>4) 
+	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST) 
 	  { fx_depth_all=-1; 	  dirty_graphic=1;}
       
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>4) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST) 
 	  { fx_depth_all=1;  	  dirty_graphic=1;}
       
       if (keyState[BUTTON_UP] && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]>4) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST) 
 	  { fx_speed_all=1;   	  dirty_graphic=1;}
       
       if (keyState[BUTTON_DOWN] && keyState[BUTTON_A])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>4) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST) 
 	  { fx_speed_all=-1;  	  dirty_graphic=1;}
     }
 
@@ -1919,19 +1926,19 @@ void handle_key_vco()
       // Insert/Remove Trig
       sub_handle_invert_trig();
       if (keyState[BUTTON_LEFT] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%4==0) 
+	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_SMALLEST==0) 
 	  { vcomix=-1; 	  dirty_graphic=1;}
       
       if (keyState[BUTTON_RIGHT]  && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%4==0) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_SMALLEST==0) 
 	  { vcomix=1;  	  dirty_graphic=1;}
       
       if (keyState[BUTTON_UP]  && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%4==0) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALLEST==0) 
 	  { phase_osc1=1;   	  dirty_graphic=1;}
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%4==0) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALLEST==0) 
 	  { phase_osc1=-1;  	  dirty_graphic=1;}
     }
 
@@ -1941,20 +1948,20 @@ void handle_key_vco()
       )
     {
       if (keyState[BUTTON_LEFT] && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%4==0) 
+	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_SMALLEST==0) 
 	  { vcomix_all=-1; 	  dirty_graphic=1;}
       
       if (keyState[BUTTON_RIGHT]  && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%4==0) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_SMALLEST==0) 
 	  { vcomix_all=1;  	  dirty_graphic=1;}
 
       // ????
       if (keyState[BUTTON_UP]  && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%4==0) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALLEST==0) 
 	  { phase_osc1_all=1;   	  dirty_graphic=1;}
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%4==0) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALLEST==0) 
 	  { phase_osc1_all=-1;  	  dirty_graphic=1;}
       //????
     }
@@ -1971,19 +1978,19 @@ void handle_key_vco()
       // Insert/Remove Trig
       sub_handle_invert_trig();
       if (keyState[BUTTON_LEFT] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%4==0) 
+	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_SMALLEST==0) 
 	  { osc1_amp=-1; 	  dirty_graphic=1;}
       
       if (keyState[BUTTON_RIGHT]  && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%4==0) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_SMALLEST==0) 
 	  { osc1_amp=1;  	  dirty_graphic=1;}
       
       if (keyState[BUTTON_UP]  && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%4==0) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALLEST==0) 
 	  { osc2_amp=1;   	  dirty_graphic=1;}
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%4==0) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALLEST==0) 
 	  { osc2_amp=-1;  	  dirty_graphic=1;}
     }
 
@@ -1993,20 +2000,20 @@ void handle_key_vco()
       )
     {
       if (keyState[BUTTON_LEFT] && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%4==0) 
+	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_SMALLEST==0) 
 	  { osc1_amp_all=-1; 	  dirty_graphic=1;}
       
       if (keyState[BUTTON_RIGHT]  && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%4==0) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_SMALLEST==0) 
 	  { osc1_amp_all=1;  	  dirty_graphic=1;}
 
       // ????
       if (keyState[BUTTON_UP]  && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%4==0) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALLEST==0) 
 	  { osc2_amp_all=1;   	  dirty_graphic=1;}
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%4==0) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALLEST==0) 
 	  { osc2_amp_all=-1;  	  dirty_graphic=1;}
       //????
     }
@@ -2037,11 +2044,11 @@ void handle_key_mac()
 
       
       if (keyState[BUTTON_UP] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%128==0) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONGEST==0) 
 	  { machine_type=1;   	  dirty_graphic=1;}
       
       if (keyState[BUTTON_DOWN] && keyState[BUTTON_B])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%128==0) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONGEST==0) 
 	  { machine_type=-1;  	  dirty_graphic=1;}
     }
 
@@ -2052,11 +2059,11 @@ void handle_key_mac()
     {
       
       if (keyState[BUTTON_UP] && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%128==0) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONGEST==0) 
 	  { machine_type_all=1;   	  dirty_graphic=1;}
       
       if (keyState[BUTTON_DOWN] && keyState[BUTTON_A])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%128==0) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONGEST==0) 
 	  { machine_type_all=-1;  	  dirty_graphic=1;}
     }
 
@@ -2085,19 +2092,19 @@ void handle_key_lfo()
       // Insert/Remove Trig
       sub_handle_invert_trig();
       if (keyState[BUTTON_LEFT] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%4==0) 
+	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_SMALL==0) 
 	  { lfo_depth=-1; 	  dirty_graphic=1;}
       
       if (keyState[BUTTON_RIGHT]  && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%4==0) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_SMALL==0) 
 	  { lfo_depth=1;  	  dirty_graphic=1;}
       
       if (keyState[BUTTON_UP]  && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%4==0) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALL==0) 
 	  { lfo_speed=1;   	  dirty_graphic=1;}
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%4==0) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALL==0) 
 	  { lfo_speed=-1;  	  dirty_graphic=1;}
     }
 
@@ -2107,20 +2114,20 @@ void handle_key_lfo()
       )
     {
       if (keyState[BUTTON_LEFT] && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%4==0) 
+	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_SMALL==0) 
 	  { lfo_depth_all=-1; 	  dirty_graphic=1;}
       
       if (keyState[BUTTON_RIGHT]  && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%4==0) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_SMALL==0) 
 	  { lfo_depth_all=1;  	  dirty_graphic=1;}
 
       // ????
       if (keyState[BUTTON_UP]  && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%4==0) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALL==0) 
 	  { lfo_speed_all=1;   	  dirty_graphic=1;}
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%4==0) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALL==0) 
 	  { lfo_speed_all=-1;  	  dirty_graphic=1;}
       //????
     }
@@ -2174,22 +2181,22 @@ void handle_key_fltr()
 
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_B])
 	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>128) 
-	  if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%4==1 )  
+	  if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_SMALL==1 )  
 	  { resonance=-1;   dirty_graphic=1; }
       
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>128)
-	  if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%4==1 )  
+	  if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_SMALL==1 )  
 	  { resonance=1; 	  dirty_graphic=1; }
       
       if (keyState[BUTTON_UP]    && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>128) 
-	  if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%4==1 ) 
+	  if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALL==1 ) 
 	  { cutoff=1;  	  dirty_graphic=1; }
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>128 ) 
-	  if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%4==1 ) 
+	  if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALL==1 ) 
 	  { cutoff=-1; 	  dirty_graphic=1; }
     }  
 
@@ -2202,22 +2209,22 @@ void handle_key_fltr()
     {
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A])
 	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>128) 
-	  if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%4==1 )  
+	  if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_SMALL==1 )  
 	  { resonance_all=-1;   dirty_graphic=1; }
       
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>128)
-	  if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%4==1 )  
+	  if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_SMALL==1 )  
 	  { resonance_all=1; 	  dirty_graphic=1; }
       
       if (keyState[BUTTON_UP]    && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>128) 
-	  if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%4==1 ) 
+	  if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALL==1 ) 
 	  { cutoff_all=1;  	  dirty_graphic=1; }
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>128 ) 
-	  if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%4==1 ) 
+	  if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALL==1 ) 
 	  { cutoff_all=-1; 	  dirty_graphic=1; }
     }  
 
@@ -2232,21 +2239,21 @@ void handle_key_fltr()
 
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_B])
 	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>128) 
-	  if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%4==1 )  
+	  if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_SMALL==1 )  
 	  { filter_algo=-1;   dirty_graphic=1; }
             if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>128)
-	  if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%4==1 )  
+	  if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_SMALL==1 )  
 	  { filter_algo=1; 	  dirty_graphic=1; }
       
       if (keyState[BUTTON_UP]    && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>128) 
-	  if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%4==1 ) 
+	  if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALL==1 ) 
 	  { filter_type=1;  	  dirty_graphic=1; }
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>128 ) 
-	  if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%4==1 ) 
+	  if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALL==1 ) 
 	  { filter_type=-1; 	  dirty_graphic=1; }
     }  
 
@@ -2262,22 +2269,22 @@ void handle_key_fltr()
 
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A])
 	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>128) 
-	  if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%4==1 )  
+	  if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_SMALL==1 )  
 	  { filter_algo_all=-1;   dirty_graphic=1; }
       
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>128)
-	  if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%4==1 )  
+	  if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_SMALL==1 )  
 	  { filter_algo_all=1; 	  dirty_graphic=1; }
       
       if (keyState[BUTTON_UP]    && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>128) 
-	  if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%4==1 ) 
+	  if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALL==1 ) 
 	  { filter_type_all=1;  	  dirty_graphic=1; }
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>128 ) 
-	  if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%4==1 ) 
+	  if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALL==1 ) 
 	  { filter_type_all=-1; 	  dirty_graphic=1; }
     }  
 
@@ -2302,19 +2309,19 @@ void handle_key_bpm()
       menu_cursor == GLOBALMENU_BPM )
     {
       if (keyState[BUTTON_LEFT] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%128==0) 
+	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_LONGEST==0) 
 	  { bpm=-1; 	  dirty_graphic=1; printf("[B+LEFT  t=%d]\n",bpm_current); }
 
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%128==0) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_LONGEST==0) 
 	  { bpm=1; 	  dirty_graphic=1; printf("[B+RIGHT t=%d]\n",bpm_current);}
 
       if (keyState[BUTTON_DOWN] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%128==0) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONGEST==0) 
 	  { bpm=-10; 	  dirty_graphic=1; printf("[B+DOWN  t=%d]\n",bpm_current); }
 
       if (keyState[BUTTON_UP] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%128==0) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONGEST==0) 
 	  { bpm=10; 	  dirty_graphic=1; printf("[B+UP    t=%d]\n",bpm_current);}
 
 
@@ -2329,11 +2336,11 @@ void handle_key_bpm()
     {
 
       if (keyState[BUTTON_DOWN] && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%128==0) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONGEST==0) 
 	  { divider=-1; 	  dirty_graphic=1; printf("[A+DOWN  t=%d] divider\n",divider); }
 
       if (keyState[BUTTON_UP] && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%128==0) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONGEST==0) 
 	  { divider=1; 	  dirty_graphic=1; printf("[A+UP    t=%d] divider\n",divider);}
     }  
 
@@ -2343,11 +2350,11 @@ void handle_key_bpm()
     {
 
       if (keyState[BUTTON_LEFT] && keyState[BUTTON_A])
-	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%128==0)
+	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_LONGEST==0)
 	  { swing=-1; 	  dirty_graphic=1; printf("[A+DOWN  t=%d] swing\n",current_swing); }
 
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%128==0) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_LONGEST==0) 
 	  { swing=1; 	  dirty_graphic=1; printf("[A+UP    t=%d] swing\n",current_swing);}
     }  
 
@@ -2419,19 +2426,19 @@ void handle_key_load_save()
 	     keyState[BUTTON_A])))
 	{
 	  if (keyState[BUTTON_LEFT])
-	    if (keyRepeat[BUTTON_LEFT]==1  || keyRepeat[BUTTON_LEFT]%64==0)  
+	    if (keyRepeat[BUTTON_LEFT]==1  || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_LONG==0)  
 	      { loadsave_cursor_x--;  dirty_graphic=1;}
 	  
 	  if (keyState[BUTTON_RIGHT])
-	    if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%64==0) 
+	    if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_LONG==0) 
 	      { loadsave_cursor_x++;  dirty_graphic=1;}
 	  
 	  if (keyState[BUTTON_UP])
-	    if (keyRepeat[BUTTON_UP]==1    || keyRepeat[BUTTON_UP]%64==0)    
+	    if (keyRepeat[BUTTON_UP]==1    || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONG==0)    
 	      { loadsave_cursor_y--;  dirty_graphic=1;}
 	  
 	  if (keyState[BUTTON_DOWN])
-	    if (keyRepeat[BUTTON_DOWN]==1  || keyRepeat[BUTTON_DOWN]%64==0)  
+	    if (keyRepeat[BUTTON_DOWN]==1  || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONG==0)  
 	      { loadsave_cursor_y++;  dirty_graphic=1;}
 	  
 	  if (loadsave_cursor_x>MAX_PATTERN_BY_PROJECT-1)        { loadsave_cursor_x=0;                           }
