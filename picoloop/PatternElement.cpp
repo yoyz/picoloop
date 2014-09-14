@@ -95,7 +95,6 @@ void PatternElement::init()
   filterType=FILTER_TYPE_LOWPASS;
   filterAlgo=FILTER_ALGO_AMSYNTH;
 
-  //printf("====PatternElement::init()====\n");
 }
 
 int PatternElement::getOscillatorOneType()
@@ -110,12 +109,14 @@ int PatternElement::getOscillatorTwoType()
 
 void PatternElement::setOscillatorOneType(int type)
 {
-  oscOneType=type%5;
+  //oscOneType=type%5;
+  oscOneType=this->checkSevenBitBoundarie(type%5);
 }
 
 void PatternElement::setOscillatorTwoType(int type)
 {
-  oscTwoType=type%5;
+  //oscTwoType=type%5;
+  oscTwoType=this->checkSevenBitBoundarie(type%5);
 }
 
 
