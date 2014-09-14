@@ -528,18 +528,33 @@ void display_board_load_save()
   int x,y;
   int  i;
   int  cty=SEQ.getCurrentTrackY();
-  //int  ctx=SEQ.getCurrentTrackX();
   int  step=SEQ.getPatternSequencer(cty).getStep();
 
   int loadsave_cursor_x_div_sixteen=loadsave_cursor_x/16;
-  //int loadsave_cursor_x_mod_sixteen=loadsave_cursor_x/16;
-  //int loadsave_cursor_y_div_sixteen=loadsave_cursor_y/16;
-
   int loadsave_cursor_x_divmul_sixteen=loadsave_cursor_x_div_sixteen*16;
-  //int loadsave_cursor_y_divmul_sixteen=loadsave_cursor_y_divmul_sixteen*16;
 
-  //printf("*************************** loadsave_cursor_x_divmul_sixteen=%d\n",loadsave_cursor_x_divmul_sixteen);
-  //printf("*************************** loadsave_cursor_x                %d\n",loadsave_cursor_x);
+  char str_submenu[16];
+
+  static const char * txt_pattern_modulo_sixteen_slot[] = 
+    { 
+    "  0-15 ",
+    " 16-31 ",
+    " 32-47 ",
+    " 48-63 ",
+    " 64-79 ",
+    " 80-95 ",
+    " 96-111",
+    "112-127",
+    "128-143",
+    "144-159",
+    "160-175",
+    "176-191",
+    "192-207",
+    "208-223",
+    "224-239",
+    "240-255" 
+    }; 
+
 
   static const char * txt_tab[] = 
     { 
@@ -550,47 +565,13 @@ void display_board_load_save()
     }; 
 
 
-  if (menu!=MENU_OFF && 
-      menu_cursor==GLOBALMENU_LS)
-    {
-
-      // Cursor & step postion      
-      SG.drawBoxNumber(cursor,CURSOR_COLOR);
-      SG.drawBoxNumber(step,STEP_COLOR);  
-      //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
-      
-      //if (menu_ad==MENU_AD_AMP_ATTACK_RELEASE_)
-      //	{
-      for (i=0;i<16;i++)
-	{
-	  // Draw trigged box trig color   
-	  if (P[cty].getPatternElement(i).getTrig())
-	    {
-	      SG.drawBoxNumber(i,TRIG_COLOR);
-	      if (i==cursor)
-		SG.drawBoxNumber(cursor,CURSOR_COLOR);
-	      if (i==step)
-		SG.drawBoxNumber(step,STEP_COLOR);  
-		  //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
-	      
-		  // LFO
-	      SG.smallBoxNumber(i,P[cty].getPatternElement(i).getLfoDepth(),128,SMALLBOX_COLOR);
-	      SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).getLfoSpeed(),SMALLBOX_COLOR);
-	    }
-	}
-    }
-      
-      
-      
   if (menu==MENU_OFF && 
       menu_cursor==GLOBALMENU_LS)
     {
       printf("HIT\n");
-      //      const char * tmp_txt;
-
-      //tmp_txt="0";
-      
       SG.clearScreen();
+      
+      SG.guiTTFText(30,20,txt_pattern_modulo_sixteen_slot[loadsave_cursor_x_div_sixteen]);
 
       // Display box loaded/unloaded
       for (x=loadsave_cursor_x_divmul_sixteen;
@@ -617,6 +598,39 @@ void display_board_load_save()
 	  SG.drawTTFTextLoadSaveBoxNumer(x%16,y,txt_tab[x%16]);
       //SG.drawTTFTextLoadSaveBoxNumer(x,y,tmp_txt);
     }
+
+
+  //Draw LFO when load/save is not selected
+  // Why ? need to display something, so why not ?
+  if (menu!=MENU_OFF && 
+      menu_cursor==GLOBALMENU_LS)
+    {
+
+      // Cursor & step postion      
+      SG.drawBoxNumber(cursor,CURSOR_COLOR);
+      SG.drawBoxNumber(step,STEP_COLOR);  
+      for (i=0;i<16;i++)
+	{
+	  // Draw trigged box trig color   
+	  if (P[cty].getPatternElement(i).getTrig())
+	    {
+	      SG.drawBoxNumber(i,TRIG_COLOR);
+	      if (i==cursor)
+		SG.drawBoxNumber(cursor,CURSOR_COLOR);
+	      if (i==step)
+		SG.drawBoxNumber(step,STEP_COLOR);  
+		  //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
+	      
+		  // LFO
+	      SG.smallBoxNumber(i,P[cty].getPatternElement(i).getLfoDepth(),128,SMALLBOX_COLOR);
+	      SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).getLfoSpeed(),SMALLBOX_COLOR);
+	    }
+	}
+    }
+      
+      
+      
+
 }
 
 void display_board_vco()
