@@ -1212,7 +1212,7 @@ void handle_key_menu()
       switch (menu)
 	{
 	case MENU_OFF:      
-	  if (menu_cursor<5) 
+	  if (menu_cursor<6) 
 	    menu=MENU_ON_PAGE1;
 	  if (menu_cursor>=6)
 	    menu=MENU_ON_PAGE2;
