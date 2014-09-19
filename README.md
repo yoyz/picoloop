@@ -1,8 +1,86 @@
 # README
 
-Picoloop is a nanoloop clone which is target for linux compatible system.
+Picoloop is a Stepsequencer  ( a nanoloop clone ) which means that a pattern of 1/16 notes is played repeatedly while these notes can be edited in various respects like volume, pitch etc. 
+All parameters are set step-wise.            
+There are four channels, playing simultaneously. 
+Each channel's patterns can be saved to file slots  and are then available for new combinations. 
+Finally, saved patterns can be arranged in a song structure ( will be implemented soon )).
+
+Besides the song editor and manual loading of patterns, there are 3 different ways to modify each channel's patterns so that they form longer structures:                                       
+
+- 1/2, 1/4 or 1/8 speed                                                                        
+- Different pattern lengths
+
+
+Picoloop is target for linux compatible system.
 It use SDL     to render graphics.
 It use RtAudio to render audio out.
+
+
+# HOW IT WORKS
+
+In menu you can select channel and edit parameter.                                           
+All notes in the sequencer can be edited simultaneously.                                       
+
+</>             select menu1 entry                                                             
+^/v             select channel                                                                 
+B               return to sequencer                                                            
+A + </>/^/v,    edit all notes at once                                                         
+SELECT          call menu 2                                                                    
+        
+        
+menu1 : 
+- A/R : 
+    - Amp Enveloppe 
+        - Attack/Release Amp or FM operator1                                                   
+        - Decay/Sustain Amp or FM operator1                                                    
+    - Filter Enveloppe                                                                         
+        - Attack/Release Filter or FM Operator2                                                
+        - Decay/Sustain Filter or FM Operator2                                                 
+    -  Trig/Amplification
+         - trig time/Volume                                                                    
+
+- Note : 
+    - Choose note with "C3" "C4" "D2"                                                          
+    - Choose note with "dot"                                                                   
+    
+- OSC : 
+    - Choose the two OSC of the synth, the drumsynth, the FM synth                             
+
+- VCO : 
+    - VCO mix in synth mode, OP1mult/OP2mult in FM mode                                        
+    - OP1amp/OP2amp in FM mode                                                                 
+    
+- LFO : 
+    - depth/speed in synth and drum synth mode                                                 
+
+- FLTR : 
+    - Cutoff/Resonance
+    - mode ( lp/bp/hp )
+
+
+menu 2 :
+- L/S :
+    - Load/Save pattern live
+
+- BANK :
+    - will give the ability to choose another bank for save/load pattern and song ( not implemented )
+
+- PSH :
+    - shift the pattern to the left/right, reduce the size of the pattern ( from 16 step to 1 step )
+
+- MAC :
+    - change the synth engine : synth, drumsynth, fm
+
+- FX :
+    - change the depth and the speed of the echo delay
+
+- BPM :
+    - change the bpm of the track
+
+
+
+
 
 
 # PACKAGE DEPENDENCY & DEVEL PACKAGE
@@ -22,7 +100,7 @@ It use RtAudio to render audio out.
 # COMPILATION
 
      # cd      picoloop
-     # make -f Makefile.Makefile.RtAudio_debian      clean
+     # make -f Makefile.RtAudio_debian               clean
      # make -f Makefile.PatternPlayer_debian_RtAudio clean
      # make -f Makefile.RtAudio_debian
      # make -f Makefile.PatternPlayer_debian_RtAudio
@@ -74,5 +152,11 @@ The old "data.pic" which contain all patern was removed.
 # DEBUG
 
 You need two file font.bmp and font.ttf which are located next to the source.
+
+
+
+
+
+
 
 
