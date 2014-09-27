@@ -874,7 +874,7 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
   sprintf(path,    "bank/bank%d",bank);
   mkdir(path,mode);
 
-  sprintf(filename,"bank/bank%d/dataP%dT%d.pic",PatternNumber,TrackNumber);
+  sprintf(filename,"bank/bank%d/dataP%dT%d.pic",bank,PatternNumber,TrackNumber);
 
   //  printf("SIZE:%d\n",P.getSize());
   //  exit(1);
