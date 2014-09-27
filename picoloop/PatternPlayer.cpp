@@ -550,11 +550,12 @@ void display_board_load_save()
   int  i;
   int  cty=SEQ.getCurrentTrackY();
   int  step=SEQ.getPatternSequencer(cty).getStep();
+  int  bank=PR.getBank();
 
   int loadsave_cursor_x_div_sixteen=loadsave_cursor_x/16;
   int loadsave_cursor_x_divmul_sixteen=loadsave_cursor_x_div_sixteen*16;
 
-  char str_submenu[16];
+  char str_bank[16];
 
   static const char * txt_pattern_modulo_sixteen_slot[] = 
     { 
@@ -594,6 +595,9 @@ void display_board_load_save()
       printf("HIT\n");
       SG.clearScreen();
       
+      sprintf(str_bank,"Bank %d ",bank);
+
+      SG.guiTTFText(30,10, str_bank);
       SG.guiTTFText(30,20,txt_pattern_modulo_sixteen_slot[loadsave_cursor_x_div_sixteen]);
 
       // Display box loaded/unloaded
@@ -1157,18 +1161,18 @@ void display_board()
     { SG.drawBoxNumber(i,DISABLEDBOX_COLOR); }
      
 
-  display_board_amp_env();
-  display_board_note();
-  display_board_osc();
-  display_board_vco();
-  display_board_lfo();
-  display_board_fltr();
+  if (menu_cursor==GLOBALMENU_AD)   display_board_amp_env();
+  if (menu_cursor==GLOBALMENU_NOTE) display_board_note();
+  if (menu_cursor==GLOBALMENU_OSC)  display_board_osc();
+  if (menu_cursor==GLOBALMENU_VCO)  display_board_vco();
+  if (menu_cursor==GLOBALMENU_LFO)  display_board_lfo();
+  if (menu_cursor==GLOBALMENU_FLTR) display_board_fltr();
 
-  display_board_load_save();
-  display_board_psh();
-  display_board_mac();
-  display_board_fx();
-  display_board_bpm();
+  if (menu_cursor==GLOBALMENU_LS)   display_board_load_save();
+  if (menu_cursor==GLOBALMENU_PSH)  display_board_psh();
+  if (menu_cursor==GLOBALMENU_MAC)  display_board_mac();
+  if (menu_cursor==GLOBALMENU_FX)   display_board_fx();
+  if (menu_cursor==GLOBALMENU_BPM)  display_board_bpm();
 
   SG.refresh();
 }
@@ -3636,8 +3640,9 @@ void load_pattern()
 
   string fileName="data.pic";
   //PR.setFileName("data.pic");
-  PR.init();
-  PR.setFileName(fileName);
+  PR.init();      // Init the     storage bank
+  PR.setBank(0);  // The current  storage bank will be 0 PWD/bank/bank%d/
+  //PR.setFileName(fileName);
   for (t=0;t<TRACK_MAX;t++)
     {
       PR.readPatternData(0,t,P[t]);

@@ -10,15 +10,20 @@
 #include "Master.h"
 #include "PatternReader.h"
 
+#include <sys/types.h>
+#include <sys/stat.h>
+
+
 using namespace std;
 
 PatternReader::PatternReader() : twoDPVector(MAX_PATTERN_BY_PROJECT,vector <Pattern>(TRACK_MAX)), 
-				 loadedData(MAX_PATTERN_BY_PROJECT,vector      <int>(TRACK_MAX))
+				 loadedData(MAX_PATTERN_BY_PROJECT, vector     <int>(TRACK_MAX))
 
 				 //, 
 				 //				 savedData(16,vector       <int>(TRACK_MAX))
 {
   printf("PatternReader::PatternReader()\n");
+  bank=0;
 }
 
 PatternReader::~PatternReader()
@@ -38,12 +43,24 @@ void PatternReader::init()
 	//	savedData[x][y]=0;
 	twoDPVector[x][y].init();
       }
+  bank=0;
+}
+
+void PatternReader::setBank(int b)
+{
+  if (b>=0 && b < 256)
+    bank=b;
+}
+
+int PatternReader::getBank()
+{
+  return bank;
 }
 
 bool PatternReader::PatternRemove(int PatternNumber,int TrackNumber)
 {
   char filename[1024];
-  sprintf(filename,"dataP%dT%d.pic",PatternNumber,TrackNumber);
+  sprintf(filename,"bank/bank%d/dataP%dT%d.pic",bank,PatternNumber,TrackNumber);
   if (unlink(filename)==0)
     {
       loadedData[PatternNumber][TrackNumber]=DATA_DOES_NOT_EXIST_ON_STORAGE;
@@ -72,10 +89,11 @@ bool PatternReader::PatternDataExist(int PatternNumber,int TrackNumber)
 
   //line=(char*)malloc(1024);
   //fd=fopen(fn.c_str(),"r+");
-  sprintf(filename,"dataP%dT%d.pic",PatternNumber,TrackNumber);
+  sprintf(filename,"bank/bank%d/dataP%dT%d.pic",bank,PatternNumber,TrackNumber);
   fd=fopen(filename,"r+");
   if (fd==0)
     {
+      loadedData[PatternNumber][TrackNumber]=DATA_DOES_NOT_EXIST_ON_STORAGE;
       return false;
     }
 
@@ -131,7 +149,7 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
   char line[1024];
   char filename[1024];
 
-  sprintf(filename,"dataP%dT%d.pic",PatternNumber,TrackNumber);
+  sprintf(filename,"bank/bank%d/dataP%dT%d.pic",bank,PatternNumber,TrackNumber);
 
 
   //check if file name can be open
@@ -843,8 +861,20 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
   char line[1024];
   char line2[1024];
   char filename[1024];
+  char path[1024];
+  mode_t mode;
 
-  sprintf(filename,"dataP%dT%d.pic",PatternNumber,TrackNumber);
+  //mode=0666;
+  mode=S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP|S_IWGRP|S_IWGRP|S_IROTH|S_IWOTH;
+  
+  sprintf(path,    "bank");
+  mkdir(path,mode);
+
+  //mode=0666;
+  sprintf(path,    "bank/bank%d",bank);
+  mkdir(path,mode);
+
+  sprintf(filename,"bank/bank%d/dataP%dT%d.pic",PatternNumber,TrackNumber);
 
   //  printf("SIZE:%d\n",P.getSize());
   //  exit(1);
@@ -1195,8 +1225,9 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
 }
 
 
-
+/*
 void PatternReader::setFileName(string filename)
 {
   fn=filename;
 }
+*/

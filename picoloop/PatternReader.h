@@ -21,15 +21,19 @@ class PatternReader
   PatternReader();
   ~PatternReader();
 
+  void init();
+  void setBank(int b);
+  int  getBank();
   void setFileName(string filename);
   bool PatternRemove(int PatternNumber,int TrackNumber);
   bool PatternDataExist(int PatternNumber,int TrackNumber);
   bool readPatternData(int PatternNumber,int TrackNumber, Pattern & P);
   bool writePattern(int PatternNumber,int TrackNumber,Pattern & P);
 
-  void init();
+
 
  private:
+  int    bank;
   FILE * fd;
   string fn;
   vector < vector < Pattern > > twoDPVector;
