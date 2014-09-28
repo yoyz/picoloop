@@ -3475,8 +3475,8 @@ void seq_update_track(int t)
 	  M[t]->set(ADSR_ENV0_RELEASE,P[t].getPatternElement(step).getRelease_amp());
 
 	  M[t]->set(ADSR_ENV1_ATTACK, P[t].getPatternElement(step).getAttack_fltr());
-	  M[t]->set(ADSR_ENV1_ATTACK, P[t].getPatternElement(step).getDecay_fltr());
-	  M[t]->set(ADSR_ENV1_ATTACK, P[t].getPatternElement(step).getSustain_fltr());
+	  M[t]->set(ADSR_ENV1_DECAY, P[t].getPatternElement(step).getDecay_fltr());
+	  M[t]->set(ADSR_ENV1_SUSTAIN, P[t].getPatternElement(step).getSustain_fltr());
 	  M[t]->set(ADSR_ENV1_RELEASE,P[t].getPatternElement(step).getRelease_fltr());
 
 
