@@ -75,6 +75,7 @@ void openaudio()
       MM[t]=AE.getAudioMixer().getTrack(t).getMonoMixer();      
       MM[t]->init();
       MM[t]->setAmplitude(0);
+      MM[t]->setMachineType(1);
       M[t]=MM[t]->getInput();
       M[t]->init();
       //M[t]->reset();      
@@ -570,7 +571,7 @@ void handle_key()
 	  
 	  printf("[Freq:%d]\n",i);
 	  MM[t]->setMachineType(0);
-	  MM[t]->setAmplitude(32);
+	  MM[t]->setAmplitude(64);
 	  M[t]->set(OSC1_FREQ,i);
 
 	  M[t]->set(OSC1_TYPE,1);
