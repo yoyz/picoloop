@@ -1,0 +1,16 @@
+CC=g++
+CFLAGS=-c -DLINUX -I. -LSDL/lib -g
+CFLAGS=-O3 -Wall -I.. -I. -DHAVE_GETTIMEOFDAY -D__WINDOWS_DS__
+LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf
+SOURCES=RtAudio.cpp 
+OBJECTS=$(SOURCES:.cpp=.o)
+#EXECUTABLE=Picoloop
+
+all: $(OBJECTS)
+
+
+.cpp.o:
+	$(CC) $(CFLAGS) -c $< -o $@
+
+clean:
+	-rm -f $(OBJECTS) $(EXECUTABLE)

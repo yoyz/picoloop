@@ -1,0 +1,17 @@
+CC=g++
+CFLAGS=-c -DLINUX -I. -LSDL/lib -g
+LDFLAGS=-D__WIN32__ -L. -lmingw32 -lSDLmain -lSDL -lSDL_ttf -static-libgcc -static-libstdc++ -ggdb
+SOURCES=WaveView.cpp
+OBJECTS=$(SOURCES:.cpp=.o)
+EXECUTABLE=WaveView
+
+all: $(SOURCES) $(EXECUTABLE)
+
+$(EXECUTABLE): $(OBJECTS)
+	$(CC) $(OBJECTS) -o $@ $(LDFLAGS) 
+
+.cpp.o:
+	$(CC) $(CFLAGS) $< -o $@
+
+clean:
+	-rm -f $(OBJECTS) $(EXECUTABLE)
