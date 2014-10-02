@@ -28,7 +28,11 @@ SDL_GUI::~SDL_GUI()
 
 int SDL_GUI::initVideo()
 {
-  if ( SDL_Init(SDL_INIT_VIDEO)
+
+#ifdef __SDL_AUDIO__
+  //  if ( SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO|SDL_INIT_TIMER)
+  if (SDL_Init(SDL_INIT_EVERYTHING)
+       
        //|SDL_INIT_TIMER|SDL_INIT_AUDIO) 
        
   //if ( SDL_Init(SDL_INIT_VIDEO) 
@@ -42,7 +46,18 @@ int SDL_GUI::initVideo()
       fprintf(stderr, "Couldn't initialize SDL: %s\n", SDL_GetError());
       return 0;
     }
-  
+#endif   
+
+#ifdef __RTAUDIO__
+  if ( SDL_Init(SDL_INIT_VIDEO)<0)
+    {
+      fprintf(stderr, "Couldn't initialize SDL: %s\n", SDL_GetError());
+      return 0;
+    }
+#endif   
+
+
+
   
   printf("SDL initialized.\n");
   #ifdef OPENDINGUX
