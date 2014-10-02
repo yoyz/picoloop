@@ -74,7 +74,7 @@ class AudioEngine
   int  getNbCallback();
 
   int bufferIsGenerated();
-  void processBuffer();
+  void processBuffer(int len);
   Sint16 * getBufferOut();
 
   void setupSequencerCallback(void (*ptrfunc)(void));

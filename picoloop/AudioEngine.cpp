@@ -15,7 +15,8 @@ int   rtcallback(
 //AudioEngine::AudioEngine() : inst(), AM()
 AudioEngine::AudioEngine() : AM(),
 			     AD(),
-			     buffer_out( new Sint16[BUFFER_FRAME])
+			     buffer_out( new Sint16[INTERNAL_BUFFER_SIZE])
+			     //buffer_out( new Sint16[BUFFER_FRAME])
 {
   freq=DEFAULTFREQ;
   samples=DEFAULTSAMPLES;
@@ -113,9 +114,10 @@ void AudioEngine::setupSequencerCallback(void (*ptrfunc)(void))
 }
 
 // process BUFFER_FRAME sample and call the callback when needed
-void AudioEngine::processBuffer()
+void AudioEngine::processBuffer(int len)
 {
-  for (int i=0;i<BUFFER_FRAME;i++)
+  //for (int i=0;i<BUFFER_FRAME;i++)
+  for (int i=0;i<len;i++)
     {
       nb_tick++;
       if (nb_tick<nb_tick_before_step_change)
@@ -356,24 +358,41 @@ int AudioEngine::callback( void *outputBuffer,
 
 
 
-  //void AudioEngine::sdlcallback(void *unused, Uint8 *stream, int len)
+//void AudioEngine::sdlcallback(void *unused, Uint8 *stream, int len)
 void AudioEngine::callback(void *unused, Uint8 *stream, int len)
 {
   //  printf("AudioEngine::calback() begin nBufferFrame=%d nbCallback=%d\n",nBufferFrames,nbCallback);
+  printf("AudioEngine::callback() len=%d\n",len);
+  int     buffer_size;
+  //int     buffer_size=len;
+
+  //Workaround a linux sdl 1.2 audio bug 
+  //                   sdl seem to have a bug on this...
+  #ifdef __SDL_AUDIO__
+  buffer_size=BUFFER_FRAME;
+  #endif
+
+  //Should be the "Normal case" because we use ...,int len) provided by the caller
+  #ifdef __RTAUDIO__
+  buffer_size=len;
+  #endif
+
   typedef Sint16 MY_TYPE;
   MY_TYPE *buffer = (MY_TYPE *) stream;
   
   //  this->bufferGenerated=0;
   if (bufferGenerated==0)
-    this->processBuffer();
+    //this->processBuffer(BUFFER_FRAME);
+    this->processBuffer(buffer_size);
 
-#ifdef LINUX_DESKTOP
-  if (debug_audio)
-    fwrite(buffer_out,len,sizeof(Sint16),fd);
-#endif
+  #ifdef LINUX_DESKTOP
+    if (debug_audio)
+      fwrite(buffer_out,buffer_size,sizeof(Sint16),fd);
+  #endif
 
-  
-  for (int i=0;i<len;i++)
+    
+    //for (int i=0;i<len;i++)
+    for (int i=0;i<buffer_size;i++)
     {
       //int tick = S.tick();
       //      int tick = AM.tick();
