@@ -1,8 +1,8 @@
 CC=i586-mingw32msvc-g++ 
 CFLAGS=-c -DLINUX -I. -LSDL/lib -g
 CFLAGS=-O3 -Wall -I.. -DHAVE_GETTIMEOFDAY -D__LINUX_ALSA__ 
-CFLAGS=-D__WINDOWS_DS__ -I/home/yoyz/.wine/drive_c/users/yoyz/Temp/DXF/DXSDK/include/ -L/home/yoyz/.wine/drive_c/users/yoyz/Temp/DXF/DXSDK/lib 
-LDFLAGS=-I/home/yoyz/.wine/drive_c/users/yoyz/Temp/DXF/DXSDK/include/ -L/home/yoyz/.wine/drive_c/users/yoyz/Temp/DXF/DXSDK/lib
+CFLAGS=-D__WINDOWS_DS__ -Idx/include/ -Ldx/lib  -static-libgcc
+LDFLAGS=-Idx/include/ -Ldx/lib
 SOURCES=RtAudio.cpp 
 OBJECTS=$(SOURCES:.cpp=.o)
 #EXECUTABLE=Picoloop
