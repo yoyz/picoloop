@@ -3662,7 +3662,7 @@ void load_pattern()
 
 
 
-int main()
+int main(int argc,char **argv)
 {
   int i;
   //  exit(0);
