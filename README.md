@@ -113,11 +113,12 @@ menu 2 :
 
 # KEYS
 
-## Debian
+## Debian/Windows
 
-    - ESC               : enter menu and move between menu
-    - ENTER             : Start key/enter a menu
-    - L-CTRL            : insert note/delete node/copy note
+    - ESC               : Select key : go back to the global menu/switch menu
+    - ENTER             : Start  key : change sub menu
+    - L-CTRL            : A      key : insert note/delete node/copy note
+    - L-ALT             : B      key : change the value on the screen of the selected step
     - ESC+ENTER         : quit
 
 Depending on the current menu selected : A/R, OSC, VCO, BPM, LS, etc.
