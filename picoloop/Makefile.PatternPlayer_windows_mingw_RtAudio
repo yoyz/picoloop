@@ -1,0 +1,37 @@
+CC=g++
+CC=i586-mingw32msvc-g++
+#CFLAGS=-c -DLINUX -I. -LSDL/lib -ggdb -pg
+#LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf -lpthread  RtAudio.o  -pg
+#LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf -lpthread  RtAudio.o 
+
+#CFLAGS=-c -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP
+
+CFLAGS=-c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb -ffast-math
+CFLAGS=-c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb  -pg
+CFLAGS=-Wall -c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb  
+CFLAGS= -c -O1 -D__WIN32__ -I/c/MinGW/include/  -DLINUX -I. -ISDL_windows -D__RTAUDIO__ -DLINUX_DESKTOP -ggdb  -fpermissive
+
+LDFLAGS=-lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread -pg
+#LDFLAGS=-L. -lmingw32 -lSDLmain -lSDL -lSDL_ttf
+LDFLAGS=-L. -lSDL -lSDL_ttf 
+LDFLAGS=-L. -lmingw32 -lSDLmain -lSDL -lSDL_ttf
+LDFLAGS=-D__WIN32__ -L. -LSDL-1.2.15/lib/ -lmingw32 -lSDLmain -lSDL -lSDL_ttf -static-libgcc -ggdb
+LDFLAGS=-D__WIN32__ -L. -LSDL_windows/lib -L/home/yoyz/.wine/drive_c/users/yoyz/Temp/DXF/DXSDK/lib/ -lmingw32 -lSDLmain -lSDL -lSDL_ttf -ldsound -lole32 -lwinmm -static-libgcc -ggdb
+
+OBJTOLINK=RtAudio.o
+
+SOURCES=Machine.cpp Track.cpp AudioMixer.cpp AudioEngine.cpp PatternElement.cpp Pattern.cpp PatternPlayer.cpp PatternReader.cpp Oscillator.cpp SineOscillator.cpp SawOscillator.cpp  FuzzyPulseOscillator.cpp PulseOscillator.cpp  TriangleOscillator.cpp WaveTableSineOscillator.cpp NoiseOscillator.cpp OneOscillator.cpp MonoMixer.cpp ADSR.cpp SDL_GUI.cpp VCO.cpp Sequencer.cpp InputManager.cpp Biquad.cpp PatternSequencer.cpp  AudioDriverRTAudio.cpp PicosynthMachine.cpp  PicodrumMachine.cpp dbopl/dbopl.cpp dbopl/hiopl.cpp DboplMachine.cpp Filter.cpp AMSynthLowPassFilter.cpp Effect.cpp EffectDelay.cpp
+OBJECTS=$(SOURCES:.cpp=.o)
+EXECUTABLE=PatternPlayer
+
+all: $(SOURCES) $(EXECUTABLE)
+
+$(EXECUTABLE): $(OBJECTS)
+	$(CC) $(OBJTOLINK)  $(OBJECTS) -o $@ $(LDFLAGS)
+#	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
+
+.cpp.o:
+	$(CC) $(CFLAGS) $< -o $@
+
+clean:
+	-rm -f $(OBJECTS) $(EXECUTABLE)
