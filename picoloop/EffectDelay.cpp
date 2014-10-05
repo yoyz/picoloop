@@ -1,6 +1,7 @@
 #include "EffectDelay.h"
 
-#define FX_SIZE 1024*256
+//#define FX_SIZE 1024*256
+#define FX_SIZE 1024*512
 //#define FX_SIZE 1024*128
 //#define FX_SIZE 1024*128
 
