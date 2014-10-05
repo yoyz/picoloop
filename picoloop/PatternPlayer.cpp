@@ -995,6 +995,16 @@ void display_board()
   char str_divider[8];
   char str_submenu[16];
 
+  int  right_x_display_offset=      200*SCREEN_MULT;
+  int  right_y_display_offset_line1=20*SCREEN_MULT;
+  int  right_y_display_offset_line2=40*SCREEN_MULT;
+  int  right_y_display_offset_line3=60*SCREEN_MULT;
+  int  right_y_display_offset_line4=80*SCREEN_MULT;
+
+  int  menu_x_display_offset=       10*SCREEN_MULT;
+  int  menu_y_display_offset=      200*SCREEN_MULT;
+  //int  
+
   int  cty=SEQ.getCurrentTrackY();
   int  stepdiv=SEQ.getPatternSequencer(cty).getBPMDivider();
   dirty_graphic=0;
@@ -1002,41 +1012,48 @@ void display_board()
   SG.clearScreen();
   //  sprintf(str,"Track %d ",ct);
   sprintf(str_up,"Track %d ",cty);
-  SG.guiTTFText(200,20,str_up);
+  SG.guiTTFText(right_x_display_offset,
+		right_y_display_offset_line1,str_up);
 
   sprintf(str_divider,"/%d",stepdiv);
-  SG.guiTTFText(200,80,str_divider);
+  SG.guiTTFText(right_x_display_offset,
+		right_y_display_offset_line3,str_divider);
 
   if (menu_cursor!=GLOBALMENU_AD ||
       menu_cursor!=GLOBALMENU_NOTE)    
     {
       sprintf(str_submenu,"               ");
-      SG.guiTTFText(200,60,str_submenu);
+      SG.guiTTFText(right_x_display_offset,
+		    right_y_display_offset_line2,str_submenu);
     }
   if (menu_note==ENABLE &&
       menu_cursor==GLOBALMENU_NOTE)
     {
       sprintf(str_submenu,"NOTE");
-      SG.guiTTFText(200,60,str_submenu);
+      SG.guiTTFText(right_x_display_offset,
+		    right_y_display_offset_line2,str_submenu);
     }
   if (menu_note==DISABLE &&
       menu_cursor==GLOBALMENU_NOTE)
     {
       sprintf(str_submenu,"DOT");
-      SG.guiTTFText(200,60,str_submenu);
+      SG.guiTTFText(right_x_display_offset,
+		    right_y_display_offset_line2,str_submenu);
     }
   if (menu_ad==MENU_AD_AMP_ATTACK_RELEASE &&
       menu_cursor==GLOBALMENU_AD)
     {
       sprintf(str_submenu,"AMP  A/R");
-      SG.guiTTFText(200,60,str_submenu);
+      SG.guiTTFText(right_x_display_offset,
+		    right_y_display_offset_line2,str_submenu);
     }
 
   if (menu_ad==MENU_AD_AMP_DECAY_SUSTAIN &&
       menu_cursor==GLOBALMENU_AD)
     {
       sprintf(str_submenu,"AMP  D/S");
-      SG.guiTTFText(200,60,str_submenu);
+      SG.guiTTFText(right_x_display_offset,
+		    right_y_display_offset_line2,str_submenu);
     }
 
 
@@ -1044,14 +1061,16 @@ void display_board()
       menu_cursor==GLOBALMENU_AD)
     {
       sprintf(str_submenu,"FLTR A/R");
-      SG.guiTTFText(200,60,str_submenu);
+      SG.guiTTFText(right_x_display_offset,
+		    right_y_display_offset_line2,str_submenu);
     }
 
   if (menu_ad==MENU_AD_FLTR_DECAY_SUSTAIN &&
       menu_cursor==GLOBALMENU_AD)
     {
       sprintf(str_submenu,"FLTR D/S");
-      SG.guiTTFText(200,60,str_submenu);
+      SG.guiTTFText(right_x_display_offset,
+		    right_y_display_offset_line2,str_submenu);
     }
 
 
@@ -1059,14 +1078,16 @@ void display_board()
       menu_cursor==GLOBALMENU_AD)
     {
       sprintf(str_submenu,"T/N AMP");
-      SG.guiTTFText(200,60,str_submenu);
+      SG.guiTTFText(right_x_display_offset,
+		    right_y_display_offset_line2,str_submenu);
     }
 
   if (menu_fltr==MENU_FLTR_CUTOFF_RESONANCE &&
       menu_cursor==GLOBALMENU_FLTR)
     {
       sprintf(str_submenu,"CUTOFF/RES");
-      SG.guiTTFText(200,60,str_submenu);
+      SG.guiTTFText(right_x_display_offset,
+		    right_y_display_offset_line2,str_submenu);
     }
 
   if (menu_fltr==MENU_FLTR_ALGO_TYPE &&
@@ -1074,7 +1095,8 @@ void display_board()
       )
     {
       sprintf(str_submenu,"ALGO/TYPE");
-      SG.guiTTFText(200,60,str_submenu);
+      SG.guiTTFText(right_x_display_offset,
+		    right_y_display_offset_line2,str_submenu);
     }
 
 
@@ -1083,7 +1105,8 @@ void display_board()
       )
     {
       sprintf(str_submenu,"OP1AMP/AP2AMP");
-      SG.guiTTFText(200,60,str_submenu);
+      SG.guiTTFText(right_x_display_offset,
+		    right_y_display_offset_line2,str_submenu);
     }
 
   if (menu_vco==MENU_VCO_OSCMIX_PHASE &&
@@ -1091,7 +1114,8 @@ void display_board()
       )
     {
       sprintf(str_submenu,"OP1Mult/OP2Mult");
-      SG.guiTTFText(200,60,str_submenu);
+      SG.guiTTFText(right_x_display_offset,
+		    right_y_display_offset_line2,str_submenu);
     }
 
 
@@ -1101,14 +1125,15 @@ void display_board()
       menu_cursor==GLOBALMENU_AD)
     {
       sprintf(str_submenu,"ATTACK/AMP");
-      SG.guiTTFText(200,60,str_submenu);
+      SG.guiTTFText(right_x_display_offset,60,str_submenu);
     }
   */
   if (menu_cursor==GLOBALMENU_BPM)
     {
       //sprintf(str_submenu,"SWING %d",(current_swing*100)/127);
       sprintf(str_submenu,"SWING %d",current_swing);
-      SG.guiTTFText(200,60,str_submenu);
+      SG.guiTTFText(right_x_display_offset,
+		    right_y_display_offset_line2,str_submenu);
     }
 
 //  sprintf(str_down,"[A/D] Note L/S",cty);
@@ -1150,8 +1175,11 @@ void display_board()
 
 
 
-  SG.guiTTFText(200,40,str_up);
-  SG.guiTTFText(10,200,str_down);
+  SG.guiTTFText(right_x_display_offset,
+		right_y_display_offset_line4,str_up);
+
+  SG.guiTTFText(menu_x_display_offset,
+		menu_y_display_offset,str_down);
 
   // Draw all box default color   
   //for (i=0;i<16;i++)
@@ -2587,19 +2615,19 @@ void handle_key()
   
   handle_key_sixteenbox();
 
-  handle_key_amp_env();
-  handle_key_note();
-  handle_key_vco();
-  handle_key_osc(); 
-  handle_key_lfo();
-  handle_key_fltr();
+  if (menu_cursor==GLOBALMENU_AD)   handle_key_amp_env();
+  if (menu_cursor==GLOBALMENU_NOTE) handle_key_note();
+  if (menu_cursor==GLOBALMENU_OSC)  handle_key_osc(); 
+  if (menu_cursor==GLOBALMENU_VCO)  handle_key_vco();
+  if (menu_cursor==GLOBALMENU_LFO)  handle_key_lfo();
+  if (menu_cursor==GLOBALMENU_FLTR) handle_key_fltr();
 
-  handle_key_load_save();
-  handle_key_mac();
-  handle_key_psh();
-  handle_key_fx();
-  handle_key_bpm();
-
+  if (menu_cursor==GLOBALMENU_LS)   handle_key_load_save();
+  if (menu_cursor==GLOBALMENU_PSH)  handle_key_psh();
+  if (menu_cursor==GLOBALMENU_MAC)  handle_key_mac();
+  if (menu_cursor==GLOBALMENU_FX)   handle_key_fx();
+  if (menu_cursor==GLOBALMENU_BPM)  handle_key_bpm();
+  
  
   int delay=1;
   //printf("sleeping %dms\n",delay);

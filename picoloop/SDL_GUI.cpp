@@ -67,8 +67,8 @@ int SDL_GUI::initVideo()
 			    SDL_HWSURFACE|SDL_DOUBLEBUF|SDL_FULLSCREEN);
   #endif
   #ifdef LINUX_DESKTOP
-  screen = SDL_SetVideoMode(SCREEN_WIDTH, 
-			    SCREEN_HEIGHT, 
+  screen = SDL_SetVideoMode(SCREEN_WIDTH*SCREEN_MULT, 
+			    SCREEN_HEIGHT*SCREEN_MULT, 
 			    SCREEN_DEPTH,			
 			    SDL_HWSURFACE|SDL_DOUBLEBUF);
   #endif
@@ -110,7 +110,7 @@ int SDL_GUI::closeVideo()
 
 void SDL_GUI::middleBox(int x,int y,Uint32 c)
 {
-  this->fullBox(x,y,boxSize/2,boxSize/2,c);
+  this->fullBox(x,y,(boxSize/2)*SCREEN_MULT,(boxSize/2)*SCREEN_MULT,c);
 }
 
 void SDL_GUI::middleBoxNumberUp(int x,int y,Uint32 c)
@@ -118,7 +118,7 @@ void SDL_GUI::middleBoxNumberUp(int x,int y,Uint32 c)
   //this->middleBox(35+15*x,60+15*y,c);
   //this->middleBox(35+15*x,30+15*y,c);
   //this->middleBox(35+15*x,OFFSET_Y_MIDDLE_BOX+15*y,c);
-  this->middleBox(OFFSET_X_MIDDLEBOX_UP+15*x,OFFSET_Y_MIDDLEBOX_UP+15*y,c);
+  this->middleBox((OFFSET_X_MIDDLEBOX_UP+15*x)*SCREEN_MULT,(OFFSET_Y_MIDDLEBOX_UP+15*y)*SCREEN_MULT,c);
 }
 /*
 void SDL_GUI::middleBoxNumber_second(int x,int y,Uint32 c)
@@ -139,13 +139,13 @@ void SDL_GUI::drawTTFTextLoadSaveBoxNumberUp(int x,int y,const char *txt)
   //this->guiTTFText(35+15*x,60+15*y,txt);
   //this->guiTTFText(35+15*x,30+15*y,txt);
   //this->guiTTFText(35+15*x,OFFSET_Y_MIDDLE_BOX+15*y,txt);
-  this->guiTTFText(OFFSET_X_MIDDLEBOX_UP+15*x,OFFSET_Y_MIDDLEBOX_UP+15*y,txt);
+  this->guiTTFText((OFFSET_X_MIDDLEBOX_UP+15*x)*SCREEN_MULT,(OFFSET_Y_MIDDLEBOX_UP+15*y)*SCREEN_MULT,txt);
 } 
 
 
 void SDL_GUI::smallBox(int x,int y,Uint32 c)
 {
-  this->fullBox(x,y,boxSize/4,boxSize/4,c);
+  this->fullBox(x,y,(boxSize/4),(boxSize/4),c);
 }
 
 
@@ -302,25 +302,25 @@ void SDL_GUI::smallBoxNumber(int n,int x,int y,Uint32 c)
     {
       //case 0: this->box(boxOffset+(0*boxSize)+((x*((boxSize*100)/(x+1)))/100),boxOffset,boxSize/4,boxSize/4,c); break;
       //case 0: this->box(boxOffset+(0*boxSize)+((4*x)/boxSize),boxOffset,boxSize/4,boxSize/4,c); break;
-    case 0:  this->fullBox(boxOffset+(0*boxSize)+0+ ((6*x)/boxSize),boxOffset+(0*boxSize+0)+((6*y)/boxSize),boxSize/4,boxSize/4,c); break;
-    case 1:  this->fullBox(boxOffset+(1*boxSize)+10+((6*x)/boxSize),boxOffset+(0*boxSize+0)+((6*y)/boxSize),boxSize/4,boxSize/4,c); break;
-    case 2:  this->fullBox(boxOffset+(2*boxSize)+20+((6*x)/boxSize),boxOffset+(0*boxSize+0)+((6*y)/boxSize),boxSize/4,boxSize/4,c); break;
-    case 3:  this->fullBox(boxOffset+(3*boxSize)+30+((6*x)/boxSize),boxOffset+(0*boxSize+0)+((6*y)/boxSize),boxSize/4,boxSize/4,c); break;
+    case 0:  this->fullBox((boxOffset+(0*boxSize)+ 0+((6*x)/boxSize))*SCREEN_MULT,(boxOffset+(0*boxSize+ 0)+((6*y)/boxSize))*SCREEN_MULT,(boxSize/4)*SCREEN_MULT,(boxSize/4)*SCREEN_MULT,c); break;
+    case 1:  this->fullBox((boxOffset+(1*boxSize)+10+((6*x)/boxSize))*SCREEN_MULT,(boxOffset+(0*boxSize+ 0)+((6*y)/boxSize))*SCREEN_MULT,(boxSize/4)*SCREEN_MULT,(boxSize/4)*SCREEN_MULT,c); break; 
+    case 2:  this->fullBox((boxOffset+(2*boxSize)+20+((6*x)/boxSize))*SCREEN_MULT,(boxOffset+(0*boxSize+ 0)+((6*y)/boxSize))*SCREEN_MULT,(boxSize/4)*SCREEN_MULT,(boxSize/4)*SCREEN_MULT,c); break;
+    case 3:  this->fullBox((boxOffset+(3*boxSize)+30+((6*x)/boxSize))*SCREEN_MULT,(boxOffset+(0*boxSize+ 0)+((6*y)/boxSize))*SCREEN_MULT,(boxSize/4)*SCREEN_MULT,(boxSize/4)*SCREEN_MULT,c); break;
 
-    case 4:  this->fullBox(boxOffset+(0*boxSize)+0+ ((6*x)/boxSize),boxOffset+(1*boxSize+10)+((6*y)/boxSize),boxSize/4,boxSize/4,c); break;
-    case 5:  this->fullBox(boxOffset+(1*boxSize)+10+((6*x)/boxSize),boxOffset+(1*boxSize+10)+((6*y)/boxSize),boxSize/4,boxSize/4,c); break;
-    case 6:  this->fullBox(boxOffset+(2*boxSize)+20+((6*x)/boxSize),boxOffset+(1*boxSize+10)+((6*y)/boxSize),boxSize/4,boxSize/4,c); break;
-    case 7:  this->fullBox(boxOffset+(3*boxSize)+30+((6*x)/boxSize),boxOffset+(1*boxSize+10)+((6*y)/boxSize),boxSize/4,boxSize/4,c); break;
+    case 4:  this->fullBox((boxOffset+(0*boxSize)+ 0+((6*x)/boxSize))*SCREEN_MULT,(boxOffset+(1*boxSize+10)+((6*y)/boxSize))*SCREEN_MULT,(boxSize/4)*SCREEN_MULT,(boxSize/4)*SCREEN_MULT,c); break;
+    case 5:  this->fullBox((boxOffset+(1*boxSize)+10+((6*x)/boxSize))*SCREEN_MULT,(boxOffset+(1*boxSize+10)+((6*y)/boxSize))*SCREEN_MULT,(boxSize/4)*SCREEN_MULT,(boxSize/4)*SCREEN_MULT,c); break;
+    case 6:  this->fullBox((boxOffset+(2*boxSize)+20+((6*x)/boxSize))*SCREEN_MULT,(boxOffset+(1*boxSize+10)+((6*y)/boxSize))*SCREEN_MULT,(boxSize/4)*SCREEN_MULT,(boxSize/4)*SCREEN_MULT,c); break;
+    case 7:  this->fullBox((boxOffset+(3*boxSize)+30+((6*x)/boxSize))*SCREEN_MULT,(boxOffset+(1*boxSize+10)+((6*y)/boxSize))*SCREEN_MULT,(boxSize/4)*SCREEN_MULT,(boxSize/4)*SCREEN_MULT,c); break;
 
-    case 8:  this->fullBox(boxOffset+(0*boxSize)+0+ ((6*x)/boxSize),boxOffset+(2*boxSize+20)+((6*y)/boxSize),boxSize/4,boxSize/4,c); break;
-    case 9:  this->fullBox(boxOffset+(1*boxSize)+10+((6*x)/boxSize),boxOffset+(2*boxSize+20)+((6*y)/boxSize),boxSize/4,boxSize/4,c); break;
-    case 10: this->fullBox(boxOffset+(2*boxSize)+20+((6*x)/boxSize),boxOffset+(2*boxSize+20)+((6*y)/boxSize),boxSize/4,boxSize/4,c); break;
-    case 11: this->fullBox(boxOffset+(3*boxSize)+30+((6*x)/boxSize),boxOffset+(2*boxSize+20)+((6*y)/boxSize),boxSize/4,boxSize/4,c); break;
+    case 8:  this->fullBox((boxOffset+(0*boxSize)+ 0+((6*x)/boxSize))*SCREEN_MULT,(boxOffset+(2*boxSize+20)+((6*y)/boxSize))*SCREEN_MULT,(boxSize/4)*SCREEN_MULT,(boxSize/4)*SCREEN_MULT,c); break;
+    case 9:  this->fullBox((boxOffset+(1*boxSize)+10+((6*x)/boxSize))*SCREEN_MULT,(boxOffset+(2*boxSize+20)+((6*y)/boxSize))*SCREEN_MULT,(boxSize/4)*SCREEN_MULT,(boxSize/4)*SCREEN_MULT,c); break;
+    case 10: this->fullBox((boxOffset+(2*boxSize)+20+((6*x)/boxSize))*SCREEN_MULT,(boxOffset+(2*boxSize+20)+((6*y)/boxSize))*SCREEN_MULT,(boxSize/4)*SCREEN_MULT,(boxSize/4)*SCREEN_MULT,c); break;
+    case 11: this->fullBox((boxOffset+(3*boxSize)+30+((6*x)/boxSize))*SCREEN_MULT,(boxOffset+(2*boxSize+20)+((6*y)/boxSize))*SCREEN_MULT,(boxSize/4)*SCREEN_MULT,(boxSize/4)*SCREEN_MULT,c); break;
 
-    case 12: this->fullBox(boxOffset+(0*boxSize)+0+ ((6*x)/boxSize),boxOffset+(3*boxSize+30)+((6*y)/boxSize),boxSize/4,boxSize/4,c); break;
-    case 13: this->fullBox(boxOffset+(1*boxSize)+10+((6*x)/boxSize),boxOffset+(3*boxSize+30)+((6*y)/boxSize),boxSize/4,boxSize/4,c); break;
-    case 14: this->fullBox(boxOffset+(2*boxSize)+20+((6*x)/boxSize),boxOffset+(3*boxSize+30)+((6*y)/boxSize),boxSize/4,boxSize/4,c); break;
-    case 15: this->fullBox(boxOffset+(3*boxSize)+30+((6*x)/boxSize),boxOffset+(3*boxSize+30)+((6*y)/boxSize),boxSize/4,boxSize/4,c); break;
+    case 12: this->fullBox((boxOffset+(0*boxSize)+ 0+((6*x)/boxSize))*SCREEN_MULT,(boxOffset+(3*boxSize+30)+((6*y)/boxSize))*SCREEN_MULT,(boxSize/4)*SCREEN_MULT,(boxSize/4)*SCREEN_MULT,c); break;
+    case 13: this->fullBox((boxOffset+(1*boxSize)+10+((6*x)/boxSize))*SCREEN_MULT,(boxOffset+(3*boxSize+30)+((6*y)/boxSize))*SCREEN_MULT,(boxSize/4)*SCREEN_MULT,(boxSize/4)*SCREEN_MULT,c); break;
+    case 14: this->fullBox((boxOffset+(2*boxSize)+20+((6*x)/boxSize))*SCREEN_MULT,(boxOffset+(3*boxSize+30)+((6*y)/boxSize))*SCREEN_MULT,(boxSize/4)*SCREEN_MULT,(boxSize/4)*SCREEN_MULT,c); break;
+    case 15: this->fullBox((boxOffset+(3*boxSize)+30+((6*x)/boxSize))*SCREEN_MULT,(boxOffset+(3*boxSize+30)+((6*y)/boxSize))*SCREEN_MULT,(boxSize/4)*SCREEN_MULT,(boxSize/4)*SCREEN_MULT,c); break;
 
     }  
 }
@@ -333,25 +333,25 @@ void SDL_GUI::drawBoxNumber(int n, Uint32 c)
 
   switch (n)
     {
-    case 0:  this->fullBox(boxOffset+(0*boxSize)+0, boxOffset+(0*boxSize)+0,boxSize,boxSize,c); break;
-    case 1:  this->fullBox(boxOffset+(1*boxSize)+10,boxOffset+(0*boxSize)+0,boxSize,boxSize,c); break;
-    case 2:  this->fullBox(boxOffset+(2*boxSize)+20,boxOffset+(0*boxSize)+0,boxSize,boxSize,c); break;
-    case 3:  this->fullBox(boxOffset+(3*boxSize)+30,boxOffset+(0*boxSize)+0,boxSize,boxSize,c); break;
+    case 0:  this->fullBox((boxOffset+(0*boxSize) +0)*SCREEN_MULT,(boxOffset+(0*boxSize)+ 0)*SCREEN_MULT,boxSize*SCREEN_MULT,boxSize*SCREEN_MULT,c); break;
+    case 1:  this->fullBox((boxOffset+(1*boxSize)+10)*SCREEN_MULT,(boxOffset+(0*boxSize)+ 0)*SCREEN_MULT,boxSize*SCREEN_MULT,boxSize*SCREEN_MULT,c); break;
+    case 2:  this->fullBox((boxOffset+(2*boxSize)+20)*SCREEN_MULT,(boxOffset+(0*boxSize)+ 0)*SCREEN_MULT,boxSize*SCREEN_MULT,boxSize*SCREEN_MULT,c); break;
+    case 3:  this->fullBox((boxOffset+(3*boxSize)+30)*SCREEN_MULT,(boxOffset+(0*boxSize)+ 0)*SCREEN_MULT,boxSize*SCREEN_MULT,boxSize*SCREEN_MULT,c); break;
 
-    case 4:  this->fullBox(boxOffset+(0*boxSize)+0, boxOffset+(1*boxSize+10),boxSize,boxSize,c); break;
-    case 5:  this->fullBox(boxOffset+(1*boxSize)+10,boxOffset+(1*boxSize+10),boxSize,boxSize,c); break;
-    case 6:  this->fullBox(boxOffset+(2*boxSize)+20,boxOffset+(1*boxSize+10),boxSize,boxSize,c); break;
-    case 7:  this->fullBox(boxOffset+(3*boxSize)+30,boxOffset+(1*boxSize+10),boxSize,boxSize,c); break;
+    case 4:  this->fullBox((boxOffset+(0*boxSize) +0)*SCREEN_MULT,(boxOffset+(1*boxSize)+10)*SCREEN_MULT,boxSize*SCREEN_MULT,boxSize*SCREEN_MULT,c); break;
+    case 5:  this->fullBox((boxOffset+(1*boxSize)+10)*SCREEN_MULT,(boxOffset+(1*boxSize)+10)*SCREEN_MULT,boxSize*SCREEN_MULT,boxSize*SCREEN_MULT,c); break;
+    case 6:  this->fullBox((boxOffset+(2*boxSize)+20)*SCREEN_MULT,(boxOffset+(1*boxSize)+10)*SCREEN_MULT,boxSize*SCREEN_MULT,boxSize*SCREEN_MULT,c); break;
+    case 7:  this->fullBox((boxOffset+(3*boxSize)+30)*SCREEN_MULT,(boxOffset+(1*boxSize)+10)*SCREEN_MULT,boxSize*SCREEN_MULT,boxSize*SCREEN_MULT,c); break;
 
-    case 8:  this->fullBox(boxOffset+(0*boxSize)+0, boxOffset+(2*boxSize+20),boxSize,boxSize,c); break;
-    case 9:  this->fullBox(boxOffset+(1*boxSize)+10,boxOffset+(2*boxSize+20),boxSize,boxSize,c); break;
-    case 10: this->fullBox(boxOffset+(2*boxSize)+20,boxOffset+(2*boxSize+20),boxSize,boxSize,c); break;
-    case 11: this->fullBox(boxOffset+(3*boxSize)+30,boxOffset+(2*boxSize+20),boxSize,boxSize,c); break;
+    case 8:  this->fullBox((boxOffset+(0*boxSize) +0)*SCREEN_MULT,(boxOffset+(2*boxSize)+20)*SCREEN_MULT,boxSize*SCREEN_MULT,boxSize*SCREEN_MULT,c); break;
+    case 9:  this->fullBox((boxOffset+(1*boxSize)+10)*SCREEN_MULT,(boxOffset+(2*boxSize)+20)*SCREEN_MULT,boxSize*SCREEN_MULT,boxSize*SCREEN_MULT,c); break;
+    case 10: this->fullBox((boxOffset+(2*boxSize)+20)*SCREEN_MULT,(boxOffset+(2*boxSize)+20)*SCREEN_MULT,boxSize*SCREEN_MULT,boxSize*SCREEN_MULT,c); break;
+    case 11: this->fullBox((boxOffset+(3*boxSize)+30)*SCREEN_MULT,(boxOffset+(2*boxSize)+20)*SCREEN_MULT,boxSize*SCREEN_MULT,boxSize*SCREEN_MULT,c); break;
       
-    case 12: this->fullBox(boxOffset+(0*boxSize)+0, boxOffset+(3*boxSize+30),boxSize,boxSize,c); break;
-    case 13: this->fullBox(boxOffset+(1*boxSize)+10,boxOffset+(3*boxSize+30),boxSize,boxSize,c); break;
-    case 14: this->fullBox(boxOffset+(2*boxSize)+20,boxOffset+(3*boxSize+30),boxSize,boxSize,c); break;
-    case 15: this->fullBox(boxOffset+(3*boxSize)+30,boxOffset+(3*boxSize+30),boxSize,boxSize,c); break;
+    case 12: this->fullBox((boxOffset+(0*boxSize) +0)*SCREEN_MULT,(boxOffset+(3*boxSize)+30)*SCREEN_MULT,boxSize*SCREEN_MULT,boxSize*SCREEN_MULT,c); break;
+    case 13: this->fullBox((boxOffset+(1*boxSize)+10)*SCREEN_MULT,(boxOffset+(3*boxSize)+30)*SCREEN_MULT,boxSize*SCREEN_MULT,boxSize*SCREEN_MULT,c); break;
+    case 14: this->fullBox((boxOffset+(2*boxSize)+20)*SCREEN_MULT,(boxOffset+(3*boxSize)+30)*SCREEN_MULT,boxSize*SCREEN_MULT,boxSize*SCREEN_MULT,c); break;
+    case 15: this->fullBox((boxOffset+(3*boxSize)+30)*SCREEN_MULT,(boxOffset+(3*boxSize)+30)*SCREEN_MULT,boxSize*SCREEN_MULT,boxSize*SCREEN_MULT,c); break;
     }               
 }
 
@@ -388,25 +388,25 @@ void SDL_GUI::drawTTFTextNumberFirstLine(int n,const char * str)
 {
   switch(n)
     {
-    case 0:  this->guiTTFText(boxOffset+(0*boxSize)+0 ,boxOffset,str); break;
-    case 1:  this->guiTTFText(boxOffset+(1*boxSize)+10,boxOffset,str); break;
-    case 2:  this->guiTTFText(boxOffset+(2*boxSize)+20,boxOffset,str); break;
-    case 3:  this->guiTTFText(boxOffset+(3*boxSize)+30,boxOffset,str); break;
+    case 0:  this->guiTTFText((boxOffset+(0*boxSize)+ 0)*SCREEN_MULT,(boxOffset+(0*boxSize+ 0))*SCREEN_MULT,str); break;
+    case 1:  this->guiTTFText((boxOffset+(1*boxSize)+10)*SCREEN_MULT,(boxOffset+(0*boxSize+ 0))*SCREEN_MULT,str); break;
+    case 2:  this->guiTTFText((boxOffset+(2*boxSize)+20)*SCREEN_MULT,(boxOffset+(0*boxSize+ 0))*SCREEN_MULT,str); break;
+    case 3:  this->guiTTFText((boxOffset+(3*boxSize)+30)*SCREEN_MULT,(boxOffset+(0*boxSize+ 0))*SCREEN_MULT,str); break;
 
-    case 4:  this->guiTTFText(boxOffset+(0*boxSize)+0 ,boxOffset+(1*boxSize+10),str); break;
-    case 5:  this->guiTTFText(boxOffset+(1*boxSize)+10,boxOffset+(1*boxSize+10),str); break;
-    case 6:  this->guiTTFText(boxOffset+(2*boxSize)+20,boxOffset+(1*boxSize+10),str); break;
-    case 7:  this->guiTTFText(boxOffset+(3*boxSize)+30,boxOffset+(1*boxSize+10),str); break;
+    case 4:  this->guiTTFText((boxOffset+(0*boxSize)+ 0)*SCREEN_MULT,(boxOffset+(1*boxSize+10))*SCREEN_MULT,str); break;
+    case 5:  this->guiTTFText((boxOffset+(1*boxSize)+10)*SCREEN_MULT,(boxOffset+(1*boxSize+10))*SCREEN_MULT,str); break;
+    case 6:  this->guiTTFText((boxOffset+(2*boxSize)+20)*SCREEN_MULT,(boxOffset+(1*boxSize+10))*SCREEN_MULT,str); break;
+    case 7:  this->guiTTFText((boxOffset+(3*boxSize)+30)*SCREEN_MULT,(boxOffset+(1*boxSize+10))*SCREEN_MULT,str); break;
 
-    case 8:  this->guiTTFText(boxOffset+(0*boxSize)+0 ,boxOffset+(2*boxSize+20),str); break;
-    case 9:  this->guiTTFText(boxOffset+(1*boxSize)+10,boxOffset+(2*boxSize+20),str); break;
-    case 10: this->guiTTFText(boxOffset+(2*boxSize)+20,boxOffset+(2*boxSize+20),str); break;
-    case 11: this->guiTTFText(boxOffset+(3*boxSize)+30,boxOffset+(2*boxSize+20),str); break;
+    case 8:  this->guiTTFText((boxOffset+(0*boxSize)+ 0)*SCREEN_MULT,(boxOffset+(2*boxSize+20))*SCREEN_MULT,str); break;
+    case 9:  this->guiTTFText((boxOffset+(1*boxSize)+10)*SCREEN_MULT,(boxOffset+(2*boxSize+20))*SCREEN_MULT,str); break;
+    case 10: this->guiTTFText((boxOffset+(2*boxSize)+20)*SCREEN_MULT,(boxOffset+(2*boxSize+20))*SCREEN_MULT,str); break;
+    case 11: this->guiTTFText((boxOffset+(3*boxSize)+30)*SCREEN_MULT,(boxOffset+(2*boxSize+20))*SCREEN_MULT,str); break;
       
-    case 12: this->guiTTFText(boxOffset+(0*boxSize)+0 ,boxOffset+(3*boxSize+30),str); break;
-    case 13: this->guiTTFText(boxOffset+(1*boxSize)+10,boxOffset+(3*boxSize+30),str); break;
-    case 14: this->guiTTFText(boxOffset+(2*boxSize)+20,boxOffset+(3*boxSize+30),str); break;
-    case 15: this->guiTTFText(boxOffset+(3*boxSize)+30,boxOffset+(3*boxSize+30),str); break;
+    case 12: this->guiTTFText((boxOffset+(0*boxSize)+ 0)*SCREEN_MULT,(boxOffset+(3*boxSize+30))*SCREEN_MULT,str); break;
+    case 13: this->guiTTFText((boxOffset+(1*boxSize)+10)*SCREEN_MULT,(boxOffset+(3*boxSize+30))*SCREEN_MULT,str); break;
+    case 14: this->guiTTFText((boxOffset+(2*boxSize)+20)*SCREEN_MULT,(boxOffset+(3*boxSize+30))*SCREEN_MULT,str); break;
+    case 15: this->guiTTFText((boxOffset+(3*boxSize)+30)*SCREEN_MULT,(boxOffset+(3*boxSize+30))*SCREEN_MULT,str); break;
 
     }
 }
@@ -415,25 +415,25 @@ void SDL_GUI::drawTTFTextNumberSecondLine(int n,const char * str)
 {
   switch(n)
     {
-    case 0:  this->guiTTFText(boxOffset+(0*boxSize)+0 ,boxOffset+10            ,str); break;
-    case 1:  this->guiTTFText(boxOffset+(1*boxSize)+10,boxOffset+10            ,str); break;
-    case 2:  this->guiTTFText(boxOffset+(2*boxSize)+20,boxOffset+10            ,str); break;
-    case 3:  this->guiTTFText(boxOffset+(3*boxSize)+30,boxOffset+10            ,str); break;
+    case 0:  this->guiTTFText((boxOffset+(0*boxSize)+ 0)*SCREEN_MULT,(boxOffset+(0*boxSize+ 0)+10)*SCREEN_MULT,str); break;
+    case 1:  this->guiTTFText((boxOffset+(1*boxSize)+10)*SCREEN_MULT,(boxOffset+(0*boxSize+ 0)+10)*SCREEN_MULT,str); break;
+    case 2:  this->guiTTFText((boxOffset+(2*boxSize)+20)*SCREEN_MULT,(boxOffset+(0*boxSize+ 0)+10)*SCREEN_MULT,str); break;
+    case 3:  this->guiTTFText((boxOffset+(3*boxSize)+30)*SCREEN_MULT,(boxOffset+(0*boxSize+ 0)+10)*SCREEN_MULT,str); break;
 
-    case 4:  this->guiTTFText(boxOffset+(0*boxSize)+0 ,boxOffset+(1*boxSize+10)+10,str); break;
-    case 5:  this->guiTTFText(boxOffset+(1*boxSize)+10,boxOffset+(1*boxSize+10)+10,str); break;
-    case 6:  this->guiTTFText(boxOffset+(2*boxSize)+20,boxOffset+(1*boxSize+10)+10,str); break;
-    case 7:  this->guiTTFText(boxOffset+(3*boxSize)+30,boxOffset+(1*boxSize+10)+10,str); break;
+    case 4:  this->guiTTFText((boxOffset+(0*boxSize)+ 0)*SCREEN_MULT,(boxOffset+(1*boxSize+10)+10)*SCREEN_MULT,str); break;
+    case 5:  this->guiTTFText((boxOffset+(1*boxSize)+10)*SCREEN_MULT,(boxOffset+(1*boxSize+10)+10)*SCREEN_MULT,str); break;
+    case 6:  this->guiTTFText((boxOffset+(2*boxSize)+20)*SCREEN_MULT,(boxOffset+(1*boxSize+10)+10)*SCREEN_MULT,str); break;
+    case 7:  this->guiTTFText((boxOffset+(3*boxSize)+30)*SCREEN_MULT,(boxOffset+(1*boxSize+10)+10)*SCREEN_MULT,str); break;
 
-    case 8:  this->guiTTFText(boxOffset+(0*boxSize)+0 ,boxOffset+(2*boxSize+20)+10,str); break;
-    case 9:  this->guiTTFText(boxOffset+(1*boxSize)+10,boxOffset+(2*boxSize+20)+10,str); break;
-    case 10: this->guiTTFText(boxOffset+(2*boxSize)+20,boxOffset+(2*boxSize+20)+10,str); break;
-    case 11: this->guiTTFText(boxOffset+(3*boxSize)+30,boxOffset+(2*boxSize+20)+10,str); break;
+    case 8:  this->guiTTFText((boxOffset+(0*boxSize)+ 0)*SCREEN_MULT,(boxOffset+(2*boxSize+20)+10)*SCREEN_MULT,str); break;
+    case 9:  this->guiTTFText((boxOffset+(1*boxSize)+10)*SCREEN_MULT,(boxOffset+(2*boxSize+20)+10)*SCREEN_MULT,str); break;
+    case 10: this->guiTTFText((boxOffset+(2*boxSize)+20)*SCREEN_MULT,(boxOffset+(2*boxSize+20)+10)*SCREEN_MULT,str); break;
+    case 11: this->guiTTFText((boxOffset+(3*boxSize)+30)*SCREEN_MULT,(boxOffset+(2*boxSize+20)+10)*SCREEN_MULT,str); break;
       
-    case 12: this->guiTTFText(boxOffset+(0*boxSize)+0 ,boxOffset+(3*boxSize+30)+10,str); break;
-    case 13: this->guiTTFText(boxOffset+(1*boxSize)+10,boxOffset+(3*boxSize+30)+10,str); break;
-    case 14: this->guiTTFText(boxOffset+(2*boxSize)+20,boxOffset+(3*boxSize+30)+10,str); break;
-    case 15: this->guiTTFText(boxOffset+(3*boxSize)+30,boxOffset+(3*boxSize+30)+10,str); break;
+    case 12: this->guiTTFText((boxOffset+(0*boxSize)+ 0)*SCREEN_MULT,(boxOffset+(3*boxSize+30)+10)*SCREEN_MULT,str); break;
+    case 13: this->guiTTFText((boxOffset+(1*boxSize)+10)*SCREEN_MULT,(boxOffset+(3*boxSize+30)+10)*SCREEN_MULT,str); break;
+    case 14: this->guiTTFText((boxOffset+(2*boxSize)+20)*SCREEN_MULT,(boxOffset+(3*boxSize+30)+10)*SCREEN_MULT,str); break;
+    case 15: this->guiTTFText((boxOffset+(3*boxSize)+30)*SCREEN_MULT,(boxOffset+(3*boxSize+30)+10)*SCREEN_MULT,str); break;
 
     }
 }
