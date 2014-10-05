@@ -130,13 +130,13 @@ void dboplMachine::set(int what,int val)
     HO->EnableWaveformControl();
 
 
-    if (what==ADSR_ENV0_ATTACK)    HO->SetEnvelopeAttack(1,1,val/16);
-    if (what==ADSR_ENV0_DECAY)     HO->SetEnvelopeDecay(1,1,val/16);
+    if (what==ADSR_ENV0_ATTACK)    HO->SetEnvelopeAttack( 1,1,val/16);
+    if (what==ADSR_ENV0_DECAY)     HO->SetEnvelopeDecay(  1,1,val/16);
     if (what==ADSR_ENV0_SUSTAIN)   HO->SetEnvelopeSustain(1,1,val/16);
     if (what==ADSR_ENV0_RELEASE)   HO->SetEnvelopeRelease(1,1,val/16);
 
-    if (what==ADSR_ENV1_ATTACK)    HO->SetEnvelopeAttack(1,2,val/16);
-    if (what==ADSR_ENV1_DECAY)     HO->SetEnvelopeDecay(1,2,val/16);
+    if (what==ADSR_ENV1_ATTACK)    HO->SetEnvelopeAttack( 1,2,val/16);
+    if (what==ADSR_ENV1_DECAY)     HO->SetEnvelopeDecay(  1,2,val/16);
     if (what==ADSR_ENV1_SUSTAIN)   HO->SetEnvelopeSustain(1,2,val/16);
     if (what==ADSR_ENV1_RELEASE)   HO->SetEnvelopeRelease(1,2,val/16);
 
