@@ -123,10 +123,17 @@ Sint16 MonoMixer::tick()
   //  res32=tick*127;
   //res32=res32/127;
   
-  res32=res32>>7;
+  res32=res32>>5;
 
-  if (res32>32000)  res32=32000;
-  if (res32<-32000) res32=-32000;
+  //if (res32>32000)  res32=32000-(res32>>6);
+  //if (res32<-32000) res32=-32000+(res32>>6);
+
+  //if (res32>32000)  res32=32000;
+  //if (res32<-32000) res32=-32000;
+
+  if (res32>32000)  res32=32000-(res32-32000);
+  if (res32<-32000) res32=-32000-(res32+32000);
+
   //  return M->tick();
   res16=res32;
   //if (0) printf("amplitude:%d tick:%d res32:%d res16:%d\n",amplitude,tick,res32,res16);

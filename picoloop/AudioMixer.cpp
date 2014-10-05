@@ -63,8 +63,12 @@ Sint16 AudioMixer::tick()
 
   
   //  sint16tick=sint32tick;
-  if (val>32000)  val=32000;
-  if (val<-32000) val=-32000;
+
+  if (val>32000)  val=32000-(val-32000);
+  if (val<-32000) val=-32000-(val+32000);
+
+  //if (val>32000)  val=32000;
+  //if (val<-32000) val=-32000;
   sint16tick=val;
   //  printf("%d\n",inttick);
   //  return S.tick();
