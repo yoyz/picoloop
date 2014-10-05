@@ -600,7 +600,7 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
     for (i=0;i<PatSize;i++)
       {
 	Pe=P.getPatternElement(i);      
-	Pe.setDecay_amp(t[i]);
+	Pe.setDecay_fltr(t[i]);
 	P.setPatternElement(i,Pe);      
       }
   else
@@ -865,14 +865,14 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
   mode_t mode;
 
   //mode=0666;
-  mode=S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP|S_IWGRP|S_IWGRP|S_IROTH|S_IWOTH;
+  //mode=S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP|S_IWGRP|S_IWGRP|S_IROTH|S_IWOTH;
   
   sprintf(path,    "bank");
-  mkdir(path,mode);
+  //mkdir(path,mode);
 
   //mode=0666;
   sprintf(path,    "bank/bank%d",bank);
-  mkdir(path,mode);
+  //mkdir(path,mode);
 
   sprintf(filename,"bank/bank%d/dataP%dT%d.pic",bank,PatternNumber,TrackNumber);
 
