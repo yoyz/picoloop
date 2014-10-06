@@ -240,7 +240,7 @@ int SDL_GUI::openTTFFont()
     }
 
   //Open the font
-  ttf_font = TTF_OpenFont("font.ttf", 8 );
+  ttf_font = TTF_OpenFont("font.ttf", 8*SCREEN_MULT );
   
   //If there was an error in loading the font
   //  printf("%d\n",ttf_font);
