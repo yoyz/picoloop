@@ -25,6 +25,8 @@ class SDL_GUI
 
   int  closeVideo();
 
+  void loadingScreen();
+
   void middleBox(int x, int y,Uint32 c);
   void middleBoxNumberUp(int x, int y,Uint32 c);
 

@@ -3710,13 +3710,18 @@ int main(int argc,char **argv)
   //  SDL_EnableKeyRepeat(500,500);
   SG.openBMPFont();
   if (SG.openTTFFont()==false) { printf("ttf font error\n"); exit(1); }
-  display_board();
-
-  printf("[openAudio output]\n");
+  SG.loadingScreen();
+  //sleep(10);
   //AE.setupSequencerCallback(printme);
   refresh_bpm();
   AE.setupSequencerCallback(seq_callback_update_step);
   AE.openAudio();
+
+  display_board();
+
+  printf("[openAudio output]\n");
+
+
   //AE.openAudioSdl();
   
   seq();
