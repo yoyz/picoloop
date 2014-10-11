@@ -21,7 +21,7 @@ using namespace std;
 
 
 #define KEY_REPEAT_INTERVAL_SMALLEST  4
-#define KEY_REPEAT_INTERVAL_SMALL     16
+#define KEY_REPEAT_INTERVAL_SMALL     8
 #define KEY_REPEAT_INTERVAL_MIDDLE    32
 #define KEY_REPEAT_INTERVAL_LONG      64
 #define KEY_REPEAT_INTERVAL_LONGEST   128
@@ -3717,7 +3717,7 @@ int main(int argc,char **argv)
   AE.setupSequencerCallback(seq_callback_update_step);
   AE.openAudio();
 
-  display_board();
+  //display_board();
 
   printf("[openAudio output]\n");
 
