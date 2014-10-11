@@ -35,7 +35,7 @@ void dboplMachine::init()
     buffer[i]=0;
 
   sample_num=0;
-  freq=110;
+  freq=110.0;
   keyon=0;
 
 
@@ -74,7 +74,7 @@ void dboplMachine::init()
 void dboplMachine::reset()
 {
  sample_num=0;
- freq=110;
+ freq=110.0;
  keyon=0;
 }
 

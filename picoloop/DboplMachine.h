@@ -49,7 +49,8 @@ class dboplMachine : public Machine
   Sint16              * buffer;
   int                   index;
 
-  int                   freq;
+  //int                   freq;
+  float                 freq;
   int                   keyon;
 };
 
