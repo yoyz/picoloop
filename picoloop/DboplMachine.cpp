@@ -80,13 +80,19 @@ void dboplMachine::reset()
 
 
 
-int dboplMachine::get(int what)
+int dboplMachine::getI(int what)
 {
   if (what==NOTE_ON) return keyon;
 }
 
+void dboplMachine::setF(int what,float val)
+{
+    if (what==OSC1_FREQ)           freq=val;
+}
 
-void dboplMachine::set(int what,int val)
+
+
+void dboplMachine::setI(int what,int val)
 {
   float f_val_cutoff;
   float f_val_resonance;
@@ -147,7 +153,7 @@ void dboplMachine::set(int what,int val)
     if (what==OSC2_AMP)            HO->SetAttenuation(1,2,32-(val/4));
 
 
-    if (what==OSC1_FREQ)           freq=val;
+    //if (what==OSC1_FREQ)           freq=val;
 
     if (what==FILTER1_CUTOFF)      
       { 

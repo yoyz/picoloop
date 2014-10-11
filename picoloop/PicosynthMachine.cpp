@@ -55,12 +55,17 @@ void PicosynthMachine::init()
 
 
 
-int PicosynthMachine::get(int what)
+int PicosynthMachine::getI(int what)
 {
   if (what==NOTE_ON) return this->getADSRAmp().getNoteOn();
 }
 
-void PicosynthMachine::set(int what,int val)
+void PicosynthMachine::setF(int what,float val)
+{
+  if (what==OSC1_FREQ)           this->getVCO().setSynthFreq(val);
+}
+
+void PicosynthMachine::setI(int what,int val)
 {
   float f_val_cutoff;
   float f_val_resonance;
@@ -79,7 +84,7 @@ void PicosynthMachine::set(int what,int val)
       this->getADSRFltr().setNoteOff(); 
     }
 
-  if (what==OSC1_FREQ)           this->getVCO().setSynthFreq(val);
+  //if (what==OSC1_FREQ)           this->getVCO().setSynthFreq(val);
   if (what==OSC1_TYPE)           this->getVCO().setOscillator(0,val);
   if (what==OSC2_TYPE)           this->getVCO().setOscillator(1,val);
 

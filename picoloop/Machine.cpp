@@ -17,12 +17,18 @@ Machine::~Machine()
 }
 
 
-void Machine::set(int what,int val)
+void Machine::setI(int what,int val)
 {
   
 }
 
-int Machine::get(int what)
+void Machine::setF(int what,float val)
+{
+  
+}
+
+
+int Machine::getI(int what)
 {
   
 }

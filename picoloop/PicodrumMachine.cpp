@@ -40,13 +40,19 @@ void PicodrumMachine::init()
 
 
 
-int PicodrumMachine::get(int what)
+int PicodrumMachine::getI(int what)
 {
 
   if (what==NOTE_ON) return this->getADSRAmp().getNoteOn();
 }
 
-void PicodrumMachine::set(int what,int val)
+void PicodrumMachine::setF(int what,float val)
+{
+  if (what==OSC1_FREQ)           this->getVCO().setSynthFreq(val);
+}
+
+
+void PicodrumMachine::setI(int what,int val)
 {
   float f_val_cutoff;
   float f_val_resonance;

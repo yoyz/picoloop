@@ -26,8 +26,9 @@ class dboplMachine : public Machine
   void reset();
   int  tick();
 
-  void set(int what,int val);
-  int  get(int what);
+  void setI(int what,int   val);
+  void setF(int what,float val);
+  int  getI(int what);
 
   //Biquad & getBiquad();
 

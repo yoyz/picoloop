@@ -81,8 +81,9 @@ class Machine
   Machine();
   ~Machine();
 
-  virtual void set(int what,int val);
-  virtual int  get(int what);
+  virtual void setI(int what,int val);
+  virtual void setF(int what,float val);
+  virtual int  getI(int what);
 
   virtual void init();
   virtual void reset();

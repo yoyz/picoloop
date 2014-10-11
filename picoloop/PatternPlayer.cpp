@@ -3486,8 +3486,9 @@ void seq_update_track(int t)
 	  FX[t]->setDepth(P[t].getPatternElement(step).getFxDepth());
 	  FX[t]->setSpeed(P[t].getPatternElement(step).getFxSpeed());
 
-	  printf("[Freq:%d]\n",i);
-	  M[t]->set(OSC1_FREQ,i);
+	  //printf("[Freq:%d]\n",i);
+	  //M[t]->set(OSC1_FREQ,i);
+	  M[t]->setF(OSC1_FREQ,i);
 
 	  /*
 	  noteOffTrigger[t]=
@@ -3497,43 +3498,43 @@ void seq_update_track(int t)
 	  */
 	  noteOffTrigger[t]=P[t].getPatternElement(step).getTrigTime()/8;
 
-	  M[t]->set(ADSR_ENV0_ATTACK,  P[t].getPatternElement(step).getAttack_amp());
-	  M[t]->set(ADSR_ENV0_DECAY,   P[t].getPatternElement(step).getDecay_amp());
-	  M[t]->set(ADSR_ENV0_SUSTAIN, P[t].getPatternElement(step).getSustain_amp());
-	  M[t]->set(ADSR_ENV0_RELEASE, P[t].getPatternElement(step).getRelease_amp());
+	  M[t]->setI(ADSR_ENV0_ATTACK,  P[t].getPatternElement(step).getAttack_amp());
+	  M[t]->setI(ADSR_ENV0_DECAY,   P[t].getPatternElement(step).getDecay_amp());
+	  M[t]->setI(ADSR_ENV0_SUSTAIN, P[t].getPatternElement(step).getSustain_amp());
+	  M[t]->setI(ADSR_ENV0_RELEASE, P[t].getPatternElement(step).getRelease_amp());
 
-	  M[t]->set(ADSR_ENV1_ATTACK,  P[t].getPatternElement(step).getAttack_fltr());
-	  M[t]->set(ADSR_ENV1_DECAY ,  P[t].getPatternElement(step).getDecay_fltr());
-	  M[t]->set(ADSR_ENV1_SUSTAIN, P[t].getPatternElement(step).getSustain_fltr());
-	  M[t]->set(ADSR_ENV1_RELEASE, P[t].getPatternElement(step).getRelease_fltr());
+	  M[t]->setI(ADSR_ENV1_ATTACK,  P[t].getPatternElement(step).getAttack_fltr());
+	  M[t]->setI(ADSR_ENV1_DECAY ,  P[t].getPatternElement(step).getDecay_fltr());
+	  M[t]->setI(ADSR_ENV1_SUSTAIN, P[t].getPatternElement(step).getSustain_fltr());
+	  M[t]->setI(ADSR_ENV1_RELEASE, P[t].getPatternElement(step).getRelease_fltr());
 
 
 
-	  M[t]->set(OSC12_MIX,P[t].getPatternElement(step).getVCOMix());
-	  M[t]->set(OSC1_PHASE,P[t].getPatternElement(step).getPhaseOsc1());
+	  M[t]->setI(OSC12_MIX,P[t].getPatternElement(step).getVCOMix());
+	  M[t]->setI(OSC1_PHASE,P[t].getPatternElement(step).getPhaseOsc1());
 
-	  M[t]->set(LFO1_DEPTH,P[t].getPatternElement(step).getLfoDepth());
-	  M[t]->set(LFO1_FREQ,P[t].getPatternElement(step).getLfoSpeed());
+	  M[t]->setI(LFO1_DEPTH,P[t].getPatternElement(step).getLfoDepth());
+	  M[t]->setI(LFO1_FREQ,P[t].getPatternElement(step).getLfoSpeed());
 	  //M[t]->set(OSC12_MIX,phase);
 
-	  M[t]->set(OSC1_TYPE,P[t].getPatternElement(step).getOscillatorOneType());
-	  M[t]->set(OSC2_TYPE,P[t].getPatternElement(step).getOscillatorTwoType());
+	  M[t]->setI(OSC1_TYPE,P[t].getPatternElement(step).getOscillatorOneType());
+	  M[t]->setI(OSC2_TYPE,P[t].getPatternElement(step).getOscillatorTwoType());
 
-	  M[t]->set(OSC1_AMP,P[t].getPatternElement(step).getOsc1Amp());
-	  M[t]->set(OSC2_AMP,P[t].getPatternElement(step).getOsc2Amp());
-
-
-	  M[t]->set(FILTER1_TYPE,P[t].getPatternElement(step).getFilterType());
-	  M[t]->set(FILTER1_ALGO,P[t].getPatternElement(step).getFilterAlgo());
+	  M[t]->setI(OSC1_AMP,P[t].getPatternElement(step).getOsc1Amp());
+	  M[t]->setI(OSC2_AMP,P[t].getPatternElement(step).getOsc2Amp());
 
 
-	  M[t]->set(FILTER1_CUTOFF,P[t].getPatternElement(step).getCutoff());
-	  M[t]->set(FILTER1_RES,P[t].getPatternElement(step).getResonance());
+	  M[t]->setI(FILTER1_TYPE,P[t].getPatternElement(step).getFilterType());
+	  M[t]->setI(FILTER1_ALGO,P[t].getPatternElement(step).getFilterAlgo());
+
+
+	  M[t]->setI(FILTER1_CUTOFF,P[t].getPatternElement(step).getCutoff());
+	  M[t]->setI(FILTER1_RES,P[t].getPatternElement(step).getResonance());
 
 
 
 
-	  M[t]->set(NOTE_ON,1);
+	  M[t]->setI(NOTE_ON,1);
 
 	}
       else
@@ -3545,7 +3546,7 @@ void seq_update_track(int t)
 	      //M[t]->getADSRFltr().setNoteOff();
 	      //M[t]->reset();
 
-	      M[t]->set(NOTE_ON,0);
+	      M[t]->setI(NOTE_ON,0);
 	    }
 	  else
 	    {
