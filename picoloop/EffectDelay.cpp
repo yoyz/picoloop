@@ -64,8 +64,8 @@ void EffectDelay::setDepth(int val)
 {
   //depth=127-val;
   depth=val;
-  index=0;
-  indexOffset=0;
+  //index=0;
+  //indexOffset=0;
 
   if (depth>127)
     depth=127;
@@ -77,8 +77,8 @@ void EffectDelay::setDepth(int val)
 void EffectDelay::setSpeed(int val)
 {
   speed=val;
-  index=0;
-  indexOffset=0;
+  //index=0;
+  //indexOffset=0;
 
   if (speed>127)
     speed=127;
@@ -88,6 +88,12 @@ void EffectDelay::setSpeed(int val)
 
 
   offset=(FX_SIZE)/(128-speed);
+
+
+  //offset=((FX_SIZE)/(128-speed))+offset;
+  //if (offset>FX_SIZE)
+  //offset=FX_SIZE-offset;
+
   indexOffset=index-offset;
   if (indexOffset<0)
     indexOffset=FX_SIZE-offset;

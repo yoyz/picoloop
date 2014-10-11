@@ -24,8 +24,8 @@ class EffectDelay : public Effect
 
  protected:
   int16_t * buffer;
-  int   index;
-  int   indexOffset;
+  int   index;       // Position in buffer for the next Write
+  int   indexOffset; // Index for Read
   int   offset;
   int   depth;
   //  int   depth;
