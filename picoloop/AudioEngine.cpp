@@ -362,7 +362,7 @@ int AudioEngine::callback( void *outputBuffer,
 void AudioEngine::callback(void *unused, Uint8 *stream, int len)
 {
   //  printf("AudioEngine::calback() begin nBufferFrame=%d nbCallback=%d\n",nBufferFrames,nbCallback);
-  printf("AudioEngine::callback() len=%d\n",len);
+  //printf("AudioEngine::callback() len=%d\n",len);
   int     buffer_size;
   //int     buffer_size=len;
 
@@ -386,8 +386,8 @@ void AudioEngine::callback(void *unused, Uint8 *stream, int len)
     this->processBuffer(buffer_size);
 
   #ifdef LINUX_DESKTOP
-    if (debug_audio)
-      fwrite(buffer_out,buffer_size,sizeof(Sint16),fd);
+  //if (debug_audio)
+  //fwrite(buffer_out,buffer_size,sizeof(Sint16),fd);
   #endif
 
     

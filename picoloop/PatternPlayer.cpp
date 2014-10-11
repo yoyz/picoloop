@@ -1113,7 +1113,7 @@ void display_board()
       menu_cursor==GLOBALMENU_VCO
       )
     {
-      sprintf(str_submenu,"OP1Mult/OP2Mult");
+      sprintf(str_submenu,"Frq1&Frq2|OSCMix&Ph");
       SG.guiTTFText(right_x_display_offset,
 		    right_y_display_offset_line2,str_submenu);
     }
