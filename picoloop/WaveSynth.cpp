@@ -17,7 +17,7 @@ InputManager   IE;          // used to  fetch key
 
 vector <Machine   *>        M(TRACK_MAX);
 vector <MonoMixer *>        MM(TRACK_MAX);
-
+vector <Effect    *>        FX(TRACK_MAX);
 
 #define SCREEN_DEPTH	16
 #define NCOEF	(32)
@@ -42,6 +42,7 @@ int release_fltr=96;
 
 
 int vcomix=63;
+int phase=63;
 
 int cutoff=16;
 int resonance=96;
@@ -75,9 +76,10 @@ void openaudio()
       MM[t]=AE.getAudioMixer().getTrack(t).getMonoMixer();      
       MM[t]->init();
       MM[t]->setAmplitude(0);
-      MM[t]->setMachineType(1);
+      //MM[t]->setMachineType(0);
       M[t]=MM[t]->getInput();
       M[t]->init();
+      FX[t] = MM[t]->getEffect();                             
       //M[t]->reset();      
       //M[t]->getADSRAmp().init();
       //M[t]->getADSRFltr().init();
@@ -473,6 +475,34 @@ void handle_key()
     }
 
 
+  if (keyRepeat[SDLK_v]%64    && 
+      keyRepeat[SDLK_LEFT]%64 
+      //&& 
+      //lastEvent ==  SDL_KEYDOWN)
+      )
+    {
+      phase=phase-1;
+      if (phase <=1) phase=1;
+      redraw=true;
+      printf("[v]+[left] => phase:%d\n",phase);
+    }
+
+
+  if (keyRepeat[SDLK_v]%64    && 
+      keyRepeat[SDLK_RIGHT]%64   
+      //&& 
+      //lastEvent ==  SDL_KEYDOWN)
+      )
+    {
+      phase=phase+1;
+      if (phase >=127) phase=127;
+      redraw=true;
+      printf("[v]+[right] => right:%d\n",phase);
+    }
+
+
+
+
 
   if(lastKey==SDLK_PAGEUP)
     {
@@ -551,52 +581,59 @@ void handle_key()
 
   if (noteon==1 &&
     //M[t]->getADSRAmp().getNoteOn()==0)
-      M[t]->get(NOTE_ON)==0)
+      M[t]->getI(NOTE_ON)==0)
     {
       printf("Trig note on\n");
 
       for (t=0;t<1;t++)
 	{
-	  float f=PE.getNoteFreq();
-	  int   i=f;
-	  float   f_c;
-	  float   f_r;
+	  float   f=PE.getNoteFreq();
+	  //int     i=f;
+	  //float   f_c;
+	  //float   f_r;
 
-	  f_c=cutoff;
-	  f_r=resonance;
+	  //f_c=cutoff;
+	  //f_r=resonance;
 
 
-	  f_c=f_c/256;
-	  f_r=f_r/8;
+	  //f_c=f_c/256;
+	  //f_r=f_r/8;
 	  
-	  printf("[Freq:%d]\n",i);
-	  MM[t]->setMachineType(0);
+	  printf("[Freq:%f]\n",f);
+
+
+	  M[t]  = MM[t]->getInput();                             
+	  FX[t] = MM[t]->getEffect();                             
+
+	  FX[t]->setDepth(0);
+	  FX[t]->setSpeed(0);
+
+	  MM[t]->setMachineType(1);
 	  MM[t]->setAmplitude(64);
-	  M[t]->set(OSC1_FREQ,i);
+	  M[t]->setF(OSC1_FREQ,f);
 
-	  M[t]->set(OSC1_TYPE,1);
-	  M[t]->set(OSC2_TYPE,2);
+	  M[t]->setI(OSC1_TYPE,1);
+	  M[t]->setI(OSC2_TYPE,2);
 	
-	  M[t]->set(OSC12_MIX,vcomix);
+	  M[t]->setI(OSC12_MIX,vcomix);
+	  M[t]->setI(OSC1_PHASE,phase);
 
-	  M[t]->set(ADSR_ENV0_ATTACK,attack_amp);
-	  M[t]->set(ADSR_ENV0_DECAY,decay_amp);
-	  M[t]->set(ADSR_ENV0_SUSTAIN,sustain_amp);
-	  M[t]->set(ADSR_ENV0_RELEASE,release_amp);
+	  M[t]->setI(ADSR_ENV0_ATTACK,attack_amp);
+	  M[t]->setI(ADSR_ENV0_DECAY,decay_amp);
+	  M[t]->setI(ADSR_ENV0_SUSTAIN,sustain_amp);
+	  M[t]->setI(ADSR_ENV0_RELEASE,release_amp);
 
-	  M[t]->set(ADSR_ENV1_ATTACK,attack_fltr);
-	  M[t]->set(ADSR_ENV1_ATTACK,decay_fltr);
-	  M[t]->set(ADSR_ENV1_ATTACK,sustain_fltr);
-	  M[t]->set(ADSR_ENV1_RELEASE,release_fltr);
-
-
-
+	  M[t]->setI(ADSR_ENV1_ATTACK,attack_fltr);
+	  M[t]->setI(ADSR_ENV1_ATTACK,decay_fltr);
+	  M[t]->setI(ADSR_ENV1_ATTACK,sustain_fltr);
+	  M[t]->setI(ADSR_ENV1_RELEASE,release_fltr);
 
 
-	  M[t]->set(FILTER1_CUTOFF,cutoff);
-	  M[t]->set(FILTER1_RES,resonance);
 
-	  M[t]->set(NOTE_ON,1);
+	  M[t]->setI(FILTER1_CUTOFF,cutoff);
+	  M[t]->setI(FILTER1_RES,resonance);
+
+	  M[t]->setI(NOTE_ON,1);
 
 
 	}
@@ -611,10 +648,10 @@ void handle_key()
       //exit(0);
       for (t=0;t<1;t++)
 	{
-	  if (M[t]->get(NOTE_ON)==1)
+	  if (M[t]->getI(NOTE_ON)==1)
 	    {
 	      printf("Trig note off\n");
-	      M[t]->set(NOTE_ON,0);
+	      M[t]->setI(NOTE_ON,0);
 	    }
 	}
     }
