@@ -3468,13 +3468,13 @@ void seq_update_track(int t)
       if (P[t].getPatternElement(step).getTrig()==true)
 	{
 	  float   f=P[t].getPatternElement(step).getNoteFreq();
-	  int     i=f;
+	  //int     i=f;
 
-	  int     i_c;
-	  float   f_c;
+	  //int     i_c;
+	  //float   f_c;
 
-	  int     i_r;
-	  float   f_r;
+	  //int     i_r;
+	  //float   f_r;
 
 	  //M[t]->set(NOTE_ON,0);
 	  MM[t]->setAmplitude(P[t].getPatternElement(step).getAmp());
@@ -3488,7 +3488,7 @@ void seq_update_track(int t)
 
 	  //printf("[Freq:%d]\n",i);
 	  //M[t]->set(OSC1_FREQ,i);
-	  M[t]->setF(OSC1_FREQ,i);
+	  M[t]->setF(OSC1_FREQ,f);
 
 	  /*
 	  noteOffTrigger[t]=
