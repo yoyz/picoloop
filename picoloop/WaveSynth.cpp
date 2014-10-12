@@ -30,6 +30,11 @@ int offset=0;
 float zoom=1.0;
 int quit;
 
+
+int current_op=1;
+int waveform_op1=0;
+int waveform_op2=0;
+
 int attack_amp=96;
 int decay_amp=96;
 int sustain_amp=96;
@@ -164,6 +169,76 @@ void handle_key()
     }
 
 
+  // WaveForm
+  if (keyRepeat[SDLK_w]%64    && 
+      keyRepeat[SDLK_LEFT]%64 
+      && 
+      lastEvent ==  SDL_KEYDOWN
+      )
+    {
+      if (current_op==1)
+	{
+	  waveform_op1=waveform_op1-1;
+	  if (waveform_op1 <0) waveform_op1=3;
+	  printf("[w]+[left] => waveform_op1:%d\n",waveform_op1);
+	}
+      if (current_op==2)
+	{
+	  waveform_op2=waveform_op2-1;
+	  if (waveform_op2 <0) waveform_op2=3;
+	  printf("[w]+[left] => waveform_op2:%d\n",waveform_op2);
+	}
+
+      redraw=true;
+    }
+
+
+  // WaveForm
+  if (keyRepeat[SDLK_w]%64    && 
+      keyRepeat[SDLK_RIGHT]%64 
+      && 
+      lastEvent ==  SDL_KEYDOWN
+      )
+    {
+      if (current_op==1)
+	{
+	  waveform_op1=waveform_op1+1;
+	  if (waveform_op1 >3) waveform_op1=0;
+	  printf("[w]+[right] => waveform_op1:%d\n",waveform_op1);
+	}
+      if (current_op==2)
+	{
+	  waveform_op2=waveform_op2+1;
+	  if (waveform_op2 >3) waveform_op2=0;
+	  printf("[w]+[right] => waveform_op2:%d\n",waveform_op2);
+	}
+
+      redraw=true;
+    }
+
+
+
+
+
+
+  if (keyRepeat[SDLK_F1]%16
+      )
+    {
+      current_op=1;
+      printf("current_op:%d\n",current_op);
+      redraw=true;
+
+    }
+
+
+  if (keyRepeat[SDLK_F2]%16
+      )
+    {
+      current_op=2;
+      printf("current_op:%d\n",current_op);
+      redraw=true;
+
+    }
 
 
   // AMP ENV ATTACK_AMP
@@ -173,10 +248,21 @@ void handle_key()
       //lastEvent ==  SDL_KEYDOWN)
       )
     {
-      attack_amp=attack_amp-1;
-      if (attack_amp <=1) attack_amp=0;
+      if (current_op==1)
+	{
+	  attack_amp=attack_amp-1;
+	  if (attack_amp <=1) attack_amp=0;
+	  printf("[x]+[down] => attack_amp:%d\n",attack_amp);
+	}
+      if (current_op==2)
+	{
+	  attack_fltr=attack_fltr-1;
+	  if (attack_fltr <=1) attack_fltr=0;
+	  printf("[x]+[down] => attack_fltr:%d\n",attack_fltr);
+	}
+
       redraw=true;
-      printf("[x]+[down] => attack_amp:%d\n",attack_amp);
+
     }
 
 
@@ -185,205 +271,214 @@ void handle_key()
       //lastEvent ==  SDL_KEYDOWN)
       )
     {
-      attack_amp=attack_amp+1;
-      if (attack_amp >=127) attack_amp=127;
+      if (current_op==1)
+	{
+	  attack_amp=attack_amp+1;
+	  if (attack_amp >=127) attack_amp=127;
+	  printf("[x]+[up] => attack_amp:%d\n",attack_amp);
+	}
+      if (current_op==2)
+	{
+	  attack_fltr=attack_fltr+1;
+	  if (attack_fltr >=127) attack_fltr=127;
+	  printf("[x]+[up] => attack_fltr:%d\n",attack_fltr);
+	}
       redraw=true;
-      printf("[x]+[up] => attack_amp:%d\n",attack_amp);
     }
 
   // AMP ENV RELEASE_AMP
   if (keyRepeat[SDLK_x]%16    && 
       keyRepeat[SDLK_RIGHT]%16 
       )
-      //&& 
-      //lastEvent ==  SDL_KEYDOWN)
     {
-      release_amp=release_amp+1;
-      if (release_amp >=127) release_amp=127;
-      redraw=true;
-      printf("[x]+[right] => release_amp:%d\n",release_amp);
+      if (current_op==1)
+	{
+	  release_amp=release_amp+1;
+	  if (release_amp >=127) release_amp=127;
+	  printf("[x]+[right] => release_amp:%d\n",release_amp);
+	}
+      if (current_op==2)
+	{
+	  release_fltr=release_fltr+1;
+	  if (release_fltr >=127) release_fltr=127;
+	  printf("[x]+[right] => release_amp:%d\n",release_fltr);
+	}
+
+	  redraw=true;
     }
 
 
   if (keyRepeat[SDLK_x]%16    && 
       keyRepeat[SDLK_LEFT]%16   //&& 
-      //lastEvent ==  SDL_KEYDOWN)
       )
     {
-      release_amp=release_amp-1;
-      if (release_amp <=1) release_amp=1;
+      if (current_op==1)
+	{
+	  release_amp=release_amp-1;
+	  if (release_amp <=1) release_amp=1;
+	  printf("[x]+[left] => release_amp:%d\n",release_amp);
+	}
+      if (current_op==2)
+	{
+	  release_fltr=release_fltr-1;
+	  if (release_fltr <=1) release_fltr=1;
+	  printf("[x]+[left] => release_fltr:%d\n",release_fltr);
+	}
       redraw=true;
-      printf("[x]+[left] => release_amp:%d\n",release_amp);
+
     }
-
-
-
-
-
-
-
 
 
   // AMP ENV 
-  if (keyRepeat[SDLK_COMMA]%16   && 
+  if (keyRepeat[SDLK_c]%16   && 
       keyRepeat[SDLK_DOWN]%16 
       //&& 
       //lastEvent ==  SDL_KEYDOWN)
       )
     {
-      decay_amp=decay_amp-1;
-      if (decay_amp <=1) decay_amp=0;
+      if (current_op==1)
+	{
+	  decay_amp=decay_amp-1;
+	  if (decay_amp <=1) decay_amp=0;
+	  printf("[x]+[down] => decay_amp:%d\n",decay_amp);
+	}
+      if (current_op==2)
+	{
+	  decay_fltr=decay_fltr-1;
+	  if (decay_fltr <=1) decay_fltr=0;
+	  printf("[x]+[down] => decay_fltr:%d\n",decay_fltr);
+	}
       redraw=true;
-      printf("[x]+[down] => decay_amp:%d\n",decay_amp);
+
     }
 
 
-  if (keyRepeat[SDLK_COMMA]%16   && 
+  if (keyRepeat[SDLK_c]%16   && 
       keyRepeat[SDLK_UP]%16   
       //lastEvent ==  SDL_KEYDOWN)
       )
     {
-      decay_amp=decay_amp+1;
-      if (decay_amp >=127) decay_amp=127;
+      if (current_op==1)
+	{
+	  decay_amp=decay_amp+1;
+	  if (decay_amp >=127) decay_amp=127;
+	  printf("[x]+[up] => decay_amp:%d\n",decay_amp);
+	}
+      if (current_op==2)
+	{
+	  decay_fltr=decay_fltr+1;
+	  if (decay_fltr >=127) decay_fltr=127;
+	  printf("[x]+[up] => decay_fltr:%d\n",decay_fltr);
+	}
+
       redraw=true;
-      printf("[x]+[up] => decay_amp:%d\n",decay_amp);
+
     }
 
   // AMP ENV 
-  if (keyRepeat[SDLK_COMMA]%16    && 
+  if (keyRepeat[SDLK_c]%16    && 
       keyRepeat[SDLK_RIGHT]%16 
       )
       //&& 
       //lastEvent ==  SDL_KEYDOWN)
     {
-      sustain_amp=sustain_amp+1;
-      if (sustain_amp >=127) sustain_amp=127;
+      if (current_op==1)
+	{
+	  sustain_amp=sustain_amp+1;
+	  if (sustain_amp >=127) sustain_amp=127;
+	  printf("[x]+[right] => sustain_amp:%d\n",sustain_amp);
+	}
+      if (current_op==2)
+	{
+	  sustain_fltr=sustain_fltr+1;
+	  if (sustain_fltr >=127) sustain_fltr=127;
+	  printf("[x]+[right] => sustain_fltr:%d\n",sustain_fltr);
+	}
+
       redraw=true;
-      printf("[x]+[right] => sustain_amp:%d\n",sustain_amp);
+
     }
 
 
-  if (keyRepeat[SDLK_COMMA]%16    && 
+  if (keyRepeat[SDLK_c]%16    && 
       keyRepeat[SDLK_LEFT]%16   //&& 
       //lastEvent ==  SDL_KEYDOWN)
       )
     {
-      sustain_amp=sustain_amp-1;
-      if (sustain_amp <=1) sustain_amp=1;
+      if (current_op==1)
+	{
+	  sustain_amp=sustain_amp-1;
+	  if (sustain_amp <=1) sustain_amp=1;
+	  printf("[x]+[left] => sustain_amp:%d\n",sustain_amp);
+	}
+      if (current_op==2)
+	{
+	  sustain_fltr=sustain_fltr-1;
+	  if (sustain_fltr <=1) sustain_fltr=1;
+	  printf("[x]+[left] => sustain_fltr:%d\n",sustain_fltr);
+	}
+
       redraw=true;
-      printf("[x]+[left] => sustain_amp:%d\n",sustain_amp);
+
     }
 
 
 
 
 
-
-
-  // FLTR ENV 
-  if (keyRepeat[SDLK_b]%16   && 
-      keyRepeat[SDLK_DOWN]%16 
+  // VCO MIX
+  if (keyRepeat[SDLK_b]%64    && 
+      keyRepeat[SDLK_DOWN]%64 
       //&& 
       //lastEvent ==  SDL_KEYDOWN)
       )
     {
-      attack_fltr=attack_fltr-1;
-      if (attack_fltr <=1) attack_fltr=0;
+      vcomix=vcomix-1;
+      if (vcomix <=1) vcomix=1;
       redraw=true;
-      printf("[x]+[down] => attack_fltr:%d\n",attack_fltr);
-    }
-
-  // FLTR ENV 
-  if (keyRepeat[SDLK_b]%16   && 
-      keyRepeat[SDLK_UP]%16   
-      //lastEvent ==  SDL_KEYDOWN)
-      )
-    {
-      attack_fltr=attack_fltr+1;
-      if (attack_fltr >=127) attack_fltr=127;
-      redraw=true;
-      printf("[x]+[up] => attack_fltr:%d\n",attack_fltr);
-    }
-
-  // FLTR ENV 
-  if (keyRepeat[SDLK_b]%16    && 
-      keyRepeat[SDLK_RIGHT]%16 
-      )
-      //&& 
-      //lastEvent ==  SDL_KEYDOWN)
-    {
-      release_fltr=release_fltr+1;
-      if (release_fltr >=127) release_fltr=127;
-      redraw=true;
-      printf("[x]+[right] => release_fltr:%d\n",release_fltr);
-    }
-
-    // FLTR ENV 
-  if (keyRepeat[SDLK_b]%16    && 
-      keyRepeat[SDLK_LEFT]%16   //&& 
-      //lastEvent ==  SDL_KEYDOWN)
-      )
-    {
-      release_fltr=release_fltr-1;
-      if (release_fltr <=1) release_fltr=1;
-      redraw=true;
-      printf("[x]+[left] => release_fltr:%d\n",release_fltr);
+      printf("[v]+[down] => vcomix|FreqMultOp1:%d\n",vcomix);
     }
 
 
-
-
-
-
-  // FLTR ENV 
-  if (keyRepeat[SDLK_n]%16   && 
-      keyRepeat[SDLK_DOWN]%16 
+  if (keyRepeat[SDLK_b]%64    && 
+      keyRepeat[SDLK_UP]%64   
       //&& 
       //lastEvent ==  SDL_KEYDOWN)
       )
     {
-      decay_fltr=decay_fltr-1;
-      if (decay_fltr <=1) decay_fltr=0;
+      vcomix=vcomix+1;
+      if (vcomix >=127) vcomix=127;
       redraw=true;
-      printf("[x]+[down] => decay_fltr:%d\n",decay_fltr);
+      printf("[v]+[up] => vcomix|FreqMultOp1:%d\n",vcomix);
     }
 
-  // FLTR ENV 
-  if (keyRepeat[SDLK_n]%16   && 
-      keyRepeat[SDLK_UP]%16   
-      //lastEvent ==  SDL_KEYDOWN)
-      )
-    {
-      decay_fltr=decay_fltr+1;
-      if (decay_fltr >=127) decay_fltr=127;
-      redraw=true;
-      printf("[x]+[up] => decay_fltr:%d\n",decay_fltr);
-    }
 
-  // FLTR ENV 
-  if (keyRepeat[SDLK_n]%16    && 
-      keyRepeat[SDLK_RIGHT]%16 
-      )
+  if (keyRepeat[SDLK_b]%64    && 
+      keyRepeat[SDLK_LEFT]%64 
       //&& 
       //lastEvent ==  SDL_KEYDOWN)
+      )
     {
-      sustain_fltr=sustain_fltr+1;
-      if (sustain_fltr >=127) sustain_fltr=127;
+      phase=phase-1;
+      if (phase <=1) phase=1;
       redraw=true;
-      printf("[x]+[right] => sustain_fltr:%d\n",sustain_fltr);
+      printf("[v]+[left] => phase|FreqMultOp2:%d\n",phase);
     }
 
-    // FLTR ENV 
-  if (keyRepeat[SDLK_n]%16    && 
-      keyRepeat[SDLK_LEFT]%16   //&& 
+
+  if (keyRepeat[SDLK_b]%64    && 
+      keyRepeat[SDLK_RIGHT]%64   
+      //&& 
       //lastEvent ==  SDL_KEYDOWN)
       )
     {
-      sustain_fltr=sustain_fltr-1;
-      if (sustain_fltr <=1) sustain_fltr=1;
+      phase=phase+1;
+      if (phase >=127) phase=127;
       redraw=true;
-      printf("[x]+[left] => sustain_fltr:%d\n",sustain_fltr);
+      printf("[v]+[right] => phase|FreqMultOp2:%d\n",phase);
     }
+
+
 
 
 
@@ -394,7 +489,7 @@ void handle_key()
 
   // FILTER Cutoff/Resonance
 
-  if (keyRepeat[SDLK_c]%16    && 
+  if (keyRepeat[SDLK_v]%16    && 
       keyRepeat[SDLK_DOWN]%16 
       //&& 
       //lastEvent ==  SDL_KEYDOWN)
@@ -407,7 +502,7 @@ void handle_key()
     }
 
 
-  if (keyRepeat[SDLK_c]%16    && 
+  if (keyRepeat[SDLK_v]%16    && 
       keyRepeat[SDLK_UP]%16   
       //&& 
       //lastEvent ==  SDL_KEYDOWN)
@@ -420,7 +515,7 @@ void handle_key()
     }
 
 
-  if (keyRepeat[SDLK_c]%64    && 
+  if (keyRepeat[SDLK_v]%64    && 
       keyRepeat[SDLK_RIGHT]%64 
       //&& 
       //lastEvent ==  SDL_KEYDOWN)
@@ -433,7 +528,7 @@ void handle_key()
     }
 
 
-  if (keyRepeat[SDLK_c]%64    && 
+  if (keyRepeat[SDLK_v]%64    && 
       keyRepeat[SDLK_LEFT]%64   
       //&& 
       //lastEvent ==  SDL_KEYDOWN)
@@ -443,61 +538,6 @@ void handle_key()
       if (resonance <=1) resonance=1;
       redraw=true;
       printf("[c]+[left] => resonance:%d\n",resonance);
-    }
-
-
-
-
-  // VCO MIX
-  if (keyRepeat[SDLK_v]%64    && 
-      keyRepeat[SDLK_DOWN]%64 
-      //&& 
-      //lastEvent ==  SDL_KEYDOWN)
-      )
-    {
-      vcomix=vcomix-1;
-      if (vcomix <=1) vcomix=1;
-      redraw=true;
-      printf("[v]+[down] => vcomix:%d\n",vcomix);
-    }
-
-
-  if (keyRepeat[SDLK_v]%64    && 
-      keyRepeat[SDLK_UP]%64   
-      //&& 
-      //lastEvent ==  SDL_KEYDOWN)
-      )
-    {
-      vcomix=vcomix+1;
-      if (vcomix >=127) vcomix=127;
-      redraw=true;
-      printf("[v]+[up] => vcomix:%d\n",vcomix);
-    }
-
-
-  if (keyRepeat[SDLK_v]%64    && 
-      keyRepeat[SDLK_LEFT]%64 
-      //&& 
-      //lastEvent ==  SDL_KEYDOWN)
-      )
-    {
-      phase=phase-1;
-      if (phase <=1) phase=1;
-      redraw=true;
-      printf("[v]+[left] => phase:%d\n",phase);
-    }
-
-
-  if (keyRepeat[SDLK_v]%64    && 
-      keyRepeat[SDLK_RIGHT]%64   
-      //&& 
-      //lastEvent ==  SDL_KEYDOWN)
-      )
-    {
-      phase=phase+1;
-      if (phase >=127) phase=127;
-      redraw=true;
-      printf("[v]+[right] => right:%d\n",phase);
     }
 
 
@@ -618,8 +658,8 @@ void handle_key()
 	  M[t]->setI(OSC12_MIX,vcomix);
 	  M[t]->setI(OSC1_PHASE,phase);
 
-	  M[t]->setI(OSC1_TYPE,0);
-	  M[t]->setI(OSC2_TYPE,0);
+	  M[t]->setI(OSC1_TYPE,waveform_op1);
+	  M[t]->setI(OSC2_TYPE,waveform_op2);
 
 
 	  M[t]->setI(ADSR_ENV0_ATTACK,attack_amp);
