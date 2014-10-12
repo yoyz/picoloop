@@ -67,7 +67,7 @@ using namespace std;
 #define FILTER2_CUTOFF      56
 #define FILTER2_RES         57
 
-
+#define FM_TYPE             60
 
 #define NOTE_ON             100
 

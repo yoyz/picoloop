@@ -17,13 +17,22 @@ enum
     NOISE,
   };
 
-enum 
+enum
   {
-    PICOSYNTH,
-    OPL2,
-    PICODRUM
+    OPL2_SIN,
+    OPL2_HALF_SIN,
+    OPL2_ABS_SIN,
+    OPL2_QUART_SIN
   };
 
+
+/*
+enum 
+  {
+    TWO_OP_AM,
+    TWO_OP_FM
+  };
+*/
 
 
 class PatternElement
@@ -38,8 +47,10 @@ public:
   float  getNoteFreq();
   const char * getMachineTypeCharStar();
   const char * getNoteCharStar();
+  const char * getFMTypeCharStar();
   const char * getOscOneTypeCharStar();
   const char * getOscTwoTypeCharStar();
+  const char * getOscTypeCharStar(int oscType);
   bool   setTrig(bool Trig);
   bool   getTrig();
 
@@ -96,6 +107,9 @@ public:
 
   int    getFxSpeed();
   void   setFxSpeed(int val);
+
+  int    getFmType();
+  void   setFmType(int fm);
 
 
 
@@ -182,6 +196,8 @@ private:
 
   int fx_depth;
   int fx_speed;
+  
+  int fm_type;
   
 };
 

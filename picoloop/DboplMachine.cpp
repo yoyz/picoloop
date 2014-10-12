@@ -2,6 +2,11 @@
 
 #define SAM 512
 
+//enum {
+//  FMTYPE_2_OP_AM,
+//  FMTYPE_2_OP_FM
+//};
+
 
 dboplMachine::dboplMachine() : filter()
 {
@@ -117,7 +122,7 @@ void dboplMachine::setI(int what,int val)
   freqM[11]=x12;
   freqM[12]=x15;
 
-  
+  //HO->EnableAdditiveSynthesis(1,true);
 
     if (what==NOTE_ON && val==1) 
     { 
@@ -151,6 +156,18 @@ void dboplMachine::setI(int what,int val)
 
     if (what==OSC1_AMP)            HO->SetAttenuation(1,1,32-(val/4));
     if (what==OSC2_AMP)            HO->SetAttenuation(1,2,32-(val/4));
+
+    if (what==FM_TYPE)             
+      {
+	// AM
+	if (val==FMTYPE_2_OP_AM)
+	  HO->EnableAdditiveSynthesis(1,true);
+
+	// FM
+	if (val==FMTYPE_2_OP_FM)
+	  HO->EnableAdditiveSynthesis(1,false);
+      }
+
 
 
     //if (what==OSC1_FREQ)           freq=val;

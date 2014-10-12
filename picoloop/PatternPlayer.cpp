@@ -94,7 +94,8 @@ enum {
 
 enum {
   MENU_VCO_OSCMIX_PHASE,
-  MENU_VCO_OSCAMP
+  MENU_VCO_OSCAMP,
+  MENU_VCO_FMTYPE
 };
 
 enum {
@@ -105,6 +106,9 @@ enum {
   MENU_LS_PATTERN,
   MENU_LS_SONG,
 };
+
+
+
   
 
 vector <Pattern>            P(TRACK_MAX);  
@@ -228,6 +232,9 @@ int osc1_amp_all=0;
 
 int osc2_amp=0;
 int osc2_amp_all=0;
+
+int fmtype=0;
+int fmtype_all=0;
 
 
 
@@ -763,7 +770,28 @@ void display_board_vco()
 	}
     }
 
-
+  if (menu_cursor == GLOBALMENU_VCO  && 
+      menu_vco    == MENU_VCO_FMTYPE)
+    {	  
+      SG.drawBoxNumber(step,STEP_COLOR);  
+      SG.drawBoxNumber(cursor,CURSOR_COLOR);
+      
+      for (i=0;i<16;i++)
+	{
+	  // Draw trig note color
+	  if (P[cty].getPatternElement(i).getTrig())
+	    {
+	      SG.drawBoxNumber(i,NOTE_COLOR);
+	      
+	      if (i==cursor)
+		SG.drawBoxNumber(cursor,CURSOR_COLOR);
+	      if (i==step)
+		SG.drawBoxNumber(step,STEP_COLOR);  
+	      SG.drawTTFTextNumberFirstLine(i,P[cty].getPatternElement(i).getFMTypeCharStar());
+	    }	  
+	}
+    }
+     
 }
 
 
@@ -1114,6 +1142,16 @@ void display_board()
       )
     {
       sprintf(str_submenu,"Frq1&Frq2|OSCMix&Ph");
+      SG.guiTTFText(right_x_display_offset,
+		    right_y_display_offset_line2,str_submenu);
+    }
+
+
+  if (menu_vco==MENU_VCO_FMTYPE &&
+      menu_cursor==GLOBALMENU_VCO
+      )
+    {
+      sprintf(str_submenu,"FMType");
       SG.guiTTFText(right_x_display_offset,
 		    right_y_display_offset_line2,str_submenu);
     }
@@ -1997,8 +2035,9 @@ void handle_key_vco()
     {
       if (menu_ad_dirty_keyboard==0)
 	{
-	  if      (menu_vco==MENU_VCO_OSCMIX_PHASE)        { menu_vco=MENU_VCO_OSCAMP;            }
+	  if      (menu_vco==MENU_VCO_FMTYPE)              { menu_vco=MENU_VCO_OSCAMP;            }
 	  else if (menu_vco==MENU_VCO_OSCAMP)              { menu_vco=MENU_VCO_OSCMIX_PHASE;      }   
+	  else if (menu_vco==MENU_VCO_OSCMIX_PHASE)        { menu_vco=MENU_VCO_FMTYPE;            }   
 	  dirty_graphic=1;
 	}
       menu_ad_dirty_keyboard=0;
@@ -2108,6 +2147,43 @@ void handle_key_vco()
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALLEST==0) 
 	  { osc2_amp_all=-1;  	  dirty_graphic=1;}
       //????
+    }
+
+
+  // GLOBALMENU_VCO
+  // VCO Menu
+  // Change Value
+  if (menu        == MENU_OFF && 
+      menu_cursor == GLOBALMENU_VCO    &&
+      menu_vco    == MENU_VCO_FMTYPE
+      )
+    {
+      // Insert/Remove Trig
+      sub_handle_invert_trig();
+
+      if (keyState[BUTTON_UP]  && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALL==0) 
+	  { fmtype=1;   	  dirty_graphic=1;}
+      
+      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B])
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALL==0) 
+	  { fmtype=-1;  	  dirty_graphic=1;}
+    }
+
+  if (menu        != MENU_OFF && 
+      menu_cursor == GLOBALMENU_VCO   &&
+      menu_vco    == MENU_VCO_FMTYPE
+      )
+    {
+
+      if (keyState[BUTTON_UP]  && keyState[BUTTON_A]) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALL==0) 
+	  { fmtype_all=1;   	  dirty_graphic=1;}
+      
+      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A])
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALL==0) 
+	  { fmtype_all=-1;  	  dirty_graphic=1;}
+
     }
 
 
@@ -3228,6 +3304,25 @@ void seq_update_multiple_time_by_step()
 
 
   // Change Note
+  if (fmtype!=0)
+    { 
+      P[cty].getPatternElement(cursor).setFmType(P[cty].getPatternElement(cursor).getFmType()+fmtype);
+      fmtype=0;
+      printf("[fmtype:%d]\n",P[cty].getPatternElement(cursor).getFmType());	  
+    }
+  
+  // Change Note
+  if (fmtype_all!=0)
+    { 
+      for (i=0;i<16;i++)
+	P[cty].getPatternElement(i).setFmType(P[cty].getPatternElement(i).getFmType()+fmtype_all);
+      fmtype_all=0;
+      printf("[fmtype_all:%d]\n",P[cty].getPatternElement(cursor).getFmType());	  
+    }
+
+
+
+  // Change Note
   if (plength_all!=0)
     { 
       SEQ.getPatternSequencer(cty).setPatternLenght(SEQ.getPatternSequencer(cty).getPatternLenght()+plength_all);
@@ -3497,6 +3592,9 @@ void seq_update_track(int t)
 	    ;
 	  */
 	  noteOffTrigger[t]=P[t].getPatternElement(step).getTrigTime()/8;
+
+
+	  M[t]->setI(FM_TYPE,P[t].getPatternElement(step).getFmType());
 
 	  M[t]->setI(ADSR_ENV0_ATTACK,  P[t].getPatternElement(step).getAttack_amp());
 	  M[t]->setI(ADSR_ENV0_DECAY,   P[t].getPatternElement(step).getDecay_amp());

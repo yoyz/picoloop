@@ -14,7 +14,7 @@
 #define SCREEN_WIDTH	320
 #define SCREEN_HEIGHT	240
 #define SCREEN_DEPTH	16
-#define SCREEN_MULT     2
+#define SCREEN_MULT     1
 #define WAVETABLE_SIZE  1024*16
 //#define WAVETABLE_SIZE  128
 #define FPU 0
@@ -38,6 +38,21 @@
 #define FILTER_ALGO_NOFILTER  0
 #define FILTER_ALGO_BIQUAD    1
 #define FILTER_ALGO_AMSYNTH   2
+
+
+enum {
+  FMTYPE_2_OP_FM,
+  FMTYPE_2_OP_AM
+};
+
+enum 
+  {
+    SYNTH_PICOSYNTH,
+    SYNTH_OPL2,
+    SYNTH_PICODRUM
+  };
+
+
 
 
 #endif

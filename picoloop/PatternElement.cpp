@@ -51,6 +51,8 @@ PatternElement::PatternElement()
 
   fx_depth=0;
   fx_speed=0;
+
+  fm_type=0;
 }
 
 PatternElement::~PatternElement()
@@ -145,6 +147,21 @@ void PatternElement::setVCOMix(int mix)
 int PatternElement::getVCOMix()
 {
   return vcomix;
+}
+
+
+int PatternElement::getFmType()
+{
+  return fm_type;
+}
+
+void PatternElement::setFmType(int fm)
+{
+  if (fm>1)
+    fm=0;
+  if (fm<0)
+    fm=1;
+  fm_type=this->checkSevenBitBoundarie(fm);  
 }
 
 
@@ -478,56 +495,83 @@ const char * PatternElement::getMachineTypeCharStar()
 
   switch (machine_type)
     {
-    case PICOSYNTH:  return str_picosynth;   break;
-    case PICODRUM:   return str_picodrum;    break;
-    case OPL2:       return str_opl2;        break; 
+    case SYNTH_PICOSYNTH:  return str_picosynth;   break;
+    case SYNTH_PICODRUM:   return str_picodrum;    break;
+    case SYNTH_OPL2:       return str_opl2;        break; 
     }
   return str_picosynth;
 }
 
 
+const char * PatternElement::getFMTypeCharStar()
+{
+  static const char * str_2_op_AM   = "2OP_AM ";
+  static const char * str_2_op_FM   = "2OP_FM ";
+
+  switch (fm_type)
+    {
+    case FMTYPE_2_OP_FM:  return str_2_op_FM;  break;
+    case FMTYPE_2_OP_AM:  return str_2_op_AM;  break; 
+
+    }
+  return str_2_op_AM;
+}
+
+
+
+const char * PatternElement::getOscTypeCharStar(int oscType)
+{
+  static const char * str_sine       = "SINE ";
+  static const char * str_saw        = "SAW  ";
+  static const char * str_pulse      = "PULSE";
+  static const char * str_trgl       = "TRGL";
+  static const char * str_noise      = "NOISE";
+  static const char * str_wtbl       = "WTBL";
+
+  static const char * str_opl2_sine  = "  SIN";
+  static const char * str_opl2_hsin  = " HSIN";
+  static const char * str_opl2_absin = "ABSIN";
+  static const char * str_opl2_qsin  = " QSIN";
+
+  if 	  (
+	   machine_type==SYNTH_PICOSYNTH ||
+	   machine_type==SYNTH_PICODRUM
+	   )
+    switch (oscType)
+      {
+      case SINE:  return str_sine;  break;
+      case SAW:   return str_saw;   break; 
+      case PULSE: return str_pulse; break;      
+      case TRGL:  return str_trgl;  break;            
+      case NOISE: return str_noise; break;            
+      }
+  
+  
+  if (
+      machine_type==SYNTH_OPL2
+      )
+    switch (oscType) 
+      {
+      case OPL2_SIN:           return str_opl2_sine;  break;
+      case OPL2_HALF_SIN:      return str_opl2_hsin;  break; 
+      case OPL2_ABS_SIN:       return str_opl2_absin; break;      
+      case OPL2_QUART_SIN:     return str_opl2_qsin;  break;            
+      }
+  
+  return str_sine;
+}
+
+
+
 const char * PatternElement::getOscOneTypeCharStar()
 {
-  static const char * str_sine  = "SINE ";
-  static const char * str_saw   = "SAW  ";
-  static const char * str_pulse = "PULSE";
-  static const char * str_wtbl  = "WTBL";
-  static const char * str_trgl  = "TRGL";
-  static const char * str_noise = "NOISE";
-
-  switch (oscOneType)
-    {
-    case SINE:  return str_sine;  break;
-    case SAW:   return str_saw;   break; 
-    case PULSE: return str_pulse; break;      
-      //case WTBL:  return str_wtbl;  break;            
-    case TRGL:  return str_trgl;  break;            
-    case NOISE: return str_noise; break;            
-    }
-  return str_sine;
+  return this->getOscTypeCharStar(oscOneType);
 }
 
 
 const char * PatternElement::getOscTwoTypeCharStar()
 {
-  static const char * str_sine  = "SINE ";
-  static const char * str_saw   = "SAW  ";
-  static const char * str_pulse = "PULSE";
-  //char * str_wtbl  = "WTBL";
-  //char * str_wtbl  = "WTBL";
-  static const char * str_trgl  = "TRGL";
-  static const char * str_noise = "NOISE";
-  
-  switch (oscTwoType)
-    {
-    case SINE:  return str_sine;  break;
-    case SAW:   return str_saw;   break; 
-    case PULSE: return str_pulse; break;
-      //case WTBL:  return str_wtbl;  break;            
-    case TRGL:  return str_trgl;  break;            
-    case NOISE: return str_noise; break;                  
-    }
-  return str_sine;
+  return this->getOscTypeCharStar(oscTwoType);
 }
 
 
