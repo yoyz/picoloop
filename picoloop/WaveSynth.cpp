@@ -32,6 +32,8 @@ int quit;
 
 
 int current_op=1;
+int current_machine=1;
+
 int waveform_op1=0;
 int waveform_op2=0;
 
@@ -142,6 +144,60 @@ void handle_key()
   */
 
 
+  if (keyRepeat[SDLK_F1]%16
+      )
+    {
+      current_op=1;
+      printf("current_op:%d\n",current_op);
+      redraw=true;
+
+    }
+
+
+  if (keyRepeat[SDLK_F2]%16
+
+      )
+    {
+      current_op=2;
+      printf("current_op:%d\n",current_op);
+      redraw=true;
+
+    }
+
+
+  if (keyRepeat[SDLK_F3]%16
+      && 
+      lastEvent ==  SDL_KEYDOWN
+
+      )
+    {
+      current_machine=current_machine-1;
+      if (current_machine<0)
+	current_machine=2;
+      printf("current_machine:%d\n",current_machine);
+      redraw=true;
+
+    }
+
+
+  if (keyRepeat[SDLK_F4]%16
+      && 
+      lastEvent ==  SDL_KEYDOWN
+
+      )
+    {
+      current_machine=current_machine+1;
+      if (current_machine>2)
+	current_machine=0;
+      printf("current_machine:%d\n",current_machine);
+      redraw=true;
+
+    }
+
+
+
+
+
   // OCTAVE
   if (keyRepeat[SDLK_w]%64    && 
       keyRepeat[SDLK_DOWN]%64 
@@ -221,24 +277,6 @@ void handle_key()
 
 
 
-  if (keyRepeat[SDLK_F1]%16
-      )
-    {
-      current_op=1;
-      printf("current_op:%d\n",current_op);
-      redraw=true;
-
-    }
-
-
-  if (keyRepeat[SDLK_F2]%16
-      )
-    {
-      current_op=2;
-      printf("current_op:%d\n",current_op);
-      redraw=true;
-
-    }
 
 
   // AMP ENV ATTACK_AMP
@@ -641,6 +679,10 @@ void handle_key()
 	  
 	  printf("[Freq:%f]\n",f);
 
+	  MM[t]->setAmplitude(64);
+	  MM[t]->setMachineType(current_machine);
+	  //M[t]  = MM[t]->getInput();                             
+	  //FX[t] = MM[t]->getEffect();                             
 
 	  M[t]  = MM[t]->getInput();                             
 	  FX[t] = MM[t]->getEffect();                             
@@ -648,8 +690,8 @@ void handle_key()
 	  FX[t]->setDepth(0);
 	  FX[t]->setSpeed(0);
 
-	  MM[t]->setMachineType(1);
-	  MM[t]->setAmplitude(64);
+	  //MM[t]->setMachineType(1);
+	  //MM[t]->setAmplitude(64);
 	  M[t]->setF(OSC1_FREQ,f);
 
 	  M[t]->setI(OSC1_TYPE,1);
