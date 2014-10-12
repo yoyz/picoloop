@@ -99,14 +99,14 @@ void dboplMachine::setF(int what,float val)
 
 void dboplMachine::setI(int what,int val)
 {
-  float f_val_cutoff;
-  float f_val_resonance;
+  float        f_val_cutoff;
+  float        f_val_resonance;
   FreqMultiple freqM[15];
-  Waveform w[4];
+  Waveform     w[4];
   w[0]=SIN;
-  w[0]=HALF_SIN;
-  w[0]=ABS_SIN;
-  w[0]=QUART_SIN;
+  w[1]=HALF_SIN;
+  w[2]=ABS_SIN;
+  w[3]=QUART_SIN;
 
   freqM[0]=xHALF;
   freqM[1]=x1;
@@ -136,9 +136,16 @@ void dboplMachine::setI(int what,int val)
       HO->KeyOff(1);
     }
 
-    if (what==OSC1_TYPE)           HO->SetWaveform(1,1,w[val]);
-    if (what==OSC2_TYPE)           HO->SetWaveform(1,2,w[val]);
-    HO->EnableWaveformControl();
+    if (what==OSC1_TYPE)           
+      { 
+	HO->SetWaveform(1,1,w[val]);
+	HO->EnableWaveformControl();
+      }
+    if (what==OSC2_TYPE)           
+      {
+	HO->SetWaveform(1,2,w[val]);
+	HO->EnableWaveformControl();
+      }
 
 
     if (what==ADSR_ENV0_ATTACK)    HO->SetEnvelopeAttack( 1,1,val/16);
