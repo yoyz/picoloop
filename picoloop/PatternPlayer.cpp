@@ -253,7 +253,7 @@ int song_cursor_y=0; // index in the song menu
 int loadsave_cursor_mode=0; // 0 loadsave mode cursor // 1 song mode cursor
 int pattern_song_inc=0;     // increment/decrement the current value of song_cursor_x/song_cursor_y
 int pattern_song_reload=0;  // if > 1 reload from current position
-//int pattern_song_reload=0;  // if > 1 reload from current position
+int pattern_song_loop=0;    // if > 1 loop from current song position to loop point
 
 int start_key=0;        // start key pressed ?
 //int step=0;             // current step in the sequencer
@@ -669,16 +669,17 @@ void display_board_load_save()
       for (x=0;x<16;x++)
 	for (y=0;y<TRACK_MAX;y++)
 	  {
-	    if (SEQ.getSongSequencer().getPatternNumberAtCursorPosition(i))
-	      SG.middleBoxNumberDown(x%16,y,NOTE_COLOR);
-	    else
-	      SG.middleBoxNumberDown(x%16,y,STEP_COLOR);
+	    //SG.middleBoxNumberDown(x%16,y,NOTE_COLOR);
+	    //if (SEQ.getSongSequencer().getPatternNumberAtCursorPosition(i))
+	    //SG.middleBoxNumberDown(x%16,y,NOTE_COLOR);
+	    //else
+	    SG.middleBoxNumberDown(x%16,y,STEP_COLOR);
 	  }
 
 
 
       // we are in song mode
-      // Display the current song position
+      // Display the current song position by a vertical bar
       for (y=0;y<TRACK_MAX;y++)
 	//if (loadsave_cursor_mode==CURSOR_SONG)
 	SG.middleBoxNumberDown(SEQ.getSongSequencer().getStep()%16,
@@ -2751,8 +2752,9 @@ void handle_key_load_save()
 	  loadsave_cursor_mode == CURSOR_SONG     &&
 	  keyState[BUTTON_A] )
 	{
-	  //if (keyState[BUTTON_DOWN])
-	  //saveall=true;
+	  if (keyState[BUTTON_DOWN])
+	    pattern_song_loop=1;
+	    //saveall=true;
 	  if (keyState[BUTTON_UP])	
 	    pattern_song_reload=1;
 	}
@@ -3622,7 +3624,24 @@ int seq_update_by_step()
 
       SEQ.getSongSequencer().setStep(song_cursor_x);
       pattern_song_reload=0;
+      SEQ.setSongMode(1);
     }
+
+  if (pattern_song_loop!=0)
+    {
+
+      SEQ.getSongSequencer().setLoopPoint(song_cursor_x);
+      pattern_song_loop=0;
+      SEQ.setSongMode(1);
+    }
+
+
+  // Stop the song mode if load/save activated ( in load/save )
+  if (load    |
+      save    | 
+      loadall |
+      saveall )
+    SEQ.setSongMode(0);
 
 
   // Load save only on pattern change
@@ -3699,6 +3718,7 @@ int seq_update_by_step()
       dirty_graphic=1;
       saveall=false;      
     }
+
 
 
   // Load save only on pattern change
@@ -3867,14 +3887,19 @@ void seq_callback_update_step()
 	{
 	  if (SEQ.getPatternSequencer(i).getStep()==0)
 	    {
+
+	      if (SEQ.getSongMode()   == 1)		
+		if (PR.PatternDataExist(SEQ.getSongSequencer().getPatternNumberAtCursorPosition(i),i))
+		  PR.readPatternData(SEQ.getSongSequencer().getPatternNumberAtCursorPosition(i),i,P[i]);
+		else
+		  P[i].init();
+
 	      if (songSequencerHasInc == 0 &&
-		  SEQ.getSongMode()   == 1
-		  
+		  SEQ.getSongMode()   == 1		  
 		  )
 		{
 		  SEQ.getSongSequencer().incStep();
 		  songSequencerHasInc++;
-		  PR.readPatternData(SEQ.getSongSequencer().getPatternNumberAtCursorPosition(i),i,P[i]);
 		}
 
 	     

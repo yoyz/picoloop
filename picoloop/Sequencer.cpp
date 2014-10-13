@@ -7,7 +7,7 @@ using namespace std;
 Sequencer::Sequencer() : psvector(TRACK_MAX,PatternSequencer()),
 			 SS()
 {
-  song_mode=1;
+  song_mode=0;
   tempo=120;
   current_track_x=0;
   current_track_y=0;
@@ -70,7 +70,7 @@ int Sequencer::getSongMode()
 
 void Sequencer::setSongMode(int s)
 {
-  return song_mode=s;
+  song_mode=s;
 }
 
 

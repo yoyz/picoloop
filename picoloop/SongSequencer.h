@@ -17,12 +17,15 @@ public:
   int  incStep();
   int  getStep();
   int  setStep(int step);
+  int  setLoopPoint(int loopStep);
   int  getPatternNumber(int cp,int trackNumber);
   int  getPatternNumberAtCursorPosition(int trackNumber);
   void setPatternNumber(int cursorPosition,int trackNumber,int patternNumber);
   
 private:
-  int                  cursorPosition;
+  int                  step;
+  int                  loopStepA;
+  int                  loopStepB;
   vector <vector <int> > songVector;
 };
 
