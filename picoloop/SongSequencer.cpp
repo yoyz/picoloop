@@ -48,7 +48,7 @@ int SongSequencer::getLoopA()
   return loopStepA;
 }
 
-int SongSequencer::getLoopA()
+int SongSequencer::getLoopB()
 {
   return loopStepB;
 }
