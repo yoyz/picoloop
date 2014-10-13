@@ -17,6 +17,7 @@ LDFLAGS=-L. -lSDL -lSDL_ttf
 LDFLAGS=-L. -lmingw32 -lSDLmain -lSDL -lSDL_ttf
 LDFLAGS=-D__WIN32__ -L. -LSDL-1.2.15/lib/ -lmingw32 -lSDLmain -lSDL -lSDL_ttf -static-libgcc -ggdb
 LDFLAGS=-D__WIN32__ -L. -LSDL_windows/lib -L/home/yoyz/.wine/drive_c/users/yoyz/Temp/DXF/DXSDK/lib/ -lmingw32 -lSDLmain -static-libgcc  -static-libstdc++ -lSDL -lSDL_ttf -ldsound -lole32 -lwinmm  -ggdb
+LDFLAGS=-D__WIN32__ -L. -LSDL_windows/lib -L/home/yoyz/.wine/drive_c/users/yoyz/Temp/DXF/DXSDK/lib/ -lmingw32 -lSDLmain -static-libgcc  -lSDL -lSDL_ttf -ldsound -lole32 -lwinmm  -ggdb
 
 OBJTOLINK=RtAudio.o
 
