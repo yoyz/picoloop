@@ -17,8 +17,9 @@ public:
   int  incStep();
   int  getStep();
   int  setStep(int step);
-  int  getPatternNumber(int trackNumber);
-  void setPatternNumber(int cursorPosition,int trackNumber,int patternNumber);
+  int  getPatternNumber(int cp,int trackNumber);
+  int  getPatternNumberAtCursorPosition(int trackNumber);
+  void setPatternNumberAtCursorPosition(int cursorPosition,int trackNumber,int patternNumber);
   
 private:
   int                  cursorPosition;

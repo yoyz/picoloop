@@ -33,13 +33,17 @@ int SongSequencer::setStep(int step)
   cursorPosition=step;
 }
 
+int SongSequencer::getPatternNumber(int cp,int trackNumber)
+{
+  return songVector[cp][trackNumber];
+}
 
-int SongSequencer::getPatternNumber(int trackNumber)
+int SongSequencer::getPatternNumberAtCursorPosition(int trackNumber)
 {
   return songVector[cursorPosition][trackNumber];
 }
 
-void SongSequencer::setPatternNumber(int cursorPosition,int trackNumber,int patternNumber)
+void SongSequencer::setPatternNumberAtCursorPosition(int cursorPosition,int trackNumber,int patternNumber)
 {
   songVector[cursorPosition][trackNumber]=patternNumber;
 }

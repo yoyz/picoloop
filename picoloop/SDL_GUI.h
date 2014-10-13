@@ -11,8 +11,12 @@
 #define   FONT_CW         16
 #define   FONT_CH         16
 
-#define   OFFSET_Y_MIDDLEBOX_UP 30
-#define   OFFSET_X_MIDDLEBOX_UP 35
+#define   OFFSET_X_MIDDLEBOX_UP   35
+#define   OFFSET_Y_MIDDLEBOX_UP   30
+
+#define   OFFSET_X_MIDDLEBOX_DOWN 35
+#define   OFFSET_Y_MIDDLEBOX_DOWN 160
+
 
 using namespace std;
 
@@ -29,9 +33,11 @@ class SDL_GUI
 
   void middleBox(int x, int y,Uint32 c);
   void middleBoxNumberUp(int x, int y,Uint32 c);
+  void middleBoxNumberDown(int x, int y,Uint32 c);
 
   //void loadSaveBoxNumber(int x, int y,Uint32 c);
   void drawTTFTextLoadSaveBoxNumberUp(int x,int y,const char *txt);
+  void drawTTFTextLoadSaveBoxNumberDown(int x,int y,const char *txt);
 
   void smallBox(int x, int y,Uint32 c);
   void smallBoxNumber(int n,int x,int y,Uint32 c);

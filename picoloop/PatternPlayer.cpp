@@ -241,6 +241,11 @@ int fmtype_all=0;
 int loadsave_cursor_x=0; // index in the load/save menu
 int loadsave_cursor_y=0; // index in the load/save menu
 
+int song_cursor_x=0; // index in the song menu
+int song_cursor_y=0; // index in the song menu
+
+int loadsave_cursor_mode=0; // 0 loadsave mode cursor // 1 song mode cursor
+
 int start_key=0;        // start key pressed ?
 //int step=0;             // current step in the sequencer
 int divider=0;           // divider - => /1 /2 /4 /8  ; divider + => /8 /4 /2 /1
@@ -562,6 +567,10 @@ void display_board_load_save()
   int loadsave_cursor_x_div_sixteen=loadsave_cursor_x/16;
   int loadsave_cursor_x_divmul_sixteen=loadsave_cursor_x_div_sixteen*16;
 
+  int song_cursor_x_div_sixteen=song_cursor_x/16;
+  int song_cursor_x_divmul_sixteen=song_cursor_x_div_sixteen*16;
+
+
   char str_bank[16];
 
   static const char * txt_pattern_modulo_sixteen_slot[] = 
@@ -584,7 +593,7 @@ void display_board_load_save()
     "240-255" 
     }; 
 
-
+  /*
   static const char * txt_tab[] = 
     { 
     "0","1","2","3",
@@ -592,11 +601,32 @@ void display_board_load_save()
     "8","9","A","B",
     "C","D","E","F" 
     }; 
+  */
+
+  static const char * txt_tab[] = 
+    { 
+      "00","01","02","03","04","05","06","07","08","09","0A","0B","0C","0D","0E","0F",
+      "10","11","12","13","14","15","16","17","18","19","1A","1B","1C","1D","1E","1F",
+      "20","21","22","23","24","25","26","27","28","29","2A","2B","2C","2D","2E","2F",
+      "30","31","32","33","34","35","36","37","38","39","3A","3B","3C","3D","3E","3F",
+      "40","41","42","43","44","45","46","47","48","49","4A","4B","4C","4D","4E","4F",
+      "50","51","52","53","54","55","56","57","58","59","5A","5B","5C","5D","5E","5F",
+      "60","61","62","63","64","65","66","67","68","69","6A","6B","6C","6D","6E","6F",
+      "70","71","72","73","74","75","76","77","78","79","7A","7B","7C","7D","7E","7F",
+      "80","81","82","83","84","85","86","87","88","89","8A","8B","8C","8D","8E","8F",
+      "90","91","92","93","94","95","96","97","98","99","9A","9B","9C","9D","9E","9F",
+      "A0","A1","A2","A3","A4","A5","A6","A7","A8","A9","AA","AB","AC","AD","AE","AF",
+      "B0","B1","B2","B3","B4","B5","B6","B7","B8","B9","BA","BB","BC","BD","BE","BF",
+      "C0","C1","C2","C3","C4","C5","C6","C7","C8","C9","CA","CB","CC","CD","CE","CF",
+      "D0","D1","D2","D3","D4","D5","D6","D7","D8","D9","DA","DB","DC","DD","DE","DF",
+      "E0","E1","E2","E3","E4","E5","E6","E7","E8","E9","EA","EB","EC","ED","EE","EF",
+      "F0","F1","F2","F3","F4","F5","F6","F7","F8","F9","FA","FB","FC","FD","FE","FF",
+    }; 
 
 
-  if (menu==MENU_OFF && 
-      menu_cursor==GLOBALMENU_LS && 
-      menu_ls==MENU_LS_PATTERN
+  if (menu         ==  MENU_OFF        && 
+      menu_cursor  ==  GLOBALMENU_LS   && 
+      menu_ls      ==  MENU_LS_PATTERN
       )
     {
       printf("HIT\n");
@@ -618,20 +648,53 @@ void display_board_load_save()
 	    else
 	      SG.middleBoxNumberUp(x%16,y,STEP_COLOR);
 	  }
-      
+
+      // Display box song
+      for (x=0;x<16;x++)
+	for (y=0;y<TRACK_MAX;y++)
+	  {
+	    if (SEQ.getSongSequencer().getPatternNumberAtCursorPosition(i))
+	      SG.middleBoxNumberDown(x%16,y,NOTE_COLOR);
+	    else
+	      SG.middleBoxNumberDown(x%16,y,STEP_COLOR);
+	  }
+
+
+      // we are in loadsave mode
       // Display your current position
-      SG.middleBoxNumberUp(loadsave_cursor_x%16,
-			 loadsave_cursor_y,
-			 TRIG_COLOR);
+      if (loadsave_cursor_mode==0)
+	SG.middleBoxNumberUp(loadsave_cursor_x%16,
+			     loadsave_cursor_y,
+			     TRIG_COLOR);
+
+      // we are in song mode
+      // Display your current position
+      if (loadsave_cursor_mode==1)
+	SG.middleBoxNumberDown(song_cursor_x%16,
+			       song_cursor_y,
+			       TRIG_COLOR);
+      
       
       // Display text 0..9..F
       for (x=loadsave_cursor_x_divmul_sixteen;
 	   x<(loadsave_cursor_x_divmul_sixteen)+16;
 	   x++)
 	for (y=0;y<TRACK_MAX;y++)
-	  SG.drawTTFTextLoadSaveBoxNumberUp(x%16,y,txt_tab[x%16]);
+	  SG.drawTTFTextLoadSaveBoxNumberUp(x%16,y,txt_tab[x]);
       //SG.drawTTFTextLoadSaveBoxNumer(x,y,tmp_txt);
+
+
+      for (x=0;
+	   x<16;
+	   x++)
+	for (y=0;y<TRACK_MAX;y++)
+	  SG.drawTTFTextLoadSaveBoxNumberDown(x,y,txt_tab[SEQ.getSongSequencer().getPatternNumber(x,y)]);
+	  //SG.drawTTFTextLoadSaveBoxNumberDown(x,y,txt_tab[x%16]);
+
     }
+
+
+
 
 
   //Draw LFO when load/save is not selected
@@ -2602,6 +2665,16 @@ void handle_key_load_save()
 	  return;
 	}
 
+      if (menu        == MENU_OFF && 
+	  keyState[BUTTON_START]
+	  )
+	{
+	  if      (loadsave_cursor_mode==0)  loadsave_cursor_mode=1;
+	  else if (loadsave_cursor_mode==1)  loadsave_cursor_mode=0;
+	  return;
+	}
+
+
 
       if (menu        == MENU_OFF && 
 	  keyState[BUTTON_B])
@@ -2629,7 +2702,8 @@ void handle_key_load_save()
       // GLOBALMENU_LS
       // in the load/save view 
       // move load/save cursor position 
-      if (menu        == MENU_OFF && 	  
+      if (menu                 == MENU_OFF && 	  
+	  loadsave_cursor_mode == 0        &&
 	  (!(
 	     keyState[BUTTON_B] ||
 	     keyState[BUTTON_A])))
@@ -2658,6 +2732,39 @@ void handle_key_load_save()
 	  
 	  SEQ.setCurrentTrackY(loadsave_cursor_y);
 	}
+
+      if (menu                 == MENU_OFF && 	  
+	  loadsave_cursor_mode == 1        &&
+	  (!(
+	     keyState[BUTTON_B] ||
+	     keyState[BUTTON_A])))
+	{
+	  if (keyState[BUTTON_LEFT])
+	    if (keyRepeat[BUTTON_LEFT]==1  || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_LONG==0)  
+	      { song_cursor_x--;  dirty_graphic=1;}
+	  
+	  if (keyState[BUTTON_RIGHT])
+	    if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_LONG==0) 
+	      { song_cursor_x++;  dirty_graphic=1;}
+	  
+	  if (keyState[BUTTON_UP])
+	    if (keyRepeat[BUTTON_UP]==1    || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONG==0)    
+	      { song_cursor_y--;  dirty_graphic=1;}
+	  
+	  if (keyState[BUTTON_DOWN])
+	    if (keyRepeat[BUTTON_DOWN]==1  || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONG==0)  
+	      { song_cursor_y++;  dirty_graphic=1;}
+	  
+	  if (song_cursor_x>MAX_PATTERN_BY_PROJECT-1)            { song_cursor_x=0;                           }
+	  if (song_cursor_x<0)                                   { song_cursor_x=MAX_PATTERN_BY_PROJECT-1;    }
+
+	  if (song_cursor_y>TRACK_MAX-1)                         { song_cursor_y=0;                           }
+	  if (song_cursor_y<0)                                   { song_cursor_y=TRACK_MAX-1;                 }  
+	  
+	  //SEQ.setCurrentTrackY(loadsave_cursor_y);
+	}
+
+
     }
 
 }
@@ -3655,11 +3762,22 @@ void seq_update_track(int t)
 }
 
 
+
+// This callback run in a really high priority thread
+// No IO or syscall is allowed to prevent audio drifting/garbage
+// EX : printf      forbiden
+//      read(fd...) forbiden
 void seq_callback_update_step()
 {
   int i;
   int oldstep;
   int songSequencerHasInc=0;
+
+
+  //for ( i=0;i<10;i++)
+  //  {
+  //SEQ.getSongSequencer().setPatternNumberAtCursorPosition(i,0,i);
+  //}
 
   for(i=0;i<TRACK_MAX;i++)
     {
@@ -3678,9 +3796,8 @@ void seq_callback_update_step()
 		{
 		  SEQ.getSongSequencer().incStep();
 		  songSequencerHasInc++;
-		  PR.readPatternData(SEQ.getSongSequencer().getStep(),i,P[i]);
+		  PR.readPatternData(SEQ.getSongSequencer().getPatternNumberAtCursorPosition(i),i,P[i]);
 		}
-
 
 	     
 	      if (i==TRACK_MAX-1)
