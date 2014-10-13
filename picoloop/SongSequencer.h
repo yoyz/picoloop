@@ -18,6 +18,8 @@ public:
   int  getStep();
   int  setStep(int step);
   int  setLoopPoint(int loopStep);
+  int  getLoopA();
+  int  getLoopB(); 
   int  getPatternNumber(int cp,int trackNumber);
   int  getPatternNumberAtCursorPosition(int trackNumber);
   void setPatternNumber(int cursorPosition,int trackNumber,int patternNumber);

@@ -9,6 +9,7 @@ SongSequencer::SongSequencer() : songVector(MAX_PATTERN_BY_PROJECT,vector <int>(
 	songVector[x][y]=0;
       }
   step=0;
+  loopStepB=MAX_PATTERN_BY_PROJECT-1;
 }
 
 SongSequencer::~SongSequencer()
@@ -41,6 +42,17 @@ int SongSequencer::setLoopPoint(int loop)
   loopStepA=step;
   loopStepB=loop;
 }
+
+int SongSequencer::getLoopA()
+{
+  return loopStepA;
+}
+
+int SongSequencer::getLoopA()
+{
+  return loopStepB;
+}
+
 
 void SongSequencer::setPatternNumber(int x,int y,int patternNumber)
 {
