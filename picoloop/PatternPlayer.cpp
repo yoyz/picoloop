@@ -3659,6 +3659,7 @@ void seq_callback_update_step()
 {
   int i;
   int oldstep;
+  int songSequencerHasInc=0;
 
   for(i=0;i<TRACK_MAX;i++)
     {
@@ -3667,7 +3668,30 @@ void seq_callback_update_step()
       oldstep=SEQ.getPatternSequencer(i).getStep();
       SEQ.getPatternSequencer(i).incStep();
       if (oldstep!=SEQ.getPatternSequencer(i).getStep())
-        seq_update_track(i);
+	{
+	  if (SEQ.getPatternSequencer(i).getStep()==0)
+	    {
+	      if (songSequencerHasInc == 0 &&
+		  SEQ.getSongMode()   == 1
+		  
+		  )
+		{
+		  SEQ.getSongSequencer().incStep();
+		  songSequencerHasInc++;
+		  PR.readPatternData(SEQ.getSongSequencer().getStep(),i,P[i]);
+		}
+
+
+	     
+	      if (i==TRACK_MAX-1)
+		{
+		  printf("SongSequencer.cursorPosition:%d\n",SEQ.getSongSequencer().getStep());
+		}
+	    }
+	  
+	  // Update the Machine for the new step
+	  seq_update_track(i);	  
+	}
     }
   dirty_graphic=1;
   seq_update_by_step_next=1;

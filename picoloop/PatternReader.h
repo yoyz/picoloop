@@ -37,7 +37,7 @@ class PatternReader
   FILE * fd;
   string fn;
   vector < vector < Pattern > > twoDPVector;
-  vector < vector < int > > loadedData;
+  vector < vector < int     > > loadedData;
   //vector < vector < int > > savedData;
   
 };

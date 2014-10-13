@@ -1,6 +1,7 @@
 using namespace std;
 
 #include "PatternSequencer.h"
+#include "SongSequencer.h"
 
 #ifndef __SEQUENCER__
 #define __SEQUENCER__
@@ -17,18 +18,25 @@ class Sequencer
   int gctx();              // shortcut to getCurrentTrackX
   int gcty();              // shortcut to getCurrentTrackY
 
+  SongSequencer    & getSongSequencer();
   PatternSequencer & getPatternSequencer(int ps);
   int setCurrentTrackX(int x);
   int setCurrentTrackY(int y);
+
+  int  getSongMode();
+  void setSongMode(int s);
 
 
  public:
 
     int         tempo;           // global tempo
 
-    int         current_track_x; // Cursor position of track
-    int         current_track_y; // Cursor position of track
-    vector<PatternSequencer> psvector;  
+    int         current_track_x; // X Cursor position in the GUI
+    int         current_track_y; // Y Cursor position in the GUI
+
+    vector<PatternSequencer> psvector;
+    SongSequencer SS;
+    int         song_mode;        // 0 live mode | 1 song mode
 };
 
 #endif
