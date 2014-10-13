@@ -252,6 +252,8 @@ int song_cursor_y=0; // index in the song menu
 
 int loadsave_cursor_mode=0; // 0 loadsave mode cursor // 1 song mode cursor
 int pattern_song_inc=0;     // increment/decrement the current value of song_cursor_x/song_cursor_y
+int pattern_song_reload=0;  // if > 1 reload from current position
+//int pattern_song_reload=0;  // if > 1 reload from current position
 
 int start_key=0;        // start key pressed ?
 //int step=0;             // current step in the sequencer
@@ -2734,7 +2736,8 @@ void handle_key_load_save()
       // move loasavecursor position 
       // Save/load bund of Pattern
       
-      if (menu        == MENU_OFF && 
+      if (menu                 == MENU_OFF        && 
+	  loadsave_cursor_mode == CURSOR_LOADSAVE &&
 	  keyState[BUTTON_A] )
 	{
 	  if (keyState[BUTTON_DOWN])
@@ -2742,6 +2745,18 @@ void handle_key_load_save()
 	  if (keyState[BUTTON_UP])	
 	    loadall=true;
 	}
+
+
+      if (menu                 == MENU_OFF        && 
+	  loadsave_cursor_mode == CURSOR_SONG     &&
+	  keyState[BUTTON_A] )
+	{
+	  //if (keyState[BUTTON_DOWN])
+	  //saveall=true;
+	  if (keyState[BUTTON_UP])	
+	    pattern_song_reload=1;
+	}
+
       
       // GLOBALMENU_LS
       // in the load/save view 
@@ -3601,6 +3616,14 @@ int seq_update_by_step()
 					      pattern_song_inc);
       pattern_song_inc=0;
     }
+
+  if (pattern_song_reload!=0)
+    {
+
+      SEQ.getSongSequencer().setStep(song_cursor_x);
+      pattern_song_reload=0;
+    }
+
 
   // Load save only on pattern change
   if (save)
