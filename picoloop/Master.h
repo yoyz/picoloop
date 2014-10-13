@@ -14,7 +14,7 @@
 #define SCREEN_WIDTH	320
 #define SCREEN_HEIGHT	240
 #define SCREEN_DEPTH	16
-#define SCREEN_MULT     1
+#define SCREEN_MULT     2
 #define WAVETABLE_SIZE  1024*16
 //#define WAVETABLE_SIZE  128
 #define FPU 0

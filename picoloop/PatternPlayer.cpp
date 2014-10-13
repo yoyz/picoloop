@@ -59,6 +59,12 @@ enum {
   MENU_ON_PAGE2
 };
 
+enum {
+  CURSOR_LOADSAVE,
+  CURSOR_SONG
+};
+  
+
 //menu_cursor
 enum {
   GLOBALMENU_AD,         // 0
@@ -245,6 +251,7 @@ int song_cursor_x=0; // index in the song menu
 int song_cursor_y=0; // index in the song menu
 
 int loadsave_cursor_mode=0; // 0 loadsave mode cursor // 1 song mode cursor
+int pattern_song_inc=0;     // increment/decrement the current value of song_cursor_x/song_cursor_y
 
 int start_key=0;        // start key pressed ?
 //int step=0;             // current step in the sequencer
@@ -572,6 +579,7 @@ void display_board_load_save()
 
 
   char str_bank[16];
+  char str_song[16];
 
   static const char * txt_pattern_modulo_sixteen_slot[] = 
     { 
@@ -635,7 +643,13 @@ void display_board_load_save()
       sprintf(str_bank,"Bank %d ",bank);
 
       SG.guiTTFText(30,10, str_bank);
-      SG.guiTTFText(30,20,txt_pattern_modulo_sixteen_slot[loadsave_cursor_x_div_sixteen]);
+      SG.guiTTFText(30,30,txt_pattern_modulo_sixteen_slot[loadsave_cursor_x_div_sixteen]);
+
+
+      sprintf(str_song,"SongPosition %d ",SEQ.getSongSequencer().getStep());
+
+      SG.guiTTFText(120,10, str_song);
+      SG.guiTTFText(120,30,txt_pattern_modulo_sixteen_slot[song_cursor_x_div_sixteen]);
 
       // Display box loaded/unloaded
       for (x=loadsave_cursor_x_divmul_sixteen;
@@ -660,22 +674,36 @@ void display_board_load_save()
 	  }
 
 
+
+      // we are in song mode
+      // Display the current song position
+      for (y=0;y<TRACK_MAX;y++)
+	//if (loadsave_cursor_mode==CURSOR_SONG)
+	SG.middleBoxNumberDown(SEQ.getSongSequencer().getStep()%16,
+			       y,
+			       TRIG_COLOR);
+
+
       // we are in loadsave mode
       // Display your current position
-      if (loadsave_cursor_mode==0)
+      if (loadsave_cursor_mode==CURSOR_LOADSAVE)
 	SG.middleBoxNumberUp(loadsave_cursor_x%16,
 			     loadsave_cursor_y,
 			     TRIG_COLOR);
 
       // we are in song mode
       // Display your current position
-      if (loadsave_cursor_mode==1)
+      if (loadsave_cursor_mode==CURSOR_SONG)
 	SG.middleBoxNumberDown(song_cursor_x%16,
 			       song_cursor_y,
 			       TRIG_COLOR);
+
+
+
       
       
-      // Display text 0..9..F
+      // txt in loadsave box 
+      // Display text 00..09..FF
       for (x=loadsave_cursor_x_divmul_sixteen;
 	   x<(loadsave_cursor_x_divmul_sixteen)+16;
 	   x++)
@@ -684,6 +712,8 @@ void display_board_load_save()
       //SG.drawTTFTextLoadSaveBoxNumer(x,y,tmp_txt);
 
 
+      // txt in Song box 
+      // Display text 00..09..FF
       for (x=0;
 	   x<16;
 	   x++)
@@ -2655,9 +2685,10 @@ void handle_key_load_save()
       // Save/load Pattern
 
 
-      if (menu        == MENU_OFF && 
-	  keyState[BUTTON_B]      &&
-	  keyState[BUTTON_A]      &&
+      if (menu                 == MENU_OFF        && 
+	  loadsave_cursor_mode == CURSOR_LOADSAVE &&
+	  keyState[BUTTON_B]                      &&
+	  keyState[BUTTON_A]                      &&
 	  keyState[BUTTON_DOWN])
 
 	{
@@ -2669,14 +2700,26 @@ void handle_key_load_save()
 	  keyState[BUTTON_START]
 	  )
 	{
-	  if      (loadsave_cursor_mode==0)  loadsave_cursor_mode=1;
-	  else if (loadsave_cursor_mode==1)  loadsave_cursor_mode=0;
+	  if      (loadsave_cursor_mode==CURSOR_LOADSAVE)  loadsave_cursor_mode=CURSOR_SONG;
+	  else if (loadsave_cursor_mode==CURSOR_SONG)      loadsave_cursor_mode=CURSOR_LOADSAVE;
 	  return;
 	}
 
 
 
-      if (menu        == MENU_OFF && 
+      if (menu                 == MENU_OFF    && 
+	  loadsave_cursor_mode == CURSOR_SONG &&
+	  keyState[BUTTON_B])
+	{
+	  if (keyState[BUTTON_DOWN])
+	    pattern_song_inc=-1;
+	  if (keyState[BUTTON_UP])	
+	    pattern_song_inc=1;
+	}
+
+
+      if (menu                 == MENU_OFF && 
+	  loadsave_cursor_mode == CURSOR_LOADSAVE &&
 	  keyState[BUTTON_B])
 	{
 	  if (keyState[BUTTON_DOWN])
@@ -2684,6 +2727,7 @@ void handle_key_load_save()
 	  if (keyState[BUTTON_UP])	
 	    load=true;
 	}
+
       
       // GLOBALMENU_LS
       // in the load/save view 
@@ -2702,8 +2746,8 @@ void handle_key_load_save()
       // GLOBALMENU_LS
       // in the load/save view 
       // move load/save cursor position 
-      if (menu                 == MENU_OFF && 	  
-	  loadsave_cursor_mode == 0        &&
+      if (menu                 == MENU_OFF        && 	  
+	  loadsave_cursor_mode == CURSOR_LOADSAVE &&
 	  (!(
 	     keyState[BUTTON_B] ||
 	     keyState[BUTTON_A])))
@@ -2733,8 +2777,8 @@ void handle_key_load_save()
 	  SEQ.setCurrentTrackY(loadsave_cursor_y);
 	}
 
-      if (menu                 == MENU_OFF && 	  
-	  loadsave_cursor_mode == 1        &&
+      if (menu                 == MENU_OFF     && 	  
+	  loadsave_cursor_mode == CURSOR_SONG  &&
 	  (!(
 	     keyState[BUTTON_B] ||
 	     keyState[BUTTON_A])))
@@ -3546,6 +3590,17 @@ int seq_update_by_step()
   int  t;
 
   //SEQ.getPatternSequencer(0).setStepDivider(4);
+
+  if (pattern_song_inc!=0)
+    {
+
+      SEQ.getSongSequencer().setPatternNumber(song_cursor_x,
+					      song_cursor_y,
+					      SEQ.getSongSequencer().getPatternNumber(song_cursor_x,
+										      song_cursor_y)+
+					      pattern_song_inc);
+      pattern_song_inc=0;
+    }
 
   // Load save only on pattern change
   if (save)

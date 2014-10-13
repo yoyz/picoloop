@@ -13,11 +13,11 @@ CFLAGS= -c -O3 -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINUX_DESKTOP -ggdb  -fperm
 
 LDFLAGS=-lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread -pg
 LDFLAGS=-lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread 
-LDFLAGS=-lasound -lSDL           -lSDL_ttf -lpthread 
+LDFLAGS=-lasound -lSDL           -lSDL_ttf -lpthread -pg
 
 OBJTOLINK=RtAudio.o
 
-SOURCES=Machine.cpp Track.cpp AudioMixer.cpp AudioEngine.cpp PatternElement.cpp Pattern.cpp PatternPlayer.cpp PatternReader.cpp Oscillator.cpp SineOscillator.cpp SawOscillator.cpp  FuzzyPulseOscillator.cpp PulseOscillator.cpp  TriangleOscillator.cpp WaveTableSineOscillator.cpp NoiseOscillator.cpp OneOscillator.cpp MonoMixer.cpp ADSR.cpp SDL_GUI.cpp VCO.cpp Sequencer.cpp InputManager.cpp Biquad.cpp PatternSequencer.cpp AudioDriverRTAudio.cpp PicosynthMachine.cpp  PicodrumMachine.cpp dbopl/dbopl.cpp dbopl/hiopl.cpp DboplMachine.cpp Filter.cpp AMSynthLowPassFilter.cpp Effect.cpp EffectDelay.cpp
+SOURCES=Machine.cpp Track.cpp AudioMixer.cpp AudioEngine.cpp PatternElement.cpp Pattern.cpp PatternPlayer.cpp PatternReader.cpp Oscillator.cpp SineOscillator.cpp SawOscillator.cpp  FuzzyPulseOscillator.cpp PulseOscillator.cpp  TriangleOscillator.cpp WaveTableSineOscillator.cpp NoiseOscillator.cpp OneOscillator.cpp MonoMixer.cpp ADSR.cpp SDL_GUI.cpp VCO.cpp Sequencer.cpp InputManager.cpp Biquad.cpp PatternSequencer.cpp AudioDriverRTAudio.cpp PicosynthMachine.cpp  PicodrumMachine.cpp dbopl/dbopl.cpp dbopl/hiopl.cpp DboplMachine.cpp Filter.cpp AMSynthLowPassFilter.cpp Effect.cpp EffectDelay.cpp SongSequencer.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=PatternPlayer
 

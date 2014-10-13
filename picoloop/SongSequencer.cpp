@@ -33,17 +33,24 @@ int SongSequencer::setStep(int step)
   cursorPosition=step;
 }
 
+
+void SongSequencer::setPatternNumber(int x,int y,int patternNumber)
+{
+  int pn=patternNumber;
+  if      (pn>MAX_PATTERN_BY_PROJECT-1) pn=0;
+  else if (pn<0)                        pn=MAX_PATTERN_BY_PROJECT-1;
+  songVector[x][y]=pn;
+  printf("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&%d\n",patternNumber);
+}
+
 int SongSequencer::getPatternNumber(int cp,int trackNumber)
 {
   return songVector[cp][trackNumber];
 }
 
+
+
 int SongSequencer::getPatternNumberAtCursorPosition(int trackNumber)
 {
   return songVector[cursorPosition][trackNumber];
-}
-
-void SongSequencer::setPatternNumberAtCursorPosition(int cursorPosition,int trackNumber,int patternNumber)
-{
-  songVector[cursorPosition][trackNumber]=patternNumber;
 }
