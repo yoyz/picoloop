@@ -650,10 +650,18 @@ void display_board_load_save()
 
       sprintf(str_song,"SongPosition %d ",SEQ.getSongSequencer().getStep());
 
-      SG.guiTTFText(120,10, str_song);
-      SG.guiTTFText(120,30,txt_pattern_modulo_sixteen_slot[song_cursor_x_div_sixteen]);
+      SG.guiTTFText(30,(SCREEN_HEIGHT/2)*SCREEN_MULT+0, str_song);
+      SG.guiTTFText(30,(SCREEN_HEIGHT/2)*SCREEN_MULT+20,txt_pattern_modulo_sixteen_slot[song_cursor_x_div_sixteen]);
 
-      // Display box loaded/unloaded
+      sprintf(str_song,"LoopA %d ",SEQ.getSongSequencer().getLoopA());
+      SG.guiTTFText((SCREEN_WIDTH/2)*SCREEN_MULT,(SCREEN_HEIGHT/2)*SCREEN_MULT+0, str_song);
+
+      sprintf(str_song,"LoopB %d ",SEQ.getSongSequencer().getLoopB());
+      SG.guiTTFText((SCREEN_WIDTH/2)*SCREEN_MULT,(SCREEN_HEIGHT/2)*SCREEN_MULT+20,str_song);
+
+
+
+      // Display box loaded/unloaded for load/save mode
       for (x=loadsave_cursor_x_divmul_sixteen;
 	   x<(loadsave_cursor_x_divmul_sixteen)+16;
 	   x++)
@@ -681,10 +689,13 @@ void display_board_load_save()
       // we are in song mode
       // Display the current song position by a vertical bar
       for (y=0;y<TRACK_MAX;y++)
-	//if (loadsave_cursor_mode==CURSOR_SONG)
-	SG.middleBoxNumberDown(SEQ.getSongSequencer().getStep()%16,
-			       y,
-			       NOTE_COLOR);
+	{
+	  if (SEQ.getSongSequencer().getStep()/16 == song_cursor_x_div_sixteen)
+	    //if (loadsave_cursor_mode==CURSOR_SONG)
+	    SG.middleBoxNumberDown(SEQ.getSongSequencer().getStep()%16,
+				   y,
+				   NOTE_COLOR);
+	}
 
 
 
@@ -1404,6 +1415,9 @@ void handle_key_menu()
 	  //case MENU_ON_PAGE1: menu=MENU_ON_PAGE2; menu_cursor=+4; break;
 	  //case MENU_ON_PAGE2: menu=MENU_ON_PAGE1; menu_cursor=-4; break;
 	}
+
+      PR.saveSong(SEQ.getSongSequencer().getSongVector());
+
       dirty_graphic=1;
       IE.clearLastKeyEvent();
       printf("[gmenu : %d cmenu : %d]\n",menu,menu_cursor);

@@ -23,6 +23,7 @@ public:
   int  getPatternNumber(int cp,int trackNumber);
   int  getPatternNumberAtCursorPosition(int trackNumber);
   void setPatternNumber(int cursorPosition,int trackNumber,int patternNumber);
+  vector <vector <int> > getSongVector();
   
 private:
   int                  step;

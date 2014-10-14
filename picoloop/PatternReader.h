@@ -24,6 +24,8 @@ class PatternReader
   void init();
   void setBank(int b);
   int  getBank();
+  int  saveSong(vector <vector <int> > songVector);
+  vector <vector <int> > loadSong();
   void setFileName(string filename);
   bool PatternRemove(int PatternNumber,int TrackNumber);
   bool PatternDataExist(int PatternNumber,int TrackNumber);

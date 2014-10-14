@@ -74,3 +74,9 @@ int SongSequencer::getPatternNumberAtCursorPosition(int trackNumber)
 {
   return songVector[step][trackNumber];
 }
+
+
+vector <vector <int> > SongSequencer::getSongVector()
+{
+  return songVector;
+}
