@@ -14,6 +14,7 @@ dboplMachine::dboplMachine() : filter()
   buffer=0;
   cutoff=125;
   resonance=10;
+  index=0;
 }
 
 
@@ -203,7 +204,8 @@ int dboplMachine::tick()
   Sint16 s_in;
   Sint16 s_out;
 
-  if (index>=SAM)
+  if (index>=SAM | 
+      index<0)
     index=0;
 
 

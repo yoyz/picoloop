@@ -684,7 +684,9 @@ void display_board_load_save()
 	//if (loadsave_cursor_mode==CURSOR_SONG)
 	SG.middleBoxNumberDown(SEQ.getSongSequencer().getStep()%16,
 			       y,
-			       TRIG_COLOR);
+			       NOTE_COLOR);
+
+
 
 
       // we are in loadsave mode
@@ -700,8 +702,6 @@ void display_board_load_save()
 	SG.middleBoxNumberDown(song_cursor_x%16,
 			       song_cursor_y,
 			       TRIG_COLOR);
-
-
 
       
       
@@ -730,7 +730,7 @@ void display_board_load_save()
 
 
 
-  //Draw LFO when load/save is not selected
+  // Draw LFO when load/save is not selected
   // Why ? need to display something, so why not ?
   if (menu!=MENU_OFF && 
       menu_cursor==GLOBALMENU_LS
@@ -1478,6 +1478,8 @@ void handle_key_menu()
 	}
     }
 
+
+  // Check this ??? do not think it works
   //leave menu 
   if (lastKey      ==  BUTTON_B       && 
       lastEvent    ==  SDL_KEYUP      &&
@@ -2699,12 +2701,17 @@ void handle_key_load_save()
 	  return;
 	}
 
-      if (menu        == MENU_OFF && 
-	  keyState[BUTTON_START]
+      // Switch between load/save and song
+      if (menu        == MENU_OFF    && 
+	  lastEvent   == SDL_KEYUP   &&
+	  lastKey     == BUTTON_START
+	  //keyState[BUTTON_START]
 	  )
 	{
 	  if      (loadsave_cursor_mode==CURSOR_LOADSAVE)  loadsave_cursor_mode=CURSOR_SONG;
 	  else if (loadsave_cursor_mode==CURSOR_SONG)      loadsave_cursor_mode=CURSOR_LOADSAVE;
+	  dirty_graphic=1;
+	  IE.clearLastKeyEvent();
 	  return;
 	}
 
@@ -3622,7 +3629,7 @@ int seq_update_by_step()
   if (pattern_song_reload!=0)
     {
 
-      SEQ.getSongSequencer().setStep(song_cursor_x);
+      SEQ.getSongSequencer().setStep(song_cursor_x);      
       pattern_song_reload=0;
       SEQ.setSongMode(1);
     }
@@ -3888,12 +3895,6 @@ void seq_callback_update_step()
 	  if (SEQ.getPatternSequencer(i).getStep()==0)
 	    {
 
-	      if (SEQ.getSongMode()   == 1)		
-		if (PR.PatternDataExist(SEQ.getSongSequencer().getPatternNumberAtCursorPosition(i),i))
-		  PR.readPatternData(SEQ.getSongSequencer().getPatternNumberAtCursorPosition(i),i,P[i]);
-		else
-		  P[i].init();
-
 	      if (songSequencerHasInc == 0 &&
 		  SEQ.getSongMode()   == 1		  
 		  )
@@ -3902,11 +3903,16 @@ void seq_callback_update_step()
 		  songSequencerHasInc++;
 		}
 
+	      if (SEQ.getSongMode()   == 1)		
+		if (PR.PatternDataExist(SEQ.getSongSequencer().getPatternNumberAtCursorPosition(i),i))
+		  PR.readPatternData(SEQ.getSongSequencer().getPatternNumberAtCursorPosition(i),i,P[i]);
+		else
+		  P[i].init();
 	     
-	      if (i==TRACK_MAX-1)
-		{
-		  printf("SongSequencer.cursorPosition:%d\n",SEQ.getSongSequencer().getStep());
-		}
+	      //if (i==TRACK_MAX-1)
+	      //{
+	      //printf("SongSequencer.cursorPosition:%d\n",SEQ.getSongSequencer().getStep());
+	      //}
 	    }
 	  
 	  // Update the Machine for the new step
@@ -4008,12 +4014,18 @@ int seq()
 void load_pattern()
 {
   int t;
+  int p;
 
   string fileName="data.pic";
   //PR.setFileName("data.pic");
   PR.init();      // Init the     storage bank
   PR.setBank(0);  // The current  storage bank will be 0 PWD/bank/bank%d/
   //PR.setFileName(fileName);
+
+  for (t=0;t<TRACK_MAX;t++)
+    for (p=0;p<MAX_PATTERN_BY_PROJECT;p++)
+	PR.readPatternData(p,t,P[t]);
+
   for (t=0;t<TRACK_MAX;t++)
     {
       PR.readPatternData(0,t,P[t]);
