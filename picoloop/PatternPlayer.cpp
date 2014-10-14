@@ -4008,12 +4008,23 @@ int seq()
 void load_pattern()
 {
   int t;
+  int p;
 
   string fileName="data.pic";
   //PR.setFileName("data.pic");
   PR.init();      // Init the     storage bank
   PR.setBank(0);  // The current  storage bank will be 0 PWD/bank/bank%d/
   //PR.setFileName(fileName);
+
+  // Warmup the patternReader cache
+  for (t=0;t<TRACK_MAX;t++)
+    for (p=0;p<MAX_PATTERN_BY_PROJECT;p++)
+      {
+	PR.readPatternData(p,t,P[t]);
+      }
+
+
+
   for (t=0;t<TRACK_MAX;t++)
     {
       PR.readPatternData(0,t,P[t]);

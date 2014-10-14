@@ -82,7 +82,8 @@ bool PatternReader::PatternDataExist(int PatternNumber,int TrackNumber)
   char filename[1024];
 
   //printf("?EXIST (%d %d)\n");
-  if (loadedData[PatternNumber][TrackNumber]==DATA_EXIST_ON_STORAGE)
+  if (loadedData[PatternNumber][TrackNumber]==DATA_EXIST_ON_STORAGE | 
+      loadedData[PatternNumber][TrackNumber]==DATA_LOADED_FROM_STORAGE)
     return true;
   if (loadedData[PatternNumber][TrackNumber]==DATA_DOES_NOT_EXIST_ON_STORAGE)
     return false;
@@ -149,6 +150,14 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
   char line[1024];
   char filename[1024];
 
+
+  if (loadedData[PatternNumber][TrackNumber]==DATA_LOADED_FROM_STORAGE)
+    {
+      P=twoDPVector[PatternNumber][TrackNumber];
+      return true;
+    }
+    
+
   sprintf(filename,"bank/bank%d/dataP%dT%d.pic",bank,PatternNumber,TrackNumber);
 
 
@@ -158,6 +167,8 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
   if (fd==0)
     {
       printf("[data file %s not found]\n",fn.c_str());
+      loadedData[PatternNumber][TrackNumber]=DATA_DOES_NOT_EXIST_ON_STORAGE;
+      twoDPVector[PatternNumber][TrackNumber].init();
       return false;
       //exit(213);
     }
@@ -857,7 +868,10 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
 
 
   if (retcode==true)
-    loadedData[PatternNumber][TrackNumber]=DATA_EXIST_ON_STORAGE;
+    {
+      loadedData[PatternNumber][TrackNumber]=DATA_LOADED_FROM_STORAGE;
+      twoDPVector[PatternNumber][TrackNumber]=P;
+    }
   
   //free(line);
   fclose(fd);
@@ -1253,6 +1267,7 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
   fclose(fd);
 
   loadedData[PatternNumber][TrackNumber]=DATA_EXIST_ON_STORAGE;
+  twoDPVector[PatternNumber][TrackNumber]=P;
 }
 
 
