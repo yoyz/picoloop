@@ -28,7 +28,7 @@ AudioEngine::AudioEngine() : AM(),
   bufferFrames = 512;          // Weird ?
   bufferFrames = BUFFER_FRAME; // Weird ?
   nbCallback=0;
-  debug_audio=1;
+  debug_audio=0;
   if (debug_audio) 
     {
       fd = fopen("audioout","w+");

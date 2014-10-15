@@ -650,10 +650,18 @@ void display_board_load_save()
 
       sprintf(str_song,"SongPosition %d ",SEQ.getSongSequencer().getStep());
 
-      SG.guiTTFText(120,10, str_song);
-      SG.guiTTFText(120,30,txt_pattern_modulo_sixteen_slot[song_cursor_x_div_sixteen]);
+      SG.guiTTFText(30,(SCREEN_HEIGHT/2)*SCREEN_MULT+0, str_song);
+      SG.guiTTFText(30,(SCREEN_HEIGHT/2)*SCREEN_MULT+20,txt_pattern_modulo_sixteen_slot[song_cursor_x_div_sixteen]);
 
-      // Display box loaded/unloaded
+      sprintf(str_song,"LoopA %d ",SEQ.getSongSequencer().getLoopA());
+      SG.guiTTFText((SCREEN_WIDTH/2)*SCREEN_MULT,(SCREEN_HEIGHT/2)*SCREEN_MULT+0, str_song);
+
+      sprintf(str_song,"LoopB %d ",SEQ.getSongSequencer().getLoopB());
+      SG.guiTTFText((SCREEN_WIDTH/2)*SCREEN_MULT,(SCREEN_HEIGHT/2)*SCREEN_MULT+20,str_song);
+
+
+
+      // Display box loaded/unloaded for load/save mode
       for (x=loadsave_cursor_x_divmul_sixteen;
 	   x<(loadsave_cursor_x_divmul_sixteen)+16;
 	   x++)
@@ -681,10 +689,15 @@ void display_board_load_save()
       // we are in song mode
       // Display the current song position by a vertical bar
       for (y=0;y<TRACK_MAX;y++)
-	//if (loadsave_cursor_mode==CURSOR_SONG)
-	SG.middleBoxNumberDown(SEQ.getSongSequencer().getStep()%16,
-			       y,
-			       TRIG_COLOR);
+	{
+	  if (SEQ.getSongSequencer().getStep()/16 == song_cursor_x_div_sixteen)
+	    //if (loadsave_cursor_mode==CURSOR_SONG)
+	    SG.middleBoxNumberDown(SEQ.getSongSequencer().getStep()%16,
+				   y,
+				   NOTE_COLOR);
+	}
+
+
 
 
       // we are in loadsave mode
@@ -700,8 +713,6 @@ void display_board_load_save()
 	SG.middleBoxNumberDown(song_cursor_x%16,
 			       song_cursor_y,
 			       TRIG_COLOR);
-
-
 
       
       
@@ -730,7 +741,7 @@ void display_board_load_save()
 
 
 
-  //Draw LFO when load/save is not selected
+  // Draw LFO when load/save is not selected
   // Why ? need to display something, so why not ?
   if (menu!=MENU_OFF && 
       menu_cursor==GLOBALMENU_LS
@@ -1404,6 +1415,9 @@ void handle_key_menu()
 	  //case MENU_ON_PAGE1: menu=MENU_ON_PAGE2; menu_cursor=+4; break;
 	  //case MENU_ON_PAGE2: menu=MENU_ON_PAGE1; menu_cursor=-4; break;
 	}
+
+      PR.saveSong(SEQ.getSongSequencer().getSongVector());
+
       dirty_graphic=1;
       IE.clearLastKeyEvent();
       printf("[gmenu : %d cmenu : %d]\n",menu,menu_cursor);
@@ -1478,6 +1492,8 @@ void handle_key_menu()
 	}
     }
 
+
+  // Check this ??? do not think it works
   //leave menu 
   if (lastKey      ==  BUTTON_B       && 
       lastEvent    ==  SDL_KEYUP      &&
@@ -2699,12 +2715,17 @@ void handle_key_load_save()
 	  return;
 	}
 
-      if (menu        == MENU_OFF && 
-	  keyState[BUTTON_START]
+      // Switch between load/save and song
+      if (menu        == MENU_OFF    && 
+	  lastEvent   == SDL_KEYUP   &&
+	  lastKey     == BUTTON_START
+	  //keyState[BUTTON_START]
 	  )
 	{
 	  if      (loadsave_cursor_mode==CURSOR_LOADSAVE)  loadsave_cursor_mode=CURSOR_SONG;
 	  else if (loadsave_cursor_mode==CURSOR_SONG)      loadsave_cursor_mode=CURSOR_LOADSAVE;
+	  dirty_graphic=1;
+	  IE.clearLastKeyEvent();
 	  return;
 	}
 
@@ -3622,7 +3643,7 @@ int seq_update_by_step()
   if (pattern_song_reload!=0)
     {
 
-      SEQ.getSongSequencer().setStep(song_cursor_x);
+      SEQ.getSongSequencer().setStep(song_cursor_x);      
       pattern_song_reload=0;
       SEQ.setSongMode(1);
     }
@@ -3888,12 +3909,6 @@ void seq_callback_update_step()
 	  if (SEQ.getPatternSequencer(i).getStep()==0)
 	    {
 
-	      if (SEQ.getSongMode()   == 1)		
-		if (PR.PatternDataExist(SEQ.getSongSequencer().getPatternNumberAtCursorPosition(i),i))
-		  PR.readPatternData(SEQ.getSongSequencer().getPatternNumberAtCursorPosition(i),i,P[i]);
-		else
-		  P[i].init();
-
 	      if (songSequencerHasInc == 0 &&
 		  SEQ.getSongMode()   == 1		  
 		  )
@@ -3902,11 +3917,16 @@ void seq_callback_update_step()
 		  songSequencerHasInc++;
 		}
 
+	      if (SEQ.getSongMode()   == 1)		
+		if (PR.PatternDataExist(SEQ.getSongSequencer().getPatternNumberAtCursorPosition(i),i))
+		  PR.readPatternData(SEQ.getSongSequencer().getPatternNumberAtCursorPosition(i),i,P[i]);
+		else
+		  P[i].init();
 	     
-	      if (i==TRACK_MAX-1)
-		{
-		  printf("SongSequencer.cursorPosition:%d\n",SEQ.getSongSequencer().getStep());
-		}
+	      //if (i==TRACK_MAX-1)
+	      //{
+	      //printf("SongSequencer.cursorPosition:%d\n",SEQ.getSongSequencer().getStep());
+	      //}
 	    }
 	  
 	  // Update the Machine for the new step
@@ -4016,6 +4036,7 @@ void load_pattern()
   PR.setBank(0);  // The current  storage bank will be 0 PWD/bank/bank%d/
   //PR.setFileName(fileName);
 
+
   // Warmup the patternReader cache
   for (t=0;t<TRACK_MAX;t++)
     for (p=0;p<MAX_PATTERN_BY_PROJECT;p++)
@@ -4023,7 +4044,11 @@ void load_pattern()
 	PR.readPatternData(p,t,P[t]);
       }
 
-
+  /*
+  for (t=0;t<TRACK_MAX;t++)
+    for (p=0;p<MAX_PATTERN_BY_PROJECT;p++)
+	PR.readPatternData(p,t,P[t]);
+  */
 
   for (t=0;t<TRACK_MAX;t++)
     {

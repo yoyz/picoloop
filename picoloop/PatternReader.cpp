@@ -57,6 +57,33 @@ int PatternReader::getBank()
   return bank;
 }
 
+
+int PatternReader::saveSong(vector <vector <int> > songVector)
+{
+  char filename[1024];
+  char line[MAX_PATTERN_BY_PROJECT];
+  int i;
+  int j;
+  sprintf(filename,"bank/bank%d/song.pic");
+  fd=fopen(filename,"w");
+  if (fd==0)
+    {
+      return 0;
+    }
+  for (j=0;j<TRACK_MAX;j++)
+    for (i=0;i<MAX_PATTERN_BY_PROJECT;i++)
+      {
+	line[i]=songVector[i][j];
+	fwrite(line,sizeof(char),sizeof(char)*MAX_PATTERN_BY_PROJECT,fd);
+      }
+  fclose(fd);
+}
+
+vector <vector <int> >  PatternReader::loadSong()
+{
+  
+}
+
 bool PatternReader::PatternRemove(int PatternNumber,int TrackNumber)
 {
   char filename[1024];
@@ -82,6 +109,7 @@ bool PatternReader::PatternDataExist(int PatternNumber,int TrackNumber)
   char filename[1024];
 
   //printf("?EXIST (%d %d)\n");
+
   if (loadedData[PatternNumber][TrackNumber]==DATA_EXIST_ON_STORAGE | 
       loadedData[PatternNumber][TrackNumber]==DATA_LOADED_FROM_STORAGE)
     return true;
@@ -156,7 +184,6 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
       P=twoDPVector[PatternNumber][TrackNumber];
       return true;
     }
-    
 
   sprintf(filename,"bank/bank%d/dataP%dT%d.pic",bank,PatternNumber,TrackNumber);
 
@@ -168,9 +195,10 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
     {
       printf("[data file %s not found]\n",fn.c_str());
       loadedData[PatternNumber][TrackNumber]=DATA_DOES_NOT_EXIST_ON_STORAGE;
-      twoDPVector[PatternNumber][TrackNumber].init();
+      //twoDPVector[PatternNumber][TrackNumber].init();
+      P.init();
+      twoDPVector[PatternNumber][TrackNumber]=P;
       return false;
-      //exit(213);
     }
   
   while (match==0 && retcode==true)
@@ -1266,8 +1294,14 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
     }
   fclose(fd);
 
-  loadedData[PatternNumber][TrackNumber]=DATA_EXIST_ON_STORAGE;
-  twoDPVector[PatternNumber][TrackNumber]=P;
+  //loadedData[PatternNumber][TrackNumber]=DATA_EXIST_ON_STORAGE;
+  //twoDPVector[PatternNumber][TrackNumber]=P;
+
+  if (retcode==true)
+    {
+      loadedData[PatternNumber][TrackNumber]=DATA_LOADED_FROM_STORAGE;
+      twoDPVector[PatternNumber][TrackNumber]=P;
+    }
 }
 
 
