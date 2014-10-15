@@ -39,6 +39,9 @@ int SongSequencer::setStep(int s)
 
 int SongSequencer::setLoopPoint(int loop)
 {
+  if (loop<=step)
+    step=loopStepA;
+
   loopStepA=step;
   loopStepB=loop;
 }

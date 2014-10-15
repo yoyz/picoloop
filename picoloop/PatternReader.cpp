@@ -973,7 +973,7 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
   if (fd==0)
     {
       printf("[data file %s not found]\n",fn.c_str());
-      retcode=true;
+      retcode=false;
       //exit(213);
     }
   else
@@ -1318,11 +1318,11 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
   //loadedData[PatternNumber][TrackNumber]=DATA_EXIST_ON_STORAGE;
   //twoDPVector[PatternNumber][TrackNumber]=P;
 
-  if (retcode==true)
-    {
-      loadedData[PatternNumber][TrackNumber]=DATA_LOADED_FROM_STORAGE;
-      twoDPVector[PatternNumber][TrackNumber]=P;
-    }
+  //if (retcode==true)
+  //{
+  loadedData[PatternNumber][TrackNumber]=DATA_LOADED_FROM_STORAGE;
+  twoDPVector[PatternNumber][TrackNumber]=P;
+      ///}
 }
 
 
