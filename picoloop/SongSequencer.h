@@ -24,12 +24,14 @@ public:
   int  getPatternNumberAtCursorPosition(int trackNumber);
   void setPatternNumber(int cursorPosition,int trackNumber,int patternNumber);
   vector <vector <int> > getSongVector();
+
+  vector <vector <int> > songVector;
   
 private:
   int                  step;
   int                  loopStepA;
   int                  loopStepB;
-  vector <vector <int> > songVector;
+
 };
 
 #endif

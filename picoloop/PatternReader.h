@@ -9,7 +9,7 @@ using namespace std;
 #include <string.h>
 #include <vector>
 #include "Pattern.h"
-
+#include "SongSequencer.h"
 
 
 #define DATA_LOADED_FROM_STORAGE         3
@@ -26,8 +26,10 @@ class PatternReader
   void init();
   void setBank(int b);
   int  getBank();
-  int  saveSong(vector <vector <int> > songVector);
-  vector <vector <int> > loadSong();
+
+  int  saveSong(SongSequencer & SS);
+  int  loadSong(SongSequencer & SS);
+
   void setFileName(string filename);
   bool PatternRemove(int PatternNumber,int TrackNumber);
   bool PatternDataExist(int PatternNumber,int TrackNumber);

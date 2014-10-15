@@ -1416,7 +1416,8 @@ void handle_key_menu()
 	  //case MENU_ON_PAGE2: menu=MENU_ON_PAGE1; menu_cursor=-4; break;
 	}
 
-      PR.saveSong(SEQ.getSongSequencer().getSongVector());
+      //PR.saveSong(SEQ.getSongSequencer().getSongVector());
+      PR.saveSong(SEQ.getSongSequencer());
 
       dirty_graphic=1;
       IE.clearLastKeyEvent();
@@ -4036,6 +4037,7 @@ void load_pattern()
   PR.setBank(0);  // The current  storage bank will be 0 PWD/bank/bank%d/
   //PR.setFileName(fileName);
 
+  PR.loadSong(SEQ.getSongSequencer());
 
   // Warmup the patternReader cache
   for (t=0;t<TRACK_MAX;t++)
