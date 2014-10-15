@@ -163,7 +163,7 @@ void SDL_GUI::drawTTFTextLoadSaveBoxNumberDown(int x,int y,const char *txt)
   //this->guiTTFText(35+15*x,60+15*y,txt);
   //this->guiTTFText(35+15*x,30+15*y,txt);
   //this->guiTTFText(35+15*x,OFFSET_Y_MIDDLE_BOX+15*y,txt);
-  this->guiTTFText((OFFSET_X_MIDDLEBOX_DOWN+15*x)*SCREEN_MULT,(OFFSET_Y_MIDDLEBOX_DOWN+15*y)*SCREEN_MULT,txt);
+  this->guiTTFText((OFFSET_X_MIDDLEBOX_DOWN+15*x)*SCREEN_MULT,(OFFSET_Y_MIDDLEBOX_DOWN+(15*y))*SCREEN_MULT,txt);
 } 
 
 

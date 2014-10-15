@@ -1,6 +1,6 @@
 #include "SongSequencer.h"
 
-SongSequencer::SongSequencer() : songVector(MAX_PATTERN_BY_PROJECT,vector <int>(TRACK_MAX))
+SongSequencer::SongSequencer() : songVector(MAX_PATTERN_BY_PROJECT,vector <unsigned int>(TRACK_MAX))
 {
   int x,y;
   for (x=0;x<MAX_PATTERN_BY_PROJECT;x++)
@@ -78,8 +78,9 @@ int SongSequencer::getPatternNumberAtCursorPosition(int trackNumber)
   return songVector[step][trackNumber];
 }
 
-
+/*
 vector <vector <int> > SongSequencer::getSongVector()
 {
   return songVector;
 }
+*/

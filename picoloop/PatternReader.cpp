@@ -61,7 +61,7 @@ int PatternReader::getBank()
 int PatternReader::saveSong(SongSequencer & SS)
 {
   char filename[1024];
-  char line[MAX_PATTERN_BY_PROJECT];
+  unsigned char line[MAX_PATTERN_BY_PROJECT];
   int i;
   int j;
   sprintf(filename,"bank/bank%d/song.pic",bank);
@@ -76,15 +76,15 @@ int PatternReader::saveSong(SongSequencer & SS)
 	{
 	  line[i]=SS.songVector[i][j];
 	}
-      fwrite(line,sizeof(char),sizeof(char)*MAX_PATTERN_BY_PROJECT,fd);
+      fwrite(line,sizeof(unsigned char),sizeof(unsigned char)*MAX_PATTERN_BY_PROJECT,fd);
     }
   fclose(fd);
 }
 
 int PatternReader::loadSong(SongSequencer & SS)
 {
-  char filename[1024];
-  char line[MAX_PATTERN_BY_PROJECT];
+  char  filename[1024];
+  unsigned char line[MAX_PATTERN_BY_PROJECT];
   int i;
   int j;
   sprintf(filename,"bank/bank%d/song.pic",bank);
@@ -95,7 +95,7 @@ int PatternReader::loadSong(SongSequencer & SS)
     }
   for (j=0;j<TRACK_MAX;j++)
     {
-      fread(line,sizeof(char),sizeof(char)*MAX_PATTERN_BY_PROJECT,fd);
+      fread(line,sizeof(unsigned char),sizeof(unsigned char)*MAX_PATTERN_BY_PROJECT,fd);
       for (i=0;i<MAX_PATTERN_BY_PROJECT;i++)
 	{
 	  SS.songVector[i][j]=line[i];

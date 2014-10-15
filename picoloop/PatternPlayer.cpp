@@ -725,16 +725,22 @@ void display_board_load_save()
 	  SG.drawTTFTextLoadSaveBoxNumberUp(x%16,y,txt_tab[x]);
       //SG.drawTTFTextLoadSaveBoxNumer(x,y,tmp_txt);
 
-
       // txt in Song box 
       // Display text 00..09..FF
       for (x=0;
 	   x<16;
 	   x++)
-	for (y=0;y<TRACK_MAX;y++)
-	  SG.drawTTFTextLoadSaveBoxNumberDown(x,y,txt_tab[SEQ.getSongSequencer().getPatternNumber(x,y)]);
-	  //SG.drawTTFTextLoadSaveBoxNumberDown(x,y,txt_tab[x%16]);
-
+	{
+	  for (y=0;y<TRACK_MAX;y++)
+	    SG.drawTTFTextLoadSaveBoxNumberDown(x,y,txt_tab[SEQ.getSongSequencer().getPatternNumber(x,y)]);
+	    //printf("%d\n",SEQ.getSongSequencer().getPatternNumber(x,y));
+	    //printf("\n");
+	}
+      
+      //exit(0);
+	  //SG.drawTTFTextLoadSaveBoxNumberDown(x,y,txt_tab[SEQ.getSongSequencer().getPatternNumber(x,y)]);
+      //SG.drawTTFTextLoadSaveBoxNumberDown(x,y,txt_tab[x%16]);
+      
     }
 
 
