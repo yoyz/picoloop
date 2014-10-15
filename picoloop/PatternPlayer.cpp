@@ -3961,7 +3961,7 @@ void seq_callback_update_step()
 		if (PR.PatternDataExist(SEQ.getSongSequencer().getPatternNumberAtCursorPosition(i),i))
 		  {
 		    PR.readPatternData(SEQ.getSongSequencer().getPatternNumberAtCursorPosition(i),i,P[i]);
-		    SEQ.getPatternSequencer(t).setBPMDivider(P[t].getBPMDivider());
+		    SEQ.getPatternSequencer(i).setBPMDivider(P[i].getBPMDivider());
 		  }
 		else
 		  P[i].init();
