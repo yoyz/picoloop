@@ -5,6 +5,7 @@ using namespace std;
 //#include "Biquad.h"
 #include "Filter.h"
 #include <SDL/SDL.h>
+#include "SineOscillator.h"
 //#include "dbopl/mixer.h"
 //#include "dbopl/dbopl.h"
 //#include "dbopl/dosbox.h"
@@ -52,6 +53,15 @@ class dboplMachine : public Machine
   //int                   freq;
   float                 freq;
   int                   keyon;
+
+  SineOscillator          sineLfoOsc1;
+
+  int lfo_depth;
+  int lfo_depth_shift;
+
+  int lfo_speed;
+
+
 };
 
 #endif

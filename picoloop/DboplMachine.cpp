@@ -1,6 +1,6 @@
 #include "DboplMachine.h"
 
-#define SAM 512
+#define SAM 1
 
 //enum {
 //  FMTYPE_2_OP_AM,
@@ -8,13 +8,18 @@
 //};
 
 
-dboplMachine::dboplMachine() : filter()
+dboplMachine::dboplMachine() : filter(), 	     sineLfoOsc1()
 {
   printf("dboplMachine::dboplMachine()\n");  
   buffer=0;
   cutoff=125;
   resonance=10;
   index=0;
+
+  lfo_depth=0;
+  lfo_depth_shift=20;
+  lfo_speed=0;
+
 }
 
 
@@ -75,6 +80,10 @@ void dboplMachine::init()
   //HO->SetKsl(1,2,3);
   HO->SetAttenuation(1,1,20);
   HO->SetAttenuation(1,2,8);
+
+  sineLfoOsc1.init();
+  sineLfoOsc1.setFreq(0);
+  sineLfoOsc1.setAmplitude(32);
 }
 
 void dboplMachine::reset()
@@ -82,6 +91,7 @@ void dboplMachine::reset()
  sample_num=0;
  freq=110.0;
  keyon=0;
+ sineLfoOsc1.reset();
 }
 
 
@@ -159,6 +169,24 @@ void dboplMachine::setI(int what,int val)
     if (what==ADSR_ENV1_SUSTAIN)   HO->SetEnvelopeSustain(1,2,val/16);
     if (what==ADSR_ENV1_RELEASE)   HO->SetEnvelopeRelease(1,2,val/16);
 
+    if (what==LFO1_FREQ)           { lfo_speed=val; }
+
+    if (what==LFO1_DEPTH)           {
+      
+      if (val > 0   && val <=  8  )  { lfo_depth=val ; lfo_depth_shift=20;       }
+      if (val > 8   && val <= 16  )  { lfo_depth=val ; lfo_depth_shift=12;       }
+      if (val > 17  && val <= 32  )  { lfo_depth=val ; lfo_depth_shift=11;       } 
+      if (val > 33  && val <= 48  )  { lfo_depth=val ; lfo_depth_shift=10;       }
+      if (val > 49  && val <= 64  )  { lfo_depth=val ; lfo_depth_shift=9;        }
+      if (val > 65  && val <= 80  )  { lfo_depth=val ; lfo_depth_shift=8;        }
+      if (val > 81  && val <= 96  )  { lfo_depth=val ; lfo_depth_shift=7;        }
+      if (val > 97  && val <= 112 )  { lfo_depth=val ; lfo_depth_shift=6;        }
+      if (val > 113 && val <= 128 )  { lfo_depth=val ; lfo_depth_shift=5;        }
+      sineLfoOsc1.setFreq(lfo_speed);
+      
+    }
+
+
     if (what==OSC12_MIX)           HO->SetFrequencyMultiple(1,1,freqM[val/11]);
     if (what==OSC1_PHASE)          HO->SetFrequencyMultiple(1,2,freqM[val/11]);
 
@@ -211,7 +239,13 @@ int dboplMachine::tick()
 
   if (sample_num==0 || 
       index==0 )
-    HO->Generate(SAM,buffer);
+    {
+      if (keyon)
+	{
+	  HO->KeyOn(1,freq+(sineLfoOsc1.tick()>>lfo_depth_shift));
+	}
+      HO->Generate(SAM,buffer);
+    }
 
 
 
