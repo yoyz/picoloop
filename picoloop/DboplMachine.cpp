@@ -138,6 +138,7 @@ void dboplMachine::setI(int what,int val)
     if (what==NOTE_ON && val==1) 
     { 
       keyon=1;
+      sineLfoOsc1.reset();
       HO->KeyOn(1,freq);
     }
 
