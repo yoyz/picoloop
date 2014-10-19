@@ -3878,7 +3878,7 @@ void seq_update_track(int t)
 	  M[t]->setI(OSC1_PHASE,P[t].getPatternElement(step).getPhaseOsc1());
 
 	  M[t]->setI(LFO1_DEPTH,P[t].getPatternElement(step).getLfoDepth());
-	  M[t]->setI(LFO1_FREQ,P[t].getPatternElement(step).getLfoSpeed());
+	  M[t]->setF(LFO1_FREQ,P[t].getPatternElement(step).getLfoSpeed());
 	  //M[t]->set(OSC12_MIX,phase);
 
 	  M[t]->setI(OSC1_TYPE,P[t].getPatternElement(step).getOscillatorOneType());

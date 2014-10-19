@@ -63,6 +63,7 @@ int PicosynthMachine::getI(int what)
 void PicosynthMachine::setF(int what,float val)
 {
   if (what==OSC1_FREQ)           this->getVCO().setSynthFreq(val);
+  if (what==LFO1_FREQ)           this->getVCO().setLfoSpeed(val);
 }
 
 void PicosynthMachine::setI(int what,int val)
@@ -91,7 +92,7 @@ void PicosynthMachine::setI(int what,int val)
   if (what==OSC12_MIX)           this->getVCO().setVCOMix(val);
 
   if (what==LFO1_DEPTH)          this->getVCO().setLfoDepth(val);
-  if (what==LFO1_FREQ)           this->getVCO().setLfoSpeed(val);
+
 
   if (what==ADSR_ENV0_ATTACK)    this->getADSRAmp().setAttack(val);
   if (what==ADSR_ENV0_DECAY)     this->getADSRAmp().setDecay(val);

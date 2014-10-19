@@ -118,21 +118,17 @@ void VCO::setOscillator(int oscillator_number,int oscillator_type)
       if (oscillator_type%5==0) s1=&sineOsc1;
       if (oscillator_type%5==1) s1=&sawOsc1;
       if (oscillator_type%5==2) s1=&pulseOsc1;
-      //if (oscillator_type%5==3) s1=&waveTableSineOsc1;
       if (oscillator_type%5==3) s1=&triangleOsc1;
       if (oscillator_type%5==4) s1=&noiseOsc1;
 
-      //      if (oscillator_type%4==2) s1=&noiseosc;
     }
   if (oscillator_number %2==1)
     {
       if (oscillator_type%5==0) s2=&sineOsc2;
       if (oscillator_type%5==1) s2=&sawOsc2;
       if (oscillator_type%5==2) s2=&pulseOsc2;
-      //if (oscillator_type%5==3) s2=&waveTableSineOsc2;
       if (oscillator_type%5==3) s2=&triangleOsc2;
       if (oscillator_type%5==4) s2=&noiseOsc2;
-      //      if (oscillator_type%4==3) s2=&noiseosc;
     }
   s1->setFreq(s1freq);
   s2->setFreq(s2freq);
@@ -141,21 +137,44 @@ void VCO::setOscillator(int oscillator_number,int oscillator_type)
 void VCO::setLfoDepth(int val)
 {
   lfo_depth=val;
-  if (val > 0   && val <=  8  )  { lfo_depth=val ; lfo_depth_shift=20;       }
-  if (val > 8   && val <= 16  )  { lfo_depth=val ; lfo_depth_shift=12;       }
-  if (val > 17  && val <= 32  )  { lfo_depth=val ; lfo_depth_shift=11;       } 
-  if (val > 33  && val <= 48  )  { lfo_depth=val ; lfo_depth_shift=10;       }
-  if (val > 49  && val <= 64  )  { lfo_depth=val ; lfo_depth_shift=9;        }
-  if (val > 65  && val <= 80  )  { lfo_depth=val ; lfo_depth_shift=8;        }
-  if (val > 81  && val <= 96  )  { lfo_depth=val ; lfo_depth_shift=7;        }
-  if (val > 97  && val <= 112 )  { lfo_depth=val ; lfo_depth_shift=6;        }
-  if (val > 113 && val <= 128 )  { lfo_depth=val ; lfo_depth_shift=5;        }
+  if (val > 0    && val <=  4  )  { lfo_depth=val ; lfo_depth_shift=33;        }
+  if (val > 4    && val <=  8  )  { lfo_depth=val ; lfo_depth_shift=32;        }
+  if (val > 8    && val <= 12  )  { lfo_depth=val ; lfo_depth_shift=31;        } 
+  if (val > 12   && val <= 16  )  { lfo_depth=val ; lfo_depth_shift=30;        }
+  if (val > 16   && val <= 20  )  { lfo_depth=val ; lfo_depth_shift=29;        }
+  if (val > 20   && val <= 24  )  { lfo_depth=val ; lfo_depth_shift=28;        }
+  if (val > 24   && val <= 28  )  { lfo_depth=val ; lfo_depth_shift=27;        }
+  if (val > 28   && val <= 32  )  { lfo_depth=val ; lfo_depth_shift=26;        }
+  if (val > 32   && val <= 36  )  { lfo_depth=val ; lfo_depth_shift=25;        }
+  if (val > 36   && val <= 40  )  { lfo_depth=val ; lfo_depth_shift=24;        }
+  if (val > 40   && val <= 44  )  { lfo_depth=val ; lfo_depth_shift=23;        }
+  if (val > 44   && val <= 48  )  { lfo_depth=val ; lfo_depth_shift=22;        }
+  if (val > 48   && val <= 54  )  { lfo_depth=val ; lfo_depth_shift=21;        }
+  if (val > 54   && val <= 58  )  { lfo_depth=val ; lfo_depth_shift=20;        }
+  if (val > 58   && val <= 62  )  { lfo_depth=val ; lfo_depth_shift=19;        }
+  if (val > 62   && val <= 66  )  { lfo_depth=val ; lfo_depth_shift=18;        }
+  if (val > 66   && val <= 70  )  { lfo_depth=val ; lfo_depth_shift=17;        }
+  if (val > 70   && val <= 74  )  { lfo_depth=val ; lfo_depth_shift=16;        }
+  if (val > 74   && val <= 78  )  { lfo_depth=val ; lfo_depth_shift=15;        }
+  if (val > 78   && val <= 82  )  { lfo_depth=val ; lfo_depth_shift=14;        }
+  if (val > 82   && val <= 86  )  { lfo_depth=val ; lfo_depth_shift=13;        }
+  if (val > 86   && val <= 90  )  { lfo_depth=val ; lfo_depth_shift=12;        }
+  if (val > 90   && val <= 94  )  { lfo_depth=val ; lfo_depth_shift=11;        }
+  if (val > 94   && val <= 98  )  { lfo_depth=val ; lfo_depth_shift=10;        }
+  if (val > 98   && val <= 102 )  { lfo_depth=val ; lfo_depth_shift=9;         }
+  if (val > 102  && val <= 106 )  { lfo_depth=val ; lfo_depth_shift=8;         }
+  if (val > 106  && val <= 110 )  { lfo_depth=val ; lfo_depth_shift=7;         }
+  if (val > 110  && val <= 114 )  { lfo_depth=val ; lfo_depth_shift=6;         }
+  if (val > 114  && val <= 118 )  { lfo_depth=val ; lfo_depth_shift=5;         }
+  if (val > 118  && val <= 122 )  { lfo_depth=val ; lfo_depth_shift=4;         }
+  if (val > 122  && val <= 128 )  { lfo_depth=val ; lfo_depth_shift=3;         } 
+
 
 }
 
-void VCO::setLfoSpeed(int val)
+void VCO::setLfoSpeed(float val)
 {
-  lfo_speed=val;
+  lfo_speed=val/24.0;
   lfo1->setFreq(val);
   //lfo1->setAmplitude(0);
 }
@@ -211,30 +230,12 @@ Sint16 VCO::tick()
     { 
       printf("[s1 is NULL]\n"); 
       //  exit(1); 
-    } /*
-  else
-    {
-      printf("[s1 is NOT NULL]\n"); 
-      } */
-  //  return s1->tick()+s2->tick();
-  
-  //sa=s1->tick()*(128/vcomix);
+    } 
 
-  //vcomix=0    sa full
-  //vcomix=128  sa 0
-
-  //vcomix=0    sb 0
-  //vcomix=128  sb full
-
-  //  sa=(s1->tick()*((128-vcomix))/128);
-  //  sb=(s2->tick()*((vcomix-128))/128);
-  
-  //sa=(s1->tick()*((128-vcomix))/(128));
   lfo_counter++;
   if (lfo_counter>lfo_refresh)
     lfo_counter=0;
 
-  //lfo_counter=0;
   
   if (lfo_counter==0)
     {
@@ -248,13 +249,6 @@ Sint16 VCO::tick()
 
       s1->setFreq(freqOsc1+tmp);
       s2->setFreq(freqOsc2+tmp);
-      //      tmp_i++;
-      //      if (tmp_i>=128)
-      //      	{
-      //	  if (tmp!=0)
-      //	    printf("tmp:\t%.5d speed:%.5d depth:%.5d shift:%.5d\n",tmp,lfo_speed,lfo_depth,lfo_depth_shift);
-      //	  tmp_i=0;
-      //	}
     }
 
   

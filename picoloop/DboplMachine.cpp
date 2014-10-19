@@ -170,7 +170,9 @@ void dboplMachine::setI(int what,int val)
     if (what==ADSR_ENV1_SUSTAIN)   HO->SetEnvelopeSustain(1,2,val/16);
     if (what==ADSR_ENV1_RELEASE)   HO->SetEnvelopeRelease(1,2,val/16);
 
-    if (what==LFO1_FREQ)           { lfo_speed=val; }
+    //if (what==LFO1_FREQ)           { lfo_speed=val; }
+    if (what==LFO1_FREQ)           { lfo_speed=(freq*val)/16; }
+    //if (what==LFO1_FREQ)           { lfo_speed=((freq/4)*(val)); }
 
     if (what==LFO1_DEPTH)           {
       
@@ -232,6 +234,7 @@ int dboplMachine::tick()
 {
   Sint16 s_in;
   Sint16 s_out;
+  int    modulated_freq;
 
   if (index>=SAM | 
       index<0)
@@ -241,9 +244,18 @@ int dboplMachine::tick()
   if (sample_num==0 || 
       index==0 )
     {
+      //modulated_freq=(sineLfoOsc1.tick()>>lfo_depth_shift);
+      //modulated_freq=((sineLfoOsc1.tick()>>5)/(128-lfo_depth));
+
       if (keyon)
 	{
-	  HO->KeyOn(1,freq+(sineLfoOsc1.tick()>>lfo_depth_shift));
+	  //HO->KeyOn(1,freq+modulated_freq);
+	  HO->KeyOn(1,freq);
+	}
+      else
+	{
+	  //HO->SetFrequency(1,freq+modulated_freq,false);
+	  HO->SetFrequency(1,freq,false);
 	}
       HO->Generate(SAM,buffer);
     }

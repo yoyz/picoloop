@@ -32,7 +32,7 @@ public:
   void                  init();
   void                  setVCOMix(int mix);
   void                  setLfoDepth(int val);
-  void                  setLfoSpeed(int val);
+  void                  setLfoSpeed(float val);
   Oscillator          * getOscillatorOne();
 
   SineOscillator          sineOsc1;
