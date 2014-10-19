@@ -34,20 +34,35 @@ void SawOscillator::init()
   float f;
   Sint16 s;
   Sint16 bitdepth=16;
-  Sint16 dec=(1<<(bitdepth-2))/(table_size/4);
+  Sint16 dec;
+  //Sint16 dec=(1<<(bitdepth-2))/(table_size/2);
   //if (table==NULL)
   //{
   //table=(Sint16*)malloc(sizeof(Sint16)*table_size);
-      s=(1<<(bitdepth-1))-((table_size/2));
-      for (i=0;i<table_size-1;i++)
-	{
-	  table[i]=s/2;
-	  s=s-dec;
-	  if (0) printf("SawOscillator::init() table[%d]=%d\n",i,table[i]);
-	  
-	}
+
+  s=(1<<(bitdepth-2));
+  dec=(1<<(bitdepth-2))/(table_size/2);
+
+  for (i=0;i<table_size;i++)
+    {
+      table[i]=s;
+      s=s-dec;
+      //if (1) printf("SawOscillator::init() table[%d]=%d\n",i,table[i]);	  
+    }
+
+
+
+
+
+  //s=(1<<(bitdepth-2))-((table_size/2));
+  //for (i=0;i<table_size-1;i++)
+  //{
+  //table[i]=s/2;
+  //s=s-dec;
+  
+  //}
       //} 
-      //exit(0); 
+  //  exit(0); 
 }
 
 
