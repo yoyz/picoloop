@@ -81,8 +81,10 @@ void dboplMachine::init()
   HO->SetAttenuation(1,1,20);
   HO->SetAttenuation(1,2,8);
 
+  lfo_speed=0.0;
+
   sineLfoOsc1.init();
-  sineLfoOsc1.setFreq(0);
+  sineLfoOsc1.setFreq(lfo_speed);
   sineLfoOsc1.setAmplitude(32);
 }
 
@@ -103,8 +105,8 @@ int dboplMachine::getI(int what)
 
 void dboplMachine::setF(int what,float val)
 {
-    if (what==OSC1_FREQ)           freq=val;
-    if (what==LFO1_FREQ)           lfo_speed=val;
+  if (what==OSC1_FREQ)           { freq=val; }
+  if (what==LFO1_FREQ)           { lfo_speed=val/4.0; sineLfoOsc1.setFreq(lfo_speed); }
 }
 
 
@@ -171,9 +173,6 @@ void dboplMachine::setI(int what,int val)
     if (what==ADSR_ENV1_SUSTAIN)   HO->SetEnvelopeSustain(1,2,val/16);
     if (what==ADSR_ENV1_RELEASE)   HO->SetEnvelopeRelease(1,2,val/16);
 
-    //if (what==LFO1_FREQ)           { lfo_speed=val; }
-    //if (what==LFO1_FREQ)           { lfo_speed=(freq*val)/16; }
-    //if (what==LFO1_FREQ)           { lfo_speed=((freq/4)*(val)); }
 
     if (what==LFO1_DEPTH)           {
 
@@ -209,7 +208,6 @@ void dboplMachine::setI(int what,int val)
       if (val > 118  && val <= 122 )  { lfo_depth=val ; lfo_depth_shift=4;         }
       if (val > 122  && val <= 128 )  { lfo_depth=val ; lfo_depth_shift=3;         } 
       
-      //sineLfoOsc1.setFreq(lfo_speed/24.0);
       sineLfoOsc1.setFreq(lfo_speed);
       
     }
@@ -269,12 +267,13 @@ int dboplMachine::tick()
   if (sample_num==0 || 
       index==0 )
     {
-      modulated_freq=(sineLfoOsc1.tick()>>lfo_depth_shift);
-      //modulated_freq=((sineLfoOsc1.tick()>>5)/(128-lfo_depth));
-
+      //modulated_freq=(sineLfoOsc1.tick()>>lfo_depth_shift);
+      modulated_freq=((sineLfoOsc1.tick()>>5)/(128-lfo_depth));
+      
       if (keyon)
 	{
-	  HO->KeyOn(1,freq+modulated_freq);
+	  //HO->KeyOn(1,freq+modulated_freq);
+	  HO->SetFrequency(1,freq+modulated_freq,true);
 	  //HO->KeyOn(1,freq);
 	}
       else
