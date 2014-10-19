@@ -59,7 +59,7 @@ class dboplMachine : public Machine
   int lfo_depth;
   int lfo_depth_shift;
 
-  int lfo_speed;
+  float lfo_speed;
 
 
 };

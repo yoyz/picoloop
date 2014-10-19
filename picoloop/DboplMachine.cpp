@@ -104,6 +104,7 @@ int dboplMachine::getI(int what)
 void dboplMachine::setF(int what,float val)
 {
     if (what==OSC1_FREQ)           freq=val;
+    if (what==LFO1_FREQ)           lfo_speed=val;
 }
 
 
@@ -171,20 +172,44 @@ void dboplMachine::setI(int what,int val)
     if (what==ADSR_ENV1_RELEASE)   HO->SetEnvelopeRelease(1,2,val/16);
 
     //if (what==LFO1_FREQ)           { lfo_speed=val; }
-    if (what==LFO1_FREQ)           { lfo_speed=(freq*val)/16; }
+    //if (what==LFO1_FREQ)           { lfo_speed=(freq*val)/16; }
     //if (what==LFO1_FREQ)           { lfo_speed=((freq/4)*(val)); }
 
     if (what==LFO1_DEPTH)           {
+
+      if (val > 0    && val <=  4  )  { lfo_depth=val ; lfo_depth_shift=33;        }
+      if (val > 4    && val <=  8  )  { lfo_depth=val ; lfo_depth_shift=32;        }
+      if (val > 8    && val <= 12  )  { lfo_depth=val ; lfo_depth_shift=31;        } 
+      if (val > 12   && val <= 16  )  { lfo_depth=val ; lfo_depth_shift=30;        }
+      if (val > 16   && val <= 20  )  { lfo_depth=val ; lfo_depth_shift=29;        }
+      if (val > 20   && val <= 24  )  { lfo_depth=val ; lfo_depth_shift=28;        }
+      if (val > 24   && val <= 28  )  { lfo_depth=val ; lfo_depth_shift=27;        }
+      if (val > 28   && val <= 32  )  { lfo_depth=val ; lfo_depth_shift=26;        }
+      if (val > 32   && val <= 36  )  { lfo_depth=val ; lfo_depth_shift=25;        }
+      if (val > 36   && val <= 40  )  { lfo_depth=val ; lfo_depth_shift=24;        }
+      if (val > 40   && val <= 44  )  { lfo_depth=val ; lfo_depth_shift=23;        }
+      if (val > 44   && val <= 48  )  { lfo_depth=val ; lfo_depth_shift=22;        }
+      if (val > 48   && val <= 54  )  { lfo_depth=val ; lfo_depth_shift=21;        }
+      if (val > 54   && val <= 58  )  { lfo_depth=val ; lfo_depth_shift=20;        }
+      if (val > 58   && val <= 62  )  { lfo_depth=val ; lfo_depth_shift=19;        }
+      if (val > 62   && val <= 66  )  { lfo_depth=val ; lfo_depth_shift=18;        }
+      if (val > 66   && val <= 70  )  { lfo_depth=val ; lfo_depth_shift=17;        }
+      if (val > 70   && val <= 74  )  { lfo_depth=val ; lfo_depth_shift=16;        }
+      if (val > 74   && val <= 78  )  { lfo_depth=val ; lfo_depth_shift=15;        }
+      if (val > 78   && val <= 82  )  { lfo_depth=val ; lfo_depth_shift=14;        }
+      if (val > 82   && val <= 86  )  { lfo_depth=val ; lfo_depth_shift=13;        }
+      if (val > 86   && val <= 90  )  { lfo_depth=val ; lfo_depth_shift=12;        }
+      if (val > 90   && val <= 94  )  { lfo_depth=val ; lfo_depth_shift=11;        }
+      if (val > 94   && val <= 98  )  { lfo_depth=val ; lfo_depth_shift=10;        }
+      if (val > 98   && val <= 102 )  { lfo_depth=val ; lfo_depth_shift=9;         }
+      if (val > 102  && val <= 106 )  { lfo_depth=val ; lfo_depth_shift=8;         }
+      if (val > 106  && val <= 110 )  { lfo_depth=val ; lfo_depth_shift=7;         }
+      if (val > 110  && val <= 114 )  { lfo_depth=val ; lfo_depth_shift=6;         }
+      if (val > 114  && val <= 118 )  { lfo_depth=val ; lfo_depth_shift=5;         }
+      if (val > 118  && val <= 122 )  { lfo_depth=val ; lfo_depth_shift=4;         }
+      if (val > 122  && val <= 128 )  { lfo_depth=val ; lfo_depth_shift=3;         } 
       
-      if (val > 0   && val <=  8  )  { lfo_depth=val ; lfo_depth_shift=20;       }
-      if (val > 8   && val <= 16  )  { lfo_depth=val ; lfo_depth_shift=12;       }
-      if (val > 17  && val <= 32  )  { lfo_depth=val ; lfo_depth_shift=11;       } 
-      if (val > 33  && val <= 48  )  { lfo_depth=val ; lfo_depth_shift=10;       }
-      if (val > 49  && val <= 64  )  { lfo_depth=val ; lfo_depth_shift=9;        }
-      if (val > 65  && val <= 80  )  { lfo_depth=val ; lfo_depth_shift=8;        }
-      if (val > 81  && val <= 96  )  { lfo_depth=val ; lfo_depth_shift=7;        }
-      if (val > 97  && val <= 112 )  { lfo_depth=val ; lfo_depth_shift=6;        }
-      if (val > 113 && val <= 128 )  { lfo_depth=val ; lfo_depth_shift=5;        }
+      //sineLfoOsc1.setFreq(lfo_speed/24.0);
       sineLfoOsc1.setFreq(lfo_speed);
       
     }
@@ -244,18 +269,18 @@ int dboplMachine::tick()
   if (sample_num==0 || 
       index==0 )
     {
-      //modulated_freq=(sineLfoOsc1.tick()>>lfo_depth_shift);
+      modulated_freq=(sineLfoOsc1.tick()>>lfo_depth_shift);
       //modulated_freq=((sineLfoOsc1.tick()>>5)/(128-lfo_depth));
 
       if (keyon)
 	{
-	  //HO->KeyOn(1,freq+modulated_freq);
-	  HO->KeyOn(1,freq);
+	  HO->KeyOn(1,freq+modulated_freq);
+	  //HO->KeyOn(1,freq);
 	}
       else
 	{
-	  //HO->SetFrequency(1,freq+modulated_freq,false);
-	  HO->SetFrequency(1,freq,false);
+	  HO->SetFrequency(1,freq+modulated_freq,false);
+	  //HO->SetFrequency(1,freq,false);
 	}
       HO->Generate(SAM,buffer);
     }

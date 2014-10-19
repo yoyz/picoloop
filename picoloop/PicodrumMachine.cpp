@@ -49,6 +49,7 @@ int PicodrumMachine::getI(int what)
 void PicodrumMachine::setF(int what,float val)
 {
   if (what==OSC1_FREQ)           this->getVCO().setSynthFreq(val);
+  if (what==LFO1_FREQ)           this->getVCO().setLfoSpeed(val);
 }
 
 
@@ -76,7 +77,7 @@ void PicodrumMachine::setI(int what,int val)
   if (what==OSC12_MIX)           this->getVCO().setVCOMix(val);
 
   if (what==LFO1_DEPTH)          this->getVCO().setLfoDepth(val);
-  if (what==LFO1_FREQ)           this->getVCO().setLfoSpeed(val);
+  //if (what==LFO1_FREQ)           this->getVCO().setLfoSpeed(val);
 
 
   if (what==ADSR_ENV0_ATTACK)    this->getADSRAmp().setAttack(val);

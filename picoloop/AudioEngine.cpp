@@ -28,7 +28,7 @@ AudioEngine::AudioEngine() : AM(),
   bufferFrames = 512;          // Weird ?
   bufferFrames = BUFFER_FRAME; // Weird ?
   nbCallback=0;
-  debug_audio=0;
+  debug_audio=1;
   if (debug_audio) 
     {
       fd = fopen("audioout","w+");
@@ -167,8 +167,8 @@ void AudioEngine::callback(void *unused, Uint8 *stream, int len)
     this->processBuffer(buffer_size);
 
   #ifdef LINUX_DESKTOP
-  //if (debug_audio)
-  //fwrite(buffer_out,buffer_size,sizeof(Sint16),fd);
+  if (debug_audio)
+    fwrite(buffer_out,buffer_size,sizeof(Sint16),fd);
   #endif
 
     

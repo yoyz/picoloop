@@ -541,21 +541,13 @@ Sint16 ADSR::tick_trig()
 
   Sint16 s=0;
   //Sint16 s_in;                                                                                                                                                                                                                            
-  Sint32 s_in;
+  //Sint32 s_in;
   //float  f1=0.0;                                                                                                                                                                                                                          
   //float  f2=0.0;                                                                                                                                                                                                                          
   int    debug=1;
   int    index_inverse=0;
   int    tmp1;
   int    tmp2;
-  //if (debug) fprintf(stderr,"begin Sint16 ADSR::tick()\n");                                                                                                                                                                               
-  /*                                                                                                                                                                                                                                        
-  if (sample_num==0)                                                                                                                                                                                                                        
-    {                                                                                                                                                                                                                                       
-      this->reset(); vco->reset();                                                                                                                                                                                                          
-                                                                                                                                                                                                                                            
-    }                                                                                                                                                                                                                                       
-  */
 
   if (sample_num>cadr)
     return 0;
@@ -563,16 +555,27 @@ Sint16 ADSR::tick_trig()
 
   sample_num++;
 
-
-  //s=S->tick();                                                                                                                                                                                                                            
-  //  s=S->tick();                                                                                                                                                                                                                          
+  old_s_sin=s_in;
   s_in=vco->tick();
-  //return s_in;                                                                                                                                                                                                                            
 
-  //(size-sample_num)                                                                                                                                                                                                                       
+  // check if we are in the 
+  //   1  32000 
+  //or the 
+  //  -1 -32000
+  // pole allow to store this information
 
-  //We are in the attack phase                                                                                                                                                                                                              
-  //if (sample_num<size_attack)                                                                                                                                                                                                             
+  if (s_in>0)
+    pole=1;
+  else
+    pole=0;
+
+  if (pole!=old_pole)
+    {
+      ca_div_woalias=ca_div;
+      cr_div_woalias=cr_div;
+    }
+
+  old_pole=pole;
 
   if (sample_num < ca)
     {
@@ -584,7 +587,8 @@ Sint16 ADSR::tick_trig()
           if(ca_div<2)
             ca_div=2;
         }
-      return s_in/((ca_div/4)+1);
+      return s_in/((ca_div_woalias/4)+1);
+      //return s_in/((ca_div/4)+1);
     }
   
   if (sample_num >= ca)
@@ -595,8 +599,8 @@ Sint16 ADSR::tick_trig()
           cr_div=cr_div+1;
         }
 
-      return s_in/((cr_div/4)+1);
-
+      return s_in/((cr_div_woalias/4)+1);
+      //return s_in/((cr_div/4)+1);
     }
 }
 

@@ -31,7 +31,10 @@ void NoiseOscillator::init()
   //      table=(Sint16*)malloc(sizeof(Sint16)*table_size);
       for (i=0;i<table_size;i++)
 	{
-	  table[i]=rand()%8192;
+	  if (rand()%2==0)
+	    table[i]=rand()%8192;
+	  else
+	    table[i]=(rand()%8192)*-1;
 	  //printf("NoiseOscillator::init() table[%d]=%d\n",i,table[i]);
 	}
       //}  

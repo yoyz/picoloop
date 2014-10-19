@@ -3849,6 +3849,7 @@ void seq_update_track(int t)
 
 	  //printf("[Freq:%d]\n",i);
 	  //M[t]->set(OSC1_FREQ,i);
+	  M[t]->reset();
 	  M[t]->setF(OSC1_FREQ,f);
 
 	  /*

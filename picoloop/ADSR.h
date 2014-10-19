@@ -50,6 +50,12 @@ class ADSR : public Oscillator
 
  private:
 
+  Sint32 s_in;
+  Sint32 old_s_sin;
+
+  int old_pole;
+  int pole;
+
   int adsr_note;
 
   int attack;
@@ -88,6 +94,9 @@ class ADSR : public Oscillator
   Sint32 cd_div;
   Sint32 cs_div;
   Sint32 cr_div;
+
+  Sint32 ca_div_woalias;
+  Sint32 cr_div_woalias;
   //Sint32 cr_div;
 
   int noteOn_value;
