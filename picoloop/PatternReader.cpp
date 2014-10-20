@@ -37,7 +37,7 @@ void PatternReader::init()
   int y;
   
   for (x=0;x<MAX_PATTERN_BY_PROJECT;x++)
-    for (y=0;y<TRACK_MAX-1;y++)
+    for (y=0;y<TRACK_MAX;y++)
       {
 	loadedData[x][y]=DATA_HAS_NOT_BEEN_CHECK;
 	//	savedData[x][y]=0;
@@ -951,13 +951,14 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
 
   //mode=0666;
   //mode=S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP|S_IWGRP|S_IWGRP|S_IROTH|S_IWOTH;
+
+  mode=0755;
   
   sprintf(path,    "bank");
-  //mkdir(path,mode);
+  mkdir(path,mode);
 
-  //mode=0666;
   sprintf(path,    "bank/bank%d",bank);
-  //mkdir(path,mode);
+  mkdir(path,mode);
 
   sprintf(filename,"bank/bank%d/dataP%dT%d.pic",bank,PatternNumber,TrackNumber);
 
