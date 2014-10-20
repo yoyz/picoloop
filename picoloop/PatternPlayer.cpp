@@ -255,6 +255,10 @@ int pattern_song_inc=0;     // increment/decrement the current value of song_cur
 int pattern_song_reload=0;  // if > 1 reload from current position
 int pattern_song_loop=0;    // if > 1 loop from current song position to loop point
 
+int bank=0;
+int bank_inc=0;
+int bank_to_load=0;
+
 int start_key=0;        // start key pressed ?
 //int step=0;             // current step in the sequencer
 int divider=0;           // divider - => /1 /2 /4 /8  ; divider + => /8 /4 /2 /1
@@ -282,6 +286,9 @@ int current_swing=50;
 int swing;
 
 int noteOffTrigger[TRACK_MAX];
+
+
+void load_pattern();
 
 void refresh_swing()
 {
@@ -565,6 +572,59 @@ void display_board_bpm()
   
 }
 
+void display_board_bank()
+{
+  int x,y;
+  int  i;
+  int  cty=SEQ.getCurrentTrackY();
+  int  step=SEQ.getPatternSequencer(cty).getStep();
+  //int  bank=PR.getBank();
+
+
+
+
+  char str_bank[16];
+  char str_song[16];
+
+
+  static const char * txt_tab[] = 
+    { 
+      "00","01","02","03","04","05","06","07","08","09","0A","0B","0C","0D","0E","0F",
+      "10","11","12","13","14","15","16","17","18","19","1A","1B","1C","1D","1E","1F",
+      "20","21","22","23","24","25","26","27","28","29","2A","2B","2C","2D","2E","2F",
+      "30","31","32","33","34","35","36","37","38","39","3A","3B","3C","3D","3E","3F",
+      "40","41","42","43","44","45","46","47","48","49","4A","4B","4C","4D","4E","4F",
+      "50","51","52","53","54","55","56","57","58","59","5A","5B","5C","5D","5E","5F",
+      "60","61","62","63","64","65","66","67","68","69","6A","6B","6C","6D","6E","6F",
+      "70","71","72","73","74","75","76","77","78","79","7A","7B","7C","7D","7E","7F",
+      "80","81","82","83","84","85","86","87","88","89","8A","8B","8C","8D","8E","8F",
+      "90","91","92","93","94","95","96","97","98","99","9A","9B","9C","9D","9E","9F",
+      "A0","A1","A2","A3","A4","A5","A6","A7","A8","A9","AA","AB","AC","AD","AE","AF",
+      "B0","B1","B2","B3","B4","B5","B6","B7","B8","B9","BA","BB","BC","BD","BE","BF",
+      "C0","C1","C2","C3","C4","C5","C6","C7","C8","C9","CA","CB","CC","CD","CE","CF",
+      "D0","D1","D2","D3","D4","D5","D6","D7","D8","D9","DA","DB","DC","DD","DE","DF",
+      "E0","E1","E2","E3","E4","E5","E6","E7","E8","E9","EA","EB","EC","ED","EE","EF",
+      "F0","F1","F2","F3","F4","F5","F6","F7","F8","F9","FA","FB","FC","FD","FE","FF",
+    }; 
+
+
+  if (menu         ==  MENU_OFF        && 
+      menu_cursor  ==  GLOBALMENU_BANK 
+      )
+    {
+      printf("HIT\n");
+      SG.clearScreen();
+      
+      sprintf(str_bank,"Current Bank %d ",bank);
+
+      SG.guiTTFText(30,10, str_bank);
+
+      sprintf(str_bank,"Bank to load %d ",bank_to_load);
+      SG.guiTTFText(30,30, str_bank);
+    }
+}
+
+
 void display_board_load_save()
 {
   int x,y;
@@ -776,6 +836,7 @@ void display_board_load_save()
 	}
     }                  
 }
+
 
 
 void display_board_psh()
@@ -1348,6 +1409,7 @@ void display_board()
   if (menu_cursor==GLOBALMENU_FLTR) display_board_fltr();
 
   if (menu_cursor==GLOBALMENU_LS)   display_board_load_save();
+  if (menu_cursor==GLOBALMENU_BANK) display_board_bank();
   if (menu_cursor==GLOBALMENU_PSH)  display_board_psh();
   if (menu_cursor==GLOBALMENU_MAC)  display_board_mac();
   if (menu_cursor==GLOBALMENU_FX)   display_board_fx();
@@ -2892,6 +2954,201 @@ void handle_key_load_save()
 }
 
 
+void handle_key_bank()
+{
+  bool * keyState;
+  int  * keyRepeat;
+  int    lastEvent;
+  int    lastKey;
+
+  keyState=IE.keyState();
+  keyRepeat=IE.keyRepeat();
+  lastEvent=IE.lastEvent();
+  lastKey=IE.lastKey();
+
+
+  // GLOBALMENU_LS
+  // Load/Save 
+  if (menu_cursor == GLOBALMENU_BANK)
+    {
+      // in the load/save view 
+      // move loasavecursor position 
+      // Save/load Pattern
+
+
+
+      // Switch between load/save and song
+      if (menu        == MENU_OFF    && 
+	  lastEvent   == SDL_KEYUP   &&
+	  lastKey     == BUTTON_START
+	  //keyState[BUTTON_START]
+	  )
+	{
+	  
+	  bank=bank_to_load;
+	  PR.init();
+	  PR.setBank(bank);
+	  load_pattern();
+	  dirty_graphic=1;
+	  IE.clearLastKeyEvent();
+	  return;
+	}
+
+
+
+      if (menu                 == MENU_OFF    && 
+	  keyRepeat[BUTTON_B]%KEY_REPEAT_INTERVAL_LONG==0)
+	{
+	  if (keyState[BUTTON_DOWN])
+	    bank_inc=-1;
+	  if (keyState[BUTTON_UP])	
+	    bank_inc=1;
+	}
+
+
+      if (menu                 == MENU_OFF && 
+	  loadsave_cursor_mode == CURSOR_LOADSAVE &&
+	  keyState[BUTTON_B])
+	{
+	  if (keyState[BUTTON_DOWN])
+	    save=true;
+	  if (keyState[BUTTON_UP])	
+	    load=true;
+	}
+
+      
+      // GLOBALMENU_LS
+      // in the load/save view 
+      // move loasavecursor position 
+      // Save/load bund of Pattern
+      
+      if (menu                 == MENU_OFF        && 
+	  loadsave_cursor_mode == CURSOR_LOADSAVE &&
+	  keyState[BUTTON_A] )
+	{
+	  if (keyState[BUTTON_DOWN])
+	    saveall=true;
+	  if (keyState[BUTTON_UP])	
+	    loadall=true;
+	}
+
+
+      if (menu                 == MENU_OFF        && 
+	  loadsave_cursor_mode == CURSOR_SONG     &&
+	  keyState[BUTTON_A] )
+	{
+	  if (keyState[BUTTON_DOWN])
+	    pattern_song_loop=1;
+	    //saveall=true;
+	  if (keyState[BUTTON_UP])	
+	    pattern_song_reload=1;
+	}
+
+      
+      // GLOBALMENU_LS
+      // in the load/save view 
+      // move load/save cursor position 
+      if (menu                 == MENU_OFF        && 	  
+	  loadsave_cursor_mode == CURSOR_LOADSAVE &&
+	  (!(
+	     keyState[BUTTON_B] ||
+	     keyState[BUTTON_A])))
+	{
+	  if (keyState[BUTTON_LEFT])
+	    if (keyRepeat[BUTTON_LEFT]==1  || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_LONG==0)  
+	      { loadsave_cursor_x--;  dirty_graphic=1;}
+	  
+	  if (keyState[BUTTON_RIGHT])
+	    if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_LONG==0) 
+	      { loadsave_cursor_x++;  dirty_graphic=1;}
+	  
+	  if (keyState[BUTTON_UP])
+	    if (keyRepeat[BUTTON_UP]==1    || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONG==0)    
+	      { loadsave_cursor_y--;  dirty_graphic=1;}
+	  
+	  if (keyState[BUTTON_DOWN])
+	    if (keyRepeat[BUTTON_DOWN]==1  || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONG==0)  
+	      { loadsave_cursor_y++;  dirty_graphic=1;}
+	  
+	  if (loadsave_cursor_x>MAX_PATTERN_BY_PROJECT-1)        { loadsave_cursor_x=0;                           }
+	  if (loadsave_cursor_x<0)                               { loadsave_cursor_x=MAX_PATTERN_BY_PROJECT-1;    }
+
+	  if (loadsave_cursor_y>TRACK_MAX-1)                     { loadsave_cursor_y=0;                           }
+	  if (loadsave_cursor_y<0)                               { loadsave_cursor_y=TRACK_MAX-1;                 }  
+	  
+	  SEQ.setCurrentTrackY(loadsave_cursor_y);
+	}
+
+      if (menu                 == MENU_OFF     && 	  
+	  loadsave_cursor_mode == CURSOR_SONG  &&
+	  (!(
+	     keyState[BUTTON_B] ||
+	     keyState[BUTTON_A])))
+	{
+	  if (keyState[BUTTON_LEFT])
+	    if (keyRepeat[BUTTON_LEFT]==1  || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_LONG==0)  
+	      { song_cursor_x--;  dirty_graphic=1;}
+	  
+	  if (keyState[BUTTON_RIGHT])
+	    if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_LONG==0) 
+	      { song_cursor_x++;  dirty_graphic=1;}
+	  
+	  if (keyState[BUTTON_UP])
+	    if (keyRepeat[BUTTON_UP]==1    || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONG==0)    
+	      { song_cursor_y--;  dirty_graphic=1;}
+	  
+	  if (keyState[BUTTON_DOWN])
+	    if (keyRepeat[BUTTON_DOWN]==1  || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONG==0)  
+	      { song_cursor_y++;  dirty_graphic=1;}
+	  
+	  if (song_cursor_x>MAX_PATTERN_BY_PROJECT-1)            { song_cursor_x=0;                           }
+	  if (song_cursor_x<0)                                   { song_cursor_x=MAX_PATTERN_BY_PROJECT-1;    }
+
+	  if (song_cursor_y>TRACK_MAX-1)                         { song_cursor_y=0;                           }
+	  if (song_cursor_y<0)                                   { song_cursor_y=TRACK_MAX-1;                 }  
+	  
+	  //SEQ.setCurrentTrackY(loadsave_cursor_y);
+	}
+
+
+      if (menu                 == MENU_OFF     && 	  
+	  loadsave_cursor_mode == CURSOR_SONG  &&
+	  (
+	   keyState[BUTTON_B]
+	   ))
+	{
+	  /*
+	  if (keyState[BUTTON_LEFT])
+	    if (keyRepeat[BUTTON_LEFT]==1  || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_LONG==0)  
+	      { song_cursor_x--;  dirty_graphic=1;}
+	  */
+	  if (keyState[BUTTON_RIGHT])
+	    if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_LONG==0) 
+	      { song_cursor_x++;  dirty_graphic=1; SEQ.getSongSequencer().setPatternNumber(song_cursor_x,song_cursor_y,SEQ.getSongSequencer().getPatternNumber(song_cursor_x-1,song_cursor_y)); }
+	  /*
+	  if (keyState[BUTTON_UP])
+	    if (keyRepeat[BUTTON_UP]==1    || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONG==0)    
+	      { song_cursor_y--;  dirty_graphic=1;}
+	  
+	  if (keyState[BUTTON_DOWN])
+	    if (keyRepeat[BUTTON_DOWN]==1  || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONG==0)  
+	      { song_cursor_y++;  dirty_graphic=1;}
+	  */
+	  if (song_cursor_x>MAX_PATTERN_BY_PROJECT-1)            { song_cursor_x=0;                           }
+	  if (song_cursor_x<0)                                   { song_cursor_x=MAX_PATTERN_BY_PROJECT-1;    }
+
+	  if (song_cursor_y>TRACK_MAX-1)                         { song_cursor_y=0;                           }
+	  if (song_cursor_y<0)                                   { song_cursor_y=TRACK_MAX-1;                 }  
+	  
+	  //SEQ.setCurrentTrackY(loadsave_cursor_y);
+	}
+
+
+    }
+
+}
+
+
 void handle_key()
 {
   
@@ -2928,6 +3185,7 @@ void handle_key()
   if (menu_cursor==GLOBALMENU_FLTR) handle_key_fltr();
 
   if (menu_cursor==GLOBALMENU_LS)   handle_key_load_save();
+  if (menu_cursor==GLOBALMENU_BANK) handle_key_bank();
   if (menu_cursor==GLOBALMENU_PSH)  handle_key_psh();
   if (menu_cursor==GLOBALMENU_MAC)  handle_key_mac();
   if (menu_cursor==GLOBALMENU_FX)   handle_key_fx();
@@ -3593,6 +3851,15 @@ void seq_update_multiple_time_by_step()
     }
 
 
+  if (bank_inc!=0)
+    {
+      bank_to_load=bank_to_load+bank_inc;
+      bank_inc=0;
+      if (bank_to_load>MAX_BANK-1)
+	bank_to_load=0;
+      if (bank_to_load<0)
+	bank_to_load=MAX_BANK-1;
+    }
 
 
       if (bpm!=0)
@@ -4075,9 +4342,10 @@ void load_pattern()
   int p;
 
   string fileName="data.pic";
+
+  vector <Pattern>            TMPP(TRACK_MAX);  
+
   //PR.setFileName("data.pic");
-  PR.init();      // Init the     storage bank
-  PR.setBank(0);  // The current  storage bank will be 0 PWD/bank/bank%d/
   //PR.setFileName(fileName);
 
   PR.loadSong(SEQ.getSongSequencer());
@@ -4086,7 +4354,7 @@ void load_pattern()
   for (t=0;t<TRACK_MAX;t++)
     for (p=0;p<MAX_PATTERN_BY_PROJECT;p++)
       {
-	PR.readPatternData(p,t,P[t]);
+	PR.readPatternData(p,t,TMPP[t]);
       }
 
   /*
@@ -4094,7 +4362,7 @@ void load_pattern()
     for (p=0;p<MAX_PATTERN_BY_PROJECT;p++)
 	PR.readPatternData(p,t,P[t]);
   */
-
+  /*
   for (t=0;t<TRACK_MAX;t++)
     {
       PR.readPatternData(0,t,P[t]);
@@ -4105,9 +4373,8 @@ void load_pattern()
       refresh_bpm();
 
       SEQ.getPatternSequencer(t).setBPMDivider(P[t].getBPMDivider());
-
     }
-
+  */
     //PR.readPatternData(1,i+1,P[i]);
 
 }
@@ -4126,6 +4393,10 @@ int main(int argc,char **argv)
   //exit(0);
   for (i=0;i<TRACK_MAX;i++)
     noteOffTrigger[i]=0;
+
+  PR.init();         // Init the     storage bank
+  PR.setBank(bank);  // The current  storage bank will be 0 PWD/bank/bank%d/
+
   load_pattern();
   printf("[openVideo output]\n");
   SG.initVideo();
