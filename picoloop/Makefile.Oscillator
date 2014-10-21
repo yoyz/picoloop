@@ -1,10 +1,13 @@
 CC=g++
-CFLAGS=-c -DLINUX -I. -LSDL/lib -g -fpermissive -DLINUX_DESKTOP -D__RTAUDIO__
-LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf -lpthread -lasound
+CFLAGS=-c -DLINUX -D__RTAUDIO__ -DLINUX_DESKTOP  -I. -LSDL/lib -Idbopl -g -fpermissive 
+CFLAGS=-c -O1 -DLINUX -D__RTAUDIO__ -DLINUX_DESKTOP -I. -LSDL/lib -g -fpermissive
+LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf  RtAudio.o
 
-OBJTOLINK=RtAudio.o
 
-SOURCES=Osc.cpp AudioEngine.cpp AudioDriverRTAudio.cpp Instrument.cpp Synth.cpp Oscillator.cpp FuzzyPulseOscillator.cpp SineOscillator.cpp SawOscillator.cpp TriangleOscillator.cpp PulseOscillator.cpp NoiseOscillator.cpp OneOscillator.cpp Biquad.cpp AudioMixer.cpp  Wave.cpp Track.cpp Machine.cpp MonoMixer.cpp ADSR.cpp PatternElement.cpp VCO.cpp  WaveTableSineOscillator.cpp InputManager.cpp 
+#SOURCES=Osc.cpp AudioEngine.cpp AudioDriverRTAudio.cpp Instrument.cpp Synth.cpp Oscillator.cpp FuzzyPulseOscillator.cpp SineOscillator.cpp SawOscillator.cpp TriangleOscillator.cpp PulseOscillator.cpp NoiseOscillator.cpp OneOscillator.cpp Biquad.cpp AMSynthLowPassFilter.cpp  AudioMixer.cpp  Wave.cpp Track.cpp Machine.cpp MonoMixer.cpp ADSR.cpp PatternElement.cpp VCO.cpp  WaveTableSineOscillator.cpp InputManager.cpp Filter.cpp dbopl/dbopl.cpp dbopl/hiopl.cpp DboplMachine.cpp PicosynthMachine.cpp PicodrumMachine.cpp  Effect.cpp EffectDelay.cpp
+
+SOURCES=Osc.cpp SDL_GUI.cpp AudioEngine.cpp AudioDriverRTAudio.cpp Instrument.cpp Synth.cpp Oscillator.cpp TriangleOscillator.cpp FuzzyPulseOscillator.cpp SineOscillator.cpp SawOscillator.cpp NoiseOscillator.cpp OneOscillator.cpp WaveTableSineOscillator.cpp Biquad.cpp AudioMixer.cpp  Wave.cpp Track.cpp Machine.cpp MonoMixer.cpp ADSR.cpp PatternElement.cpp VCO.cpp PulseOscillator.cpp InputManager.cpp PicosynthMachine.cpp dbopl/dbopl.cpp dbopl/hiopl.cpp DboplMachine.cpp PicodrumMachine.cpp Filter.cpp AMSynthLowPassFilter.cpp  Effect.cpp EffectDelay.cpp
+
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=Oscillator
 
@@ -12,7 +15,7 @@ EXECUTABLE=Oscillator
 all: $(SOURCES) $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJECTS)
-	$(CC) $(OBJTOLINK) $(OBJECTS) -o $@ $(LDFLAGS) 
+	$(CC)  $(LDFLAGS) $(OBJECTS) -o $@ 
 
 .cpp.o:
 	$(CC) $(CFLAGS) $< -o $@

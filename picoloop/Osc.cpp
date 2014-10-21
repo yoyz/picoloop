@@ -12,8 +12,11 @@ using namespace std;
 
 AudioEngine    AE;          // used to  init alsa/rtaudio
 InputManager   IE;          // used to  fetch key
+
 vector <Machine   *>        M(TRACK_MAX);
 vector <MonoMixer *>        MM(TRACK_MAX);
+vector <Effect    *>        FX(TRACK_MAX);
+
 
 
 #define SCREEN_DEPTH	16
@@ -57,18 +60,22 @@ void openaudio()
   for (t=0;t<TRACK_MAX;t++)
     {
       MM[t]=AE.getAudioMixer().getTrack(t).getMonoMixer();
+      MM[t]->init();
+      MM[t]->setAmplitude(0);
+
       M[t]=MM[t]->getInput();
       M[t]->init();
-      M[t]->reset();
-      M[t]->getADSRAmp().init();
-      M[t]->getADSRFltr().init();
+      FX[t] = MM[t]->getEffect();                             
+      //M[t]->reset();
+      //M[t]->getADSRAmp().init();
+      //M[t]->getADSRFltr().init();
 
-      M[t]->getADSRAmp().reset();
-      M[t]->getADSRFltr().reset();
+      //M[t]->getADSRAmp().reset();
+      //M[t]->getADSRFltr().reset();
 
-      M[t]->getVCO().init();
-      M[t]->getVCO().reset();
-      M[t]->getVCO().setSynthFreq(0);      
+      //M[t]->getVCO().init();
+      //M[t]->getVCO().reset();
+      //M[t]->getVCO().setSynthFreq(0);      
     }
 
 
@@ -95,52 +102,70 @@ void func()
   int t;
   float f=PE.getNoteFreq();
   int   i=f;
-
-  for (t=0;t<1;t++)
-    {
+  
+  t=0;
       
-      printf("[Freq:%d]\n",i);
-      //M[t]->getVCO().setOscillator(0,0);
-      //      M[t]->getVCO().setOscillator(1,2);
+  printf("[Freq:%d]\n",i);
+  
+  MM[t]->setAmplitude(64);
+  MM[t]->setMachineType(1);
+  
+  M[t]  = MM[t]->getInput();                             
+  FX[t] = MM[t]->getEffect();                             
+  
+  FX[t]->setDepth(0);
+  FX[t]->setSpeed(0);
+  
+  M[t]->setF(OSC1_FREQ,440);
+  
+  M[t]->setI(OSC12_MIX,16);
+  M[t]->setI(OSC1_PHASE,16);
+  
+  M[t]->setI(OSC1_TYPE,1);
+  M[t]->setI(OSC2_TYPE,1);
+  
+  
+  M[t]->setI(ADSR_ENV0_ATTACK, 64);
+  M[t]->setI(ADSR_ENV0_DECAY,  64);
+  M[t]->setI(ADSR_ENV0_SUSTAIN,64);
+  M[t]->setI(ADSR_ENV0_RELEASE,64);
+  
+  M[t]->setI(ADSR_ENV1_ATTACK, 64);
+  M[t]->setI(ADSR_ENV1_ATTACK, 64);
+  M[t]->setI(ADSR_ENV1_ATTACK, 64);
+  M[t]->setI(ADSR_ENV1_RELEASE,64);
+  
+  
+  
+  M[t]->setI(FILTER1_CUTOFF,64);
+  M[t]->setI(FILTER1_RES,64);
+  
+  // play the attack of the note for 1 second
+  M[t]->setI(NOTE_ON,1);
+  sleep(1);
 
-      //M[t]->getVCO().setSynthFreq(i);
+  // Release the note
+  M[t]->setI(NOTE_ON,0);
+  sleep(2);
 
-      M[t]->getBiquad().reset();
+  // play a note 2* Higher
+  M[t]->setF(OSC1_FREQ,880);
+  M[t]->setI(NOTE_ON,1);
+  sleep(2);
 
-      M[t]->getVCO().setSynthFreq(i);
-      M[t]->getVCO().setOscillator(0,1);
-      M[t]->getVCO().setOscillator(1,1);
-      M[t]->getVCO().setVCOMix(vcomix);		  
+  // Release the note
+  M[t]->setI(NOTE_ON,0);
+  sleep(2);
 
-      M[t]->getADSRAmp().setRelease(127);
-      M[t]->getADSRAmp().setAttack(0);
-
-      M[t]->getADSRFltr().setAttack(0);
-      M[t]->getADSRFltr().setRelease(127);
-
-      M[t]->getBiquad().setBiquad(0, 0.5+0.005, (0.5+0.005), 0.0);
-      M[t]->getBiquad().calcBiquad();
-
-
-      M[t]->getVCO().setVCOMix(64);
-      M[t]->getADSRAmp().reset();;	  
-      M[t]->getVCO().reset();
-      M[t]->getVCO().getOscillatorOne();
-      M[t]->getVCO().reset();
-      
-
-      M[t]->getVCO().setVCOMix(vcomix);		  
-      M[t]->getADSRAmp().setRelease(release);
-      M[t]->getADSRAmp().setAttack(attack);
-      M[t]->getVCO().init();
-      M[t]->getVCO().setSynthFreq(i);
-    }     
-  //sleep(4);
-  usleep(1000);
-  M[t]->getVCO().setSynthFreq(i*2);
-  usleep(1000);
-  M[t]->getVCO().setSynthFreq(i*4);
+  // play a note 4* lower
+  M[t]->setF(OSC1_FREQ,220);
+  M[t]->setI(NOTE_ON,1);
   sleep(3);
+
+  // Release the note
+  M[t]->setI(NOTE_ON,0);
+  sleep(1);
+
 }
 
 
