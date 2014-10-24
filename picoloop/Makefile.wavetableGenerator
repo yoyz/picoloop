@@ -1,0 +1,17 @@
+CC=g++
+CFLAGS=-c -O1 -DLINUX -D__RTAUDIO__ -DLINUX_DESKTOP -I. -LSDL/lib -g -fpermissive
+LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf RtAudio.o  
+SOURCES=wavetableGenerator.cpp WaveTableManager.cpp WaveTable.cpp Generator.cpp Oscillator.cpp 
+OBJECTS=$(SOURCES:.cpp=.o)
+EXECUTABLE=wavetableGenerator
+
+all: $(SOURCES) $(EXECUTABLE)
+
+$(EXECUTABLE): $(OBJECTS)
+	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
+
+.cpp.o:
+	$(CC) $(CFLAGS) $< -o $@
+
+clean:
+	-rm -f $(OBJECTS) $(EXECUTABLE)
