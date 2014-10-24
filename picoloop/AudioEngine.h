@@ -12,7 +12,7 @@ using namespace std;
 #include "RtAudio.h"
 
 #include "Oscillator.h"
-#include "SineOscillator.h"
+//#include "SineOscillator.h"
 #include "AudioMixer.h"
 
 #ifdef   __SDL_AUDIO__

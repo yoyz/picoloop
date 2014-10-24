@@ -2,13 +2,13 @@
 #define __VCO____
 
 #include "Oscillator.h"
-#include "SineOscillator.h"
-#include "SawOscillator.h"
-#include "FuzzyPulseOscillator.h"
-#include "PulseOscillator.h"
-#include "TriangleOscillator.h"
-#include "WaveTableSineOscillator.h"
-#include "NoiseOscillator.h"
+//#include "SineOscillator.h"
+//#include "SawOscillator.h"
+//#include "FuzzyPulseOscillator.h"
+//#include "PulseOscillator.h"
+//#include "TriangleOscillator.h"
+//#include "WaveTableSineOscillator.h"
+//#include "NoiseOscillator.h"
 
 class VCO : public Oscillator
 {
