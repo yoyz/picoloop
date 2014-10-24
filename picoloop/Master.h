@@ -5,6 +5,7 @@
 
 #define INTERNAL_BUFFER_SIZE 128*1024   
 #define DEFAULTFREQ      44100
+#define DEFAULTBITRATE   16
 //#define DEFAULTSAMPLES   512
 //#define DEFAULTSAMPLES   1024
 #define DEFAULTSAMPLES   2048
@@ -15,7 +16,7 @@
 #define SCREEN_WIDTH	320
 #define SCREEN_HEIGHT	240
 #define SCREEN_DEPTH	16
-#define SCREEN_MULT     2
+#define SCREEN_MULT     1
 #define WAVETABLE_SIZE  1024*16
 //#define WAVETABLE_SIZE  128
 #define FPU 0

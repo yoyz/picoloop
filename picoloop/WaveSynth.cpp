@@ -699,7 +699,7 @@ void handle_key()
 	  M[t]->setF(OSC1_FREQ,f);
 
 	  M[t]->setI(OSC1_TYPE,1);
-	  M[t]->setI(OSC2_TYPE,2);
+	  M[t]->setI(OSC2_TYPE,1);
 	
 	  M[t]->setI(OSC12_MIX,vcomix);
 	  M[t]->setI(OSC1_PHASE,phase);
@@ -850,34 +850,33 @@ void wtg()
   WT = new WaveTable();
   WT->setSize(WAVETABLE_SIZE);
   G.noise();
-  memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE);
+  memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE*DEFAULTBITRATE/8);
   WTM.insert(WT,PICO_WAVETABLE_NOISE);
 
 
   WT = new WaveTable();
   WT->setSize(WAVETABLE_SIZE);
   G.sine();
-  memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE);
+  memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE*DEFAULTBITRATE/8);
   WTM.insert(WT,PICO_WAVETABLE_SINE);
 
   WT = new WaveTable();
   WT->setSize(WAVETABLE_SIZE);
   G.saw();
-  memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE);
+  memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE*DEFAULTBITRATE/8);
   WTM.insert(WT,PICO_WAVETABLE_SAW);
 
   WT = new WaveTable();
   WT->setSize(WAVETABLE_SIZE);
   G.pulse();
-  memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE);
+  memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE*DEFAULTBITRATE/8);
   WTM.insert(WT,PICO_WAVETABLE_PULSE);
 
   WT = new WaveTable();
   WT->setSize(WAVETABLE_SIZE);
   G.triangle();
-  memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE);
+  memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE*DEFAULTBITRATE/8);
   WTM.insert(WT,PICO_WAVETABLE_TRGL);
-
 
   printf("wavetablemanager.getSize : %d\n",WTM.getSize());
 
