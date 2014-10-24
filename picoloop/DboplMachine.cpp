@@ -83,7 +83,8 @@ void dboplMachine::init()
 
   lfo_speed=0.0;
 
-  sineLfoOsc1.init();
+  //sineLfoOsc1.init();
+  sineLfoOsc1.setWaveForm(2);
   sineLfoOsc1.setFreq(lfo_speed);
   sineLfoOsc1.setAmplitude(32);
 }

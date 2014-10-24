@@ -41,6 +41,7 @@ void NoiseOscillator::init()
 }
 
 
+/*
 Sint16 NoiseOscillator::tick()
 {
   //index=index+(this->getFreq()*table_size)/44100;
@@ -55,3 +56,4 @@ Sint16 NoiseOscillator::tick()
   return table[index];
 
 }
+*/

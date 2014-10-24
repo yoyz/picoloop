@@ -44,7 +44,7 @@ void VCO::init()
   lfo_speed=0;
 
 
-
+  /*
   sineOsc1.init();
   sineOsc2.init();
 
@@ -65,6 +65,29 @@ void VCO::init()
 
   sineLfoOsc1.init();
   sawLfoOsc1.init();
+  */
+
+  sineOsc1.setWaveForm(PICO_WAVETABLE_SINE);
+  sineOsc2.setWaveForm(PICO_WAVETABLE_SINE);
+
+  sawOsc1.setWaveForm(PICO_WAVETABLE_SAW);
+  sawOsc2.setWaveForm(PICO_WAVETABLE_SAW);
+
+  pulseOsc1.setWaveForm(PICO_WAVETABLE_PULSE);
+  pulseOsc2.setWaveForm(PICO_WAVETABLE_PULSE);
+
+  triangleOsc1.setWaveForm(PICO_WAVETABLE_TRGL);
+  triangleOsc2.setWaveForm(PICO_WAVETABLE_TRGL);
+
+  waveTableSineOsc1.setWaveForm(PICO_WAVETABLE_SINE);
+  waveTableSineOsc2.setWaveForm(PICO_WAVETABLE_SINE);
+
+  noiseOsc1.setWaveForm(PICO_WAVETABLE_NOISE);
+  noiseOsc2.setWaveForm(PICO_WAVETABLE_NOISE);
+
+  sineLfoOsc1.setWaveForm(PICO_WAVETABLE_SINE);
+  sawLfoOsc1.setWaveForm(PICO_WAVETABLE_SAW);
+
 
   //lfo1=&sineLfoOsc1;
   lfo1=&sawLfoOsc1;

@@ -1,5 +1,6 @@
 using namespace std;
 #include "Oscillator.h"
+#include "WaveTableManager.h"
 
 Oscillator::Oscillator()
 {
@@ -11,6 +12,7 @@ Oscillator::Oscillator()
   table_size=0;
   offset_next_index=0;
   table_size=WAVETABLE_SIZE;
+  index=0;
 }
 
 Oscillator::~Oscillator()
@@ -85,10 +87,20 @@ void Oscillator::setAmplitude(int amp)
 }
 
 
+void   Oscillator::setWaveForm(int waveform)
+{
+  WaveTable * WT;
+  WaveTableManager & WTM = WaveTableManager::getInstance();
+  WT=WTM.get(waveform);
+  table=WT->getBuffer();
+}
+
 
 Sint16 Oscillator::tick()
-{
-  Sint16 trash;
-  printf("Sint16 Oscillator::tick() freq:%d amp:%d\n",frequency,amplitude);
+{ 
+  index=index+offset_next_index;
+  if (index>=table_size)
+    index=index-table_size;
+  return table[index];
 }
 

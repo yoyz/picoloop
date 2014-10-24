@@ -21,9 +21,11 @@ class Oscillator
   void   setPhase(int phase);
   void   setFreq(int freq);
   int    getFreq();
+  
+  void   setWaveForm(int waveform);
 
   
-  virtual Sint16 tick();
+  Sint16 tick();
 
 
 
@@ -45,6 +47,7 @@ class Oscillator
 
   int      index;
 
+  Sint16 * table;
   
 };
 

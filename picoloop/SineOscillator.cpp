@@ -3,6 +3,7 @@
 using namespace std;
 
 
+//SineOscillator::SineOscillator() : table(new Sint16[WAVETABLE_SIZE])
 SineOscillator::SineOscillator() : table(new Sint16[WAVETABLE_SIZE])
 {
   printf("SineOscillator::SineOscillator()");
@@ -55,6 +56,7 @@ void SineOscillator::init()
   
 }
 
+/*
 Sint16 SineOscillator::tick()
 { 
   //index=index+(this->getFreq()*table_size)/44100;
@@ -66,5 +68,5 @@ Sint16 SineOscillator::tick()
   //printf("freq=%d index=%d table[index]=%d\n",this->getFreq(),index,table[index]);
   return table[index];
 }
-
+*/
 

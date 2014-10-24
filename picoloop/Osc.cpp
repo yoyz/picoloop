@@ -66,16 +66,6 @@ void openaudio()
       M[t]=MM[t]->getInput();
       M[t]->init();
       FX[t] = MM[t]->getEffect();                             
-      //M[t]->reset();
-      //M[t]->getADSRAmp().init();
-      //M[t]->getADSRFltr().init();
-
-      //M[t]->getADSRAmp().reset();
-      //M[t]->getADSRFltr().reset();
-
-      //M[t]->getVCO().init();
-      //M[t]->getVCO().reset();
-      //M[t]->getVCO().setSynthFreq(0);      
     }
 
 
@@ -168,6 +158,48 @@ void func()
 
 }
 
+void wtg()
+{
+  Generator G;
+  WaveTableManager & WTM = WaveTableManager::getInstance();
+  WaveTable* WT;
+
+  WT = new WaveTable();
+  WT->setSize(WAVETABLE_SIZE);
+  G.sine();
+  memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE);
+  WTM.insert(WT,PICO_WAVETABLE_SINE);
+
+  WT = new WaveTable();
+  WT->setSize(WAVETABLE_SIZE);
+  G.saw();
+  memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE);
+  WTM.insert(WT,PICO_WAVETABLE_SAW);
+
+  WT = new WaveTable();
+  WT->setSize(WAVETABLE_SIZE);
+  G.pulse();
+  memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE);
+  WTM.insert(WT,PICO_WAVETABLE_PULSE);
+
+  WT = new WaveTable();
+  WT->setSize(WAVETABLE_SIZE);
+  G.triangle();
+  memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE);
+  WTM.insert(WT,PICO_WAVETABLE_TRGL);
+
+
+  WT = new WaveTable();
+  WT->setSize(WAVETABLE_SIZE);
+  G.noise();
+  memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE);
+  WTM.insert(WT,PICO_WAVETABLE_NOISE);
+
+  printf("wavetablemanager.getSize : %d\n",WTM.getSize());
+
+}
+
+
 
 int main(int argc,char ** argv)
 {	  
@@ -177,7 +209,7 @@ int main(int argc,char ** argv)
 
 
   struct stat fileStat;
-
+  wtg();
   openaudio();
 
 

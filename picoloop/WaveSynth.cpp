@@ -11,6 +11,10 @@ using namespace std;
 #include "InputManager.h"
 #include "SDL_GUI.h"
 
+#include "Generator.h"
+#include "WaveTableManager.h"
+#include "WaveTable.h"
+
 SDL_GUI        SG;          // used to  initialize video
 AudioEngine    AE;          // used to  init alsa/rtaudio
 InputManager   IE;          // used to  fetch key
@@ -837,13 +841,58 @@ void draw_screen()
   redraw=false;  
 }
 
+void wtg()
+{
+  Generator G;
+  WaveTableManager & WTM = WaveTableManager::getInstance();
+  WaveTable* WT;
+
+  WT = new WaveTable();
+  WT->setSize(WAVETABLE_SIZE);
+  G.noise();
+  memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE);
+  WTM.insert(WT,PICO_WAVETABLE_NOISE);
+
+
+  WT = new WaveTable();
+  WT->setSize(WAVETABLE_SIZE);
+  G.sine();
+  memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE);
+  WTM.insert(WT,PICO_WAVETABLE_SINE);
+
+  WT = new WaveTable();
+  WT->setSize(WAVETABLE_SIZE);
+  G.saw();
+  memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE);
+  WTM.insert(WT,PICO_WAVETABLE_SAW);
+
+  WT = new WaveTable();
+  WT->setSize(WAVETABLE_SIZE);
+  G.pulse();
+  memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE);
+  WTM.insert(WT,PICO_WAVETABLE_PULSE);
+
+  WT = new WaveTable();
+  WT->setSize(WAVETABLE_SIZE);
+  G.triangle();
+  memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE);
+  WTM.insert(WT,PICO_WAVETABLE_TRGL);
+
+
+  printf("wavetablemanager.getSize : %d\n",WTM.getSize());
+
+}
 
 
 int main(int argc,char ** argv)
 {	  
   //if (argc!=2) { printf("arg please\n"); exit(1); }
+
+  wtg();
+
   file_buffer=(Sint16*)malloc(sizeof(short)*DEFAULTSAMPLES);
   vector_buffer=(Sint16*)malloc(sizeof(Sint16)*SCREEN_WIDTH);
+  
 
   PE.setNote(32);
 

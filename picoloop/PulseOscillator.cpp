@@ -50,6 +50,7 @@ void PulseOscillator::init()
       //    }  
 }
 
+/*
 Sint16 PulseOscillator::tick()
 {
   //index=index+(this->getFreq()*table_size)/44100;
@@ -61,3 +62,4 @@ Sint16 PulseOscillator::tick()
   return table[index];
 
 }
+*/

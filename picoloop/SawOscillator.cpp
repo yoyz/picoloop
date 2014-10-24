@@ -65,7 +65,7 @@ void SawOscillator::init()
   //  exit(0); 
 }
 
-
+/*
 Sint16 SawOscillator::tick()
 {
   Sint16 s_out;
@@ -82,4 +82,5 @@ Sint16 SawOscillator::tick()
   return s_out;
 
 }
+*/
 
