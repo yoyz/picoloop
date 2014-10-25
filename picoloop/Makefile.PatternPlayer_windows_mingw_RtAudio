@@ -20,10 +20,47 @@ LDFLAGS=-D__WIN32__ -L. -LSDL_windows/lib -L/home/yoyz/.wine/drive_c/users/yoyz/
 LDFLAGS=-D__WIN32__ -L. -LSDL_windows/lib -L/home/yoyz/.wine/drive_c/users/yoyz/Temp/DXF/DXSDK/lib/ -lmingw32 -lSDLmain -static-libgcc  -lSDL -lSDL_ttf -ldsound -lole32 -lwinmm  -ggdb
 
 OBJTOLINK=RtAudio.o
+SOURCES=PatternPlayer.cpp			\
+			SDL_GUI.cpp		\
+			SYSTEMWINDOWS.cpp	\
+			AudioEngine.cpp		\
+			AudioDriverRTAudio.cpp	\
+			Instrument.cpp		\
+			Synth.cpp		\
+			Oscillator.cpp		\
+			OneOscillator.cpp	\
+			Biquad.cpp		\
+			AudioMixer.cpp		\
+			Wave.cpp Track.cpp	\
+			Machine.cpp		\
+			MonoMixer.cpp		\
+			InputManager.cpp	\
+			Filter.cpp		\
+			AMSynthLowPassFilter.cpp\
+			Effect.cpp		\
+			EffectDelay.cpp		\
+			WaveTableManager.cpp	\
+			WaveTable.cpp		\
+			Generator.cpp		\
+			PatternElement.cpp	\
+			Pattern.cpp		\
+			PatternReader.cpp	\
+			Sequencer.cpp		\
+			PatternSequencer.cpp	\
+			SongSequencer.cpp	\
+			Machine/Picosynth/PicosynthADSR.cpp		\
+			Machine/Picosynth/PicosynthVCO.cpp		\
+			Machine/Picosynth/PicosynthMachine.cpp		\
+			Machine/Picodrum/PicodrumVCO.cpp		\
+			Machine/Picodrum/PicodrumADSR.cpp		\
+			Machine/Picodrum/PicodrumMachine.cpp		\
+			Machine/Dbopl/dbopl.cpp				\
+			Machine/Dbopl/hiopl.cpp				\
+			Machine/Dbopl/DboplMachine.cpp			\
 
-SOURCES=Machine.cpp Track.cpp AudioMixer.cpp AudioEngine.cpp PatternElement.cpp Pattern.cpp PatternPlayer.cpp PatternReader.cpp Oscillator.cpp SineOscillator.cpp SawOscillator.cpp  FuzzyPulseOscillator.cpp PulseOscillator.cpp  TriangleOscillator.cpp WaveTableSineOscillator.cpp NoiseOscillator.cpp OneOscillator.cpp MonoMixer.cpp ADSR.cpp SDL_GUI.cpp VCO.cpp Sequencer.cpp InputManager.cpp Biquad.cpp PatternSequencer.cpp  AudioDriverRTAudio.cpp PicosynthMachine.cpp  PicodrumMachine.cpp dbopl/dbopl.cpp dbopl/hiopl.cpp DboplMachine.cpp Filter.cpp AMSynthLowPassFilter.cpp Effect.cpp EffectDelay.cpp SongSequencer.cpp
+
 OBJECTS=$(SOURCES:.cpp=.o)
-EXECUTABLE=PatternPlayer
+EXECUTABLE=PatternPlayer.exe
 
 all: $(SOURCES) $(EXECUTABLE)
 

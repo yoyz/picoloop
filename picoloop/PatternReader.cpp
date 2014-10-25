@@ -9,6 +9,7 @@
 
 #include "Master.h"
 #include "PatternReader.h"
+#include "SYSTEM.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -952,13 +953,15 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
   //mode=0666;
   //mode=S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP|S_IWGRP|S_IWGRP|S_IROTH|S_IWOTH;
 
-  mode=0755;
+  //mode=0755;
   
   sprintf(path,    "bank");
-  mkdir(path,mode);
+  //mkdir(path,mode);
+  MKDIR(path);
 
   sprintf(path,    "bank/bank%d",bank);
-  mkdir(path,mode);
+  //mkdir(path,mode);
+  MKDIR(path);
 
   sprintf(filename,"bank/bank%d/dataP%dT%d.pic",bank,PatternNumber,TrackNumber);
 
