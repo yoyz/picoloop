@@ -35,7 +35,7 @@ void PicodrumMachine::init()
 
   this->getPicodrumVCO().init();
   this->getPicodrumVCO().setSynthFreq(0);      
-  this->getADSRAmp().setNoteADSR(0);
+  //this->getADSRAmp().setNoteADSR(0);
 }
 
 

@@ -185,87 +185,10 @@ int PicosynthMachine::tick()
   s_in=s_in/6;
  
   s_out=filter.process(s_in);      
-  
-
-  
+    
   sample_num++;
   last_sample=s_out;
 
   return s_out;
 
 }
-
-/*
-int PicosynthMachine::tick()
-{
-  float  f_in;
-  float  f_out;
-
-  float  f_Fc;
-  float  f_Q;
-
-  Sint16 s_in;
-  Sint16 s_out;
-
-  Sint16 s_test;
-
-  Sint32 tmp1;
-  Sint32 tmp2;
-  Sint32 tmp3;
-  Sint16 index;
-
-  Sint32 cutoff_tmp;
-  Sint32 resonance_tmp;
-  int    num=8192;
-  int    i;
-  
-  num=1024;
-
-  s_in=adsr_amp.tick();
-  s_in=s_in/6;
-  if (sample_num==0)
-    {
-      for (i=0;i<num;i++)
-	adsr_fltr.tick();
-      
-      s_test=adsr_fltr.tick();
-      
-      cutoff_tmp=(cutoff*s_test)/16384;
-      resonance_tmp=(resonance*s_test)/16384;
-      
-      if (1)
-      	{
-	  filter.setCutoff(cutoff_tmp);
-	  filter.setResonance(resonance_tmp);
-      	}
-    }
-  
-
-  if (sample_num>=0 &&
-      sample_num < 256)
-    {
-      s_out=filter.process(s_in);      
-    }
-
-
-  if (sample_num>=256 &&
-      sample_num<=num+256)
-    {
-      s_out=filter.process(s_in);
-    }
-
-
-  if (sample_num>=num+256)
-    {
-      s_out=filter.process(s_in);
-      sample_num=-1;
-    }
-
-  
-  sample_num++;
-  last_sample=s_out;
-
-  return s_out;
-
-}
-*/
