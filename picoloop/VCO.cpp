@@ -89,8 +89,8 @@ void VCO::init()
   sawLfoOsc1.setWaveForm(PICO_WAVETABLE_SAW);
 
 
-  //lfo1=&sineLfoOsc1;
-  lfo1=&sawLfoOsc1;
+  lfo1=&sineLfoOsc1;
+  //lfo1=&sawLfoOsc1;
 
   lfo1->setFreq(0);
   lfo1->setAmplitude(32);
@@ -267,7 +267,11 @@ Sint16 VCO::tick()
       if (lfo_depth==0)
 	tmp=0;
       else
-	tmp=lfo1->tick() >> lfo_depth_shift;
+	{
+	  //tmp=lfo1->tick() >> lfo_depth_shift;
+	  //tmp=(lfo1->tick()*lfo_depth)/128;
+	  tmp=((lfo1->tick()>>6)*lfo_depth)>>7;
+	}
 	//tmp=lfo1->tick() * (lfo_depth_shift*127)/;
 
       s1->setFreq(freqOsc1+tmp);

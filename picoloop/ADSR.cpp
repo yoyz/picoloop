@@ -13,7 +13,7 @@ enum
   };
 
 #define SHIFT_TRIG 8  // for drum
-#define SHIFT_NOTE 7  // for synth
+#define SHIFT_NOTE 8  // for synth
 
 ADSR::ADSR() : tanh_table(new Sint16[128])
 {
