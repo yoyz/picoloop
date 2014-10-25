@@ -1,7 +1,7 @@
-#include "VCO.h"
+#include "PicodrumVCO.h"
 
 
-VCO::VCO() : sineOsc1(), 
+PicodrumVCO::PicodrumVCO() : sineOsc1(), 
 	     sineOsc2(), 
 	     sawOsc1(), 
 	     sawOsc2(), 
@@ -16,7 +16,7 @@ VCO::VCO() : sineOsc1(),
 	     sineLfoOsc1(), 
 	     sawLfoOsc1() //, noiseosc()
 {
-  printf("VCO::VCO()\n");
+  printf("PicodrumVCO::PicodrumVCO()\n");
   s1=NULL;
   s2=NULL;
   vcomix=64;
@@ -33,9 +33,9 @@ VCO::VCO() : sineOsc1(),
   freqOsc2=0;
 }
 
-void VCO::init()
+void PicodrumVCO::init()
 {
-  printf("VCO::init() begin s1:=0x%08.8X s2:=0x%08.8X\n",s1,s2);
+  printf("PicodrumVCO::init() begin s1:=0x%08.8X s2:=0x%08.8X\n",s1,s2);
 
 
   lfo_depth=0;
@@ -106,16 +106,16 @@ void VCO::init()
   s2->setAmplitude(32);
 
 
-  printf("VCO::init() end s1:=0x%08.8X s2:=0x%08.8X\n",s1,s2);
+  printf("PicodrumVCO::init() end s1:=0x%08.8X s2:=0x%08.8X\n",s1,s2);
 }
 
 
-VCO::~VCO()
+PicodrumVCO::~PicodrumVCO()
 {
-  printf("VCO::~VCO()\n");
+  printf("PicodrumVCO::~PicodrumVCO()\n");
 }
 
-int VCO::checkSevenBitBoundarie(int val)
+int PicodrumVCO::checkSevenBitBoundarie(int val)
 {
   if (val <= 0)
     return 0;
@@ -125,13 +125,13 @@ int VCO::checkSevenBitBoundarie(int val)
 }
 
 
-void VCO::setVCOMix(int mix)
+void PicodrumVCO::setPicodrumVCOMix(int mix)
 {
 
   vcomix=this->checkSevenBitBoundarie(mix);
 }
 
-void VCO::setOscillator(int oscillator_number,int oscillator_type)
+void PicodrumVCO::setOscillator(int oscillator_number,int oscillator_type)
 {
   int s1freq=s1->getFreq();
   int s2freq=s2->getFreq();
@@ -157,7 +157,7 @@ void VCO::setOscillator(int oscillator_number,int oscillator_type)
   s2->setFreq(s2freq);
 }
 
-void VCO::setLfoDepth(int val)
+void PicodrumVCO::setLfoDepth(int val)
 {
   lfo_depth=val;
   if (val > 0    && val <=  4  )  { lfo_depth=val ; lfo_depth_shift=33;        }
@@ -195,16 +195,16 @@ void VCO::setLfoDepth(int val)
 
 }
 
-void VCO::setLfoSpeed(float val)
+void PicodrumVCO::setLfoSpeed(float val)
 {
   lfo_speed=val/24.0;
   lfo1->setFreq(val);
   //lfo1->setAmplitude(0);
 }
 
-void VCO::reset()
+void PicodrumVCO::reset()
 {
-  printf("VCO::reset() this=0x%08.8X\n",this); // <==== FAILS allways the same this pointers
+  printf("PicodrumVCO::reset() this=0x%08.8X\n",this); // <==== FAILS allways the same this pointers
   s1->reset();
   s2->reset();
   //s2->setPhase(72);
@@ -215,14 +215,14 @@ void VCO::reset()
   //  lfo_counter=0;
 }
 
-Oscillator * VCO::getOscillatorOne()
+Oscillator * PicodrumVCO::getOscillatorOne()
 {
-  printf("Oscillator * VCO::getOscillatorOne() Oscillator=0x%08.8X\n",s1);
+  printf("Oscillator * PicodrumVCO::getOscillatorOne() Oscillator=0x%08.8X\n",s1);
   return s1;
 }
 
 
-void VCO::setSynthFreq(float sfreq)
+void PicodrumVCO::setSynthFreq(float sfreq)
 {
 
   freqOsc1=sfreq;
@@ -239,9 +239,9 @@ void VCO::setSynthFreq(float sfreq)
 
 
 
-Sint16 VCO::tick()
+Sint16 PicodrumVCO::tick()
 {
-  //  printf("VCO::tick() this=0x%08.8X\n",this); 
+  //  printf("PicodrumVCO::tick() this=0x%08.8X\n",this); 
   // return s1->tick()+s2->tick();
   Sint32 sa;
   Sint32 sb;

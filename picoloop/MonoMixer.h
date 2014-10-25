@@ -1,9 +1,9 @@
 using namespace std;
 
 #include "Machine.h"
-#include "PicosynthMachine.h"
-#include "PicodrumMachine.h"
-#include "DboplMachine.h"
+#include "Machine/Picosynth/PicosynthMachine.h"
+#include "Machine/Picodrum/PicodrumMachine.h"
+#include "Machine/Dbopl/DboplMachine.h"
 //#include "Effect.h"
 #include "EffectDelay.h"
 #include <SDL/SDL_types.h>

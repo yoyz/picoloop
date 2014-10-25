@@ -24,6 +24,24 @@ PicosynthMachine::~PicosynthMachine()
   printf("PicosynthMachine::~PicosynthMachine()\n");
 }
 
+PicosynthADSR & PicosynthMachine::getADSRAmp()
+{
+  return adsr_amp;
+}
+
+
+PicosynthADSR & PicosynthMachine::getADSRFltr()
+{
+  return adsr_fltr;
+}
+
+
+PicosynthVCO & PicosynthMachine::getVCO()
+{
+  return vco;
+}
+
+
 
 void PicosynthMachine::init()
 {
@@ -129,22 +147,6 @@ void PicosynthMachine::setI(int what,int val)
 }
 
 
-ADSR & PicosynthMachine::getADSRAmp()
-{
-  return adsr_amp;
-}
-
-
-ADSR & PicosynthMachine::getADSRFltr()
-{
-  return adsr_fltr;
-}
-
-
-VCO & PicosynthMachine::getVCO()
-{
-  return vco;
-}
 
 
 void PicosynthMachine::reset()

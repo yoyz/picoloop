@@ -1,20 +1,13 @@
-#ifndef __VCO____
-#define __VCO____
+#ifndef __PicodrumVCO____
+#define __PicodrumVCO____
 
 #include "Oscillator.h"
-//#include "SineOscillator.h"
-//#include "SawOscillator.h"
-//#include "FuzzyPulseOscillator.h"
-//#include "PulseOscillator.h"
-//#include "TriangleOscillator.h"
-//#include "WaveTableSineOscillator.h"
-//#include "NoiseOscillator.h"
 
-class VCO : public Oscillator
+class PicodrumVCO : public Oscillator
 {
 public:
-  VCO();
-  ~VCO();
+  PicodrumVCO();
+  ~PicodrumVCO();
 
   int checkSevenBitBoundarie(int val);
   void setSynthFreq(float sfreq);
@@ -30,7 +23,7 @@ public:
   void                  reset();
   Sint16                tick();
   void                  init();
-  void                  setVCOMix(int mix);
+  void                  setPicodrumVCOMix(int mix);
   void                  setLfoDepth(int val);
   void                  setLfoSpeed(float val);
   Oscillator          * getOscillatorOne();

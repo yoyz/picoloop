@@ -33,8 +33,8 @@ void PicodrumMachine::init()
   this->reset();
   this->getADSRAmp().init();
 
-  this->getVCO().init();
-  this->getVCO().setSynthFreq(0);      
+  this->getPicodrumVCO().init();
+  this->getPicodrumVCO().setSynthFreq(0);      
   this->getADSRAmp().setNoteADSR(0);
 }
 
@@ -48,8 +48,8 @@ int PicodrumMachine::getI(int what)
 
 void PicodrumMachine::setF(int what,float val)
 {
-  if (what==OSC1_FREQ)           this->getVCO().setSynthFreq(val);
-  if (what==LFO1_FREQ)           this->getVCO().setLfoSpeed(val);
+  if (what==OSC1_FREQ)           this->getPicodrumVCO().setSynthFreq(val);
+  if (what==LFO1_FREQ)           this->getPicodrumVCO().setLfoSpeed(val);
 }
 
 
@@ -62,7 +62,7 @@ void PicodrumMachine::setI(int what,int val)
     { 
 
       this->getADSRAmp().reset();
-      this->getVCO().reset();
+      this->getPicodrumVCO().reset();
       this->getADSRAmp().setNoteOn(); 
     }
   if (what==NOTE_ON && val==0) 
@@ -70,14 +70,14 @@ void PicodrumMachine::setI(int what,int val)
       this->getADSRAmp().setNoteOff(); 
     }
 
-  if (what==OSC1_FREQ)           this->getVCO().setSynthFreq(val);
-  if (what==OSC1_TYPE)           this->getVCO().setOscillator(0,val);
-  if (what==OSC2_TYPE)           this->getVCO().setOscillator(1,val);
+  if (what==OSC1_FREQ)           this->getPicodrumVCO().setSynthFreq(val);
+  if (what==OSC1_TYPE)           this->getPicodrumVCO().setOscillator(0,val);
+  if (what==OSC2_TYPE)           this->getPicodrumVCO().setOscillator(1,val);
 
-  if (what==OSC12_MIX)           this->getVCO().setVCOMix(val);
+  if (what==OSC12_MIX)           this->getPicodrumVCO().setPicodrumVCOMix(val);
 
-  if (what==LFO1_DEPTH)          this->getVCO().setLfoDepth(val);
-  //if (what==LFO1_FREQ)           this->getVCO().setLfoSpeed(val);
+  if (what==LFO1_DEPTH)          this->getPicodrumVCO().setLfoDepth(val);
+  //if (what==LFO1_FREQ)           this->getPicodrumVCO().setLfoSpeed(val);
 
 
   if (what==ADSR_ENV0_ATTACK)    this->getADSRAmp().setAttack(val);
@@ -106,7 +106,7 @@ void PicodrumMachine::setI(int what,int val)
 }
 
 
-ADSR & PicodrumMachine::getADSRAmp()
+PicodrumADSR & PicodrumMachine::getADSRAmp()
 {
   return adsr_amp;
 }
@@ -114,9 +114,9 @@ ADSR & PicodrumMachine::getADSRAmp()
 
 
 
-VCO & PicodrumMachine::getVCO()
+PicodrumVCO & PicodrumMachine::getPicodrumVCO()
 {
-  //  printf("PicodrumMachine::getVCO() this=0x%08.8X\n",this);
+  //  printf("PicodrumMachine::getPicodrumVCO() this=0x%08.8X\n",this);
   //  return vco_pointer;
   return vco;
 }

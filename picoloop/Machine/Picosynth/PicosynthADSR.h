@@ -5,19 +5,19 @@
 #include "AudioEngine.h"
 //#include "Oscillator.h"
 //#include "SineOscillator.h"
-#include "VCO.h"
+#include "PicosynthVCO.h"
 
-#ifndef __ADSR__
-#define __ADSR__
+#ifndef __PicosynthADSR__
+#define __PicosynthADSR__
 
-class ADSR : public Oscillator
+class PicosynthADSR : public Oscillator
 {
  public:
-  ADSR();
-  ~ADSR();
+  PicosynthADSR();
+  ~PicosynthADSR();
   //  void setInput(Oscillator * S);
   void   init();
-  //void   setInput(VCO * vcoosc);
+  //void   setInput(PicosynthVCO * vcoosc);
   void   setInput(Oscillator * vcoosc);
 
   void   setAttack(int atk);
@@ -66,7 +66,7 @@ class ADSR : public Oscillator
 
   int current_segment;
   //  Oscillator * S;
-  VCO * vco;
+  PicosynthVCO * vco;
 
   Sint32 ca;
   Sint32 cd;

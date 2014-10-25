@@ -1,8 +1,8 @@
 using namespace std;
 
 #include "Machine.h"
-#include "VCO.h"
-#include "ADSR.h"
+#include "PicodrumVCO.h"
+#include "PicodrumADSR.h"
 #include "Filter.h"
 
 #ifndef __PICODRUMMACHINE____
@@ -24,15 +24,15 @@ class PicodrumMachine : public Machine
 
  protected:
   
-  ADSR   & getADSRAmp();
-  VCO    & getVCO();
+  PicodrumADSR   & getADSRAmp();
+  PicodrumVCO    & getPicodrumVCO();
   Biquad & getBiquad();
 
   int                   cutoff;
   int                   resonance;
 
-  VCO                   vco;
-  ADSR                  adsr_amp;
+  PicodrumVCO           vco;
+  PicodrumADSR          adsr_amp;
   Filter                filter;
 
   int                   sample_num;

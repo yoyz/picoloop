@@ -1,7 +1,7 @@
 using namespace std;
 
 #include "Machine.h"
-#include "dbopl/hiopl.h"
+#include "Machine/Dbopl/hiopl.h"
 
 #include "Filter.h"
 #include <SDL/SDL.h>

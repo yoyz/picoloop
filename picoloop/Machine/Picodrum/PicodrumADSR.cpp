@@ -1,27 +1,27 @@
 using namespace std;
 
-#include "ADSR.h"
+#include "PicodrumADSR.h"
 
 enum  
   {
-    ADSR_INIT,
-    ADSR_ATTACK,
-    ADSR_DECAY,
-    ADSR_SUSTAIN,
-    ADSR_RELEASE,
-    ADSR_FINISH
+    PicodrumADSR_INIT,
+    PicodrumADSR_ATTACK,
+    PicodrumADSR_DECAY,
+    PicodrumADSR_SUSTAIN,
+    PicodrumADSR_RELEASE,
+    PicodrumADSR_FINISH
   };
 
 #define SHIFT_TRIG 8  // for drum
 #define SHIFT_NOTE 8  // for synth
 
-ADSR::ADSR() : tanh_table(new Sint16[128])
+PicodrumADSR::PicodrumADSR() : tanh_table(new Sint16[128])
 {
   float fi;
   int   ii;
   int   i;
 
-  printf("ADSR::ADSR()\n");
+  printf("PicodrumADSR::PicodrumADSR()\n");
 
   adsr_note=0;
 
@@ -49,7 +49,7 @@ ADSR::ADSR() : tanh_table(new Sint16[128])
   cd_next_segment=0;
   cr_next_segment=0;
 
-  current_segment=ADSR_INIT;
+  current_segment=PicodrumADSR_INIT;
   noteOn_value=0;
 
   for (i=0;i<256;i++)
@@ -63,14 +63,14 @@ ADSR::ADSR() : tanh_table(new Sint16[128])
     }
 }
 
-ADSR::~ADSR()
+PicodrumADSR::~PicodrumADSR()
 {
 
 }
 
-void ADSR::init()
+void PicodrumADSR::init()
 {
-  printf("ADSR::init()\n");
+  printf("PicodrumADSR::init()\n");
 
   adsr_note=0;
 
@@ -94,126 +94,126 @@ void ADSR::init()
   cd_next_segment=0;
   cr_next_segment=0;
 
-  current_segment=ADSR_INIT;
+  current_segment=PicodrumADSR_INIT;
   noteOn_value=0;
 }
 
-void ADSR::setNoteADSR(int mode)
+void PicodrumADSR::setNoteADSR(int mode)
 {
   adsr_note=mode;
 }
 
 
-int ADSR::getNoteADSR()
+int PicodrumADSR::getNoteADSR()
 {
   return adsr_note;
 }
 
 
-void ADSR::setAttack(int atk)
+void PicodrumADSR::setAttack(int atk)
 {
   attack=atk;
 }
 
-void ADSR::setDecay(int dc)
+void PicodrumADSR::setDecay(int dc)
 {
   decay=dc;
 }
 
-void  ADSR::setSustain(int sust)
+void  PicodrumADSR::setSustain(int sust)
 {
   sustain=sust;
 }
 
-void ADSR::setRelease(int rls)
+void PicodrumADSR::setRelease(int rls)
 {
   release=rls;
 }
 
 
-int ADSR::getAttack()
+int PicodrumADSR::getAttack()
 {
   return attack;
 }
 
-int ADSR::getDecay()
+int PicodrumADSR::getDecay()
 {
   return decay;
 }
 
-int ADSR::getSustain()
+int PicodrumADSR::getSustain()
 {
   return sustain;
 }
 
-int ADSR::getRelease()
+int PicodrumADSR::getRelease()
 {
   return release;
 }
 
 
-int ADSR::setSegment(int segment)
+int PicodrumADSR::setSegment(int segment)
 {
-  if (segment==ADSR_INIT     ||
-      segment==ADSR_ATTACK   ||
-      segment==ADSR_DECAY    ||
-      segment==ADSR_SUSTAIN  ||
-      segment==ADSR_RELEASE  ||
-      segment==ADSR_FINISH   
+  if (segment==PicodrumADSR_INIT     ||
+      segment==PicodrumADSR_ATTACK   ||
+      segment==PicodrumADSR_DECAY    ||
+      segment==PicodrumADSR_SUSTAIN  ||
+      segment==PicodrumADSR_RELEASE  ||
+      segment==PicodrumADSR_FINISH   
       )
     current_segment=segment;
 }
 
 /*
-void ADSR::setOscillator(Oscillator * osc)
+void PicodrumADSR::setOscillator(Oscillator * osc)
 {
   S=osc; 
 }
 */
 
- //void ADSR::setOscillator(VCO * vcoosc)
- //void ADSR::setInput(VCO * vcoosc)
-void ADSR::setInput(Oscillator * vcoosc)
+ //void PicodrumADSR::setOscillator(VCO * vcoosc)
+ //void PicodrumADSR::setInput(VCO * vcoosc)
+void PicodrumADSR::setInput(Oscillator * vcoosc)
 {
   //  exit(0);
-  printf("ADSR::setVCO(0x%08.8X\n",vcoosc);
-  vco=(VCO*)vcoosc;
+  printf("PicodrumADSR::setVCO(0x%08.8X\n",vcoosc);
+  vco=(PicodrumVCO*)vcoosc;
 }
 /*
-int ADSR::getPlaying()
+int PicodrumADSR::getPlaying()
 {
   return playing;
 }
 */
 
-void ADSR::setNoteOn()
+void PicodrumADSR::setNoteOn()
 {
   //printf("NOTEONNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN\n");
   noteOn_value=1;
 }
 
-void ADSR::setNoteOff()
+void PicodrumADSR::setNoteOff()
 {
   //printf("NOTEOFFFFFFFFFFFFFFFFFFFFFFF\n");
   noteOn_value=0;
 }
 
-void ADSR::setADSRRelease()
+void PicodrumADSR::setADSRRelease()
 {
   //printf("NOTEOFFFFFFFFFFFFFFFFFFFFFFF\n");
-  current_segment=ADSR_RELEASE;
+  current_segment=PicodrumADSR_RELEASE;
 }
 
 
-int ADSR::getNoteOn()
+int PicodrumADSR::getNoteOn()
 {
   return noteOn_value;
 }
 
-void ADSR::reset()
+void PicodrumADSR::reset()
 { 
   int numsample_shift;
-  printf("ADSR::reset() this=0x%08.8X\n",this);  
+  printf("PicodrumADSR::reset() this=0x%08.8X\n",this);  
   
   if (adsr_note==0)
     numsample_shift=SHIFT_TRIG;
@@ -265,7 +265,7 @@ void ADSR::reset()
   //fseconds_attack=(float)attack/128;
   //size_release=fseconds_release*44100;
   //size_attack=fseconds_attack*44100;
-  current_segment=ADSR_INIT;
+  current_segment=PicodrumADSR_INIT;
   noteOn_value=0;
 }
  
@@ -273,7 +273,7 @@ void ADSR::reset()
 
 
 /*
-int ADSR::getSize()
+int PicodrumADSR::getSize()
 {
   //return size_release;
 
@@ -285,7 +285,7 @@ int ADSR::getSize()
 
 
 
-Sint16 ADSR::tick()
+Sint16 PicodrumADSR::tick()
 {
   if (adsr_note==1)
     return this->tick_note();
@@ -294,7 +294,7 @@ Sint16 ADSR::tick()
 }
 
 
-Sint16 ADSR::tick_note()
+Sint16 PicodrumADSR::tick_note()
 {
   //  return S->tick();
 
@@ -308,7 +308,7 @@ Sint16 ADSR::tick_note()
   int    index_inverse=0;
   int    tmp1;
   int    tmp2;
-  //if (debug) fprintf(stderr,"begin Sint16 ADSR::tick()\n");
+  //if (debug) fprintf(stderr,"begin Sint16 PicodrumADSR::tick()\n");
   /*
   if (sample_num==0)  
     {      
@@ -319,30 +319,30 @@ Sint16 ADSR::tick_note()
 
 
 
-  if (current_segment==ADSR_FINISH)
+  if (current_segment==PicodrumADSR_FINISH)
     {
-      if (0) printf("ADSR_FINISH\n");
+      if (0) printf("PicodrumADSR_FINISH\n");
       //return 0;
       s_out=0;
     }
 
-  if (current_segment==ADSR_INIT &&
+  if (current_segment==PicodrumADSR_INIT &&
       noteOn_value==0                    
       )
     {
       //printf("***********WHY THE HELL I AM HERE\n");
-      if (0) printf("ADSR_INIT\n");
+      if (0) printf("PicodrumADSR_INIT\n");
       //return(0);
-      current_segment=ADSR_RELEASE;
+      current_segment=PicodrumADSR_RELEASE;
     }
 
 
 
-  if (current_segment==ADSR_INIT &&
+  if (current_segment==PicodrumADSR_INIT &&
       noteOn_value==1                  
       )
     {
-      current_segment=ADSR_ATTACK;
+      current_segment=PicodrumADSR_ATTACK;
     }
   
       
@@ -364,55 +364,55 @@ Sint16 ADSR::tick_note()
 
   if (sample_num%8192==0)
     {
-      if(current_segment==ADSR_INIT)
+      if(current_segment==PicodrumADSR_INIT)
 	  printf("***************************** INIT     noteOn:%d\n",noteOn_value);
 
-      if(current_segment==ADSR_ATTACK)
+      if(current_segment==PicodrumADSR_ATTACK)
 	  printf("***************************** ATTACK   noteOn:%d\n",noteOn_value);
 
-      if(current_segment==ADSR_DECAY)
+      if(current_segment==PicodrumADSR_DECAY)
 	  printf("***************************** DECAY    noteOn:%d\n",noteOn_value);
 
-      if(current_segment==ADSR_SUSTAIN)
+      if(current_segment==PicodrumADSR_SUSTAIN)
 	  printf("***************************** SUSTAIN  noteOn:%d\n",noteOn_value);
 
-      if(current_segment==ADSR_RELEASE)
+      if(current_segment==PicodrumADSR_RELEASE)
 	  printf("***************************** RELEASE  noteOn:%d\n",noteOn_value);
 
-      if(current_segment==ADSR_FINISH)
+      if(current_segment==PicodrumADSR_FINISH)
 	  printf("***************************** FINISH  noteOn:%d\n",noteOn_value);
 
     }
 
-  if (current_segment==ADSR_ATTACK &&
+  if (current_segment==PicodrumADSR_ATTACK &&
       sample_num > ca)
     {
       printf("***************************** DECAY noteOn:%d\n",noteOn_value);
-      current_segment=ADSR_DECAY;
+      current_segment=PicodrumADSR_DECAY;
       cd_next_segment=sample_num+cd_segment;
     }
 
-  if (current_segment==ADSR_DECAY &&      
+  if (current_segment==PicodrumADSR_DECAY &&      
       sample_num >= ca+cd)
     {
-      current_segment=ADSR_SUSTAIN;
+      current_segment=PicodrumADSR_SUSTAIN;
       printf("***************************** SUSTAIN  noteOn:%d\n",noteOn_value);
     }
 
   
-  if (current_segment==ADSR_SUSTAIN &&
+  if (current_segment==PicodrumADSR_SUSTAIN &&
       noteOn_value==0)
     {
       //printf("OK\n");
       //exit(1);
-      current_segment=ADSR_RELEASE;
+      current_segment=PicodrumADSR_RELEASE;
       cr_next_segment=sample_num+cr_segment;
       cr_div=127-cd_div;
       printf("***************************** RELEASE  noteOn:%d\n",noteOn_value);
     }
   
   /*
-  if (current_segment==ADSR_SUSTAIN &&
+  if (current_segment==PicodrumADSR_SUSTAIN &&
       noteOn_value==1)
     {
       //printf("SUSTAIN!!!!!!");
@@ -422,7 +422,7 @@ Sint16 ADSR::tick_note()
 
 
   // ATTACK
-  if (current_segment==ADSR_ATTACK)    
+  if (current_segment==PicodrumADSR_ATTACK)    
     {
       if (sample_num>ca_next_segment)
 	{
@@ -440,7 +440,7 @@ Sint16 ADSR::tick_note()
 
   /*
   // DECAY
-  if (current_segment==ADSR_DECAY)
+  if (current_segment==PicodrumADSR_DECAY)
     {
       //return s_in;
       s_out=s_in;
@@ -450,7 +450,7 @@ Sint16 ADSR::tick_note()
 
 
   // DECAY
-  if (current_segment==ADSR_DECAY)
+  if (current_segment==PicodrumADSR_DECAY)
     {
 
       if (sample_num>cd_next_segment)
@@ -460,7 +460,7 @@ Sint16 ADSR::tick_note()
 	  if (cd_div<sustain)
 	    {
 	      cd_div=sustain;
-	      //current_segment=ADSR_SUSTAIN;
+	      //current_segment=PicodrumADSR_SUSTAIN;
 	    }
 	}
 
@@ -478,7 +478,7 @@ Sint16 ADSR::tick_note()
 
 
   // SUSTAIN
-  if (current_segment==ADSR_SUSTAIN)
+  if (current_segment==PicodrumADSR_SUSTAIN)
     {
       //return s_in;
       s_out=(s_in*tanh_table[cd_div])/1024;
@@ -488,7 +488,7 @@ Sint16 ADSR::tick_note()
 
 
   // RELEASE
-  if (current_segment==ADSR_RELEASE)
+  if (current_segment==PicodrumADSR_RELEASE)
     {
       if (sample_num>cr_next_segment)
 	{
@@ -497,7 +497,7 @@ Sint16 ADSR::tick_note()
 	  if (cr_div>127)
 	    {
 	      cr_div=127;
-	      current_segment=ADSR_FINISH;
+	      current_segment=PicodrumADSR_FINISH;
 	    }
 	}
 
@@ -507,7 +507,7 @@ Sint16 ADSR::tick_note()
       s_out=(s_in*tanh_table[127-cr_div])/1024;
     }
        
-  if (current_segment==ADSR_FINISH)
+  if (current_segment==PicodrumADSR_FINISH)
     {
       noteOn_value=0;
     }
@@ -517,7 +517,7 @@ Sint16 ADSR::tick_note()
   
   return s_out;
 
-  //if (debug) fprintf(stderr,"end Sint16 ADSR::tick()\n");
+  //if (debug) fprintf(stderr,"end Sint16 PicodrumADSR::tick()\n");
   //return s;  
 }
 
@@ -535,7 +535,7 @@ Sint16 ADSR::tick_note()
 
 
 
-Sint16 ADSR::tick_trig()
+Sint16 PicodrumADSR::tick_trig()
 {
   //  return S->tick();                                                                                                                                                                                                                     
 
@@ -605,13 +605,13 @@ Sint16 ADSR::tick_trig()
 }
 
 /*
-Sint16 ADSR::tick()
+Sint16 PicodrumADSR::tick()
 {
   Sint16 s;
   float f1;
   float f2;
   int debug=0;
-  if (debug) fprintf(stderr,"begin Sint16 ADSR::tick()\n");
+  if (debug) fprintf(stderr,"begin Sint16 PicodrumADSR::tick()\n");
   if (sample_num<0)  this->processSample();
   sample_num++;
 
@@ -626,7 +626,7 @@ Sint16 ADSR::tick()
 
   s=f2;
 
-  if (debug) fprintf(stderr,"end Sint16 ADSR::tick()\n");
+  if (debug) fprintf(stderr,"end Sint16 PicodrumADSR::tick()\n");
   return s;  
 }
 */

@@ -1,5 +1,5 @@
-#ifndef __VCO____
-#define __VCO____
+#ifndef __PicosynthVCO____
+#define __PicosynthVCO____
 
 #include "Oscillator.h"
 //#include "SineOscillator.h"
@@ -10,11 +10,11 @@
 //#include "WaveTableSineOscillator.h"
 //#include "NoiseOscillator.h"
 
-class VCO : public Oscillator
+class PicosynthVCO : public Oscillator
 {
 public:
-  VCO();
-  ~VCO();
+  PicosynthVCO();
+  ~PicosynthVCO();
 
   int checkSevenBitBoundarie(int val);
   void setSynthFreq(float sfreq);

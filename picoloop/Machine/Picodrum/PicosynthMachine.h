@@ -1,8 +1,8 @@
 using namespace std;
 
 #include "Machine.h"
-#include "VCO.h"
-#include "ADSR.h"
+#include "PicosynthVCO.h"
+#include "PicosynthADSR.h"
 #include "Filter.h"
 #include "OneOscillator.h"
 
@@ -25,16 +25,16 @@ class PicosynthMachine : public Machine
 
  protected:
   
-  ADSR   & getADSRAmp();
-  ADSR   & getADSRFltr();
-  VCO    & getVCO();
+  PicosynthADSR   & getPicosynthADSRAmp();
+  PicosynthADSR   & getPicosynthADSRFltr();
+  PicosynthVCO    & getPicosynthVCO();
 
   int                   cutoff;
   int                   resonance;
 
-  VCO                   vco;
-  ADSR                  adsr_amp;
-  ADSR                  adsr_fltr;
+  PicosynthVCO                   vco;
+  PicosynthADSR                  adsr_amp;
+  PicosynthADSR                  adsr_fltr;
   Filter                filter;
 
   OneOscillator         one_osc;
