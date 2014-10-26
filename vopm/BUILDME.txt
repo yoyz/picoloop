@@ -1,0 +1,1 @@
+g++ -c OPM.cpp OPMdrv.cpp op.cpp lfo.cpp  ; g++ -c test.cpp  -o test.o ; g++ *.o -o test
