@@ -1,0 +1,85 @@
+# Project: VOPM
+# Makefile created by Dev-C++ 4.9.9.2
+
+CPP  = g++.exe -finput-charset=cp932 -fexec-charset=cp932
+CC   = gcc.exe -finput-charset=cp932 -fexec-charset=cp932
+WINDRES = windres.exe
+RES  = VOPM_private.res
+OBJ  = VOPMproc.o disp.o form.o OPM.o OPMdrv.o Slider.o VOPM.o VOPMEdit.o vstcontrols.o vstgui.o vstplugmain.o aeffguieditor.o audioeffect.o audioeffectx.o cfileselector.o op.o lfo.o $(RES)
+LINKOBJ  = VOPMproc.o disp.o form.o OPM.o OPMdrv.o Slider.o VOPM.o VOPMEdit.o vstcontrols.o vstgui.o vstplugmain.o aeffguieditor.o audioeffect.o audioeffectx.o cfileselector.o op.o lfo.o $(RES)
+LIBS =  -L"lib" -lglu32 -lglut32 -lopengl32 --add-stdcall-alias -lole32 -lkernel32 -lgdi32 -luuid -luser32 -mwindows --no-export-all-symbols --def VOPM.def   
+INCS =  -I"include"  -I"../vstsdk2.4/vstgui.sf/vstgui"  -I"../vstsdk2.4/pluginterfaces/vst2.x"  -I"../vstsdk2.4/public.sdk/source/vst2.x"  -I"../vstsdk2.4" 
+CXXINCS =  -I"lib/gcc/mingw32/3.4.2/include"  -I"include/c++/3.4.2/backward"  -I"include/c++/3.4.2/mingw32"  -I"include/c++/3.4.2"  -I"include"  -I"../vstsdk2.4/vstgui.sf/vstgui"  -I"../vstsdk2.4/pluginterfaces/vst2.x"  -I"../vstsdk2.4/public.sdk/source/vst2.x"  -I"../vstsdk2.4" 
+BIN  = VOPM.dll
+CXXFLAGS = $(CXXINCS) -DBUILDING_DLL=1 -mwindows -O3 -DVST_FORCE_DEPRECATED=0  
+CFLAGS = $(INCS) -DBUILDING_DLL=1  
+RM = rm -f
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before VOPM.dll all-after
+
+
+clean: clean-custom
+	${RM} $(OBJ) $(BIN)
+
+DLLWRAP=dllwrap.exe
+DEFFILE=libVOPM.def
+STATICLIB=libVOPM.a
+
+$(BIN): $(LINKOBJ)
+	$(DLLWRAP) --output-def $(DEFFILE) --driver-name c++ --implib $(STATICLIB) $(LINKOBJ) $(LIBS) -o $(BIN)
+
+VOPMproc.o: VOPMproc.cpp
+	$(CPP) -c VOPMproc.cpp -o VOPMproc.o $(CXXFLAGS)
+
+disp.o: disp.cpp
+	$(CPP) -c disp.cpp -o disp.o $(CXXFLAGS)
+
+form.o: form.cpp
+	$(CPP) -c form.cpp -o form.o $(CXXFLAGS)
+
+OPM.o: OPM.cpp
+	$(CPP) -c OPM.cpp -o OPM.o $(CXXFLAGS)
+
+OPMdrv.o: OPMdrv.cpp
+	$(CPP) -c OPMdrv.cpp -o OPMdrv.o $(CXXFLAGS)
+
+Slider.o: Slider.cpp
+	$(CPP) -c Slider.cpp -o Slider.o $(CXXFLAGS)
+
+VOPM.o: VOPM.cpp
+	$(CPP) -c VOPM.cpp -o VOPM.o $(CXXFLAGS)
+
+VOPMEdit.o: VOPMEdit.cpp
+	$(CPP) -c VOPMEdit.cpp -o VOPMEdit.o $(CXXFLAGS)
+
+vstcontrols.o: vstcontrols.cpp
+	$(CPP) -c vstcontrols.cpp -o vstcontrols.o $(CXXFLAGS)
+
+vstgui.o: vstgui.cpp
+	$(CPP) -c vstgui.cpp -o vstgui.o $(CXXFLAGS)
+
+vstplugmain.o: vstplugmain.cpp
+	$(CPP) -c vstplugmain.cpp -o vstplugmain.o $(CXXFLAGS)
+
+aeffguieditor.o: aeffguieditor.cpp
+	$(CPP) -c aeffguieditor.cpp -o aeffguieditor.o $(CXXFLAGS)
+
+audioeffect.o: audioeffect.cpp
+	$(CPP) -c audioeffect.cpp -o audioeffect.o $(CXXFLAGS)
+
+audioeffectx.o: audioeffectx.cpp
+	$(CPP) -c audioeffectx.cpp -o audioeffectx.o $(CXXFLAGS)
+
+cfileselector.o: cfileselector.cpp
+	$(CPP) -c cfileselector.cpp -o cfileselector.o $(CXXFLAGS)
+
+op.o: op.cpp
+	$(CPP) -c op.cpp -o op.o $(CXXFLAGS)
+
+lfo.o: lfo.cpp
+	$(CPP) -c lfo.cpp -o lfo.o $(CXXFLAGS)
+
+VOPM_private.res: VOPM_private.rc VOPM.rc 
+	$(WINDRES) -i VOPM_private.rc --input-format=rc -o VOPM_private.res -O coff 
