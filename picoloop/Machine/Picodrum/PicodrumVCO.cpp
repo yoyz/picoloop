@@ -89,8 +89,8 @@ void PicodrumVCO::init()
   sawLfoOsc1.setWaveForm(PICO_WAVETABLE_SAW);
 
 
-  lfo1=&sineLfoOsc1;
-  //lfo1=&sawLfoOsc1;
+  //lfo1=&sineLfoOsc1;
+  lfo1=&sawLfoOsc1;
 
   lfo1->setFreq(0);
   lfo1->setAmplitude(32);
@@ -130,6 +130,13 @@ void PicodrumVCO::setPicodrumVCOMix(int mix)
 
   vcomix=this->checkSevenBitBoundarie(mix);
 }
+
+void PicodrumVCO::setPicodrumVCOPhase(int ph)
+{
+
+  phase=this->checkSevenBitBoundarie(ph);
+}
+
 
 void PicodrumVCO::setOscillator(int oscillator_number,int oscillator_type)
 {
@@ -208,6 +215,7 @@ void PicodrumVCO::reset()
   s1->reset();
   s2->reset();
   //s2->setPhase(72);
+  s2->setPhase(phase);
   lfo1->reset();
   
   //this->setLfoDepth(0);
@@ -271,6 +279,7 @@ Sint16 PicodrumVCO::tick()
 	  //tmp=lfo1->tick() >> lfo_depth_shift;
 	  //tmp=(lfo1->tick()*lfo_depth)/128;
 	  tmp=((lfo1->tick()>>6)*lfo_depth)>>7;
+	  //tmp=lfo1->tick()>>8)*lfo_depth)>>7;
 	}
 	//tmp=lfo1->tick() * (lfo_depth_shift*127)/;
 

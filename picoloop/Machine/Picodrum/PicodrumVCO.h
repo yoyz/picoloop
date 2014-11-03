@@ -24,6 +24,7 @@ public:
   Sint16                tick();
   void                  init();
   void                  setPicodrumVCOMix(int mix);
+  void                  setPicodrumVCOPhase(int ph);
   void                  setLfoDepth(int val);
   void                  setLfoSpeed(float val);
   Oscillator          * getOscillatorOne();
@@ -91,6 +92,7 @@ public:
 
   int current;
   int vcomix;
+  int phase;
 
   int lfo_depth;
   int lfo_depth_shift;

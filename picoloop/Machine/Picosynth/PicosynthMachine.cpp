@@ -108,6 +108,7 @@ void PicosynthMachine::setI(int what,int val)
   if (what==OSC2_TYPE)           this->getVCO().setOscillator(1,val);
 
   if (what==OSC12_MIX)           this->getVCO().setVCOMix(val);
+  if (what==OSC1_PHASE)          this->getVCO().setVCOPhase(val);
 
   if (what==LFO1_DEPTH)          this->getVCO().setLfoDepth(val);
 
