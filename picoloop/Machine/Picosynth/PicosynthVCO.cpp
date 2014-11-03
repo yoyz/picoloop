@@ -131,6 +131,13 @@ void PicosynthVCO::setVCOMix(int mix)
   vcomix=this->checkSevenBitBoundarie(mix);
 }
 
+void PicosynthVCO::setVCOPhase(int ph)
+{
+
+  phase=this->checkSevenBitBoundarie(ph);
+}
+
+
 void PicosynthVCO::setOscillator(int oscillator_number,int oscillator_type)
 {
   int s1freq=s1->getFreq();
@@ -207,7 +214,7 @@ void PicosynthVCO::reset()
   printf("PicosynthVCO::reset() this=0x%08.8X\n",this); // <==== FAILS allways the same this pointers
   s1->reset();
   s2->reset();
-  //s2->setPhase(72);
+  s2->setPhase(phase);
   lfo1->reset();
   
   //this->setLfoDepth(0);

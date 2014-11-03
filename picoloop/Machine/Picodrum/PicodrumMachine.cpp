@@ -75,6 +75,7 @@ void PicodrumMachine::setI(int what,int val)
   if (what==OSC2_TYPE)           this->getPicodrumVCO().setOscillator(1,val);
 
   if (what==OSC12_MIX)           this->getPicodrumVCO().setPicodrumVCOMix(val);
+  if (what==OSC1_PHASE)          this->getPicodrumVCO().setPicodrumVCOPhase(val);
 
   if (what==LFO1_DEPTH)          this->getPicodrumVCO().setLfoDepth(val);
   //if (what==LFO1_FREQ)           this->getPicodrumVCO().setLfoSpeed(val);
