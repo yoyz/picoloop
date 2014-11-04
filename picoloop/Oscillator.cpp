@@ -56,22 +56,10 @@ void Oscillator::setFreq(int freq)
   else 
     if (freq > 20000) freq=20000;
   frequency=freq;
-  /*
-  table_fill=0;
-  if (freq!=0)
-    table_size=DEFAULTFREQ/freq;
-  else
-    table_size=0;
-  */
-  //  printf("setFreq:%d\n",freq);
+
   if (freq>0)
     {
       offset_next_index=(freq*table_size)/44100;
-      /*
-      printf("*************freq:%d\n",freq);
-      printf("*************table_size:%d\n",table_size);
-      printf("*************offset_next_index:%d\n",offset_next_index);
-      */
     }
 }
 
