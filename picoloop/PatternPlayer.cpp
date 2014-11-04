@@ -21,6 +21,8 @@ using namespace std;
 #include "WaveTableManager.h"
 #include "WaveTable.h"
 
+#include "NoteFreq.h"
+
 
 #define KEY_REPEAT_INTERVAL 400
 
@@ -133,6 +135,7 @@ PatternReader  PR;          // used to  read data.pic file
 PatternElement PE;          // used for copy paste PatternElement
 InputManager   IE;          // used to  fetch key
 SDL_GUI        SG;          // used to  open a gui and display stuff
+NoteFreq       NF;
 //Wave           cowbell;     // used ?
 //Instrument     inst;        // used ?
 
@@ -4100,7 +4103,9 @@ void seq_update_track(int t)
   //{
       if (P[t].getPatternElement(step).getTrig()==true)
 	{
-	  float   f=P[t].getPatternElement(step).getNoteFreq();
+	  //float   f=P[t].getPatternElement(step).getNoteFreq();
+	  float   f=NF.getFNoteFreq(P[t].getPatternElement(step).getNote());
+
 	  //int     i=f;
 
 	  //int     i_c;

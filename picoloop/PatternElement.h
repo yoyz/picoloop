@@ -44,7 +44,7 @@ public:
   void   init();
   bool   setNote(int Note);
   int    getNote();
-  float  getNoteFreq();
+  //float  getNoteFreq();
   const char * getMachineTypeCharStar();
   const char * getNoteCharStar();
   const char * getFMTypeCharStar();

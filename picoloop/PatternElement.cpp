@@ -776,7 +776,7 @@ const char * PatternElement::getNoteCharStar()
   
 }
 
-
+/*
 float PatternElement::getNoteFreq()
 {
   
@@ -907,3 +907,4 @@ float PatternElement::getNoteFreq()
 
   return note_hertz[PatternElement::Note];
 }
+*/
