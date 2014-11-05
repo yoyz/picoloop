@@ -27,6 +27,7 @@ SOURCES=WaveSynth.cpp            \
 		      WaveTable.cpp            \
 		      Generator.cpp            \
 		      PatternElement.cpp       \
+		      NoteFreq.cpp             \
 		      Machine/Picosynth/PicosynthADSR.cpp        \
 		      Machine/Picosynth/PicosynthVCO.cpp         \
 		      Machine/Picosynth/PicosynthMachine.cpp     \
