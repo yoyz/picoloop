@@ -192,9 +192,25 @@ int NoteFreq::getWTJumpDetune(int note,int detune)
   float f_note;
   float f_detune;
   int   wt;
+  int   dt;
+  int   nt;
+
+  nt=note;
+  dt=detune;
+
+  if (nt<0)
+    nt=0;
+  if (nt>88)
+    nt=88;
+
+  if (dt<0)
+    dt=0;
+  if (dt>127)
+    dt=127;
+
 
   //f_note=this->getFNoteFreq(note);
   //f_detune=this->getFNoteFreq(note
   //wt=(f_note*WAVETABLE_SIZE)/DEFAULTFREQ;
-  return wtjTable[note][detune];
+  return wtjTable[nt][dt];
 }
