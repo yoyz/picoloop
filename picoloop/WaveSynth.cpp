@@ -14,6 +14,9 @@ using namespace std;
 #include "Generator.h"
 #include "WaveTableManager.h"
 #include "WaveTable.h"
+#include "PatternElement.h"
+
+#include "NoteFreq.h"
 
 SDL_GUI        SG;          // used to  initialize video
 AudioEngine    AE;          // used to  init alsa/rtaudio
@@ -669,7 +672,7 @@ void handle_key()
 
       for (t=0;t<1;t++)
 	{
-	  float   f=PE.getNoteFreq();
+	  //float   f=PE.getNoteFreq();
 	  //int     i=f;
 	  //float   f_c;
 	  //float   f_r;
@@ -681,7 +684,7 @@ void handle_key()
 	  //f_c=f_c/256;
 	  //f_r=f_r/8;
 	  
-	  printf("[Freq:%f]\n",f);
+	  //printf("[Freq:%f]\n",f);
 
 	  MM[t]->setAmplitude(64);
 	  MM[t]->setMachineType(current_machine);
@@ -696,9 +699,12 @@ void handle_key()
 
 	  //MM[t]->setMachineType(1);
 	  //MM[t]->setAmplitude(64);
-	  M[t]->setF(OSC1_FREQ,f);
+	  //M[t]->setF(OSC1_FREQ,f);
 
-	  M[t]->setI(OSC1_TYPE,1);
+	  M[t]->reset();
+	  M[t]->setI(OSC1_NOTE,note);
+
+	  M[t]->setI(OSC1_TYPE,2);
 	  M[t]->setI(OSC2_TYPE,1);
 	
 	  M[t]->setI(OSC12_MIX,vcomix);
@@ -888,6 +894,9 @@ int main(int argc,char ** argv)
   //if (argc!=2) { printf("arg please\n"); exit(1); }
 
   wtg();
+  NoteFreq & NF = NoteFreq::getInstance();
+  NF.init();
+
 
   file_buffer=(Sint16*)malloc(sizeof(short)*DEFAULTSAMPLES);
   vector_buffer=(Sint16*)malloc(sizeof(Sint16)*SCREEN_WIDTH);
