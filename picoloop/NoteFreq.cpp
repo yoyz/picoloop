@@ -2,10 +2,53 @@
 
 NoteFreq::NoteFreq()
 {
+  wtjTable=0;
 }
 
 NoteFreq::~NoteFreq()
 {
+}
+
+
+NoteFreq& NoteFreq::getInstance()
+{
+  static NoteFreq instance;
+  return instance;
+}
+
+
+void NoteFreq::init()
+{
+  int i=0;
+  int j=0;
+
+  float freq;
+  float wtjump_freq;
+  float detune;
+  float wtjump_detune;
+  float value;
+
+  if (wtjTable!=0)
+    return;
+
+  wtjTable=malloc(sizeof(Sint32)*128);
+  for (i=0;i<109;i++)
+    wtjTable[i]=malloc(sizeof(Sint32)*128);
+
+  for (i=1;i<109;i++)
+    for (j=0;j<128;j++)
+      {
+	freq=this->getFNoteFreq(i);
+	wtjump_freq=(freq*WAVETABLE_SIZE)/44100;
+	
+	wtjump_detune=(((this->getFNoteFreq(i+1)*(j)))-((this->getFNoteFreq(i-1)*(128-j))))/(128*12);
+	//detune=((this->getFNoteFreq(i+1)*(j))-(this->getFNoteFreq(i-1)*(128-j)))/(128*16);
+	//value=(freq+detune)*WAVETABLE_SIZE;
+	//wtjTable[i][j]=value;
+	wtjTable[i][j]=wtjump_freq+wtjump_detune;
+
+	//printf("wtjTable[%d][%d]=%d freq:%f wtjump_freq:%f wtjump_detune:%f\n",i,j,wtjTable[i][j],freq,wtjump_freq,wtjump_detune);
+      }
 }
 
 float NoteFreq::getFNoteFreq(int note)
@@ -141,4 +184,17 @@ int NoteFreq::getINoteFreq(int note)
   int freq;
   freq=this->getFNoteFreq(note);
   return freq;
+}
+
+
+int NoteFreq::getWTJumpDetune(int note,int detune)
+{
+  float f_note;
+  float f_detune;
+  int   wt;
+
+  //f_note=this->getFNoteFreq(note);
+  //f_detune=this->getFNoteFreq(note
+  //wt=(f_note*WAVETABLE_SIZE)/DEFAULTFREQ;
+  return wtjTable[note][detune];
 }

@@ -1,4 +1,4 @@
-
+/*
 enum note {
   BMINUSONE,
   C0,
@@ -108,4 +108,6 @@ enum note {
 };
 
 
+
+*/
 

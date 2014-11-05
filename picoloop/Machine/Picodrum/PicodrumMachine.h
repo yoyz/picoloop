@@ -37,6 +37,9 @@ class PicodrumMachine : public Machine
 
   int                   sample_num;
   Sint16                last_sample;
+
+  int                   note;
+  int                   detune;
 };
 
 #endif

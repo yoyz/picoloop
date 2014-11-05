@@ -8,15 +8,25 @@ using namespace std;
 
 class NoteFreq
 {
+  private:
 
- public:
   NoteFreq();
   ~NoteFreq();
 
+  Sint32  ** wtjTable; // table of notefreq with the detune 
+                     // value of this table are multiplied by WAVETABLE_SIZE
+                     // it allow to lookup the next jump of the oscillator
+
+ public:
+  static NoteFreq& getInstance();
+
+  void  init();
   float getFNoteFreq(int note);
   int   getINoteFreq(int note);
   int   getWTJump(int   note);
   int   getWTJumpDetune(int note,int detune);
+
+
 };
 
 #endif

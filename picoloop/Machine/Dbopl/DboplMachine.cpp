@@ -106,7 +106,7 @@ int dboplMachine::getI(int what)
 
 void dboplMachine::setF(int what,float val)
 {
-  if (what==OSC1_FREQ)           { freq=val; }
+  //if (what==OSC1_FREQ)           { freq=val; }
   if (what==LFO1_FREQ)           { lfo_speed=val/4.0; sineLfoOsc1.setFreq(lfo_speed); }
 }
 
@@ -143,7 +143,9 @@ void dboplMachine::setI(int what,int val)
     { 
       keyon=1;
       sineLfoOsc1.reset();
-      HO->KeyOn(1,freq);
+      NoteFreq & NF = NoteFreq::getInstance();
+      HO->KeyOn(1,NF.getINoteFreq(note));
+      freq=NF.getINoteFreq(note);
     }
 
     if (what==NOTE_ON && val==0) 
@@ -232,7 +234,7 @@ void dboplMachine::setI(int what,int val)
       }
 
 
-
+  if (what==OSC1_NOTE)           note=val;
     //if (what==OSC1_FREQ)           freq=val;
 
     if (what==FILTER1_CUTOFF)      

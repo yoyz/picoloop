@@ -5,6 +5,7 @@ using namespace std;
 
 #include "Filter.h"
 #include <SDL/SDL.h>
+#include "NoteFreq.h"
 //#include "Biquad.h"
 //#include "SineOscillator.h"
 //#include "dbopl/mixer.h"
@@ -63,7 +64,7 @@ class dboplMachine : public Machine
 
   float lfo_speed;
 
-
+  int note;
 };
 
 #endif

@@ -229,21 +229,37 @@ Oscillator * PicodrumVCO::getOscillatorOne()
   return s1;
 }
 
+void PicodrumVCO::setNoteDetune(int note,int dt)
+{
+  NoteFreq & NF = NoteFreq::getInstance();
+  detune=dt;
 
+  s1->setNoteDetune(note,64);
+  s2->setNoteDetune(note,dt);
+  freqOsc1=NF.getINoteFreq(note);
+  freqOsc2=NF.getINoteFreq(note);
+  /*
+  s1->setSynthFreq(sfreq);
+  s2->setSynthFreq(sfreq);
+  */
+  //s1->setFreq(freqOsc1);
+  //s2->setFreq(freqOsc2);
+  //  s2->setFreq(sfreq*3);
+}
+
+
+
+/*
 void PicodrumVCO::setSynthFreq(float sfreq)
 {
 
   freqOsc1=sfreq;
   freqOsc2=sfreq;
-  /*
-  s1->setSynthFreq(sfreq);
-  s2->setSynthFreq(sfreq);
-  */
   s1->setFreq(freqOsc1);
   s2->setFreq(freqOsc2);
   //  s2->setFreq(sfreq*3);
 }
-
+*/
 
 
 
