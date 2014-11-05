@@ -6,8 +6,11 @@ using namespace std;
 #include <math.h>
 #include <SDL/SDL.h>
 
-#include "PatternElement.h"
+//#include "PatternElement.h"
 #include "Master.h"
+#include "WaveTableManager.h"
+#include "NoteFreq.h"
+
 #ifndef __OSCILLATOR__
 #define __OSCILLATOR__
 
@@ -21,6 +24,8 @@ class Oscillator
   void   setPhase(int phase);
   void   setFreq(int freq);
   int    getFreq();
+
+  void   setNoteDetune(int note,int detune);
   
   void   setWaveForm(int waveform);
 
@@ -48,6 +53,7 @@ class Oscillator
   int      index;
 
   Sint16 * table;
+  //NoteFreq NF;
   
 };
 

@@ -2,6 +2,7 @@
 #define __PicosynthVCO____
 
 #include "Oscillator.h"
+//#include "NoteFreq.h"
 //#include "SineOscillator.h"
 //#include "SawOscillator.h"
 //#include "FuzzyPulseOscillator.h"
@@ -17,7 +18,9 @@ public:
   ~PicosynthVCO();
 
   int checkSevenBitBoundarie(int val);
-  void setSynthFreq(float sfreq);
+  //void setFSynthFreq(float ffreq);
+  //void setISynthFreq(int   ifreq);
+  void setNoteDetune(int note,int detune);
   void setOscillator(int oscillator_number,int oscillator_type);
   /*
   void setSineOsc();
@@ -35,6 +38,7 @@ public:
   void                  setLfoDepth(int val);
   void                  setLfoSpeed(float val);
   Oscillator          * getOscillatorOne();
+
 
   /*
   SineOscillator          sineOsc1;
@@ -91,11 +95,11 @@ public:
 
   Oscillator            * lfo1;
 
-  float freq;
-
   int freqOsc1;
   int freqOsc2;
 
+  int                   note;
+  int                   detune;
 
   int current;
   int vcomix;

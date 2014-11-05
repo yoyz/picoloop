@@ -45,12 +45,6 @@ using namespace std;
 #define OSC3_AMP            33
 #define OSC4_AMP            34
 
-#define OSC1_FREQ           37
-#define OSC2_FREQ           38
-#define OSC3_FREQ           39
-#define OSC4_FREQ           40
-
-
 #define LFO1_DEPTH          41
 #define LFO1_FREQ           42
 #define LFO2_DEPTH          43
@@ -68,6 +62,21 @@ using namespace std;
 #define FILTER2_RES         57
 
 #define FM_TYPE             60
+
+
+
+#define OSC1_NOTE           70
+#define OSC2_NOTE           71
+#define OSC3_NOTE           72
+#define OSC4_NOTE           73
+
+#define OSC1_DETUNE         74
+#define OSC2_DETUNE         75
+#define OSC3_DETUNE         76
+#define OSC4_DETUNE         77
+
+
+
 
 #define NOTE_ON             100
 

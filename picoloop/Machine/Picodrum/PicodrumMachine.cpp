@@ -10,6 +10,8 @@ PicodrumMachine::PicodrumMachine() : adsr_amp(), vco(), filter()
   printf("PicodrumMachine::PicodrumMachine()\n");  
   cutoff=125;
   resonance=10;
+  note=0;
+  detune=64;
 }
 
 
@@ -34,8 +36,13 @@ void PicodrumMachine::init()
   this->getADSRAmp().init();
 
   this->getPicodrumVCO().init();
-  this->getPicodrumVCO().setSynthFreq(0);      
+  this->getPicodrumVCO().setNoteDetune(0,0);      
+  //this->getPicodrumVCO().setSynthFreq(0);      
   //this->getADSRAmp().setNoteADSR(0);
+
+  note=0;
+  detune=64;
+
 }
 
 
@@ -48,7 +55,7 @@ int PicodrumMachine::getI(int what)
 
 void PicodrumMachine::setF(int what,float val)
 {
-  if (what==OSC1_FREQ)           this->getPicodrumVCO().setSynthFreq(val);
+  //  if (what==OSC1_FREQ)           this->getPicodrumVCO().setSynthFreq(val);
   if (what==LFO1_FREQ)           this->getPicodrumVCO().setLfoSpeed(val);
 }
 
@@ -60,7 +67,7 @@ void PicodrumMachine::setI(int what,int val)
 
   if (what==NOTE_ON && val==1) 
     { 
-
+      this->getPicodrumVCO().setNoteDetune(note,detune);
       this->getADSRAmp().reset();
       this->getPicodrumVCO().reset();
       this->getADSRAmp().setNoteOn(); 
@@ -70,7 +77,9 @@ void PicodrumMachine::setI(int what,int val)
       this->getADSRAmp().setNoteOff(); 
     }
 
-  if (what==OSC1_FREQ)           this->getPicodrumVCO().setSynthFreq(val);
+  if (what==OSC1_NOTE)           note=val;
+
+  //if (what==OSC1_FREQ)           this->getPicodrumVCO().setSynthFreq(val);
   if (what==OSC1_TYPE)           this->getPicodrumVCO().setOscillator(0,val);
   if (what==OSC2_TYPE)           this->getPicodrumVCO().setOscillator(1,val);
 

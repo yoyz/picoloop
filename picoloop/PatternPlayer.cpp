@@ -136,7 +136,7 @@ PatternElement PE;          // used for copy paste PatternElement
 PatternElement PECursor;    // used for storing the current PatternElement ( under the cursor )
 InputManager   IE;          // used to  fetch key
 SDL_GUI        SG;          // used to  open a gui and display stuff
-NoteFreq       NF;
+//NoteFreq       NF;
 //Wave           cowbell;     // used ?
 //Instrument     inst;        // used ?
 
@@ -4153,7 +4153,7 @@ void seq_update_track(int t)
       if (P[t].getPatternElement(step).getTrig()==true)
 	{
 	  //float   f=P[t].getPatternElement(step).getNoteFreq();
-	  float   f=NF.getFNoteFreq(P[t].getPatternElement(step).getNote());
+	  //float   f=NF.getFNoteFreq(P[t].getPatternElement(step).getNote());
 
 	  //int     i=f;
 
@@ -4176,7 +4176,8 @@ void seq_update_track(int t)
 	  //printf("[Freq:%d]\n",i);
 	  //M[t]->set(OSC1_FREQ,i);
 	  M[t]->reset();
-	  M[t]->setF(OSC1_FREQ,f);
+	  //M[t]->setF(OSC1_FREQ,f);
+	  M[t]->setI(OSC1_NOTE,P[t].getPatternElement(step).getNote());
 
 	  /*
 	  noteOffTrigger[t]=
@@ -4488,6 +4489,11 @@ int main(int argc,char **argv)
 
   wtg();
   //  exit(0);
+  //NF.init();
+
+  NoteFreq & NF = NoteFreq::getInstance();
+  NF.init();
+
   IE.init();
   IE.printState();
   //IE.handle_key();

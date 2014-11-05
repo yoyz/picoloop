@@ -2,19 +2,20 @@
 
 
 PicosynthVCO::PicosynthVCO() : sineOsc1(), 
-	     sineOsc2(), 
-	     sawOsc1(), 
-	     sawOsc2(), 
-	     pulseOsc1(), 
-	     pulseOsc2(), 
-	     triangleOsc1(), 
-	     triangleOsc2(), 
-	     waveTableSineOsc1(), 
-	     waveTableSineOsc2(), 
-	     noiseOsc1(), 
-	     noiseOsc2(), 
-	     sineLfoOsc1(), 
-	     sawLfoOsc1() //, noiseosc()
+			       sineOsc2(), 
+			       sawOsc1(), 
+			       sawOsc2(), 
+			       pulseOsc1(), 
+			       pulseOsc2(), 
+			       triangleOsc1(), 
+			       triangleOsc2(), 
+			       waveTableSineOsc1(), 
+			       waveTableSineOsc2(), 
+			       noiseOsc1(), 
+			       noiseOsc2(), 
+			       sineLfoOsc1(), 
+			       sawLfoOsc1()
+			       //, noiseosc()
 {
   printf("PicosynthVCO::PicosynthVCO()\n");
   s1=NULL;
@@ -31,6 +32,9 @@ PicosynthVCO::PicosynthVCO() : sineOsc1(),
 
   freqOsc1=0;
   freqOsc2=0;
+  
+  note=0;
+  detune=64;
 }
 
 void PicosynthVCO::init()
@@ -229,20 +233,41 @@ Oscillator * PicosynthVCO::getOscillatorOne()
 }
 
 
-void PicosynthVCO::setSynthFreq(float sfreq)
-{
 
-  freqOsc1=sfreq;
-  freqOsc2=sfreq;
+void PicosynthVCO::setNoteDetune(int note,int dt)
+{
+  NoteFreq & NF = NoteFreq::getInstance();
+  detune=dt;
+
+  s1->setNoteDetune(note,64);
+  s2->setNoteDetune(note,dt);
+  freqOsc1=NF.getINoteFreq(note);
+  freqOsc2=NF.getINoteFreq(note);
   /*
   s1->setSynthFreq(sfreq);
   s2->setSynthFreq(sfreq);
   */
-  s1->setFreq(freqOsc1);
-  s2->setFreq(freqOsc2);
+  //s1->setFreq(freqOsc1);
+  //s2->setFreq(freqOsc2);
   //  s2->setFreq(sfreq*3);
 }
 
+
+/*
+void PicosynthVCO::setFSynthFreq(float f_freq)
+{
+
+  f_freqOsc1=f_freq;
+  f_freqOsc2=f_freq;
+
+  //s1->setSynthFreq(sfreq);
+  //s2->setSynthFreq(sfreq);
+
+  s1->setFFreq(ffreqOsc1);
+  s2->setFFreq(ffreqOsc2);
+
+}
+*/
 
 
 
@@ -281,8 +306,8 @@ Sint16 PicosynthVCO::tick()
 	}
 	//tmp=lfo1->tick() * (lfo_depth_shift*127)/;
 
-      s1->setFreq(freqOsc1+tmp);
-      s2->setFreq(freqOsc2+tmp);
+      //s1->setFreq(freqOsc1+tmp);
+      //s2->setFreq(freqOsc2+tmp);
     }
 
   

@@ -15,6 +15,8 @@ PicosynthMachine::PicosynthMachine() : adsr_amp(), adsr_fltr(), vco(), filter(),
     }
   cutoff=125;
   resonance=10;
+  note=0;
+  detune=64;
 }
 
 
@@ -65,9 +67,14 @@ void PicosynthMachine::init()
   this->getADSRAmp().init();
   this->getADSRFltr().init();
   this->getVCO().init();
-  this->getVCO().setSynthFreq(0);      
+  //this->getVCO().setSynthFreq(0);      
+  this->getVCO().setNoteDetune(0,0);      
   this->getADSRAmp().setNoteADSR(1);
   this->getADSRFltr().setNoteADSR(1);
+
+  note=0;
+  detune=64;
+
 
 }
 
@@ -80,7 +87,7 @@ int PicosynthMachine::getI(int what)
 
 void PicosynthMachine::setF(int what,float val)
 {
-  if (what==OSC1_FREQ)           this->getVCO().setSynthFreq(val);
+  //if (what==OSC1_FREQ)           this->getVCO().setSynthFreq(val);
   if (what==LFO1_FREQ)           this->getVCO().setLfoSpeed(val);
 }
 
@@ -91,17 +98,21 @@ void PicosynthMachine::setI(int what,int val)
 
   if (what==NOTE_ON && val==1) 
     { 
+      this->getVCO().setNoteDetune(note,detune);
       this->getADSRAmp().reset();
       this->getADSRFltr().reset();
       this->getVCO().reset();
       this->getADSRAmp().setNoteOn(); 
-      this->getADSRFltr().setNoteOn();   
+      this->getADSRFltr().setNoteOn();
     }
   if (what==NOTE_ON && val==0) 
     { 
       this->getADSRAmp().setNoteOff(); 
       this->getADSRFltr().setNoteOff(); 
     }
+
+  //if (what==OSC1_NOTE)           this->getVCO().setSynthFreq(val);
+  if (what==OSC1_NOTE)           note=val;
 
   //if (what==OSC1_FREQ)           this->getVCO().setSynthFreq(val);
   if (what==OSC1_TYPE)           this->getVCO().setOscillator(0,val);
@@ -111,6 +122,10 @@ void PicosynthMachine::setI(int what,int val)
   if (what==OSC1_PHASE)          this->getVCO().setVCOPhase(val);
 
   if (what==LFO1_DEPTH)          this->getVCO().setLfoDepth(val);
+
+  if (what==OSC1_AMP)            detune=val;
+  //if (what==OSC2_AMP)            //HO->SetAttenuation(1,2,32-(val/4));
+
 
 
   if (what==ADSR_ENV0_ATTACK)    this->getADSRAmp().setAttack(val);

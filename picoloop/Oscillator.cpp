@@ -1,6 +1,7 @@
 using namespace std;
 #include "Oscillator.h"
-#include "WaveTableManager.h"
+//#include "NoteFreq.h"
+//#include "WaveTableManager.h"
 
 Oscillator::Oscillator()
 {
@@ -43,8 +44,17 @@ int Oscillator::getFreq()
   return frequency;
 }
 
+void Oscillator::setNoteDetune(int note,int detune)
+{
+  NoteFreq & NF = NoteFreq::getInstance();
+  offset_next_index=NF.getWTJumpDetune(note,detune);
+  printf("note:%d detune:%d offset_next_index:%d\n",note,detune,offset_next_index);
+}
+
 void Oscillator::setFreq(int freq)
 {
+  return;
+
   if (freq==frequency)
     return;
 
@@ -88,7 +98,12 @@ Sint16 Oscillator::tick()
 { 
   index=index+offset_next_index;
   if (index>=table_size)
-    index=index-table_size;
+    {
+      index=index-table_size;
+      if (index>table_size)
+	index=0;
+      //printf("offset_next_index.tick.offset_next_index:%d\n",offset_next_index);
+    }
   return table[index];
 }
 

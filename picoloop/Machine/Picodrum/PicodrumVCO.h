@@ -10,7 +10,8 @@ public:
   ~PicodrumVCO();
 
   int checkSevenBitBoundarie(int val);
-  void setSynthFreq(float sfreq);
+  void setNoteDetune(int note,int detune);
+  //void setSynthFreq(float sfreq);
   void setOscillator(int oscillator_number,int oscillator_type);
   /*
   void setSineOsc();
@@ -88,6 +89,9 @@ public:
 
   int freqOsc1;
   int freqOsc2;
+
+  int                   note;
+  int                   detune;
 
 
   int current;

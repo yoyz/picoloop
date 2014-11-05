@@ -43,6 +43,9 @@ class PicosynthMachine : public Machine
   Sint16                last_sample;
 
   Sint16              * tanh_table;
+
+  int                   note;
+  int                   detune;
 };
 
 #endif
