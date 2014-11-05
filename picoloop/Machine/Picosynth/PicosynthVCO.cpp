@@ -234,15 +234,16 @@ Oscillator * PicosynthVCO::getOscillatorOne()
 
 
 
-void PicosynthVCO::setNoteDetune(int note,int dt)
+void PicosynthVCO::setNoteDetune(int nt,int dt)
 {
   NoteFreq & NF = NoteFreq::getInstance();
   detune=dt;
 
-  s1->setNoteDetune(note,64);
-  s2->setNoteDetune(note,dt);
-  freqOsc1=NF.getINoteFreq(note);
-  freqOsc2=NF.getINoteFreq(note);
+  s1->setNoteDetune(nt,64);
+  s2->setNoteDetune(nt,dt);
+  freqOsc1=NF.getINoteFreq(nt);
+  freqOsc2=NF.getINoteFreq(nt);
+  note=nt;
   /*
   s1->setSynthFreq(sfreq);
   s2->setSynthFreq(sfreq);
@@ -302,7 +303,11 @@ Sint16 PicosynthVCO::tick()
 	{
 	  //tmp=lfo1->tick() >> lfo_depth_shift;
 	  //tmp=(lfo1->tick()*lfo_depth)/128;
-	  tmp=((lfo1->tick()>>6)*lfo_depth)>>7;
+	  //tmp=((lfo1->tick()>>6)*lfo_depth)>>7;
+	  tmp=((lfo1->tick()>>7)*lfo_depth>>7)+64;
+	  s1->setNoteDetune(note,tmp);
+	  //s2->setNoteDetune(note,tmp);
+	  //printf("tmp:%d\n",tmp);
 	}
 	//tmp=lfo1->tick() * (lfo_depth_shift*127)/;
 
