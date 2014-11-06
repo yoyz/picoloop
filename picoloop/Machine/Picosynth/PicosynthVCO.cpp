@@ -208,7 +208,7 @@ void PicosynthVCO::setLfoDepth(int val)
 
 void PicosynthVCO::setLfoSpeed(float val)
 {
-  lfo_speed=val/24.0;
+  //lfo_speed=val/24.0;
   lfo1->setFreq(val);
   //lfo1->setAmplitude(0);
 }
@@ -281,6 +281,8 @@ Sint16 PicosynthVCO::tick()
   Sint32 sc;
   Sint16 s;
   int    tmp=0;
+  int    tmp2=0;
+
   if (vcomix==0) vcomix=1;
   if (s1==NULL)
     { 
@@ -304,10 +306,13 @@ Sint16 PicosynthVCO::tick()
 	  //tmp=lfo1->tick() >> lfo_depth_shift;
 	  //tmp=(lfo1->tick()*lfo_depth)/128;
 	  //tmp=((lfo1->tick()>>6)*lfo_depth)>>7;
-	  tmp=((lfo1->tick()>>7)*lfo_depth>>7)+64;
+	  tmp2=lfo1->tick();
+	  tmp=((tmp2>>7)*lfo_depth>>7)+64;
+	  
 	  s1->setNoteDetune(note,tmp);
 	  //s2->setNoteDetune(note,tmp);
-	  //printf("tmp:%d\n",tmp);
+	  //printf("tmp:%d lfo1->tick()=%d\n",tmp,tmp2);
+	  //printf("lfo1->tick()=%d\n",tmp2);
 	}
 	//tmp=lfo1->tick() * (lfo_depth_shift*127)/;
 

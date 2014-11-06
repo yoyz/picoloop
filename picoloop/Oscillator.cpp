@@ -69,7 +69,7 @@ void Oscillator::setFreq(int freq)
 
   if (freq>0)
     {
-      offset_next_index=(freq*table_size)/44100;
+      offset_next_index=(freq*table_size*65535)/44100;
     }
 }
 
@@ -99,11 +99,11 @@ Sint16 Oscillator::tick()
   index=index+offset_next_index;
   if (index>=table_size)
     {
-      index=index-table_size;
-      if (index>table_size)
+      index=index-(table_size>>16);
+      if ((index>>16)>table_size)
 	index=0;
       //printf("offset_next_index.tick.offset_next_index:%d\n",offset_next_index);
     }
-  return table[index];
+  return table[index>>16];
 }
 
