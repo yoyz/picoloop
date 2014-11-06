@@ -39,16 +39,20 @@ void NoteFreq::init()
     for (j=0;j<128;j++)
       {
 	freq=this->getFNoteFreq(i);
-	wtjump_freq=(freq*WAVETABLE_SIZE)/44100;
-	
+
+	/*
+	wtjump_freq=(freq*WAVETABLE_SIZE)/44100;	
 	wtjump_detune=(((this->getFNoteFreq(i+1)*(j)))-((this->getFNoteFreq(i-1)*(128-j))))/(128*12);
-	//detune=((this->getFNoteFreq(i+1)*(j))-(this->getFNoteFreq(i-1)*(128-j)))/(128*16);
-	//value=(freq+detune)*WAVETABLE_SIZE;
-	//wtjTable[i][j]=value;
 	wtjTable[i][j]=wtjump_freq+wtjump_detune;
+	*/
+	wtjump_freq=(freq*WAVETABLE_SIZE*65535)/44100;	
+	wtjump_detune=(((this->getFNoteFreq(i+1)*(j))*65535)-((this->getFNoteFreq(i-1)*(128-j))*65535))/8192;
+	wtjTable[i][j]=wtjump_freq+wtjump_detune;
+
 
 	//printf("wtjTable[%d][%d]=%d freq:%f wtjump_freq:%f wtjump_detune:%f\n",i,j,wtjTable[i][j],freq,wtjump_freq,wtjump_detune);
       }
+  //exit(0);
 }
 
 float NoteFreq::getFNoteFreq(int note)
