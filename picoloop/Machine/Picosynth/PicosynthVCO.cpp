@@ -208,9 +208,8 @@ void PicosynthVCO::setLfoDepth(int val)
 
 void PicosynthVCO::setLfoSpeed(float val)
 {
-  //lfo_speed=val/24.0;
+  lfo_speed=val;
   lfo1->setFreq(val);
-  //lfo1->setAmplitude(0);
 }
 
 void PicosynthVCO::reset()
@@ -296,6 +295,7 @@ Sint16 PicosynthVCO::tick()
       tmp2=lfo1->tick();
       tmp=((tmp2>>7)*lfo_depth>>7)+64;
   
+      //printf("tmp:%d\n",tmp);
       s1->setNoteDetune(note,tmp);
       s2->setNoteDetune(note,tmp);
     }
