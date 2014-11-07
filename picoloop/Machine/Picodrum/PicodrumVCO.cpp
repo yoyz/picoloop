@@ -285,49 +285,19 @@ Sint16 PicodrumVCO::tick()
       //  exit(1); 
     } 
 
-  //lfo_counter++;
-  //if (lfo_counter>lfo_refresh)
-  //lfo_counter=0;
-
-  
-  //if (lfo_counter==0)
-  //{
-      //tmp=lfo1->tick() >> ( lfo_depth >> 4 ) ;
-      //tmp=lfo1->tick() >> (lfo_depth /32 ) ;
-  //if (lfo_depth==0)
-  //	tmp=0;
-  //      else
-  //{
-	  //tmp=lfo1->tick() >> lfo_depth_shift;
-	  //tmp=(lfo1->tick()*lfo_depth)/128;
   tmp=((lfo1->tick()>>6)*lfo_depth)>>7;
-	  //tmp=lfo1->tick()>>8)*lfo_depth)>>7;
-	  //	}
-	//tmp=lfo1->tick() * (lfo_depth_shift*127)/;
 
   s1->setFreq(freqOsc1+tmp);
   s2->setFreq(freqOsc2+tmp);
-  //printf("freqOsc1:%d freqOsc2:%d tmp:%d\n",freqOsc1,freqOsc2,tmp);
-      //    }
 
   
   sa=(s1->tick()*((128-vcomix)));
 
-  //sb=(s2->tick()*((vcomix))/(128));
-  //sb=(s2->tick()*((vcomix)));
   sb=(s2->tick()*((vcomix)));
 
-  //sc=sa+sb;
-  //sc=(sa+sb)/128;
   sc=(sa+sb)>>7;
 
-  //s=s1->tick();
-  s=sc;
-  //  sb=(s2->tick())
 
-  //return s1->tick()/(128-vcomix)+s2->tick()/(vcomix);  
-  //if (1) printf("sa:%d sb:%d sc:%d\n",sa,sb,sc);    
-  
-  //return s1->tick()+s2->tick();
+  s=sc;
   return s;
 }
