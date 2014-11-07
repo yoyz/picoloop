@@ -26,6 +26,8 @@ void NoteFreq::init()
   float wtjump_freq;
   float detune;
   float wtjump_detune;
+  float wtjump_detune_1;
+  float wtjump_detune_2;
   float value;
 
   if (wtjTable!=0)
@@ -46,7 +48,19 @@ void NoteFreq::init()
 	wtjTable[i][j]=wtjump_freq+wtjump_detune;
 	*/
 	wtjump_freq=(freq*WAVETABLE_SIZE*65535)/44100;	
-	wtjump_detune=(((this->getFNoteFreq(i+1)*(j))*65535)-((this->getFNoteFreq(i-1)*(128-j))*65535))/8192;
+	//wtjump_detune=(((this->getFNoteFreq(i+1)*(j))*65535)-((this->getFNoteFreq(i-1)*(128-j))*65535))/8192;
+	//wtjump_detune=(((((this->getFNoteFreq(i+12)*(j))*65535))/44100)-((((this->getFNoteFreq(i-12)*(128-j))*65535))/44100));
+	//wtjump_detune_1=(((this->getFNoteFreq(i+1)*65535)/44100)*16384)*j;
+	//wtjump_detune_2=(((this->getFNoteFreq(i-1)*65535)/44100)*16384)*(128-j);
+
+	wtjump_detune_1=(((this->getFNoteFreq(i+2)*((16384*65535)/44100))))*j;
+	wtjump_detune_2=(((this->getFNoteFreq(i-2)*((16384*65535)/44100))))*(128-j);
+
+	//wtjump_detune=(wtjump_detune_1-wtjump_detune_2)*512;
+	wtjump_detune=(wtjump_detune_1-wtjump_detune_2)/512;
+	  
+
+	//-((((this->getFNoteFreq(i-12)*(128-j))*65535))/44100));
 	wtjTable[i][j]=wtjump_freq+wtjump_detune;
 
 

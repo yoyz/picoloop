@@ -53,6 +53,7 @@ void Oscillator::setNoteDetune(int note,int detune)
 
 void Oscillator::setFreq(int freq)
 {
+  Sint32 tmp;
   //return;
 
   if (freq==frequency)
@@ -69,7 +70,12 @@ void Oscillator::setFreq(int freq)
 
   if (freq>0)
     {
-      offset_next_index=(freq*table_size*65535)/44100;
+      //tmp=freq*table_size*65535;
+      tmp=((freq*65535)/44100)*16384;
+      //tmp=tmp/44100;
+      //offset_next_index=(freq*table_size*65535)/44100;
+      offset_next_index=tmp;
+      //printf("freq:%d table_size:%d offset_next_index:%d tmp:%d\n",freq,table_size,offset_next_index,tmp);
     }
 }
 
@@ -97,11 +103,16 @@ void   Oscillator::setWaveForm(int waveform)
 Sint16 Oscillator::tick()
 { 
   index=index+offset_next_index;
-  if (index>=table_size)
+  if ((index>>16)>=table_size)
     {
-      index=index-(table_size>>16);
-      if ((index>>16)>table_size)
-	index=0;
+      index=index-(table_size<<16);
+      if ((index>>16)>=table_size)
+	{
+	  index=0;
+	}
+
+      //      if ((index>>16)>table_size)
+      //index=0;
       //printf("offset_next_index.tick.offset_next_index:%d\n",offset_next_index);
     }
   return table[index>>16];

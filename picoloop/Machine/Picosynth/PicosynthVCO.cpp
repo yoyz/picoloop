@@ -313,6 +313,7 @@ Sint16 PicosynthVCO::tick()
 	  //s2->setNoteDetune(note,tmp);
 	  //printf("tmp:%d lfo1->tick()=%d\n",tmp,tmp2);
 	  //printf("lfo1->tick()=%d\n",tmp2);
+	  //printf("lfo1->tick()=%d\n",tmp);
 	}
 	//tmp=lfo1->tick() * (lfo_depth_shift*127)/;
 
