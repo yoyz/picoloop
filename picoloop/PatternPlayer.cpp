@@ -2919,6 +2919,7 @@ void handle_key_bank()
 
 
       if (menu                 == MENU_OFF    && 
+	  keyRepeat[BUTTON_B]                 &&
 	  keyRepeat[BUTTON_B]%KEY_REPEAT_INTERVAL_LONG==0)
 	{
 	  if (keyState[BUTTON_DOWN])
