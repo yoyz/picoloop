@@ -36,7 +36,7 @@ public:
   void                  setVCOMix(int mix);
   void                  setVCOPhase(int ph);
   void                  setLfoDepth(int val);
-  void                  setLfoSpeed(float val);
+  void                  setLfoSpeed(int val);
   Oscillator          * getOscillatorOne();
 
 
