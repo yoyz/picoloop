@@ -206,7 +206,7 @@ void PicosynthVCO::setLfoDepth(int val)
 
 }
 
-void PicosynthVCO::setLfoSpeed(float val)
+void PicosynthVCO::setLfoSpeed(int val)
 {
   //lfo_speed=val/24.0;
   lfo1->setFreq(val/2);
