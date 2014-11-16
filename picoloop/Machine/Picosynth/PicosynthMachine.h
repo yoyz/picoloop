@@ -39,13 +39,18 @@ class PicosynthMachine : public Machine
 
   OneOscillator         one_osc;
 
-  int                   sample_num;
+  Sint32                sample_num;
   Sint16                last_sample;
 
   Sint16              * tanh_table;
 
   int                   note;
   int                   detune;
+
+  int                   trig_time_mode;
+  int                   trig_time_duration;
+  Sint32                trig_time_duration_sample;
+
 };
 
 #endif

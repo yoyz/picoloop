@@ -17,6 +17,9 @@ PicosynthMachine::PicosynthMachine() : adsr_amp(), adsr_fltr(), vco(), filter(),
   resonance=10;
   note=0;
   detune=64;
+  trig_time_mode=0;
+  trig_time_duration=0;
+  trig_time_duration_sample=0;
 }
 
 
@@ -75,7 +78,9 @@ void PicosynthMachine::init()
   note=0;
   detune=64;
 
-
+  trig_time_mode=0;
+  trig_time_duration=0;
+  trig_time_duration_sample=0;
 }
 
 
@@ -96,6 +101,9 @@ void PicosynthMachine::setI(int what,int val)
   float f_val_cutoff;
   float f_val_resonance;
 
+  if (what==TRIG_TIME_MODE)       trig_time_mode=val;
+  if (what==TRIG_TIME_DURATION) { trig_time_duration=val; trig_time_duration_sample=val*512; }
+
   if (what==NOTE_ON && val==1) 
     { 
       this->getVCO().setNoteDetune(note,detune);
@@ -107,8 +115,8 @@ void PicosynthMachine::setI(int what,int val)
     }
   if (what==NOTE_ON && val==0) 
     { 
-      this->getADSRAmp().setNoteOff(); 
-      this->getADSRFltr().setNoteOff(); 
+      this->getADSRAmp().setNoteOff();
+      this->getADSRFltr().setNoteOff();
     }
 
   //if (what==OSC1_NOTE)           this->getVCO().setSynthFreq(val);
@@ -169,6 +177,10 @@ void PicosynthMachine::reset()
 {
   sample_num=0;
   last_sample=0;
+
+  trig_time_mode=0;
+  trig_time_duration=0;
+  trig_time_duration_sample=0;
 }
 
 
@@ -195,7 +207,19 @@ int PicosynthMachine::tick()
   int    num=8192;
   int    i;
   
-  num=1024;
+  //num=1024;
+
+  if (trig_time_mode)
+    {
+      if (trig_time_duration_sample<sample_num)
+	{
+	  this->setI(NOTE_ON,0);
+	  trig_time_mode=0;
+	  //printf("\t\t\t\t\t\tDONE\n");
+	}
+
+    }
+      
 
   s_in=adsr_amp.tick();
   s_in=s_in/6;

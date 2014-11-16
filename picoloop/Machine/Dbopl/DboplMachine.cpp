@@ -20,6 +20,11 @@ dboplMachine::dboplMachine() : filter(), 	     sineLfoOsc1()
   lfo_depth_shift=20;
   lfo_speed=0;
 
+  trig_time_mode=0;
+  trig_time_duration=0;
+  trig_time_duration_sample=0;
+
+
 }
 
 
@@ -87,6 +92,11 @@ void dboplMachine::init()
   sineLfoOsc1.setWaveForm(2);
   sineLfoOsc1.setFreq(lfo_speed);
   sineLfoOsc1.setAmplitude(32);
+
+  trig_time_mode=0;
+  trig_time_duration=0;
+  trig_time_duration_sample=0;
+
 }
 
 void dboplMachine::reset()
@@ -95,6 +105,10 @@ void dboplMachine::reset()
  freq=110.0;
  keyon=0;
  sineLfoOsc1.reset();
+
+ trig_time_mode=0;
+ trig_time_duration=0;
+ trig_time_duration_sample=0;
 }
 
 
@@ -138,6 +152,10 @@ void dboplMachine::setI(int what,int val)
   freqM[12]=x15;
 
   //HO->EnableAdditiveSynthesis(1,true);
+
+  if (what==TRIG_TIME_MODE)       trig_time_mode=val;
+  if (what==TRIG_TIME_DURATION) { trig_time_duration=val; trig_time_duration_sample=val*512; }
+
 
     if (what==NOTE_ON && val==1) 
     { 
@@ -265,6 +283,19 @@ int dboplMachine::tick()
   if (index>=SAM | 
       index<0)
     index=0;
+
+  if (trig_time_mode)
+    {
+      if (trig_time_duration_sample<sample_num)
+	{
+	  this->setI(NOTE_ON,0);
+	  trig_time_mode=0;
+	  //printf("\t\t\t\t\t\tDONE\n");
+	}
+
+    }
+
+
 
 
   if (sample_num==0 || 
