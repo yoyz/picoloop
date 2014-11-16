@@ -62,6 +62,11 @@ void SongSequencer::setPatternNumber(int x,int y,int patternNumber)
   int pn=patternNumber;
   if      (pn>MAX_PATTERN_BY_PROJECT-1) pn=0;
   else if (pn<0)                        pn=MAX_PATTERN_BY_PROJECT-1;
+
+  if (x<0)                        x=MAX_PATTERN_BY_PROJECT-1;
+  if (x>MAX_PATTERN_BY_PROJECT-1) x=0;
+
+  printf("x:%d y:%d pn:%d\n",x,y,pn);
   songVector[x][y]=pn;
   //printf("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&%d\n",patternNumber);
 }
