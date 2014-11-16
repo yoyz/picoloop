@@ -208,8 +208,8 @@ void PicosynthVCO::setLfoDepth(int val)
 
 void PicosynthVCO::setLfoSpeed(int val)
 {
-  //lfo_speed=val/24.0;
-  lfo1->setFreq(val/2);
+  lfo_speed=val;
+  lfo1->setFreq(lfo_speed/2);
   //lfo1->setAmplitude(0);
 }
 
@@ -244,31 +244,7 @@ void PicosynthVCO::setNoteDetune(int nt,int dt)
   freqOsc1=NF.getINoteFreq(nt);
   freqOsc2=NF.getINoteFreq(nt);
   note=nt;
-  /*
-  s1->setSynthFreq(sfreq);
-  s2->setSynthFreq(sfreq);
-  */
-  //s1->setFreq(freqOsc1);
-  //s2->setFreq(freqOsc2);
-  //  s2->setFreq(sfreq*3);
 }
-
-
-/*
-void PicosynthVCO::setFSynthFreq(float f_freq)
-{
-
-  f_freqOsc1=f_freq;
-  f_freqOsc2=f_freq;
-
-  //s1->setSynthFreq(sfreq);
-  //s2->setSynthFreq(sfreq);
-
-  s1->setFFreq(ffreqOsc1);
-  s2->setFFreq(ffreqOsc2);
-
-}
-*/
 
 
 
@@ -279,9 +255,9 @@ Sint16 PicosynthVCO::tick()
   Sint32 sa;
   Sint32 sb;
   Sint32 sc;
-  Sint16 s;
-  int    tmp=0;
-  int    tmp2=0;
+  Sint32 s;
+  Sint32 lfo_tick=0;
+  Sint32 lfo_tick_normdownshift=0;
 
   if (vcomix==0) vcomix=1;
   if (s1==NULL)
@@ -290,55 +266,31 @@ Sint16 PicosynthVCO::tick()
       //  exit(1); 
     } 
 
-  lfo_counter++;
-  if (lfo_counter>lfo_refresh)
-    lfo_counter=0;
 
-  
-  if (lfo_counter==0)
+  if (lfo_depth>0  && 
+      lfo_speed>0)
     {
-      //tmp=lfo1->tick() >> ( lfo_depth >> 4 ) ;
-      //tmp=lfo1->tick() >> (lfo_depth /32 ) ;
-      if (lfo_depth==0)
-	tmp=0;
-      else
-	{
-	  //tmp=lfo1->tick() >> lfo_depth_shift;
-	  //tmp=(lfo1->tick()*lfo_depth)/128;
-	  //tmp=((lfo1->tick()>>6)*lfo_depth)>>7;
-	  tmp2=lfo1->tick();
-	  tmp=((tmp2>>7)*lfo_depth>>7)+64;
-	  
-	  s1->setNoteDetune(note,tmp);
-	  //s2->setNoteDetune(note,tmp);
-	  //6;5~printf("tmp:%d lfo1->tick()=%d\n",tmp,tmp2);
-	  //printf("lfo1->tick()=%d\n",tmp2);
-	  //printf("lfo1->tick()=%d\n",tmp);
-	}
-	//tmp=lfo1->tick() * (lfo_depth_shift*127)/;
+      // Lfo activated
+      lfo_tick=lfo1->tick();
+      lfo_tick_normdownshift=((lfo_tick>>7)*lfo_depth>>7)+64;
+      //printf("lfo_tick:%d lfo_tick_normdownshift:%d\n",lfo_tick,lfo_tick_normdownshift);
 
-      //s1->setFreq(freqOsc1+tmp);
-      //s2->setFreq(freqOsc2+tmp);
     }
+  else
+    {
+      // Fixed value 64 for the detuning of oscillator 1 
+      // 0 << 64 << 127
+      lfo_tick_normdownshift=64;
+    }
+
+  s1->setNoteDetune(note,lfo_tick_normdownshift);
 
   
   sa=(s1->tick()*((128-vcomix)));
-
-  //sb=(s2->tick()*((vcomix))/(128));
-  //sb=(s2->tick()*((vcomix)));
   sb=(s2->tick()*((vcomix)));
 
-  //sc=sa+sb;
-  //sc=(sa+sb)/128;
   sc=(sa+sb)>>7;
 
-  //s=s1->tick();
   s=sc;
-  //  sb=(s2->tick())
-
-  //return s1->tick()/(128-vcomix)+s2->tick()/(vcomix);  
-  //if (1) printf("sa:%d sb:%d sc:%d\n",sa,sb,sc);    
-  
-  //return s1->tick()+s2->tick();
   return s;
 }
