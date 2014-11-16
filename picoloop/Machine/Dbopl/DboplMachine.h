@@ -45,8 +45,8 @@ class dboplMachine : public Machine
   int                   resonance;
 
 
-  int                   sample_num;
-  Sint16                last_sample;
+  Sint32                sample_num;
+  Sint32                last_sample;
 
   Sint16              * tanh_table;
   Sint16              * buffer;
@@ -65,6 +65,11 @@ class dboplMachine : public Machine
   float lfo_speed;
 
   int note;
+
+  int                   trig_time_mode;
+  int                   trig_time_duration;
+  Sint32                trig_time_duration_sample;
+
 };
 
 #endif

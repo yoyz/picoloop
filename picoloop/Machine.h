@@ -78,7 +78,10 @@ using namespace std;
 
 
 
-#define NOTE_ON             100
+#define NOTE_ON             100  // Used by external hardware/WaveSynth
+
+#define TRIG_TIME_MODE      101  // Used by PatternPlayer to predefined the time of NOTE_ON
+#define TRIG_TIME_DURATION  102  // Used by PatternPlayer to predefined the time of NOTE_ON
 
 
 #ifndef __MACHINE____

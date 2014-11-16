@@ -4190,8 +4190,11 @@ void seq_update_track(int t)
 	    P[t].getPatternElement(step).getAttack_fltr()
 	    ;
 	  */
-	  noteOffTrigger[t]=P[t].getPatternElement(step).getTrigTime()/8;
+	  //noteOffTrigger[t]=P[t].getPatternElement(step).getTrigTime()/8;
 
+	  // Let the Machine handle NoteOn/NoteOff with a trig time duration
+	  M[t]->setI(TRIG_TIME_MODE,1);
+	  M[t]->setI(TRIG_TIME_DURATION,P[t].getPatternElement(step).getTrigTime());
 
 	  M[t]->setI(FM_TYPE,P[t].getPatternElement(step).getFmType());
 
@@ -4234,6 +4237,7 @@ void seq_update_track(int t)
 	  M[t]->setI(NOTE_ON,1);
 
 	}
+      /*
       else
 	{
 	  if (noteOffTrigger[t]<0)
@@ -4243,7 +4247,7 @@ void seq_update_track(int t)
 	      //M[t]->getADSRFltr().setNoteOff();
 	      //M[t]->reset();
 
-	      M[t]->setI(NOTE_ON,0);
+	      //M[t]->setI(NOTE_ON,0);
 	    }
 	  else
 	    {
@@ -4251,6 +4255,7 @@ void seq_update_track(int t)
 	      printf("noteOffTrigger[%d]=%d\n",noteOffTrigger[t],t);
 	    }
 	}
+      */
 }
 
 
