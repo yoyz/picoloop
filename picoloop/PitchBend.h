@@ -7,7 +7,8 @@ using namespace std;
 
 class PitchBend
 {
- private:
+ public:
+
   PitchBend();
   ~PitchBend();
 
@@ -15,10 +16,20 @@ class PitchBend
   void setSpeed(int s);
   void setNote(int  n);
 
+  void reset();
+  int  tickNoteDetune();
+
+ private:
+
   Sint16 note;
   Sint16 speed;
   Sint16 depth;
-  
+
+
+
+  Sint32 sample_num;
   
 };
+
+#endif
 

@@ -2,6 +2,7 @@
 #define __PicosynthVCO____
 
 #include "Oscillator.h"
+#include "PitchBend.h"
 //#include "NoteFreq.h"
 //#include "SineOscillator.h"
 //#include "SawOscillator.h"
@@ -94,6 +95,7 @@ public:
   Oscillator            * s2;
 
   Oscillator            * lfo1;
+  PitchBend               pb;
 
   int freqOsc1;
   int freqOsc2;

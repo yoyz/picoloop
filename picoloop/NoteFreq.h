@@ -25,6 +25,7 @@ class NoteFreq
   int   getINoteFreq(int note);
   int   getWTJump(int   note);
   int   getWTJumpDetune(int note,int detune);
+  int   getWTJumpDetune(int notedetune);
 
 
 };
