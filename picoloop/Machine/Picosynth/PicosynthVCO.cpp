@@ -14,7 +14,8 @@ PicosynthVCO::PicosynthVCO() : sineOsc1(),
 			       noiseOsc1(), 
 			       noiseOsc2(), 
 			       sineLfoOsc1(), 
-			       sawLfoOsc1()
+			       sawLfoOsc1(),
+			       pb()
 			       //, noiseosc()
 {
   printf("PicosynthVCO::PicosynthVCO()\n");
@@ -219,6 +220,7 @@ void PicosynthVCO::reset()
   s1->reset();
   s2->reset();
   s2->setPhase(phase);
+  pb.reset();
   lfo1->reset();
   
   //this->setLfoDepth(0);
@@ -258,6 +260,7 @@ Sint16 PicosynthVCO::tick()
   Sint32 s;
   Sint32 lfo_tick=0;
   Sint32 lfo_tick_normdownshift=0;
+  Sint32 pbtick;
 
   if (vcomix==0) vcomix=1;
   if (s1==NULL)
@@ -271,8 +274,13 @@ Sint16 PicosynthVCO::tick()
       lfo_speed>0)
     {
       // Lfo activated
-      lfo_tick=lfo1->tick();
-      lfo_tick_normdownshift=((lfo_tick>>7)*lfo_depth>>7)+64;
+      //lfo_tick=lfo1->tick();
+      //lfo_tick_normdownshift=((lfo_tick>>7)*lfo_depth>>7)+64;
+
+      pb.setNote(note);
+      pb.setDepth(lfo_depth);
+      pb.setSpeed(lfo_speed);
+
       //printf("lfo_tick:%d lfo_tick_normdownshift:%d\n",lfo_tick,lfo_tick_normdownshift);
 
     }
@@ -283,7 +291,15 @@ Sint16 PicosynthVCO::tick()
       lfo_tick_normdownshift=64;
     }
 
-  s1->setNoteDetune(note,lfo_tick_normdownshift);
+  //s1->setNoteDetune(note,lfo_tick_normdownshift);
+  //s1->setNoteDetune(note,lfo_tick_normdownshift);
+
+
+  //s1->setNoteDetune((note<<7)+lfo_tick_normdownshift);
+  
+  pbtick=pb.tickNoteDetune();
+  s1->setNoteDetune(pbtick);
+  s2->setNoteDetune(pbtick);
 
   
   sa=(s1->tick()*((128-vcomix)));

@@ -705,7 +705,7 @@ void handle_key()
 	  M[t]->setI(OSC1_NOTE,note);
 
 	  M[t]->setI(OSC1_TYPE,2);
-	  M[t]->setI(OSC2_TYPE,1);
+	  M[t]->setI(OSC2_TYPE,2);
 	
 	  M[t]->setI(OSC12_MIX,vcomix);
 	  M[t]->setI(OSC1_PHASE,phase);

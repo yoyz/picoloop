@@ -51,6 +51,15 @@ void Oscillator::setNoteDetune(int note,int detune)
   //printf("note:%d detune:%d offset_next_index:%d\n",note,detune,offset_next_index);
 }
 
+
+void Oscillator::setNoteDetune(int notedetune)
+{
+  NoteFreq & NF = NoteFreq::getInstance();
+  offset_next_index=NF.getWTJumpDetune(notedetune);
+  //printf("note:%d detune:%d offset_next_index:%d\n",note,detune,offset_next_index);
+}
+
+
 void Oscillator::setFreq(int freq)
 {
   Sint32 tmp;

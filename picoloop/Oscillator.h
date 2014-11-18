@@ -26,6 +26,7 @@ class Oscillator
   int    getFreq();
 
   void   setNoteDetune(int note,int detune);
+  void   setNoteDetune(int notedetune);
   
   void   setWaveForm(int waveform);
 

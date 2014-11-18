@@ -236,3 +236,22 @@ int NoteFreq::getWTJumpDetune(int note,int detune)
   //wt=(f_note*WAVETABLE_SIZE)/DEFAULTFREQ;
   return wtjTable[nt][dt];
 }
+
+
+int NoteFreq::getWTJumpDetune(int notedetune)
+{
+  Sint32 hi;
+  Sint32 lo;
+  if (notedetune>12000) notedetune=12000;
+  if (notedetune<0) notedetune=0;
+
+  hi=notedetune>>7;
+  lo=notedetune-((notedetune>>7)<<7);
+  //if (hi>119) hi=119;
+  //if (hi<0)   hi=0;
+  //if (lo>127) lo=127;
+  //if (lo<0)   lo=0;
+
+  return wtjTable[hi][lo];
+}
+
