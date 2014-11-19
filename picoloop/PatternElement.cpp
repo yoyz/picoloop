@@ -35,6 +35,12 @@ PatternElement::PatternElement()
 
   lfo_depth=0;
   lfo_speed=0;
+
+
+  pb_depth=64; // middle so no pitch bend
+  pb_speed=0;
+
+  lfo_type=0;  // 0 lfo pitch, 1 pitchbend
     
 
   oscOneType=SAW;
@@ -88,6 +94,7 @@ void PatternElement::init()
   lfo_depth=0;
   lfo_speed=0;
     
+  lfo_type=0;
 
   oscOneType=SAW;
   oscTwoType=PULSE;
@@ -361,6 +368,31 @@ void PatternElement::setLfoSpeed(int val)
   lfo_speed=this->checkSevenBitBoundarie(val);
 }
 
+
+int PatternElement::getPitchBendDepth()
+{
+  return pb_depth;
+}
+
+void PatternElement::setPitchBendDepth(int val)
+{
+  pb_depth=this->checkSevenBitBoundarie(val);
+}
+
+
+
+int PatternElement::getPitchBendSpeed()
+{
+  return pb_speed;
+}
+
+void PatternElement::setPitchBendSpeed(int val)
+{
+  pb_speed=this->checkSevenBitBoundarie(val);
+}
+
+
+
 void PatternElement::setPhaseOsc1(int val)
 {
   phaseOsc1=this->checkSevenBitBoundarie(val);
@@ -445,6 +477,19 @@ const char * PatternElement::getFilterTypeCharStar()
 }
 
 
+const char * PatternElement::getLFOTypeCharStar()
+{
+  static const char * str_lfo_type_unknown  = "UKNW";
+  static const char * str_lfo_type_lfopitch = "PLFO";
+  static const char * str_lfo_type_pitchbend= "PB";
+
+
+  if (lfo_type  ==LFO_LFOPITCH)         return str_lfo_type_lfopitch;
+  if (lfo_type  ==LFO_PITCHBEND)        return str_lfo_type_pitchbend;
+  return str_lfo_type_unknown;
+}
+
+
 void PatternElement::setFilterAlgo(int val)
 {
   if (val>2) val=0;
@@ -453,10 +498,26 @@ void PatternElement::setFilterAlgo(int val)
   filterAlgo=this->checkSevenBitBoundarie(val);
 }
 
+
 int PatternElement::getFilterAlgo()
 {
   return filterAlgo;
 }
+
+void PatternElement::setLfoType(int val)
+{
+  if (val>1) val=0;
+  if (val<0) val=1;
+
+  lfo_type=this->checkSevenBitBoundarie(val);
+}
+
+int PatternElement::getLfoType()
+{
+  return lfo_type;
+}
+
+
 
 const char * PatternElement::getFilterAlgoCharStar()
 {

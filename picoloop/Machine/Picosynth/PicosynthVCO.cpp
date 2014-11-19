@@ -31,11 +31,18 @@ PicosynthVCO::PicosynthVCO() : sineOsc1(),
 
   lfo_speed=0;
 
+  pb_depth=0;
+  pb_speed=0;
+
+
   freqOsc1=0;
   freqOsc2=0;
   
   note=0;
   detune=64;
+
+
+  lfo_type=0;
 }
 
 void PicosynthVCO::init()
@@ -47,6 +54,9 @@ void PicosynthVCO::init()
   lfo_depth_shift=20;
 
   lfo_speed=0;
+
+  pb_depth=0;
+  pb_speed=0;
 
 
   /*
@@ -142,6 +152,11 @@ void PicosynthVCO::setVCOPhase(int ph)
   phase=this->checkSevenBitBoundarie(ph);
 }
 
+void PicosynthVCO::setLfoType(int val)
+{
+  lfo_type=val;
+}
+
 
 void PicosynthVCO::setOscillator(int oscillator_number,int oscillator_type)
 {
@@ -204,8 +219,8 @@ void PicosynthVCO::setLfoDepth(int val)
   if (val > 118  && val <= 122 )  { lfo_depth=val ; lfo_depth_shift=4;         }
   if (val > 122  && val <= 128 )  { lfo_depth=val ; lfo_depth_shift=3;         } 
 
-
 }
+
 
 void PicosynthVCO::setLfoSpeed(int val)
 {
@@ -213,6 +228,23 @@ void PicosynthVCO::setLfoSpeed(int val)
   lfo1->setFreq(lfo_speed/2);
   //lfo1->setAmplitude(0);
 }
+
+
+void PicosynthVCO::setPitchBendDepth(int val)
+{
+  pb_depth=val;
+  pb.setDepth(val);  
+}
+
+void PicosynthVCO::setPitchBendSpeed(int val)
+{
+  //pb.setDepth(lfo_depth);  
+  pb_speed=val;
+  pb.setSpeed(pb_speed);
+}
+
+
+
 
 void PicosynthVCO::reset()
 {
@@ -246,6 +278,8 @@ void PicosynthVCO::setNoteDetune(int nt,int dt)
   freqOsc1=NF.getINoteFreq(nt);
   freqOsc2=NF.getINoteFreq(nt);
   note=nt;
+
+  pb.setNote(note);
 }
 
 
@@ -268,38 +302,46 @@ Sint16 PicosynthVCO::tick()
       printf("[s1 is NULL]\n"); 
       //  exit(1); 
     } 
-
-
-  if (lfo_depth>0  && 
-      lfo_speed>0)
+  
+  if (lfo_type==0)
     {
-      // Lfo activated
-      //lfo_tick=lfo1->tick();
-      //lfo_tick_normdownshift=((lfo_tick>>7)*lfo_depth>>7)+64;
+      if (lfo_depth>0  && 
+	  lfo_speed>0
+	  )
 
-      pb.setNote(note);
-      pb.setDepth(lfo_depth);
-      pb.setSpeed(lfo_speed);
-
-      //printf("lfo_tick:%d lfo_tick_normdownshift:%d\n",lfo_tick,lfo_tick_normdownshift);
-
+	{
+	  // Lfo activated
+	  lfo_tick=lfo1->tick();
+	  lfo_tick_normdownshift=((lfo_tick>>7)*lfo_depth>>7)+64;
+	  
+	  //pb.setNote(note);
+	  //pb.setDepth(lfo_depth);
+	  //pb.setSpeed(lfo_speed);
+	  
+	  //printf("lfo_tick:%d lfo_tick_normdownshift:%d\n",lfo_tick,lfo_tick_normdownshift);
+	  
+	}
+      else
+	{
+	  // Fixed value 64 for the detuning of oscillator 1 
+	  // 0 << 64 << 127
+	  lfo_tick_normdownshift=64;
+	}
+      s1->setNoteDetune((note<<7)+lfo_tick_normdownshift);
     }
-  else
+  
+  if (lfo_type==1)
     {
-      // Fixed value 64 for the detuning of oscillator 1 
-      // 0 << 64 << 127
-      lfo_tick_normdownshift=64;
-    }
-
   //s1->setNoteDetune(note,lfo_tick_normdownshift);
   //s1->setNoteDetune(note,lfo_tick_normdownshift);
 
 
   //s1->setNoteDetune((note<<7)+lfo_tick_normdownshift);
   
-  pbtick=pb.tickNoteDetune();
-  s1->setNoteDetune(pbtick);
-  s2->setNoteDetune(pbtick);
+      pbtick=pb.tickNoteDetune();
+      s1->setNoteDetune(pbtick);
+      s2->setNoteDetune(pbtick);
+    }
 
   
   sa=(s1->tick()*((128-vcomix)));

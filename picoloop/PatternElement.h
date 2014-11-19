@@ -25,6 +25,11 @@ enum
     OPL2_QUART_SIN
   };
 
+enum
+  {
+    LFO_LFOPITCH,
+    LFO_PITCHBEND
+  };
 
 /*
 enum 
@@ -99,6 +104,12 @@ public:
   int    getLfoSpeed();
   void   setLfoSpeed(int val);
 
+  int    getPitchBendDepth();
+  void   setPitchBendDepth(int val);
+
+  int    getPitchBendSpeed();
+  void   setPitchBendSpeed(int val);
+
   int    getPhaseOsc1();
   void   setPhaseOsc1(int val);
 
@@ -110,6 +121,9 @@ public:
 
   int    getFmType();
   void   setFmType(int fm);
+
+  int    getLfoType();
+  void   setLfoType(int val);
 
 
 
@@ -123,11 +137,12 @@ public:
   int    getFilterType();
   void   setFilterType(int val);
   const char * getFilterTypeCharStar();
-
+  const char * getLFOTypeCharStar();
 
   int    getFilterAlgo();
   void   setFilterAlgo(int val);
   const char * getFilterAlgoCharStar();
+
 
   int    getOscillatorOneType();
   int    getOscillatorTwoType();
@@ -179,6 +194,11 @@ private:
 
   int lfo_depth;
   int lfo_speed;
+
+  int pb_depth;
+  int pb_speed;
+
+  int lfo_type;
 
   int oscOneType;
   int oscTwoType;
