@@ -130,6 +130,10 @@ void PicosynthMachine::setI(int what,int val)
   if (what==OSC1_PHASE)          this->getVCO().setVCOPhase(val);
 
   if (what==LFO1_DEPTH)          this->getVCO().setLfoDepth(val);
+  if (what==LFO_TYPE)            this->getVCO().setLfoType(val);
+
+  if (what==PITCHBEND_DEPTH)     this->getVCO().setPitchBendDepth(val);
+  if (what==PITCHBEND_SPEED)     this->getVCO().setPitchBendSpeed(val);
 
   if (what==OSC1_AMP)            detune=val;
   //if (what==OSC2_AMP)            //HO->SetAttenuation(1,2,32-(val/4));

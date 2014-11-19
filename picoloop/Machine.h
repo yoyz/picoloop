@@ -50,6 +50,10 @@ using namespace std;
 #define LFO2_DEPTH          43
 #define LFO2_FREQ           44
 
+#define PITCHBEND_DEPTH     45
+#define PITCHBEND_SPEED     46
+#define LFO_TYPE            47
+
 
 #define FILTER1_TYPE        50
 #define FILTER1_ALGO        51

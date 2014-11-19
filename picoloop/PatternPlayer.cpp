@@ -111,6 +111,14 @@ enum {
   MENU_VCO_FMTYPE
 };
 
+
+enum {
+  MENU_LFO_LFOPITCH,
+  MENU_LFO_PITCHBEND,
+  MENU_LFO_TYPE,
+};
+
+
 enum {
   MENU_FX_DEPTH_SPEED
 };
@@ -209,6 +217,14 @@ int lfo_depth_all=0;
 int lfo_speed=0;
 int lfo_speed_all=0;
 
+int pb_depth=0;
+int pb_depth_all=0;
+int pb_speed=0;
+int pb_speed_all=0;
+
+int lfo_type=0;
+int lfo_type_all=0;
+
 int cutoff=0;
 int resonance=0;
 
@@ -278,6 +294,7 @@ int menu_ad=MENU_AD_AMP_ATTACK_RELEASE;
 int menu_fltr=MENU_FLTR_CUTOFF_RESONANCE;
 int menu_fx=MENU_FX_DEPTH_SPEED;
 int menu_vco=MENU_VCO_OSCMIX_PHASE;
+int menu_lfo=MENU_LFO_LFOPITCH;
 int menu_ls=MENU_LS_PATTERN;
 
 int menu_ad_dirty_keyboard=0;
@@ -986,37 +1003,86 @@ void display_board_lfo()
   int  cty=SEQ.getCurrentTrackY();
   int  step=SEQ.getPatternSequencer(cty).getStep();
 
-  // LFO
+  // LFOPITCH
 
-  if (menu_cursor==GLOBALMENU_LFO)
+  if (menu_cursor==GLOBALMENU_LFO &&
+      menu_lfo   ==MENU_LFO_LFOPITCH)
     {
       // Cursor & step postion      
       SG.drawBoxNumber(cursor,CURSOR_COLOR);
       SG.drawBoxNumber(step,STEP_COLOR);  
-      //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
-      
-      //if (menu_ad==MENU_AD_AMP_ATTACK_RELEASE_)
-      //	{
-	  for (i=0;i<16;i++)
+      for (i=0;i<16;i++)
+	{
+	  // Draw trigged box trig color   
+	  if (P[cty].getPatternElement(i).getTrig())
 	    {
-	      // Draw trigged box trig color   
-	      if (P[cty].getPatternElement(i).getTrig())
-		{
-		  SG.drawBoxNumber(i,TRIG_COLOR);
-		  if (i==cursor)
-		    SG.drawBoxNumber(cursor,CURSOR_COLOR);
-		  if (i==step)
-		    SG.drawBoxNumber(step,STEP_COLOR);  
-		  //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
-		  
-		  // LFO
-		  SG.smallBoxNumber(i,P[cty].getPatternElement(i).getLfoDepth(),128,SMALLBOX_COLOR);
-		  SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).getLfoSpeed(),SMALLBOX_COLOR);
-		}
+	      SG.drawBoxNumber(i,TRIG_COLOR);
+	      if (i==cursor)
+		SG.drawBoxNumber(cursor,CURSOR_COLOR);
+	      if (i==step)
+		SG.drawBoxNumber(step,STEP_COLOR);  
+	      //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
+	      
+	      // LFO
+	      SG.smallBoxNumber(i,P[cty].getPatternElement(i).getLfoDepth(),128,SMALLBOX_COLOR);
+	      SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).getLfoSpeed(),SMALLBOX_COLOR);
 	    }
-	  //}
+	}
       
     }
+
+  // PITCHBEND
+
+  if (menu_cursor==GLOBALMENU_LFO &&
+      menu_lfo   ==MENU_LFO_PITCHBEND)
+    {
+      // Cursor & step postion      
+      SG.drawBoxNumber(cursor,CURSOR_COLOR);
+      SG.drawBoxNumber(step,STEP_COLOR);  
+      for (i=0;i<16;i++)
+	{
+	  // Draw trigged box trig color   
+	  if (P[cty].getPatternElement(i).getTrig())
+	    {
+	      SG.drawBoxNumber(i,TRIG_COLOR);
+	      if (i==cursor)
+		SG.drawBoxNumber(cursor,CURSOR_COLOR);
+	      if (i==step)
+		SG.drawBoxNumber(step,STEP_COLOR);  
+	      //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
+	      
+	      // LFO
+	      SG.smallBoxNumber(i,P[cty].getPatternElement(i).getPitchBendDepth(),128,SMALLBOX_COLOR);
+	      SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).getPitchBendSpeed(),SMALLBOX_COLOR);
+	    }
+	}
+      
+    }
+
+  if (menu_lfo==MENU_LFO_TYPE)
+    {
+      // Cursor & step postion      
+      SG.drawBoxNumber(cursor,CURSOR_COLOR);
+      SG.drawBoxNumber(step,STEP_COLOR);  
+      
+      for (i=0;i<16;i++)
+	{
+	  // Draw trigged box trig color   
+	  if (P[cty].getPatternElement(i).getTrig())
+	    {
+	      SG.drawBoxNumber(i,TRIG_COLOR);
+	      if (i==cursor)
+		SG.drawBoxNumber(cursor,CURSOR_COLOR);
+	      if (i==step)
+		SG.drawBoxNumber(step,STEP_COLOR);  
+	      
+	      SG.drawTTFTextNumberFirstLine(i,P[cty].getPatternElement(i).getLFOTypeCharStar()); 
+	      //SG.drawTTFTextNumberSecondLine(i,P[cty].getPatternElement(i).getFilterTypeCharStar()); 
+	    }
+	}
+    }
+
+  
 }
 
 void display_board_osc()
@@ -1335,6 +1401,36 @@ void display_board()
       )
     {
       sprintf(str_submenu,"FMType");
+      SG.guiTTFText(right_x_display_offset,
+		    right_y_display_offset_line2,str_submenu);
+    }
+
+
+
+  if (menu_lfo==MENU_LFO_LFOPITCH &&
+      menu_cursor==GLOBALMENU_LFO
+      )
+    {
+      sprintf(str_submenu,"LFOPitch Depth/Speed");
+      SG.guiTTFText(right_x_display_offset,
+		    right_y_display_offset_line2,str_submenu);
+    }
+
+  if (menu_lfo==MENU_LFO_PITCHBEND &&
+      menu_cursor==GLOBALMENU_LFO
+      )
+    {
+      sprintf(str_submenu,"PitchBend Depth/Speed");
+      SG.guiTTFText(right_x_display_offset,
+		    right_y_display_offset_line2,str_submenu);
+    }
+
+
+  if (menu_lfo==MENU_LFO_TYPE &&
+      menu_cursor==GLOBALMENU_LFO
+      )
+    {
+      sprintf(str_submenu,"LFOType");
       SG.guiTTFText(right_x_display_offset,
 		    right_y_display_offset_line2,str_submenu);
     }
@@ -2374,11 +2470,12 @@ void handle_key_lfo()
   lastEvent=IE.lastEvent();
   lastKey=IE.lastKey();
 
-  // GLOBALMENU_VCO
-  // VCO Menu
+  // GLOBALMENU_LFO
+  // LFO Menu
   // Change Value
   if (menu        == MENU_OFF && 
-      menu_cursor == GLOBALMENU_LFO    
+      menu_cursor == GLOBALMENU_LFO &&
+      menu_lfo    == MENU_LFO_LFOPITCH
       )
     {
       // Insert/Remove Trig
@@ -2402,7 +2499,8 @@ void handle_key_lfo()
 
 
   if (menu        != MENU_OFF && 
-      menu_cursor == GLOBALMENU_LFO
+      menu_cursor == GLOBALMENU_LFO &&
+      menu_lfo    == MENU_LFO_LFOPITCH
       )
     {
       if (keyState[BUTTON_LEFT] && keyState[BUTTON_A]) 
@@ -2423,6 +2521,97 @@ void handle_key_lfo()
 	  { lfo_speed_all=-1;  	  dirty_graphic=1;}
       //????
     }
+
+  // GLOBALMENU_LFO
+  // LFO Menu
+  // Change Value
+  if (menu        == MENU_OFF && 
+      menu_cursor == GLOBALMENU_LFO &&
+      menu_lfo    == MENU_LFO_PITCHBEND
+      )
+    {
+      // Insert/Remove Trig
+      sub_handle_invert_trig();
+      if (keyState[BUTTON_LEFT] && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_SMALL==0) 
+	  { pb_depth=-1; 	  dirty_graphic=1;}
+      
+      if (keyState[BUTTON_RIGHT]  && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_SMALL==0) 
+	  { pb_depth=1;  	  dirty_graphic=1;}
+      
+      if (keyState[BUTTON_UP]  && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALL==0) 
+	  { pb_speed=1;   	  dirty_graphic=1;}
+      
+      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B])
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALL==0) 
+	  { pb_speed=-1;  	  dirty_graphic=1;}
+    }
+
+
+  if (menu        != MENU_OFF && 
+      menu_cursor == GLOBALMENU_LFO &&
+      menu_lfo    == MENU_LFO_PITCHBEND
+      )
+    {
+      if (keyState[BUTTON_LEFT] && keyState[BUTTON_A]) 
+	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_SMALL==0) 
+	  { pb_depth_all=-1; 	  dirty_graphic=1;}
+      
+      if (keyState[BUTTON_RIGHT]  && keyState[BUTTON_A]) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_SMALL==0) 
+	  { pb_depth_all=1;  	  dirty_graphic=1;}
+
+      // ????
+      if (keyState[BUTTON_UP]  && keyState[BUTTON_A]) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALL==0) 
+	  { pb_speed_all=1;   	  dirty_graphic=1;}
+      
+      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A])
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALL==0) 
+	  { pb_speed_all=-1;  	  dirty_graphic=1;}
+      //????
+    }
+
+
+  if (menu        == MENU_OFF && 
+      menu_cursor == GLOBALMENU_LFO &&
+      menu_lfo    == MENU_LFO_TYPE
+      )
+    {
+
+
+      if (keyState[BUTTON_UP]  && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALL==0) 
+	  { lfo_type=1;   	  dirty_graphic=1;}
+      
+      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B])
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALL==0) 
+	  { lfo_type=-1;  	  dirty_graphic=1;}
+
+    }
+
+
+
+  if (menu        != MENU_OFF && 
+      menu_cursor == GLOBALMENU_LFO &&
+      menu_lfo    == MENU_LFO_TYPE
+      )
+    {
+
+
+      if (keyState[BUTTON_UP]  && keyState[BUTTON_A]) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALL==0) 
+	  { lfo_type_all=1;   	  dirty_graphic=1;}
+      
+      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A])
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALL==0) 
+	  { lfo_type_all=-1;  	  dirty_graphic=1;}
+
+    }
+
+
 
 }
 
@@ -3170,6 +3359,38 @@ void handle_key_submenu_vco()
     }
 }
 
+void handle_key_submenu_lfo()
+{
+  bool * keyState;
+  int  * keyRepeat;
+  int    lastEvent;
+  int    lastKey;
+
+  keyState=IE.keyState();
+  keyRepeat=IE.keyRepeat();
+  lastEvent=IE.lastEvent();
+  lastKey=IE.lastKey();
+
+  // change GLOBALMENU_VCO SUBMENU
+  if (lastKey     ==  BUTTON_START  && 
+      lastEvent   ==  SDL_KEYUP     && 
+      menu_cursor ==  GLOBALMENU_LFO)
+    {
+      if (menu_ad_dirty_keyboard==0)
+	{
+	  if      (menu_lfo==MENU_LFO_LFOPITCH)               { menu_lfo=MENU_LFO_PITCHBEND;       }
+	  else if (menu_lfo==MENU_LFO_PITCHBEND)              { menu_lfo=MENU_LFO_TYPE;            } 
+	  else if (menu_lfo==MENU_LFO_TYPE)                   { menu_lfo=MENU_LFO_LFOPITCH;        }  
+	  dirty_graphic=1;
+	}
+      menu_ad_dirty_keyboard=0;
+      IE.clearLastKeyEvent();
+      printf("[sub menu lfo : %d]\n",menu_lfo);
+    }
+}
+
+
+
 void handle_key_submenu_fltr()
 {
   bool * keyState;
@@ -3242,7 +3463,7 @@ void handle_key()
   if (menu_cursor==GLOBALMENU_VCO)  
     { handle_key_vco(); handle_key_submenu_vco();    }
   if (menu_cursor==GLOBALMENU_LFO)  
-    { handle_key_lfo();                              }
+    { handle_key_lfo(); handle_key_submenu_lfo();    }
   if (menu_cursor==GLOBALMENU_FLTR) 
     { handle_key_fltr(); handle_key_submenu_fltr();  }
 
@@ -3677,13 +3898,11 @@ void seq_update_multiple_time_by_step()
 
   // Change lfo depth
   if (lfo_depth!=0)
-    {
-      //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
+    {      
       P[cty].getPatternElement(cursor).setLfoDepth(P[cty].getPatternElement(cursor).getLfoDepth()+lfo_depth);
       lfo_depth=0;
       if (debug)
 	printf("[lfo_depth:%d]\n",P[cty].getPatternElement(cursor).getLfoDepth());
-      //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
       
     }
 
@@ -3691,13 +3910,11 @@ void seq_update_multiple_time_by_step()
   // Change lfo depth
   if (lfo_depth_all!=0)
     {
-      //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
       for (i=0;i<16;i++)
 	P[cty].getPatternElement(i).setLfoDepth(P[cty].getPatternElement(i).getLfoDepth()+lfo_depth_all);
       lfo_depth_all=0;
       if (debug)
 	printf("[lfo_depth_all:%d]\n",P[cty].getPatternElement(cursor).getLfoDepth());
-      //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
       
     }
 
@@ -3705,25 +3922,88 @@ void seq_update_multiple_time_by_step()
   // Change lfo speed
   if (lfo_speed!=0)
     {
-      //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
       P[cty].getPatternElement(cursor).setLfoSpeed(P[cty].getPatternElement(cursor).getLfoSpeed()+lfo_speed);
       lfo_speed=0;
       if (debug)
 	printf("[lfo_speed:%d]\n",P[cty].getPatternElement(cursor).getLfoSpeed());
-      //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
       
     }
 
   // Change lfo speed
   if (lfo_speed_all!=0)
     {
-      //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
       for (i=0;i<16;i++)
 	P[cty].getPatternElement(i).setLfoSpeed(P[cty].getPatternElement(i).getLfoSpeed()+lfo_speed_all);
       lfo_speed_all=0;
       if (debug)
 	printf("[lfo_speed:%d]\n",P[cty].getPatternElement(cursor).getLfoSpeed());
-      //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
+      
+    }
+
+
+  // Change pb depth
+  if (pb_depth!=0)
+    {      
+      P[cty].getPatternElement(cursor).setPitchBendDepth(P[cty].getPatternElement(cursor).getPitchBendDepth()+pb_depth);
+      pb_depth=0;
+      if (debug)
+	printf("[pb_depth:%d]\n",P[cty].getPatternElement(cursor).getPitchBendDepth());
+      
+    }
+
+
+  // Change pb depth
+  if (pb_depth_all!=0)
+    {
+      for (i=0;i<16;i++)
+	P[cty].getPatternElement(i).setPitchBendDepth(P[cty].getPatternElement(i).getPitchBendDepth()+pb_depth_all);
+      pb_depth_all=0;
+      if (debug)
+	printf("[pb_depth_all:%d]\n",P[cty].getPatternElement(cursor).getPitchBendDepth());
+      
+    }
+
+
+  // Change pb speed
+  if (pb_speed!=0)
+    {
+      P[cty].getPatternElement(cursor).setPitchBendSpeed(P[cty].getPatternElement(cursor).getPitchBendSpeed()+pb_speed);
+      pb_speed=0;
+      if (debug)
+	printf("[pb_speed:%d]\n",P[cty].getPatternElement(cursor).getPitchBendSpeed());
+      
+    }
+
+  // Change pb speed
+  if (pb_speed_all!=0)
+    {
+      for (i=0;i<16;i++)
+	P[cty].getPatternElement(i).setPitchBendSpeed(P[cty].getPatternElement(i).getPitchBendSpeed()+pb_speed_all);
+      pb_speed_all=0;
+      if (debug)
+	printf("[pb_speed:%d]\n",P[cty].getPatternElement(cursor).getPitchBendSpeed());
+      
+    }
+
+
+  // Change lfo type
+  if (lfo_type!=0)
+    {
+      P[cty].getPatternElement(cursor).setLfoType(P[cty].getPatternElement(cursor).getLfoType()+lfo_type);
+      lfo_type=0;
+      if (debug)
+	printf("[lfo_type:%d]\n",P[cty].getPatternElement(cursor).getLfoType());
+      
+    }
+
+  // Change pb speed
+  if (lfo_type_all!=0)
+    {
+      for (i=0;i<16;i++)
+	P[cty].getPatternElement(i).setLfoType(P[cty].getPatternElement(i).getLfoType()+lfo_type_all);
+      lfo_type_all=0;
+      if (debug)
+	printf("[lfo_type:%d]\n",P[cty].getPatternElement(cursor).getLfoType());
       
     }
 
@@ -4215,6 +4495,11 @@ void seq_update_track(int t)
 
 	  M[t]->setI(LFO1_DEPTH,P[t].getPatternElement(step).getLfoDepth());
 	  M[t]->setF(LFO1_FREQ,P[t].getPatternElement(step).getLfoSpeed());
+
+	  M[t]->setI(PITCHBEND_DEPTH,P[t].getPatternElement(step).getPitchBendDepth());
+	  M[t]->setI(PITCHBEND_SPEED,P[t].getPatternElement(step).getPitchBendSpeed());
+	  M[t]->setI(LFO_TYPE,       P[t].getPatternElement(step).getLfoType());
+
 	  //M[t]->set(OSC12_MIX,phase);
 
 	  M[t]->setI(OSC1_TYPE,P[t].getPatternElement(step).getOscillatorOneType());

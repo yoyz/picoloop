@@ -38,6 +38,14 @@ public:
   void                  setVCOPhase(int ph);
   void                  setLfoDepth(int val);
   void                  setLfoSpeed(int val);
+
+  void                  setLfoType(int val);
+
+  void                  setPitchBendDepth(int val);
+  void                  setPitchBendSpeed(int val);
+
+
+
   Oscillator          * getOscillatorOne();
 
 
@@ -115,6 +123,14 @@ public:
   int lfo_refresh;
   int lfo_counter;
     
+
+  //int lfo_speed;
+
+  int pb_depth;
+  int pb_speed;
+
+  int lfo_type;
+
   int tmp_i;
 };
 
