@@ -15,6 +15,7 @@ class PitchBend
   void setDepth(int d);
   void setSpeed(int s);
   void setNote(int  n);
+  void calc();
 
   void reset();
   int  tickNoteDetune();
@@ -24,7 +25,8 @@ class PitchBend
   Sint16 note;
   Sint16 speed;
   Sint16 depth;
-
+  Sint32 formula1;
+  Sint32 formula2;
 
 
   Sint32 sample_num;
