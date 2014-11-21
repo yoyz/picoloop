@@ -938,6 +938,72 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
     retcode=false;
 
 
+  fgets(line,512,fd);
+  //match('Pattern 1 Track 1 Param Release 0  0 1  0 0  0 1  0 0  1  0  0  1  0  0')
+  sscanf(line,
+	 "Pattern %d Track %d Param PitchBendDepth %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
+	 &PatNum,&TrackNum,
+	 &t[0], &t[1], &t[2], &t[3],
+	 &t[4], &t[5], &t[6], &t[7],
+	 &t[8], &t[9], &t[10],&t[11],
+	 &t[12],&t[13],&t[14],&t[15]);
+
+  if (PatNum    ==PatternNumber &&
+      TrackNum  ==TrackNumber)
+    for (i=0;i<PatSize;i++)
+      {
+	Pe=P.getPatternElement(i);      
+	Pe.setPitchBendDepth(t[i]);
+	P.setPatternElement(i,Pe);      
+      }
+  else
+    retcode=false;
+
+
+  fgets(line,512,fd);
+  //match('Pattern 1 Track 1 Param Release 0  0 1  0 0  0 1  0 0  1  0  0  1  0  0')
+  sscanf(line,
+	 "Pattern %d Track %d Param PitchBendSpeed %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
+	 &PatNum,&TrackNum,
+	 &t[0], &t[1], &t[2], &t[3],
+	 &t[4], &t[5], &t[6], &t[7],
+	 &t[8], &t[9], &t[10],&t[11],
+	 &t[12],&t[13],&t[14],&t[15]);
+
+  if (PatNum    ==PatternNumber &&
+      TrackNum  ==TrackNumber)
+    for (i=0;i<PatSize;i++)
+      {
+	Pe=P.getPatternElement(i);      
+	Pe.setPitchBendSpeed(t[i]);
+	P.setPatternElement(i,Pe);      
+      }
+  else
+    retcode=false;
+
+
+  fgets(line,512,fd);
+  //match('Pattern 1 Track 1 Param Release 0  0 1  0 0  0 1  0 0  1  0  0  1  0  0')
+  sscanf(line,
+	 "Pattern %d Track %d Param LfoType %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
+	 &PatNum,&TrackNum,
+	 &t[0], &t[1], &t[2], &t[3],
+	 &t[4], &t[5], &t[6], &t[7],
+	 &t[8], &t[9], &t[10],&t[11],
+	 &t[12],&t[13],&t[14],&t[15]);
+
+  if (PatNum    ==PatternNumber &&
+      TrackNum  ==TrackNumber)
+    for (i=0;i<PatSize;i++)
+      {
+	Pe=P.getPatternElement(i);      
+	Pe.setLfoType(t[i]);
+	P.setPatternElement(i,Pe);      
+      }
+  else
+    retcode=false;
+
+
 
   if (retcode==true)
     {
@@ -1329,6 +1395,36 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
       if (i==0)
 	sprintf(line,"Pattern %d Track %d Param TrigTime ",PatternNumber,TrackNumber);
       sprintf(line+strlen(line),"%d ",P.getPatternElement(i).getTrigTime());
+    }
+  sprintf(line+strlen(line),"\n");
+  data.insert(data.end(),line);
+
+
+  for (int i=0; i< P.getSize();i++)
+    {
+      if (i==0)
+	sprintf(line,"Pattern %d Track %d Param PitchBendDepth ",PatternNumber,TrackNumber);
+      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).getPitchBendDepth());
+    }
+  sprintf(line+strlen(line),"\n");
+  data.insert(data.end(),line);
+
+
+  for (int i=0; i< P.getSize();i++)
+    {
+      if (i==0)
+	sprintf(line,"Pattern %d Track %d Param PitchBendSpeed ",PatternNumber,TrackNumber);
+      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).getPitchBendSpeed());
+    }
+  sprintf(line+strlen(line),"\n");
+  data.insert(data.end(),line);
+
+
+  for (int i=0; i< P.getSize();i++)
+    {
+      if (i==0)
+	sprintf(line,"Pattern %d Track %d Param LfoType ",PatternNumber,TrackNumber);
+      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).getLfoType());
     }
   sprintf(line+strlen(line),"\n");
   data.insert(data.end(),line);
