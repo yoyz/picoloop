@@ -43,7 +43,8 @@ void dboplMachine::init()
   //HO(44100);
   if (buffer==0)
     {
-      HO=new Hiopl(44100);
+      //HO=new Hiopl(44100);
+      HO=new Hiopl(4096);
       buffer = (Sint16*)malloc(sizeof(Sint16)*SAM*8);
     }
 
