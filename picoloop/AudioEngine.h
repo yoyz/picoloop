@@ -100,7 +100,7 @@ class AudioEngine
   AudioMixer   AM;
   int          nbCallback;
   FILE       * fd;
-  int          debug_audio;
+  int          dump_audio;
   Sint16     * buffer_out;
   //RtAudio dac;
   int          bufferGenerated;
