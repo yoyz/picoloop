@@ -28,8 +28,16 @@ AudioEngine::AudioEngine() : AM(),
   bufferFrames = 512;          // Weird ?
   bufferFrames = BUFFER_FRAME; // Weird ?
   nbCallback=0;
-  debug_audio=1;
-  if (debug_audio) 
+
+  // Debug audio allow to dump audio to audioout file which is a raw file
+  #ifndef DUMP_AUDIO
+  dump_audio=0;
+  #else
+  dump_audio=DUMP_AUDIO;
+  #endif
+
+
+  if (dump_audio) 
     {
       fd = fopen("audioout","w+");
     }
@@ -166,8 +174,8 @@ void AudioEngine::callback(void *unused, Uint8 *stream, int len)
     //this->processBuffer(BUFFER_FRAME);
     this->processBuffer(buffer_size);
 
-  #ifdef LINUX_DESKTOP
-  if (debug_audio)
+  #ifdef DUMP_AUDIO
+  if (dump_audio)
     fwrite(buffer_out,buffer_size,sizeof(Sint16),fd);
   #endif
 
