@@ -121,6 +121,7 @@ Sint16 Oscillator::tick()
   const int   wtshift=1<<shift;
 
   index=index+offset_next_index;
+  if (index<0) index=0;
   if ((index>>shift)>=table_size)
     {
       index=index-(table_size<<shift);
