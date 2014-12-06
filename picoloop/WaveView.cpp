@@ -81,6 +81,7 @@ void load_raw(char * filepath)
   printf("Number of Links: \t%d\n",fileStat.st_nlink);
   printf("File inode: \t\t%d\n",fileStat.st_ino);
   
+  /*
   printf("File Permissions: \t");
   printf( (S_ISDIR(fileStat.st_mode)) ? "d" : "-");
   printf( (fileStat.st_mode & S_IRUSR) ? "r" : "-");
@@ -93,7 +94,7 @@ void load_raw(char * filepath)
   printf( (fileStat.st_mode & S_IWOTH) ? "w" : "-");
   printf( (fileStat.st_mode & S_IXOTH) ? "x" : "-");
   printf("\n\n");
-
+  */
   filesize_octet=fileStat.st_size;
   file_buffer=(Sint16*)malloc(sizeof(short)*filesize_octet);
   vector_buffer=(Sint16*)malloc(sizeof(Sint16)*SCREEN_WIDTH);
