@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<title>SDL Joystick mapping - wiki.gp2x.org</title>
+<meta charset="UTF-8" />
+<meta name="generator" content="MediaWiki 1.18.1" />
+<link rel="shortcut icon" href="../../../../misc/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="../../../../../opensearch_desc.php" title="wiki.gp2x.org (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="../../../../../api.php?action=rsd" />
+<link rel="copyright" href="../../../../../COPYING.html" />
+<link rel="alternate" type="application/atom+xml" title="wiki.gp2x.org Atom feed" href="http://localhost/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<link rel="stylesheet" href="/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+<!--[if lt IE 5.5000]><link rel="stylesheet" href="../../../../skins/monobook/IE50Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 5.5000]><link rel="stylesheet" href="../../../../skins/monobook/IE55Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 6]><link rel="stylesheet" href="../../../../skins/monobook/IE60Fixes.css?303" media="screen" /><![endif]-->
+<!--[if IE 7]><link rel="stylesheet" href="../../../../skins/monobook/IE70Fixes.css?303" media="screen" /><![endif]--><meta name="ResourceLoaderDynamicStyles" content="" />
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wiki_gp2x:resourceloader:filter:minify-css:4:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+<script src="/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=monobook&amp;*"></script>
+<script>if(window.mw){
+	mw.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "SDL_Joystick_mapping", "wgTitle": "SDL Joystick mapping", "wgCurRevisionId": 24309, "wgArticleId": 1511, "wgIsArticle": true, "wgAction": "view", "wgUserName": null, "wgUserGroups": ["*"], "wgCategories": ["SDL"], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": []});
+}
+</script>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-SDL_Joystick_mapping action-view skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">SDL Joystick mapping</h1>
+	<div id="bodyContent">
+		<div id="siteSub">From wiki.gp2x.org</div>
+		<div id="contentSub"></div>
+		<!-- start content -->
+<div lang="en" dir="ltr" class="mw-content-ltr"><table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Events"><span class="tocnumber">1</span> <span class="toctext">Events</span></a>
+<ul>
+<li class="toclevel-2 tocsection-2"><a href="#Other_Buttons"><span class="tocnumber">1.1</span> <span class="toctext">Other Buttons</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-3"><a href="#Implementation"><span class="tocnumber">2</span> <span class="toctext">Implementation</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Examples"><span class="tocnumber">3</span> <span class="toctext">Examples</span></a>
+<ul>
+<li class="toclevel-2 tocsection-5"><a href="#C"><span class="tocnumber">3.1</span> <span class="toctext">C</span></a></li>
+<li class="toclevel-2 tocsection-6"><a href="#Python"><span class="tocnumber">3.2</span> <span class="toctext">Python</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-7"><a href="#Headers"><span class="tocnumber">4</span> <span class="toctext">Headers</span></a>
+<ul>
+<li class="toclevel-2 tocsection-8"><a href="#C_2"><span class="tocnumber">4.1</span> <span class="toctext">C</span></a></li>
+<li class="toclevel-2 tocsection-9"><a href="#Python_2"><span class="tocnumber">4.2</span> <span class="toctext">Python</span></a></li>
+</ul>
+</li>
+</ul>
+</td></tr></table>
+<h2> <span class="mw-headline" id="Events"> Events </span></h2>
+<p>In <a href="../../../../articles/s/d/l/SDL.html" title="SDL">SDL</a> and <a href="../../../../articles/p/y/g/Pygame.html" title="Pygame">PyGame</a>, every action produces button events (<tt>SDL_JOYBUTTONUP</tt>, <tt>SDL_JOYBUTTONDOWN</tt>), including the joystick - <b>not</b> joystick events. Each action is counted as a button press. Press and release of each control triggers <tt>SDL_JOYBUTTONDOWN</tt> and <tt>SDL_JOYBUTTONUP</tt> respectively.
+</p><p>You need to track the events yourself; SDL gives events on button presses/releases instead of continuous events when a button or the joystick is not in it's normal state.  That is, there is no event meaning "the button is still down". This can be taken care of by acting upon an event until another action is in the queue.
+</p>
+=== Joystick === <div class="thumb tright"><div class="thumbinner" style="width:102px;"><a href="../../../../articles/j/o/y/File:JoystickMap.png.html" class="image"><img alt="" src="../../../../../images/7/2F/7/7/77/JoystickMap.png" width="100" height="100" class="thumbimage" /></a>  <div class="thumbcaption"><div class="magnify"><a href="../../../../articles/j/o/y/File:JoystickMap.png.html" class="internal" title="Enlarge"><img src="../../../../skins/common/images/m/a/g/magnify-clip.png" width="15" height="11" alt="" /></a></div>Visual Mapping</div></div></div>
+<p>The joystick has eight directions.  If you hold it along a minor diagonal and another direction (e.g. between left and left-up), you can get two separate button events for left and left-up. See <a href="../../../../articles/s/u/g/Suggested_Joystick_Configurations.html" title="Suggested Joystick Configurations">Suggested Joystick Configurations</a> for mapping between joystick directions.
+</p>
+<table border="1">
+
+<tr>
+<th> Joystick Direction
+</th>
+<th> Event Value
+</th></tr>
+<tr>
+<td> Up
+</td>
+<td> <tt>0</tt>
+</td></tr>
+<tr>
+<td> Down
+</td>
+<td> <tt>4</tt>
+</td></tr>
+<tr>
+<td> Left
+</td>
+<td> <tt>2</tt>
+</td></tr>
+<tr>
+<td> Right
+</td>
+<td> <tt>6</tt>
+</td></tr>
+<tr>
+<td> Up-Left
+</td>
+<td> <tt>1</tt>
+</td></tr>
+<tr>
+<td> Up-Right
+</td>
+<td> <tt>7</tt>
+</td></tr>
+<tr>
+<td> Down-Left
+</td>
+<td> <tt>3</tt>
+</td></tr>
+<tr>
+<td> Down-Right
+</td>
+<td> <tt>5</tt>
+</td></tr>
+<tr>
+<td> Stick "Click"
+</td>
+<td> <tt>18</tt>
+</td></tr></table>
+<h3> <span class="mw-headline" id="Other_Buttons"> Other Buttons </span></h3>
+<p>It is highly recommended that when mapping actions to your game, application or emulator, you should refer to the <a href="../../../../articles/c/o/m/Common_User_Interface_Recommendations.html" title="Common User Interface Recommendations">Common User Interface Recommendations</a>.
+</p>
+<table border="1">
+
+<tr>
+<th> Button
+</th>
+<th> Event Value
+</th></tr>
+<tr>
+<td> A
+</td>
+<td> <tt>12</tt>
+</td></tr>
+<tr>
+<td> B
+</td>
+<td> <tt>13</tt>
+</td></tr>
+<tr>
+<td> Y
+</td>
+<td> <tt>14</tt>
+</td></tr>
+<tr>
+<td> X
+</td>
+<td> <tt>15</tt>
+</td></tr>
+<tr>
+<td> R
+</td>
+<td> <tt>10</tt>
+</td></tr>
+<tr>
+<td> L
+</td>
+<td> <tt>11</tt>
+</td></tr>
+<tr>
+<td> Start
+</td>
+<td> <tt>8</tt>
+</td></tr>
+<tr>
+<td> Select
+</td>
+<td> <tt>9</tt>
+</td></tr>
+<tr>
+<td> Vol -
+</td>
+<td> <tt>17</tt>
+</td></tr>
+<tr>
+<td> Vol +
+</td>
+<td> <tt>16</tt>
+</td></tr></table>
+<p><b>Note:</b> These mappings are assuming you are using Guyfawkes' library. X/Y and L/R may be the other way around. See the <a href="../../../../articles/s/d/l/Talk:SDL_Joystick_mapping.html" title="Talk:SDL Joystick mapping">talk</a> page.
+</p>
+<h2> <span class="mw-headline" id="Implementation"> Implementation </span></h2>
+<ul><li> When you call SDL_Init, make sure you include SDL_INIT_JOYSTICK.
+</li><li> You <b>must</b> call <tt>SDL_JoystickOpen(0)</tt>
+</li><li> In your event loop, you should check for <tt>SDL_JOYBUTTONDOWN</tt> and <tt>SDL_JOYBUTTONUP</tt> events
+</li><li> You should compare <tt>event.jbutton.button</tt> to the constants below
+</li><li> You may sometimes get an inital SDL_JOYBUTTONDOWN event for the button used to launch the application (usually the B button). This can be intermittent depending on the execution time before running <tt>SDL_Init()</tt> and how long the button is pressed for
+</li></ul>
+<h2> <span class="mw-headline" id="Examples"> Examples </span></h2>
+<h3> <span class="mw-headline" id="C"> C </span></h3>
+<pre>/* initialize */
+SDL_Init(SDL_INIT_JOYSTICK|SDL_INIT_VIDEO);
+SDL_JoystickOpen(0);
+
+SDL_Event event;
+
+/* event loop */
+while(SDL_PollEvent(&amp;event))
+{
+    switch(event.type)
+    {
+        case SDL_JOYBUTTONDOWN:
+            switch(event.jbutton.button)
+            {
+                case GP2X_BUTTON_X: /* X pressed */
+                    printf(&quot;X was pressed\n&quot;);
+                    break;
+                case GP2X_BUTTON_L: /* L pressed */
+                    printf(&quot;L was pressed\n&quot;);
+                    break;
+            }
+            
+            break;
+        case SDL_JOYBUTTONUP:
+            switch(event.jbutton.button)
+            {
+                case GP2X_BUTTON_X: /* X released */
+                    printf(&quot;X was released\n&quot;);
+                    break;
+                case GP2X_BUTTON_L: /* L released */
+                    printf(&quot;L was released\n&quot;);
+                    break;
+            }
+            
+            break;
+    }
+}</pre>
+<h3> <span class="mw-headline" id="Python"> Python </span></h3>
+<pre>import gp2x
+
+# initialize
+num_joysticks = pygame.joystick.get_count()
+if num_joysticks &gt; 0:
+    stick = pygame.joystick.Joystick(0)
+    stick.init() # now we will receive events for the joystick
+
+# event loop
+while 1:
+    event = pygame.event.poll()
+    print &quot;got event&quot;
+    print repr(event)
+    if event.type == pygame.NOEVENT:
+        print &quot;No more events for now&quot;
+        break
+    if event.type == pygame.QUIT:
+        print &quot;got quit event&quot;
+        running = 0
+    elif event.type == pygame.JOYBUTTONDOWN:
+        if event.button == gp2x.BUTTON_X:
+            print &quot;X pressed&quot;
+        elif event.button == gp2x.BUTTON_Y:
+            print &quot;Y pressed&quot;
+        else:
+            print &quot;unknown button pushed&quot;
+    elif event.type == pygame.JOYBUTTONUP:
+        if event.button == gp2x.BUTTON_X:
+            print &quot;X released&quot;
+        elif event.button == gp2x.BUTTON_Y:
+            print &quot;Y released&quot;
+        else:
+            print &quot;unknown button released&quot;</pre>
+<h2> <span class="mw-headline" id="Headers"> Headers </span></h2>
+<h3> <span class="mw-headline" id="C_2"> C </span></h3>
+<pre>#define GP2X_BUTTON_UP              (0)
+#define GP2X_BUTTON_DOWN            (4)
+#define GP2X_BUTTON_LEFT            (2)
+#define GP2X_BUTTON_RIGHT           (6)
+#define GP2X_BUTTON_UPLEFT          (1)
+#define GP2X_BUTTON_UPRIGHT         (7)
+#define GP2X_BUTTON_DOWNLEFT        (3)
+#define GP2X_BUTTON_DOWNRIGHT       (5)
+#define GP2X_BUTTON_CLICK           (18)
+#define GP2X_BUTTON_A               (12)
+#define GP2X_BUTTON_B               (13)
+#define GP2X_BUTTON_Y               (14)
+#define GP2X_BUTTON_X               (15)
+#define GP2X_BUTTON_L               (10)
+#define GP2X_BUTTON_R               (11)
+#define GP2X_BUTTON_START           (8)
+#define GP2X_BUTTON_SELECT          (9)
+#define GP2X_BUTTON_VOLUP           (16)
+#define GP2X_BUTTON_VOLDOWN         (17)
+</pre>
+<p>NOTE: for dynamically linked Open2x applications and recent versions of SDL, the following mapping should be used instead.
+</p>
+<pre>#define GP2X_BUTTON_UP              (0)
+#define GP2X_BUTTON_DOWN            (4)
+#define GP2X_BUTTON_LEFT            (2)
+#define GP2X_BUTTON_RIGHT           (6)
+#define GP2X_BUTTON_UPLEFT          (1)
+#define GP2X_BUTTON_UPRIGHT         (7)
+#define GP2X_BUTTON_DOWNLEFT        (3)
+#define GP2X_BUTTON_DOWNRIGHT       (5)
+#define GP2X_BUTTON_CLICK           (18)
+#define GP2X_BUTTON_A               (12)
+#define GP2X_BUTTON_B               (13)
+#define GP2X_BUTTON_X               (14)
+#define GP2X_BUTTON_Y               (15)
+#define GP2X_BUTTON_L               (10)
+#define GP2X_BUTTON_R               (11)
+#define GP2X_BUTTON_START           (8)
+#define GP2X_BUTTON_SELECT          (9)
+#define GP2X_BUTTON_VOLUP           (16)
+#define GP2X_BUTTON_VOLDOWN         (17)
+</pre>
+<h3> <span class="mw-headline" id="Python_2"> Python </span></h3>
+<pre># GP2X joystick button mappings
+BUTTON_UP            = 0
+BUTTON_DOWN          = 4
+BUTTON_LEFT          = 2
+BUTTON_RIGHT         = 6
+BUTTON_UPLEFT        = 1
+BUTTON_UPRIGHT       = 7
+BUTTON_DOWNLEFT      = 3
+BUTTON_DOWNRIGHT     = 5
+BUTTON_CLICK         = 18
+BUTTON_A             = 12
+BUTTON_B             = 13
+BUTTON_X             = 14
+BUTTON_Y             = 15
+BUTTON_L             = 10
+BUTTON_R             = 11
+BUTTON_START         = 8 
+BUTTON_SELECT        = 9
+BUTTON_VOLUP         = 16
+BUTTON_VOLDOWN       = 17
+</pre>
+<!-- 
+NewPP limit report
+Preprocessor node count: 52/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+</div><div class="printfooter">
+Retrieved from "<a href="http://localhost/index.php?title=SDL_Joystick_mapping&amp;oldid=24309">http://localhost/index.php?title=SDL_Joystick_mapping&amp;oldid=24309</a>"</div>
+		<div id='catlinks' class='catlinks'><div id="mw-normal-catlinks"><a href="http://localhost/wiki/Special:Categories" title="Special:Categories">Category</a>: <ul><li><a href="../../../../articles/s/d/l/Category:SDL.html" title="Category:SDL">SDL</a></li></ul></div></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				<li id="ca-nstab-main" class="selected"><a href="../../../../articles/s/d/l/SDL_Joystick_mapping.html" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk"><a href="../../../../articles/s/d/l/Talk:SDL_Joystick_mapping.html" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="http://localhost/index.php?title=SDL_Joystick_mapping&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="http://localhost/index.php?title=SDL_Joystick_mapping&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-login"><a href="http://localhost/index.php?title=Special:UserLogin&amp;returnto=SDL+Joystick+mapping" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in / create account</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a title="Visit the main page" style="background-image: url(../../../../misc/gp2x_4.gif);" href="../../../../index.html"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-navigation">
+		<h5>Navigation</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-mainpage"><a href="../../../../index.html" title="Visit the main page [z]" accesskey="z">Main Page</a></li>
+				<li id="n-portal"><a href="../../../../articles/c/o/m/wiki.gp2x.org:Community_portal.html" title="About the project, what you can do, where to find things">Community portal</a></li>
+				<li id="n-recentchanges"><a href="http://localhost/wiki/Special:RecentChanges" title="A list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
+				<li id="n-randompage"><a href="http://localhost/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="../../../../articles/c/o/n/Help:Contents.html" title="The place to find out">Help</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/index.php" id="searchform">
+				<input type='hidden' name="title" value="Special:Search"/>
+				<input type="search" name="search" title="Search wiki.gp2x.org [f]" accesskey="f" id="searchInput" />
+				<input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" />&#160;
+				<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" />
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="http://localhost/wiki/Special:WhatLinksHere/SDL_Joystick_mapping" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="http://localhost/wiki/Special:RecentChangesLinked/SDL_Joystick_mapping" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+				<li id="t-specialpages"><a href="http://localhost/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li><a href="http://localhost/index.php?title=SDL_Joystick_mapping&amp;printable=yes" rel="alternate">Printable version</a></li>
+				<li id="t-permalink"><a href="http://localhost/index.php?title=SDL_Joystick_mapping&amp;oldid=24309" title="Permanent link to this revision of the page">Permanent link</a></li>
+			</ul>
+		</div>
+	</div>
+
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<div id="f-copyrightico">
+		<a href="http://www.gnu.org/copyleft/fdl.html"><img src="/skins/common/images/gnu-fdl.png" alt="GNU Free Documentation License 1.2" width="88" height="31" /></a>
+	</div>
+	<div id="f-poweredbyico">
+		<a href="http://www.mediawiki.org/"><img src="/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31" /></a>
+	</div>
+	<ul id="f-list">
+		<li id="credits">This page was last modified 15:12, 16 July 2008 by <a href="http://localhost/index.php?title=User:RogerCageot&amp;action=edit&amp;redlink=1" class="new" title="User:RogerCageot (page does not exist)">Guillaume B.</a>. Based on work by <a href="http://localhost/index.php?title=User:TaoubAsbas&amp;action=edit&amp;redlink=1" class="new" title="User:TaoubAsbas (page does not exist)">TaoubAsbas</a>, <a href="../../../../articles/j/u/s/User:Justthisguy.html" title="User:Justthisguy">Mark Jordan</a>, <a href="../../../../articles/o/r/k/User:Orkie.html" title="User:Orkie">Adan</a>, <a href="http://localhost/index.php?title=User:Jawdy&amp;action=edit&amp;redlink=1" class="new" title="User:Jawdy (page does not exist)">Mark Jawdoszak</a>, <a href="../../../../articles/a/l/v/User:Alvin.html" title="User:Alvin">Alvin Sipraga</a>, <a href="../../../../articles/l/u/t/User:Luteijn.html" title="User:Luteijn">Pieter Luteijn</a>, <a href="http://localhost/index.php?title=User:Gadget&amp;action=edit&amp;redlink=1" class="new" title="User:Gadget (page does not exist)">Chris Millward</a>, <a href="http://localhost/index.php?title=User:Kitsu&amp;action=edit&amp;redlink=1" class="new" title="User:Kitsu (page does not exist)">Ed Blake</a>, <a href="../../../../articles/g/i/z/User:Gizbot.html" class="mw-redirect" title="User:Gizbot">Charles Merriam</a>, <a href="../../../../articles/n/o/_/User:No_skill.html" title="User:No skill">Florian Hufsky</a>, <a href="../../../../articles/t/h/e/User:Theoddbot.html" title="User:Theoddbot">Brendan McCarthy</a>, <a href="http://localhost/index.php?title=User:Zaq121&amp;action=edit&amp;redlink=1" class="new" title="User:Zaq121 (page does not exist)">Mike Deweese</a>, <a href="../../../../articles/t/i/t/User:Titousensei.html" title="User:Titousensei">Eric Gaudet</a> and <a href="../../../../articles/b/e/n/User:Ben_ost.html" title="User:Ben ost">Ben</a> and wiki.gp2x.org users <a href="http://localhost/index.php?title=User:Psychotic_spoon&amp;action=edit&amp;redlink=1" class="new" title="User:Psychotic spoon (page does not exist)">Psychotic spoon</a>, <a href="http://localhost/index.php?title=User:VirUZI&amp;action=edit&amp;redlink=1" class="new" title="User:VirUZI (page does not exist)">VirUZI</a> and <a href="http://localhost/index.php?title=User:MovAX13h&amp;action=edit&amp;redlink=1" class="new" title="User:MovAX13h (page does not exist)">MovAX13h</a>.</li>
+		<li id="copyright">Content is available under <a class="external" href="../../../../../COPYING.html">GNU Free Documentation License 1.2</a>.</li>
+		<li id="privacy"><a href="../../../../articles/p/r/i/wiki.gp2x.org:Privacy_policy.html" title="wiki.gp2x.org:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="../../../../articles/a/b/o/wiki.gp2x.org:About.html" title="wiki.gp2x.org:About">About wiki.gp2x.org</a></li>
+		<li id="disclaimer"><a href="../../../../articles/g/e/n/wiki.gp2x.org:General_disclaimer.html" title="wiki.gp2x.org:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+
+<script>if(window.mw){
+	mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"vector","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,
+	"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mw.user.tokens.set({"editToken":"+\\","watchToken":false});;mw.loader.state({"user.options":"ready","user.tokens":"ready"});
+	
+	/* cache key: wiki_gp2x:resourceloader:filter:minify-js:4:19a4b18a9ac79a6b8c60b24af4668814 */
+}
+</script><!-- Served in 2.664 secs. --></body></html>
