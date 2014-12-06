@@ -81,6 +81,8 @@
 
 #ifdef PSP
 
+
+
 #define PSP_BUTTON_TRIANGLE 0 // X
 #define PSP_BUTTON_CIRCLE   1 // A
 #define PSP_BUTTON_CROSS    2 // B
@@ -106,7 +108,7 @@
 #define BUTTON_LEFT         PSP_BUTTON_LEFT
 #define BUTTON_RIGHT        PSP_BUTTON_RIGHT
 
-#define BUTTON_SELECT       PSP_BUTTON_SELECT
+#define BUTTON_SELECT       PSP_BUTTON_SELEC
 #define BUTTON_START        PSP_BUTTON_START
 // BEGIN PSP SDL
 #endif
