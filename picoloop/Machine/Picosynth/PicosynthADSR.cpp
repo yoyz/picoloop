@@ -201,17 +201,17 @@ void PicosynthADSR::reset()
   cs=sustain;
 
 
-  if (attack>0)
+  if (attack>=0)
     ca=attack  << numsample_shift;
   else
     ca=0;
 
-  if (decay>0)
+  if (decay>=0)
     cd=decay  << numsample_shift;
   else
     cd=0;
 
-  if (release>0)
+  if (release>=0)
     cr=release << numsample_shift;
   else
     cr=0;
