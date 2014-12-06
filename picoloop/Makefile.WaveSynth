@@ -28,6 +28,7 @@ SOURCES=WaveSynth.cpp            \
 		      Generator.cpp            \
 		      PatternElement.cpp       \
 		      NoteFreq.cpp             \
+		      PitchBend.cpp            \
 		      Machine/Picosynth/PicosynthADSR.cpp        \
 		      Machine/Picosynth/PicosynthVCO.cpp         \
 		      Machine/Picosynth/PicosynthMachine.cpp     \
