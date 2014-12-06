@@ -45,18 +45,6 @@ using namespace std;
 #define DISABLE             0
 #define ENABLE              1
 
-#define BUTTON_B            SDLK_LALT
-#define BUTTON_A            SDLK_LCTRL
-#define BUTTON_X            SDLK_SPACE
-#define BUTTON_Y            SDLK_LSHIFT
-
-#define BUTTON_UP           SDLK_UP
-#define BUTTON_DOWN         SDLK_DOWN
-#define BUTTON_LEFT         SDLK_LEFT
-#define BUTTON_RIGHT        SDLK_RIGHT
-
-#define BUTTON_SELECT       SDLK_ESCAPE
-#define BUTTON_START        SDLK_RETURN
 
 
 //menu
