@@ -14,7 +14,7 @@ using namespace std;
 #include "Generator.h"
 #include "WaveTableManager.h"
 #include "WaveTable.h"
-#include "PatternElement.h"
+//#include "PatternElement.h"
 
 #include "NoteFreq.h"
 
@@ -78,7 +78,7 @@ bool right_key=false;
 int    noteon=0;
 int    note=0;
 
-PatternElement PE;
+//PatternElement PE;
 
 void openaudio()
 {
@@ -617,46 +617,46 @@ void handle_key()
 
   if (lastEvent ==  SDL_KEYDOWN)
     {
-      if (lastKey==SDLK_q) { printf("key q\n"); PE.setNote(0+octave);  note=0+octave;  noteon=1; }
-      if (lastKey==SDLK_z) { printf("key z\n"); PE.setNote(1+octave);  note=1+octave;  noteon=1; }
-      if (lastKey==SDLK_s) { printf("key s\n"); PE.setNote(2+octave);  note=2+octave;  noteon=1; }
-      if (lastKey==SDLK_e) { printf("key e\n"); PE.setNote(3+octave);  note=3+octave;  noteon=1; }
-      if (lastKey==SDLK_d) { printf("key d\n"); PE.setNote(4+octave);  note=4+octave;  noteon=1; }
-      if (lastKey==SDLK_f) { printf("key f\n"); PE.setNote(5+octave);  note=5+octave;  noteon=1; }
-      if (lastKey==SDLK_t) { printf("key t\n"); PE.setNote(6+octave);  note=6+octave;  noteon=1; }
-      if (lastKey==SDLK_g) { printf("key g\n"); PE.setNote(7+octave);  note=7+octave;  noteon=1; }
-      if (lastKey==SDLK_y) { printf("key y\n"); PE.setNote(8+octave);  note=8+octave;  noteon=1; }
-      if (lastKey==SDLK_h) { printf("key h\n"); PE.setNote(9+octave);  note=9+octave;  noteon=1; }
-      if (lastKey==SDLK_u) { printf("key u\n"); PE.setNote(10+octave); note=10+octave; noteon=1; }
-      if (lastKey==SDLK_j) { printf("key j\n"); PE.setNote(11+octave); note=11+octave; noteon=1; }
+      if (lastKey==SDLK_q) { printf("key q\n"); note=0+octave;  noteon=1; }
+      if (lastKey==SDLK_z) { printf("key z\n"); note=1+octave;  noteon=1; }
+      if (lastKey==SDLK_s) { printf("key s\n"); note=2+octave;  noteon=1; }
+      if (lastKey==SDLK_e) { printf("key e\n"); note=3+octave;  noteon=1; }
+      if (lastKey==SDLK_d) { printf("key d\n"); note=4+octave;  noteon=1; }
+      if (lastKey==SDLK_f) { printf("key f\n"); note=5+octave;  noteon=1; }
+      if (lastKey==SDLK_t) { printf("key t\n"); note=6+octave;  noteon=1; }
+      if (lastKey==SDLK_g) { printf("key g\n"); note=7+octave;  noteon=1; }
+      if (lastKey==SDLK_y) { printf("key y\n"); note=8+octave;  noteon=1; }
+      if (lastKey==SDLK_h) { printf("key h\n"); note=9+octave;  noteon=1; }
+      if (lastKey==SDLK_u) { printf("key u\n"); note=10+octave; noteon=1; }
+      if (lastKey==SDLK_j) { printf("key j\n"); note=11+octave; noteon=1; }
       
-      if (lastKey==SDLK_k) { printf("key k\n"); PE.setNote(12+octave); note=12+octave; noteon=1; }
-      if (lastKey==SDLK_o) { printf("key o\n"); PE.setNote(13+octave); note=13+octave; noteon=1; }
-      if (lastKey==SDLK_l) { printf("key l\n"); PE.setNote(14+octave); note=14+octave; noteon=1; }
-      if (lastKey==SDLK_p) { printf("key p\n"); PE.setNote(15+octave); note=15+octave; noteon=1; }
-      if (lastKey==SDLK_m) { printf("key m\n"); PE.setNote(16+octave); note=16+octave; noteon=1; }
+      if (lastKey==SDLK_k) { printf("key k\n"); note=12+octave; noteon=1; }
+      if (lastKey==SDLK_o) { printf("key o\n"); note=13+octave; noteon=1; }
+      if (lastKey==SDLK_l) { printf("key l\n"); note=14+octave; noteon=1; }
+      if (lastKey==SDLK_p) { printf("key p\n"); note=15+octave; noteon=1; }
+      if (lastKey==SDLK_m) { printf("key m\n"); note=16+octave; noteon=1; }
     }
 
   if (lastEvent ==  SDL_KEYUP)
     {
-      if (lastKey==SDLK_q) { printf("key q\n"); PE.setNote(0+octave);  note=0+octave;  noteon=0; }
-      if (lastKey==SDLK_z) { printf("key z\n"); PE.setNote(1+octave);  note=1+octave;  noteon=0; }
-      if (lastKey==SDLK_s) { printf("key s\n"); PE.setNote(2+octave);  note=2+octave;  noteon=0; }
-      if (lastKey==SDLK_e) { printf("key e\n"); PE.setNote(3+octave);  note=3+octave;  noteon=0; }
-      if (lastKey==SDLK_d) { printf("key d\n"); PE.setNote(4+octave);  note=4+octave;  noteon=0; }
-      if (lastKey==SDLK_f) { printf("key f\n"); PE.setNote(5+octave);  note=5+octave;  noteon=0; }
-      if (lastKey==SDLK_t) { printf("key t\n"); PE.setNote(6+octave);  note=6+octave;  noteon=0; }
-      if (lastKey==SDLK_g) { printf("key g\n"); PE.setNote(7+octave);  note=7+octave;  noteon=0; }
-      if (lastKey==SDLK_y) { printf("key y\n"); PE.setNote(8+octave);  note=8+octave;  noteon=0; }
-      if (lastKey==SDLK_h) { printf("key h\n"); PE.setNote(9+octave);  note=9+octave;  noteon=0; }
-      if (lastKey==SDLK_u) { printf("key u\n"); PE.setNote(10+octave); note=10+octave; noteon=0; }
-      if (lastKey==SDLK_j) { printf("key j\n"); PE.setNote(11+octave); note=11+octave; noteon=0; }
+      if (lastKey==SDLK_q) { printf("key q\n"); note=0+octave;  noteon=0; }
+      if (lastKey==SDLK_z) { printf("key z\n"); note=1+octave;  noteon=0; }
+      if (lastKey==SDLK_s) { printf("key s\n"); note=2+octave;  noteon=0; }
+      if (lastKey==SDLK_e) { printf("key e\n"); note=3+octave;  noteon=0; }
+      if (lastKey==SDLK_d) { printf("key d\n"); note=4+octave;  noteon=0; }
+      if (lastKey==SDLK_f) { printf("key f\n"); note=5+octave;  noteon=0; }
+      if (lastKey==SDLK_t) { printf("key t\n"); note=6+octave;  noteon=0; }
+      if (lastKey==SDLK_g) { printf("key g\n"); note=7+octave;  noteon=0; }
+      if (lastKey==SDLK_y) { printf("key y\n"); note=8+octave;  noteon=0; }
+      if (lastKey==SDLK_h) { printf("key h\n"); note=9+octave;  noteon=0; }
+      if (lastKey==SDLK_u) { printf("key u\n"); note=10+octave; noteon=0; }
+      if (lastKey==SDLK_j) { printf("key j\n"); note=11+octave; noteon=0; }
      
-      if (lastKey==SDLK_k) { printf("key k\n"); PE.setNote(12+octave); note=12+octave; noteon=0; }
-      if (lastKey==SDLK_o) { printf("key o\n"); PE.setNote(13+octave); note=13+octave; noteon=0; }
-      if (lastKey==SDLK_l) { printf("key l\n"); PE.setNote(14+octave); note=14+octave; noteon=0; }
-      if (lastKey==SDLK_p) { printf("key p\n"); PE.setNote(15+octave); note=15+octave; noteon=0; }
-      if (lastKey==SDLK_m) { printf("key m\n"); PE.setNote(16+octave); note=16+octave; noteon=0; }
+      if (lastKey==SDLK_k) { printf("key k\n"); note=12+octave; noteon=0; }
+      if (lastKey==SDLK_o) { printf("key o\n"); note=13+octave; noteon=0; }
+      if (lastKey==SDLK_l) { printf("key l\n"); note=14+octave; noteon=0; }
+      if (lastKey==SDLK_p) { printf("key p\n"); note=15+octave; noteon=0; }
+      if (lastKey==SDLK_m) { printf("key m\n"); note=16+octave; noteon=0; }
     }
   IE.clearLastKeyEvent(); 
 
@@ -902,7 +902,7 @@ int main(int argc,char ** argv)
   vector_buffer=(Sint16*)malloc(sizeof(Sint16)*SCREEN_WIDTH);
   
 
-  PE.setNote(32);
+  //PE.setNote(32);
 
   struct stat fileStat;
   //  if(stat(argv[1],&fileStat) < 0)    
