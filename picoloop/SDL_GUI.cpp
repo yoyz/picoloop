@@ -31,7 +31,8 @@ int SDL_GUI::initVideo()
 
 #ifdef __SDL_AUDIO__
   //  if ( SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO|SDL_INIT_TIMER)
-  if (SDL_Init(SDL_INIT_EVERYTHING)
+  //if (SDL_Init(SDL_INIT_EVERYTHING)
+  if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO|SDL_INIT_JOYSTICK)
        
        //|SDL_INIT_TIMER|SDL_INIT_AUDIO) 
        
@@ -78,6 +79,18 @@ int SDL_GUI::initVideo()
 			    SCREEN_DEPTH,			
 			    SDL_SWSURFACE);
   #endif
+  #ifdef PSP
+  screen = SDL_SetVideoMode(480, 
+			    272, 
+			    16,			
+			    SDL_SWSURFACE);
+  SDL_Joystick *joystick = NULL;
+  SDL_JoystickEventState(SDL_ENABLE);
+  joystick = SDL_JoystickOpen(0);
+
+  #endif
+
+
 
   if (screen == NULL)
     {

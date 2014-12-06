@@ -18,6 +18,8 @@
 
 /* $Id: setup.h,v 1.41 2009-05-27 09:15:41 qbix79 Exp $ */
 
+#include <stdio.h>
+
 #ifndef DOSBOX_SETUP_H
 #define DOSBOX_SETUP_H
 
