@@ -32,7 +32,7 @@ int SDL_GUI::initVideo()
 #ifdef __SDL_AUDIO__
   //  if ( SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO|SDL_INIT_TIMER)
   //if (SDL_Init(SDL_INIT_EVERYTHING)
-  if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO|SDL_INIT_JOYSTICK)
+  if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO|SDL_INIT_JOYSTICK|SDL_INIT_TIMER)
        
        //|SDL_INIT_TIMER|SDL_INIT_AUDIO) 
        
@@ -278,6 +278,7 @@ int SDL_GUI::openTTFFont()
     }
 
   //Open the font
+  //ttf_font = TTF_OpenFont("umd0:/font.ttf", 8*SCREEN_MULT ); <= fix issue on PSP
   ttf_font = TTF_OpenFont("font.ttf", 8*SCREEN_MULT );
   
   //If there was an error in loading the font
