@@ -52,6 +52,6 @@ int AudioDriver::openAudio()
 
 int AudioDriver::closeAudio()
 {
-  //SDL_CloseAudio();
+  SDL_CloseAudio();
   //SDL_QuitSubSystem(SDL_INIT_AUDIO);
 }
