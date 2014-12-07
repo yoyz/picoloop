@@ -14,6 +14,8 @@ class AudioDriver
   int  openAudio();
   int  stopAudio();
   int  startAudio();
+  
+  int  getBufferFrame();
 
 
  public:

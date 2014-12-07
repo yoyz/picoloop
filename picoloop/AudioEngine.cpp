@@ -158,7 +158,9 @@ void AudioEngine::callback(void *unused, Uint8 *stream, int len)
   //Workaround a linux sdl 1.2 audio bug 
   //                   sdl seem to have a bug on this...
   #ifdef __SDL_AUDIO__
-  buffer_size=BUFFER_FRAME;
+  //buffer_size=BUFFER_FRAME;
+  buffer_size=AD.getBufferFrame();
+  //buffer_size=len;
   #endif
 
   //Should be the "Normal case" because we use ...,int len) provided by the caller
