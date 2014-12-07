@@ -7,13 +7,20 @@ AudioDriver::AudioDriver()
   sdlAudioSpecWanted   = (SDL_AudioSpec *) malloc(sizeof(SDL_AudioSpec));  
   sdlAudioSpecObtained = (SDL_AudioSpec *) malloc(sizeof(SDL_AudioSpec));
 
-  sdlAudioSpecWanted->freq = 48000;
+  //sdlAudioSpecWanted->freq = 48000;
   //sdlAudioSpecWanted->freq = 44100;
-  sdlAudioSpecWanted->format = AUDIO_S16;
+  sdlAudioSpecWanted->freq = DEFAULTFREQ;
+  sdlAudioSpecWanted->format = AUDIO_S16SYS;
   sdlAudioSpecWanted->channels = 2;    /* 1 = mono, 2 = stereo */
   sdlAudioSpecWanted->samples = BUFFER_FRAME;  /* Good low-latency value for callback */
   //sdlAudioSpecWanted->callback = fakesdlcallback;
   //sdlAudioSpecWanted->userdata = this;
+}
+
+int AudioDriver::getBufferFrame()
+{
+  //return sdlAudioSpecWanted->samples;
+  return sdlAudioSpecObtained->samples;
 }
 
 
