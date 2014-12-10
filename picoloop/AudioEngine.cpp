@@ -161,6 +161,10 @@ void AudioEngine::callback(void *unused, Uint8 *stream, int len)
   //buffer_size=BUFFER_FRAME;
   buffer_size=AD.getBufferFrame();
   //buffer_size=len;
+  #ifdef PSP
+  //buffer_size=len;
+  buffer_size=len;
+  #endif
   #endif
 
   //Should be the "Normal case" because we use ...,int len) provided by the caller
