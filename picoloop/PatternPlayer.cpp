@@ -10,8 +10,11 @@ using namespace std;
 #define REVS    0
 
 PSP_MODULE_INFO("PatternPlayer", PSP_MODULE_USER, VERS, REVS);
+//PSP_MODULE_INFO("TESTPRX", 0x1000, 1, 1);
 PSP_MAIN_THREAD_ATTR(PSP_THREAD_ATTR_USER);
-PSP_HEAP_SIZE_MAX();
+//PSP_HEAP_SIZE_MAX();
+//PSP_HEAP_SIZE_KB(16384);
+PSP_HEAP_SIZE_KB(-1024);
 #endif
 
 #include <stdio.h>
@@ -4616,6 +4619,10 @@ int seq()
   int          oldstep=0;
   int          i=0;
 
+  dirty_graphic=1;
+
+  printf("Now in PatternPlayer::seq()\n");
+
   // Initialize 
   for (t=0;t<TRACK_MAX;t++)
     {
@@ -4637,14 +4644,19 @@ int seq()
   printf("openAudio start streaming\n");
   //AE.startAudio();
   //AE.startAudioSdl();
+
+
+
   AE.startAudio();
+
   seq_update_by_step();  
   while (true)
     {
+
       cty=SEQ.getCurrentTrackY();
       ctx=SEQ.getCurrentTrackX();
 
-      handle_key();
+      //handle_key();
 
       // A/D, Note, VCO, BPM, more handling...
       // apply the modification done by the user on the gui
@@ -4652,7 +4664,7 @@ int seq()
 
       
       
-            
+
       // if user want to quit via handle_key
       if (quit)
 	{
@@ -4780,7 +4792,8 @@ void wtg()
 
 
 
-int main(int argc,char **argv)
+//int main(int argc,char **argv)
+int main()
 {
   int i;
 
@@ -4817,6 +4830,7 @@ int main(int argc,char **argv)
   SG.openBMPFont();
   if (SG.openTTFFont()==false) { printf("ttf font error\n"); exit(1); }
   SG.loadingScreen();
+
   //sleep(10);
   //AE.setupSequencerCallback(printme);
   refresh_bpm();
@@ -4826,7 +4840,7 @@ int main(int argc,char **argv)
   //display_board();
 
   printf("[openAudio output]\n");
-
+  //exit(0);
 
   //AE.openAudioSdl();
   

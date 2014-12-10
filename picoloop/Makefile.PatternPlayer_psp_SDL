@@ -1,13 +1,18 @@
-TARGET		= hello_sdl
-OBJS		= psp_callback.o  SYSTEMLINUX.o Machine.o PatternSequencer.o Effect.o WaveTable.o AudioDriverSDL.o EffectDelay.o AMSynthLowPassFilter.o InputManager.o Generator.o PitchBend.o NoteFreq.o WaveTableManager.o Sequencer.o Oscillator.o OneOscillator.o SongSequencer.o Filter.o Synth.o Biquad.o Track.o Pattern.o MonoMixer.o SDL_GUI.o AudioEngine.o PatternElement.o AudioMixer.o Instrument.o PatternReader.o Wave.o Machine/Picodrum/PicodrumADSR.o  Machine/Picodrum/PicodrumMachine.o  Machine/Picodrum/PicodrumVCO.o Machine/Picosynth/PicosynthADSR.o  Machine/Picosynth/PicosynthMachine.o  Machine/Picosynth/PicosynthVCO.o Machine/Dbopl/DboplMachine.o  Machine/Dbopl/dbopl.o  Machine/Dbopl/hiopl.o   PatternPlayer.o
+TARGET		= PatternPlayer
+EXTRA_TARGETS	= EBOOT.PBP
+#EXTRA_TARGETS	= PatternPlayer.prx
+#PSP_EBOOT_TITLE= hello_sdl
+
+OBJS		= PatternPlayer.o psp_callback.o SYSTEMLINUX.o Machine.o PatternSequencer.o Effect.o WaveTable.o AudioDriverSDL.o EffectDelay.o AMSynthLowPassFilter.o InputManager.o Generator.o PitchBend.o NoteFreq.o WaveTableManager.o Sequencer.o Oscillator.o OneOscillator.o SongSequencer.o Filter.o Synth.o Biquad.o Track.o Pattern.o MonoMixer.o SDL_GUI.o AudioEngine.o PatternElement.o AudioMixer.o Instrument.o PatternReader.o Wave.o Machine/Picodrum/PicodrumADSR.o  Machine/Picodrum/PicodrumMachine.o  Machine/Picodrum/PicodrumVCO.o Machine/Picosynth/PicosynthADSR.o  Machine/Picosynth/PicosynthMachine.o  Machine/Picosynth/PicosynthVCO.o Machine/Dbopl/DboplMachine.o  Machine/Dbopl/dbopl.o  Machine/Dbopl/hiopl.o
+BUILD_PRX=1
 
 INCDIR		=
-CFLAGS		= -G0 -Wall -O2  -I${PSPDEV}/psp/include/ -L${PSPDEV}/psp/lib -fpermissive -D__SDL_AUDIO__ -DPSP
+CFLAGS		= -O2  -G0 -Wall  -I${PSPDEV}/psp/include/ -L${PSPDEV}/psp/lib -fpermissive -D__SDL_AUDIO__ -DPSP
 CXXFLAGS	= $(CFLAGS) -fno-exceptions -fno-rtti
-ASFLAGS	= $(CFLAGS)
+ASFLAGS	        = $(CFLAGS)
 
-LIBDIR		=
-LDFLAGS	=
+#LIBDIR		=
+#LDFLAGS	=
 #LIBS		= -lm -lSDL -lSDLmain
 #LIBS		= -lm -lSDL -lSDLmain  -lGL -lGLU -lglut -lpspvfpu -lm -lpspdebug -lpspgu -lpspctrl -lpspge -lpspdisplay -lpsphprm -lpspsdk -lpsprtc -lpspaudio -lc -lpspuser -lpsputility -lpspkernel -lpspnet_inet -ljpeg -lpspirkeyb -lpsppower
 
@@ -17,10 +22,11 @@ LDFLAGS	=
 
 LIBS             = -lGLU -lGL  -ljpeg -lstdc++ -lm -lc -lpspvfpu  
 LIBS            += ${shell ${PSPDEV}/psp/bin/sdl-config --libs } -lSDL_ttf -lfreetype -lm
-BUILD_PRX = 1 
 
-EXTRA_TARGETS	= EBOOT.PBP
-PSP_EBOOT_TITLE= hello_sdl
+
+#LINK.c = psp-g++
+
+
 
 PSPSDK	= $(shell psp-config --pspsdk-path)
 include $(PSPSDK)/lib/build.mak
