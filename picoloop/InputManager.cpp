@@ -132,6 +132,9 @@ void InputManager::clearLastKeyEvent()
 int InputManager::handleKey()
 {
   int keypressrelease=0;
+  int key=0;
+  int joy=0;
+  //int keypressrelease=0;
   SDL_Event event;
   if (SDL_PollEvent(&event))
     {     
@@ -146,6 +149,7 @@ int InputManager::handleKey()
 	  
 	case SDL_KEYUP:
 	  keypressrelease=1;
+	  key=1;
 	  last_key=event.key.keysym.sym;
 	  last_event=event.type;
 	  //last_event=2;
@@ -155,11 +159,33 @@ int InputManager::handleKey()
 	  
 	case SDL_KEYDOWN:
 	  keypressrelease=1;
+	  key=1;
 	  last_key=event.key.keysym.sym;
 	  last_event=event.type;
 	  //last_event=3;
 	  this->updateState(event.key.keysym.sym,true);
 	  break;
+
+	case SDL_JOYBUTTONUP:
+	  keypressrelease=1;
+	  joy=1;
+	  last_key=event.jbutton.button;
+	  last_event=event.type;
+	  //last_event=3;
+	  this->updateState(event.jbutton.button,false);
+	  break;	 
+
+	case SDL_JOYBUTTONDOWN:
+	  keypressrelease=1;
+	  joy=1;
+	  last_key=event.jbutton.button;
+	  last_event=event.type;
+	  //last_event=3;
+	  this->updateState(event.jbutton.button,true);
+	  break;
+
+
+
 	  
 	  //switch (event.key.keysym.sym)
 	  //	    {
@@ -176,7 +202,11 @@ int InputManager::handleKey()
 	  // break;
 	  
 	}
-      printf("new event:%d %s\n",event.type,SDL_GetKeyName(event.key.keysym.sym));
+      if (key)
+	printf("key new event:%d %d %s\n",event.type,event.key.keysym.sym,SDL_GetKeyName(event.key.keysym.sym));
+      if (joy)
+	printf("joy new event:%d %d %s\n",event.type,event.jbutton.button,SDL_GetKeyName(event.jbutton.button));
+
     }
   if (keypressrelease==0) //need to update the state to increment keypress
     this->updateState(MAX_KEY,true); 

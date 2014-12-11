@@ -7,7 +7,7 @@ OBJS		= PatternPlayer.o psp_callback.o SYSTEMLINUX.o Machine.o PatternSequencer.
 BUILD_PRX=1
 
 INCDIR		=
-CFLAGS		= -O2  -G0 -Wall  -I${PSPDEV}/psp/include/ -L${PSPDEV}/psp/lib -fpermissive -D__SDL_AUDIO__ -DPSP
+CFLAGS		= -O2  -G0 -Wall  -I${PSPDEV}/psp/include/ -L${PSPDEV}/psp/lib -fpermissive -D__SDL_AUDIO__ -DPSP -g -ggdb
 CXXFLAGS	= $(CFLAGS) -fno-exceptions -fno-rtti
 ASFLAGS	        = $(CFLAGS)
 
