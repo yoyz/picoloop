@@ -18,7 +18,7 @@
 //#define SCREEN_WIDTH	320
 //#define SCREEN_HEIGHT	240
 //#define SCREEN_DEPTH	16
-#define SCREEN_MULT     1
+
 //#define WAVETABLE_SIZE  1024*16
 #define WAVETABLE_SIZE  1024*16
 //#define WAVETABLE_SIZE  1024
@@ -48,6 +48,10 @@
 
 
 #ifdef OPENDINGUX
+#define SCREEN_WIDTH	320
+#define SCREEN_HEIGHT	240
+#define SCREEN_DEPTH	16
+#define SCREEN_MULT     1
 // BEGIN DINGOO A320 SDL
 #define BUTTON_B            SDLK_LALT
 #define BUTTON_A            SDLK_LCTRL
@@ -65,6 +69,10 @@
 #endif
 
 #ifdef LINUX_DESKTOP
+#define SCREEN_WIDTH	320
+#define SCREEN_HEIGHT	240
+#define SCREEN_DEPTH	16
+#define SCREEN_MULT     2
 // BEGIN DINGOO A320 SDL use by linux too
 #define BUTTON_B            SDLK_LALT
 #define BUTTON_A            SDLK_LCTRL
@@ -87,7 +95,7 @@
 
 
 #ifdef PSP
-
+#define SCREEN_MULT     1
 #define SCREEN_WIDTH	480
 #define SCREEN_HEIGHT	272
 #define SCREEN_DEPTH	16
@@ -127,7 +135,10 @@
 
 
 #ifdef GP2X
-
+#define SCREEN_WIDTH	320
+#define SCREEN_HEIGHT	240
+#define SCREEN_DEPTH	16
+#define SCREEN_MULT     1
 #define GP2X_BUTTON_UP              0
 #define GP2X_BUTTON_DOWN            4
 #define GP2X_BUTTON_LEFT            2

@@ -62,7 +62,7 @@ SOURCES=PatternPlayer.cpp			\
 
 
 OBJECTS=$(SOURCES:.cpp=.o)
-EXECUTABLE=PatternPlayer.exe
+EXECUTABLE=PatternPlayer_Rtaudio.exe
 
 all: $(SOURCES) $(EXECUTABLE)
 
