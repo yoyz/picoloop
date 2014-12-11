@@ -86,7 +86,8 @@ int SDL_GUI::initVideo()
   screen = SDL_SetVideoMode(480,
 			    272,
 			    16,
-			    SDL_SWSURFACE);
+			    SDL_HWSURFACE);
+			    //SDL_SWSURFACE);
   SDL_Joystick *joystick = NULL;
   SDL_JoystickEventState(SDL_ENABLE);
   joystick = SDL_JoystickOpen(0);
@@ -106,7 +107,9 @@ int SDL_GUI::initVideo()
 
 void SDL_GUI::refresh()
 {
+  //SDL_LockSurface(screen);
   SDL_Flip(screen);
+  //SDL_UnlockSurface(screen);
 }
 
 

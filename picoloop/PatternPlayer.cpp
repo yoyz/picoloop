@@ -14,7 +14,9 @@ PSP_MODULE_INFO("PatternPlayer", PSP_MODULE_USER, VERS, REVS);
 PSP_MAIN_THREAD_ATTR(PSP_THREAD_ATTR_USER);
 //PSP_HEAP_SIZE_MAX();
 //PSP_HEAP_SIZE_KB(16384);
-PSP_HEAP_SIZE_KB(-1024);
+//PSP_HEAP_SIZE_KB(-1024);
+//PSP_HEAP_SIZE_KB(20480) ;
+PSP_HEAP_SIZE_KB(-1024) ;
 #endif
 
 #include <stdio.h>
@@ -1538,7 +1540,7 @@ void sub_handle_invert_trig()
   lastKey=IE.lastKey();
 
   if (lastKey   == BUTTON_A && 
-      lastEvent == SDL_KEYDOWN)
+      lastEvent == KEYPRESSED)
     {
       invert_trig=1;
       printf("key lalt\n");      
@@ -1562,7 +1564,7 @@ void handle_key_menu()
 
   // Enter and cycle thru menu pages
   if (lastKey   ==  BUTTON_SELECT && 
-      lastEvent ==  SDL_KEYUP)
+      lastEvent ==  KEYRELEASED)
     {
       switch (menu)
 	{
@@ -1675,7 +1677,7 @@ void handle_key_menu()
   // Check this ??? do not think it works
   //leave menu 
   if (lastKey      ==  BUTTON_B       && 
-      lastEvent    ==  SDL_KEYUP      &&
+      lastEvent    ==  KEYRELEASED      &&
       (menu        ==  MENU_ON_PAGE1  ||
        menu        ==  MENU_ON_PAGE2))
     menu=MENU_OFF;
@@ -1992,7 +1994,7 @@ void handle_key_amp_env()
       menu_ad      == MENU_AD_TRIGTIME_AMP)
     {
       if (lastKey   == BUTTON_A && 
-	  lastEvent == SDL_KEYDOWN)
+	  lastEvent == KEYPRESSED)
 	{
 	  invert_trig=1;
 	  printf("key lalt\n");      
@@ -2066,7 +2068,7 @@ void handle_key_note()
       sub_handle_invert_trig();
       /*
       if (lastKey   == BUTTON_A && 
-	  lastEvent ==  SDL_KEYUP)
+	  lastEvent ==  KEYRELEASED)
 	{
 	  invert_trig=1;
 	  printf("key lalt\n");      
@@ -2117,7 +2119,7 @@ void handle_key_note()
 
   // change note from box to value e.g C3 D4...
   if (lastKey     ==  BUTTON_START  && 
-      lastEvent   ==  SDL_KEYUP     && 
+      lastEvent   ==  KEYRELEASED     && 
       menu_cursor ==  GLOBALMENU_NOTE)
     {
       if      (menu_note==0)        { menu_note=1;  }
@@ -2902,7 +2904,7 @@ void handle_key_load_save()
 
       // Switch between load/save and song
       if (menu        == MENU_OFF    && 
-	  lastEvent   == SDL_KEYUP   &&
+	  lastEvent   == KEYRELEASED   &&
 	  lastKey     == BUTTON_START
 	  //keyState[BUTTON_START]
 	  )
@@ -3100,7 +3102,7 @@ void handle_key_bank()
 
       // Switch between load/save and song
       if (menu        == MENU_OFF    && 
-	  lastEvent   == SDL_KEYUP   &&
+	  lastEvent   == KEYRELEASED   &&
 	  lastKey     == BUTTON_START
 	  //keyState[BUTTON_START]
 	  )
@@ -3313,7 +3315,7 @@ void handle_key_submenu_ad()
 
   // change GLOBALMENU_AD SUBMENU
   if (lastKey     ==  BUTTON_START  && 
-      lastEvent   ==  SDL_KEYUP     && 
+      lastEvent   ==  KEYRELEASED     && 
       menu_cursor ==  GLOBALMENU_AD)
     {
       if (menu_ad_dirty_keyboard==0)
@@ -3348,7 +3350,7 @@ void handle_key_submenu_vco()
 
   // change GLOBALMENU_VCO SUBMENU
   if (lastKey     ==  BUTTON_START  && 
-      lastEvent   ==  SDL_KEYUP     && 
+      lastEvent   ==  KEYRELEASED     && 
       menu_cursor ==  GLOBALMENU_VCO)
     {
       if (menu_ad_dirty_keyboard==0)
@@ -3378,7 +3380,7 @@ void handle_key_submenu_lfo()
 
   // change GLOBALMENU_VCO SUBMENU
   if (lastKey     ==  BUTTON_START  && 
-      lastEvent   ==  SDL_KEYUP     && 
+      lastEvent   ==  KEYRELEASED     && 
       menu_cursor ==  GLOBALMENU_LFO)
     {
       if (menu_ad_dirty_keyboard==0)
@@ -3411,7 +3413,7 @@ void handle_key_submenu_fltr()
 
   // change GLOBALMENU_FLTR SUBMENU
   if (lastKey     ==  BUTTON_START  && 
-      lastEvent   ==  SDL_KEYUP     && 
+      lastEvent   ==  KEYRELEASED     && 
       menu_cursor ==  GLOBALMENU_FLTR)
     {
       if (menu_ad_dirty_keyboard==0)
@@ -3449,7 +3451,7 @@ void handle_key()
     //exit(0);
   
   //if (start_key==2) 
-  //printf("%d %d %d\n",lastKey,lastEvent,lastKey==&& BUTTON_START && lastEvent==SDL_KEYUP);
+  //printf("%d %d %d\n",lastKey,lastEvent,lastKey==&& BUTTON_START && lastEvent==KEYRELEASED);
   //  printf("lastevent=%d\n",lastEvent);
 
 
@@ -4642,21 +4644,24 @@ int seq()
     seq_update_track(i);
 
   printf("openAudio start streaming\n");
-  //AE.startAudio();
+  AE.startAudio();
   //AE.startAudioSdl();
 
 
 
-  AE.startAudio();
+  //AE.startAudio();
 
   seq_update_by_step();  
   while (true)
     {
-
+      dirty_graphic=1;
+      //display_board();
+      seq_update_by_step_next=1;
       cty=SEQ.getCurrentTrackY();
       ctx=SEQ.getCurrentTrackX();
 
-      //handle_key();
+      handle_key();
+
 
       // A/D, Note, VCO, BPM, more handling...
       // apply the modification done by the user on the gui
@@ -4673,8 +4678,8 @@ int seq()
 	}
       
       //display graphic if something has change : handle_key 
-      if (dirty_graphic)
-	display_board();
+      //if (dirty_graphic)
+      //display_board();
 
       nbcb=AE.getNbCallback();
 
@@ -4688,17 +4693,25 @@ int seq()
       //if (nbcb-last_nbcb_ch_step>nb_cb_ch_step)
       if (seq_update_by_step_next)
 	{	 
+	  //sceKernelDcacheWritebackAll();
 
 	  if (dirty_graphic)
-	    display_board();
+	    {
+	      //SDL_LockAudio();
+	      //sceKernelDcacheWritebackAll(); 
+	      //display_board();
+	      //SDL_UnlockAudio();
+	      //sceKernelDcacheWritebackAll();
+	    }
 	  //printf("[cursor:%d]\n",cursor);
 	  
 	  //printf("loop\n");    
 	  last_nbcb_ch_step=nbcb;
 	  //**** step++;
 	  //step++;
-
+	  SDL_LockAudio();
 	  seq_update_by_step();
+	  SDL_UnlockAudio();
 	  seq_update_by_step_next=0;
 
 	}
@@ -4796,7 +4809,7 @@ void wtg()
 int main()
 {
   int i;
-
+  int running = isRunning();
 #ifdef PSP
   setupExitCallback();
 #endif
