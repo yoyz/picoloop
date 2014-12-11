@@ -4880,7 +4880,7 @@ int main()
 
   printf("[closeAudio output]\n");
   //AE.stopAudioSdl();
-
+  AE.stopAudio();
   AE.closeAudio();
   
   //AE.closeAudioSdl();
@@ -4890,4 +4890,5 @@ int main()
   //sleep(10);
   //PE.print();
   printf("Exiting PatternPlayer\n");
+  sceKernelExitGame();	
 }
