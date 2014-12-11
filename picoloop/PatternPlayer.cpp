@@ -155,6 +155,7 @@ SDL_GUI        SG;          // used to  open a gui and display stuff
 //Wave           cowbell;     // used ?
 //Instrument     inst;        // used ?
 
+int running;
 
 int save=false;
 int load=false;
@@ -4671,10 +4672,12 @@ int seq()
       seq_update_multiple_time_by_step();
 
       
-      
-
+#ifdef PSP
+      running = isRunning();
+#endif
       // if user want to quit via handle_key
-      if (quit)
+      if (quit ||
+	  running<=0)
 	{
 	  printf("user want to quit\n");
 	  return(0);
@@ -4824,13 +4827,15 @@ void wtg()
 
 
 
-//int main(int argc,char **argv)
-int main()
+
+int main(int argc,char **argv)
 {
   int i;
-  int running = isRunning();
 #ifdef PSP
+  running = isRunning();
   setupExitCallback();
+#else
+  running=1; // if we are not on psp, running should be 1  
 #endif
 
 
@@ -4890,5 +4895,9 @@ int main()
   //sleep(10);
   //PE.print();
   printf("Exiting PatternPlayer\n");
+
+#ifdef PSP
   sceKernelExitGame();	
+#endif
 }
+
