@@ -1274,10 +1274,10 @@ void display_board_fx()
 void display_board()
 {
   int  i;
-  char str_up[8];
-  char str_down[24];
-  char str_divider[8];
-  char str_submenu[16];
+  char str_up[64];
+  char str_down[64];
+  char str_divider[64];
+  char str_submenu[64];
 
   int  right_x_display_offset=      200*SCREEN_MULT;
   int  right_y_display_offset_line1=20*SCREEN_MULT;
@@ -4700,9 +4700,11 @@ int seq()
 
 	  if (dirty_graphic)
 	    {
-	      //SDL_LockAudio();
+	      SDL_LockAudio();
 	      //sceKernelDcacheWritebackAll(); 
-	      //display_board();
+	      display_board();
+	      SDL_UnlockAudio();
+	      /*
 	      if (menu_cursor==GLOBALMENU_AD)   display_board_amp_env();
 	      if (menu_cursor==GLOBALMENU_NOTE) display_board_note();
 	      if (menu_cursor==GLOBALMENU_OSC)  display_board_osc();
@@ -4716,6 +4718,7 @@ int seq()
 	      if (menu_cursor==GLOBALMENU_MAC)  display_board_mac();
 	      if (menu_cursor==GLOBALMENU_FX)   display_board_fx();
 	      if (menu_cursor==GLOBALMENU_BPM)  display_board_bpm();
+	      */
 	      //SDL_UnlockAudio();
 	      //sceKernelDcacheWritebackAll();
 	    }
