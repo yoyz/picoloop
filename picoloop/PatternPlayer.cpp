@@ -4654,8 +4654,11 @@ int seq()
   seq_update_by_step();  
   while (true)
     {
-      dirty_graphic=1;
+      //dirty_graphic=1;
+      //SDL_LockAudio();
       //display_board();
+      
+      //SDL_UnlockAudio();
       seq_update_by_step_next=1;
       cty=SEQ.getCurrentTrackY();
       ctx=SEQ.getCurrentTrackX();
@@ -4700,6 +4703,19 @@ int seq()
 	      //SDL_LockAudio();
 	      //sceKernelDcacheWritebackAll(); 
 	      //display_board();
+	      if (menu_cursor==GLOBALMENU_AD)   display_board_amp_env();
+	      if (menu_cursor==GLOBALMENU_NOTE) display_board_note();
+	      if (menu_cursor==GLOBALMENU_OSC)  display_board_osc();
+	      if (menu_cursor==GLOBALMENU_VCO)  display_board_vco();
+	      if (menu_cursor==GLOBALMENU_LFO)  display_board_lfo();
+	      if (menu_cursor==GLOBALMENU_FLTR) display_board_fltr();
+	      
+	      if (menu_cursor==GLOBALMENU_LS)   display_board_load_save();
+	      if (menu_cursor==GLOBALMENU_BANK) display_board_bank();
+	      if (menu_cursor==GLOBALMENU_PSH)  display_board_psh();
+	      if (menu_cursor==GLOBALMENU_MAC)  display_board_mac();
+	      if (menu_cursor==GLOBALMENU_FX)   display_board_fx();
+	      if (menu_cursor==GLOBALMENU_BPM)  display_board_bpm();
 	      //SDL_UnlockAudio();
 	      //sceKernelDcacheWritebackAll();
 	    }
