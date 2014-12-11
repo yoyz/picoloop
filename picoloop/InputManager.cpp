@@ -1,5 +1,5 @@
 #include "InputManager.h"
-
+#include "Master.h"
 InputManager::InputManager() : key_state(new  bool[MAX_KEY]),
 			       key_repeat(new int[MAX_KEY])
 {
@@ -84,10 +84,12 @@ int InputManager::updateState(int symbol,bool state)
 
 int InputManager::shouldExit()
 {
-  if (key_state[SDLK_ESCAPE] && key_state[SDLK_RETURN])
+  //if (key_state[SDLK_ESCAPE] && key_state[SDLK_RETURN])
+  if (key_state[BUTTON_SELECT] && key_state[BUTTON_START])
     {
       this->printState();
-      printf("SDLK_ESCAPE] + SDLK_RETURN\n");
+      printf("[SELECT] + [START] => END \n");      
+      quit=1;
       return(1);
     }
   if (quit)

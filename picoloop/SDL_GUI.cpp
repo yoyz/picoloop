@@ -86,7 +86,7 @@ int SDL_GUI::initVideo()
   screen = SDL_SetVideoMode(480,
 			    272,
 			    16,
-			    SDL_HWSURFACE);
+			    SDL_HWSURFACE|SDL_DOUBLEBUF);
 			    //SDL_SWSURFACE);
   SDL_Joystick *joystick = NULL;
   SDL_JoystickEventState(SDL_ENABLE);
