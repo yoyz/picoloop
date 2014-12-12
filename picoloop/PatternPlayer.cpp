@@ -761,6 +761,7 @@ void display_board_load_save()
 	   x++)
 	for (y=0;y<TRACK_MAX;y++)
 	  {
+	    //printf("!!!!!!!!!!!!!!!!!!!!!!!x:%d y:%d\n",x,y);
 	    if (PR.PatternDataExist(x,y))
 	      SG.middleBoxNumberUp(x%16,y,NOTE_COLOR);
 	    else
@@ -3121,11 +3122,14 @@ void handle_key_bank()
 
 
       if (menu                 == MENU_OFF    && 
-	  keyRepeat[BUTTON_B]%KEY_REPEAT_INTERVAL_LONG==0)
+	  keyState[BUTTON_B])
+	//keyRepeat[BUTTON_B]%KEY_REPEAT_INTERVAL_LONG==0)
 	{
 	  if (keyState[BUTTON_DOWN])
+	    if (keyRepeat[BUTTON_DOWN]==1  || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONG==0)
 	    bank_inc=-1;
-	  if (keyState[BUTTON_UP])	
+	  if (keyState[BUTTON_UP])
+	    if (keyRepeat[BUTTON_UP]==1    || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONG==0)
 	    bank_inc=1;
 	}
 
