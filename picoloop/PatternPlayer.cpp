@@ -3140,150 +3140,10 @@ void handle_key_bank()
 	    bank_inc=-1;
 	  if (keyState[BUTTON_UP])
 	    if (keyRepeat[BUTTON_UP]==1    || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONG==0)
-	    bank_inc=1;
+	      bank_inc=1;
 	}
-
-
-      if (menu                 == MENU_OFF && 
-	  loadsave_cursor_mode == CURSOR_LOADSAVE &&
-	  keyState[BUTTON_B])
-	{
-	  if (keyState[BUTTON_DOWN])
-	    save=true;
-	  if (keyState[BUTTON_UP])	
-	    load=true;
-	}
-
       
-      // GLOBALMENU_LS
-      // in the load/save view 
-      // move loasavecursor position 
-      // Save/load bund of Pattern
-      
-      if (menu                 == MENU_OFF        && 
-	  loadsave_cursor_mode == CURSOR_LOADSAVE &&
-	  keyState[BUTTON_A] )
-	{
-	  if (keyState[BUTTON_DOWN])
-	    saveall=true;
-	  if (keyState[BUTTON_UP])	
-	    loadall=true;
-	}
-
-
-      if (menu                 == MENU_OFF        && 
-	  loadsave_cursor_mode == CURSOR_SONG     &&
-	  keyState[BUTTON_A] )
-	{
-	  if (keyState[BUTTON_DOWN])
-	    pattern_song_loop=1;
-	    //saveall=true;
-	  if (keyState[BUTTON_UP])	
-	    pattern_song_reload=1;
-	}
-
-      
-      // GLOBALMENU_LS
-      // in the load/save view 
-      // move load/save cursor position 
-      if (menu                 == MENU_OFF        && 	  
-	  loadsave_cursor_mode == CURSOR_LOADSAVE &&
-	  (!(
-	     keyState[BUTTON_B] ||
-	     keyState[BUTTON_A])))
-	{
-	  if (keyState[BUTTON_LEFT])
-	    if (keyRepeat[BUTTON_LEFT]==1  || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_LONG==0)  
-	      { loadsave_cursor_x--;  dirty_graphic=1;}
-	  
-	  if (keyState[BUTTON_RIGHT])
-	    if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_LONG==0) 
-	      { loadsave_cursor_x++;  dirty_graphic=1;}
-	  
-	  if (keyState[BUTTON_UP])
-	    if (keyRepeat[BUTTON_UP]==1    || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONG==0)    
-	      { loadsave_cursor_y--;  dirty_graphic=1;}
-	  
-	  if (keyState[BUTTON_DOWN])
-	    if (keyRepeat[BUTTON_DOWN]==1  || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONG==0)  
-	      { loadsave_cursor_y++;  dirty_graphic=1;}
-	  
-	  if (loadsave_cursor_x>MAX_PATTERN_BY_PROJECT-1)        { loadsave_cursor_x=0;                           }
-	  if (loadsave_cursor_x<0)                               { loadsave_cursor_x=MAX_PATTERN_BY_PROJECT-1;    }
-
-	  if (loadsave_cursor_y>TRACK_MAX-1)                     { loadsave_cursor_y=0;                           }
-	  if (loadsave_cursor_y<0)                               { loadsave_cursor_y=TRACK_MAX-1;                 }  
-	  
-	  SEQ.setCurrentTrackY(loadsave_cursor_y);
-	}
-
-      if (menu                 == MENU_OFF     && 	  
-	  loadsave_cursor_mode == CURSOR_SONG  &&
-	  (!(
-	     keyState[BUTTON_B] ||
-	     keyState[BUTTON_A])))
-	{
-	  if (keyState[BUTTON_LEFT])
-	    if (keyRepeat[BUTTON_LEFT]==1  || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_LONG==0)  
-	      { song_cursor_x--;  dirty_graphic=1;}
-	  
-	  if (keyState[BUTTON_RIGHT])
-	    if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_LONG==0) 
-	      { song_cursor_x++;  dirty_graphic=1;}
-	  
-	  if (keyState[BUTTON_UP])
-	    if (keyRepeat[BUTTON_UP]==1    || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONG==0)    
-	      { song_cursor_y--;  dirty_graphic=1;}
-	  
-	  if (keyState[BUTTON_DOWN])
-	    if (keyRepeat[BUTTON_DOWN]==1  || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONG==0)  
-	      { song_cursor_y++;  dirty_graphic=1;}
-	  
-	  if (song_cursor_x>MAX_PATTERN_BY_PROJECT-1)            { song_cursor_x=0;                           }
-	  if (song_cursor_x<0)                                   { song_cursor_x=MAX_PATTERN_BY_PROJECT-1;    }
-
-	  if (song_cursor_y>TRACK_MAX-1)                         { song_cursor_y=0;                           }
-	  if (song_cursor_y<0)                                   { song_cursor_y=TRACK_MAX-1;                 }  
-	  
-	  //SEQ.setCurrentTrackY(loadsave_cursor_y);
-	}
-
-
-      if (menu                 == MENU_OFF     && 	  
-	  loadsave_cursor_mode == CURSOR_SONG  &&
-	  (
-	   keyState[BUTTON_B]
-	   ))
-	{
-	  /*
-	  if (keyState[BUTTON_LEFT])
-	    if (keyRepeat[BUTTON_LEFT]==1  || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_LONG==0)  
-	      { song_cursor_x--;  dirty_graphic=1;}
-	  */
-	  if (keyState[BUTTON_RIGHT])
-	    if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_LONG==0) 
-	      { song_cursor_x++;  dirty_graphic=1; SEQ.getSongSequencer().setPatternNumber(song_cursor_x,song_cursor_y,SEQ.getSongSequencer().getPatternNumber(song_cursor_x-1,song_cursor_y)); }
-	  /*
-	  if (keyState[BUTTON_UP])
-	    if (keyRepeat[BUTTON_UP]==1    || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONG==0)    
-	      { song_cursor_y--;  dirty_graphic=1;}
-	  
-	  if (keyState[BUTTON_DOWN])
-	    if (keyRepeat[BUTTON_DOWN]==1  || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONG==0)  
-	      { song_cursor_y++;  dirty_graphic=1;}
-	  */
-	  if (song_cursor_x>MAX_PATTERN_BY_PROJECT-1)            { song_cursor_x=0;                           }
-	  if (song_cursor_x<0)                                   { song_cursor_x=MAX_PATTERN_BY_PROJECT-1;    }
-
-	  if (song_cursor_y>TRACK_MAX-1)                         { song_cursor_y=0;                           }
-	  if (song_cursor_y<0)                                   { song_cursor_y=TRACK_MAX-1;                 }  
-	  
-	  //SEQ.setCurrentTrackY(loadsave_cursor_y);
-	}
-
-
     }
-
 }
 
 
@@ -3497,7 +3357,7 @@ void handle_key()
   if (menu_cursor==GLOBALMENU_BPM)  handle_key_bpm();
   
  
-  int delay=1;
+  int delay=5;
   //printf("sleeping %dms\n",delay);
   SDL_Delay(delay);  
 }
