@@ -16,7 +16,8 @@ PSP_MAIN_THREAD_ATTR(PSP_THREAD_ATTR_USER);
 //PSP_HEAP_SIZE_KB(16384);
 //PSP_HEAP_SIZE_KB(-1024);
 //PSP_HEAP_SIZE_KB(20480) ;
-PSP_HEAP_SIZE_KB(-1024) ;
+//PSP_HEAP_SIZE_KB(-1024) ;
+PSP_HEAP_SIZE_KB(-4096) ;
 #endif
 
 #include <stdio.h>
@@ -46,11 +47,6 @@ PSP_HEAP_SIZE_KB(-1024) ;
 #define KEY_REPEAT_INTERVAL 400
 
 
-#define KEY_REPEAT_INTERVAL_SMALLEST  4
-#define KEY_REPEAT_INTERVAL_SMALL     8
-#define KEY_REPEAT_INTERVAL_MIDDLE    32
-#define KEY_REPEAT_INTERVAL_LONG      64
-#define KEY_REPEAT_INTERVAL_LONGEST   128
 
 #define DISABLEDBOX_COLOR   0x0AF0FE
 #define BOX_COLOR           0xAECD15
@@ -1558,6 +1554,9 @@ void handle_key_menu()
   int    lastEvent;
   int    lastKey;
 
+  int last_menu;
+  int last_menu_cursor;
+
   keyState=IE.keyState();
   keyRepeat=IE.keyRepeat();
   lastEvent=IE.lastEvent();
@@ -1568,8 +1567,12 @@ void handle_key_menu()
   if (lastKey   ==  BUTTON_SELECT && 
       lastEvent ==  KEYRELEASED)
     {
+      last_menu        = menu;
+      last_menu_cursor = menu_cursor;
+
       switch (menu)
 	{
+
 	case MENU_OFF:      
 	  if (menu_cursor<6) 
 	    menu=MENU_ON_PAGE1;
@@ -1599,7 +1602,13 @@ void handle_key_menu()
 	}
 
       //PR.saveSong(SEQ.getSongSequencer().getSongVector());
-      PR.saveSong(SEQ.getSongSequencer());
+
+
+      //We exit the LS Menu so we had to save the song
+      if (last_menu        == MENU_OFF &&
+	  menu             != MENU_OFF &&
+	  last_menu_cursor == GLOBALMENU_LS)
+	PR.saveSong(SEQ.getSongSequencer());
 
       dirty_graphic=1;
       IE.clearLastKeyEvent();
@@ -2691,22 +2700,22 @@ void handle_key_fltr()
 
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_B])
 	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>128) 
-	  if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_SMALL==1 )  
+	  if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST )  
 	  { resonance=-1;   dirty_graphic=1; }
       
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>128)
-	  if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_SMALL==1 )  
+	  if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST )  
 	  { resonance=1; 	  dirty_graphic=1; }
       
       if (keyState[BUTTON_UP]    && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>128) 
-	  if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALL==1 ) 
+	  if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST ) 
 	  { cutoff=1;  	  dirty_graphic=1; }
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>128 ) 
-	  if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALL==1 ) 
+	  if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST ) 
 	  { cutoff=-1; 	  dirty_graphic=1; }
     }  
 
@@ -2719,22 +2728,22 @@ void handle_key_fltr()
     {
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A])
 	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>128) 
-	  if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_SMALL==1 )  
+	  if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST )  
 	  { resonance_all=-1;   dirty_graphic=1; }
       
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>128)
-	  if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_SMALL==1 )  
+	  if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST )  
 	  { resonance_all=1; 	  dirty_graphic=1; }
       
       if (keyState[BUTTON_UP]    && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>128) 
-	  if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALL==1 ) 
+	  if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST ) 
 	  { cutoff_all=1;  	  dirty_graphic=1; }
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>128 ) 
-	  if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALL==1 ) 
+	  if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST ) 
 	  { cutoff_all=-1; 	  dirty_graphic=1; }
     }  
 
@@ -2751,6 +2760,7 @@ void handle_key_fltr()
 	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>128) 
 	  if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_SMALL==1 )  
 	  { filter_algo=-1;   dirty_graphic=1; }
+
             if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>128)
 	  if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_SMALL==1 )  
