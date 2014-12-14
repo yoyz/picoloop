@@ -1525,6 +1525,11 @@ void display_board()
   if (menu_cursor==GLOBALMENU_FX)   display_board_fx();
   if (menu_cursor==GLOBALMENU_BPM)  display_board_bpm();
 
+
+}
+
+void display_refresh()
+{
   SG.refresh();
 }
 
@@ -2699,23 +2704,19 @@ void handle_key_fltr()
       sub_handle_invert_trig();
 
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_B])
-	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>128) 
-	  if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST )  
+	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST )  
 	  { resonance=-1;   dirty_graphic=1; }
       
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>128)
-	  if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST )  
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST )  
 	  { resonance=1; 	  dirty_graphic=1; }
       
       if (keyState[BUTTON_UP]    && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>128) 
-	  if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST ) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST ) 
 	  { cutoff=1;  	  dirty_graphic=1; }
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>128 ) 
-	  if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST ) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST ) 
 	  { cutoff=-1; 	  dirty_graphic=1; }
     }  
 
@@ -2727,23 +2728,19 @@ void handle_key_fltr()
       menu_fltr     == MENU_FLTR_CUTOFF_RESONANCE)
     {
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A])
-	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>128) 
-	  if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST )  
+	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST )  
 	  { resonance_all=-1;   dirty_graphic=1; }
       
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>128)
-	  if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST )  
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST )  
 	  { resonance_all=1; 	  dirty_graphic=1; }
       
       if (keyState[BUTTON_UP]    && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>128) 
-	  if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST ) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST ) 
 	  { cutoff_all=1;  	  dirty_graphic=1; }
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>128 ) 
-	  if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST ) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST ) 
 	  { cutoff_all=-1; 	  dirty_graphic=1; }
     }  
 
@@ -2757,23 +2754,19 @@ void handle_key_fltr()
       sub_handle_invert_trig();
 
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_B])
-	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>128) 
-	  if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_SMALL==1 )  
+	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST )  
 	  { filter_algo=-1;   dirty_graphic=1; }
-
-            if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>128)
-	  if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_SMALL==1 )  
+      
+      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST )  
 	  { filter_algo=1; 	  dirty_graphic=1; }
       
       if (keyState[BUTTON_UP]    && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>128) 
-	  if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALL==1 ) 
+	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST) 
 	  { filter_type=1;  	  dirty_graphic=1; }
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>128 ) 
-	  if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALL==1 ) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST ) 
 	  { filter_type=-1; 	  dirty_graphic=1; }
     }  
 
@@ -2788,23 +2781,19 @@ void handle_key_fltr()
       //sub_handle_invert_trig();
 
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A])
-	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>128) 
-	  if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_SMALL==1 )  
+	  if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST )  
 	  { filter_algo_all=-1;   dirty_graphic=1; }
       
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>128)
-	  if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_SMALL==1 )  
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST )  
 	  { filter_algo_all=1; 	  dirty_graphic=1; }
       
       if (keyState[BUTTON_UP]    && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>128) 
-	  if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALL==1 ) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST ) 
 	  { filter_type_all=1;  	  dirty_graphic=1; }
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>128 ) 
-	  if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALL==1 ) 
+	  if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST ) 
 	  { filter_type_all=-1; 	  dirty_graphic=1; }
     }  
 
@@ -3357,9 +3346,6 @@ void handle_key()
   if (menu_cursor==GLOBALMENU_BPM)  handle_key_bpm();
   
  
-  int delay=5;
-  //printf("sleeping %dms\n",delay);
-  SDL_Delay(delay);  
 }
 
 
@@ -4495,6 +4481,7 @@ int seq()
   int          step=SEQ.getPatternSequencer(cty).getStep();
   int          oldstep=0;
   int          i=0;
+  int          delay=1;
 
   dirty_graphic=1;
 
@@ -4538,8 +4525,12 @@ int seq()
       cty=SEQ.getCurrentTrackY();
       ctx=SEQ.getCurrentTrackX();
 
+      SDL_LockAudio();
       handle_key();
+      SDL_UnlockAudio();
 
+      //printf("sleeping %dms\n",delay);
+      SDL_Delay(delay);  
 
       // A/D, Note, VCO, BPM, more handling...
       // apply the modification done by the user on the gui
@@ -4577,10 +4568,14 @@ int seq()
 
 	  if (dirty_graphic)
 	    {
-	      SDL_LockAudio();
+	      //SDL_LockAudio();
 	      //sceKernelDcacheWritebackAll(); 
 	      display_board();
+
+	      SDL_LockAudio();
+	      SG.refresh();
 	      SDL_UnlockAudio();
+	      //SDL_UnlockAudio();
 	      /*
 	      if (menu_cursor==GLOBALMENU_AD)   display_board_amp_env();
 	      if (menu_cursor==GLOBALMENU_NOTE) display_board_note();
@@ -4605,9 +4600,9 @@ int seq()
 	  last_nbcb_ch_step=nbcb;
 	  //**** step++;
 	  //step++;
-	  SDL_LockAudio();
+	  //SDL_LockAudio();
 	  seq_update_by_step();
-	  SDL_UnlockAudio();
+	  //SDL_UnlockAudio();
 	  seq_update_by_step_next=0;
 
 	}
