@@ -5,6 +5,7 @@ using namespace std;
 #include <pspdebug.h>
 #include <pspdisplay.h>
 #include <pspctrl.h>
+#include <psppower.h>
 #include "psp_callback.h"
 #define VERS    1 //Talk about this
 #define REVS    0
@@ -4700,9 +4701,18 @@ void wtg()
 int main(int argc,char **argv)
 {
   int i;
+  int cpu_speed;
 #ifdef PSP
   running = isRunning();
   setupExitCallback();
+  cpu_speed=scePowerGetCpuClockFrequencyInt();
+  printf("CURRENT PSP CPU SPEED:%d\n",cpu_speed);
+  //cpu_speed=333;
+  //scePowerSetCpuClockFrequency(cpu_speed);
+  //scePowerSetClockFrequency(333, 333, 166);
+  scePowerSetClockFrequency(300, 300, 150);
+  cpu_speed=scePowerGetCpuClockFrequencyInt();
+  printf("NEW PSP CPU SPEED:%d\n",cpu_speed);
 #else
   running=1; // if we are not on psp, running should be 1  
 #endif
