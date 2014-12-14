@@ -81,6 +81,9 @@ int SDL_GUI::initVideo()
 			    SCREEN_HEIGHT, 
 			    SCREEN_DEPTH,			
 			    SDL_SWSURFACE);
+  SDL_Joystick *joystick = NULL;
+  SDL_JoystickEventState(SDL_ENABLE);
+  joystick = SDL_JoystickOpen(0);
   #endif
   #ifdef PSP
   screen = SDL_SetVideoMode(480,
