@@ -2935,7 +2935,7 @@ void handle_key_load_save()
 	  keyState[BUTTON_B])
 	{
 	  if (keyState[BUTTON_DOWN])
-	    save=true;
+	    { save=true; dirty_graphic=1; }
 	  if (keyState[BUTTON_UP])	
 	    load=true;
 	}
@@ -2951,7 +2951,7 @@ void handle_key_load_save()
 	  keyState[BUTTON_A] )
 	{
 	  if (keyState[BUTTON_DOWN])
-	    saveall=true;
+	    { saveall=true; dirty_graphic=1; }
 	  if (keyState[BUTTON_UP])	
 	    loadall=true;
 	}
