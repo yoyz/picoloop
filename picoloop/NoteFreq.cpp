@@ -36,9 +36,9 @@ void NoteFreq::init()
   if (wtjTable!=0)
     return;
 
-  wtjTable=malloc(sizeof(Sint32**)*128);
+  wtjTable=(Sint32**)malloc(sizeof(Sint32**)*128);
   for (i=0;i<109;i++)
-    wtjTable[i]=malloc(sizeof(Sint32)*128);
+    wtjTable[i]=(Sint32*)malloc(sizeof(Sint32)*128);
 
   for (i=1;i<109;i++)
     for (j=0;j<128;j++)
