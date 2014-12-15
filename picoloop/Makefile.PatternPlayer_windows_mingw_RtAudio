@@ -9,7 +9,7 @@ CC=i586-mingw32msvc-g++
 CFLAGS=-c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb -ffast-math
 CFLAGS=-c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb  -pg
 CFLAGS=-Wall -c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb  
-CFLAGS= -c -O1 -D__WIN32__ -I/c/MinGW/include/  -DLINUX -I. -ISDL_windows -D__RTAUDIO__ -DLINUX_DESKTOP -ggdb  -fpermissive
+CFLAGS= -c -O3 -D__WIN32__ -I/c/MinGW/include/  -DLINUX -I. -ISDL_windows -D__RTAUDIO__ -DLINUX_DESKTOP -ggdb 
 
 LDFLAGS=-lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread -pg
 #LDFLAGS=-L. -lmingw32 -lSDLmain -lSDL -lSDL_ttf
