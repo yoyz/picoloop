@@ -25,7 +25,7 @@ class AudioDriver
   RtAudio::StreamOptions    rtAudioStreamOptions;
   RtAudio dac;
   int     FORMAT;
-  int     bufferFrames;
+  unsigned int     bufferFrames;
   RtAudioCallback internal_callback;
   void  * userdata;
   //SDL_AudioSpec * sdlAudioSpecWanted;

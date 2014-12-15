@@ -31,7 +31,7 @@ EffectDelay::~EffectDelay()
 
 void EffectDelay::init()
 {
-  printf("EffectDelay::init() buffer=%x.8\n",buffer);
+  printf("EffectDelay::init() before malloc buffer=%x.8\n",buffer);
   //buffer=0;
   index=0;
   indexOffset=0;
@@ -42,8 +42,8 @@ void EffectDelay::init()
   
   if (buffer==0)
   {
-    buffer=malloc(sizeof(int16_t)*FX_SIZE);
-    printf("                                                             %x.8\n",buffer);
+    printf("EffectDelay::init() after malloc buffer=%x.8\n",buffer);
+    buffer=(int16_t*)malloc(sizeof(int16_t)*FX_SIZE);
   }
   
 }

@@ -207,7 +207,7 @@ int InputManager::handleKey()
       if (key)
 	printf("key new event:%d %d %s\n",event.type,event.key.keysym.sym,SDL_GetKeyName(event.key.keysym.sym));
       if (joy)
-	printf("joy new event:%d %d %s\n",event.type,event.jbutton.button,SDL_GetKeyName(event.jbutton.button));
+	printf("joy new event:%d %d   \n",event.type,event.jbutton.button);
 
     }
   if (keypressrelease==0) //need to update the state to increment keypress
