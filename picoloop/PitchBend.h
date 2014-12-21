@@ -25,12 +25,13 @@ class PitchBend
   Sint16 note;
   Sint16 speed;
   Sint16 depth;
-  Sint32 formula1;
-  Sint32 formula2;
+  Sint32 formula1; // NoteDetune value
+  Sint32 formula2; // is the pitch bend apply to note value
 
 
   Sint32 sample_num;
-  
+  Sint32 div;
+  Sint32 speed_calc;
 };
 
 #endif
