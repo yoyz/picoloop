@@ -1,42 +1,46 @@
 # README
 
-Picoloop is a Stepsequencer  ( a nanoloop clone ) which means that a pattern of 1/16 notes is played repeatedly while these notes can be edited in various respects like volume, pitch etc. 
-All parameters are set step-wise.            
-There are four channels, playing simultaneously. 
+Picoloop is a synth Stepsequencer  ( a nanoloop clone ).
+A pattern of 16 notes is played repeatedly while these notes can be edited in various respects like volume, pitch, filter, lfo etc. 
+All parameters are set step-wise, so you can make huge variation of sound on the same pattern.
+There are four channels, playing simultaneously.
 Each channel's patterns can be saved to file slots  and are then available for new combinations. 
-Finally, saved patterns can be arranged in a song structure ( will be implemented soon )).
+Finally, saved patterns can be arranged in a song structure.
 
 Besides the song editor and manual loading of patterns, there are 3 different ways to modify each channel's patterns so that they form longer structures:                                       
 
-- 1/2, 1/4 or 1/8 speed                                                                        
+- 1/2, 1/4 or 1/8 speed                                                               
 - Different pattern lengths
 
 
-Picoloop is target for linux compatible system.
+Picoloop is target for linux/SDL compatible system.
 It use SDL     to render graphics.
-It use RtAudio to render audio out.
+It use RtAudio or SDL to render audio out.
 
 
 # HOW IT WORKS
 
-In menu you can select channel and edit parameter.                                           
-All notes in the sequencer can be edited simultaneously.                                       
+There is two pane, the 16 box and the menu which is above the 16 box.
+On the 16 box, there is a moving cursor which display the current played step.
+and another cursor which display the current selected step.
+There is a text menu, which allow you to select channel and edit parameter.
+All notes in the sequencer can be edited simultaneously.
 
-</>             select menu1 entry                                                             
-^/v             select channel                                                                 
-B               return to sequencer                                                            
-A + </>/^/v,    edit all notes at once                                                         
-SELECT          call menu 2                                                                    
+</>             select menu1 entry
+^/v             select channel 
+B               return to sequencer  
+A + </>/^/v,    edit all notes at once
+SELECT          call menu2 or menu1 ( it cycle between the two menu )
         
         
 menu1 : 
 - A/R : 
     - Amp Enveloppe 
-        - Attack/Release Amp or FM operator1                                                   
-        - Decay/Sustain Amp or FM operator1                                                    
-    - Filter Enveloppe                                                                         
-        - Attack/Release Filter or FM Operator2                                                
-        - Decay/Sustain Filter or FM Operator2                                                 
+        - Attack/Release     Amp /  FM operator1   
+        - Decay/Sustain      Amp /  FM operator1   
+    - Filter Enveloppe           
+        - Attack/Release Filter  /  FM Operator2       
+        - Decay/Sustain  Filter  /  FM Operator2       
     -  Trig/Amplification
          - trig time/Volume                                                                    
 
@@ -52,11 +56,12 @@ menu1 :
     - OP1amp/OP2amp in FM mode                                                                 
     
 - LFO : 
-    - depth/speed in synth and drum synth mode                                                 
+    - depth/speed in psynth and drumsynth mode 
+    - pitchbenddepth/pitchbendspeed in psynth mode 
 
 - FLTR : 
     - Cutoff/Resonance
-    - mode ( lp/bp/hp )
+    - algo/mode ( lp/bp/hp )
 
 
 menu 2 :
@@ -64,19 +69,19 @@ menu 2 :
     - Load/Save pattern live
 
 - BANK :
-    - will give the ability to choose another bank for save/load pattern and song ( not implemented )
+    - give the ability to choose another bank for save/load pattern and song 
 
 - PSH :
     - shift the pattern to the left/right, reduce the size of the pattern ( from 16 step to 1 step )
 
 - MAC :
-    - change the synth engine : synth, drumsynth, fm
+    - change the synth engine : synth, drumsynth, dbopl ( adlib fm )
 
 - FX :
     - change the depth and the speed of the echo delay
 
 - BPM :
-    - change the bpm of the track
+    - change the bpm of the track and change the swing
 
 
 
@@ -97,13 +102,63 @@ menu 2 :
 <tt> # git clone https://github.com/yoyz/audio.git </tt> </br>
 
 
-# COMPILATION
+# COMPILATION FOR DEBIAN
 
      # cd      picoloop
      # make -f Makefile.RtAudio_debian               clean
      # make -f Makefile.PatternPlayer_debian_RtAudio clean
      # make -f Makefile.RtAudio_debian
      # make -f Makefile.PatternPlayer_debian_RtAudio
+
+# COMPILATION FOR OPENDINGUX
+
+On debian you need the /opt/opendingux-toolchain/ directory.
+you can fetch fetch it there : http://www.treewalker.org/opendingux/
+
+     # cd      picoloop
+     # make -j 64 -f Makefile.RtAudio_opendingux               clean
+     # make -j 64 -f Makefile.PatternPlayer_opendingux_RtAudio clean
+
+     # make -j 64 -f Makefile.RtAudio_opendingux
+     # make -j 64 -f Makefile.PatternPlayer_opendingux_RtAudio
+
+# COMPILATION FOR GP2X
+
+On debian you need the /opt/open2x/ directory.
+you can fetch it there : http://wiki.gp2x.org/articles/i/n/s/Installing_the_Open2x_toolchain.html
+
+     # cd      picoloop
+     # make -j 64 -f Makefile.RtAudio_opendingux               clean
+     # make -j 64 -f Makefile.PatternPlayer_opendingux_RtAudio clean
+
+     # make -j 64 -f Makefile.RtAudio_opendingux
+     # make -j 64 -f Makefile.PatternPlayer_opendingux_RtAudio
+
+
+
+# COMPILATION FOR WINDOWS WITH MINGW32
+
+On debian, you need the mingw32 package.
+Picoloop provide the header and binary for SDL 1.2 on windows.
+
+     # cd         picoloop
+     # make       -f Makefile.RtAudio_mingw32                              clean
+     # make       -f Makefile.PatternPlayer_windows_mingw_RtAudio clean
+
+     # make       -f Makefile.RtAudio_mingw32
+     # make       -f Makefile.PatternPlayer_windows_mingw_RtAudio -j 64
+
+
+# COMPILATION FOR PSP
+
+you need to have the sdk, the toolchain and the external lib.
+All can be fetched here : https://github.com/pspdev
+
+     # cd      picoloop
+     # source ~/local/pspdev/env_build
+     # make -f Makefile.PatternPlayer_psp_SDL        clean
+     # make -f Makefile.PatternPlayer_psp_SDL 
+
 
 # LAUNCHING
 
@@ -129,7 +184,7 @@ Depending on the current menu selected : A/R, OSC, VCO, BPM, LS, etc.
     - L-ALT + right     : change value right
 
 
-## OpenDingux
+## OpenDingux/PSP/GP2X
 
     - SELECT            : enter menu and move between menu
     - ENTER             : Start key/enter a menu
@@ -147,7 +202,6 @@ Depending on the current menu selected : A/R, OSC, VCO, BPM, LS, etc.
 
 file named dataP<%d>T<%d>.pic store information about saved pattern.
 This file will be created when you store file in the "L/S" menu.
-The old "data.pic" which contain all patern was removed.
 
 
 # DEBUG
