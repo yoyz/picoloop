@@ -2922,11 +2922,11 @@ void handle_key_load_save()
 
       if (menu                 == MENU_OFF    && 
 	  loadsave_cursor_mode == CURSOR_SONG &&
-	  keyState[BUTTON_B])
+	  keyState[BUTTON_B] )
 	{
-	  if (keyState[BUTTON_DOWN])
+	  if (keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONGEST==1)
 	    pattern_song_inc=-1;
-	  if (keyState[BUTTON_UP])	
+	  if (keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONGEST==1)	
 	    pattern_song_inc=1;
 	}
 
