@@ -134,6 +134,210 @@ enum {
 
 
 
+
+class TweakableKnob
+{  
+public:
+  TweakableKnob();
+
+  int bpm;               // change from -10 to +10
+  int divider;           // divider - => /1 /2 /4 /8  ; divider + => /8 /4 /2 /1
+  int swing;
+  int invert_trig;
+
+
+
+  int note;
+  int note_all;
+  
+  int amp;                  // variation of the amp of monomixer
+  int amp_all;              // variation of the amp of monomixer
+  
+  int attack_amp;
+  int decay_amp;
+  int sustain_amp;
+  int release_amp;
+  
+  int attack_fltr;
+  int decay_fltr;
+  int sustain_fltr;
+  int release_fltr;
+  
+  
+  int attack_amp_all;
+  int decay_amp_all;
+  int sustain_amp_all;
+  int release_amp_all;
+  
+  int attack_fltr_all;
+  int decay_fltr_all;
+  int sustain_fltr_all;
+  int release_fltr_all;
+  
+  
+  int pshift_all;
+  int plength_all;
+  
+  int trig_time;
+  int trig_time_all;
+  
+  
+  int lfo_depth;
+  int lfo_depth_all;
+  int lfo_speed;
+  int lfo_speed_all;
+  
+  int pb_depth;
+  int pb_depth_all;
+  int pb_speed;
+  int pb_speed_all;
+  
+  int lfo_type;
+  int lfo_type_all;
+  
+  int cutoff;
+  int resonance;
+  
+  int cutoff_all;
+  int resonance_all;
+  
+  int fx_depth;
+  int fx_speed;
+  
+  int fx_depth_all;
+  int fx_speed_all;
+  
+  int vcomix;
+  int vcomix_all;
+  
+  int osconetype;
+  int osctwotype;
+  
+  int osconetype_all;
+  int osctwotype_all;
+  
+  int machine_type;
+  int machine_type_all;
+  
+  int phase_osc1;
+  int phase_osc1_all;
+  
+  int filter_algo;
+  int filter_algo_all;
+  
+  int filter_type;
+  int filter_type_all;
+  
+  int osc1_amp;
+  int osc1_amp_all;
+  
+  int osc2_amp;
+  int osc2_amp_all;
+  
+  int fmtype;
+  int fmtype_all;
+    
+};
+
+TweakableKnob::TweakableKnob()
+{
+  bpm=0;
+  divider=0;
+  swing=0;
+
+  invert_trig=0;
+
+  note=0;
+  note_all=0;
+  
+  amp=0;                  // variation of the amp of monomixer
+  amp_all=0;              // variation of the amp of monomixer
+  
+  attack_amp=0;
+  decay_amp=0;
+  sustain_amp=0;
+  release_amp=0;
+  
+  attack_fltr=0;
+  decay_fltr=0;
+  sustain_fltr=0;
+  release_fltr=0;
+  
+  
+  attack_amp_all=0;
+  decay_amp_all=0;
+  sustain_amp_all=0;
+  release_amp_all=0;
+  
+  attack_fltr_all=0;
+  decay_fltr_all=0;
+  sustain_fltr_all=0;
+  release_fltr_all=0;
+  
+  
+  pshift_all=0;
+  plength_all=0;
+  
+  trig_time=0;
+  trig_time_all=0;
+  
+  
+  lfo_depth=0;
+  lfo_depth_all=0;
+  lfo_speed=0;
+  lfo_speed_all=0;
+  
+  pb_depth=0;
+  pb_depth_all=0;
+  pb_speed=0;
+  pb_speed_all=0;
+  
+  lfo_type=0;
+  lfo_type_all=0;
+  
+  cutoff=0;
+  resonance=0;
+  
+  cutoff_all=0;
+  resonance_all=0;
+  
+  fx_depth=0;
+  fx_speed=0;
+  
+  fx_depth_all=0;
+  fx_speed_all=0;
+  
+  vcomix=0;
+  vcomix_all=0;
+  
+  osconetype=0;
+  osctwotype=0;
+  
+  osconetype_all=0;
+  osctwotype_all=0;
+  
+  machine_type=0;
+  machine_type_all=0;
+  
+  phase_osc1=0;
+  phase_osc1_all=0;
+  
+  filter_algo=0;
+  filter_algo_all=0;
+  
+  filter_type=0;
+  filter_type_all=0;
+  
+  osc1_amp=0;
+  osc1_amp_all=0;
+  
+  osc2_amp=0;
+  osc2_amp_all=0;
+  
+  fmtype=0;
+  fmtype_all=0;  
+}
+  
   
 
 vector <Pattern>            P(TRACK_MAX);  
@@ -148,6 +352,7 @@ PatternElement PE;          // used for copy paste PatternElement
 PatternElement PECursor;    // used for storing the current PatternElement ( under the cursor )
 InputManager   IE;          // used to  fetch key
 SDL_GUI        SG;          // used to  open a gui and display stuff
+TweakableKnob  TK;
 //NoteFreq       NF;
 //Wave           cowbell;     // used ?
 //Instrument     inst;        // used ?
@@ -163,7 +368,8 @@ int loadall=false;
 int patternRemove=false;
 
 int bpm_current=120;    // current value for the four ( TRACK_MAX ) tracks
-int bpm=0;              // change from -10 to +10
+
+
 int nbcb=0;             // current nb audio callback 
 int last_nbcb=0;        // number of occurence of AudioEngine callback before changing step
 //int nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm); // Weird ?
@@ -179,98 +385,6 @@ int t=0;                // index of track
 int repeat=0;
 int quit=0;             // do we need to quit ?
 int cursor=0;           // cursor position in a sequencer track
-
-int note=0;
-int note_all=0;
-
-int amp=0;              // variation of the amp of monomixer
-int amp_all=0;              // variation of the amp of monomixer
-
-int attack_amp=0;
-int decay_amp=0;
-int sustain_amp=0;
-int release_amp=0;
-
-int attack_fltr=0;
-int decay_fltr=0;
-int sustain_fltr=0;
-int release_fltr=0;
-
-
-int attack_amp_all=0;
-int decay_amp_all=0;
-int sustain_amp_all=0;
-int release_amp_all=0;
-
-int attack_fltr_all=0;
-int decay_fltr_all=0;
-int sustain_fltr_all=0;
-int release_fltr_all=0;
-
-
-int pshift_all=0;
-int plength_all=0;
-
-//int adsr_note=0;
-//int adsr_note_all=0;
-int trig_time=0;
-int trig_time_all=0;
-
-
-int lfo_depth=0;
-int lfo_depth_all=0;
-int lfo_speed=0;
-int lfo_speed_all=0;
-
-int pb_depth=0;
-int pb_depth_all=0;
-int pb_speed=0;
-int pb_speed_all=0;
-
-int lfo_type=0;
-int lfo_type_all=0;
-
-int cutoff=0;
-int resonance=0;
-
-int cutoff_all=0;
-int resonance_all=0;
-
-int fx_depth=0;
-int fx_speed=0;
-
-int fx_depth_all=0;
-int fx_speed_all=0;
-
-int vcomix=0;
-int vcomix_all=0;
-
-int osconetype=0;
-int osctwotype=0;
-
-int osconetype_all=0;
-int osctwotype_all=0;
-
-int machine_type=0;
-int machine_type_all=0;
-
-int phase_osc1=0;
-int phase_osc1_all=0;
-
-int filter_algo=0;
-int filter_algo_all=0;
-
-int filter_type=0;
-int filter_type_all=0;
-
-int osc1_amp=0;
-int osc1_amp_all=0;
-
-int osc2_amp=0;
-int osc2_amp_all=0;
-
-int fmtype=0;
-int fmtype_all=0;
 
 
 
@@ -291,7 +405,7 @@ int bank_to_load=0;
 
 int start_key=0;        // start key pressed ?
 //int step=0;             // current step in the sequencer
-int divider=0;           // divider - => /1 /2 /4 /8  ; divider + => /8 /4 /2 /1
+
 int menu_cursor=GLOBALMENU_AD;      // index int the menu
 int menu=MENU_ON_PAGE1;             // menu mode
 int menu_note=ENABLE;
@@ -307,14 +421,14 @@ int menu_ad_dirty_keyboard=0;
 //int ct=0;               // current_track
 int ct_x=0;             
 int ct_y=0;
-int invert_trig=0;
+
 
 int dirty_graphic=1;
 int seq_update_by_step_next=0;
 
 int current_swing=50;  
 //int current_swing=64;
-int swing;
+
 
 int noteOffTrigger[TRACK_MAX];
 
@@ -1546,7 +1660,7 @@ void sub_handle_invert_trig()
   if (lastKey   == BUTTON_A && 
       lastEvent == KEYPRESSED)
     {
-      invert_trig=1;
+      TK.invert_trig=1;
       printf("key lalt\n");      
       dirty_graphic=1;
       IE.clearLastKeyEvent();
@@ -1803,19 +1917,19 @@ void handle_key_amp_env()
       sub_handle_invert_trig();
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_B])
 	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { release_amp=-1;   dirty_graphic=1; }
+	  { TK.release_amp=-1;   dirty_graphic=1; }
       
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { release_amp=1; 	  dirty_graphic=1; }
+	  { TK.release_amp=1; 	  dirty_graphic=1; }
       
       if (keyState[BUTTON_UP]    && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { attack_amp=1;  	  dirty_graphic=1; }
+	  { TK.attack_amp=1;  	  dirty_graphic=1; }
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { attack_amp=-1; 	  dirty_graphic=1; }
+	  { TK.attack_amp=-1; 	  dirty_graphic=1; }
     }  
 
 
@@ -1830,19 +1944,19 @@ void handle_key_amp_env()
       sub_handle_invert_trig();
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_B])
 	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { decay_amp=-1;   dirty_graphic=1; }
+	  { TK.decay_amp=-1;   dirty_graphic=1; }
       
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { decay_amp=1; 	  dirty_graphic=1; }
+	  { TK.decay_amp=1; 	  dirty_graphic=1; }
       
       if (keyState[BUTTON_UP]    && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { sustain_amp=1;  	  dirty_graphic=1; }
+	  { TK.sustain_amp=1;  	  dirty_graphic=1; }
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { sustain_amp=-1; 	  dirty_graphic=1; }
+	  { TK.sustain_amp=-1; 	  dirty_graphic=1; }
     }  
 
 
@@ -1856,19 +1970,19 @@ void handle_key_amp_env()
       //printf("***********************\n");
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A])
 	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { release_amp_all=-1;   dirty_graphic=1; }
+	  { TK.release_amp_all=-1;   dirty_graphic=1; }
       
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { release_amp_all=1; 	  dirty_graphic=1; }
+	  { TK.release_amp_all=1; 	  dirty_graphic=1; }
       
       if (keyState[BUTTON_UP]    && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { attack_amp_all=1;  	  dirty_graphic=1; }
+	  { TK.attack_amp_all=1;  	  dirty_graphic=1; }
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { attack_amp_all=-1; 	  dirty_graphic=1; }
+	  { TK.attack_amp_all=-1; 	  dirty_graphic=1; }
     }  
 
   // GLOBALMENU_AD AMP
@@ -1881,19 +1995,19 @@ void handle_key_amp_env()
       //printf("***********************\n");
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A])
 	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { decay_amp_all=-1;   dirty_graphic=1; }
+	  { TK.decay_amp_all=-1;   dirty_graphic=1; }
       
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { decay_amp_all=1; 	  dirty_graphic=1; }
+	  { TK.decay_amp_all=1; 	  dirty_graphic=1; }
       
       if (keyState[BUTTON_UP]    && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { sustain_amp_all=1;  	  dirty_graphic=1; }
+	  { TK.sustain_amp_all=1;  	  dirty_graphic=1; }
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { sustain_amp_all=-1; 	  dirty_graphic=1; }
+	  { TK.sustain_amp_all=-1; 	  dirty_graphic=1; }
     }  
 
 
@@ -1910,19 +2024,19 @@ void handle_key_amp_env()
       sub_handle_invert_trig();
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_B])
 	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { release_fltr=-1;   dirty_graphic=1; }
+	  { TK.release_fltr=-1;   dirty_graphic=1; }
       
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { release_fltr=1; 	  dirty_graphic=1; }
+	  { TK.release_fltr=1; 	  dirty_graphic=1; }
       
       if (keyState[BUTTON_UP]    && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { attack_fltr=1;  	  dirty_graphic=1; }
+	  { TK.attack_fltr=1;  	  dirty_graphic=1; }
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { attack_fltr=-1; 	  dirty_graphic=1; }
+	  { TK.attack_fltr=-1; 	  dirty_graphic=1; }
     }  
 
   // GLOBALMENU_AD FLTR
@@ -1936,19 +2050,19 @@ void handle_key_amp_env()
       sub_handle_invert_trig();
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_B])
 	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { decay_fltr=-1;   dirty_graphic=1; }
+	  { TK.decay_fltr=-1;   dirty_graphic=1; }
       
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { decay_fltr=1; 	  dirty_graphic=1; }
+	  { TK.decay_fltr=1; 	  dirty_graphic=1; }
       
       if (keyState[BUTTON_UP]    && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { sustain_fltr=1;  	  dirty_graphic=1; }
+	  { TK.sustain_fltr=1;  	  dirty_graphic=1; }
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { sustain_fltr=-1; 	  dirty_graphic=1; }
+	  { TK.sustain_fltr=-1; 	  dirty_graphic=1; }
     }  
 
 
@@ -1963,19 +2077,19 @@ void handle_key_amp_env()
       //printf("***********************\n");
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A])
 	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { release_fltr_all=-1;   dirty_graphic=1; }
+	  { TK.release_fltr_all=-1;   dirty_graphic=1; }
       
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { release_fltr_all=1; 	  dirty_graphic=1; }
+	  { TK.release_fltr_all=1; 	  dirty_graphic=1; }
       
       if (keyState[BUTTON_UP]    && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { attack_fltr_all=1;  	  dirty_graphic=1; }
+	  { TK.attack_fltr_all=1;  	  dirty_graphic=1; }
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { attack_fltr_all=-1; 	  dirty_graphic=1; }
+	  { TK.attack_fltr_all=-1; 	  dirty_graphic=1; }
     }  
 
   // GLOBALMENU_AD FLTR
@@ -1988,19 +2102,19 @@ void handle_key_amp_env()
       //printf("***********************\n");
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A])
 	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { decay_fltr_all=-1;   dirty_graphic=1; }
+	  { TK.decay_fltr_all=-1;   dirty_graphic=1; }
       
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { decay_fltr_all=1; 	  dirty_graphic=1; }
+	  { TK.decay_fltr_all=1; 	  dirty_graphic=1; }
       
       if (keyState[BUTTON_UP]    && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { sustain_fltr_all=1;  	  dirty_graphic=1; }
+	  { TK.sustain_fltr_all=1;  	  dirty_graphic=1; }
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { sustain_fltr_all=-1; 	  dirty_graphic=1; }
+	  { TK.sustain_fltr_all=-1; 	  dirty_graphic=1; }
     }  
 
 
@@ -2013,26 +2127,26 @@ void handle_key_amp_env()
       if (lastKey   == BUTTON_A && 
 	  lastEvent == KEYPRESSED)
 	{
-	  invert_trig=1;
+	  TK.invert_trig=1;
 	  printf("key lalt\n");      
 	  dirty_graphic=1;
 	  IE.clearLastKeyEvent();
 	}
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_B])
 	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { amp=-1;   dirty_graphic=1; }
+	  { TK.amp=-1;   dirty_graphic=1; }
       
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { amp=1; 	  dirty_graphic=1; }
+	  { TK.amp=1; 	  dirty_graphic=1; }
       
       if (keyState[BUTTON_UP]    && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { trig_time=1;  	  dirty_graphic=1; }
+	  { TK.trig_time=1;  	  dirty_graphic=1; }
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { trig_time=-1; 	  dirty_graphic=1; }
+	  { TK.trig_time=-1; 	  dirty_graphic=1; }
     }  
 
 
@@ -2042,19 +2156,19 @@ void handle_key_amp_env()
     {
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A])
 	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { amp_all=-1;   dirty_graphic=1; }
+	  { TK.amp_all=-1;   dirty_graphic=1; }
       
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { amp_all=1; 	  dirty_graphic=1; }
+	  { TK.amp_all=1; 	  dirty_graphic=1; }
       
       if (keyState[BUTTON_UP]    && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { trig_time_all=1;  	  dirty_graphic=1; }
+	  { TK.trig_time_all=1;  	  dirty_graphic=1; }
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { trig_time_all=-1; 	  dirty_graphic=1; }
+	  { TK.trig_time_all=-1; 	  dirty_graphic=1; }
     }  
 
 
@@ -2095,19 +2209,19 @@ void handle_key_note()
       */
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_LONG==0) 
-	{ note=-1; 	  dirty_graphic=1;}
+	{ TK.note=-1; 	  dirty_graphic=1;}
 
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_LONG==0) 
-	  { note=1;  	  dirty_graphic=1;}
+	  { TK.note=1;  	  dirty_graphic=1;}
 
       if (keyState[BUTTON_UP]    && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONG==0) 
-	  { note=12;   	  dirty_graphic=1;}
+	  { TK.note=12;   	  dirty_graphic=1;}
 
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B])
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONG==0) 
-	{ note=-12;  	  dirty_graphic=1;}
+	{ TK.note=-12;  	  dirty_graphic=1;}
     }  
 
     // GLOBALMENU_NOTE
@@ -2118,19 +2232,19 @@ void handle_key_note()
       
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_LONG==0) 
-	{ note_all=-1; 	  dirty_graphic=1;}
+	{ TK.note_all=-1; 	  dirty_graphic=1;}
 
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_LONG==0) 
-	  { note_all=1;  	  dirty_graphic=1;}
+	  { TK.note_all=1;  	  dirty_graphic=1;}
 
       if (keyState[BUTTON_UP]    && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONG==0) 
-	  { note_all=12;   	  dirty_graphic=1;}
+	  { TK.note_all=12;   	  dirty_graphic=1;}
 
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A])
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONG==0) 
-	{ note_all=-12;  	  dirty_graphic=1;}
+	{ TK.note_all=-12;  	  dirty_graphic=1;}
     }  
 
 
@@ -2171,19 +2285,19 @@ void handle_key_osc()
 
       if (keyState[BUTTON_LEFT] && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_LONG==0) 
-	  { osconetype=-1; 	  dirty_graphic=1;}
+	  { TK.osconetype=-1; 	  dirty_graphic=1;}
       
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_LONG==0) 
-	  { osconetype=1;  	  dirty_graphic=1;}
+	  { TK.osconetype=1;  	  dirty_graphic=1;}
       
       if (keyState[BUTTON_UP] && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONG==0) 
-	  { osctwotype=1;   	  dirty_graphic=1;}
+	  { TK.osctwotype=1;   	  dirty_graphic=1;}
       
       if (keyState[BUTTON_DOWN] && keyState[BUTTON_B])
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONG==0) 
-	  { osctwotype=-1;  	  dirty_graphic=1;}
+	  { TK.osctwotype=-1;  	  dirty_graphic=1;}
     }
 
   // GLOBALMENU_OSC
@@ -2193,19 +2307,19 @@ void handle_key_osc()
     {
       if (keyState[BUTTON_LEFT] && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_LONG==0) 
-	  { osconetype_all=-1; 	  dirty_graphic=1;}
+	  { TK.osconetype_all=-1; 	  dirty_graphic=1;}
       
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_LONG==0) 
-	  { osconetype_all=1;  	  dirty_graphic=1;}
+	  { TK.osconetype_all=1;  	  dirty_graphic=1;}
       
       if (keyState[BUTTON_UP] && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONG==0) 
-	  { osctwotype_all=1;   	  dirty_graphic=1;}
+	  { TK.osctwotype_all=1;   	  dirty_graphic=1;}
       
       if (keyState[BUTTON_DOWN] && keyState[BUTTON_A])
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONG==0) 
-	  { osctwotype_all=-1;  	  dirty_graphic=1;}
+	  { TK.osctwotype_all=-1;  	  dirty_graphic=1;}
     }
 
 }
@@ -2233,19 +2347,19 @@ void handle_key_fx()
 
       if (keyState[BUTTON_LEFT] && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { fx_depth=-1; 	  dirty_graphic=1;}
+	  { TK.fx_depth=-1; 	  dirty_graphic=1;}
       
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { fx_depth=1;  	  dirty_graphic=1;}
+	  { TK.fx_depth=1;  	  dirty_graphic=1;}
       
       if (keyState[BUTTON_UP] && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { fx_speed=1;   	  dirty_graphic=1;}
+	  { TK.fx_speed=1;   	  dirty_graphic=1;}
       
       if (keyState[BUTTON_DOWN] && keyState[BUTTON_B])
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { fx_speed=-1;  	  dirty_graphic=1;}
+	  { TK.fx_speed=-1;  	  dirty_graphic=1;}
     }
 
   // GLOBALMENU_FX
@@ -2258,19 +2372,19 @@ void handle_key_fx()
 
       if (keyState[BUTTON_LEFT] && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { fx_depth_all=-1; 	  dirty_graphic=1;}
+	  { TK.fx_depth_all=-1; 	  dirty_graphic=1;}
       
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { fx_depth_all=1;  	  dirty_graphic=1;}
+	  { TK.fx_depth_all=1;  	  dirty_graphic=1;}
       
       if (keyState[BUTTON_UP] && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { fx_speed_all=1;   	  dirty_graphic=1;}
+	  { TK.fx_speed_all=1;   	  dirty_graphic=1;}
       
       if (keyState[BUTTON_DOWN] && keyState[BUTTON_A])
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { fx_speed_all=-1;  	  dirty_graphic=1;}
+	  { TK.fx_speed_all=-1;  	  dirty_graphic=1;}
     }
 
 }
@@ -2302,19 +2416,19 @@ void handle_key_vco()
       sub_handle_invert_trig();
       if (keyState[BUTTON_LEFT] && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_SMALLEST==0) 
-	  { vcomix=-1; 	  dirty_graphic=1;}
+	  { TK.vcomix=-1; 	  dirty_graphic=1;}
       
       if (keyState[BUTTON_RIGHT]  && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_SMALLEST==0) 
-	  { vcomix=1;  	  dirty_graphic=1;}
+	  { TK.vcomix=1;  	  dirty_graphic=1;}
       
       if (keyState[BUTTON_UP]  && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALLEST==0) 
-	  { phase_osc1=1;   	  dirty_graphic=1;}
+	  { TK.phase_osc1=1;   	  dirty_graphic=1;}
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B])
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALLEST==0) 
-	  { phase_osc1=-1;  	  dirty_graphic=1;}
+	  { TK.phase_osc1=-1;  	  dirty_graphic=1;}
     }
 
   if (menu        != MENU_OFF && 
@@ -2324,20 +2438,20 @@ void handle_key_vco()
     {
       if (keyState[BUTTON_LEFT] && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_SMALLEST==0) 
-	  { vcomix_all=-1; 	  dirty_graphic=1;}
+	  { TK.vcomix_all=-1; 	  dirty_graphic=1;}
       
       if (keyState[BUTTON_RIGHT]  && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_SMALLEST==0) 
-	  { vcomix_all=1;  	  dirty_graphic=1;}
+	  { TK.vcomix_all=1;  	  dirty_graphic=1;}
 
       // ????
       if (keyState[BUTTON_UP]  && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALLEST==0) 
-	  { phase_osc1_all=1;   	  dirty_graphic=1;}
+	  { TK.phase_osc1_all=1;   	  dirty_graphic=1;}
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A])
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALLEST==0) 
-	  { phase_osc1_all=-1;  	  dirty_graphic=1;}
+	  { TK.phase_osc1_all=-1;  	  dirty_graphic=1;}
       //????
     }
 
@@ -2354,19 +2468,19 @@ void handle_key_vco()
       sub_handle_invert_trig();
       if (keyState[BUTTON_LEFT] && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_SMALLEST==0) 
-	  { osc1_amp=-1; 	  dirty_graphic=1;}
+	  { TK.osc1_amp=-1; 	  dirty_graphic=1;}
       
       if (keyState[BUTTON_RIGHT]  && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_SMALLEST==0) 
-	  { osc1_amp=1;  	  dirty_graphic=1;}
+	  { TK.osc1_amp=1;  	  dirty_graphic=1;}
       
       if (keyState[BUTTON_UP]  && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALLEST==0) 
-	  { osc2_amp=1;   	  dirty_graphic=1;}
+	  { TK.osc2_amp=1;   	  dirty_graphic=1;}
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B])
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALLEST==0) 
-	  { osc2_amp=-1;  	  dirty_graphic=1;}
+	  { TK.osc2_amp=-1;  	  dirty_graphic=1;}
     }
 
   if (menu        != MENU_OFF && 
@@ -2376,20 +2490,20 @@ void handle_key_vco()
     {
       if (keyState[BUTTON_LEFT] && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_SMALLEST==0) 
-	  { osc1_amp_all=-1; 	  dirty_graphic=1;}
+	  { TK.osc1_amp_all=-1; 	  dirty_graphic=1;}
       
       if (keyState[BUTTON_RIGHT]  && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_SMALLEST==0) 
-	  { osc1_amp_all=1;  	  dirty_graphic=1;}
+	  { TK.osc1_amp_all=1;  	  dirty_graphic=1;}
 
       // ????
       if (keyState[BUTTON_UP]  && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALLEST==0) 
-	  { osc2_amp_all=1;   	  dirty_graphic=1;}
+	  { TK.osc2_amp_all=1;   	  dirty_graphic=1;}
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A])
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALLEST==0) 
-	  { osc2_amp_all=-1;  	  dirty_graphic=1;}
+	  { TK.osc2_amp_all=-1;  	  dirty_graphic=1;}
       //????
     }
 
@@ -2407,11 +2521,11 @@ void handle_key_vco()
 
       if (keyState[BUTTON_UP]  && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALL==0) 
-	  { fmtype=1;   	  dirty_graphic=1;}
+	  { TK.fmtype=1;   	  dirty_graphic=1;}
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B])
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALL==0) 
-	  { fmtype=-1;  	  dirty_graphic=1;}
+	  { TK.fmtype=-1;  	  dirty_graphic=1;}
     }
 
   if (menu        != MENU_OFF && 
@@ -2422,11 +2536,11 @@ void handle_key_vco()
 
       if (keyState[BUTTON_UP]  && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALL==0) 
-	  { fmtype_all=1;   	  dirty_graphic=1;}
+	  { TK.fmtype_all=1;   	  dirty_graphic=1;}
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A])
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALL==0) 
-	  { fmtype_all=-1;  	  dirty_graphic=1;}
+	  { TK.fmtype_all=-1;  	  dirty_graphic=1;}
 
     }
 
@@ -2457,11 +2571,11 @@ void handle_key_mac()
       
       if (keyState[BUTTON_UP] && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONGEST==0) 
-	  { machine_type=1;   	  dirty_graphic=1;}
+	  { TK.machine_type=1;   	  dirty_graphic=1;}
       
       if (keyState[BUTTON_DOWN] && keyState[BUTTON_B])
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONGEST==0) 
-	  { machine_type=-1;  	  dirty_graphic=1;}
+	  { TK.machine_type=-1;  	  dirty_graphic=1;}
     }
 
   // GLOBALMENU_MAC
@@ -2472,11 +2586,11 @@ void handle_key_mac()
       
       if (keyState[BUTTON_UP] && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONGEST==0) 
-	  { machine_type_all=1;   	  dirty_graphic=1;}
+	  { TK.machine_type_all=1;   	  dirty_graphic=1;}
       
       if (keyState[BUTTON_DOWN] && keyState[BUTTON_A])
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONGEST==0) 
-	  { machine_type_all=-1;  	  dirty_graphic=1;}
+	  { TK.machine_type_all=-1;  	  dirty_graphic=1;}
     }
 
 }
@@ -2506,19 +2620,19 @@ void handle_key_lfo()
       sub_handle_invert_trig();
       if (keyState[BUTTON_LEFT] && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_SMALL==0) 
-	  { lfo_depth=-1; 	  dirty_graphic=1;}
+	  { TK.lfo_depth=-1; 	  dirty_graphic=1;}
       
       if (keyState[BUTTON_RIGHT]  && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_SMALL==0) 
-	  { lfo_depth=1;  	  dirty_graphic=1;}
+	  { TK.lfo_depth=1;  	  dirty_graphic=1;}
       
       if (keyState[BUTTON_UP]  && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALL==0) 
-	  { lfo_speed=1;   	  dirty_graphic=1;}
+	  { TK.lfo_speed=1;   	  dirty_graphic=1;}
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B])
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALL==0) 
-	  { lfo_speed=-1;  	  dirty_graphic=1;}
+	  { TK.lfo_speed=-1;  	  dirty_graphic=1;}
     }
 
 
@@ -2529,20 +2643,20 @@ void handle_key_lfo()
     {
       if (keyState[BUTTON_LEFT] && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_SMALL==0) 
-	  { lfo_depth_all=-1; 	  dirty_graphic=1;}
+	  { TK.lfo_depth_all=-1; 	  dirty_graphic=1;}
       
       if (keyState[BUTTON_RIGHT]  && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_SMALL==0) 
-	  { lfo_depth_all=1;  	  dirty_graphic=1;}
+	  { TK.lfo_depth_all=1;  	  dirty_graphic=1;}
 
       // ????
       if (keyState[BUTTON_UP]  && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALL==0) 
-	  { lfo_speed_all=1;   	  dirty_graphic=1;}
+	  { TK.lfo_speed_all=1;   	  dirty_graphic=1;}
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A])
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALL==0) 
-	  { lfo_speed_all=-1;  	  dirty_graphic=1;}
+	  { TK.lfo_speed_all=-1;  	  dirty_graphic=1;}
       //????
     }
 
@@ -2558,19 +2672,19 @@ void handle_key_lfo()
       sub_handle_invert_trig();
       if (keyState[BUTTON_LEFT] && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_SMALL==0) 
-	  { pb_depth=-1; 	  dirty_graphic=1;}
+	  { TK.pb_depth=-1; 	  dirty_graphic=1;}
       
       if (keyState[BUTTON_RIGHT]  && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_SMALL==0) 
-	  { pb_depth=1;  	  dirty_graphic=1;}
+	  { TK.pb_depth=1;  	  dirty_graphic=1;}
       
       if (keyState[BUTTON_UP]  && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALL==0) 
-	  { pb_speed=1;   	  dirty_graphic=1;}
+	  { TK.pb_speed=1;   	  dirty_graphic=1;}
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B])
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALL==0) 
-	  { pb_speed=-1;  	  dirty_graphic=1;}
+	  { TK.pb_speed=-1;  	  dirty_graphic=1;}
     }
 
 
@@ -2581,20 +2695,20 @@ void handle_key_lfo()
     {
       if (keyState[BUTTON_LEFT] && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_SMALL==0) 
-	  { pb_depth_all=-1; 	  dirty_graphic=1;}
+	  { TK.pb_depth_all=-1; 	  dirty_graphic=1;}
       
       if (keyState[BUTTON_RIGHT]  && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_SMALL==0) 
-	  { pb_depth_all=1;  	  dirty_graphic=1;}
+	  { TK.pb_depth_all=1;  	  dirty_graphic=1;}
 
       // ????
       if (keyState[BUTTON_UP]  && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALL==0) 
-	  { pb_speed_all=1;   	  dirty_graphic=1;}
+	  { TK.pb_speed_all=1;   	  dirty_graphic=1;}
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A])
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALL==0) 
-	  { pb_speed_all=-1;  	  dirty_graphic=1;}
+	  { TK.pb_speed_all=-1;  	  dirty_graphic=1;}
       //????
     }
 
@@ -2608,11 +2722,11 @@ void handle_key_lfo()
 
       if (keyState[BUTTON_UP]  && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALL==0) 
-	  { lfo_type=1;   	  dirty_graphic=1;}
+	  { TK.lfo_type=1;   	  dirty_graphic=1;}
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B])
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALL==0) 
-	  { lfo_type=-1;  	  dirty_graphic=1;}
+	  { TK.lfo_type=-1;  	  dirty_graphic=1;}
 
     }
 
@@ -2627,11 +2741,11 @@ void handle_key_lfo()
 
       if (keyState[BUTTON_UP]  && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALL==0) 
-	  { lfo_type_all=1;   	  dirty_graphic=1;}
+	  { TK.lfo_type_all=1;   	  dirty_graphic=1;}
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A])
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALL==0) 
-	  { lfo_type_all=-1;  	  dirty_graphic=1;}
+	  { TK.lfo_type_all=-1;  	  dirty_graphic=1;}
 
     }
 
@@ -2661,19 +2775,19 @@ void handle_key_psh()
     {
       if (keyState[BUTTON_LEFT] && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_LONGEST==0) 
-	  { pshift_all=-1; 	  dirty_graphic=1;}
+	  { TK.pshift_all=-1; 	  dirty_graphic=1;}
       
       if (keyState[BUTTON_RIGHT]  && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_LONGEST==0) 
-	  { pshift_all=1;  	  dirty_graphic=1;}
+	  { TK.pshift_all=1;  	  dirty_graphic=1;}
 
       if (keyState[BUTTON_UP]  && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONGEST==0) 
-	  { plength_all=1;   	  dirty_graphic=1;}
+	  { TK.plength_all=1;   	  dirty_graphic=1;}
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A])
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONGEST==0) 
-	  { plength_all=-1;  	  dirty_graphic=1;}
+	  { TK.plength_all=-1;  	  dirty_graphic=1;}
     }
 
 }
@@ -2706,19 +2820,19 @@ void handle_key_fltr()
 
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_B])
 	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST )  
-	  { resonance=-1;   dirty_graphic=1; }
+	  { TK.resonance=-1;   dirty_graphic=1; }
       
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST )  
-	  { resonance=1; 	  dirty_graphic=1; }
+	  { TK.resonance=1; 	  dirty_graphic=1; }
       
       if (keyState[BUTTON_UP]    && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST ) 
-	  { cutoff=1;  	  dirty_graphic=1; }
+	  { TK.cutoff=1;  	  dirty_graphic=1; }
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST ) 
-	  { cutoff=-1; 	  dirty_graphic=1; }
+	  { TK.cutoff=-1; 	  dirty_graphic=1; }
     }  
 
   // GLOBALMENU_FLTR
@@ -2730,19 +2844,19 @@ void handle_key_fltr()
     {
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A])
 	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST )  
-	  { resonance_all=-1;   dirty_graphic=1; }
+	  { TK.resonance_all=-1;   dirty_graphic=1; }
       
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST )  
-	  { resonance_all=1; 	  dirty_graphic=1; }
+	  { TK.resonance_all=1; 	  dirty_graphic=1; }
       
       if (keyState[BUTTON_UP]    && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST ) 
-	  { cutoff_all=1;  	  dirty_graphic=1; }
+	  { TK.cutoff_all=1;  	  dirty_graphic=1; }
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST ) 
-	  { cutoff_all=-1; 	  dirty_graphic=1; }
+	  { TK.cutoff_all=-1; 	  dirty_graphic=1; }
     }  
 
   // GLOBALMENU_FLTR
@@ -2756,19 +2870,19 @@ void handle_key_fltr()
 
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_B])
 	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST )  
-	  { filter_algo=-1;   dirty_graphic=1; }
+	  { TK.filter_algo=-1;   dirty_graphic=1; }
       
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST )  
-	  { filter_algo=1; 	  dirty_graphic=1; }
+	  { TK.filter_algo=1; 	  dirty_graphic=1; }
       
       if (keyState[BUTTON_UP]    && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { filter_type=1;  	  dirty_graphic=1; }
+	  { TK.filter_type=1;  	  dirty_graphic=1; }
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST ) 
-	  { filter_type=-1; 	  dirty_graphic=1; }
+	  { TK.filter_type=-1; 	  dirty_graphic=1; }
     }  
 
 
@@ -2783,19 +2897,19 @@ void handle_key_fltr()
 
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A])
 	  if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST )  
-	  { filter_algo_all=-1;   dirty_graphic=1; }
+	  { TK.filter_algo_all=-1;   dirty_graphic=1; }
       
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST )  
-	  { filter_algo_all=1; 	  dirty_graphic=1; }
+	  { TK.filter_algo_all=1; 	  dirty_graphic=1; }
       
       if (keyState[BUTTON_UP]    && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST ) 
-	  { filter_type_all=1;  	  dirty_graphic=1; }
+	  { TK.filter_type_all=1;  	  dirty_graphic=1; }
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A]) 
 	  if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST ) 
-	  { filter_type_all=-1; 	  dirty_graphic=1; }
+	  { TK.filter_type_all=-1; 	  dirty_graphic=1; }
     }  
 
 
@@ -2820,19 +2934,19 @@ void handle_key_bpm()
     {
       if (keyState[BUTTON_LEFT] && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_LONGEST==0) 
-	  { bpm=-1; 	  dirty_graphic=1; printf("[B+LEFT  t=%d]\n",bpm_current); }
+	  { TK.bpm=-1; 	  dirty_graphic=1; printf("[B+LEFT  t=%d]\n",bpm_current); }
 
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_LONGEST==0) 
-	  { bpm=1; 	  dirty_graphic=1; printf("[B+RIGHT t=%d]\n",bpm_current);}
+	  { TK.bpm=1; 	  dirty_graphic=1; printf("[B+RIGHT t=%d]\n",bpm_current);}
 
       if (keyState[BUTTON_DOWN] && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONGEST==0) 
-	  { bpm=-10; 	  dirty_graphic=1; printf("[B+DOWN  t=%d]\n",bpm_current); }
+	  { TK.bpm=-10; 	  dirty_graphic=1; printf("[B+DOWN  t=%d]\n",bpm_current); }
 
       if (keyState[BUTTON_UP] && keyState[BUTTON_B]) 
 	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONGEST==0) 
-	  { bpm=10; 	  dirty_graphic=1; printf("[B+UP    t=%d]\n",bpm_current);}
+	  { TK.bpm=10; 	  dirty_graphic=1; printf("[B+UP    t=%d]\n",bpm_current);}
 
 
       //if (bpm < 20) bpm=20;
@@ -2847,11 +2961,11 @@ void handle_key_bpm()
 
       if (keyState[BUTTON_DOWN] && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONGEST==0) 
-	  { divider=-1; 	  dirty_graphic=1; printf("[A+DOWN  t=%d] divider\n",divider); }
+	  { TK.divider=-1; 	  dirty_graphic=1; printf("[A+DOWN  t=%d] divider\n",TK.divider); }
 
       if (keyState[BUTTON_UP] && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONGEST==0) 
-	  { divider=1; 	  dirty_graphic=1; printf("[A+UP    t=%d] divider\n",divider);}
+	  { TK.divider=1; 	  dirty_graphic=1; printf("[A+UP    t=%d] divider\n",TK.divider);}
     }  
 
 
@@ -2861,11 +2975,11 @@ void handle_key_bpm()
 
       if (keyState[BUTTON_LEFT] && keyState[BUTTON_A])
 	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_LONGEST==0)
-	  { swing=-1; 	  dirty_graphic=1; printf("[A+DOWN  t=%d] swing\n",current_swing); }
+	  { TK.swing=-1; 	  dirty_graphic=1; printf("[A+DOWN  t=%d] swing\n",current_swing); }
 
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
 	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_LONGEST==0) 
-	  { swing=1; 	  dirty_graphic=1; printf("[A+UP    t=%d] swing\n",current_swing);}
+	  { TK.swing=1; 	  dirty_graphic=1; printf("[A+UP    t=%d] swing\n",current_swing);}
     }  
 
 
@@ -3361,59 +3475,59 @@ void seq_update_multiple_time_by_step()
 
   
   // Change amp Amplification
-  if (amp!=0)
+  if (TK.amp!=0)
     {
-      P[cty].getPatternElement(cursor).setAmp(P[cty].getPatternElement(cursor).getAmp()+amp);
-      amp=0;
+      P[cty].getPatternElement(cursor).setAmp(P[cty].getPatternElement(cursor).getAmp()+TK.amp);
+      TK.amp=0;
       if (debug)
 	printf("[amp:%d]\n",P[cty].getPatternElement(cursor).getAmp());
     }
   
   // Change amp Amplification
-  if (amp_all!=0)
+  if (TK.amp_all!=0)
     {
       for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).setAmp(P[cty].getPatternElement(i).getAmp()+amp_all);
-      amp_all=0;
+	P[cty].getPatternElement(i).setAmp(P[cty].getPatternElement(i).getAmp()+TK.amp_all);
+      TK.amp_all=0;
       if (debug)
 	printf("[amp_all:%d]\n",P[cty].getPatternElement(cursor).getAmp());
     }
   
   // Change amp env Attack
-  if (attack_amp!=0)
+  if (TK.attack_amp!=0)
     {
-      P[cty].getPatternElement(cursor).setAttack_amp(P[cty].getPatternElement(cursor).getAttack_amp()+attack_amp);
-      attack_amp=0;
+      P[cty].getPatternElement(cursor).setAttack_amp(P[cty].getPatternElement(cursor).getAttack_amp()+TK.attack_amp);
+      TK.attack_amp=0;
       if (debug)
 	printf("[attack_amp:%d]\n",P[cty].getPatternElement(cursor).getAttack_amp());
     }
   
   // Change amp env Attack
-  if (attack_amp_all!=0)
+  if (TK.attack_amp_all!=0)
     {
       for(i=0;i<16;i++)
-	P[cty].getPatternElement(i).setAttack_amp(P[cty].getPatternElement(i).getAttack_amp()+attack_amp_all);
-      attack_amp_all=0;
+	P[cty].getPatternElement(i).setAttack_amp(P[cty].getPatternElement(i).getAttack_amp()+TK.attack_amp_all);
+      TK.attack_amp_all=0;
       if (debug)
 	printf("[attack_all:%d]\n",P[cty].getPatternElement(cursor).getAttack_amp());
     }
 
 
   // Change amp env Decay
-  if (decay_amp!=0)
+  if (TK.decay_amp!=0)
     {
-      P[cty].getPatternElement(cursor).setDecay_amp(P[cty].getPatternElement(cursor).getDecay_amp()+decay_amp);
-      decay_amp=0;
+      P[cty].getPatternElement(cursor).setDecay_amp(P[cty].getPatternElement(cursor).getDecay_amp()+TK.decay_amp);
+      TK.decay_amp=0;
       if (debug)
 	printf("[decay_amp:%d]\n",P[cty].getPatternElement(cursor).getDecay_amp());
     }
   
   // Change amp env Decay
-  if (decay_amp_all!=0)
+  if (TK.decay_amp_all!=0)
     {
       for(i=0;i<16;i++)
-	P[cty].getPatternElement(i).setDecay_amp(P[cty].getPatternElement(i).getDecay_amp()+decay_amp_all);
-      decay_amp_all=0;
+	P[cty].getPatternElement(i).setDecay_amp(P[cty].getPatternElement(i).getDecay_amp()+TK.decay_amp_all);
+      TK.decay_amp_all=0;
       if (debug)
 	printf("[decay_all:%d]\n",P[cty].getPatternElement(cursor).getDecay_amp());
     }
@@ -3421,31 +3535,31 @@ void seq_update_multiple_time_by_step()
 
 
   // Change amp env Sustain
-  if (sustain_amp!=0)
+  if (TK.sustain_amp!=0)
     {
-      P[cty].getPatternElement(cursor).setSustain_amp(P[cty].getPatternElement(cursor).getSustain_amp()+sustain_amp);
-      sustain_amp=0;
+      P[cty].getPatternElement(cursor).setSustain_amp(P[cty].getPatternElement(cursor).getSustain_amp()+TK.sustain_amp);
+      TK.sustain_amp=0;
       if (debug)
 	printf("[sustain_amp:%d]\n",P[cty].getPatternElement(cursor).getSustain_amp());
     }
   
   // Change amp env Sustain
-  if (sustain_amp_all!=0)
+  if (TK.sustain_amp_all!=0)
     {
       for(i=0;i<16;i++)
-	P[cty].getPatternElement(i).setSustain_amp(P[cty].getPatternElement(i).getSustain_amp()+sustain_amp_all);
-      sustain_amp_all=0;
+	P[cty].getPatternElement(i).setSustain_amp(P[cty].getPatternElement(i).getSustain_amp()+TK.sustain_amp_all);
+      TK.sustain_amp_all=0;
       if (debug)
 	printf("[sustain_all:%d]\n",P[cty].getPatternElement(cursor).getSustain_amp());
     }
   
   
   // Change amp env Release
-  if (release_amp!=0)
+  if (TK.release_amp!=0)
     {
       //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
-      P[cty].getPatternElement(cursor).setRelease_amp(P[cty].getPatternElement(cursor).getRelease_amp()+release_amp);
-      release_amp=0;
+      P[cty].getPatternElement(cursor).setRelease_amp(P[cty].getPatternElement(cursor).getRelease_amp()+TK.release_amp);
+      TK.release_amp=0;
       if (debug)
 	printf("[release_amp:%d]\n",P[cty].getPatternElement(cursor).getRelease_amp());
       //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
@@ -3453,12 +3567,12 @@ void seq_update_multiple_time_by_step()
     }
   
   // Change amp env Release
-  if (release_amp_all!=0)
+  if (TK.release_amp_all!=0)
     {
       //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
       for(i=0;i<16;i++)
-	P[cty].getPatternElement(i).setRelease_amp(P[cty].getPatternElement(i).getRelease_amp()+release_amp_all);
-      release_amp_all=0;
+	P[cty].getPatternElement(i).setRelease_amp(P[cty].getPatternElement(i).getRelease_amp()+TK.release_amp_all);
+      TK.release_amp_all=0;
       if (debug)
 	printf("[release_amp_all:%d]\n",P[cty].getPatternElement(cursor).getRelease_amp());
       //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
@@ -3470,60 +3584,60 @@ void seq_update_multiple_time_by_step()
 
 
   // Change fltr env Attack
-  if (attack_fltr!=0)
+  if (TK.attack_fltr!=0)
     {
-      P[cty].getPatternElement(cursor).setAttack_fltr(P[cty].getPatternElement(cursor).getAttack_fltr()+attack_fltr);
-      attack_fltr=0;
+      P[cty].getPatternElement(cursor).setAttack_fltr(P[cty].getPatternElement(cursor).getAttack_fltr()+TK.attack_fltr);
+      TK.attack_fltr=0;
       if (debug)
 	printf("[attack_fltr:%d]\n",P[cty].getPatternElement(cursor).getAttack_fltr());
     }
   
   // Change fltr env Attack
-  if (attack_fltr_all!=0)
+  if (TK.attack_fltr_all!=0)
     {
       for(i=0;i<16;i++)
-	P[cty].getPatternElement(i).setAttack_fltr(P[cty].getPatternElement(i).getAttack_fltr()+attack_fltr_all);
-      attack_fltr_all=0;
+	P[cty].getPatternElement(i).setAttack_fltr(P[cty].getPatternElement(i).getAttack_fltr()+TK.attack_fltr_all);
+      TK.attack_fltr_all=0;
       if (debug)
 	printf("[attack_all:%d]\n",P[cty].getPatternElement(cursor).getAttack_amp());
     }
 
 
   // Change fltr env Decay
-  if (decay_fltr!=0)
+  if (TK.decay_fltr!=0)
     {
-      P[cty].getPatternElement(cursor).setDecay_fltr(P[cty].getPatternElement(cursor).getDecay_fltr()+decay_fltr);
-      decay_fltr=0;
+      P[cty].getPatternElement(cursor).setDecay_fltr(P[cty].getPatternElement(cursor).getDecay_fltr()+TK.decay_fltr);
+      TK.decay_fltr=0;
       if (debug)
 	printf("[decay_fltr:%d]\n",P[cty].getPatternElement(cursor).getDecay_fltr());
     }
   
   // Change fltr env Decay
-  if (decay_fltr_all!=0)
+  if (TK.decay_fltr_all!=0)
     {
       for(i=0;i<16;i++)
-	P[cty].getPatternElement(i).setDecay_fltr(P[cty].getPatternElement(i).getDecay_fltr()+decay_fltr_all);
-      decay_fltr_all=0;
+	P[cty].getPatternElement(i).setDecay_fltr(P[cty].getPatternElement(i).getDecay_fltr()+TK.decay_fltr_all);
+      TK.decay_fltr_all=0;
       if (debug)
 	printf("[decay_all:%d]\n",P[cty].getPatternElement(cursor).getDecay_amp());
     }
 
 
   // Change fltr env Sustain
-  if (sustain_fltr!=0)
+  if (TK.sustain_fltr!=0)
     {
-      P[cty].getPatternElement(cursor).setSustain_fltr(P[cty].getPatternElement(cursor).getSustain_fltr()+sustain_fltr);
-      sustain_fltr=0;
+      P[cty].getPatternElement(cursor).setSustain_fltr(P[cty].getPatternElement(cursor).getSustain_fltr()+TK.sustain_fltr);
+      TK.sustain_fltr=0;
       if (debug)
 	printf("[sustain_fltr:%d]\n",P[cty].getPatternElement(cursor).getSustain_fltr());
     }
   
   // Change fltr env Sustain
-  if (sustain_fltr_all!=0)
+  if (TK.sustain_fltr_all!=0)
     {
       for(i=0;i<16;i++)
-	P[cty].getPatternElement(i).setSustain_fltr(P[cty].getPatternElement(i).getSustain_fltr()+sustain_fltr_all);
-      sustain_fltr_all=0;
+	P[cty].getPatternElement(i).setSustain_fltr(P[cty].getPatternElement(i).getSustain_fltr()+TK.sustain_fltr_all);
+      TK.sustain_fltr_all=0;
       if (debug)
 	printf("[sustain_all:%d]\n",P[cty].getPatternElement(cursor).getSustain_amp());
     }
@@ -3531,11 +3645,11 @@ void seq_update_multiple_time_by_step()
   
   
   // Change fltr env Release
-  if (release_fltr!=0)
+  if (TK.release_fltr!=0)
     {
       //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
-      P[cty].getPatternElement(cursor).setRelease_fltr(P[cty].getPatternElement(cursor).getRelease_fltr()+release_fltr);
-      release_fltr=0;
+      P[cty].getPatternElement(cursor).setRelease_fltr(P[cty].getPatternElement(cursor).getRelease_fltr()+TK.release_fltr);
+      TK.release_fltr=0;
       if (debug)
 	printf("[release_fltr:%d]\n",P[cty].getPatternElement(cursor).getRelease_fltr());
       //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
@@ -3543,12 +3657,12 @@ void seq_update_multiple_time_by_step()
     }
   
   // Change fltr env Release
-  if (release_fltr_all!=0)
+  if (TK.release_fltr_all!=0)
     {
       //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
       for(i=0;i<16;i++)
-	P[cty].getPatternElement(i).setRelease_fltr(P[cty].getPatternElement(i).getRelease_fltr()+release_fltr_all);
-      release_fltr_all=0;
+	P[cty].getPatternElement(i).setRelease_fltr(P[cty].getPatternElement(i).getRelease_fltr()+TK.release_fltr_all);
+      TK.release_fltr_all=0;
       if (debug)
 	printf("[release_fltr_all:%d]\n",P[cty].getPatternElement(cursor).getRelease_fltr());
       //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
@@ -3557,39 +3671,39 @@ void seq_update_multiple_time_by_step()
   
 
   // Change fltr env Attack
-  if (filter_type!=0)
+  if (TK.filter_type!=0)
     {
-      P[cty].getPatternElement(cursor).setFilterType(P[cty].getPatternElement(cursor).getFilterType()+filter_type);
-      filter_type=0;
+      P[cty].getPatternElement(cursor).setFilterType(P[cty].getPatternElement(cursor).getFilterType()+TK.filter_type);
+      TK.filter_type=0;
       if (debug)
 	printf("[filter_type:%d]\n",P[cty].getPatternElement(cursor).getFilterType());
     }
   
   // Change fltr env Attack
-  if (filter_type_all!=0)
+  if (TK.filter_type_all!=0)
     {
       for(i=0;i<16;i++)
-	P[cty].getPatternElement(i).setFilterType(P[cty].getPatternElement(i).getFilterType()+filter_type_all);
-      filter_type_all=0;
+	P[cty].getPatternElement(i).setFilterType(P[cty].getPatternElement(i).getFilterType()+TK.filter_type_all);
+      TK.filter_type_all=0;
       if (debug)
 	printf("[filter_type:%d]\n",P[cty].getPatternElement(cursor).getFilterType());
     }
 
   // Change fltr env Attack
-  if (filter_algo!=0)
+  if (TK.filter_algo!=0)
     {
-      P[cty].getPatternElement(cursor).setFilterAlgo(P[cty].getPatternElement(cursor).getFilterAlgo()+filter_algo);
-      filter_algo=0;
+      P[cty].getPatternElement(cursor).setFilterAlgo(P[cty].getPatternElement(cursor).getFilterAlgo()+TK.filter_algo);
+      TK.filter_algo=0;
       if (debug)
 	printf("[filter_algo:%d]\n",P[cty].getPatternElement(cursor).getFilterAlgo());
     }
   
   // Change fltr env Attack
-  if (filter_algo_all!=0)
+  if (TK.filter_algo_all!=0)
     {
       for(i=0;i<16;i++)
-	P[cty].getPatternElement(i).setFilterAlgo(P[cty].getPatternElement(i).getFilterAlgo()+filter_algo_all);
-      filter_algo_all=0;
+	P[cty].getPatternElement(i).setFilterAlgo(P[cty].getPatternElement(i).getFilterAlgo()+TK.filter_algo_all);
+      TK.filter_algo_all=0;
       if (debug)
 	printf("[filter_algo:%d]\n",P[cty].getPatternElement(cursor).getFilterAlgo());
     }
@@ -3599,11 +3713,11 @@ void seq_update_multiple_time_by_step()
 
   
   // Change VCOMix
-  if (vcomix!=0)
+  if (TK.vcomix!=0)
     {
       //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
-      P[cty].getPatternElement(cursor).setVCOMix(P[cty].getPatternElement(cursor).getVCOMix()+vcomix);
-      vcomix=0;
+      P[cty].getPatternElement(cursor).setVCOMix(P[cty].getPatternElement(cursor).getVCOMix()+TK.vcomix);
+      TK.vcomix=0;
       if (debug)
 	printf("[vcomix:%d]\n",P[cty].getPatternElement(cursor).getVCOMix());
       //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
@@ -3611,11 +3725,11 @@ void seq_update_multiple_time_by_step()
     }
   
   // Change VCOMix
-  if (vcomix_all!=0)
+  if (TK.vcomix_all!=0)
     {
       for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).setVCOMix(P[cty].getPatternElement(i).getVCOMix()+vcomix_all);
-      vcomix_all=0;
+	P[cty].getPatternElement(i).setVCOMix(P[cty].getPatternElement(i).getVCOMix()+TK.vcomix_all);
+      TK.vcomix_all=0;
       if (debug)
 	printf("[vcomix_all:%d]\n",P[cty].getPatternElement(cursor).getVCOMix());
       //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
@@ -3624,40 +3738,40 @@ void seq_update_multiple_time_by_step()
 
 
   // Change Fx Depth
-  if (fx_depth!=0)
+  if (TK.fx_depth!=0)
     {
-      P[cty].getPatternElement(cursor).setFxDepth(P[cty].getPatternElement(cursor).getFxDepth()+fx_depth);
-      fx_depth=0;
+      P[cty].getPatternElement(cursor).setFxDepth(P[cty].getPatternElement(cursor).getFxDepth()+TK.fx_depth);
+      TK.fx_depth=0;
       if (debug)
 	printf("[fx_depth:%d]\n",P[cty].getPatternElement(cursor).getFxDepth());      
     }
   
   // Change Fx Depth All
-  if (fx_depth_all!=0)
+  if (TK.fx_depth_all!=0)
     {
       for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).setFxDepth(P[cty].getPatternElement(i).getFxDepth()+fx_depth_all);
-      fx_depth_all=0;
+	P[cty].getPatternElement(i).setFxDepth(P[cty].getPatternElement(i).getFxDepth()+TK.fx_depth_all);
+      TK.fx_depth_all=0;
       if (debug)
 	printf("[fx_depth_all:%d]\n",P[cty].getPatternElement(cursor).getFxDepth());      
     }
 
 
   // Change Fx Speed
-  if (fx_speed!=0)
+  if (TK.fx_speed!=0)
     {
-      P[cty].getPatternElement(cursor).setFxSpeed(P[cty].getPatternElement(cursor).getFxSpeed()+fx_speed);
-      fx_speed=0;
+      P[cty].getPatternElement(cursor).setFxSpeed(P[cty].getPatternElement(cursor).getFxSpeed()+TK.fx_speed);
+      TK.fx_speed=0;
       if (debug)
 	printf("[fx_speed:%d]\n",P[cty].getPatternElement(cursor).getFxSpeed());      
     }
   
   // Change Fx Speed
-  if (fx_speed_all!=0)
+  if (TK.fx_speed_all!=0)
     {
       for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).setFxSpeed(P[cty].getPatternElement(i).getFxSpeed()+fx_speed_all);
-      fx_speed_all=0;
+	P[cty].getPatternElement(i).setFxSpeed(P[cty].getPatternElement(i).getFxSpeed()+TK.fx_speed_all);
+      TK.fx_speed_all=0;
       if (debug)
 	printf("[fx_speed_all:%d]\n",P[cty].getPatternElement(cursor).getFxSpeed());      
     }
@@ -3665,11 +3779,11 @@ void seq_update_multiple_time_by_step()
 
 
   // Change osc1 amp
-  if (osc1_amp!=0)
+  if (TK.osc1_amp!=0)
     {
       //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
-      P[cty].getPatternElement(cursor).setOsc1Amp(P[cty].getPatternElement(cursor).getOsc1Amp()+osc1_amp);
-      osc1_amp=0;
+      P[cty].getPatternElement(cursor).setOsc1Amp(P[cty].getPatternElement(cursor).getOsc1Amp()+TK.osc1_amp);
+      TK.osc1_amp=0;
       if (debug)
 	printf("[osc1_amp:%d]\n",P[cty].getPatternElement(cursor).getOsc1Amp());
       //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
@@ -3677,11 +3791,11 @@ void seq_update_multiple_time_by_step()
     }
   
   // Change osc1 amp all
-  if (osc1_amp_all!=0)
+  if (TK.osc1_amp_all!=0)
     {
       for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).setOsc1Amp(P[cty].getPatternElement(i).getOsc1Amp()+osc1_amp_all);
-      osc1_amp_all=0;
+	P[cty].getPatternElement(i).setOsc1Amp(P[cty].getPatternElement(i).getOsc1Amp()+TK.osc1_amp_all);
+      TK.osc1_amp_all=0;
       if (debug)
 	printf("[osc1_amp_all:%d]\n",P[cty].getPatternElement(cursor).getOsc1Amp());
       //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
@@ -3689,11 +3803,11 @@ void seq_update_multiple_time_by_step()
     }
 
   // Change osc2 amp
-  if (osc2_amp!=0)
+  if (TK.osc2_amp!=0)
     {
       //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
-      P[cty].getPatternElement(cursor).setOsc2Amp(P[cty].getPatternElement(cursor).getOsc2Amp()+osc2_amp);
-      osc2_amp=0;
+      P[cty].getPatternElement(cursor).setOsc2Amp(P[cty].getPatternElement(cursor).getOsc2Amp()+TK.osc2_amp);
+      TK.osc2_amp=0;
       if (debug)
 	printf("[osc2_amp:%d]\n",P[cty].getPatternElement(cursor).getOsc2Amp());
       //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
@@ -3701,11 +3815,11 @@ void seq_update_multiple_time_by_step()
     }
   
   // Change osc2 amp all
-  if (osc2_amp_all!=0)
+  if (TK.osc2_amp_all!=0)
     {
       for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).setOsc2Amp(P[cty].getPatternElement(i).getOsc2Amp()+osc2_amp_all);
-      osc2_amp_all=0;
+	P[cty].getPatternElement(i).setOsc2Amp(P[cty].getPatternElement(i).getOsc2Amp()+TK.osc2_amp_all);
+      TK.osc2_amp_all=0;
       if (debug)
 	printf("[osc2_amp_all:%d]\n",P[cty].getPatternElement(cursor).getOsc2Amp());
       //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
@@ -3717,20 +3831,20 @@ void seq_update_multiple_time_by_step()
 
 
   // Change trig time
-  if (trig_time!=0)
+  if (TK.trig_time!=0)
     {
-      P[cty].getPatternElement(cursor).setTrigTime(P[cty].getPatternElement(cursor).getTrigTime()+trig_time);
-      trig_time=0;
+      P[cty].getPatternElement(cursor).setTrigTime(P[cty].getPatternElement(cursor).getTrigTime()+TK.trig_time);
+      TK.trig_time=0;
       if (debug)
 	printf("[trig_time:%d]\n",P[cty].getPatternElement(cursor).getTrigTime());      
     }
   
   // Change all trig time
-  if (trig_time_all!=0)
+  if (TK.trig_time_all!=0)
     {
       for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).setTrigTime(P[cty].getPatternElement(i).getTrigTime()+trig_time_all);
-      trig_time_all=0;
+	P[cty].getPatternElement(i).setTrigTime(P[cty].getPatternElement(i).getTrigTime()+TK.trig_time_all);
+      TK.trig_time_all=0;
       if (debug)
 	printf("[trig_time_all:%d]\n",P[cty].getPatternElement(cursor).getTrigTime());      
     }
@@ -3739,11 +3853,11 @@ void seq_update_multiple_time_by_step()
 
 
   // Change phase osc1
-  if (phase_osc1!=0)
+  if (TK.phase_osc1!=0)
     {
       //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
-      P[cty].getPatternElement(cursor).setPhaseOsc1(P[cty].getPatternElement(cursor).getPhaseOsc1()+phase_osc1);
-      phase_osc1=0;
+      P[cty].getPatternElement(cursor).setPhaseOsc1(P[cty].getPatternElement(cursor).getPhaseOsc1()+TK.phase_osc1);
+      TK.phase_osc1=0;
       if (debug)
 	printf("[phase_osc1:%d]\n",P[cty].getPatternElement(cursor).getPhaseOsc1());
       //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
@@ -3751,12 +3865,12 @@ void seq_update_multiple_time_by_step()
     }
 
   // Change phase osc1
-  if (phase_osc1_all!=0)
+  if (TK.phase_osc1_all!=0)
     {
       //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
       for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).setPhaseOsc1(P[cty].getPatternElement(i).getPhaseOsc1()+phase_osc1_all);
-      phase_osc1_all=0;
+	P[cty].getPatternElement(i).setPhaseOsc1(P[cty].getPatternElement(i).getPhaseOsc1()+TK.phase_osc1_all);
+      TK.phase_osc1_all=0;
       if (debug)
 	printf("[phase_osc1_all:%d]\n",P[cty].getPatternElement(cursor).getPhaseOsc1());
       //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
@@ -3766,10 +3880,10 @@ void seq_update_multiple_time_by_step()
 
 
   // Change lfo depth
-  if (lfo_depth!=0)
+  if (TK.lfo_depth!=0)
     {      
-      P[cty].getPatternElement(cursor).setLfoDepth(P[cty].getPatternElement(cursor).getLfoDepth()+lfo_depth);
-      lfo_depth=0;
+      P[cty].getPatternElement(cursor).setLfoDepth(P[cty].getPatternElement(cursor).getLfoDepth()+TK.lfo_depth);
+      TK.lfo_depth=0;
       if (debug)
 	printf("[lfo_depth:%d]\n",P[cty].getPatternElement(cursor).getLfoDepth());
       
@@ -3777,11 +3891,11 @@ void seq_update_multiple_time_by_step()
 
 
   // Change lfo depth
-  if (lfo_depth_all!=0)
+  if (TK.lfo_depth_all!=0)
     {
       for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).setLfoDepth(P[cty].getPatternElement(i).getLfoDepth()+lfo_depth_all);
-      lfo_depth_all=0;
+	P[cty].getPatternElement(i).setLfoDepth(P[cty].getPatternElement(i).getLfoDepth()+TK.lfo_depth_all);
+      TK.lfo_depth_all=0;
       if (debug)
 	printf("[lfo_depth_all:%d]\n",P[cty].getPatternElement(cursor).getLfoDepth());
       
@@ -3789,21 +3903,21 @@ void seq_update_multiple_time_by_step()
 
 
   // Change lfo speed
-  if (lfo_speed!=0)
+  if (TK.lfo_speed!=0)
     {
-      P[cty].getPatternElement(cursor).setLfoSpeed(P[cty].getPatternElement(cursor).getLfoSpeed()+lfo_speed);
-      lfo_speed=0;
+      P[cty].getPatternElement(cursor).setLfoSpeed(P[cty].getPatternElement(cursor).getLfoSpeed()+TK.lfo_speed);
+      TK.lfo_speed=0;
       if (debug)
 	printf("[lfo_speed:%d]\n",P[cty].getPatternElement(cursor).getLfoSpeed());
       
     }
 
   // Change lfo speed
-  if (lfo_speed_all!=0)
+  if (TK.lfo_speed_all!=0)
     {
       for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).setLfoSpeed(P[cty].getPatternElement(i).getLfoSpeed()+lfo_speed_all);
-      lfo_speed_all=0;
+	P[cty].getPatternElement(i).setLfoSpeed(P[cty].getPatternElement(i).getLfoSpeed()+TK.lfo_speed_all);
+      TK.lfo_speed_all=0;
       if (debug)
 	printf("[lfo_speed:%d]\n",P[cty].getPatternElement(cursor).getLfoSpeed());
       
@@ -3811,10 +3925,10 @@ void seq_update_multiple_time_by_step()
 
 
   // Change pb depth
-  if (pb_depth!=0)
+  if (TK.pb_depth!=0)
     {      
-      P[cty].getPatternElement(cursor).setPitchBendDepth(P[cty].getPatternElement(cursor).getPitchBendDepth()+pb_depth);
-      pb_depth=0;
+      P[cty].getPatternElement(cursor).setPitchBendDepth(P[cty].getPatternElement(cursor).getPitchBendDepth()+TK.pb_depth);
+      TK.pb_depth=0;
       if (debug)
 	printf("[pb_depth:%d]\n",P[cty].getPatternElement(cursor).getPitchBendDepth());
       
@@ -3822,11 +3936,11 @@ void seq_update_multiple_time_by_step()
 
 
   // Change pb depth
-  if (pb_depth_all!=0)
+  if (TK.pb_depth_all!=0)
     {
       for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).setPitchBendDepth(P[cty].getPatternElement(i).getPitchBendDepth()+pb_depth_all);
-      pb_depth_all=0;
+	P[cty].getPatternElement(i).setPitchBendDepth(P[cty].getPatternElement(i).getPitchBendDepth()+TK.pb_depth_all);
+      TK.pb_depth_all=0;
       if (debug)
 	printf("[pb_depth_all:%d]\n",P[cty].getPatternElement(cursor).getPitchBendDepth());
       
@@ -3834,21 +3948,21 @@ void seq_update_multiple_time_by_step()
 
 
   // Change pb speed
-  if (pb_speed!=0)
+  if (TK.pb_speed!=0)
     {
-      P[cty].getPatternElement(cursor).setPitchBendSpeed(P[cty].getPatternElement(cursor).getPitchBendSpeed()+pb_speed);
-      pb_speed=0;
+      P[cty].getPatternElement(cursor).setPitchBendSpeed(P[cty].getPatternElement(cursor).getPitchBendSpeed()+TK.pb_speed);
+      TK.pb_speed=0;
       if (debug)
 	printf("[pb_speed:%d]\n",P[cty].getPatternElement(cursor).getPitchBendSpeed());
       
     }
 
   // Change pb speed
-  if (pb_speed_all!=0)
+  if (TK.pb_speed_all!=0)
     {
       for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).setPitchBendSpeed(P[cty].getPatternElement(i).getPitchBendSpeed()+pb_speed_all);
-      pb_speed_all=0;
+	P[cty].getPatternElement(i).setPitchBendSpeed(P[cty].getPatternElement(i).getPitchBendSpeed()+TK.pb_speed_all);
+      TK.pb_speed_all=0;
       if (debug)
 	printf("[pb_speed:%d]\n",P[cty].getPatternElement(cursor).getPitchBendSpeed());
       
@@ -3856,21 +3970,21 @@ void seq_update_multiple_time_by_step()
 
 
   // Change lfo type
-  if (lfo_type!=0)
+  if (TK.lfo_type!=0)
     {
-      P[cty].getPatternElement(cursor).setLfoType(P[cty].getPatternElement(cursor).getLfoType()+lfo_type);
-      lfo_type=0;
+      P[cty].getPatternElement(cursor).setLfoType(P[cty].getPatternElement(cursor).getLfoType()+TK.lfo_type);
+      TK.lfo_type=0;
       if (debug)
 	printf("[lfo_type:%d]\n",P[cty].getPatternElement(cursor).getLfoType());
       
     }
 
   // Change pb speed
-  if (lfo_type_all!=0)
+  if (TK.lfo_type_all!=0)
     {
       for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).setLfoType(P[cty].getPatternElement(i).getLfoType()+lfo_type_all);
-      lfo_type_all=0;
+	P[cty].getPatternElement(i).setLfoType(P[cty].getPatternElement(i).getLfoType()+TK.lfo_type_all);
+      TK.lfo_type_all=0;
       if (debug)
 	printf("[lfo_type:%d]\n",P[cty].getPatternElement(cursor).getLfoType());
       
@@ -3879,84 +3993,84 @@ void seq_update_multiple_time_by_step()
   
   
   // Change filter cutoff
-  if (cutoff!=0)
+  if (TK.cutoff!=0)
     {
-      P[cty].getPatternElement(cursor).setCutoff(P[cty].getPatternElement(cursor).getCutoff()+cutoff);
-      cutoff=0;
+      P[cty].getPatternElement(cursor).setCutoff(P[cty].getPatternElement(cursor).getCutoff()+TK.cutoff);
+      TK.cutoff=0;
       if (debug) printf("[cutoff:%d]\n",P[cty].getPatternElement(cursor).getCutoff());	  
     }
   
   // Change filter cutoff
-  if (cutoff_all!=0)
+  if (TK.cutoff_all!=0)
     {
       for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).setCutoff(P[cty].getPatternElement(i).getCutoff()+cutoff_all);
-      cutoff_all=0;
+	P[cty].getPatternElement(i).setCutoff(P[cty].getPatternElement(i).getCutoff()+TK.cutoff_all);
+      TK.cutoff_all=0;
       if (debug) printf("[cutoff_all:%d]\n",P[cty].getPatternElement(cursor).getCutoff());	  
     }
   
   // Change filter resonance
-  if (resonance!=0)
+  if (TK.resonance!=0)
     {
-      P[cty].getPatternElement(cursor).setResonance(P[cty].getPatternElement(cursor).getResonance()+resonance);
-      resonance=0;
+      P[cty].getPatternElement(cursor).setResonance(P[cty].getPatternElement(cursor).getResonance()+TK.resonance);
+      TK.resonance=0;
       if (debug) printf("[resonance:%d]\n",P[cty].getPatternElement(cursor).getResonance());	  
     }
   
   // Change filter resonance
-  if (resonance_all!=0)
+  if (TK.resonance_all!=0)
     {
       for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).setResonance(P[cty].getPatternElement(i).getResonance()+resonance_all);
-      resonance_all=0;
+	P[cty].getPatternElement(i).setResonance(P[cty].getPatternElement(i).getResonance()+TK.resonance_all);
+      TK.resonance_all=0;
       if (debug) printf("[resonance_all:%d]\n",P[cty].getPatternElement(cursor).getResonance());	  
     }
   
     // Change step divider
-  if (divider!=0)
+  if (TK.divider!=0)
     {	  
-      if (divider>0)
+      if (TK.divider>0)
 	SEQ.getPatternSequencer(cty).setBPMDivider(SEQ.getPatternSequencer(cty).getBPMDivider()*2);
-      if (divider<0)
+      if (TK.divider<0)
 	SEQ.getPatternSequencer(cty).setBPMDivider(SEQ.getPatternSequencer(cty).getBPMDivider()/2);
-      divider=0;
+      TK.divider=0;
       P[cty].setBPMDivider(SEQ.getPatternSequencer(cty).getBPMDivider());
     }
   
   // Change oscillator one
-  if (osconetype!=0)
+  if (TK.osconetype!=0)
     {
-      P[cty].getPatternElement(cursor).setOscillatorOneType(P[cty].getPatternElement(cursor).getOscillatorOneType()+osconetype);
-      osconetype=0;
+      P[cty].getPatternElement(cursor).setOscillatorOneType(P[cty].getPatternElement(cursor).getOscillatorOneType()+TK.osconetype);
+      TK.osconetype=0;
       if (debug)
 	printf("[osconetype:%d]\n",P[cty].getPatternElement(cursor).getOscillatorOneType());	  
     }
   
   // Change oscillator one
-  if (osconetype_all!=0)
+  if (TK.osconetype_all!=0)
     {
       for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).setOscillatorOneType(P[cty].getPatternElement(i).getOscillatorOneType()+osconetype_all);
-      osconetype_all=0;
+	P[cty].getPatternElement(i).setOscillatorOneType(P[cty].getPatternElement(i).getOscillatorOneType()+TK.osconetype_all);
+      TK.osconetype_all=0;
       if (debug)
 	printf("[osconetype_all:%d]\n",P[cty].getPatternElement(cursor).getOscillatorOneType());	  
     }
   
   // Change oscillator two
-  if (osctwotype!=0)
+  if (TK.osctwotype!=0)
     {
-      P[cty].getPatternElement(cursor).setOscillatorTwoType(P[cty].getPatternElement(cursor).getOscillatorTwoType()+osctwotype);
-      osctwotype=0;
+      P[cty].getPatternElement(cursor).setOscillatorTwoType(P[cty].getPatternElement(cursor).getOscillatorTwoType()+TK.osctwotype);
+      TK.osctwotype=0;
       if (debug)
 	printf("[osctwotype:%d]\n",P[cty].getPatternElement(cursor).getOscillatorTwoType());	  
     }
   
   // Change oscillator two
-  if (osctwotype_all!=0)
+  if (TK.osctwotype_all!=0)
     {
       for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).setOscillatorTwoType(P[cty].getPatternElement(i).getOscillatorTwoType()+osctwotype_all);
-      osctwotype_all=0;
+	P[cty].getPatternElement(i).setOscillatorTwoType(P[cty].getPatternElement(i).getOscillatorTwoType()+TK.osctwotype_all);
+      TK.osctwotype_all=0;
       if (debug)
 	printf("[osctwotype:%d]\n",P[cty].getPatternElement(cursor).getOscillatorTwoType());	  
     }
@@ -3964,77 +4078,77 @@ void seq_update_multiple_time_by_step()
 
 
   // Change oscillator one
-  if (machine_type!=0)
+  if (TK.machine_type!=0)
     {
-      P[cty].getPatternElement(cursor).setMachineType(P[cty].getPatternElement(cursor).getMachineType()+machine_type);
-      machine_type=0;
+      P[cty].getPatternElement(cursor).setMachineType(P[cty].getPatternElement(cursor).getMachineType()+TK.machine_type);
+      TK.machine_type=0;
       if (debug)
 	printf("[machine_type:%d]\n",P[cty].getPatternElement(cursor).getMachineType());	  
     }
   
   // Change oscillator one
-  if (machine_type_all!=0)
+  if (TK.machine_type_all!=0)
     {
       for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).setMachineType(P[cty].getPatternElement(i).getMachineType()+machine_type_all);
-      machine_type_all=0;
+	P[cty].getPatternElement(i).setMachineType(P[cty].getPatternElement(i).getMachineType()+TK.machine_type_all);
+      TK.machine_type_all=0;
       if (debug)
 	printf("[machine_type_all:%d]\n",P[cty].getPatternElement(cursor).getMachineType());	  
     }
   
   
   // Change Note
-  if (note!=0)
+  if (TK.note!=0)
     { 
-      P[cty].getPatternElement(cursor).setNote(P[cty].getPatternElement(cursor).getNote()+note);
-      note=0;
+      P[cty].getPatternElement(cursor).setNote(P[cty].getPatternElement(cursor).getNote()+TK.note);
+      TK.note=0;
       printf("[note:%d]\n",P[cty].getPatternElement(cursor).getNote());	  
     }
   
   // Change Note
-  if (note_all!=0)
+  if (TK.note_all!=0)
     { 
       for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).setNote(P[cty].getPatternElement(i).getNote()+note_all);
-      note_all=0;
+	P[cty].getPatternElement(i).setNote(P[cty].getPatternElement(i).getNote()+TK.note_all);
+      TK.note_all=0;
       printf("[note_all:%d]\n",P[cty].getPatternElement(cursor).getNote());	  
     }
 
 
   // Change Note
-  if (fmtype!=0)
+  if (TK.fmtype!=0)
     { 
-      P[cty].getPatternElement(cursor).setFmType(P[cty].getPatternElement(cursor).getFmType()+fmtype);
-      fmtype=0;
+      P[cty].getPatternElement(cursor).setFmType(P[cty].getPatternElement(cursor).getFmType()+TK.fmtype);
+      TK.fmtype=0;
       printf("[fmtype:%d]\n",P[cty].getPatternElement(cursor).getFmType());	  
     }
   
   // Change Note
-  if (fmtype_all!=0)
+  if (TK.fmtype_all!=0)
     { 
       for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).setFmType(P[cty].getPatternElement(i).getFmType()+fmtype_all);
-      fmtype_all=0;
+	P[cty].getPatternElement(i).setFmType(P[cty].getPatternElement(i).getFmType()+TK.fmtype_all);
+      TK.fmtype_all=0;
       printf("[fmtype_all:%d]\n",P[cty].getPatternElement(cursor).getFmType());	  
     }
 
 
 
   // Change Note
-  if (plength_all!=0)
+  if (TK.plength_all!=0)
     { 
-      SEQ.getPatternSequencer(cty).setPatternLenght(SEQ.getPatternSequencer(cty).getPatternLenght()+plength_all);
-      plength_all=0;
+      SEQ.getPatternSequencer(cty).setPatternLenght(SEQ.getPatternSequencer(cty).getPatternLenght()+TK.plength_all);
+      TK.plength_all=0;
     }
 
 
 
   // shift PatternEntry
-  if (pshift_all!=0)
+  if (TK.pshift_all!=0)
     {       
       PatternElement Pe;
 
-      if (pshift_all<0)
+      if (TK.pshift_all<0)
 	{
 	  Pe=P[cty].getPatternElement(0);
 	  for (i=0;i<15;i++)
@@ -4045,7 +4159,7 @@ void seq_update_multiple_time_by_step()
 	  P[cty].getPatternElement(15)=Pe;	    
 	}
 
-      if (pshift_all>0)
+      if (TK.pshift_all>0)
 	{
 	  Pe=P[cty].getPatternElement(15);
 	  for (i=15;i>0;i--)
@@ -4056,7 +4170,7 @@ void seq_update_multiple_time_by_step()
 	  P[cty].getPatternElement(0)=Pe;	    
 	}
 
-      pshift_all=0;
+      TK.pshift_all=0;
       dirty_graphic=1;
       printf("[pshift_all:left]\n");	  
     }
@@ -4073,66 +4187,66 @@ void seq_update_multiple_time_by_step()
     }
 
 
-      if (bpm!=0)
-	{
-	  //save the bpm in the 
-	  //change the number of time AudioEngine need to be trigged
-	  //to effectively change pattern step
-
-	  bpm_current=P[cty].getBPM();
-	  for(t=0;t<TRACK_MAX;t++)	    
-	    P[t].setBPM(bpm_current+bpm);
-
-	  bpm_current=bpm_current+bpm;
-	  bpm=0;
-	  refresh_bpm();
-
-	}
-
-      if (swing!=0)
-	{
-	  //save the swing in the Pattern
-	  //change the number of time AudioEngine need to be trigged
-	  //to effectively change pattern step
-
-	  current_swing=current_swing+swing;
-	  swing=0;
-
-	  if (current_swing>75)
-	    current_swing=75;
-	  if (current_swing<25)
-	    current_swing=25;
-
-	  for(t=0;t<TRACK_MAX;t++)	    
-	    P[t].setSwing(current_swing);
-
-	  refresh_bpm();
-	}
-
-
+  if (TK.bpm!=0)
+    {
+      //save the bpm in the 
+      //change the number of time AudioEngine need to be trigged
+      //to effectively change pattern step
+      
+      bpm_current=P[cty].getBPM();
+      for(t=0;t<TRACK_MAX;t++)	    
+	P[t].setBPM(bpm_current+TK.bpm);
+      
+      bpm_current=bpm_current+TK.bpm;
+      TK.bpm=0;
+      refresh_bpm();
+      
+    }
+  
+  if (TK.swing!=0)
+    {
+      //save the swing in the Pattern
+      //change the number of time AudioEngine need to be trigged
+      //to effectively change pattern step
+      
+      current_swing=current_swing+TK.swing;
+      TK.swing=0;
+      
+      if (current_swing>75)
+	current_swing=75;
+      if (current_swing<25)
+	current_swing=25;
+      
+      for(t=0;t<TRACK_MAX;t++)	    
+	P[t].setSwing(current_swing);
+      
+      refresh_bpm();
+    }
+  
+  
 
       // invert trig => insert/remove/copy note 
-      if (invert_trig)
+  if (TK.invert_trig)
+    {
+      if (P[cty].getPatternElement(cursor).getTrig())
 	{
-	  if (P[cty].getPatternElement(cursor).getTrig())
-	    {
-	      P[cty].getPatternElement(cursor).setTrig(! P[cty].getPatternElement(cursor).getTrig());
-	      PE=P[cty].getPatternElement(cursor);
-	    }
-	  else
-	    {
-	      P[cty].setPatternElement(cursor,PE);
-	      P[cty].getPatternElement(cursor).setTrig(true);
-	      if (P[cty].getPatternElement(cursor).getNote()==0)
-		{
-		  //P[cty].getPatternElement(cursor).setAttack_amp(0);
-		  //P[cty].getPatternElement(cursor).setRelease_amp(64);
-		  //P[cty].getPatternElement(cursor).setNote(37);
-		  P[cty].getPatternElement(cursor).setNote(25);
-		}
-	    }
-	  invert_trig=0;
+	  P[cty].getPatternElement(cursor).setTrig(! P[cty].getPatternElement(cursor).getTrig());
+	  PE=P[cty].getPatternElement(cursor);
 	}
+      else
+	{
+	  P[cty].setPatternElement(cursor,PE);
+	  P[cty].getPatternElement(cursor).setTrig(true);
+	  if (P[cty].getPatternElement(cursor).getNote()==0)
+	    {
+	      //P[cty].getPatternElement(cursor).setAttack_amp(0);
+	      //P[cty].getPatternElement(cursor).setRelease_amp(64);
+	      //P[cty].getPatternElement(cursor).setNote(37);
+	      P[cty].getPatternElement(cursor).setNote(25);
+	    }
+	}
+      TK.invert_trig=0;
+    }
   
 }
 
