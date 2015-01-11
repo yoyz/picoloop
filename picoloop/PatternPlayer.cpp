@@ -2344,11 +2344,11 @@ void handle_key_vco()
       sub_handle_invert_trig();
 
       if (keyState[BUTTON_UP]  && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALL==0) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONG==0) 
 	  { TK.fmtype=1;   	  dirty_graphic=1;}
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALL==0) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONG==0) 
 	  { TK.fmtype=-1;  	  dirty_graphic=1;}
     }
 
@@ -2359,11 +2359,11 @@ void handle_key_vco()
     {
 
       if (keyState[BUTTON_UP]  && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALL==0) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONG==0) 
 	  { TK.fmtype_all=1;   	  dirty_graphic=1;}
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALL==0) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONG==0) 
 	  { TK.fmtype_all=-1;  	  dirty_graphic=1;}
 
     }
@@ -2545,11 +2545,11 @@ void handle_key_lfo()
 
 
       if (keyState[BUTTON_UP]  && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALL==0) 
+	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONG==0) 
 	  { TK.lfo_type=1;   	  dirty_graphic=1;}
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALL==0) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONG==0) 
 	  { TK.lfo_type=-1;  	  dirty_graphic=1;}
 
     }
@@ -2693,19 +2693,19 @@ void handle_key_fltr()
       sub_handle_invert_trig();
 
       if (keyState[BUTTON_LEFT]  && keyState[BUTTON_B])
-	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST )  
+	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_LONG )  
 	  { TK.filter_algo=-1;   dirty_graphic=1; }
       
       if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST )  
+	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_LONG )  
 	  { TK.filter_algo=1; 	  dirty_graphic=1; }
       
       if (keyState[BUTTON_UP]    && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST) 
+	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_LONG) 
 	  { TK.filter_type=1;  	  dirty_graphic=1; }
       
       if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST ) 
+	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_LONG ) 
 	  { TK.filter_type=-1; 	  dirty_graphic=1; }
     }  
 
@@ -4622,7 +4622,9 @@ int main(int argc,char **argv)
   //cpu_speed=333;
   //scePowerSetCpuClockFrequency(cpu_speed);
   //scePowerSetClockFrequency(333, 333, 166);
-  scePowerSetClockFrequency(300, 300, 150);
+  //scePowerSetClockFrequency(233, 233, 133);
+  scePowerSetClockFrequency(266, 266, 133);
+  //scePowerSetClockFrequency(300, 300, 150);
   cpu_speed=scePowerGetCpuClockFrequencyInt();
   printf("NEW PSP CPU SPEED:%d\n",cpu_speed);
 #else
