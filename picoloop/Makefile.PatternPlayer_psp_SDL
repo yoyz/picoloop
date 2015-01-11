@@ -3,7 +3,54 @@ EXTRA_TARGETS	= EBOOT.PBP
 #EXTRA_TARGETS	= PatternPlayer.prx
 #PSP_EBOOT_TITLE= hello_sdl
 
-OBJS		= PatternPlayer.o psp_callback.o SYSTEMLINUX.o Machine.o PatternSequencer.o Effect.o WaveTable.o AudioDriverSDL.o EffectDelay.o AMSynthLowPassFilter.o InputManager.o Generator.o PitchBend.o NoteFreq.o WaveTableManager.o Sequencer.o Oscillator.o OneOscillator.o SongSequencer.o Filter.o Synth.o Biquad.o Track.o Pattern.o MonoMixer.o SDL_GUI.o AudioEngine.o PatternElement.o AudioMixer.o Instrument.o PatternReader.o Wave.o Machine/Picodrum/PicodrumADSR.o  Machine/Picodrum/PicodrumMachine.o  Machine/Picodrum/PicodrumVCO.o Machine/Picosynth/PicosynthADSR.o  Machine/Picosynth/PicosynthMachine.o  Machine/Picosynth/PicosynthVCO.o Machine/Dbopl/DboplMachine.o  Machine/Dbopl/dbopl.o  Machine/Dbopl/hiopl.o
+#OBJS		= PatternPlayer.o psp_callback.o SYSTEMLINUX.o Machine.o PatternSequencer.o Effect.o WaveTable.o AudioDriverSDL.o EffectDelay.o AMSynthLowPassFilter.o InputManager.o Generator.o PitchBend.o NoteFreq.o WaveTableManager.o Sequencer.o Oscillator.o OneOscillator.o SongSequencer.o Filter.o Synth.o Biquad.o Track.o Pattern.o MonoMixer.o SDL_GUI.o AudioEngine.o PatternElement.o AudioMixer.o Instrument.o PatternReader.o Wave.o Machine/Picodrum/PicodrumADSR.o  Machine/Picodrum/PicodrumMachine.o  Machine/Picodrum/PicodrumVCO.o Machine/Picosynth/PicosynthADSR.o  Machine/Picosynth/PicosynthMachine.o  Machine/Picosynth/PicosynthVCO.o Machine/Dbopl/DboplMachine.o  Machine/Dbopl/dbopl.o  Machine/Dbopl/hiopl.o
+
+
+OBJS=PatternPlayer.o \
+		      SDL_GUI.o              \
+		      SYSTEMLINUX.o	     \
+		      AudioEngine.o          \
+		      AudioDriverSDL.o       \
+		      Instrument.o           \
+		      Synth.o                \
+		      Oscillator.o           \
+		      OneOscillator.o        \
+		      Biquad.o               \
+		      AudioMixer.o           \
+		      Wave.o Track.o         \
+		      Machine.o              \
+		      MonoMixer.o            \
+		      InputManager.o         \
+		      Filter.o               \
+		      AMSynthLowPassFilter.o \
+		      Effect.o               \
+		      EffectDelay.o          \
+		      WaveTableManager.o     \
+		      WaveTable.o            \
+		      Generator.o            \
+		      PatternElement.o       \
+		      Pattern.o              \
+		      PatternReader.o        \
+		      Sequencer.o            \
+		      PatternSequencer.o     \
+		      SongSequencer.o        \
+		      NoteFreq.o             \
+		      PitchBend.o            \
+		      TweakableKnob.o	       \
+		      Machine/Picosynth/PicosynthADSR.o        \
+		      Machine/Picosynth/PicosynthVCO.o         \
+		      Machine/Picosynth/PicosynthMachine.o     \
+		      Machine/Picodrum/PicodrumVCO.o           \
+		      Machine/Picodrum/PicodrumADSR.o          \
+		      Machine/Picodrum/PicodrumMachine.o       \
+		      Machine/Dbopl/dbopl.o                    \
+		      Machine/Dbopl/hiopl.o                    \
+		      Machine/Dbopl/DboplMachine.o             \
+		      psp_callback.o                           \
+
+
+
+
 BUILD_PRX=1
 
 PSP_FW_VERSION = 500
