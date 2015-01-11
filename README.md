@@ -209,6 +209,35 @@ This file will be created when you store file in the "L/S" menu.
 You need two file font.bmp and font.ttf which are located next to the source.
 
 
+# DEBUG PSP
+
+
+You need your psp gcc compiler, the library and psplinkusb.
+Launch psplink on the psp this is an EBOOT.PBP.
+Launch usbhostfs_pc ( you need to be root to access the psp by usb and you need to be in the somewhere/psplinkusb/usbhostfs_pc/ folder ).
+You should see it is connected.
+In another terminal launch pspsh.
+Try to 'ls -l', to see if all is ok.
+Copy the prx file in the usbhostfs_pc directory.
+
+If you want to launch PatternPlayer.prx, launch it with pspsh.
+You need a prx file with usbhostfs_pc and pspsh not an elf or EBOOT.PBP.
+
+
+
+If you want to debug it with psp-gdb, you can do it by this command in two different window.
+
+         
+         host0:/> debug PatternPlayer.prx
+
+In another window : 
+	 
+         $ psp-gdb ./PatternPlayer.elf
+	 (gdb) target remote localhost:10001
+         Remote debugging using localhost:10001
+
+In this case you need a prx and an elf file.
+
 
 
 
