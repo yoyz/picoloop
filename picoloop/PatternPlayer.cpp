@@ -1517,17 +1517,17 @@ void handle_key_menu()
 	    menu_cursor=0;
 	  break;
 
-	  //	case MENU_ON_PAGE1: menu=MENU_OFF;      break;
-	  //case MENU_ON_PAGE1: menu=MENU_ON_PAGE2; menu_cursor=+4; break;
-	  //case MENU_ON_PAGE2: menu=MENU_ON_PAGE1; menu_cursor=-4; break;
 	}
-
-      //We enter the LS Menu so we had to sync the cursor with SEQ 
+      
+      // We exit the LS Menu so we had to 
+      // sync SEQ.Y with the cursor in the load save screen
+      // save the song to a file
       if (last_menu        != MENU_OFF &&
 	  menu             == MENU_OFF &&
-	  menu_cursor == GLOBALMENU_LS)
+	  menu_cursor      == GLOBALMENU_LS)
 	{
-	  loadsave_cursor_y=SEQ.getCurrentTrackY();
+	  SEQ.setCurrentTrackY(loadsave_cursor_y);
+	  PR.saveSong(SEQ.getSongSequencer());
 	}
 
       dirty_graphic=1;
@@ -1535,36 +1535,20 @@ void handle_key_menu()
       printf("[gmenu : %d cmenu : %d]\n",menu,menu_cursor);
     }
 
-  //leave menu 
+  //We enter the LS Menu so we had to sync the cursor with SEQ 
   if (lastKey      ==  BUTTON_B       && 
-      lastEvent    ==  KEYRELEASED      &&
+      lastEvent    ==  KEYRELEASED    &&
       (menu        ==  MENU_ON_PAGE1  ||
        menu        ==  MENU_ON_PAGE2))
     {
       last_menu        = menu;
       menu=MENU_OFF;
-
-      //We exit the LS Menu so we had to save the song and sync SEQ with cursor
-      if (last_menu        == MENU_OFF &&
-	  menu             != MENU_OFF &&
-	  menu_cursor == GLOBALMENU_LS)
-	{
-	  PR.saveSong(SEQ.getSongSequencer());
-	  SEQ.setCurrentTrackY(loadsave_cursor_y);
-	}
-
+      loadsave_cursor_y=SEQ.getCurrentTrackY();
       dirty_graphic=1;
       IE.clearLastKeyEvent();
       printf("[gmenu : %d cmenu : %d]\n",menu,menu_cursor);
     }
 
-
-      //PR.saveSong(SEQ.getSongSequencer().getSongVector());
-
-
-  
-  
-      
 
 
   //Move into on menu
@@ -4623,8 +4607,8 @@ int main(int argc,char **argv)
   //scePowerSetCpuClockFrequency(cpu_speed);
   //scePowerSetClockFrequency(333, 333, 166);
   //scePowerSetClockFrequency(233, 233, 133);
-  scePowerSetClockFrequency(266, 266, 133);
   //scePowerSetClockFrequency(300, 300, 150);
+  scePowerSetClockFrequency(266, 266, 133);
   cpu_speed=scePowerGetCpuClockFrequencyInt();
   printf("NEW PSP CPU SPEED:%d\n",cpu_speed);
 #else
