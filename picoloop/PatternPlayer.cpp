@@ -200,7 +200,7 @@ int bank=0;
 int bank_inc=0;
 int bank_to_load=0;
 
-int start_key=0;        // start key pressed ?
+//int start_key=0;        // start key pressed ?
 //int step=0;             // current step in the sequencer
 
 int menu_cursor=GLOBALMENU_AD;      // index int the menu
@@ -216,18 +216,22 @@ int menu_ls=MENU_LS_PATTERN;
 int menu_ad_dirty_keyboard=0;
 
 //int ct=0;               // current_track
-int ct_x=0;             
-int ct_y=0;
+//int ct_x=0;             
+//int ct_y=0;
 
 
-int dirty_graphic=1;
-int seq_update_by_step_next=0;
+int dirty_graphic=1;           // 1 : the UI need to be updated
+
+int seq_update_by_step_next=0; // 0 : the UI audio and seq are sync
+                               // 1 : the audio callback update the seq, 
+                               //   : other stuff need to be updated 
+                               //   : seq_update_by_step(), load,save...
 
 int current_swing=50;  
 //int current_swing=64;
 
 
-int noteOffTrigger[TRACK_MAX];
+//int noteOffTrigger[TRACK_MAX];
 
 
 void load_pattern();
@@ -1471,8 +1475,8 @@ void handle_key_menu()
   int    lastEvent;
   int    lastKey;
 
-  int last_menu;
-  int last_menu_cursor;
+  int last_menu=0xffff;
+  int last_menu_cursor=0xffff;
 
   keyState=IE.keyState();
   keyRepeat=IE.keyRepeat();
@@ -1518,19 +1522,50 @@ void handle_key_menu()
 	  //case MENU_ON_PAGE2: menu=MENU_ON_PAGE1; menu_cursor=-4; break;
 	}
 
-      //PR.saveSong(SEQ.getSongSequencer().getSongVector());
-
-
-      //We exit the LS Menu so we had to save the song
-      if (last_menu        == MENU_OFF &&
-	  menu             != MENU_OFF &&
-	  last_menu_cursor == GLOBALMENU_LS)
-	PR.saveSong(SEQ.getSongSequencer());
+      //We enter the LS Menu so we had to sync the cursor with SEQ 
+      if (last_menu        != MENU_OFF &&
+	  menu             == MENU_OFF &&
+	  menu_cursor == GLOBALMENU_LS)
+	{
+	  loadsave_cursor_y=SEQ.getCurrentTrackY();
+	}
 
       dirty_graphic=1;
       IE.clearLastKeyEvent();
       printf("[gmenu : %d cmenu : %d]\n",menu,menu_cursor);
     }
+
+  //leave menu 
+  if (lastKey      ==  BUTTON_B       && 
+      lastEvent    ==  KEYRELEASED      &&
+      (menu        ==  MENU_ON_PAGE1  ||
+       menu        ==  MENU_ON_PAGE2))
+    {
+      last_menu        = menu;
+      menu=MENU_OFF;
+
+      //We exit the LS Menu so we had to save the song and sync SEQ with cursor
+      if (last_menu        == MENU_OFF &&
+	  menu             != MENU_OFF &&
+	  menu_cursor == GLOBALMENU_LS)
+	{
+	  PR.saveSong(SEQ.getSongSequencer());
+	  SEQ.setCurrentTrackY(loadsave_cursor_y);
+	}
+
+      dirty_graphic=1;
+      IE.clearLastKeyEvent();
+      printf("[gmenu : %d cmenu : %d]\n",menu,menu_cursor);
+    }
+
+
+      //PR.saveSong(SEQ.getSongSequencer().getSongVector());
+
+
+  
+  
+      
+
 
   //Move into on menu
   //select current active track
@@ -1601,14 +1636,6 @@ void handle_key_menu()
 	}
     }
 
-
-  // Check this ??? do not think it works
-  //leave menu 
-  if (lastKey      ==  BUTTON_B       && 
-      lastEvent    ==  KEYRELEASED      &&
-      (menu        ==  MENU_ON_PAGE1  ||
-       menu        ==  MENU_ON_PAGE2))
-    menu=MENU_OFF;
 
 
 
@@ -4424,7 +4451,7 @@ int seq()
 
 
   //AE.startAudio();
-
+  seq_update_by_step_next=1;
   seq_update_by_step();  
   while (true)
     {
@@ -4433,7 +4460,7 @@ int seq()
       //display_board();
       
       //SDL_UnlockAudio();
-      seq_update_by_step_next=1;
+      //seq_update_by_step_next=1;
       cty=SEQ.getCurrentTrackY();
       ctx=SEQ.getCurrentTrackX();
 
@@ -4472,51 +4499,25 @@ int seq()
 	}
 
 
+      if (dirty_graphic)
+	{
+	  //SDL_LockAudio();
+	  //sceKernelDcacheWritebackAll(); 
+	  display_board();
+	  
+	  SDL_LockAudio();
+	  SG.refresh();
+	  SDL_UnlockAudio();
+	  dirty_graphic=0;
+	}
+
       // change step in the pattern
       //if (nbcb-last_nbcb_ch_step>nb_cb_ch_step)
       if (seq_update_by_step_next)
 	{	 
-	  //sceKernelDcacheWritebackAll();
-
-	  if (dirty_graphic)
-	    {
-	      //SDL_LockAudio();
-	      //sceKernelDcacheWritebackAll(); 
-	      display_board();
-
-	      SDL_LockAudio();
-	      SG.refresh();
-	      SDL_UnlockAudio();
-	      //SDL_UnlockAudio();
-	      /*
-	      if (menu_cursor==GLOBALMENU_AD)   display_board_amp_env();
-	      if (menu_cursor==GLOBALMENU_NOTE) display_board_note();
-	      if (menu_cursor==GLOBALMENU_OSC)  display_board_osc();
-	      if (menu_cursor==GLOBALMENU_VCO)  display_board_vco();
-	      if (menu_cursor==GLOBALMENU_LFO)  display_board_lfo();
-	      if (menu_cursor==GLOBALMENU_FLTR) display_board_fltr();
-	      
-	      if (menu_cursor==GLOBALMENU_LS)   display_board_load_save();
-	      if (menu_cursor==GLOBALMENU_BANK) display_board_bank();
-	      if (menu_cursor==GLOBALMENU_PSH)  display_board_psh();
-	      if (menu_cursor==GLOBALMENU_MAC)  display_board_mac();
-	      if (menu_cursor==GLOBALMENU_FX)   display_board_fx();
-	      if (menu_cursor==GLOBALMENU_BPM)  display_board_bpm();
-	      */
-	      //SDL_UnlockAudio();
-	      //sceKernelDcacheWritebackAll();
-	    }
-	  //printf("[cursor:%d]\n",cursor);
-	  
-	  //printf("loop\n");    
 	  last_nbcb_ch_step=nbcb;
-	  //**** step++;
-	  //step++;
-	  //SDL_LockAudio();
 	  seq_update_by_step();
-	  //SDL_UnlockAudio();
 	  seq_update_by_step_next=0;
-
 	}
     }
 }
@@ -4642,8 +4643,8 @@ int main(int argc,char **argv)
   //IE.init();
   //IE.printState();
   //exit(0);
-  for (i=0;i<TRACK_MAX;i++)
-    noteOffTrigger[i]=0;
+  //for (i=0;i<TRACK_MAX;i++)
+  //noteOffTrigger[i]=0;
 
   PR.init();         // Init the     storage bank
   PR.setBank(bank);  // The current  storage bank will be 0 PWD/bank/bank%d/
