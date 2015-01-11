@@ -42,6 +42,7 @@ SOURCES=PatternPlayer.cpp \
 		      SongSequencer.cpp        \
 		      NoteFreq.cpp             \
 		      PitchBend.cpp            \
+		      TweakableKnob.cpp        \
 		      Machine/Picosynth/PicosynthADSR.cpp        \
 		      Machine/Picosynth/PicosynthVCO.cpp         \
 		      Machine/Picosynth/PicosynthMachine.cpp     \
