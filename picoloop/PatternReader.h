@@ -10,7 +10,7 @@ using namespace std;
 #include <vector>
 #include "Pattern.h"
 #include "SongSequencer.h"
-
+#include "Machine.h"
 
 #define DATA_LOADED_FROM_STORAGE         3
 #define DATA_EXIST_ON_STORAGE            2

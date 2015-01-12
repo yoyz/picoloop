@@ -45,6 +45,44 @@ void PicodrumMachine::init()
 
 }
 
+int PicodrumMachine::checkI(int what,int val)
+{
+  switch (what)
+    {
+    case OSC1_TYPE:
+      if (val<0) return 0;
+      if (val>4) return 4;
+      return val;
+      break;
+
+    case OSC2_TYPE:
+      if (val<0) return 0;
+      if (val>4) return 4;
+      return val;
+      break;
+
+    case FILTER1_TYPE:
+      if (val<0) return 0;
+      if (val>3) return 3;
+      return val;
+      break;
+
+    case FILTER1_ALGO:
+      if (val<0) return 0;
+      if (val>2) return 2;
+      return val;
+      break;
+
+
+
+    default:
+      if (val<0)   return 0;
+      if (val>127) return 127;
+      printf("WARNING: PicodrumMachine::checkI(%d,%d)\n",what,val);
+      return val;
+      break;      
+    }
+}
 
 
 int PicodrumMachine::getI(int what)
@@ -102,7 +140,7 @@ void PicodrumMachine::setI(int what,int val)
       this->getADSRAmp().reset();
 
   }
-  if (what==FILTER1_RES)         
+  if (what==FILTER1_RESONANCE)         
     { 
       resonance=val;
       filter.setResonance(resonance);

@@ -33,6 +33,7 @@ class dboplMachine : public Machine
   void setF(int what,float val);
   int  getI(int what);
 
+  int checkI(int what,int   val);
   //Biquad & getBiquad();
 
  protected:

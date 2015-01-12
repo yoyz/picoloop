@@ -5,12 +5,13 @@ using namespace std;
 #include <sstream>
 #include <stdio.h>
 #include "PatternElement.h"
+#include "Machine.h"
 
 PatternElement::PatternElement()
 {
   printf("PatternElement::PatternElement()\n");
-  Note=0;
-  Trig=false;
+  note=0;
+  note_on=0;
   Channel=0;
   vcomix=64;
 
@@ -69,8 +70,8 @@ PatternElement::~PatternElement()
 
 void PatternElement::init()
 {
-  Note=0;
-  Trig=false;
+  note=0;
+  note_on=0;
   Channel=0;
   vcomix=64;
 
@@ -106,33 +107,246 @@ void PatternElement::init()
 
 }
 
-int PatternElement::getOscillatorOneType()
+void PatternElement::set(int what,int val)
 {
-  return oscOneType;
-}
+  switch (what)
+    {
+    case ADSR_AMP_ATTACK:
+      amp_attack=checkSevenBitBoundarie(val);
+      break;
 
-int PatternElement::getOscillatorTwoType()
-{
-  return oscTwoType;
-}
+    case ADSR_AMP_DECAY:
+      amp_decay=checkSevenBitBoundarie(val);
+      break;      
 
-void PatternElement::setOscillatorOneType(int type)
-{
-  //oscOneType=type%5;
-  oscOneType=this->checkSevenBitBoundarie(type%5);
-}
+    case ADSR_AMP_SUSTAIN:
+      amp_sustain=checkSevenBitBoundarie(val);
+      break;      
 
-void PatternElement::setOscillatorTwoType(int type)
-{
-  //oscTwoType=type%5;
-  oscTwoType=this->checkSevenBitBoundarie(type%5);
-}
+    case ADSR_AMP_RELEASE:
+      amp_release=checkSevenBitBoundarie(val);
+      break;
 
 
-int PatternElement::getNote()
-{
-  return PatternElement::Note;
+
+    case ADSR_FLTR_ATTACK:
+      fltr_attack=checkSevenBitBoundarie(val);
+      break;
+
+    case ADSR_FLTR_DECAY:
+      fltr_decay=checkSevenBitBoundarie(val);
+      break;      
+
+    case ADSR_FLTR_SUSTAIN:
+      fltr_sustain=checkSevenBitBoundarie(val);
+      break;      
+
+    case ADSR_FLTR_RELEASE:
+      fltr_release=checkSevenBitBoundarie(val);
+      break;
+
+
+
+    case FILTER1_CUTOFF:
+      fltr_cutoff=checkSevenBitBoundarie(val);
+      break;
+
+    case FILTER1_RESONANCE:
+      fltr_resonance=checkSevenBitBoundarie(val);
+      break;      
+
+
+    case LFO1_DEPTH:
+      lfo_depth=checkSevenBitBoundarie(val);
+      break;
+
+    case LFO1_FREQ:
+      lfo_speed=checkSevenBitBoundarie(val);
+      break;      
+
+
+    case FX1_DEPTH:
+      fx_depth=checkSevenBitBoundarie(val);
+      break;
+    case FX1_SPEED:
+      fx_speed=checkSevenBitBoundarie(val);
+      break;      
+
+    case PITCHBEND_DEPTH:
+      pb_depth=checkSevenBitBoundarie(val);
+      break;
+    case PITCHBEND_SPEED:
+      pb_speed=checkSevenBitBoundarie(val);
+      break;      
+
+
+    case OSC1_TYPE:
+      oscOneType=checkSevenBitBoundarie(val);
+      break;
+    case OSC2_TYPE:
+      oscTwoType=checkSevenBitBoundarie(val);
+      break;      
+
+    case NOTE:
+      note=checkSevenBitBoundarie(val);
+      break;      
+
+
+    case FILTER1_TYPE:
+      filterType=checkSevenBitBoundarie(val);
+      break;
+    case FILTER1_ALGO:
+      filterAlgo=checkSevenBitBoundarie(val);
+      break;      
+
+
+    case NOTE_ON:
+      note_on=checkSevenBitBoundarie(val);
+      break;      
+
+    case AMP:
+      amp=checkSevenBitBoundarie(val);
+      break;      
+
+      
+
+      
+    default:
+	printf("PatternElement::set(%d,%d)\n",what,val);
+	printf("case default => exit\n");
+	exit(1);
+	break;
+    }
 }
+
+
+int PatternElement::get(int what)
+{
+  switch (what)
+    {
+    case ADSR_AMP_ATTACK:
+      return amp_attack;
+      break;
+    case ADSR_AMP_DECAY:
+      return amp_decay;
+      break;      
+    case ADSR_AMP_SUSTAIN:
+      return amp_sustain;
+      break;      
+    case ADSR_AMP_RELEASE:
+      return amp_release;
+      break;
+
+
+    case ADSR_FLTR_ATTACK:
+      return fltr_attack;
+      break;
+    case ADSR_FLTR_DECAY:
+      return fltr_decay;
+      break;      
+    case ADSR_FLTR_SUSTAIN:
+      return fltr_sustain;
+      break;      
+    case ADSR_FLTR_RELEASE:
+      return fltr_release;
+      break;
+
+
+    case FILTER1_CUTOFF:
+      return fltr_cutoff;
+      break;      
+    case FILTER1_RESONANCE:
+      return fltr_resonance;
+      break;
+
+    case LFO1_DEPTH:
+      return lfo_depth;
+      break;      
+    case LFO1_FREQ:
+      return lfo_speed;
+      break;
+
+    case FX1_DEPTH:
+      return fx_depth;
+      break;      
+    case FX1_SPEED:
+      return fx_speed;
+      break;
+
+    case PITCHBEND_DEPTH:
+      return pb_depth;
+      break;      
+    case PITCHBEND_SPEED:
+      return pb_speed;
+      break;
+
+
+    case OSC1_TYPE:
+      return oscOneType;
+      break;      
+    case OSC2_TYPE:
+      return oscTwoType;
+      break;
+
+    case NOTE:
+      return note;
+      break;
+
+    case FILTER1_TYPE:
+      return filterType;
+      break;      
+    case FILTER1_ALGO:
+      return filterAlgo;
+      break;
+
+
+    case NOTE_ON:
+      return note_on;
+      break;
+
+    case AMP:
+      return amp;
+      break;
+
+
+
+    default:
+      printf("PatternElement::get(%d,%d)\n",what);
+      printf("case default : exit");
+      exit(1);
+
+    }
+  
+  //return 1;
+}
+
+// int PatternElement::getOscillatorOneType()
+// {
+//   return oscOneType;
+// }
+
+// int PatternElement::getOscillatorTwoType()
+// {
+//   return oscTwoType;
+// }
+
+// void PatternElement::setOscillatorOneType(int type)
+// {
+//   //oscOneType=type%5;
+//   oscOneType=this->checkSevenBitBoundarie(type%5);
+// }
+
+// void PatternElement::setOscillatorTwoType(int type)
+// {
+//   //oscTwoType=type%5;
+//   oscTwoType=this->checkSevenBitBoundarie(type%5);
+// }
+
+
+// int PatternElement::getNote()
+// {
+//   return PatternElement::Note;
+// }
 
 
 
@@ -173,105 +387,105 @@ void PatternElement::setFmType(int fm)
 
 
 
-int PatternElement::getAttack_amp()
-{
-  return amp_attack;
-}
+// int PatternElement::getAttack_amp()
+// {
+//   return amp_attack;
+// }
 
-void PatternElement::setAttack_amp(int atk)
-{
-  amp_attack=this->checkSevenBitBoundarie(atk);  
-}
+// void PatternElement::setAttack_amp(int atk)
+// {
+//   amp_attack=this->checkSevenBitBoundarie(atk);  
+// }
 
-int PatternElement::getDecay_amp()
-{
-  return amp_decay;
-}
+// int PatternElement::getDecay_amp()
+// {
+//   return amp_decay;
+// }
 
-void PatternElement::setDecay_amp(int dcy)
-{
-  amp_decay=this->checkSevenBitBoundarie(dcy);
-}
-
-
-int PatternElement::getSustain_amp()
-{
-  return amp_sustain;
-}
-
-void PatternElement::setSustain_amp(int sus)
-{
-  amp_sustain=this->checkSevenBitBoundarie(sus);
-}
+// void PatternElement::setDecay_amp(int dcy)
+// {
+//   amp_decay=this->checkSevenBitBoundarie(dcy);
+// }
 
 
-int PatternElement::getRelease_amp()
-{
-  return amp_release;
-}
+// int PatternElement::getSustain_amp()
+// {
+//   return amp_sustain;
+// }
 
-void PatternElement::setRelease_amp(int rls)
-{
-  amp_release=this->checkSevenBitBoundarie(rls);
-}
+// void PatternElement::setSustain_amp(int sus)
+// {
+//   amp_sustain=this->checkSevenBitBoundarie(sus);
+// }
 
 
+// int PatternElement::getRelease_amp()
+// {
+//   return amp_release;
+// }
+
+// void PatternElement::setRelease_amp(int rls)
+// {
+//   amp_release=this->checkSevenBitBoundarie(rls);
+//}
 
 
 
-int PatternElement::getAttack_fltr()
-{
-  return fltr_attack;
-}
-
-void PatternElement::setAttack_fltr(int atk)
-{
-  fltr_attack=this->checkSevenBitBoundarie(atk);  
-}
-
-int PatternElement::getDecay_fltr()
-{
-  return fltr_decay;
-}
-
-void PatternElement::setDecay_fltr(int dcy)
-{
-  fltr_decay=this->checkSevenBitBoundarie(dcy);
-}
 
 
-int PatternElement::getSustain_fltr()
-{
-  return fltr_sustain;
-}
+// int PatternElement::getAttack_fltr()
+// {
+//   return fltr_attack;
+// }
 
-void PatternElement::setSustain_fltr(int sus)
-{
-  fltr_sustain=this->checkSevenBitBoundarie(sus);
-}
+// void PatternElement::setAttack_fltr(int atk)
+// {
+//   fltr_attack=this->checkSevenBitBoundarie(atk);  
+// }
 
+// int PatternElement::getDecay_fltr()
+// {
+//   return fltr_decay;
+// }
 
-int PatternElement::getRelease_fltr()
-{
-  return fltr_release;
-}
-
-void PatternElement::setRelease_fltr(int rls)
-{
-  fltr_release=this->checkSevenBitBoundarie(rls);
-}
-
+// void PatternElement::setDecay_fltr(int dcy)
+// {
+//   fltr_decay=this->checkSevenBitBoundarie(dcy);
+// }
 
 
-int PatternElement::getNoteADSR()
-{
-  return adsr_note;
-}
+// int PatternElement::getSustain_fltr()
+// {
+//   return fltr_sustain;
+// }
 
-void PatternElement::setNoteADSR(int val)
-{
-  adsr_note=val;
-}
+// void PatternElement::setSustain_fltr(int sus)
+// {
+//   fltr_sustain=this->checkSevenBitBoundarie(sus);
+// }
+
+
+// int PatternElement::getRelease_fltr()
+// {
+//   return fltr_release;
+// }
+
+// void PatternElement::setRelease_fltr(int rls)
+// {
+//   fltr_release=this->checkSevenBitBoundarie(rls);
+// }
+
+
+
+// int PatternElement::getNoteADSR()
+// {
+//   return adsr_note;
+// }
+
+// void PatternElement::setNoteADSR(int val)
+// {
+//   adsr_note=val;
+// }
 
 
 int PatternElement::getMachineType()
@@ -300,96 +514,96 @@ void PatternElement::setTrigTime(int val)
 
 
 
-int PatternElement::getCutoff()
-{
-  return fltr_cutoff;
-}
+// int PatternElement::getCutoff()
+// {
+//   return fltr_cutoff;
+// }
 
-void PatternElement::setCutoff(int cut)
-{
-  fltr_cutoff=this->checkSevenBitBoundarie(cut);
-}
+// void PatternElement::setCutoff(int cut)
+// {
+//   fltr_cutoff=this->checkSevenBitBoundarie(cut);
+// }
 
-int PatternElement::getResonance()
-{
-  return fltr_resonance;
-}
+// int PatternElement::getResonance()
+// {
+//   return fltr_resonance;
+// }
 
-void PatternElement::setResonance(int res)
-{
-  fltr_resonance=this->checkSevenBitBoundarie(res);
-}
-
-
-
-bool PatternElement::setNote(int N)
-{
-  Note=this->checkSevenBitBoundarie(N);
-}
-
-bool PatternElement::setTrig(bool T)
-{
-  return Trig=T;
-}
-
-bool PatternElement::getTrig()
-{
-  return Trig;
-}
-
-int PatternElement::getAmp()
-{
-  return amp;
-}
-
-void PatternElement::setAmp(int a)
-{
-  amp=this->checkSevenBitBoundarie(a);
-}
-
-
-int PatternElement::getLfoDepth()
-{
-  return lfo_depth;
-}
-
-void PatternElement::setLfoDepth(int val)
-{
-  lfo_depth=this->checkSevenBitBoundarie(val);
-}
-
-int PatternElement::getLfoSpeed()
-{
-  return lfo_speed;
-}
-
-void PatternElement::setLfoSpeed(int val)
-{
-  lfo_speed=this->checkSevenBitBoundarie(val);
-}
-
-
-int PatternElement::getPitchBendDepth()
-{
-  return pb_depth;
-}
-
-void PatternElement::setPitchBendDepth(int val)
-{
-  pb_depth=this->checkSevenBitBoundarie(val);
-}
+// void PatternElement::setResonance(int res)
+// {
+//   fltr_resonance=this->checkSevenBitBoundarie(res);
+// }
 
 
 
-int PatternElement::getPitchBendSpeed()
-{
-  return pb_speed;
-}
+// bool PatternElement::setNote(int N)
+// {
+//   note=this->checkSevenBitBoundarie(N);
+// }
 
-void PatternElement::setPitchBendSpeed(int val)
-{
-  pb_speed=this->checkSevenBitBoundarie(val);
-}
+// bool PatternElement::setTrig(bool T)
+// {
+//   return Trig=T;
+// }
+
+// bool PatternElement::getTrig()
+// {
+//   return Trig;
+// }
+
+// int PatternElement::getAmp()
+// {
+//   return amp;
+// }
+
+// void PatternElement::setAmp(int a)
+// {
+//   amp=this->checkSevenBitBoundarie(a);
+// }
+
+
+// int PatternElement::getLfoDepth()
+// {
+//   return lfo_depth;
+// }
+
+// void PatternElement::setLfoDepth(int val)
+// {
+//   lfo_depth=this->checkSevenBitBoundarie(val);
+// }
+
+// int PatternElement::getLfoSpeed()
+// {
+//   return lfo_speed;
+// }
+
+// void PatternElement::setLfoSpeed(int val)
+// {
+//   lfo_speed=this->checkSevenBitBoundarie(val);
+// }
+
+
+// int PatternElement::getPitchBendDepth()
+// {
+//   return pb_depth;
+// }
+
+// void PatternElement::setPitchBendDepth(int val)
+// {
+//   pb_depth=this->checkSevenBitBoundarie(val);
+// }
+
+
+
+// int PatternElement::getPitchBendSpeed()
+// {
+//   return pb_speed;
+// }
+
+// void PatternElement::setPitchBendSpeed(int val)
+// {
+//   pb_speed=this->checkSevenBitBoundarie(val);
+// }
 
 
 
@@ -403,26 +617,26 @@ int PatternElement::getPhaseOsc1()
   return phaseOsc1;
 }
 
-void PatternElement::setFxDepth(int val)
-{
-  fx_depth=this->checkSevenBitBoundarie(val);
-}
+// void PatternElement::setFxDepth(int val)
+// {
+//   fx_depth=this->checkSevenBitBoundarie(val);
+// }
 
-int PatternElement::getFxDepth()
-{
-  return fx_depth;
-}
+// int PatternElement::getFxDepth()
+// {
+//   return fx_depth;
+// }
 
 
-void PatternElement::setFxSpeed(int val)
-{
-  fx_speed=this->checkSevenBitBoundarie(val);
-}
+// void PatternElement::setFxSpeed(int val)
+// {
+//   fx_speed=this->checkSevenBitBoundarie(val);
+// }
 
-int PatternElement::getFxSpeed()
-{
-  return fx_speed;
-}
+// int PatternElement::getFxSpeed()
+// {
+//   return fx_speed;
+// }
 
 
 
@@ -450,18 +664,6 @@ int PatternElement::getOsc2Amp()
 
 
 
-void PatternElement::setFilterType(int val)
-{
-  if (val>2) val=0;
-  if (val<0) val=2;
-  filterType=this->checkSevenBitBoundarie(val);
-
-}
-
-int PatternElement::getFilterType()
-{
-  return filterType;
-}
 
 const char * PatternElement::getFilterTypeCharStar()
 {
@@ -490,19 +692,33 @@ const char * PatternElement::getLFOTypeCharStar()
 }
 
 
-void PatternElement::setFilterAlgo(int val)
-{
-  if (val>2) val=0;
-  if (val<0) val=2;
+// void PatternElement::setFilterType(int val)
+// {
+//   if (val>2) val=0;
+//   if (val<0) val=2;
+//   filterType=this->checkSevenBitBoundarie(val);
 
-  filterAlgo=this->checkSevenBitBoundarie(val);
-}
+// }
+
+// int PatternElement::getFilterType()
+// {
+//   return filterType;
+// }
 
 
-int PatternElement::getFilterAlgo()
-{
-  return filterAlgo;
-}
+// void PatternElement::setFilterAlgo(int val)
+// {
+//   if (val>2) val=0;
+//   if (val<0) val=2;
+
+//   filterAlgo=this->checkSevenBitBoundarie(val);
+// }
+
+
+// int PatternElement::getFilterAlgo()
+// {
+//   return filterAlgo;
+// }
 
 void PatternElement::setLfoType(int val)
 {
@@ -536,7 +752,7 @@ string PatternElement::getStr()
 {
   stringstream ss;
   string s;
-  ss << "Note:" << Note << "\tTrig:" << Trig << "\tChannel:" << Channel ;
+  ss << "note:" << note << "\ttrig:" << note_on << "\tChannel:" << Channel ;
   s=ss.str();
   return s;
     //cout << "Note:" << Note << " Trig:" << Trig << " Channel:" << Channel << "\n";
@@ -735,7 +951,7 @@ const char * PatternElement::getNoteCharStar()
   static const char * D7=    "D7 ";
   static const char * D7plus="D7+";
   
-  switch(Note)
+  switch(note)
     {
     case 1:   return  C0;      break;
     case 2:   return  C0plus;  break;

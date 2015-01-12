@@ -22,6 +22,8 @@ class PicodrumMachine : public Machine
   void setF(int what,float val);
   int  getI(int what);
 
+  int checkI(int what,int   val);
+
  protected:
   
   PicodrumADSR   & getADSRAmp();

@@ -22,6 +22,7 @@ class PicosynthMachine : public Machine
   void setI(int what,int val);
   void setF(int what,float val);
   int  getI(int what);
+  int  checkI(int what,int val);
 
  protected:
   
