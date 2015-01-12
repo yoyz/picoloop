@@ -71,16 +71,37 @@ SOURCES=PatternPlayer.cpp \
 
 
 OBJECTS=$(SOURCES:.cpp=.o)
+DEPENDENCY=$(SOURCES:.cpp=.d)
 EXECUTABLE=PatternPlayer_debian_Rtaudio
 
-all: $(SOURCES) $(EXECUTABLE)
+all: $(SOURCES) $(DEPENDENCY) $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJECTS)
 	$(CC) $(OBJTOLINK)  $(OBJECTS) -o $@ $(LDFLAGS)
-#	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
 
-.cpp.o:
+
+%.o : %.cpp 
 	$(CC) $(CFLAGS) $< -o $@
 
+
+# include all the dependency .d file into the makefile 
+# it allow to match change in .h file
+include ${DEPENDENCY}
+
+# the .d file contain the dependency
+%.d : %.cpp %.h
+	$(CC) -I. -MM $< -o $@
+
+# SYSTEMLINUX.d does have a .h which is SYSTEM.h, so it need a tweaks
+SYSTEMLINUX.d:SYSTEMLINUX.cpp 
+	$(CC) -I. -MM $< -o $@ 
+
+# systemlinux.d does have a .h which is system.h
+PatternPlayer.d:PatternPlayer.cpp
+	$(CC) -I. -MM $< -o $@ 
+
+
 clean:
-	-rm -f $(OBJECTS) $(EXECUTABLE)
+	-rm -f $(OBJECTS) 
+	-rm -f $(EXECUTABLE)
+	-rm -f $(DEPENDENCY)
