@@ -51,3 +51,11 @@ int Machine::tick()
 {
   printf("Machine::tick()\n");
 }
+
+
+int Machine::checkI(int what,int val)
+{
+  printf("WARNING : Machine::checkI()\n");
+  return val;
+}
+

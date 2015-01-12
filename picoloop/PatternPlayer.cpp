@@ -142,6 +142,15 @@ vector <Machine   *>        M(TRACK_MAX);
 vector <MonoMixer *>        MM(TRACK_MAX);
 vector <Effect    *>        FX(TRACK_MAX);
 
+MonoMixer                   SAMM; // Standalone MonoMixer 
+                                  //  used to get   a standalone Machine SAM
+                                  //  used to check the boundary of value of different element
+                                  //  it is used in seq_update_multiple_time_by_step()
+
+Machine  *                   SAM; // Standalone Machine
+                                  //  it is used in seq_update_multiple_time_by_step()
+
+
 Sequencer      SEQ;         // used to  store/get information about sequencer 
 AudioEngine    AE;          // used to  init alsa/rtaudio
 PatternReader  PR;          // used to  read data.pic file
@@ -233,6 +242,12 @@ int current_swing=50;
 
 //int noteOffTrigger[TRACK_MAX];
 
+void update_SAMM(int trackNumber,int stepNumber)
+{
+  SAMM.setMachineType(P[trackNumber].getPatternElement(stepNumber).getMachineType());	  
+  SAM=SAMM.getInput();
+}
+
 
 void load_pattern();
 
@@ -288,7 +303,7 @@ void display_board_amp_env()
 	  for (i=0;i<16;i++)
 	    {
 	      // Draw trigged box trig color   
-	      if (P[cty].getPatternElement(i).getTrig())
+	      if (P[cty].getPatternElement(i).get(NOTE_ON))
 		{
 		  SG.drawBoxNumber(i,TRIG_COLOR);
 		  if (i==cursor)
@@ -298,8 +313,8 @@ void display_board_amp_env()
 		  //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
 		  
 		  // AdsR
-		  SG.smallBoxNumber(i,P[cty].getPatternElement(i).getRelease_amp(),128,SMALLBOX_COLOR);
-		  SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).getAttack_amp(),SMALLBOX_COLOR);      
+		  SG.smallBoxNumber(i,P[cty].getPatternElement(i).get(ADSR_AMP_RELEASE),128,SMALLBOX_COLOR);
+		  SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).get(ADSR_AMP_ATTACK),SMALLBOX_COLOR);      
 		}
 	    }
 	}
@@ -309,7 +324,7 @@ void display_board_amp_env()
 	  for (i=0;i<16;i++)
 	    {
 	      // Draw trigged box trig color   
-	      if (P[cty].getPatternElement(i).getTrig())
+	      if (P[cty].getPatternElement(i).get(NOTE_ON))
 		{
 		  SG.drawBoxNumber(i,TRIG_COLOR);
 		  if (i==cursor)
@@ -319,8 +334,8 @@ void display_board_amp_env()
 		  //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
 		  
 		  // AdsR
-		  SG.smallBoxNumber(i,P[cty].getPatternElement(i).getDecay_amp(),128,SMALLBOX_COLOR);
-		  SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).getSustain_amp(),SMALLBOX_COLOR);      
+		  SG.smallBoxNumber(i,P[cty].getPatternElement(i).get(ADSR_AMP_DECAY),128,SMALLBOX_COLOR);
+		  SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).get(ADSR_AMP_SUSTAIN),SMALLBOX_COLOR);      
 		}
 	    }
 	}
@@ -332,7 +347,7 @@ void display_board_amp_env()
 	  for (i=0;i<16;i++)
 	    {
 	      // Draw trigged box trig color   
-	      if (P[cty].getPatternElement(i).getTrig())
+	      if (P[cty].getPatternElement(i).get(NOTE_ON))
 		{
 		  SG.drawBoxNumber(i,TRIG_COLOR);
 		  if (i==cursor)
@@ -342,8 +357,8 @@ void display_board_amp_env()
 		  //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
 		  
 		  // AdsR
-		  SG.smallBoxNumber(i,P[cty].getPatternElement(i).getRelease_fltr(),128,SMALLBOX_COLOR);
-		  SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).getAttack_fltr(),SMALLBOX_COLOR);      
+		  SG.smallBoxNumber(i,P[cty].getPatternElement(i).get(ADSR_FLTR_RELEASE),128,SMALLBOX_COLOR);
+		  SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).get(ADSR_FLTR_ATTACK),SMALLBOX_COLOR);      
 		}
 	    }
 	}
@@ -354,7 +369,7 @@ void display_board_amp_env()
 	  for (i=0;i<16;i++)
 	    {
 	      // Draw trigged box trig color   
-	      if (P[cty].getPatternElement(i).getTrig())
+	      if (P[cty].getPatternElement(i).get(NOTE_ON))
 		{
 		  SG.drawBoxNumber(i,TRIG_COLOR);
 		  if (i==cursor)
@@ -364,8 +379,8 @@ void display_board_amp_env()
 		  //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
 		  
 		  // AdsR
-		  SG.smallBoxNumber(i,P[cty].getPatternElement(i).getDecay_fltr(),128,SMALLBOX_COLOR);
-		  SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).getSustain_fltr(),SMALLBOX_COLOR);      
+		  SG.smallBoxNumber(i,P[cty].getPatternElement(i).get(ADSR_FLTR_DECAY),128,SMALLBOX_COLOR);
+		  SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).get(ADSR_FLTR_SUSTAIN),SMALLBOX_COLOR);      
 		}
 	    }
 	}
@@ -377,7 +392,7 @@ void display_board_amp_env()
 	  for (i=0;i<16;i++)
 	    {
 	      // Draw trigged box trig color   
-	      if (P[cty].getPatternElement(i).getTrig())
+	      if (P[cty].getPatternElement(i).get(NOTE_ON))
 		{
 		  SG.drawBoxNumber(i,TRIG_COLOR);
 		  if (i==cursor)
@@ -387,7 +402,7 @@ void display_board_amp_env()
 		  //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
 		  
 		  // AdsR
-		  SG.smallBoxNumber(i,P[cty].getPatternElement(i).getAmp(),128,SMALLBOX_COLOR);
+		  SG.smallBoxNumber(i,P[cty].getPatternElement(i).get(AMP),128,SMALLBOX_COLOR);
 		  SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).getTrigTime(),SMALLBOX_COLOR);      
 		}
 	    }
@@ -432,7 +447,7 @@ void display_board_note()
 	  for (i=0;i<16;i++)
 	    {
 	      // Draw trig note color
-	      if (P[cty].getPatternElement(i).getTrig())
+	      if (P[cty].getPatternElement(i).get(NOTE_ON))
 		{
 		  SG.drawBoxNumber(i,NOTE_COLOR);
 		  
@@ -453,8 +468,8 @@ void display_board_note()
 	  for (i=0;i<16;i++)
 	    {
 	      // Draw trig note color
-	      if (P[cty].getPatternElement(i).getTrig())
-		{
+	      if (P[cty].getPatternElement(i).get(NOTE_ON))
+		  {
 		  SG.drawBoxNumber(i,NOTE_COLOR);	    
 		  if (i==cursor)
 		    SG.drawBoxNumber(cursor,CURSOR_COLOR);
@@ -465,8 +480,8 @@ void display_board_note()
 		  //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
 
 		  SG.smallBoxNumber(i,
-				    (P[cty].getPatternElement(i).getNote()%12)*10,
-				    (128-(P[cty].getPatternElement(i).getNote()/12)*10),
+				    (P[cty].getPatternElement(i).get(NOTE)%12)*10,
+				    (128-(P[cty].getPatternElement(i).get(NOTE)/12)*10),
 				    SMALLBOX_COLOR);
 
 		  
@@ -500,7 +515,7 @@ void display_board_bpm()
       for (i=0;i<16;i++)
 	{
 	  // Draw trigged box trig color   
-	  if (P[cty].getPatternElement(i).getTrig())
+	  if (P[cty].getPatternElement(i).get(NOTE_ON))
 	    {
 	      SG.drawBoxNumber(i,TRIG_COLOR);
 	      if (i==cursor)
@@ -510,8 +525,8 @@ void display_board_bpm()
 		  //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
 	      
 		  // LFO
-	      SG.smallBoxNumber(i,P[cty].getPatternElement(i).getLfoDepth(),128,SMALLBOX_COLOR);
-	      SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).getLfoSpeed(),SMALLBOX_COLOR);
+	      SG.smallBoxNumber(i,P[cty].getPatternElement(i).get(LFO1_DEPTH),128,SMALLBOX_COLOR);
+	      SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).get(LFO1_FREQ),SMALLBOX_COLOR);
 	    }
 	}
     }
@@ -767,7 +782,7 @@ void display_board_load_save()
       for (i=0;i<16;i++)
 	{
 	  // Draw trigged box trig color   
-	  if (P[cty].getPatternElement(i).getTrig())
+	  if (P[cty].getPatternElement(i).get(NOTE_ON))
 	    {
 	      SG.drawBoxNumber(i,TRIG_COLOR);
 	      if (i==cursor)
@@ -777,8 +792,8 @@ void display_board_load_save()
 		  //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
 	      
 		  // LFO
-	      SG.smallBoxNumber(i,P[cty].getPatternElement(i).getLfoDepth(),128,SMALLBOX_COLOR);
-	      SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).getLfoSpeed(),SMALLBOX_COLOR);
+	      SG.smallBoxNumber(i,P[cty].getPatternElement(i).get(LFO1_DEPTH),128,SMALLBOX_COLOR);
+	      SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).get(LFO1_DEPTH),SMALLBOX_COLOR);
 	    }
 	}
     }                  
@@ -809,7 +824,7 @@ void display_board_psh()
       for (i=0;i<16;i++)
 	{
 	  // Draw trigged box trig color   
-	  if (P[cty].getPatternElement(i).getTrig())
+	  if (P[cty].getPatternElement(i).get(NOTE_ON))
 	    {
 	      SG.drawBoxNumber(i,TRIG_COLOR);
 	      if (i==cursor)
@@ -819,8 +834,8 @@ void display_board_psh()
 		  //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
 	      
 		  // LFO
-	      SG.smallBoxNumber(i,P[cty].getPatternElement(i).getLfoDepth(),128,SMALLBOX_COLOR);
-	      SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).getLfoSpeed(),SMALLBOX_COLOR);
+	      SG.smallBoxNumber(i,P[cty].getPatternElement(i).get(LFO1_DEPTH),128,SMALLBOX_COLOR);
+	      SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).get(LFO1_FREQ),SMALLBOX_COLOR);
 	    }
 	}
     }                  
@@ -843,7 +858,7 @@ void display_board_vco()
       for (i=0;i<16;i++)
 	{
 	  // MIX / PHASE
-	  if (P[cty].getPatternElement(i).getTrig())
+	  if (P[cty].getPatternElement(i).get(NOTE_ON))
 	    {	      
 	      SG.drawBoxNumber(i,NOTE_COLOR);
 	      if (i==cursor)
@@ -872,7 +887,7 @@ void display_board_vco()
       for (i=0;i<16;i++)
 	{
 	  // OSC1AMP OSC2AMP
-	  if (P[cty].getPatternElement(i).getTrig())
+	  if (P[cty].getPatternElement(i).get(NOTE_ON))
 	    {	      
 	      SG.drawBoxNumber(i,NOTE_COLOR);
 	      if (i==cursor)
@@ -900,7 +915,7 @@ void display_board_vco()
       for (i=0;i<16;i++)
 	{
 	  // Draw trig note color
-	  if (P[cty].getPatternElement(i).getTrig())
+	  if (P[cty].getPatternElement(i).get(NOTE_ON))
 	    {
 	      SG.drawBoxNumber(i,NOTE_COLOR);
 	      
@@ -935,7 +950,7 @@ void display_board_lfo()
       for (i=0;i<16;i++)
 	{
 	  // Draw trigged box trig color   
-	  if (P[cty].getPatternElement(i).getTrig())
+	  if (P[cty].getPatternElement(i).get(NOTE_ON))
 	    {
 	      SG.drawBoxNumber(i,TRIG_COLOR);
 	      if (i==cursor)
@@ -945,8 +960,8 @@ void display_board_lfo()
 	      //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
 	      
 	      // LFO
-	      SG.smallBoxNumber(i,P[cty].getPatternElement(i).getLfoDepth(),128,SMALLBOX_COLOR);
-	      SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).getLfoSpeed(),SMALLBOX_COLOR);
+	      SG.smallBoxNumber(i,P[cty].getPatternElement(i).get(LFO1_DEPTH),128,SMALLBOX_COLOR);
+	      SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).get(LFO1_FREQ),SMALLBOX_COLOR);
 	    }
 	}
       
@@ -963,7 +978,7 @@ void display_board_lfo()
       for (i=0;i<16;i++)
 	{
 	  // Draw trigged box trig color   
-	  if (P[cty].getPatternElement(i).getTrig())
+	  if (P[cty].getPatternElement(i).get(NOTE_ON))
 	    {
 	      SG.drawBoxNumber(i,TRIG_COLOR);
 	      if (i==cursor)
@@ -973,8 +988,8 @@ void display_board_lfo()
 	      //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
 	      
 	      // LFO
-	      SG.smallBoxNumber(i,P[cty].getPatternElement(i).getPitchBendDepth(),128,SMALLBOX_COLOR);
-	      SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).getPitchBendSpeed(),SMALLBOX_COLOR);
+	      SG.smallBoxNumber(i,P[cty].getPatternElement(i).get(PITCHBEND_DEPTH),128,SMALLBOX_COLOR);
+	      SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).get(PITCHBEND_SPEED),SMALLBOX_COLOR);
 	    }
 	}
       
@@ -989,7 +1004,7 @@ void display_board_lfo()
       for (i=0;i<16;i++)
 	{
 	  // Draw trigged box trig color   
-	  if (P[cty].getPatternElement(i).getTrig())
+	  if (P[cty].getPatternElement(i).get(NOTE_ON))
 	    {
 	      SG.drawBoxNumber(i,TRIG_COLOR);
 	      if (i==cursor)
@@ -1016,7 +1031,7 @@ void display_board_osc()
     {
       for (i=0;i<16;i++)
 	{
-	  if (P[cty].getPatternElement(i).getTrig())
+	  if (P[cty].getPatternElement(i).get(NOTE_ON))
 	    {
 	      SG.drawBoxNumber(i,TRIG_COLOR);
 	      if (i==cursor)       SG.drawBoxNumber(cursor,CURSOR_COLOR);
@@ -1045,7 +1060,7 @@ void display_board_mac()
     {
       for (i=0;i<16;i++)
 	{
-	  if (P[cty].getPatternElement(i).getTrig())
+	  if (P[cty].getPatternElement(i).get(NOTE_ON))
 	    {
 	      SG.drawBoxNumber(i,TRIG_COLOR);
 	      if (i==cursor)       SG.drawBoxNumber(cursor,CURSOR_COLOR);
@@ -1081,7 +1096,7 @@ void display_board_fltr()
 	  for (i=0;i<16;i++)
 	    {
 	      // Draw trigged box trig color   
-	      if (P[cty].getPatternElement(i).getTrig())
+	      if (P[cty].getPatternElement(i).get(NOTE_ON))
 		{
 		  SG.drawBoxNumber(i,TRIG_COLOR);
 		  if (i==cursor)
@@ -1090,8 +1105,8 @@ void display_board_fltr()
 		    SG.drawBoxNumber(step,STEP_COLOR);  
 		  
 		  // AdsR
-		  SG.smallBoxNumber(i,P[cty].getPatternElement(i).getResonance(),128,SMALLBOX_COLOR);
-		  SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).getCutoff(),SMALLBOX_COLOR);      
+		  SG.smallBoxNumber(i,P[cty].getPatternElement(i).get(FILTER1_RESONANCE),128,SMALLBOX_COLOR);
+		  SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).get(FILTER1_CUTOFF),SMALLBOX_COLOR);
 		}
 	    }
 	}
@@ -1104,7 +1119,7 @@ void display_board_fltr()
 	  for (i=0;i<16;i++)
 	    {
 	      // Draw trigged box trig color   
-	      if (P[cty].getPatternElement(i).getTrig())
+	      if (P[cty].getPatternElement(i).get(NOTE_ON))
 		{
 		  SG.drawBoxNumber(i,TRIG_COLOR);
 		  if (i==cursor)
@@ -1140,7 +1155,7 @@ void display_board_fx()
 	  for (i=0;i<16;i++)
 	    {
 	      // Draw trigged box trig color   
-	      if (P[cty].getPatternElement(i).getTrig())
+	      if (P[cty].getPatternElement(i).get(NOTE_ON))
 		{
 		  SG.drawBoxNumber(i,TRIG_COLOR);
 		  if (i==cursor)
@@ -1149,8 +1164,8 @@ void display_board_fx()
 		    SG.drawBoxNumber(step,STEP_COLOR);  
 		  
 		  // AdsR
-		  SG.smallBoxNumber(i,P[cty].getPatternElement(i).getFxDepth(),128,SMALLBOX_COLOR);
-		  SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).getFxSpeed(),SMALLBOX_COLOR);      
+		  SG.smallBoxNumber(i,P[cty].getPatternElement(i).get(FX1_DEPTH),128,SMALLBOX_COLOR);
+		  SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).get(FX1_SPEED),SMALLBOX_COLOR);      
 		}
 	    }
 	}
@@ -3281,63 +3296,71 @@ void seq_update_multiple_time_by_step()
   int          oldstep=0;
   int          i=0;
 
+
+
   
   // Change amp Amplification
   if (TK.amp!=0)
     {
-      P[cty].getPatternElement(cursor).setAmp(P[cty].getPatternElement(cursor).getAmp()+TK.amp);
+      P[cty].getPatternElement(cursor).set(AMP,
+					   P[cty].getPatternElement(cursor).get(AMP)+TK.amp);
       TK.amp=0;
       if (debug)
-	printf("[amp:%d]\n",P[cty].getPatternElement(cursor).getAmp());
+	printf("[amp:%d]\n",P[cty].getPatternElement(cursor).get(AMP));
     }
   
   // Change amp Amplification
   if (TK.amp_all!=0)
     {
       for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).setAmp(P[cty].getPatternElement(i).getAmp()+TK.amp_all);
+	P[cty].getPatternElement(i).set(AMP,
+					P[cty].getPatternElement(i).get(AMP)+TK.amp_all);
       TK.amp_all=0;
       if (debug)
-	printf("[amp_all:%d]\n",P[cty].getPatternElement(cursor).getAmp());
+	printf("[amp_all:%d]\n",P[cty].getPatternElement(cursor).get(AMP));
     }
   
   // Change amp env Attack
   if (TK.attack_amp!=0)
     {
-      P[cty].getPatternElement(cursor).setAttack_amp(P[cty].getPatternElement(cursor).getAttack_amp()+TK.attack_amp);
+      //P[cty].getPatternElement(cursor).setAttack_amp(P[cty].getPatternElement(cursor).getAttack_amp()+TK.attack_amp);
+      P[cty].getPatternElement(cursor).set(ADSR_AMP_ATTACK,
+					   P[cty].getPatternElement(cursor).get(ADSR_AMP_ATTACK)+TK.attack_amp);
       TK.attack_amp=0;
       if (debug)
-	printf("[attack_amp:%d]\n",P[cty].getPatternElement(cursor).getAttack_amp());
+	printf("[attack_amp:%d]\n",P[cty].getPatternElement(cursor).get(ADSR_AMP_ATTACK));
     }
   
   // Change amp env Attack
   if (TK.attack_amp_all!=0)
     {
       for(i=0;i<16;i++)
-	P[cty].getPatternElement(i).setAttack_amp(P[cty].getPatternElement(i).getAttack_amp()+TK.attack_amp_all);
+	P[cty].getPatternElement(i).set(ADSR_AMP_ATTACK,
+					   P[cty].getPatternElement(i).get(ADSR_AMP_ATTACK)+TK.attack_amp_all);
+
       TK.attack_amp_all=0;
       if (debug)
-	printf("[attack_all:%d]\n",P[cty].getPatternElement(cursor).getAttack_amp());
+	printf("[attack_all:%d]\n",P[cty].getPatternElement(cursor).get(ADSR_AMP_ATTACK));
     }
 
 
   // Change amp env Decay
   if (TK.decay_amp!=0)
     {
-      P[cty].getPatternElement(cursor).setDecay_amp(P[cty].getPatternElement(cursor).getDecay_amp()+TK.decay_amp);
+      P[cty].getPatternElement(cursor).set(ADSR_AMP_DECAY,P[cty].getPatternElement(cursor).get(ADSR_AMP_DECAY)+TK.decay_amp);
       TK.decay_amp=0;
       if (debug)
-	printf("[decay_amp:%d]\n",P[cty].getPatternElement(cursor).getDecay_amp());
+	printf("[decay_amp:%d]\n",P[cty].getPatternElement(cursor).get(ADSR_AMP_DECAY));
     }
   
   // Change amp env Decay
   if (TK.decay_amp_all!=0)
     {
       for(i=0;i<16;i++)
-	P[cty].getPatternElement(i).setDecay_amp(P[cty].getPatternElement(i).getDecay_amp()+TK.decay_amp_all);
+	P[cty].getPatternElement(i).set(ADSR_AMP_DECAY,P[cty].getPatternElement(i).get(ADSR_AMP_DECAY)+TK.decay_amp_all);
       TK.decay_amp_all=0;
       if (debug)
-	printf("[decay_all:%d]\n",P[cty].getPatternElement(cursor).getDecay_amp());
+	printf("[decay_all:%d]\n",P[cty].getPatternElement(cursor).get(ADSR_AMP_DECAY));
     }
 
 
@@ -3345,45 +3368,45 @@ void seq_update_multiple_time_by_step()
   // Change amp env Sustain
   if (TK.sustain_amp!=0)
     {
-      P[cty].getPatternElement(cursor).setSustain_amp(P[cty].getPatternElement(cursor).getSustain_amp()+TK.sustain_amp);
+      P[cty].getPatternElement(cursor).set(ADSR_AMP_SUSTAIN,
+					   P[cty].getPatternElement(cursor).get(ADSR_AMP_SUSTAIN)+TK.sustain_amp);
       TK.sustain_amp=0;
       if (debug)
-	printf("[sustain_amp:%d]\n",P[cty].getPatternElement(cursor).getSustain_amp());
+	printf("[sustain_amp:%d]\n",P[cty].getPatternElement(cursor).get(ADSR_AMP_SUSTAIN));
     }
   
   // Change amp env Sustain
   if (TK.sustain_amp_all!=0)
     {
       for(i=0;i<16;i++)
-	P[cty].getPatternElement(i).setSustain_amp(P[cty].getPatternElement(i).getSustain_amp()+TK.sustain_amp_all);
+	P[cty].getPatternElement(i).set(ADSR_AMP_SUSTAIN,
+					P[cty].getPatternElement(i).get(ADSR_AMP_SUSTAIN)+TK.sustain_amp_all);
       TK.sustain_amp_all=0;
       if (debug)
-	printf("[sustain_all:%d]\n",P[cty].getPatternElement(cursor).getSustain_amp());
+	printf("[sustain_all:%d]\n",P[cty].getPatternElement(cursor).get(ADSR_AMP_SUSTAIN));
     }
   
   
   // Change amp env Release
   if (TK.release_amp!=0)
     {
-      //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
-      P[cty].getPatternElement(cursor).setRelease_amp(P[cty].getPatternElement(cursor).getRelease_amp()+TK.release_amp);
+      P[cty].getPatternElement(cursor).set(ADSR_AMP_RELEASE,
+					   P[cty].getPatternElement(cursor).get(ADSR_AMP_RELEASE)+TK.release_amp);
       TK.release_amp=0;
       if (debug)
-	printf("[release_amp:%d]\n",P[cty].getPatternElement(cursor).getRelease_amp());
-      //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
+	printf("[release_amp:%d]\n",P[cty].getPatternElement(cursor).get(ADSR_AMP_RELEASE));
       
     }
   
   // Change amp env Release
   if (TK.release_amp_all!=0)
     {
-      //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
       for(i=0;i<16;i++)
-	P[cty].getPatternElement(i).setRelease_amp(P[cty].getPatternElement(i).getRelease_amp()+TK.release_amp_all);
+	P[cty].getPatternElement(i).set(ADSR_AMP_RELEASE,
+					P[cty].getPatternElement(i).get(ADSR_AMP_RELEASE)+TK.release_amp_all);
       TK.release_amp_all=0;
       if (debug)
-	printf("[release_amp_all:%d]\n",P[cty].getPatternElement(cursor).getRelease_amp());
-      //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
+	printf("[release_amp_all:%d]\n",P[cty].getPatternElement(cursor).get(ADSR_AMP_RELEASE));
       
     }
   
@@ -3394,60 +3417,61 @@ void seq_update_multiple_time_by_step()
   // Change fltr env Attack
   if (TK.attack_fltr!=0)
     {
-      P[cty].getPatternElement(cursor).setAttack_fltr(P[cty].getPatternElement(cursor).getAttack_fltr()+TK.attack_fltr);
+      P[cty].getPatternElement(cursor).set(ADSR_FLTR_ATTACK,
+					   P[cty].getPatternElement(cursor).get(ADSR_FLTR_ATTACK)+TK.attack_fltr);
       TK.attack_fltr=0;
       if (debug)
-	printf("[attack_fltr:%d]\n",P[cty].getPatternElement(cursor).getAttack_fltr());
+	printf("[attack_fltr:%d]\n",P[cty].getPatternElement(cursor).get(ADSR_FLTR_ATTACK));
     }
   
   // Change fltr env Attack
   if (TK.attack_fltr_all!=0)
     {
       for(i=0;i<16;i++)
-	P[cty].getPatternElement(i).setAttack_fltr(P[cty].getPatternElement(i).getAttack_fltr()+TK.attack_fltr_all);
+	P[cty].getPatternElement(i).set(ADSR_FLTR_ATTACK,P[cty].getPatternElement(i).get(ADSR_FLTR_ATTACK)+TK.attack_fltr_all);
       TK.attack_fltr_all=0;
       if (debug)
-	printf("[attack_all:%d]\n",P[cty].getPatternElement(cursor).getAttack_amp());
+	printf("[attack_all:%d]\n",P[cty].getPatternElement(cursor).get(ADSR_FLTR_ATTACK));
     }
 
 
   // Change fltr env Decay
   if (TK.decay_fltr!=0)
     {
-      P[cty].getPatternElement(cursor).setDecay_fltr(P[cty].getPatternElement(cursor).getDecay_fltr()+TK.decay_fltr);
+      P[cty].getPatternElement(cursor).set(ADSR_FLTR_DECAY,P[cty].getPatternElement(cursor).get(ADSR_FLTR_DECAY)+TK.decay_fltr);
       TK.decay_fltr=0;
       if (debug)
-	printf("[decay_fltr:%d]\n",P[cty].getPatternElement(cursor).getDecay_fltr());
+	printf("[decay_fltr:%d]\n",P[cty].getPatternElement(cursor).get(ADSR_FLTR_DECAY));
     }
   
   // Change fltr env Decay
   if (TK.decay_fltr_all!=0)
     {
       for(i=0;i<16;i++)
-	P[cty].getPatternElement(i).setDecay_fltr(P[cty].getPatternElement(i).getDecay_fltr()+TK.decay_fltr_all);
+	P[cty].getPatternElement(i).set(ADSR_FLTR_DECAY,P[cty].getPatternElement(i).get(ADSR_FLTR_DECAY)+TK.decay_fltr_all);
       TK.decay_fltr_all=0;
       if (debug)
-	printf("[decay_all:%d]\n",P[cty].getPatternElement(cursor).getDecay_amp());
+	printf("[decay_fltr_all:%d]\n",P[cty].getPatternElement(cursor).get(ADSR_FLTR_DECAY));
     }
 
 
   // Change fltr env Sustain
   if (TK.sustain_fltr!=0)
     {
-      P[cty].getPatternElement(cursor).setSustain_fltr(P[cty].getPatternElement(cursor).getSustain_fltr()+TK.sustain_fltr);
+      P[cty].getPatternElement(cursor).set(ADSR_FLTR_SUSTAIN,P[cty].getPatternElement(cursor).get(ADSR_FLTR_SUSTAIN)+TK.sustain_fltr);
       TK.sustain_fltr=0;
       if (debug)
-	printf("[sustain_fltr:%d]\n",P[cty].getPatternElement(cursor).getSustain_fltr());
+	printf("[sustain_fltr:%d]\n",P[cty].getPatternElement(cursor).get(ADSR_FLTR_SUSTAIN));
     }
   
   // Change fltr env Sustain
   if (TK.sustain_fltr_all!=0)
     {
       for(i=0;i<16;i++)
-	P[cty].getPatternElement(i).setSustain_fltr(P[cty].getPatternElement(i).getSustain_fltr()+TK.sustain_fltr_all);
+	P[cty].getPatternElement(i).set(ADSR_FLTR_SUSTAIN,P[cty].getPatternElement(i).get(ADSR_FLTR_SUSTAIN)+TK.sustain_fltr_all);
       TK.sustain_fltr_all=0;
       if (debug)
-	printf("[sustain_all:%d]\n",P[cty].getPatternElement(cursor).getSustain_amp());
+	printf("[sustain_all:%d]\n",P[cty].getPatternElement(cursor).get(ADSR_FLTR_SUSTAIN));
     }
 
   
@@ -3456,10 +3480,10 @@ void seq_update_multiple_time_by_step()
   if (TK.release_fltr!=0)
     {
       //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
-      P[cty].getPatternElement(cursor).setRelease_fltr(P[cty].getPatternElement(cursor).getRelease_fltr()+TK.release_fltr);
+      P[cty].getPatternElement(cursor).set(ADSR_FLTR_RELEASE,P[cty].getPatternElement(cursor).get(ADSR_FLTR_RELEASE)+TK.release_fltr);
       TK.release_fltr=0;
       if (debug)
-	printf("[release_fltr:%d]\n",P[cty].getPatternElement(cursor).getRelease_fltr());
+	printf("[release_fltr:%d]\n",P[cty].getPatternElement(cursor).get(ADSR_FLTR_RELEASE));
       //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
       
     }
@@ -3467,53 +3491,63 @@ void seq_update_multiple_time_by_step()
   // Change fltr env Release
   if (TK.release_fltr_all!=0)
     {
-      //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
       for(i=0;i<16;i++)
-	P[cty].getPatternElement(i).setRelease_fltr(P[cty].getPatternElement(i).getRelease_fltr()+TK.release_fltr_all);
+	P[cty].getPatternElement(i).set(ADSR_FLTR_RELEASE,P[cty].getPatternElement(i).get(ADSR_FLTR_RELEASE)+TK.release_fltr_all);
       TK.release_fltr_all=0;
       if (debug)
-	printf("[release_fltr_all:%d]\n",P[cty].getPatternElement(cursor).getRelease_fltr());
-      //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
+	printf("[release_fltr_all:%d]\n",P[cty].getPatternElement(cursor).get(ADSR_FLTR_RELEASE));
       
     }
   
 
-  // Change fltr env Attack
+  // Change fltr type
   if (TK.filter_type!=0)
     {
-      P[cty].getPatternElement(cursor).setFilterType(P[cty].getPatternElement(cursor).getFilterType()+TK.filter_type);
+      update_SAMM(cty,cursor);
+      P[cty].getPatternElement(cursor).set(FILTER1_TYPE,
+					   SAM->checkI(FILTER1_TYPE,P[cty].getPatternElement(cursor).get(FILTER1_TYPE)+TK.filter_type));
       TK.filter_type=0;
       if (debug)
-	printf("[filter_type:%d]\n",P[cty].getPatternElement(cursor).getFilterType());
+	printf("[filter_type:%d]\n",P[cty].getPatternElement(cursor).get(FILTER1_TYPE));
     }
   
-  // Change fltr env Attack
+  // Change fltr
   if (TK.filter_type_all!=0)
     {
       for(i=0;i<16;i++)
-	P[cty].getPatternElement(i).setFilterType(P[cty].getPatternElement(i).getFilterType()+TK.filter_type_all);
+	{
+	  update_SAMM(cty,i);
+	  P[cty].getPatternElement(i).set(FILTER1_TYPE,
+					  SAM->checkI(FILTER1_TYPE,P[cty].getPatternElement(i).get(FILTER1_TYPE)+TK.filter_type_all));
+	}
       TK.filter_type_all=0;
       if (debug)
-	printf("[filter_type:%d]\n",P[cty].getPatternElement(cursor).getFilterType());
+	printf("[filter_type:%d]\n",P[cty].getPatternElement(cursor).get(FILTER1_TYPE));
     }
 
   // Change fltr env Attack
   if (TK.filter_algo!=0)
     {
-      P[cty].getPatternElement(cursor).setFilterAlgo(P[cty].getPatternElement(cursor).getFilterAlgo()+TK.filter_algo);
+      update_SAMM(cty,cursor);
+      P[cty].getPatternElement(cursor).set(FILTER1_ALGO,
+					   SAM->checkI(FILTER1_ALGO,P[cty].getPatternElement(cursor).get(FILTER1_ALGO)+TK.filter_algo));
       TK.filter_algo=0;
       if (debug)
-	printf("[filter_algo:%d]\n",P[cty].getPatternElement(cursor).getFilterAlgo());
+	printf("[filter_algo:%d]\n",P[cty].getPatternElement(cursor).get(FILTER1_ALGO));
     }
   
   // Change fltr env Attack
   if (TK.filter_algo_all!=0)
     {
       for(i=0;i<16;i++)
-	P[cty].getPatternElement(i).setFilterAlgo(P[cty].getPatternElement(i).getFilterAlgo()+TK.filter_algo_all);
+	{
+	  update_SAMM(cty,i);
+	  P[cty].getPatternElement(i).set(FILTER1_ALGO,
+					  SAM->checkI(FILTER1_ALGO,P[cty].getPatternElement(i).get(FILTER1_ALGO)+TK.filter_algo_all));
+	}
       TK.filter_algo_all=0;
       if (debug)
-	printf("[filter_algo:%d]\n",P[cty].getPatternElement(cursor).getFilterAlgo());
+	printf("[filter_algo:%d]\n",P[cty].getPatternElement(cursor).get(FILTER1_ALGO));
     }
 
 
@@ -3548,40 +3582,40 @@ void seq_update_multiple_time_by_step()
   // Change Fx Depth
   if (TK.fx_depth!=0)
     {
-      P[cty].getPatternElement(cursor).setFxDepth(P[cty].getPatternElement(cursor).getFxDepth()+TK.fx_depth);
+      P[cty].getPatternElement(cursor).set(FX1_DEPTH,P[cty].getPatternElement(cursor).get(FX1_DEPTH)+TK.fx_depth);
       TK.fx_depth=0;
       if (debug)
-	printf("[fx_depth:%d]\n",P[cty].getPatternElement(cursor).getFxDepth());      
+	printf("[fx_depth:%d]\n",P[cty].getPatternElement(cursor).get(FX1_DEPTH));      
     }
   
   // Change Fx Depth All
   if (TK.fx_depth_all!=0)
     {
       for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).setFxDepth(P[cty].getPatternElement(i).getFxDepth()+TK.fx_depth_all);
+	P[cty].getPatternElement(i).set(FX1_DEPTH,P[cty].getPatternElement(i).get(FX1_DEPTH)+TK.fx_depth_all);
       TK.fx_depth_all=0;
       if (debug)
-	printf("[fx_depth_all:%d]\n",P[cty].getPatternElement(cursor).getFxDepth());      
+	printf("[fx_depth_all:%d]\n",P[cty].getPatternElement(cursor).get(FX1_DEPTH));      
     }
 
 
   // Change Fx Speed
   if (TK.fx_speed!=0)
     {
-      P[cty].getPatternElement(cursor).setFxSpeed(P[cty].getPatternElement(cursor).getFxSpeed()+TK.fx_speed);
+      P[cty].getPatternElement(cursor).set(FX1_SPEED,P[cty].getPatternElement(cursor).get(FX1_SPEED)+TK.fx_speed);
       TK.fx_speed=0;
       if (debug)
-	printf("[fx_speed:%d]\n",P[cty].getPatternElement(cursor).getFxSpeed());      
+	printf("[fx_speed:%d]\n",P[cty].getPatternElement(cursor).get(FX1_SPEED));      
     }
   
   // Change Fx Speed
   if (TK.fx_speed_all!=0)
     {
       for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).setFxSpeed(P[cty].getPatternElement(i).getFxSpeed()+TK.fx_speed_all);
+	P[cty].getPatternElement(i).set(FX1_SPEED,P[cty].getPatternElement(i).get(FX1_SPEED)+TK.fx_speed_all);
       TK.fx_speed_all=0;
       if (debug)
-	printf("[fx_speed_all:%d]\n",P[cty].getPatternElement(cursor).getFxSpeed());      
+	printf("[fx_speed_all:%d]\n",P[cty].getPatternElement(cursor).get(FX1_SPEED));      
     }
 
 
@@ -3690,10 +3724,10 @@ void seq_update_multiple_time_by_step()
   // Change lfo depth
   if (TK.lfo_depth!=0)
     {      
-      P[cty].getPatternElement(cursor).setLfoDepth(P[cty].getPatternElement(cursor).getLfoDepth()+TK.lfo_depth);
+      P[cty].getPatternElement(cursor).set(LFO1_DEPTH,P[cty].getPatternElement(cursor).get(LFO1_DEPTH)+TK.lfo_depth);
       TK.lfo_depth=0;
       if (debug)
-	printf("[lfo_depth:%d]\n",P[cty].getPatternElement(cursor).getLfoDepth());
+	printf("[lfo_depth:%d]\n",P[cty].getPatternElement(cursor).get(LFO1_DEPTH));
       
     }
 
@@ -3702,10 +3736,10 @@ void seq_update_multiple_time_by_step()
   if (TK.lfo_depth_all!=0)
     {
       for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).setLfoDepth(P[cty].getPatternElement(i).getLfoDepth()+TK.lfo_depth_all);
+	P[cty].getPatternElement(i).set(LFO1_DEPTH,P[cty].getPatternElement(i).get(LFO1_DEPTH)+TK.lfo_depth_all);
       TK.lfo_depth_all=0;
       if (debug)
-	printf("[lfo_depth_all:%d]\n",P[cty].getPatternElement(cursor).getLfoDepth());
+	printf("[lfo_depth_all:%d]\n",P[cty].getPatternElement(cursor).get(LFO1_DEPTH));
       
     }
 
@@ -3713,10 +3747,10 @@ void seq_update_multiple_time_by_step()
   // Change lfo speed
   if (TK.lfo_speed!=0)
     {
-      P[cty].getPatternElement(cursor).setLfoSpeed(P[cty].getPatternElement(cursor).getLfoSpeed()+TK.lfo_speed);
+      P[cty].getPatternElement(cursor).set(LFO1_FREQ,P[cty].getPatternElement(cursor).get(LFO1_FREQ)+TK.lfo_speed);
       TK.lfo_speed=0;
       if (debug)
-	printf("[lfo_speed:%d]\n",P[cty].getPatternElement(cursor).getLfoSpeed());
+	printf("[lfo_speed:%d]\n",P[cty].getPatternElement(cursor).get(LFO1_FREQ));
       
     }
 
@@ -3724,10 +3758,10 @@ void seq_update_multiple_time_by_step()
   if (TK.lfo_speed_all!=0)
     {
       for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).setLfoSpeed(P[cty].getPatternElement(i).getLfoSpeed()+TK.lfo_speed_all);
+	P[cty].getPatternElement(i).set(LFO1_FREQ,P[cty].getPatternElement(i).get(LFO1_FREQ)+TK.lfo_speed_all);
       TK.lfo_speed_all=0;
       if (debug)
-	printf("[lfo_speed:%d]\n",P[cty].getPatternElement(cursor).getLfoSpeed());
+	printf("[lfo_speed:%d]\n",P[cty].getPatternElement(cursor).get(LFO1_FREQ));
       
     }
 
@@ -3735,10 +3769,10 @@ void seq_update_multiple_time_by_step()
   // Change pb depth
   if (TK.pb_depth!=0)
     {      
-      P[cty].getPatternElement(cursor).setPitchBendDepth(P[cty].getPatternElement(cursor).getPitchBendDepth()+TK.pb_depth);
+      P[cty].getPatternElement(cursor).set(PITCHBEND_DEPTH,P[cty].getPatternElement(cursor).get(PITCHBEND_DEPTH)+TK.pb_depth);
       TK.pb_depth=0;
       if (debug)
-	printf("[pb_depth:%d]\n",P[cty].getPatternElement(cursor).getPitchBendDepth());
+	printf("[pb_depth:%d]\n",P[cty].getPatternElement(cursor).get(PITCHBEND_DEPTH));
       
     }
 
@@ -3747,10 +3781,10 @@ void seq_update_multiple_time_by_step()
   if (TK.pb_depth_all!=0)
     {
       for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).setPitchBendDepth(P[cty].getPatternElement(i).getPitchBendDepth()+TK.pb_depth_all);
+	P[cty].getPatternElement(i).set(PITCHBEND_DEPTH,P[cty].getPatternElement(i).get(PITCHBEND_DEPTH)+TK.pb_depth_all);
       TK.pb_depth_all=0;
       if (debug)
-	printf("[pb_depth_all:%d]\n",P[cty].getPatternElement(cursor).getPitchBendDepth());
+	printf("[pb_depth_all:%d]\n",P[cty].getPatternElement(cursor).get(PITCHBEND_DEPTH));
       
     }
 
@@ -3758,10 +3792,11 @@ void seq_update_multiple_time_by_step()
   // Change pb speed
   if (TK.pb_speed!=0)
     {
-      P[cty].getPatternElement(cursor).setPitchBendSpeed(P[cty].getPatternElement(cursor).getPitchBendSpeed()+TK.pb_speed);
+      P[cty].getPatternElement(cursor).set(PITCHBEND_SPEED,
+					   P[cty].getPatternElement(cursor).get(PITCHBEND_SPEED)+TK.pb_speed);
       TK.pb_speed=0;
       if (debug)
-	printf("[pb_speed:%d]\n",P[cty].getPatternElement(cursor).getPitchBendSpeed());
+	printf("[pb_speed:%d]\n",P[cty].getPatternElement(cursor).get(PITCHBEND_SPEED));
       
     }
 
@@ -3769,10 +3804,11 @@ void seq_update_multiple_time_by_step()
   if (TK.pb_speed_all!=0)
     {
       for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).setPitchBendSpeed(P[cty].getPatternElement(i).getPitchBendSpeed()+TK.pb_speed_all);
+	P[cty].getPatternElement(i).set(PITCHBEND_SPEED,
+					P[cty].getPatternElement(i).get(PITCHBEND_SPEED)+TK.pb_speed_all);
       TK.pb_speed_all=0;
       if (debug)
-	printf("[pb_speed:%d]\n",P[cty].getPatternElement(cursor).getPitchBendSpeed());
+	printf("[pb_speed:%d]\n",P[cty].getPatternElement(cursor).get(PITCHBEND_SPEED));
       
     }
 
@@ -3803,35 +3839,39 @@ void seq_update_multiple_time_by_step()
   // Change filter cutoff
   if (TK.cutoff!=0)
     {
-      P[cty].getPatternElement(cursor).setCutoff(P[cty].getPatternElement(cursor).getCutoff()+TK.cutoff);
+      P[cty].getPatternElement(cursor).set(FILTER1_CUTOFF,
+					   P[cty].getPatternElement(cursor).get(FILTER1_CUTOFF)+TK.cutoff);
       TK.cutoff=0;
-      if (debug) printf("[cutoff:%d]\n",P[cty].getPatternElement(cursor).getCutoff());	  
+      if (debug) printf("[cutoff:%d]\n",P[cty].getPatternElement(cursor).get(FILTER1_CUTOFF));	  
     }
   
   // Change filter cutoff
   if (TK.cutoff_all!=0)
     {
       for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).setCutoff(P[cty].getPatternElement(i).getCutoff()+TK.cutoff_all);
+	P[cty].getPatternElement(i).set(FILTER1_CUTOFF,
+					P[cty].getPatternElement(i).get(FILTER1_CUTOFF)+TK.cutoff_all);
       TK.cutoff_all=0;
-      if (debug) printf("[cutoff_all:%d]\n",P[cty].getPatternElement(cursor).getCutoff());	  
+      if (debug) printf("[cutoff_all:%d]\n",P[cty].getPatternElement(cursor).get(FILTER1_CUTOFF));
     }
   
   // Change filter resonance
   if (TK.resonance!=0)
     {
-      P[cty].getPatternElement(cursor).setResonance(P[cty].getPatternElement(cursor).getResonance()+TK.resonance);
+      P[cty].getPatternElement(cursor).set(FILTER1_RESONANCE,
+					   P[cty].getPatternElement(cursor).get(FILTER1_RESONANCE)+TK.resonance);
       TK.resonance=0;
-      if (debug) printf("[resonance:%d]\n",P[cty].getPatternElement(cursor).getResonance());	  
+      if (debug) printf("[resonance:%d]\n",P[cty].getPatternElement(cursor).get(FILTER1_RESONANCE));	  
     }
   
   // Change filter resonance
   if (TK.resonance_all!=0)
     {
       for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).setResonance(P[cty].getPatternElement(i).getResonance()+TK.resonance_all);
+	P[cty].getPatternElement(i).set(FILTER1_RESONANCE,
+					P[cty].getPatternElement(i).get(FILTER1_RESONANCE)+TK.resonance_all);
       TK.resonance_all=0;
-      if (debug) printf("[resonance_all:%d]\n",P[cty].getPatternElement(cursor).getResonance());	  
+      if (debug) printf("[resonance_all:%d]\n",P[cty].getPatternElement(cursor).get(FILTER1_RESONANCE));	  
     }
   
     // Change step divider
@@ -3848,39 +3888,51 @@ void seq_update_multiple_time_by_step()
   // Change oscillator one
   if (TK.osconetype!=0)
     {
-      P[cty].getPatternElement(cursor).setOscillatorOneType(P[cty].getPatternElement(cursor).getOscillatorOneType()+TK.osconetype);
+      update_SAMM(cty,cursor);
+      P[cty].getPatternElement(cursor).set(OSC1_TYPE,
+					   SAM->checkI(OSC1_TYPE,P[cty].getPatternElement(cursor).get(OSC1_TYPE)+TK.osconetype));
       TK.osconetype=0;
       if (debug)
-	printf("[osconetype:%d]\n",P[cty].getPatternElement(cursor).getOscillatorOneType());	  
+	printf("[osconetype:%d]\n",P[cty].getPatternElement(cursor).get(OSC1_TYPE));	  
     }
   
   // Change oscillator one
   if (TK.osconetype_all!=0)
     {
       for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).setOscillatorOneType(P[cty].getPatternElement(i).getOscillatorOneType()+TK.osconetype_all);
+	{
+	  update_SAMM(cty,i);
+	  P[cty].getPatternElement(i).set(OSC1_TYPE,
+					  SAM->checkI(OSC1_TYPE,P[cty].getPatternElement(i).get(OSC1_TYPE)+TK.osconetype_all));
+	}
       TK.osconetype_all=0;
       if (debug)
-	printf("[osconetype_all:%d]\n",P[cty].getPatternElement(cursor).getOscillatorOneType());	  
+	printf("[osconetype_all:%d]\n",P[cty].getPatternElement(cursor).get(OSC1_TYPE));	  
     }
   
   // Change oscillator two
   if (TK.osctwotype!=0)
     {
-      P[cty].getPatternElement(cursor).setOscillatorTwoType(P[cty].getPatternElement(cursor).getOscillatorTwoType()+TK.osctwotype);
+      update_SAMM(cty,cursor);
+      P[cty].getPatternElement(cursor).set(OSC2_TYPE,
+					   SAM->checkI(OSC2_TYPE,P[cty].getPatternElement(cursor).get(OSC2_TYPE)+TK.osctwotype));
       TK.osctwotype=0;
       if (debug)
-	printf("[osctwotype:%d]\n",P[cty].getPatternElement(cursor).getOscillatorTwoType());	  
+	printf("[osctwotype:%d]\n",P[cty].getPatternElement(cursor).get(OSC2_TYPE));	  
     }
   
   // Change oscillator two
   if (TK.osctwotype_all!=0)
     {
       for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).setOscillatorTwoType(P[cty].getPatternElement(i).getOscillatorTwoType()+TK.osctwotype_all);
+	{
+	  update_SAMM(cty,i);
+	  P[cty].getPatternElement(i).set(OSC2_TYPE,
+					  SAM->checkI(OSC2_TYPE,P[cty].getPatternElement(i).get(OSC2_TYPE)+TK.osctwotype_all));
+	}
       TK.osctwotype_all=0;
       if (debug)
-	printf("[osctwotype:%d]\n",P[cty].getPatternElement(cursor).getOscillatorTwoType());	  
+	printf("[osctwotype:%d]\n",P[cty].getPatternElement(cursor).get(OSC2_TYPE));	  
     }
   
 
@@ -3908,18 +3960,20 @@ void seq_update_multiple_time_by_step()
   // Change Note
   if (TK.note!=0)
     { 
-      P[cty].getPatternElement(cursor).setNote(P[cty].getPatternElement(cursor).getNote()+TK.note);
+      P[cty].getPatternElement(cursor).set(NOTE,
+					   P[cty].getPatternElement(cursor).get(NOTE)+TK.note);
       TK.note=0;
-      printf("[note:%d]\n",P[cty].getPatternElement(cursor).getNote());	  
+      printf("[note:%d]\n",P[cty].getPatternElement(cursor).get(NOTE));	  
     }
   
   // Change Note
   if (TK.note_all!=0)
     { 
       for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).setNote(P[cty].getPatternElement(i).getNote()+TK.note_all);
+	P[cty].getPatternElement(i).set(NOTE,
+					P[cty].getPatternElement(i).get(NOTE)+TK.note_all);
       TK.note_all=0;
-      printf("[note_all:%d]\n",P[cty].getPatternElement(cursor).getNote());	  
+      printf("[note_all:%d]\n",P[cty].getPatternElement(cursor).get(NOTE));	  
     }
 
 
@@ -4036,21 +4090,21 @@ void seq_update_multiple_time_by_step()
       // invert trig => insert/remove/copy note 
   if (TK.invert_trig)
     {
-      if (P[cty].getPatternElement(cursor).getTrig())
+      if (P[cty].getPatternElement(cursor).get(NOTE_ON))
 	{
-	  P[cty].getPatternElement(cursor).setTrig(! P[cty].getPatternElement(cursor).getTrig());
+	  P[cty].getPatternElement(cursor).set(NOTE_ON,(P[cty].getPatternElement(cursor).get(NOTE_ON)+1)%2);
 	  PE=P[cty].getPatternElement(cursor);
 	}
       else
 	{
 	  P[cty].setPatternElement(cursor,PE);
-	  P[cty].getPatternElement(cursor).setTrig(true);
-	  if (P[cty].getPatternElement(cursor).getNote()==0)
+	  P[cty].getPatternElement(cursor).set(NOTE_ON,1);
+	  if (P[cty].getPatternElement(cursor).get(NOTE)==0)
 	    {
 	      //P[cty].getPatternElement(cursor).setAttack_amp(0);
 	      //P[cty].getPatternElement(cursor).setRelease_amp(64);
 	      //P[cty].getPatternElement(cursor).setNote(37);
-	      P[cty].getPatternElement(cursor).setNote(25);
+	      P[cty].getPatternElement(cursor).set(NOTE,25);
 	    }
 	}
       TK.invert_trig=0;
@@ -4226,34 +4280,22 @@ void seq_update_track(int t)
   // of each track 
   //for (t=0;t<TRACK_MAX;t++)
   //{
-      if (P[t].getPatternElement(step).getTrig()==true)
+  if (P[t].getPatternElement(step).get(NOTE_ON)!=0)
 	{
-	  //float   f=P[t].getPatternElement(step).getNoteFreq();
-	  //float   f=NF.getFNoteFreq(P[t].getPatternElement(step).getNote());
-
-	  //int     i=f;
-
-	  //int     i_c;
-	  //float   f_c;
-
-	  //int     i_r;
-	  //float   f_r;
-
-	  //M[t]->set(NOTE_ON,0);
-	  MM[t]->setAmplitude(P[t].getPatternElement(step).getAmp());
+	  MM[t]->setAmplitude(P[t].getPatternElement(step).get(AMP));
 	  MM[t]->setMachineType(P[t].getPatternElement(step).getMachineType());
 	  M[t]  = MM[t]->getInput();                             
 	  FX[t] = MM[t]->getEffect();                             
 
 
-	  FX[t]->setDepth(P[t].getPatternElement(step).getFxDepth());
-	  FX[t]->setSpeed(P[t].getPatternElement(step).getFxSpeed());
+	  FX[t]->setDepth(P[t].getPatternElement(step).get(FX1_DEPTH));
+	  FX[t]->setSpeed(P[t].getPatternElement(step).get(FX1_SPEED));
 
 	  //printf("[Freq:%d]\n",i);
 	  //M[t]->set(OSC1_FREQ,i);
 	  M[t]->reset();
 	  //M[t]->setF(OSC1_FREQ,f);
-	  M[t]->setI(OSC1_NOTE,P[t].getPatternElement(step).getNote());
+	  M[t]->setI(OSC1_NOTE,P[t].getPatternElement(step).get(NOTE));
 
 	  /*
 	  noteOffTrigger[t]=
@@ -4269,43 +4311,43 @@ void seq_update_track(int t)
 
 	  M[t]->setI(FM_TYPE,P[t].getPatternElement(step).getFmType());
 
-	  M[t]->setI(ADSR_ENV0_ATTACK,  P[t].getPatternElement(step).getAttack_amp());
-	  M[t]->setI(ADSR_ENV0_DECAY,   P[t].getPatternElement(step).getDecay_amp());
-	  M[t]->setI(ADSR_ENV0_SUSTAIN, P[t].getPatternElement(step).getSustain_amp());
-	  M[t]->setI(ADSR_ENV0_RELEASE, P[t].getPatternElement(step).getRelease_amp());
+	  M[t]->setI(ADSR_ENV0_ATTACK,  P[t].getPatternElement(step).get(ADSR_AMP_ATTACK));
+	  M[t]->setI(ADSR_ENV0_DECAY,   P[t].getPatternElement(step).get(ADSR_AMP_DECAY));
+	  M[t]->setI(ADSR_ENV0_SUSTAIN, P[t].getPatternElement(step).get(ADSR_AMP_SUSTAIN));
+	  M[t]->setI(ADSR_ENV0_RELEASE, P[t].getPatternElement(step).get(ADSR_AMP_RELEASE));
 
-	  M[t]->setI(ADSR_ENV1_ATTACK,  P[t].getPatternElement(step).getAttack_fltr());
-	  M[t]->setI(ADSR_ENV1_DECAY ,  P[t].getPatternElement(step).getDecay_fltr());
-	  M[t]->setI(ADSR_ENV1_SUSTAIN, P[t].getPatternElement(step).getSustain_fltr());
-	  M[t]->setI(ADSR_ENV1_RELEASE, P[t].getPatternElement(step).getRelease_fltr());
+	  M[t]->setI(ADSR_ENV1_ATTACK,  P[t].getPatternElement(step).get(ADSR_FLTR_RELEASE));
+	  M[t]->setI(ADSR_ENV1_DECAY ,  P[t].getPatternElement(step).get(ADSR_FLTR_DECAY));
+	  M[t]->setI(ADSR_ENV1_SUSTAIN, P[t].getPatternElement(step).get(ADSR_FLTR_SUSTAIN));
+	  M[t]->setI(ADSR_ENV1_RELEASE, P[t].getPatternElement(step).get(ADSR_FLTR_RELEASE));
 
 
 
 	  M[t]->setI(OSC12_MIX,P[t].getPatternElement(step).getVCOMix());
 	  M[t]->setI(OSC1_PHASE,P[t].getPatternElement(step).getPhaseOsc1());
 
-	  M[t]->setI(LFO1_DEPTH,P[t].getPatternElement(step).getLfoDepth());
-	  M[t]->setF(LFO1_FREQ,P[t].getPatternElement(step).getLfoSpeed());
+	  M[t]->setI(LFO1_DEPTH,P[t].getPatternElement(step).get(LFO1_DEPTH));
+	  M[t]->setF(LFO1_FREQ,P[t].getPatternElement(step).get(LFO1_FREQ));
 
-	  M[t]->setI(PITCHBEND_DEPTH,P[t].getPatternElement(step).getPitchBendDepth());
-	  M[t]->setI(PITCHBEND_SPEED,P[t].getPatternElement(step).getPitchBendSpeed());
+	  M[t]->setI(PITCHBEND_DEPTH,P[t].getPatternElement(step).get(PITCHBEND_DEPTH));
+	  M[t]->setI(PITCHBEND_SPEED,P[t].getPatternElement(step).get(PITCHBEND_SPEED));
 	  M[t]->setI(LFO_TYPE,       P[t].getPatternElement(step).getLfoType());
 
 	  //M[t]->set(OSC12_MIX,phase);
 
-	  M[t]->setI(OSC1_TYPE,P[t].getPatternElement(step).getOscillatorOneType());
-	  M[t]->setI(OSC2_TYPE,P[t].getPatternElement(step).getOscillatorTwoType());
+	  M[t]->setI(OSC1_TYPE,P[t].getPatternElement(step).get(OSC1_TYPE));
+	  M[t]->setI(OSC2_TYPE,P[t].getPatternElement(step).get(OSC2_TYPE));
 
 	  M[t]->setI(OSC1_AMP,P[t].getPatternElement(step).getOsc1Amp());
 	  M[t]->setI(OSC2_AMP,P[t].getPatternElement(step).getOsc2Amp());
 
 
-	  M[t]->setI(FILTER1_TYPE,P[t].getPatternElement(step).getFilterType());
-	  M[t]->setI(FILTER1_ALGO,P[t].getPatternElement(step).getFilterAlgo());
+	  M[t]->setI(FILTER1_TYPE,P[t].getPatternElement(step).get(FILTER1_TYPE));
+	  M[t]->setI(FILTER1_ALGO,P[t].getPatternElement(step).get(FILTER1_ALGO));;
 
 
-	  M[t]->setI(FILTER1_CUTOFF,P[t].getPatternElement(step).getCutoff());
-	  M[t]->setI(FILTER1_RES,P[t].getPatternElement(step).getResonance());
+	  M[t]->setI(FILTER1_CUTOFF,P[t].getPatternElement(step).get(FILTER1_CUTOFF));
+	  M[t]->setI(FILTER1_RESONANCE,P[t].getPatternElement(step).get(FILTER1_RESONANCE));
 
 
 

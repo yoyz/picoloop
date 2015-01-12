@@ -302,7 +302,7 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
 	for (i=0;i<PatSize;i++)
 	  {
 	    Pe=P.getPatternElement(i);      
-	    Pe.setLfoDepth(n[i]);
+	    Pe.set(LFO1_DEPTH,n[i]);
 	    P.setPatternElement(i,Pe);      
 	  }
       else
@@ -324,7 +324,7 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
 	for (i=0;i<PatSize;i++)
 	  {
 	    Pe=P.getPatternElement(i);      
-	    Pe.setLfoSpeed(n[i]);
+	    Pe.set(LFO1_FREQ,n[i]);
 	    P.setPatternElement(i,Pe);      
 	  }
       else
@@ -347,7 +347,7 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
 	for (i=0;i<PatSize;i++)
 	  {
 	    Pe=P.getPatternElement(i);      
-	    Pe.setAmp(n[i]);
+	    Pe.set(AMP,n[i]);
 	    P.setPatternElement(i,Pe);      
 	  }
       else
@@ -369,7 +369,7 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
 	for (i=0;i<PatSize;i++)
 	  {
 	    Pe=P.getPatternElement(i);      
-	    Pe.setNote(n[i]);
+	    Pe.set(NOTE,n[i]);
 	    P.setPatternElement(i,Pe);      
 	  }
       else
@@ -392,7 +392,7 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
     for (i=0;i<PatSize;i++)
       {
 	Pe=P.getPatternElement(i);      
-	Pe.setTrig(t[i]);
+	Pe.set(NOTE_ON,t[i]);
 	P.setPatternElement(i,Pe);      
       }
   else
@@ -436,7 +436,7 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
     for (i=0;i<PatSize;i++)
       {
 	Pe=P.getPatternElement(i);      
-	Pe.setAttack_amp(t[i]);
+	Pe.set(ADSR_AMP_ATTACK,t[i]);
 	P.setPatternElement(i,Pe);      
       }
   else
@@ -461,7 +461,7 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
     for (i=0;i<PatSize;i++)
       {
 	Pe=P.getPatternElement(i);      
-	Pe.setDecay_amp(t[i]);
+	Pe.set(ADSR_AMP_DECAY,t[i]);
 	P.setPatternElement(i,Pe);      
       }
   else
@@ -485,7 +485,7 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
     for (i=0;i<PatSize;i++)
       {
 	Pe=P.getPatternElement(i);      
-	Pe.setSustain_amp(t[i]);
+	Pe.set(ADSR_AMP_SUSTAIN,t[i]);
 	P.setPatternElement(i,Pe);      
       }
   else
@@ -507,7 +507,7 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
     for (i=0;i<PatSize;i++)
       {
 	Pe=P.getPatternElement(i);      
-	Pe.setRelease_amp(t[i]);
+	Pe.set(ADSR_AMP_RELEASE,t[i]);
 	P.setPatternElement(i,Pe);      
       }
   else
@@ -529,7 +529,7 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
     for (i=0;i<PatSize;i++)
       {
 	Pe=P.getPatternElement(i);
-	Pe.setOscillatorOneType(t[i]);
+	Pe.set(OSC1_TYPE,t[i]);
 	P.setPatternElement(i,Pe);      
       }
   else
@@ -550,7 +550,7 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
     for (i=0;i<PatSize;i++)
       {
 	Pe=P.getPatternElement(i);    
-	Pe.setOscillatorTwoType(t[i]);  
+	Pe.set(OSC2_TYPE,t[i]);  
 	P.setPatternElement(i,Pe);      
       }
   else
@@ -571,7 +571,7 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
     for (i=0;i<PatSize;i++)
       {
 	Pe=P.getPatternElement(i);    
-	Pe.setCutoff(t[i]);  
+	Pe.set(FILTER1_CUTOFF,t[i]);
 	P.setPatternElement(i,Pe);      
       }
   else
@@ -592,7 +592,7 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
     for (i=0;i<PatSize;i++)
       {
 	Pe=P.getPatternElement(i);    
-	Pe.setResonance(t[i]);  
+	Pe.set(FILTER1_RESONANCE,t[i]);
 	P.setPatternElement(i,Pe);      
       }
   else
@@ -636,7 +636,7 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
     for (i=0;i<PatSize;i++)
       {
 	Pe=P.getPatternElement(i);      
-	Pe.setAttack_fltr(t[i]);
+	Pe.set(ADSR_FLTR_ATTACK,t[i]);
 	P.setPatternElement(i,Pe);      
       }
   else
@@ -661,7 +661,7 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
     for (i=0;i<PatSize;i++)
       {
 	Pe=P.getPatternElement(i);      
-	Pe.setDecay_fltr(t[i]);
+	Pe.set(ADSR_FLTR_DECAY,t[i]);
 	P.setPatternElement(i,Pe);      
       }
   else
@@ -685,7 +685,7 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
     for (i=0;i<PatSize;i++)
       {
 	Pe=P.getPatternElement(i);      
-	Pe.setSustain_fltr(t[i]);
+	Pe.set(ADSR_FLTR_SUSTAIN,t[i]);
 	P.setPatternElement(i,Pe);      
       }
   else
@@ -707,7 +707,7 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
     for (i=0;i<PatSize;i++)
       {
 	Pe=P.getPatternElement(i);      
-	Pe.setRelease_fltr(t[i]);
+	Pe.set(ADSR_FLTR_RELEASE,t[i]);
 	P.setPatternElement(i,Pe);      
       }
   else
@@ -729,7 +729,7 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
     for (i=0;i<PatSize;i++)
       {
 	Pe=P.getPatternElement(i);      
-	Pe.setNoteADSR(t[i]);
+	//Pe.setNoteADSR(t[i]);
 	P.setPatternElement(i,Pe);      
       }
   else
@@ -773,7 +773,7 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
     for (i=0;i<PatSize;i++)
       {
 	Pe=P.getPatternElement(i);      
-	Pe.setFilterAlgo(t[i]);
+	Pe.set(FILTER1_ALGO,t[i]);
 	P.setPatternElement(i,Pe);      
       }
   else
@@ -796,7 +796,7 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
     for (i=0;i<PatSize;i++)
       {
 	Pe=P.getPatternElement(i);      
-	Pe.setFilterType(t[i]);
+	Pe.set(FILTER1_TYPE,t[i]);
 	P.setPatternElement(i,Pe);      
       }
   else
@@ -866,7 +866,7 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
     for (i=0;i<PatSize;i++)
       {
 	Pe=P.getPatternElement(i);      
-	Pe.setFxDepth(t[i]);
+	Pe.set(FX1_DEPTH,t[i]);
 	P.setPatternElement(i,Pe);      
       }
   else
@@ -888,7 +888,7 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
     for (i=0;i<PatSize;i++)
       {
 	Pe=P.getPatternElement(i);      
-	Pe.setFxSpeed(t[i]);
+	Pe.set(FX1_SPEED,t[i]);
 	P.setPatternElement(i,Pe);      
       }
   else
@@ -953,7 +953,7 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
     for (i=0;i<PatSize;i++)
       {
 	Pe=P.getPatternElement(i);      
-	Pe.setPitchBendDepth(t[i]);
+	Pe.set(PITCHBEND_DEPTH,t[i]);
 	P.setPatternElement(i,Pe);      
       }
   else
@@ -975,7 +975,7 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
     for (i=0;i<PatSize;i++)
       {
 	Pe=P.getPatternElement(i);      
-	Pe.setPitchBendSpeed(t[i]);
+	Pe.set(PITCHBEND_SPEED,t[i]);
 	P.setPatternElement(i,Pe);      
       }
   else
@@ -1126,7 +1126,7 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
     {
       if (i==0)
 	sprintf(line,"Pattern %d Track %d Param PitchLfoDepth ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).getLfoDepth());
+      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(LFO1_DEPTH));
     }
   sprintf(line+strlen(line),"\n");
   data.insert(data.end(),line);
@@ -1137,7 +1137,7 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
     {
       if (i==0)
 	sprintf(line,"Pattern %d Track %d Param PitchLfoSpeed ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).getLfoSpeed());
+      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(LFO1_FREQ));
     }
   sprintf(line+strlen(line),"\n");
   data.insert(data.end(),line);
@@ -1148,7 +1148,7 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
     {
       if (i==0)
 	sprintf(line,"Pattern %d Track %d Param Amp ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).getAmp());
+      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(AMP));
     }
   sprintf(line+strlen(line),"\n");
   data.insert(data.end(),line);
@@ -1159,7 +1159,7 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
     {
       if (i==0)
 	sprintf(line,"Pattern %d Track %d Param Note ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).getNote());
+      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(NOTE));
     }
   sprintf(line+strlen(line),"\n");
   data.insert(data.end(),line);
@@ -1169,7 +1169,7 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
     {
       if (i==0)
 	sprintf(line,"Pattern %d Track %d Param Trig ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).getTrig());
+      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(NOTE_ON));
     }
   sprintf(line+strlen(line),"\n");
   data.insert(data.end(),line);
@@ -1187,7 +1187,7 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
     {
       if (i==0)
 	sprintf(line,"Pattern %d Track %d Param Attack ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).getAttack_amp());
+      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(ADSR_AMP_ATTACK));
     }
   sprintf(line+strlen(line),"\n");
   data.insert(data.end(),line);
@@ -1196,7 +1196,7 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
     {
       if (i==0)
 	sprintf(line,"Pattern %d Track %d Param Decay ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).getDecay_amp());
+      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(ADSR_AMP_DECAY));
     }
   sprintf(line+strlen(line),"\n");
   data.insert(data.end(),line);
@@ -1205,7 +1205,7 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
     {
       if (i==0)
 	sprintf(line,"Pattern %d Track %d Param Sustain ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).getSustain_amp());
+      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(ADSR_AMP_SUSTAIN));
     }
   sprintf(line+strlen(line),"\n");
   data.insert(data.end(),line);
@@ -1214,7 +1214,7 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
     {
       if (i==0)
 	sprintf(line,"Pattern %d Track %d Param Release ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).getRelease_amp());
+      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(ADSR_AMP_RELEASE));
     }
   sprintf(line+strlen(line),"\n");
   data.insert(data.end(),line);
@@ -1223,7 +1223,7 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
     {
       if (i==0)
 	sprintf(line,"Pattern %d Track %d Param OscOneType ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).getOscillatorOneType());
+      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(OSC1_TYPE));
     }
   sprintf(line+strlen(line),"\n");
   data.insert(data.end(),line);
@@ -1232,7 +1232,7 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
     {
       if (i==0)
 	sprintf(line,"Pattern %d Track %d Param OscTwoType ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).getOscillatorTwoType());    
+      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(OSC2_TYPE));    
     }
   sprintf(line+strlen(line),"\n");
   data.insert(data.end(),line);
@@ -1242,7 +1242,7 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
     {
       if (i==0)
 	sprintf(line,"Pattern %d Track %d Param Cutoff ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).getCutoff());
+      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(FILTER1_CUTOFF));
     }
   sprintf(line+strlen(line),"\n");
   data.insert(data.end(),line);
@@ -1251,7 +1251,7 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
     {
       if (i==0)
 	sprintf(line,"Pattern %d Track %d Param Resonance ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).getResonance());
+      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(FILTER1_RESONANCE));
     }
   sprintf(line+strlen(line),"\n");
   data.insert(data.end(),line);
@@ -1271,7 +1271,7 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
     {
       if (i==0)
 	sprintf(line,"Pattern %d Track %d Param AttackFltr ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).getAttack_fltr());
+      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(ADSR_FLTR_ATTACK));
     }
   sprintf(line+strlen(line),"\n");
   data.insert(data.end(),line);
@@ -1280,7 +1280,7 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
     {
       if (i==0)
 	sprintf(line,"Pattern %d Track %d Param DecayFltr ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).getDecay_fltr());
+      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(ADSR_FLTR_DECAY));
     }
   sprintf(line+strlen(line),"\n");
   data.insert(data.end(),line);
@@ -1289,7 +1289,7 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
     {
       if (i==0)
 	sprintf(line,"Pattern %d Track %d Param SustainFltr ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).getSustain_fltr());
+      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(ADSR_FLTR_SUSTAIN));
     }
   sprintf(line+strlen(line),"\n");
   data.insert(data.end(),line);
@@ -1298,7 +1298,7 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
     {
       if (i==0)
 	sprintf(line,"Pattern %d Track %d Param ReleaseFltr ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).getRelease_fltr());
+      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(ADSR_FLTR_RELEASE));
     }
   sprintf(line+strlen(line),"\n");
   data.insert(data.end(),line);
@@ -1308,7 +1308,7 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
     {
       if (i==0)
 	sprintf(line,"Pattern %d Track %d Param NoteADSR ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).getNoteADSR());
+      sprintf(line+strlen(line),"%d ",0);
     }
   sprintf(line+strlen(line),"\n");
   data.insert(data.end(),line);
@@ -1328,7 +1328,7 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
     {
       if (i==0)
 	sprintf(line,"Pattern %d Track %d Param FilterAlgo ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).getFilterAlgo());
+      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(FILTER1_ALGO));
     }
   sprintf(line+strlen(line),"\n");
   data.insert(data.end(),line);
@@ -1337,7 +1337,7 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
     {
       if (i==0)
 	sprintf(line,"Pattern %d Track %d Param FilterType ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).getFilterType());
+      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(FILTER1_TYPE));
     }
   sprintf(line+strlen(line),"\n");
   data.insert(data.end(),line);
@@ -1366,7 +1366,7 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
     {
       if (i==0)
 	sprintf(line,"Pattern %d Track %d Param FxDepth ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).getFxDepth());
+      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(FX1_DEPTH));
     }
   sprintf(line+strlen(line),"\n");
   data.insert(data.end(),line);
@@ -1376,7 +1376,7 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
     {
       if (i==0)
 	sprintf(line,"Pattern %d Track %d Param FxSpeed ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).getFxSpeed());
+      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(FX1_SPEED));
     }
   sprintf(line+strlen(line),"\n");
   data.insert(data.end(),line);
@@ -1404,7 +1404,7 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
     {
       if (i==0)
 	sprintf(line,"Pattern %d Track %d Param PitchBendDepth ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).getPitchBendDepth());
+      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(PITCHBEND_DEPTH));
     }
   sprintf(line+strlen(line),"\n");
   data.insert(data.end(),line);
@@ -1414,7 +1414,7 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
     {
       if (i==0)
 	sprintf(line,"Pattern %d Track %d Param PitchBendSpeed ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).getPitchBendSpeed());
+      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(PITCHBEND_SPEED));
     }
   sprintf(line+strlen(line),"\n");
   data.insert(data.end(),line);

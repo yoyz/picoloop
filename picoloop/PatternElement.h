@@ -7,6 +7,9 @@ using namespace std;
 #ifndef __PATTERNELEMENT__
 #define __PATTERNELEMENT__
 
+
+
+
 enum 
   {
     SINE,
@@ -47,85 +50,36 @@ public:
   ~PatternElement();
 
   void   init();
-  bool   setNote(int Note);
-  int    getNote();
-  //float  getNoteFreq();
+
   const char * getMachineTypeCharStar();
   const char * getNoteCharStar();
   const char * getFMTypeCharStar();
   const char * getOscOneTypeCharStar();
   const char * getOscTwoTypeCharStar();
   const char * getOscTypeCharStar(int oscType);
-  bool   setTrig(bool Trig);
-  bool   getTrig();
-
-  int    getAmp();
-  void   setAmp(int a);
-
-  int    getVCOMix();
-  void   setVCOMix(int mix);
-
-  int    getAttack_amp();
-  void   setAttack_amp(int atk);
-
-  int    getDecay_amp();
-  void   setDecay_amp(int dc);
-
-  int    getSustain_amp();
-  void   setSustain_amp(int sus);
-
-  int    getRelease_amp();
-  void   setRelease_amp(int rls);
 
 
+  void   set(int what, int val);
+  int    get(int what);
 
-  int    getAttack_fltr();
-  void   setAttack_fltr(int atk);
+  /* int    getAmp(); */
+  /* void   setAmp(int a); */
 
-  int    getDecay_fltr();
-  void   setDecay_fltr(int dc);
-
-  int    getSustain_fltr();
-  void   setSustain_fltr(int sus);
-
-  int    getRelease_fltr();
-  void   setRelease_fltr(int rls);
-
-
-  int    getCutoff();
-  void   setCutoff(int cut);
-
-  int    getResonance();
-  void   setResonance(int res);
-
-  int    getLfoDepth();
-  void   setLfoDepth(int val);
-
-  int    getLfoSpeed();
-  void   setLfoSpeed(int val);
-
-  int    getPitchBendDepth();
-  void   setPitchBendDepth(int val);
-
-  int    getPitchBendSpeed();
-  void   setPitchBendSpeed(int val);
 
   int    getPhaseOsc1();
   void   setPhaseOsc1(int val);
 
-  int    getFxDepth();
-  void   setFxDepth(int val);
-
-  int    getFxSpeed();
-  void   setFxSpeed(int val);
-
   int    getFmType();
   void   setFmType(int fm);
+
+  int    getMachineType();
+  void   setMachineType(int val);
 
   int    getLfoType();
   void   setLfoType(int val);
 
-
+  int    getVCOMix();
+  void   setVCOMix(int mix);
 
   int    getOsc1Amp();
   void   setOsc1Amp(int val);
@@ -133,31 +87,17 @@ public:
   int    getOsc2Amp();
   void   setOsc2Amp(int val);
 
+  int    getTrigTime();
+  void   setTrigTime(int val);
 
-  int    getFilterType();
-  void   setFilterType(int val);
+
+
   const char * getFilterTypeCharStar();
   const char * getLFOTypeCharStar();
-
-  int    getFilterAlgo();
-  void   setFilterAlgo(int val);
   const char * getFilterAlgoCharStar();
 
 
-  int    getOscillatorOneType();
-  int    getOscillatorTwoType();
-  
-  void   setOscillatorOneType(int type);
-  void   setOscillatorTwoType(int type);
 
-  int    getNoteADSR();
-  void   setNoteADSR(int val);
-
-  int    getMachineType();
-  void   setMachineType(int val);
-
-  int    getTrigTime();
-  void   setTrigTime(int val);
 
 
   bool   setChannel(int Channel);
@@ -168,8 +108,8 @@ public:
   void   print();
 private:
   int  checkSevenBitBoundarie(int val);
-  int  Note;
-  bool Trig;
+  int  note;
+  int  note_on;
   int  Channel;
 
   int  vcomix;
