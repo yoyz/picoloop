@@ -63,16 +63,39 @@ SOURCES=PatternPlayer.cpp			\
 
 
 OBJECTS=$(SOURCES:.cpp=.o)
+DEPENDENCY=$(SOURCES:.cpp=.d)
 EXECUTABLE=PatternPlayer_Rtaudio.exe
 
-all: $(SOURCES) $(EXECUTABLE)
+all: $(SOURCES) $(DEPENDENCY) $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJECTS)
 	$(CC) $(OBJTOLINK)  $(OBJECTS) -o $@ $(LDFLAGS)
 #	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
 
-.cpp.o:
+#.cpp.o:
+%.o : %.cpp 
 	$(CC) $(CFLAGS) $< -o $@
 
+
+# include all the dependency .d file into the makefile 
+# it allow to match change in .h file
+include ${DEPENDENCY}
+
+# the .d file contain the dependency
+%.d : %.cpp %.h
+	$(CC) -I. -ISDL_windows -MM $< -o $@
+
+# SYSTEMWINDOWS.d does have a .h which is SYSTEM.h, so it need a tweaks
+SYSTEMWINDOWS.d:SYSTEMWINDOWS.cpp 
+	$(CC) -I. -ISDL_windows -MM $< -o $@ 
+
+# systemlinux.d does have a .h which is system.h
+PatternPlayer.d:PatternPlayer.cpp
+	$(CC) -I. -ISDL_windows -MM $< -o $@ 
+
+
+
 clean:
-	-rm -f $(OBJECTS) $(EXECUTABLE)
+	-rm -f $(OBJECTS) 
+	-rm -f $(EXECUTABLE)
+	-rm -f $(DEPENDENCY)
