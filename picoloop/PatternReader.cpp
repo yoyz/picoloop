@@ -414,7 +414,7 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
     for (i=0;i<PatSize;i++)
       {
 	Pe=P.getPatternElement(i);      
-	Pe.setVCOMix(t[i]);
+	Pe.set(VCO_MIX,t[i]);
 	P.setPatternElement(i,Pe);      
       }
   else
@@ -613,7 +613,7 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
     for (i=0;i<PatSize;i++)
       {
 	Pe=P.getPatternElement(i);    
-	Pe.setPhaseOsc1(t[i]);  
+	Pe.set(OSC1_PHASE,t[i]);  
 	P.setPatternElement(i,Pe);      
       }
   else
@@ -819,7 +819,8 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
     for (i=0;i<PatSize;i++)
       {
 	Pe=P.getPatternElement(i);      
-	Pe.setOsc1Amp(t[i]);
+	//Pe.setOsc1Amp(t[i]);
+	Pe.set(OSC1_AMP,t[i]);
 	P.setPatternElement(i,Pe);      
       }
   else
@@ -841,7 +842,7 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
     for (i=0;i<PatSize;i++)
       {
 	Pe=P.getPatternElement(i);      
-	Pe.setOsc2Amp(t[i]);
+	Pe.set(OSC2_AMP,t[i]);
 	P.setPatternElement(i,Pe);      
       }
   else
@@ -931,7 +932,8 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
     for (i=0;i<PatSize;i++)
       {
 	Pe=P.getPatternElement(i);      
-	Pe.setTrigTime(t[i]);
+	//Pe.setTrigTime(t[i]);
+	Pe.set(TRIG_TIME_DURATION,t[i]);
 	P.setPatternElement(i,Pe);      
       }
   else
@@ -1178,7 +1180,7 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
     {
       if (i==0)
 	sprintf(line,"Pattern %d Track %d Param VCOMix ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).getVCOMix());
+      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(VCO_MIX));
     }
   sprintf(line+strlen(line),"\n");
   data.insert(data.end(),line);
@@ -1261,7 +1263,7 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
     {
       if (i==0)
 	sprintf(line,"Pattern %d Track %d Param PhaseOsc1 ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).getPhaseOsc1());
+      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(OSC1_PHASE));
     }
   sprintf(line+strlen(line),"\n");
   data.insert(data.end(),line);
@@ -1346,7 +1348,7 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
     {
       if (i==0)
 	sprintf(line,"Pattern %d Track %d Param Osc1Amp ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).getOsc1Amp());
+      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(OSC1_AMP));
     }
   sprintf(line+strlen(line),"\n");
   data.insert(data.end(),line);
@@ -1356,7 +1358,7 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
     {
       if (i==0)
 	sprintf(line,"Pattern %d Track %d Param Osc2Amp ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).getOsc2Amp());
+      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(OSC2_AMP));
     }
   sprintf(line+strlen(line),"\n");
   data.insert(data.end(),line);
@@ -1394,7 +1396,7 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
     {
       if (i==0)
 	sprintf(line,"Pattern %d Track %d Param TrigTime ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).getTrigTime());
+      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(TRIG_TIME_DURATION));
     }
   sprintf(line+strlen(line),"\n");
   data.insert(data.end(),line);

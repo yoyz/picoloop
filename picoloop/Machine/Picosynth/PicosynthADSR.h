@@ -53,8 +53,9 @@ class PicosynthADSR : public Oscillator
   Sint32 s_in;
   Sint32 old_s_sin;
 
-  int old_pole;
+  //int old_s_sinpole;
   int pole;
+  int old_pole;
 
   int adsr_note;
 
@@ -63,6 +64,7 @@ class PicosynthADSR : public Oscillator
   int sustain;
   int release;
   int sample_num;
+  int sample_num_debug;
 
   int current_segment;
   //  Oscillator * S;
@@ -96,6 +98,7 @@ class PicosynthADSR : public Oscillator
   Sint32 cr_div;
 
   Sint32 ca_div_woalias;
+  Sint32 cd_div_woalias;
   Sint32 cr_div_woalias;
   //Sint32 cr_div;
 
@@ -109,7 +112,6 @@ class PicosynthADSR : public Oscillator
 
   Sint16 * tanh_table;
 
- 
 };
 
 #endif

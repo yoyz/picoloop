@@ -48,9 +48,13 @@ using namespace std;
 #define OSC3_PHASE          26
 #define OSC4_PHASE          27
 
-#define OSC12_MIX           28
-#define OSC34_MIX           29
-#define OSC1234_MIX         30
+#define OSC12_MIX           28  // mix the two oscillator
+#define VCO_MIX             28  // mix the two oscillator
+
+//#define OSC34_MIX           29
+//#define OSC1234_MIX         30
+
+//#define VCO_MIX             24
 
 #define OSC1_AMP            31
 #define OSC2_AMP            32
@@ -119,6 +123,7 @@ using namespace std;
 #define TRIG_TIME_DURATION  102  // Used by PatternPlayer to predefined the time of NOTE_ON
 
 #define NOTE                200   // Store note value
+#define MACHINE_TYPE        210   // Store the machine type dbOpl, Picosynth...
 
 #ifndef __MACHINE____
 #define __MACHINE____
