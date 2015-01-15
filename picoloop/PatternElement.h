@@ -81,14 +81,14 @@ public:
   int    getVCOMix();
   void   setVCOMix(int mix);
 
-  int    getOsc1Amp();
-  void   setOsc1Amp(int val);
+  /* int    getOsc1Amp(); */
+  /* void   setOsc1Amp(int val); */
 
-  int    getOsc2Amp();
-  void   setOsc2Amp(int val);
+  /* int    getOsc2Amp(); */
+  /* void   setOsc2Amp(int val); */
 
-  int    getTrigTime();
-  void   setTrigTime(int val);
+  /* int    getTrigTime(); */
+  /* void   setTrigTime(int val); */
 
 
 
@@ -100,12 +100,12 @@ public:
 
 
 
-  bool   setChannel(int Channel);
-  bool   setKeyValue(string key, string value);
-  string getValueOfKey(string key);
-  bool   clearKey(string key);
+  /* bool   setChannel(int Channel); */
+  /* bool   setKeyValue(string key, string value); */
+  /* string getValueOfKey(string key); */
+  /* bool   clearKey(string key); */
   string getStr();
-  void   print();
+  void   print(); 
 private:
   int  checkSevenBitBoundarie(int val);
   int  note;

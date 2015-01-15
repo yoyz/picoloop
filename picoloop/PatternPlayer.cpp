@@ -403,7 +403,7 @@ void display_board_amp_env()
 		  
 		  // AdsR
 		  SG.smallBoxNumber(i,P[cty].getPatternElement(i).get(AMP),128,SMALLBOX_COLOR);
-		  SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).getTrigTime(),SMALLBOX_COLOR);      
+		  SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).get(TRIG_TIME_DURATION),SMALLBOX_COLOR);      
 		}
 	    }
 	}
@@ -416,6 +416,8 @@ void display_board_note()
   int  i;
   int  cty=SEQ.getCurrentTrackY();
   int  step=SEQ.getPatternSequencer(cty).getStep();
+
+  NoteFreq & NF = NoteFreq::getInstance();
   // Note
   if (menu_cursor==GLOBALMENU_NOTE)
     {
@@ -456,7 +458,8 @@ void display_board_note()
 		  if (i==step)
 		    SG.drawBoxNumber(step,STEP_COLOR);  
 		    //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);
-		  SG.drawTTFTextNumberFirstLine(i,P[cty].getPatternElement(i).getNoteCharStar());
+		  //  SG.drawTTFTextNumberFirstLine(i,P[cty].getPatternElement(i).getNoteCharStar());
+		  SG.drawTTFTextNumberFirstLine(i,NF.getNoteCharStar(P[cty].getPatternElement(i).get(NOTE)));
 		}
 	      //      if (P[cty].getPatternElement(i).getTrig())
 		
@@ -868,11 +871,19 @@ void display_board_vco()
 
 	      
 	      if (i==step)
-		SG.smallBoxNumber(i,P[cty].getPatternElement(i).getVCOMix(),128-P[cty].getPatternElement(i).getPhaseOsc1(),STEP_COLOR);
+		SG.smallBoxNumber(i,
+				  P[cty].getPatternElement(i).get(VCO_MIX),
+				  128-P[cty].getPatternElement(i).get(OSC1_PHASE),
+				  STEP_COLOR);
 	      if (i==cursor)
-		SG.smallBoxNumber(i,P[cty].getPatternElement(i).getVCOMix(),128-P[cty].getPatternElement(i).getPhaseOsc1(),CURSOR_COLOR);
+		SG.smallBoxNumber(i,
+				  P[cty].getPatternElement(i).get(VCO_MIX),
+				  128-P[cty].getPatternElement(i).get(OSC1_PHASE),
+				  CURSOR_COLOR);
 
-	      SG.smallBoxNumber(i,P[cty].getPatternElement(i).getVCOMix(),128-P[cty].getPatternElement(i).getPhaseOsc1(),SMALLBOX_COLOR);
+	      SG.smallBoxNumber(i,
+				P[cty].getPatternElement(i).get(VCO_MIX),
+				128-P[cty].getPatternElement(i).get(OSC1_PHASE),SMALLBOX_COLOR);
 	    }
 
 	}
@@ -897,11 +908,20 @@ void display_board_vco()
 
 	      
 	      if (i==step)
-		SG.smallBoxNumber(i,P[cty].getPatternElement(i).getOsc1Amp(),128-P[cty].getPatternElement(i).getOsc2Amp(),STEP_COLOR);
+		SG.smallBoxNumber(i,
+				  P[cty].getPatternElement(i).get(OSC1_AMP),
+				  128-P[cty].getPatternElement(i).get(OSC2_AMP),
+				  STEP_COLOR);
 	      if (i==cursor)
-		SG.smallBoxNumber(i,P[cty].getPatternElement(i).getOsc1Amp(),128-P[cty].getPatternElement(i).getOsc2Amp(),CURSOR_COLOR);
+		SG.smallBoxNumber(i,
+				  P[cty].getPatternElement(i).get(OSC1_AMP),
+				  128-P[cty].getPatternElement(i).get(OSC2_AMP),
+				  CURSOR_COLOR);
 
-	      SG.smallBoxNumber(i,P[cty].getPatternElement(i).getOsc1Amp(),128-P[cty].getPatternElement(i).getOsc2Amp(),SMALLBOX_COLOR);
+	      SG.smallBoxNumber(i,
+				P[cty].getPatternElement(i).get(OSC1_AMP),
+				128-P[cty].getPatternElement(i).get(OSC2_AMP),
+				SMALLBOX_COLOR);
 	    }
 	}
     }
@@ -3558,10 +3578,10 @@ void seq_update_multiple_time_by_step()
   if (TK.vcomix!=0)
     {
       //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
-      P[cty].getPatternElement(cursor).setVCOMix(P[cty].getPatternElement(cursor).getVCOMix()+TK.vcomix);
+      P[cty].getPatternElement(cursor).set(VCO_MIX,P[cty].getPatternElement(cursor).get(VCO_MIX)+TK.vcomix);
       TK.vcomix=0;
       if (debug)
-	printf("[vcomix:%d]\n",P[cty].getPatternElement(cursor).getVCOMix());
+	printf("[vcomix:%d]\n",P[cty].getPatternElement(cursor).get(VCO_MIX));
       //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
       
     }
@@ -3570,10 +3590,11 @@ void seq_update_multiple_time_by_step()
   if (TK.vcomix_all!=0)
     {
       for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).setVCOMix(P[cty].getPatternElement(i).getVCOMix()+TK.vcomix_all);
+	P[cty].getPatternElement(i).set(VCO_MIX,
+					P[cty].getPatternElement(i).get(VCO_MIX)+TK.vcomix_all);
       TK.vcomix_all=0;
       if (debug)
-	printf("[vcomix_all:%d]\n",P[cty].getPatternElement(cursor).getVCOMix());
+	printf("[vcomix_all:%d]\n",P[cty].getPatternElement(cursor).get(VCO_MIX));
       //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
       
     }
@@ -3624,10 +3645,11 @@ void seq_update_multiple_time_by_step()
   if (TK.osc1_amp!=0)
     {
       //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
-      P[cty].getPatternElement(cursor).setOsc1Amp(P[cty].getPatternElement(cursor).getOsc1Amp()+TK.osc1_amp);
+      P[cty].getPatternElement(cursor).set(OSC1_AMP,
+					   P[cty].getPatternElement(cursor).get(OSC1_AMP)+TK.osc1_amp);
       TK.osc1_amp=0;
       if (debug)
-	printf("[osc1_amp:%d]\n",P[cty].getPatternElement(cursor).getOsc1Amp());
+	printf("[osc1_amp:%d]\n",P[cty].getPatternElement(cursor).get(OSC1_AMP));
       //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
       
     }
@@ -3636,10 +3658,11 @@ void seq_update_multiple_time_by_step()
   if (TK.osc1_amp_all!=0)
     {
       for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).setOsc1Amp(P[cty].getPatternElement(i).getOsc1Amp()+TK.osc1_amp_all);
+	P[cty].getPatternElement(i).set(OSC1_AMP,
+					P[cty].getPatternElement(i).get(OSC1_AMP)+TK.osc1_amp_all);
       TK.osc1_amp_all=0;
       if (debug)
-	printf("[osc1_amp_all:%d]\n",P[cty].getPatternElement(cursor).getOsc1Amp());
+	printf("[osc1_amp_all:%d]\n",P[cty].getPatternElement(cursor).get(OSC1_AMP));
       //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
       
     }
@@ -3648,10 +3671,11 @@ void seq_update_multiple_time_by_step()
   if (TK.osc2_amp!=0)
     {
       //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
-      P[cty].getPatternElement(cursor).setOsc2Amp(P[cty].getPatternElement(cursor).getOsc2Amp()+TK.osc2_amp);
+      P[cty].getPatternElement(cursor).set(OSC2_AMP,
+					   P[cty].getPatternElement(cursor).get(OSC2_AMP)+TK.osc2_amp);
       TK.osc2_amp=0;
       if (debug)
-	printf("[osc2_amp:%d]\n",P[cty].getPatternElement(cursor).getOsc2Amp());
+	printf("[osc2_amp:%d]\n",P[cty].getPatternElement(cursor).get(OSC2_AMP));
       //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
       
     }
@@ -3660,10 +3684,11 @@ void seq_update_multiple_time_by_step()
   if (TK.osc2_amp_all!=0)
     {
       for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).setOsc2Amp(P[cty].getPatternElement(i).getOsc2Amp()+TK.osc2_amp_all);
+	P[cty].getPatternElement(i).set(OSC2_AMP,
+					P[cty].getPatternElement(i).get(OSC2_AMP)+TK.osc2_amp_all);
       TK.osc2_amp_all=0;
       if (debug)
-	printf("[osc2_amp_all:%d]\n",P[cty].getPatternElement(cursor).getOsc2Amp());
+	printf("[osc2_amp_all:%d]\n",P[cty].getPatternElement(cursor).get(OSC2_AMP));
       //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
       
     }
@@ -3675,20 +3700,20 @@ void seq_update_multiple_time_by_step()
   // Change trig time
   if (TK.trig_time!=0)
     {
-      P[cty].getPatternElement(cursor).setTrigTime(P[cty].getPatternElement(cursor).getTrigTime()+TK.trig_time);
+      P[cty].getPatternElement(cursor).set(TRIG_TIME_DURATION,P[cty].getPatternElement(cursor).get(TRIG_TIME_DURATION)+TK.trig_time);
       TK.trig_time=0;
       if (debug)
-	printf("[trig_time:%d]\n",P[cty].getPatternElement(cursor).getTrigTime());      
+	printf("[trig_time:%d]\n",P[cty].getPatternElement(cursor).get(TRIG_TIME_DURATION));
     }
   
   // Change all trig time
   if (TK.trig_time_all!=0)
     {
       for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).setTrigTime(P[cty].getPatternElement(i).getTrigTime()+TK.trig_time_all);
+	P[cty].getPatternElement(i).set(TRIG_TIME_DURATION,P[cty].getPatternElement(i).get(TRIG_TIME_DURATION)+TK.trig_time_all);
       TK.trig_time_all=0;
       if (debug)
-	printf("[trig_time_all:%d]\n",P[cty].getPatternElement(cursor).getTrigTime());      
+	printf("[trig_time_all:%d]\n",P[cty].getPatternElement(cursor).get(TRIG_TIME_DURATION));      
     }
 
 
@@ -3698,10 +3723,10 @@ void seq_update_multiple_time_by_step()
   if (TK.phase_osc1!=0)
     {
       //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
-      P[cty].getPatternElement(cursor).setPhaseOsc1(P[cty].getPatternElement(cursor).getPhaseOsc1()+TK.phase_osc1);
+      P[cty].getPatternElement(cursor).set(OSC1_PHASE,P[cty].getPatternElement(cursor).get(OSC1_PHASE)+TK.phase_osc1);
       TK.phase_osc1=0;
       if (debug)
-	printf("[phase_osc1:%d]\n",P[cty].getPatternElement(cursor).getPhaseOsc1());
+	printf("[phase_osc1:%d]\n",P[cty].getPatternElement(cursor).get(OSC1_PHASE));
       //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
       
     }
@@ -3711,10 +3736,11 @@ void seq_update_multiple_time_by_step()
     {
       //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
       for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).setPhaseOsc1(P[cty].getPatternElement(i).getPhaseOsc1()+TK.phase_osc1_all);
+	P[cty].getPatternElement(i).set(OSC1_PHASE,
+					P[cty].getPatternElement(i).get(OSC1_PHASE)+TK.phase_osc1_all);
       TK.phase_osc1_all=0;
       if (debug)
-	printf("[phase_osc1_all:%d]\n",P[cty].getPatternElement(cursor).getPhaseOsc1());
+	printf("[phase_osc1_all:%d]\n",P[cty].getPatternElement(cursor).get(OSC1_PHASE));
       //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
       
     }
@@ -4284,8 +4310,8 @@ void seq_update_track(int t)
 	{
 	  MM[t]->setAmplitude(P[t].getPatternElement(step).get(AMP));
 	  MM[t]->setMachineType(P[t].getPatternElement(step).getMachineType());
-	  M[t]  = MM[t]->getInput();                             
-	  FX[t] = MM[t]->getEffect();                             
+	  M[t]  = MM[t]->getInput();
+	  FX[t] = MM[t]->getEffect();
 
 
 	  FX[t]->setDepth(P[t].getPatternElement(step).get(FX1_DEPTH));
@@ -4307,7 +4333,7 @@ void seq_update_track(int t)
 
 	  // Let the Machine handle NoteOn/NoteOff with a trig time duration
 	  M[t]->setI(TRIG_TIME_MODE,1);
-	  M[t]->setI(TRIG_TIME_DURATION,P[t].getPatternElement(step).getTrigTime());
+	  M[t]->setI(TRIG_TIME_DURATION,P[t].getPatternElement(step).get(TRIG_TIME_DURATION));
 
 	  M[t]->setI(FM_TYPE,P[t].getPatternElement(step).getFmType());
 
@@ -4323,8 +4349,8 @@ void seq_update_track(int t)
 
 
 
-	  M[t]->setI(OSC12_MIX,P[t].getPatternElement(step).getVCOMix());
-	  M[t]->setI(OSC1_PHASE,P[t].getPatternElement(step).getPhaseOsc1());
+	  M[t]->setI(OSC12_MIX,P[t].getPatternElement(step).get(VCO_MIX));
+	  M[t]->setI(OSC1_PHASE,P[t].getPatternElement(step).get(OSC1_PHASE));
 
 	  M[t]->setI(LFO1_DEPTH,P[t].getPatternElement(step).get(LFO1_DEPTH));
 	  M[t]->setF(LFO1_FREQ,P[t].getPatternElement(step).get(LFO1_FREQ));
@@ -4338,8 +4364,8 @@ void seq_update_track(int t)
 	  M[t]->setI(OSC1_TYPE,P[t].getPatternElement(step).get(OSC1_TYPE));
 	  M[t]->setI(OSC2_TYPE,P[t].getPatternElement(step).get(OSC2_TYPE));
 
-	  M[t]->setI(OSC1_AMP,P[t].getPatternElement(step).getOsc1Amp());
-	  M[t]->setI(OSC2_AMP,P[t].getPatternElement(step).getOsc2Amp());
+	  M[t]->setI(OSC1_AMP,P[t].getPatternElement(step).get(OSC1_AMP));
+	  M[t]->setI(OSC2_AMP,P[t].getPatternElement(step).get(OSC2_AMP));
 
 
 	  M[t]->setI(FILTER1_TYPE,P[t].getPatternElement(step).get(FILTER1_TYPE));

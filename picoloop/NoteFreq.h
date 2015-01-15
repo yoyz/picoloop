@@ -27,6 +27,7 @@ class NoteFreq
   int   getWTJumpDetune(int note,int detune);
   int   getWTJumpDetune(int notedetune);
 
+  const char * getNoteCharStar(int note);
 
 };
 
