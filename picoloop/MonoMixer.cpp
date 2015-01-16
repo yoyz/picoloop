@@ -123,7 +123,7 @@ Sint16 MonoMixer::tick()
   //  res32=tick*127;
   //res32=res32/127;
   
-  res32=res32>>5;
+  res32=res32>>4;
 
   //if (res32>32000)  res32=32000-(res32>>6);
   //if (res32<-32000) res32=-32000+(res32>>6);
