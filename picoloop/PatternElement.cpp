@@ -215,6 +215,18 @@ void PatternElement::set(int what,int val)
     case OSC2_AMP:
       osc2_amp=checkSevenBitBoundarie(val);
       break;
+
+    case VCO_MIX:
+      vcomix=checkSevenBitBoundarie(val);
+      break;
+
+    case OSC1_PHASE:
+      phaseOsc1=checkSevenBitBoundarie(val);
+      break;
+
+    case TRIG_TIME_DURATION:
+      trig_time=checkSevenBitBoundarie(val);
+      break;
       
 
       
@@ -321,6 +333,20 @@ int PatternElement::get(int what)
     case OSC2_AMP:
       return osc2_amp;
       break;
+
+    case VCO_MIX:
+      return vcomix;
+      break;
+
+
+    case OSC1_PHASE:
+      return phaseOsc1;
+      break;
+
+    case TRIG_TIME_DURATION:
+      return trig_time;
+      break;
+
 
     // case VCO:
     //   return osc2_amp;
