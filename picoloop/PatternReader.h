@@ -34,6 +34,7 @@ class PatternReader
   bool PatternRemove(int PatternNumber,int TrackNumber);
   bool PatternDataExist(int PatternNumber,int TrackNumber);
   bool readPatternData(int PatternNumber,int TrackNumber, Pattern & P);
+  bool readPatternDataLine(int PatternNumber,int TrackNumber, Pattern & P, char * line, int machineParam);
   bool writePattern(int PatternNumber,int TrackNumber,Pattern & P);
 
   const char * getParameterCharStar(int param);
