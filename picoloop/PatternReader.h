@@ -36,6 +36,7 @@ class PatternReader
   bool readPatternData(int PatternNumber,int TrackNumber, Pattern & P);
   bool writePattern(int PatternNumber,int TrackNumber,Pattern & P);
 
+  const char * getParameterCharStar(int param);
 
 
  private:

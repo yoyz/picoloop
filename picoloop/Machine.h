@@ -124,6 +124,7 @@ using namespace std;
 
 #define NOTE                200   // Store note value
 #define MACHINE_TYPE        210   // Store the machine type dbOpl, Picosynth...
+#define NOTE_ADSR           211   // Note used but still here...
 
 #ifndef __MACHINE____
 #define __MACHINE____
