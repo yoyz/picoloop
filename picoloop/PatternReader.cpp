@@ -180,6 +180,43 @@ bool PatternReader::PatternDataExist(int PatternNumber,int TrackNumber)
   return found;
 }
 
+
+bool PatternReader::readPatternDataLine(int PatternNumber,int TrackNumber, Pattern & P, char * line, int machineParam)
+{
+  PatternElement Pe;
+  bool retcode=true;
+  int n[16];
+  char strParam[64];
+  int PatNum;
+  int TrackNum;
+  int i;
+  int PatSize;
+
+
+  //match('Pattern 1 Track 1 Param Note 41 0 52 0 22 0 12 0 21 11 14 12 43 12 54')
+  sscanf(line,
+	 "Pattern %d Track %d Param %s %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
+	 &PatNum,&TrackNum,strParam,
+	 &n[0], &n[1], &n[2], &n[3],
+	 &n[4], &n[5], &n[6], &n[7],
+	 &n[8], &n[9], &n[10],&n[11],
+	 &n[12],&n[13],&n[14],&n[15]);
+  
+  if (PatNum    ==PatternNumber &&
+      TrackNum  ==TrackNumber   &&
+      strcmp(strParam,this->getParameterCharStar(machineParam))==0)
+    for (i=0;i<PatSize;i++)
+      {
+	Pe=P.getPatternElement(i);      
+	Pe.set(machineParam,n[i]);
+	P.setPatternElement(i,Pe);      
+      }
+  else
+    retcode=false;
+
+  return retcode;
+}
+
 bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern & P)
 {
   PatternElement Pe;
@@ -290,93 +327,48 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
 
   machineParam=LFO1_DEPTH;
   fgets(line,512,fd);
-  //match('Pattern 1 Track 1 Param Note 41 0 52 0 22 0 12 0 21 11 14 12 43 12 54')
-  sscanf(line,
-	 "Pattern %d Track %d Param %s %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
-	 &PatNum,&TrackNum,strParam,
-	 &n[0], &n[1], &n[2], &n[3],
-	 &n[4], &n[5], &n[6], &n[7],
-	 &n[8], &n[9], &n[10],&n[11],
-	 &n[12],&n[13],&n[14],&n[15]);
-
-      if (PatNum    ==PatternNumber &&
-	  TrackNum  ==TrackNumber   &&
-	  strcmp(strParam,this->getParameterCharStar(machineParam))==0)
-	for (i=0;i<PatSize;i++)
-	  {
-	    Pe=P.getPatternElement(i);      
-	    Pe.set(machineParam,n[i]);
-	    P.setPatternElement(i,Pe);      
-	  }
-      else
-	retcode=false;
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
+
+  machineParam=LFO1_FREQ;
   fgets(line,512,fd);
-  //match('Pattern 1 Track 1 Param Note 41 0 52 0 22 0 12 0 21 11 14 12 43 12 54')
-  sscanf(line,
-	 "Pattern %d Track %d Param PitchLfoSpeed %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
-	 &PatNum,&TrackNum,
-	 &n[0], &n[1], &n[2], &n[3],
-	 &n[4], &n[5], &n[6], &n[7],
-	 &n[8], &n[9], &n[10],&n[11],
-	 &n[12],&n[13],&n[14],&n[15]);
-
-      if (PatNum    ==PatternNumber &&
-	  TrackNum  ==TrackNumber)
-	for (i=0;i<PatSize;i++)
-	  {
-	    Pe=P.getPatternElement(i);      
-	    Pe.set(LFO1_FREQ,n[i]);
-	    P.setPatternElement(i,Pe);      
-	  }
-      else
-	retcode=false;
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
-
+  machineParam=AMP;
   fgets(line,512,fd);
-  //match('Pattern 1 Track 1 Param Note 41 0 52 0 22 0 12 0 21 11 14 12 43 12 54')
-  sscanf(line,
-	 "Pattern %d Track %d Param Amp %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
-	 &PatNum,&TrackNum,
-	 &n[0], &n[1], &n[2], &n[3],
-	 &n[4], &n[5], &n[6], &n[7],
-	 &n[8], &n[9], &n[10],&n[11],
-	 &n[12],&n[13],&n[14],&n[15]);
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
-      if (PatNum    ==PatternNumber &&
-	  TrackNum  ==TrackNumber)
-	for (i=0;i<PatSize;i++)
-	  {
-	    Pe=P.getPatternElement(i);      
-	    Pe.set(AMP,n[i]);
-	    P.setPatternElement(i,Pe);      
-	  }
-      else
-	retcode=false;
+
+
+  machineParam=NOTE;
+  fgets(line,512,fd);
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
+
+
 
   
-  fgets(line,512,fd);
-  //match('Pattern 1 Track 1 Param Note 41 0 52 0 22 0 12 0 21 11 14 12 43 12 54')
-  sscanf(line,
-	 "Pattern %d Track %d Param Note %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
-	 &PatNum,&TrackNum,
-	 &n[0], &n[1], &n[2], &n[3],
-	 &n[4], &n[5], &n[6], &n[7],
-	 &n[8], &n[9], &n[10],&n[11],
-	 &n[12],&n[13],&n[14],&n[15]);
+  // fgets(line,512,fd);
+  // //match('Pattern 1 Track 1 Param Note 41 0 52 0 22 0 12 0 21 11 14 12 43 12 54')
+  // sscanf(line,
+  // 	 "Pattern %d Track %d Param Note %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
+  // 	 &PatNum,&TrackNum,
+  // 	 &n[0], &n[1], &n[2], &n[3],
+  // 	 &n[4], &n[5], &n[6], &n[7],
+  // 	 &n[8], &n[9], &n[10],&n[11],
+  // 	 &n[12],&n[13],&n[14],&n[15]);
 
-      if (PatNum    ==PatternNumber &&
-	  TrackNum  ==TrackNumber)
-	for (i=0;i<PatSize;i++)
-	  {
-	    Pe=P.getPatternElement(i);      
-	    Pe.set(NOTE,n[i]);
-	    P.setPatternElement(i,Pe);      
-	  }
-      else
-	retcode=false;
+  //     if (PatNum    ==PatternNumber &&
+  // 	  TrackNum  ==TrackNumber)
+  // 	for (i=0;i<PatSize;i++)
+  // 	  {
+  // 	    Pe=P.getPatternElement(i);      
+  // 	    Pe.set(NOTE,n[i]);
+  // 	    P.setPatternElement(i,Pe);      
+  // 	  }
+  //     else
+  // 	retcode=false;
 
 
 
@@ -1512,6 +1504,13 @@ const char * PatternReader::getParameterCharStar(int param)
   static const char * pitchbend_speed="PitchBendSpeed"; 
   
   static const char * lfo_type="LfoType";
+
+  static const char * lfo1_depth="PitchLfoDepth";
+  static const char * lfo1_freq="PitchLfoSpeed";
+
+  static const char * amp="Amp";
+
+  static const char * note="Note";
     
 
 
@@ -1522,41 +1521,48 @@ const char * PatternReader::getParameterCharStar(int param)
     case ADSR_ENV0_SUSTAIN:  return adsr_env0_sustain;        break;
     case ADSR_ENV0_RELEASE:  return adsr_env0_release;        break;
 
-    case OSC1_TYPE:          return osc1_type;     break;
-    case OSC2_TYPE:          return osc2_type;     break;
+    case OSC1_TYPE:          return osc1_type;                break;
+    case OSC2_TYPE:          return osc2_type;                break;
       
-    case FILTER1_CUTOFF:     return filter1_cutoff;         break;
-    case FILTER1_RESONANCE:  return filter1_resonance;      break;
+    case FILTER1_CUTOFF:     return filter1_cutoff;           break;
+    case FILTER1_RESONANCE:  return filter1_resonance;        break;
     
-    case OSC1_PHASE:         return osc1_phase;      break;
+    case OSC1_PHASE:         return osc1_phase;               break;
     
-    case ADSR_ENV1_ATTACK:   return adsr_env1_attack;     break;
-    case ADSR_ENV1_DECAY:    return adsr_env1_decay;      break;
-    case ADSR_ENV1_SUSTAIN:  return adsr_env1_sustain;    break;
-    case ADSR_ENV1_RELEASE:  return adsr_env1_release;    break;
+    case ADSR_ENV1_ATTACK:   return adsr_env1_attack;         break;
+    case ADSR_ENV1_DECAY:    return adsr_env1_decay;          break;
+    case ADSR_ENV1_SUSTAIN:  return adsr_env1_sustain;        break;
+    case ADSR_ENV1_RELEASE:  return adsr_env1_release;        break;
 
-    case NOTE_ADSR:          return note_adsr;       break;
+    case NOTE_ADSR:          return note_adsr;                break;
 
-    case MACHINE_TYPE:       return machine_type;    break;
-    case FILTER1_ALGO:       return filter1_algo;     break;
-    case FILTER1_TYPE:       return filter1_type;     break;
+    case MACHINE_TYPE:       return machine_type;             break;
+    case FILTER1_ALGO:       return filter1_algo;             break;
+    case FILTER1_TYPE:       return filter1_type;             break;
 
-    case OSC1_AMP:           return osc1_amp;        break;
-    case OSC2_AMP:           return osc2_amp;        break;
+    case OSC1_AMP:           return osc1_amp;                 break;
+    case OSC2_AMP:           return osc2_amp;                 break;
 
-    case FX1_DEPTH:          return fx1_depth;        break;
-    case FX1_SPEED:          return fx1_speed;        break;
+    case FX1_DEPTH:          return fx1_depth;                break;
+    case FX1_SPEED:          return fx1_speed;                break;
 
-    case FM_TYPE:            return fm_type;         break;
+    case FM_TYPE:            return fm_type;                  break;
 
     case TRIG_TIME_DURATION: return trig_time_duration;       break;
 
-    case PITCHBEND_DEPTH:    return pitchbend_depth; break;
-    case PITCHBEND_SPEED:    return pitchbend_speed; break;
+    case PITCHBEND_DEPTH:    return pitchbend_depth;          break;
+    case PITCHBEND_SPEED:    return pitchbend_speed;          break;
 
     case LFO_TYPE:           return lfo_type;                 break;
-    
 
+    case LFO1_DEPTH:         return lfo1_depth;               break;
+    case LFO1_FREQ:          return lfo1_freq;                break;
+
+    case AMP:                return amp;                      break;
+
+    case NOTE:               return note;                      break;
+    
+    default:                 printf("PatternReader::getParameterCharStar(%d) not found => exit\n"); exit(1); break;
     }
   return ret;
 }
