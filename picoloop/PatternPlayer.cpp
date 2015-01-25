@@ -3842,10 +3842,10 @@ void seq_update_multiple_time_by_step()
   // Change lfo type
   if (TK.lfo_type!=0)
     {
-      P[cty].getPatternElement(cursor).setLfoType(P[cty].getPatternElement(cursor).getLfoType()+TK.lfo_type);
+      P[cty].getPatternElement(cursor).set(LFO_TYPE,P[cty].getPatternElement(cursor).get(LFO_TYPE)+TK.lfo_type);
       TK.lfo_type=0;
       if (debug)
-	printf("[lfo_type:%d]\n",P[cty].getPatternElement(cursor).getLfoType());
+	printf("[lfo_type:%d]\n",P[cty].getPatternElement(cursor).get(LFO_TYPE));
       
     }
 
@@ -3853,10 +3853,10 @@ void seq_update_multiple_time_by_step()
   if (TK.lfo_type_all!=0)
     {
       for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).setLfoType(P[cty].getPatternElement(i).getLfoType()+TK.lfo_type_all);
+	P[cty].getPatternElement(i).set(LFO_TYPE,P[cty].getPatternElement(i).get(LFO_TYPE)+TK.lfo_type_all);
       TK.lfo_type_all=0;
       if (debug)
-	printf("[lfo_type:%d]\n",P[cty].getPatternElement(cursor).getLfoType());
+	printf("[lfo_type:%d]\n",P[cty].getPatternElement(cursor).get(LFO_TYPE));
       
     }
 
@@ -4006,18 +4006,18 @@ void seq_update_multiple_time_by_step()
   // Change Note
   if (TK.fmtype!=0)
     { 
-      P[cty].getPatternElement(cursor).setFmType(P[cty].getPatternElement(cursor).getFmType()+TK.fmtype);
+      P[cty].getPatternElement(cursor).set(FM_TYPE,P[cty].getPatternElement(cursor).get(FM_TYPE)+TK.fmtype);
       TK.fmtype=0;
-      printf("[fmtype:%d]\n",P[cty].getPatternElement(cursor).getFmType());	  
+      printf("[fmtype:%d]\n",P[cty].getPatternElement(cursor).get(FM_TYPE));	  
     }
   
   // Change Note
   if (TK.fmtype_all!=0)
     { 
       for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).setFmType(P[cty].getPatternElement(i).getFmType()+TK.fmtype_all);
+	P[cty].getPatternElement(i).set(FM_TYPE,P[cty].getPatternElement(i).get(FM_TYPE)+TK.fmtype_all);
       TK.fmtype_all=0;
-      printf("[fmtype_all:%d]\n",P[cty].getPatternElement(cursor).getFmType());	  
+      printf("[fmtype_all:%d]\n",P[cty].getPatternElement(cursor).get(FM_TYPE));
     }
 
 
@@ -4335,7 +4335,7 @@ void seq_update_track(int t)
 	  M[t]->setI(TRIG_TIME_MODE,1);
 	  M[t]->setI(TRIG_TIME_DURATION,P[t].getPatternElement(step).get(TRIG_TIME_DURATION));
 
-	  M[t]->setI(FM_TYPE,P[t].getPatternElement(step).getFmType());
+	  M[t]->setI(FM_TYPE,P[t].getPatternElement(step).get(FM_TYPE));
 
 	  M[t]->setI(ADSR_ENV0_ATTACK,  P[t].getPatternElement(step).get(ADSR_AMP_ATTACK));
 	  M[t]->setI(ADSR_ENV0_DECAY,   P[t].getPatternElement(step).get(ADSR_AMP_DECAY));
@@ -4357,7 +4357,7 @@ void seq_update_track(int t)
 
 	  M[t]->setI(PITCHBEND_DEPTH,P[t].getPatternElement(step).get(PITCHBEND_DEPTH));
 	  M[t]->setI(PITCHBEND_SPEED,P[t].getPatternElement(step).get(PITCHBEND_SPEED));
-	  M[t]->setI(LFO_TYPE,       P[t].getPatternElement(step).getLfoType());
+	  M[t]->setI(LFO_TYPE,       P[t].getPatternElement(step).get(LFO_TYPE));
 
 	  //M[t]->set(OSC12_MIX,phase);
 
