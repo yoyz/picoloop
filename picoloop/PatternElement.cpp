@@ -227,6 +227,15 @@ void PatternElement::set(int what,int val)
     case TRIG_TIME_DURATION:
       trig_time=checkSevenBitBoundarie(val);
       break;
+
+      //NOT USED ANYMORE NEED TO BE REMOVED
+    case NOTE_ADSR:
+      adsr_note=checkSevenBitBoundarie(val);
+      break;
+
+    case MACHINE_TYPE:
+      machine_type=checkSevenBitBoundarie(val)%3; // HACK TO make the DBOPL/PICOSYNTH/PICODRUM TO WORK
+      break;
       
 
       
@@ -348,9 +357,16 @@ int PatternElement::get(int what)
       break;
 
 
-    // case VCO:
-    //   return osc2_amp;
-    //   break;
+
+
+    case NOTE_ADSR:
+      return adsr_note;       //NOT USED ANYMORE NEED TO BE REMOVED
+      break;
+
+    case MACHINE_TYPE:
+      return machine_type;  // HACK TO make the DBOPL/PICOSYNTH/PICODRUM TO WORK
+      break;
+
 
 
     default:
@@ -401,17 +417,17 @@ void PatternElement::setFmType(int fm)
 
 
 
-int PatternElement::getMachineType()
-{
-  return machine_type;
-}
+// int PatternElement::getMachineType()
+// {
+//   return machine_type;
+// }
 
-void PatternElement::setMachineType(int val)
-{
-  if      (val>2) val=0;
-  else if (val<0) val=2;
-  machine_type=val;
-}
+// void PatternElement::setMachineType(int val)
+// {
+//   if      (val>2) val=0;
+//   else if (val<0) val=2;
+//   machine_type=val;
+// }
 
 
 

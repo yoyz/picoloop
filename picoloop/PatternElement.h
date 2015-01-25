@@ -66,20 +66,20 @@ public:
   /* void   setAmp(int a); */
 
 
-  int    getPhaseOsc1();
-  void   setPhaseOsc1(int val);
+  /* int    getPhaseOsc1(); */
+  /* void   setPhaseOsc1(int val); */
 
   int    getFmType();
   void   setFmType(int fm);
 
-  int    getMachineType();
-  void   setMachineType(int val);
+  /* int    getMachineType(); */
+  /* void   setMachineType(int val); */
 
   int    getLfoType();
   void   setLfoType(int val);
 
-  int    getVCOMix();
-  void   setVCOMix(int mix);
+  /* int    getVCOMix(); */
+  /* void   setVCOMix(int mix); */
 
   /* int    getOsc1Amp(); */
   /* void   setOsc1Amp(int val); */
@@ -145,7 +145,7 @@ private:
 
   int phaseOsc1;
 
-  int adsr_note;
+  int adsr_note;       //NOT USED ANYMORE NEED TO BE REMOVED
 
   int machine_type;
 
