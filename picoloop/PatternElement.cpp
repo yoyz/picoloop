@@ -193,10 +193,10 @@ void PatternElement::set(int what,int val)
 
 
     case FILTER1_TYPE:
-      filterType=checkSevenBitBoundarie(val);
+      filterType=checkSevenBitBoundarie(val)%3; //HACKISH
       break;
     case FILTER1_ALGO:
-      filterAlgo=checkSevenBitBoundarie(val);
+      filterAlgo=checkSevenBitBoundarie(val)%3; //HACKISH
       break;      
 
 
@@ -235,6 +235,15 @@ void PatternElement::set(int what,int val)
 
     case MACHINE_TYPE:
       machine_type=checkSevenBitBoundarie(val)%3; // HACK TO make the DBOPL/PICOSYNTH/PICODRUM TO WORK
+      break;
+
+
+    case FM_TYPE:
+      fm_type=checkSevenBitBoundarie(val)%2; // HACK TO make AM/FM
+      break;
+
+    case LFO_TYPE:
+      lfo_type=checkSevenBitBoundarie(val)%2; // HACK TO make LFOPITCH/PB
       break;
       
 
@@ -367,6 +376,13 @@ int PatternElement::get(int what)
       return machine_type;  // HACK TO make the DBOPL/PICOSYNTH/PICODRUM TO WORK
       break;
 
+    case FM_TYPE:
+      return fm_type;       // HACK TO make AM/FM
+      break;
+
+    case LFO_TYPE:
+      return lfo_type;      // HACK TO make LFOPITCH/PB
+      break;
 
 
     default:
@@ -401,19 +417,19 @@ int PatternElement::checkSevenBitBoundarie(int val)
 // }
 
 
-int PatternElement::getFmType()
-{
-  return fm_type;
-}
+// int PatternElement::getFmType()
+// {
+//   return fm_type;
+// }
 
-void PatternElement::setFmType(int fm)
-{
-  if (fm>1)
-    fm=0;
-  if (fm<0)
-    fm=1;
-  fm_type=this->checkSevenBitBoundarie(fm);  
-}
+// void PatternElement::setFmType(int fm)
+// {
+//   if (fm>1)
+//     fm=0;
+//   if (fm<0)
+//     fm=1;
+//   fm_type=this->checkSevenBitBoundarie(fm);  
+// }
 
 
 
@@ -472,18 +488,18 @@ const char * PatternElement::getLFOTypeCharStar()
 }
 
 
-void PatternElement::setLfoType(int val)
-{
-  if (val>1) val=0;
-  if (val<0) val=1;
+// void PatternElement::setLfoType(int val)
+// {
+//   if (val>1) val=0;
+//   if (val<0) val=1;
 
-  lfo_type=this->checkSevenBitBoundarie(val);
-}
+//   lfo_type=this->checkSevenBitBoundarie(val);
+// }
 
-int PatternElement::getLfoType()
-{
-  return lfo_type;
-}
+// int PatternElement::getLfoType()
+// {
+//   return lfo_type;
+// }
 
 
 

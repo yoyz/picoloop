@@ -69,14 +69,14 @@ public:
   /* int    getPhaseOsc1(); */
   /* void   setPhaseOsc1(int val); */
 
-  int    getFmType();
-  void   setFmType(int fm);
+  /* int    getFmType(); */
+  /* void   setFmType(int fm); */
 
   /* int    getMachineType(); */
   /* void   setMachineType(int val); */
 
-  int    getLfoType();
-  void   setLfoType(int val);
+  /* int    getLfoType(); */
+  /* void   setLfoType(int val); */
 
   /* int    getVCOMix(); */
   /* void   setVCOMix(int mix); */
