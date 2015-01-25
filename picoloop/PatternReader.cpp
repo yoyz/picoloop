@@ -190,7 +190,7 @@ bool PatternReader::readPatternDataLine(int PatternNumber,int TrackNumber, Patte
   int PatNum;
   int TrackNum;
   int i;
-  int PatSize;
+  //int PatSize;
 
 
   //match('Pattern 1 Track 1 Param Note 41 0 52 0 22 0 12 0 21 11 14 12 43 12 54')
@@ -202,11 +202,25 @@ bool PatternReader::readPatternDataLine(int PatternNumber,int TrackNumber, Patte
 	 &n[8], &n[9], &n[10],&n[11],
 	 &n[12],&n[13],&n[14],&n[15]);
   
+  // printf("READ    : %s\n",line);
+  // printf("COMPARE : Pattern %d Track %d Param %s %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n",	PatNum,TrackNum,strParam,
+  // 	 n[0], n[1], n[2], n[3],
+  // 	 n[4], n[5], n[6], n[7],
+  // 	 n[8], n[9], n[10],n[11],
+  // 	 n[12],n[13],n[14],n[15]);
+
+  // printf("[%s] [%s] [%d]\n",
+  // 	 strParam,
+  // 	 this->getParameterCharStar(machineParam),
+  // 	 strcmp(strParam,this->getParameterCharStar(machineParam))
+  // 	 );
+
   if (PatNum    ==PatternNumber &&
       TrackNum  ==TrackNumber   &&
       strcmp(strParam,this->getParameterCharStar(machineParam))==0)
-    for (i=0;i<PatSize;i++)
+    for (i=0;i<P.getSize();i++)
       {
+	//printf("MATCHED\n");
 	Pe=P.getPatternElement(i);      
 	Pe.set(machineParam,n[i]);
 	P.setPatternElement(i,Pe);      
@@ -347,410 +361,465 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
+  machineParam=NOTE_ON;
+  fgets(line,512,fd);
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
   
+
+
   // fgets(line,512,fd);
-  // //match('Pattern 1 Track 1 Param Note 41 0 52 0 22 0 12 0 21 11 14 12 43 12 54')
+  // //match('Pattern 1 Track 1 Param Trig 0  0 1  0 0  0 1  0 0  1  0  0  1  0  0')
   // sscanf(line,
-  // 	 "Pattern %d Track %d Param Note %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
+  // 	 "Pattern %d Track %d Param Trig %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
   // 	 &PatNum,&TrackNum,
-  // 	 &n[0], &n[1], &n[2], &n[3],
-  // 	 &n[4], &n[5], &n[6], &n[7],
-  // 	 &n[8], &n[9], &n[10],&n[11],
-  // 	 &n[12],&n[13],&n[14],&n[15]);
+  // 	 &t[0], &t[1], &t[2], &t[3],
+  // 	 &t[4], &t[5], &t[6], &t[7],
+  // 	 &t[8], &t[9], &t[10],&t[11],
+  // 	 &t[12],&t[13],&t[14],&t[15]);
 
-  //     if (PatNum    ==PatternNumber &&
-  // 	  TrackNum  ==TrackNumber)
-  // 	for (i=0;i<PatSize;i++)
-  // 	  {
-  // 	    Pe=P.getPatternElement(i);      
-  // 	    Pe.set(NOTE,n[i]);
-  // 	    P.setPatternElement(i,Pe);      
-  // 	  }
-  //     else
-  // 	retcode=false;
+  // if (PatNum    ==PatternNumber &&
+  //     TrackNum  ==TrackNumber)
+  //   for (i=0;i<PatSize;i++)
+  //     {
+  // 	Pe=P.getPatternElement(i);      
+  // 	Pe.set(NOTE_ON,t[i]);
+  // 	P.setPatternElement(i,Pe);      
+  //     }
+  // else
+  //   retcode=false;
 
-
-
+  machineParam=VCO_MIX;
   fgets(line,512,fd);
-  //match('Pattern 1 Track 1 Param Trig 0  0 1  0 0  0 1  0 0  1  0  0  1  0  0')
-  sscanf(line,
-	 "Pattern %d Track %d Param Trig %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
-	 &PatNum,&TrackNum,
-	 &t[0], &t[1], &t[2], &t[3],
-	 &t[4], &t[5], &t[6], &t[7],
-	 &t[8], &t[9], &t[10],&t[11],
-	 &t[12],&t[13],&t[14],&t[15]);
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
-  if (PatNum    ==PatternNumber &&
-      TrackNum  ==TrackNumber)
-    for (i=0;i<PatSize;i++)
-      {
-	Pe=P.getPatternElement(i);      
-	Pe.set(NOTE_ON,t[i]);
-	P.setPatternElement(i,Pe);      
-      }
-  else
-    retcode=false;
+  
 
 
+
+
+  // fgets(line,512,fd);
+  // //match('Pattern 1 Track 1 Param Decay 0  0 1  0 0  0 1  0 0  1  0  0  1  0  0')
+  // sscanf(line,
+  // 	 "Pattern %d Track %d Param VCOMix %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
+  // 	 &PatNum,&TrackNum,
+  // 	 &t[0], &t[1], &t[2], &t[3],
+  // 	 &t[4], &t[5], &t[6], &t[7],
+  // 	 &t[8], &t[9], &t[10],&t[11],
+  // 	 &t[12],&t[13],&t[14],&t[15]);
+
+  // if (PatNum    ==PatternNumber &&
+  //     TrackNum  ==TrackNumber)
+  //   for (i=0;i<PatSize;i++)
+  //     {
+  // 	Pe=P.getPatternElement(i);      
+  // 	Pe.set(VCO_MIX,t[i]);
+  // 	P.setPatternElement(i,Pe);      
+  //     }
+  // else
+  //   retcode=false;
+
+
+  machineParam=ADSR_AMP_ATTACK;
   fgets(line,512,fd);
-  //match('Pattern 1 Track 1 Param Decay 0  0 1  0 0  0 1  0 0  1  0  0  1  0  0')
-  sscanf(line,
-	 "Pattern %d Track %d Param VCOMix %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
-	 &PatNum,&TrackNum,
-	 &t[0], &t[1], &t[2], &t[3],
-	 &t[4], &t[5], &t[6], &t[7],
-	 &t[8], &t[9], &t[10],&t[11],
-	 &t[12],&t[13],&t[14],&t[15]);
-
-  if (PatNum    ==PatternNumber &&
-      TrackNum  ==TrackNumber)
-    for (i=0;i<PatSize;i++)
-      {
-	Pe=P.getPatternElement(i);      
-	Pe.set(VCO_MIX,t[i]);
-	P.setPatternElement(i,Pe);      
-      }
-  else
-    retcode=false;
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
+  // fgets(line,512,fd);
+  // //match('Pattern 1 Track 1 Param Attack 0  0 1  0 0  0 1  0 0  1  0  0  1  0  0')
+  // sscanf(line,
+  // 	 "Pattern %d Track %d Param Attack %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
+  // 	 &PatNum,&TrackNum,
+  // 	 &t[0], &t[1], &t[2], &t[3],
+  // 	 &t[4], &t[5], &t[6], &t[7],
+  // 	 &t[8], &t[9], &t[10],&t[11],
+  // 	 &t[12],&t[13],&t[14],&t[15]);
+
+  // if (PatNum    ==PatternNumber &&
+  //     TrackNum  ==TrackNumber)
+  //   for (i=0;i<PatSize;i++)
+  //     {
+  // 	Pe=P.getPatternElement(i);      
+  // 	Pe.set(ADSR_AMP_ATTACK,t[i]);
+  // 	P.setPatternElement(i,Pe);      
+  //     }
+  // else
+  //   retcode=false;
+
+
+  machineParam=ADSR_AMP_DECAY;
   fgets(line,512,fd);
-  //match('Pattern 1 Track 1 Param Attack 0  0 1  0 0  0 1  0 0  1  0  0  1  0  0')
-  sscanf(line,
-	 "Pattern %d Track %d Param Attack %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
-	 &PatNum,&TrackNum,
-	 &t[0], &t[1], &t[2], &t[3],
-	 &t[4], &t[5], &t[6], &t[7],
-	 &t[8], &t[9], &t[10],&t[11],
-	 &t[12],&t[13],&t[14],&t[15]);
-
-  if (PatNum    ==PatternNumber &&
-      TrackNum  ==TrackNumber)
-    for (i=0;i<PatSize;i++)
-      {
-	Pe=P.getPatternElement(i);      
-	Pe.set(ADSR_AMP_ATTACK,t[i]);
-	P.setPatternElement(i,Pe);      
-      }
-  else
-    retcode=false;
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
 
+  // fgets(line,512,fd);
+  // //match('Pattern 1 Track 1 Param Decay 0  0 1  0 0  0 1  0 0  1  0  0  1  0  0')
+  // sscanf(line,
+  // 	 "Pattern %d Track %d Param Decay %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
+  // 	 &PatNum,&TrackNum,
+  // 	 &t[0], &t[1], &t[2], &t[3],
+  // 	 &t[4], &t[5], &t[6], &t[7],
+  // 	 &t[8], &t[9], &t[10],&t[11],
+  // 	 &t[12],&t[13],&t[14],&t[15]);
 
+  // if (PatNum    ==PatternNumber &&
+  //     TrackNum  ==TrackNumber)
+  //   for (i=0;i<PatSize;i++)
+  //     {
+  // 	Pe=P.getPatternElement(i);      
+  // 	Pe.set(ADSR_AMP_DECAY,t[i]);
+  // 	P.setPatternElement(i,Pe);      
+  //     }
+  // else
+  //   retcode=false;
 
+  machineParam=ADSR_AMP_SUSTAIN;
   fgets(line,512,fd);
-  //match('Pattern 1 Track 1 Param Decay 0  0 1  0 0  0 1  0 0  1  0  0  1  0  0')
-  sscanf(line,
-	 "Pattern %d Track %d Param Decay %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
-	 &PatNum,&TrackNum,
-	 &t[0], &t[1], &t[2], &t[3],
-	 &t[4], &t[5], &t[6], &t[7],
-	 &t[8], &t[9], &t[10],&t[11],
-	 &t[12],&t[13],&t[14],&t[15]);
-
-  if (PatNum    ==PatternNumber &&
-      TrackNum  ==TrackNumber)
-    for (i=0;i<PatSize;i++)
-      {
-	Pe=P.getPatternElement(i);      
-	Pe.set(ADSR_AMP_DECAY,t[i]);
-	P.setPatternElement(i,Pe);      
-      }
-  else
-    retcode=false;
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
 
+  // fgets(line,512,fd);
+  // //match('Pattern 1 Track 1 Param Sustain 0  0 1  0 0  0 1  0 0  1  0  0  1  0  0')
+  // sscanf(line,
+  // 	 "Pattern %d Track %d Param Sustain %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
+  // 	 &PatNum,&TrackNum,
+  // 	 &t[0], &t[1], &t[2], &t[3],
+  // 	 &t[4], &t[5], &t[6], &t[7],
+  // 	 &t[8], &t[9], &t[10],&t[11],
+  // 	 &t[12],&t[13],&t[14],&t[15]);
 
+  // if (PatNum    ==PatternNumber &&
+  //     TrackNum  ==TrackNumber)
+  //   for (i=0;i<PatSize;i++)
+  //     {
+  // 	Pe=P.getPatternElement(i);      
+  // 	Pe.set(ADSR_AMP_SUSTAIN,t[i]);
+  // 	P.setPatternElement(i,Pe);      
+  //     }
+  // else
+  //   retcode=false;
+
+  machineParam=ADSR_AMP_RELEASE;
   fgets(line,512,fd);
-  //match('Pattern 1 Track 1 Param Sustain 0  0 1  0 0  0 1  0 0  1  0  0  1  0  0')
-  sscanf(line,
-	 "Pattern %d Track %d Param Sustain %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
-	 &PatNum,&TrackNum,
-	 &t[0], &t[1], &t[2], &t[3],
-	 &t[4], &t[5], &t[6], &t[7],
-	 &t[8], &t[9], &t[10],&t[11],
-	 &t[12],&t[13],&t[14],&t[15]);
-
-  if (PatNum    ==PatternNumber &&
-      TrackNum  ==TrackNumber)
-    for (i=0;i<PatSize;i++)
-      {
-	Pe=P.getPatternElement(i);      
-	Pe.set(ADSR_AMP_SUSTAIN,t[i]);
-	P.setPatternElement(i,Pe);      
-      }
-  else
-    retcode=false;
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
+  // fgets(line,512,fd);
+  // //match('Pattern 1 Track 1 Param Release 0  0 1  0 0  0 1  0 0  1  0  0  1  0  0')
+  // sscanf(line,
+  // 	 "Pattern %d Track %d Param Release %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
+  // 	 &PatNum,&TrackNum,
+  // 	 &t[0], &t[1], &t[2], &t[3],
+  // 	 &t[4], &t[5], &t[6], &t[7],
+  // 	 &t[8], &t[9], &t[10],&t[11],
+  // 	 &t[12],&t[13],&t[14],&t[15]);
+
+  // if (PatNum    ==PatternNumber &&
+  //     TrackNum  ==TrackNumber)
+  //   for (i=0;i<PatSize;i++)
+  //     {
+  // 	Pe=P.getPatternElement(i);      
+  // 	Pe.set(ADSR_AMP_RELEASE,t[i]);
+  // 	P.setPatternElement(i,Pe);      
+  //     }
+  // else
+  //   retcode=false;
+
+  machineParam=OSC1_TYPE;
   fgets(line,512,fd);
-  //match('Pattern 1 Track 1 Param Release 0  0 1  0 0  0 1  0 0  1  0  0  1  0  0')
-  sscanf(line,
-	 "Pattern %d Track %d Param Release %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
-	 &PatNum,&TrackNum,
-	 &t[0], &t[1], &t[2], &t[3],
-	 &t[4], &t[5], &t[6], &t[7],
-	 &t[8], &t[9], &t[10],&t[11],
-	 &t[12],&t[13],&t[14],&t[15]);
-
-  if (PatNum    ==PatternNumber &&
-      TrackNum  ==TrackNumber)
-    for (i=0;i<PatSize;i++)
-      {
-	Pe=P.getPatternElement(i);      
-	Pe.set(ADSR_AMP_RELEASE,t[i]);
-	P.setPatternElement(i,Pe);      
-      }
-  else
-    retcode=false;
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
+  // fgets(line,512,fd);
+  // //match('Pattern 1 Track 1 Param Release 0  0 1  0 0  0 1  0 0  1  0  0  1  0  0')
+  // sscanf(line,
+  // 	 "Pattern %d Track %d Param OscOneType %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
+  // 	 &PatNum,&TrackNum,
+  // 	 &t[0], &t[1], &t[2], &t[3],
+  // 	 &t[4], &t[5], &t[6], &t[7],
+  // 	 &t[8], &t[9], &t[10],&t[11],
+  // 	 &t[12],&t[13],&t[14],&t[15]);
+
+  // if (PatNum    ==PatternNumber &&
+  //     TrackNum  ==TrackNumber)
+  //   for (i=0;i<PatSize;i++)
+  //     {
+  // 	Pe=P.getPatternElement(i);
+  // 	Pe.set(OSC1_TYPE,t[i]);
+  // 	P.setPatternElement(i,Pe);      
+  //     }
+  // else
+  //   retcode=false;
+
+  machineParam=OSC2_TYPE;
   fgets(line,512,fd);
-  //match('Pattern 1 Track 1 Param Release 0  0 1  0 0  0 1  0 0  1  0  0  1  0  0')
-  sscanf(line,
-	 "Pattern %d Track %d Param OscOneType %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
-	 &PatNum,&TrackNum,
-	 &t[0], &t[1], &t[2], &t[3],
-	 &t[4], &t[5], &t[6], &t[7],
-	 &t[8], &t[9], &t[10],&t[11],
-	 &t[12],&t[13],&t[14],&t[15]);
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
-  if (PatNum    ==PatternNumber &&
-      TrackNum  ==TrackNumber)
-    for (i=0;i<PatSize;i++)
-      {
-	Pe=P.getPatternElement(i);
-	Pe.set(OSC1_TYPE,t[i]);
-	P.setPatternElement(i,Pe);      
-      }
-  else
-    retcode=false;
 
+  // fgets(line,512,fd);
+  // //match('Pattern 1 Track 1 Param Release 0  0 1  0 0  0 1  0 0  1  0  0  1  0  0')
+  // sscanf(line,
+  // 	 "Pattern %d Track %d Param OscTwoType %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
+  // 	 &PatNum,&TrackNum,
+  // 	 &t[0], &t[1], &t[2], &t[3],
+  // 	 &t[4], &t[5], &t[6], &t[7],
+  // 	 &t[8], &t[9], &t[10],&t[11],
+  // 	 &t[12],&t[13],&t[14],&t[15]);
+
+  // if (PatNum    ==PatternNumber &&
+  //     TrackNum  ==TrackNumber)
+  //   for (i=0;i<PatSize;i++)
+  //     {
+  // 	Pe=P.getPatternElement(i);    
+  // 	Pe.set(OSC2_TYPE,t[i]);  
+  // 	P.setPatternElement(i,Pe);      
+  //     }
+  // else
+  //   retcode=false;
+
+
+  machineParam=FILTER1_CUTOFF;
   fgets(line,512,fd);
-  //match('Pattern 1 Track 1 Param Release 0  0 1  0 0  0 1  0 0  1  0  0  1  0  0')
-  sscanf(line,
-	 "Pattern %d Track %d Param OscTwoType %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
-	 &PatNum,&TrackNum,
-	 &t[0], &t[1], &t[2], &t[3],
-	 &t[4], &t[5], &t[6], &t[7],
-	 &t[8], &t[9], &t[10],&t[11],
-	 &t[12],&t[13],&t[14],&t[15]);
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
-  if (PatNum    ==PatternNumber &&
-      TrackNum  ==TrackNumber)
-    for (i=0;i<PatSize;i++)
-      {
-	Pe=P.getPatternElement(i);    
-	Pe.set(OSC2_TYPE,t[i]);  
-	P.setPatternElement(i,Pe);      
-      }
-  else
-    retcode=false;
 
+  // fgets(line,512,fd);
+  // //match('Pattern 1 Track 1 Param Release 0  0 1  0 0  0 1  0 0  1  0  0  1  0  0')
+  // sscanf(line,
+  // 	 "Pattern %d Track %d Param Cutoff %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
+  // 	 &PatNum,&TrackNum,
+  // 	 &t[0], &t[1], &t[2], &t[3],
+  // 	 &t[4], &t[5], &t[6], &t[7],
+  // 	 &t[8], &t[9], &t[10],&t[11],
+  // 	 &t[12],&t[13],&t[14],&t[15]);
+
+  // if (PatNum    ==PatternNumber &&
+  //     TrackNum  ==TrackNumber)
+  //   for (i=0;i<PatSize;i++)
+  //     {
+  // 	Pe=P.getPatternElement(i);    
+  // 	Pe.set(FILTER1_CUTOFF,t[i]);
+  // 	P.setPatternElement(i,Pe);      
+  //     }
+  // else
+  //   retcode=false;
+
+  machineParam=FILTER1_RESONANCE;
   fgets(line,512,fd);
-  //match('Pattern 1 Track 1 Param Release 0  0 1  0 0  0 1  0 0  1  0  0  1  0  0')
-  sscanf(line,
-	 "Pattern %d Track %d Param Cutoff %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
-	 &PatNum,&TrackNum,
-	 &t[0], &t[1], &t[2], &t[3],
-	 &t[4], &t[5], &t[6], &t[7],
-	 &t[8], &t[9], &t[10],&t[11],
-	 &t[12],&t[13],&t[14],&t[15]);
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
-  if (PatNum    ==PatternNumber &&
-      TrackNum  ==TrackNumber)
-    for (i=0;i<PatSize;i++)
-      {
-	Pe=P.getPatternElement(i);    
-	Pe.set(FILTER1_CUTOFF,t[i]);
-	P.setPatternElement(i,Pe);      
-      }
-  else
-    retcode=false;
 
+  // fgets(line,512,fd);
+  // //match('Pattern 1 Track 1 Param Release 0  0 1  0 0  0 1  0 0  1  0  0  1  0  0')
+  // sscanf(line,
+  // 	 "Pattern %d Track %d Param Resonance %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
+  // 	 &PatNum,&TrackNum,
+  // 	 &t[0], &t[1], &t[2], &t[3],
+  // 	 &t[4], &t[5], &t[6], &t[7],
+  // 	 &t[8], &t[9], &t[10],&t[11],
+  // 	 &t[12],&t[13],&t[14],&t[15]);
+
+  // if (PatNum    ==PatternNumber &&
+  //     TrackNum  ==TrackNumber)
+  //   for (i=0;i<PatSize;i++)
+  //     {
+  // 	Pe=P.getPatternElement(i);    
+  // 	Pe.set(FILTER1_RESONANCE,t[i]);
+  // 	P.setPatternElement(i,Pe);      
+  //     }
+  // else
+  //   retcode=false;
+
+
+  machineParam=OSC1_PHASE;
   fgets(line,512,fd);
-  //match('Pattern 1 Track 1 Param Release 0  0 1  0 0  0 1  0 0  1  0  0  1  0  0')
-  sscanf(line,
-	 "Pattern %d Track %d Param Resonance %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
-	 &PatNum,&TrackNum,
-	 &t[0], &t[1], &t[2], &t[3],
-	 &t[4], &t[5], &t[6], &t[7],
-	 &t[8], &t[9], &t[10],&t[11],
-	 &t[12],&t[13],&t[14],&t[15]);
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
-  if (PatNum    ==PatternNumber &&
-      TrackNum  ==TrackNumber)
-    for (i=0;i<PatSize;i++)
-      {
-	Pe=P.getPatternElement(i);    
-	Pe.set(FILTER1_RESONANCE,t[i]);
-	P.setPatternElement(i,Pe);      
-      }
-  else
-    retcode=false;
 
+  // fgets(line,512,fd);
+  // //match('Pattern 1 Track 1 Param Release 0  0 1  0 0  0 1  0 0  1  0  0  1  0  0')
+  // sscanf(line,
+  // 	 "Pattern %d Track %d Param PhaseOsc1 %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
+  // 	 &PatNum,&TrackNum,
+  // 	 &t[0], &t[1], &t[2], &t[3],
+  // 	 &t[4], &t[5], &t[6], &t[7],
+  // 	 &t[8], &t[9], &t[10],&t[11],
+  // 	 &t[12],&t[13],&t[14],&t[15]);
+
+  // if (PatNum    ==PatternNumber &&
+  //     TrackNum  ==TrackNumber)
+  //   for (i=0;i<PatSize;i++)
+  //     {
+  // 	Pe=P.getPatternElement(i);    
+  // 	Pe.set(OSC1_PHASE,t[i]);  
+  // 	P.setPatternElement(i,Pe);      
+  //     }
+  // else
+  //   retcode=false;
+
+  machineParam=ADSR_FLTR_ATTACK;
   fgets(line,512,fd);
-  //match('Pattern 1 Track 1 Param Release 0  0 1  0 0  0 1  0 0  1  0  0  1  0  0')
-  sscanf(line,
-	 "Pattern %d Track %d Param PhaseOsc1 %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
-	 &PatNum,&TrackNum,
-	 &t[0], &t[1], &t[2], &t[3],
-	 &t[4], &t[5], &t[6], &t[7],
-	 &t[8], &t[9], &t[10],&t[11],
-	 &t[12],&t[13],&t[14],&t[15]);
-
-  if (PatNum    ==PatternNumber &&
-      TrackNum  ==TrackNumber)
-    for (i=0;i<PatSize;i++)
-      {
-	Pe=P.getPatternElement(i);    
-	Pe.set(OSC1_PHASE,t[i]);  
-	P.setPatternElement(i,Pe);      
-      }
-  else
-    retcode=false;
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
+  // fgets(line,512,fd);
+  // //match('Pattern 1 Track 1 Param Attack 0  0 1  0 0  0 1  0 0  1  0  0  1  0  0')
+  // sscanf(line,
+  // 	 "Pattern %d Track %d Param AttackFltr %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
+  // 	 &PatNum,&TrackNum,
+  // 	 &t[0], &t[1], &t[2], &t[3],
+  // 	 &t[4], &t[5], &t[6], &t[7],
+  // 	 &t[8], &t[9], &t[10],&t[11],
+  // 	 &t[12],&t[13],&t[14],&t[15]);
 
+  // if (PatNum    ==PatternNumber &&
+  //     TrackNum  ==TrackNumber)
+  //   for (i=0;i<PatSize;i++)
+  //     {
+  // 	Pe=P.getPatternElement(i);      
+  // 	Pe.set(ADSR_FLTR_ATTACK,t[i]);
+  // 	P.setPatternElement(i,Pe);      
+  //     }
+  // else
+  //   retcode=false;
+
+
+  machineParam=ADSR_FLTR_DECAY;
   fgets(line,512,fd);
-  //match('Pattern 1 Track 1 Param Attack 0  0 1  0 0  0 1  0 0  1  0  0  1  0  0')
-  sscanf(line,
-	 "Pattern %d Track %d Param AttackFltr %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
-	 &PatNum,&TrackNum,
-	 &t[0], &t[1], &t[2], &t[3],
-	 &t[4], &t[5], &t[6], &t[7],
-	 &t[8], &t[9], &t[10],&t[11],
-	 &t[12],&t[13],&t[14],&t[15]);
-
-  if (PatNum    ==PatternNumber &&
-      TrackNum  ==TrackNumber)
-    for (i=0;i<PatSize;i++)
-      {
-	Pe=P.getPatternElement(i);      
-	Pe.set(ADSR_FLTR_ATTACK,t[i]);
-	P.setPatternElement(i,Pe);      
-      }
-  else
-    retcode=false;
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
 
+  // fgets(line,512,fd);
+  // //match('Pattern 1 Track 1 Param Decay 0  0 1  0 0  0 1  0 0  1  0  0  1  0  0')
+  // sscanf(line,
+  // 	 "Pattern %d Track %d Param DecayFltr %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
+  // 	 &PatNum,&TrackNum,
+  // 	 &t[0], &t[1], &t[2], &t[3],
+  // 	 &t[4], &t[5], &t[6], &t[7],
+  // 	 &t[8], &t[9], &t[10],&t[11],
+  // 	 &t[12],&t[13],&t[14],&t[15]);
+
+  // if (PatNum    ==PatternNumber &&
+  //     TrackNum  ==TrackNumber)
+  //   for (i=0;i<PatSize;i++)
+  //     {
+  // 	Pe=P.getPatternElement(i);      
+  // 	Pe.set(ADSR_FLTR_DECAY,t[i]);
+  // 	P.setPatternElement(i,Pe);      
+  //     }
+  // else
+  //   retcode=false;
 
 
+  machineParam=ADSR_FLTR_SUSTAIN;
   fgets(line,512,fd);
-  //match('Pattern 1 Track 1 Param Decay 0  0 1  0 0  0 1  0 0  1  0  0  1  0  0')
-  sscanf(line,
-	 "Pattern %d Track %d Param DecayFltr %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
-	 &PatNum,&TrackNum,
-	 &t[0], &t[1], &t[2], &t[3],
-	 &t[4], &t[5], &t[6], &t[7],
-	 &t[8], &t[9], &t[10],&t[11],
-	 &t[12],&t[13],&t[14],&t[15]);
-
-  if (PatNum    ==PatternNumber &&
-      TrackNum  ==TrackNumber)
-    for (i=0;i<PatSize;i++)
-      {
-	Pe=P.getPatternElement(i);      
-	Pe.set(ADSR_FLTR_DECAY,t[i]);
-	P.setPatternElement(i,Pe);      
-      }
-  else
-    retcode=false;
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
+  // fgets(line,512,fd);
+  // //match('Pattern 1 Track 1 Param Sustain 0  0 1  0 0  0 1  0 0  1  0  0  1  0  0')
+  // sscanf(line,
+  // 	 "Pattern %d Track %d Param SustainFltr %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
+  // 	 &PatNum,&TrackNum,
+  // 	 &t[0], &t[1], &t[2], &t[3],
+  // 	 &t[4], &t[5], &t[6], &t[7],
+  // 	 &t[8], &t[9], &t[10],&t[11],
+  // 	 &t[12],&t[13],&t[14],&t[15]);
+
+  // if (PatNum    ==PatternNumber &&
+  //     TrackNum  ==TrackNumber)
+  //   for (i=0;i<PatSize;i++)
+  //     {
+  // 	Pe=P.getPatternElement(i);      
+  // 	Pe.set(ADSR_FLTR_SUSTAIN,t[i]);
+  // 	P.setPatternElement(i,Pe);      
+  //     }
+  // else
+  //   retcode=false;
 
 
+  machineParam=ADSR_FLTR_RELEASE;
   fgets(line,512,fd);
-  //match('Pattern 1 Track 1 Param Sustain 0  0 1  0 0  0 1  0 0  1  0  0  1  0  0')
-  sscanf(line,
-	 "Pattern %d Track %d Param SustainFltr %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
-	 &PatNum,&TrackNum,
-	 &t[0], &t[1], &t[2], &t[3],
-	 &t[4], &t[5], &t[6], &t[7],
-	 &t[8], &t[9], &t[10],&t[11],
-	 &t[12],&t[13],&t[14],&t[15]);
-
-  if (PatNum    ==PatternNumber &&
-      TrackNum  ==TrackNumber)
-    for (i=0;i<PatSize;i++)
-      {
-	Pe=P.getPatternElement(i);      
-	Pe.set(ADSR_FLTR_SUSTAIN,t[i]);
-	P.setPatternElement(i,Pe);      
-      }
-  else
-    retcode=false;
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
+  // fgets(line,512,fd);
+  // //match('Pattern 1 Track 1 Param Release 0  0 1  0 0  0 1  0 0  1  0  0  1  0  0')
+  // sscanf(line,
+  // 	 "Pattern %d Track %d Param ReleaseFltr %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
+  // 	 &PatNum,&TrackNum,
+  // 	 &t[0], &t[1], &t[2], &t[3],
+  // 	 &t[4], &t[5], &t[6], &t[7],
+  // 	 &t[8], &t[9], &t[10],&t[11],
+  // 	 &t[12],&t[13],&t[14],&t[15]);
+
+  // if (PatNum    ==PatternNumber &&
+  //     TrackNum  ==TrackNumber)
+  //   for (i=0;i<PatSize;i++)
+  //     {
+  // 	Pe=P.getPatternElement(i);      
+  // 	Pe.set(ADSR_FLTR_RELEASE,t[i]);
+  // 	P.setPatternElement(i,Pe);      
+  //     }
+  // else
+  //   retcode=false;
+
+
+  machineParam=NOTE_ADSR;
   fgets(line,512,fd);
-  //match('Pattern 1 Track 1 Param Release 0  0 1  0 0  0 1  0 0  1  0  0  1  0  0')
-  sscanf(line,
-	 "Pattern %d Track %d Param ReleaseFltr %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
-	 &PatNum,&TrackNum,
-	 &t[0], &t[1], &t[2], &t[3],
-	 &t[4], &t[5], &t[6], &t[7],
-	 &t[8], &t[9], &t[10],&t[11],
-	 &t[12],&t[13],&t[14],&t[15]);
-
-  if (PatNum    ==PatternNumber &&
-      TrackNum  ==TrackNumber)
-    for (i=0;i<PatSize;i++)
-      {
-	Pe=P.getPatternElement(i);      
-	Pe.set(ADSR_FLTR_RELEASE,t[i]);
-	P.setPatternElement(i,Pe);      
-      }
-  else
-    retcode=false;
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
+  // fgets(line,512,fd);
+  // //match('Pattern 1 Track 1 Param Release 0  0 1  0 0  0 1  0 0  1  0  0  1  0  0')
+  // sscanf(line,
+  // 	 "Pattern %d Track %d Param NoteADSR %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
+  // 	 &PatNum,&TrackNum,
+  // 	 &t[0], &t[1], &t[2], &t[3],
+  // 	 &t[4], &t[5], &t[6], &t[7],
+  // 	 &t[8], &t[9], &t[10],&t[11],
+  // 	 &t[12],&t[13],&t[14],&t[15]);
+
+  // if (PatNum    ==PatternNumber &&
+  //     TrackNum  ==TrackNumber)
+  //   for (i=0;i<PatSize;i++)
+  //     {
+  // 	Pe=P.getPatternElement(i);      
+  // 	//Pe.setNoteADSR(t[i]);
+  // 	P.setPatternElement(i,Pe);      
+  //     }
+  // else
+  //   retcode=false;
+
+
+  machineParam=MACHINE_TYPE;
   fgets(line,512,fd);
-  //match('Pattern 1 Track 1 Param Release 0  0 1  0 0  0 1  0 0  1  0  0  1  0  0')
-  sscanf(line,
-	 "Pattern %d Track %d Param NoteADSR %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
-	 &PatNum,&TrackNum,
-	 &t[0], &t[1], &t[2], &t[3],
-	 &t[4], &t[5], &t[6], &t[7],
-	 &t[8], &t[9], &t[10],&t[11],
-	 &t[12],&t[13],&t[14],&t[15]);
-
-  if (PatNum    ==PatternNumber &&
-      TrackNum  ==TrackNumber)
-    for (i=0;i<PatSize;i++)
-      {
-	Pe=P.getPatternElement(i);      
-	//Pe.setNoteADSR(t[i]);
-	P.setPatternElement(i,Pe);      
-      }
-  else
-    retcode=false;
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
-  fgets(line,512,fd);
-  //match('Pattern 1 Track 1 Param Release 0  0 1  0 0  0 1  0 0  1  0  0  1  0  0')
-  sscanf(line,
-	 "Pattern %d Track %d Param MachineType %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
-	 &PatNum,&TrackNum,
-	 &t[0], &t[1], &t[2], &t[3],
-	 &t[4], &t[5], &t[6], &t[7],
-	 &t[8], &t[9], &t[10],&t[11],
-	 &t[12],&t[13],&t[14],&t[15]);
+  // fgets(line,512,fd);
+  // //match('Pattern 1 Track 1 Param Release 0  0 1  0 0  0 1  0 0  1  0  0  1  0  0')
+  // sscanf(line,
+  // 	 "Pattern %d Track %d Param MachineType %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
+  // 	 &PatNum,&TrackNum,
+  // 	 &t[0], &t[1], &t[2], &t[3],
+  // 	 &t[4], &t[5], &t[6], &t[7],
+  // 	 &t[8], &t[9], &t[10],&t[11],
+  // 	 &t[12],&t[13],&t[14],&t[15]);
 
-  if (PatNum    ==PatternNumber &&
-      TrackNum  ==TrackNumber)
-    for (i=0;i<PatSize;i++)
-      {
-	Pe=P.getPatternElement(i);      
-	Pe.setMachineType(t[i]);
-	P.setPatternElement(i,Pe);      
-      }
-  else
-    retcode=false;
+  // if (PatNum    ==PatternNumber &&
+  //     TrackNum  ==TrackNumber)
+  //   for (i=0;i<PatSize;i++)
+  //     {
+  // 	Pe=P.getPatternElement(i);      
+  // 	Pe.setMachineType(t[i]);
+  // 	P.setPatternElement(i,Pe);      
+  //     }
+  // else
+  //   retcode=false;
 
 
   fgets(line,512,fd);
@@ -1314,7 +1383,8 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
     {
       if (i==0)
 	sprintf(line,"Pattern %d Track %d Param MachineType ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).getMachineType());
+      //sprintf(line+strlen(line),"%d ",P.getPatternElement(i).getMachineType());
+      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(MACHINE_TYPE));
     }
   sprintf(line+strlen(line),"\n");
   data.insert(data.end(),line);
@@ -1512,7 +1582,9 @@ const char * PatternReader::getParameterCharStar(int param)
 
   static const char * note="Note";
     
+  static const char * trig="Trig";
 
+  static const char * vcomix="VCOMix";
 
   switch (param)
     {
@@ -1560,7 +1632,11 @@ const char * PatternReader::getParameterCharStar(int param)
 
     case AMP:                return amp;                      break;
 
-    case NOTE:               return note;                      break;
+    case NOTE:               return note;                     break;
+
+    case NOTE_ON:            return trig;                     break;
+
+    case VCO_MIX:            return vcomix;                   break;
     
     default:                 printf("PatternReader::getParameterCharStar(%d) not found => exit\n"); exit(1); break;
     }

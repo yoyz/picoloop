@@ -116,7 +116,7 @@ using namespace std;
 
 
 
-#define NOTE_ON             100  // Used by PatternPlayer sequencer 
+#define NOTE_ON             300  // Used by PatternPlayer sequencer 
                                  // external hardware/WaveSynth
 
 #define TRIG_TIME_MODE      101  // Used by PatternPlayer to predefined the time of NOTE_ON
@@ -124,7 +124,7 @@ using namespace std;
 
 #define NOTE                200   // Store note value
 #define MACHINE_TYPE        210   // Store the machine type dbOpl, Picosynth...
-#define NOTE_ADSR           211   // Note used but still here...
+#define NOTE_ADSR           211   // Note used but still here...       //NOT USED ANYMORE NEED TO BE REMOVED
 
 #ifndef __MACHINE____
 #define __MACHINE____

@@ -244,7 +244,7 @@ int current_swing=50;
 
 void update_SAMM(int trackNumber,int stepNumber)
 {
-  SAMM.setMachineType(P[trackNumber].getPatternElement(stepNumber).getMachineType());	  
+  SAMM.setMachineType(P[trackNumber].getPatternElement(stepNumber).get(MACHINE_TYPE));	  
   SAM=SAMM.getInput();
 }
 
@@ -3966,20 +3966,20 @@ void seq_update_multiple_time_by_step()
   // Change oscillator one
   if (TK.machine_type!=0)
     {
-      P[cty].getPatternElement(cursor).setMachineType(P[cty].getPatternElement(cursor).getMachineType()+TK.machine_type);
+      P[cty].getPatternElement(cursor).set(MACHINE_TYPE,P[cty].getPatternElement(cursor).get(MACHINE_TYPE)+TK.machine_type);
       TK.machine_type=0;
       if (debug)
-	printf("[machine_type:%d]\n",P[cty].getPatternElement(cursor).getMachineType());	  
+	printf("[machine_type:%d]\n",P[cty].getPatternElement(cursor).get(MACHINE_TYPE));	  
     }
   
   // Change oscillator one
   if (TK.machine_type_all!=0)
     {
       for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).setMachineType(P[cty].getPatternElement(i).getMachineType()+TK.machine_type_all);
+	P[cty].getPatternElement(i).set(MACHINE_TYPE,P[cty].getPatternElement(i).get(MACHINE_TYPE)+TK.machine_type_all);
       TK.machine_type_all=0;
       if (debug)
-	printf("[machine_type_all:%d]\n",P[cty].getPatternElement(cursor).getMachineType());	  
+	printf("[machine_type_all:%d]\n",P[cty].getPatternElement(cursor).get(MACHINE_TYPE));	  
     }
   
   
@@ -4309,7 +4309,7 @@ void seq_update_track(int t)
   if (P[t].getPatternElement(step).get(NOTE_ON)!=0)
 	{
 	  MM[t]->setAmplitude(P[t].getPatternElement(step).get(AMP));
-	  MM[t]->setMachineType(P[t].getPatternElement(step).getMachineType());
+	  MM[t]->setMachineType(P[t].getPatternElement(step).get(MACHINE_TYPE));
 	  M[t]  = MM[t]->getInput();
 	  FX[t] = MM[t]->getEffect();
 
