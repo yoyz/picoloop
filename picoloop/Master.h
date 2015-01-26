@@ -36,13 +36,13 @@
 
 //INTERNAL
 
-#define FILTER_TYPE_LOWPASS   0
-#define FILTER_TYPE_BANDPASS  1
-#define FILTER_TYPE_HIPASS    2
+/* #define FILTER_TYPE_LOWPASS   0 */
+/* #define FILTER_TYPE_BANDPASS  1 */
+/* #define FILTER_TYPE_HIPASS    2 */
 
-#define FILTER_ALGO_NOFILTER  0
-#define FILTER_ALGO_BIQUAD    1
-#define FILTER_ALGO_AMSYNTH   2
+/* #define FILTER_ALGO_NOFILTER  0 */
+/* #define FILTER_ALGO_BIQUAD    1 */
+/* #define FILTER_ALGO_AMSYNTH   2 */
 
 
 
@@ -223,10 +223,11 @@
 
 
 
-enum {
-  FMTYPE_2_OP_FM,
-  FMTYPE_2_OP_AM
-};
+enum 
+  {
+    FMTYPE_2_OP_FM,
+    FMTYPE_2_OP_AM
+  };
 
 enum 
   {
@@ -242,7 +243,40 @@ enum
     PICO_WAVETABLE_PULSE,
     PICO_WAVETABLE_TRGL,
     PICO_WAVETABLE_NOISE,
+    PICO_WAVETABLE_SIZE
   };
+
+enum 
+  {
+    PICO_DBOPL_SINE,
+    PICO_DBOPL_HSIN,
+    PICO_DBOPL_ABSIN,
+    PICO_DBOPL_QSIN,
+    PICO_DBOPL_EPSIN,
+    PICO_DBOPL_ASIN,
+    PICO_DBOPL_SQR,
+    PICO_DBOPL_DSQR,
+    PICO_DBOPL_SIZE
+  };
+
+enum
+  {
+    FILTER_TYPE_LP,
+    FILTER_TYPE_BP,
+    FILTER_TYPE_HP,
+    FILTER_TYPE_SIZE
+  };
+
+
+enum
+  {
+    FILTER_ALGO_NOFILTER,
+    FILTER_ALGO_BIQUAD,
+    FILTER_ALGO_AMSYNTH,
+    FILTER_ALGO_SIZE,
+  };
+
+
 
 
 

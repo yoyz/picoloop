@@ -36,6 +36,8 @@ class dboplMachine : public Machine
   int checkI(int what,int   val);
   //Biquad & getBiquad();
 
+  const char * getMachineParamCharStar(int machineParam,int paramValue);
+
  protected:
   Hiopl                 * HO;
 
@@ -70,6 +72,10 @@ class dboplMachine : public Machine
   int                   trig_time_mode;
   int                   trig_time_duration;
   Sint32                trig_time_duration_sample;
+
+  int                   osc1_type;
+  int                   osc2_type;
+
 
 };
 

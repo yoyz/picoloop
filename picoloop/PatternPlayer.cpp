@@ -1056,8 +1056,11 @@ void display_board_osc()
 	      SG.drawBoxNumber(i,TRIG_COLOR);
 	      if (i==cursor)       SG.drawBoxNumber(cursor,CURSOR_COLOR);
 	      if (i==step)         SG.drawBoxNumber(step,STEP_COLOR);  
-	      SG.drawTTFTextNumberFirstLine(i, P[cty].getPatternElement(i).getOscOneTypeCharStar());
-	      SG.drawTTFTextNumberSecondLine(i,P[cty].getPatternElement(i).getOscTwoTypeCharStar());
+	      //SG.drawTTFTextNumberFirstLine(i, P[cty].getPatternElement(i).getOscOneTypeCharStar());
+	      //SG.drawTTFTextNumberSecondLine(i,P[cty].getPatternElement(i).getOscTwoTypeCharStar());
+	      update_SAMM(cty,i);
+	      SG.drawTTFTextNumberFirstLine(i, SAM->getMachineParamCharStar(OSC1_TYPE,P[cty].getPatternElement(i).get(OSC1_TYPE)));
+	      SG.drawTTFTextNumberSecondLine(i, SAM->getMachineParamCharStar(OSC2_TYPE,P[cty].getPatternElement(i).get(OSC2_TYPE)));
 	    }
 	  else
 	    {

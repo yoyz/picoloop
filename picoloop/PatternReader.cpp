@@ -180,6 +180,17 @@ bool PatternReader::PatternDataExist(int PatternNumber,int TrackNumber)
   return found;
 }
 
+bool PatternReader::writePatternDataLine(int PatternNumber,int TrackNumber, Pattern & P, char * line, int machineParam)
+{
+  for (int i=0; i< P.getSize();i++)
+    {
+      if (i==0)
+	sprintf(line,"Pattern %d Track %d Param %s ",PatternNumber,TrackNumber,this->getParameterCharStar(machineParam));
+      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(machineParam));
+    }
+  sprintf(line+strlen(line),"\n");
+}
+
 
 bool PatternReader::readPatternDataLine(int PatternNumber,int TrackNumber, Pattern & P, char * line, int machineParam)
 {
@@ -649,315 +660,168 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
   //line=""; //Weird ?
 
 
-  //insert 'Pattern 2 Track 2 Param Note 84 0 52 0 22 0 12 0 21 11 14 12 43 12 54 13'
-  for (int i=0; i< P.getSize();i++)
-    {
-      if (i==0)
-	sprintf(line,"Pattern %d Track %d Param PitchLfoDepth ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(LFO1_DEPTH));
-    }
-  sprintf(line+strlen(line),"\n");
-  data.insert(data.end(),line);
-
-
-  //insert 'Pattern 2 Track 2 Param Note 84 0 52 0 22 0 12 0 21 11 14 12 43 12 54 13'
-  for (int i=0; i< P.getSize();i++)
-    {
-      if (i==0)
-	sprintf(line,"Pattern %d Track %d Param PitchLfoSpeed ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(LFO1_FREQ));
-    }
-  sprintf(line+strlen(line),"\n");
-  data.insert(data.end(),line);
-
-
-  //insert 'Pattern 2 Track 2 Param Note 84 0 52 0 22 0 12 0 21 11 14 12 43 12 54 13'
-  for (int i=0; i< P.getSize();i++)
-    {
-      if (i==0)
-	sprintf(line,"Pattern %d Track %d Param Amp ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(AMP));
-    }
-  sprintf(line+strlen(line),"\n");
-  data.insert(data.end(),line);
-
-
-  //insert 'Pattern 2 Track 2 Param Note 84 0 52 0 22 0 12 0 21 11 14 12 43 12 54 13'
-  for (int i=0; i< P.getSize();i++)
-    {
-      if (i==0)
-	sprintf(line,"Pattern %d Track %d Param Note ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(NOTE));
-    }
-  sprintf(line+strlen(line),"\n");
-  data.insert(data.end(),line);
-
-  //insert 'Pattern 2 Track 2 Param Trig 0  0 1  0 0  0 1  0 0  1  0  0  1  0  0 0'
-  for (int i=0; i< P.getSize();i++)
-    {
-      if (i==0)
-	sprintf(line,"Pattern %d Track %d Param Trig ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(NOTE_ON));
-    }
-  sprintf(line+strlen(line),"\n");
-  data.insert(data.end(),line);
-
-  for (int i=0; i< P.getSize();i++)
-    {
-      if (i==0)
-	sprintf(line,"Pattern %d Track %d Param VCOMix ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(VCO_MIX));
-    }
-  sprintf(line+strlen(line),"\n");
-  data.insert(data.end(),line);
-
-  for (int i=0; i< P.getSize();i++)
-    {
-      if (i==0)
-	sprintf(line,"Pattern %d Track %d Param Attack ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(ADSR_AMP_ATTACK));
-    }
-  sprintf(line+strlen(line),"\n");
-  data.insert(data.end(),line);
-
-  for (int i=0; i< P.getSize();i++)
-    {
-      if (i==0)
-	sprintf(line,"Pattern %d Track %d Param Decay ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(ADSR_AMP_DECAY));
-    }
-  sprintf(line+strlen(line),"\n");
-  data.insert(data.end(),line);
-
-  for (int i=0; i< P.getSize();i++)
-    {
-      if (i==0)
-	sprintf(line,"Pattern %d Track %d Param Sustain ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(ADSR_AMP_SUSTAIN));
-    }
-  sprintf(line+strlen(line),"\n");
-  data.insert(data.end(),line);
-
-  for (int i=0; i< P.getSize();i++)
-    {
-      if (i==0)
-	sprintf(line,"Pattern %d Track %d Param Release ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(ADSR_AMP_RELEASE));
-    }
-  sprintf(line+strlen(line),"\n");
-  data.insert(data.end(),line);
-
-  for (int i=0; i< P.getSize();i++)
-    {
-      if (i==0)
-	sprintf(line,"Pattern %d Track %d Param OscOneType ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(OSC1_TYPE));
-    }
-  sprintf(line+strlen(line),"\n");
-  data.insert(data.end(),line);
-
-  for (int i=0; i< P.getSize();i++)
-    {
-      if (i==0)
-	sprintf(line,"Pattern %d Track %d Param OscTwoType ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(OSC2_TYPE));    
-    }
-  sprintf(line+strlen(line),"\n");
-  data.insert(data.end(),line);
-
-
-  for (int i=0; i< P.getSize();i++)
-    {
-      if (i==0)
-	sprintf(line,"Pattern %d Track %d Param Cutoff ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(FILTER1_CUTOFF));
-    }
-  sprintf(line+strlen(line),"\n");
-  data.insert(data.end(),line);
-
-  for (int i=0; i< P.getSize();i++)
-    {
-      if (i==0)
-	sprintf(line,"Pattern %d Track %d Param Resonance ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(FILTER1_RESONANCE));
-    }
-  sprintf(line+strlen(line),"\n");
-  data.insert(data.end(),line);
-
-
-  for (int i=0; i< P.getSize();i++)
-    {
-      if (i==0)
-	sprintf(line,"Pattern %d Track %d Param PhaseOsc1 ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(OSC1_PHASE));
-    }
-  sprintf(line+strlen(line),"\n");
-  data.insert(data.end(),line);
-
-
-  for (int i=0; i< P.getSize();i++)
-    {
-      if (i==0)
-	sprintf(line,"Pattern %d Track %d Param AttackFltr ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(ADSR_FLTR_ATTACK));
-    }
-  sprintf(line+strlen(line),"\n");
-  data.insert(data.end(),line);
-
-  for (int i=0; i< P.getSize();i++)
-    {
-      if (i==0)
-	sprintf(line,"Pattern %d Track %d Param DecayFltr ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(ADSR_FLTR_DECAY));
-    }
-  sprintf(line+strlen(line),"\n");
-  data.insert(data.end(),line);
-
-  for (int i=0; i< P.getSize();i++)
-    {
-      if (i==0)
-	sprintf(line,"Pattern %d Track %d Param SustainFltr ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(ADSR_FLTR_SUSTAIN));
-    }
-  sprintf(line+strlen(line),"\n");
-  data.insert(data.end(),line);
-
-  for (int i=0; i< P.getSize();i++)
-    {
-      if (i==0)
-	sprintf(line,"Pattern %d Track %d Param ReleaseFltr ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(ADSR_FLTR_RELEASE));
-    }
-  sprintf(line+strlen(line),"\n");
-  data.insert(data.end(),line);
-
-
-  for (int i=0; i< P.getSize();i++)
-    {
-      if (i==0)
-	sprintf(line,"Pattern %d Track %d Param NoteADSR ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",0);
-    }
-  sprintf(line+strlen(line),"\n");
-  data.insert(data.end(),line);
-
-  for (int i=0; i< P.getSize();i++)
-    {
-      if (i==0)
-	sprintf(line,"Pattern %d Track %d Param MachineType ",PatternNumber,TrackNumber);
-      //sprintf(line+strlen(line),"%d ",P.getPatternElement(i).getMachineType());
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(MACHINE_TYPE));
-    }
-  sprintf(line+strlen(line),"\n");
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,LFO1_DEPTH);
   data.insert(data.end(),line);
 
 
 
-  for (int i=0; i< P.getSize();i++)
-    {
-      if (i==0)
-	sprintf(line,"Pattern %d Track %d Param FilterAlgo ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(FILTER1_ALGO));
-    }
-  sprintf(line+strlen(line),"\n");
-  data.insert(data.end(),line);
-
-  for (int i=0; i< P.getSize();i++)
-    {
-      if (i==0)
-	sprintf(line,"Pattern %d Track %d Param FilterType ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(FILTER1_TYPE));
-    }
-  sprintf(line+strlen(line),"\n");
-  data.insert(data.end(),line);
-
-  for (int i=0; i< P.getSize();i++)
-    {
-      if (i==0)
-	sprintf(line,"Pattern %d Track %d Param Osc1Amp ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(OSC1_AMP));
-    }
-  sprintf(line+strlen(line),"\n");
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,LFO1_FREQ);
   data.insert(data.end(),line);
 
 
-  for (int i=0; i< P.getSize();i++)
-    {
-      if (i==0)
-	sprintf(line,"Pattern %d Track %d Param Osc2Amp ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(OSC2_AMP));
-    }
-  sprintf(line+strlen(line),"\n");
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,AMP);
   data.insert(data.end(),line);
 
 
-  for (int i=0; i< P.getSize();i++)
-    {
-      if (i==0)
-	sprintf(line,"Pattern %d Track %d Param FxDepth ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(FX1_DEPTH));
-    }
-  sprintf(line+strlen(line),"\n");
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,NOTE);
   data.insert(data.end(),line);
 
 
-  for (int i=0; i< P.getSize();i++)
-    {
-      if (i==0)
-	sprintf(line,"Pattern %d Track %d Param FxSpeed ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(FX1_SPEED));
-    }
-  sprintf(line+strlen(line),"\n");
-  data.insert(data.end(),line);
 
-  for (int i=0; i< P.getSize();i++)
-    {
-      if (i==0)
-	sprintf(line,"Pattern %d Track %d Param FmType ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(FM_TYPE));
-    }
-  sprintf(line+strlen(line),"\n");
-  data.insert(data.end(),line);
 
-  for (int i=0; i< P.getSize();i++)
-    {
-      if (i==0)
-	sprintf(line,"Pattern %d Track %d Param TrigTime ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(TRIG_TIME_DURATION));
-    }
-  sprintf(line+strlen(line),"\n");
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,NOTE_ON);
   data.insert(data.end(),line);
 
 
-  for (int i=0; i< P.getSize();i++)
-    {
-      if (i==0)
-	sprintf(line,"Pattern %d Track %d Param PitchBendDepth ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(PITCHBEND_DEPTH));
-    }
-  sprintf(line+strlen(line),"\n");
+
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,VCO_MIX);
   data.insert(data.end(),line);
 
 
-  for (int i=0; i< P.getSize();i++)
-    {
-      if (i==0)
-	sprintf(line,"Pattern %d Track %d Param PitchBendSpeed ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(PITCHBEND_SPEED));
-    }
-  sprintf(line+strlen(line),"\n");
+
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,ADSR_AMP_ATTACK);
   data.insert(data.end(),line);
 
 
-  for (int i=0; i< P.getSize();i++)
-    {
-      if (i==0)
-	sprintf(line,"Pattern %d Track %d Param LfoType ",PatternNumber,TrackNumber);
-      sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(LFO_TYPE));
-    }
-  sprintf(line+strlen(line),"\n");
+
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,ADSR_AMP_DECAY);
   data.insert(data.end(),line);
 
+
+
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,ADSR_AMP_SUSTAIN);
+  data.insert(data.end(),line);
+
+
+
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,ADSR_AMP_RELEASE);
+  data.insert(data.end(),line);
+
+
+
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,OSC1_TYPE);
+  data.insert(data.end(),line);
+
+
+
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,OSC2_TYPE);
+  data.insert(data.end(),line);
+
+
+
+
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,FILTER1_CUTOFF);
+  data.insert(data.end(),line);
+
+
+
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,FILTER1_RESONANCE);
+  data.insert(data.end(),line);
+
+
+
+
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,OSC1_PHASE);
+  data.insert(data.end(),line);
+
+
+
+
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,ADSR_FLTR_ATTACK);
+  data.insert(data.end(),line);
+
+
+
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,ADSR_FLTR_DECAY);
+  data.insert(data.end(),line);
+
+
+
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,ADSR_FLTR_SUSTAIN);
+  data.insert(data.end(),line);
+
+
+
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,ADSR_FLTR_RELEASE);
+  data.insert(data.end(),line);
+
+
+
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,NOTE_ADSR);
+  data.insert(data.end(),line);
+
+
+
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,MACHINE_TYPE);
+  data.insert(data.end(),line);
+
+
+
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,FILTER1_ALGO);
+  data.insert(data.end(),line);
+
+
+
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,FILTER1_TYPE);
+  data.insert(data.end(),line);
+
+
+
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,OSC1_AMP);
+  data.insert(data.end(),line);
+
+
+
+
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,OSC2_AMP);
+  data.insert(data.end(),line);
+
+
+
+
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,FX1_DEPTH);
+  data.insert(data.end(),line);
+
+
+
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,FX1_SPEED);
+  data.insert(data.end(),line);
+
+
+
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,FM_TYPE);
+  data.insert(data.end(),line);
+
+
+
+
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,TRIG_TIME_DURATION);
+  data.insert(data.end(),line);
+
+
+
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,PITCHBEND_DEPTH);
+  data.insert(data.end(),line);
+
+
+
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,PITCHBEND_SPEED);
+  data.insert(data.end(),line);
+
+
+
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,LFO_TYPE);
+  data.insert(data.end(),line);
 
 
 

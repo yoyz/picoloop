@@ -144,6 +144,7 @@ class Machine
   virtual int  tick();
 
   virtual int  checkI(int what,int val);
+  virtual const char * getMachineParamCharStar(int machineParam,int paramValue);
 
 };
 
