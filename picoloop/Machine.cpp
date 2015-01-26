@@ -59,3 +59,10 @@ int Machine::checkI(int what,int val)
   return val;
 }
 
+const char * Machine::getMachineParamCharStar(int machineParam,int paramValue)
+{
+  const char * str_null="NULL";
+  printf("Machine::getMachineParamCharStar\n");
+  return str_null;
+}
+

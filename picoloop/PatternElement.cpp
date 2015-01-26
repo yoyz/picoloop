@@ -44,8 +44,8 @@ PatternElement::PatternElement()
   lfo_type=0;  // 0 lfo pitch, 1 pitchbend
     
 
-  oscOneType=SAW;
-  oscTwoType=PULSE;
+  oscOneType=PICO_WAVETABLE_SAW;
+  oscTwoType=PICO_WAVETABLE_PULSE;
 
   adsr_note=1;
 
@@ -53,7 +53,7 @@ PatternElement::PatternElement()
 
   trig_time=0;
 
-  filterType=FILTER_TYPE_LOWPASS;
+  filterType=FILTER_TYPE_LP;
   filterAlgo=FILTER_ALGO_AMSYNTH;
 
   fx_depth=0;
@@ -97,12 +97,12 @@ void PatternElement::init()
     
   lfo_type=0;
 
-  oscOneType=SAW;
-  oscTwoType=PULSE;
+  oscOneType=PICO_WAVETABLE_SAW;
+  oscTwoType=PICO_WAVETABLE_PULSE;
 
   adsr_note=1;
 
-  filterType=FILTER_TYPE_LOWPASS;
+  filterType=FILTER_TYPE_LP;
   filterAlgo=FILTER_ALGO_AMSYNTH;
 
 }
@@ -549,60 +549,60 @@ const char * PatternElement::getFMTypeCharStar()
 
 
 
-const char * PatternElement::getOscTypeCharStar(int oscType)
-{
-  static const char * str_sine       = "SINE ";
-  static const char * str_saw        = "SAW  ";
-  static const char * str_pulse      = "PULSE";
-  static const char * str_trgl       = "TRGL";
-  static const char * str_noise      = "NOISE";
-  static const char * str_wtbl       = "WTBL";
+// const char * PatternElement::getOscTypeCharStar(int oscType)
+// {
+//   static const char * str_sine       = "SINE ";
+//   static const char * str_saw        = "SAW  ";
+//   static const char * str_pulse      = "PULSE";
+//   static const char * str_trgl       = "TRGL";
+//   static const char * str_noise      = "NOISE";
+//   static const char * str_wtbl       = "WTBL";
 
-  static const char * str_opl2_sine  = "  SIN";
-  static const char * str_opl2_hsin  = " HSIN";
-  static const char * str_opl2_absin = "ABSIN";
-  static const char * str_opl2_qsin  = " QSIN";
+//   static const char * str_opl2_sine  = "  SIN";
+//   static const char * str_opl2_hsin  = " HSIN";
+//   static const char * str_opl2_absin = "ABSIN";
+//   static const char * str_opl2_qsin  = " QSIN";
 
-  if 	  (
-	   machine_type==SYNTH_PICOSYNTH ||
-	   machine_type==SYNTH_PICODRUM
-	   )
-    switch (oscType)
-      {
-      case SINE:  return str_sine;  break;
-      case SAW:   return str_saw;   break; 
-      case PULSE: return str_pulse; break;      
-      case TRGL:  return str_trgl;  break;            
-      case NOISE: return str_noise; break;            
-      }
+//   if 	  (
+// 	   machine_type==SYNTH_PICOSYNTH ||
+// 	   machine_type==SYNTH_PICODRUM
+// 	   )
+//     switch (oscType)
+//       {
+//       case SINE:  return str_sine;  break;
+//       case SAW:   return str_saw;   break; 
+//       case PULSE: return str_pulse; break;      
+//       case TRGL:  return str_trgl;  break;            
+//       case NOISE: return str_noise; break;            
+//       }
   
   
-  if (
-      machine_type==SYNTH_OPL2
-      )
-    switch (oscType) 
-      {
-      case OPL2_SIN:           return str_opl2_sine;  break;
-      case OPL2_HALF_SIN:      return str_opl2_hsin;  break; 
-      case OPL2_ABS_SIN:       return str_opl2_absin; break;      
-      case OPL2_QUART_SIN:     return str_opl2_qsin;  break;            
-      }
+//   if (
+//       machine_type==SYNTH_OPL2
+//       )
+//     switch (oscType) 
+//       {
+//       case OPL2_SIN:           return str_opl2_sine;  break;
+//       case OPL2_HALF_SIN:      return str_opl2_hsin;  break; 
+//       case OPL2_ABS_SIN:       return str_opl2_absin; break;      
+//       case OPL2_QUART_SIN:     return str_opl2_qsin;  break;            
+//       }
   
-  return str_sine;
-}
+//   return str_sine;
+// }
 
 
 
-const char * PatternElement::getOscOneTypeCharStar()
-{
-  return this->getOscTypeCharStar(oscOneType);
-}
+// const char * PatternElement::getOscOneTypeCharStar()
+// {
+//   return this->getOscTypeCharStar(oscOneType);
+// }
 
 
-const char * PatternElement::getOscTwoTypeCharStar()
-{
-  return this->getOscTypeCharStar(oscTwoType);
-}
+// const char * PatternElement::getOscTwoTypeCharStar()
+// {
+//   return this->getOscTypeCharStar(oscTwoType);
+// }
 
 
 void PatternElement::print()

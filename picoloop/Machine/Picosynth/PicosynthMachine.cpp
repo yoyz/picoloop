@@ -1,3 +1,4 @@
+#include "Master.h"
 #include "PicosynthMachine.h"
 
 
@@ -90,25 +91,25 @@ int PicosynthMachine::checkI(int what,int val)
     {
     case OSC1_TYPE:
       if (val<0) return 0;
-      if (val>4) return 4;
+      if (val>PICO_WAVETABLE_SIZE-1) return PICO_WAVETABLE_SIZE-1;
       return val;
       break;
 
     case OSC2_TYPE:
       if (val<0) return 0;
-      if (val>4) return 4;
+      if (val>PICO_WAVETABLE_SIZE-1) return PICO_WAVETABLE_SIZE-1;
       return val;
       break;
 
     case FILTER1_TYPE:
       if (val<0) return 0;
-      if (val>3) return 3;
+      if (val>FILTER_TYPE_SIZE-1) return FILTER_TYPE_SIZE-1;
       return val;
       break;
 
     case FILTER1_ALGO:
       if (val<0) return 0;
-      if (val>2) return 2;
+      if (val>FILTER_ALGO_SIZE-1) return FILTER_ALGO_SIZE-1;
       return val;
       break;
 
@@ -160,8 +161,8 @@ void PicosynthMachine::setI(int what,int val)
   if (what==OSC1_NOTE)           note=val;
 
   //if (what==OSC1_FREQ)           this->getVCO().setSynthFreq(val);
-  if (what==OSC1_TYPE)           this->getVCO().setOscillator(0,val);
-  if (what==OSC2_TYPE)           this->getVCO().setOscillator(1,val);
+  if (what==OSC1_TYPE)           { this->getVCO().setOscillator(0,val); osc1_type=val; }
+  if (what==OSC2_TYPE)           { this->getVCO().setOscillator(1,val); osc2_type=val; }
 
   if (what==OSC12_MIX)           this->getVCO().setVCOMix(val);
   if (what==OSC1_PHASE)          this->getVCO().setVCOPhase(val);
@@ -211,6 +212,35 @@ void PicosynthMachine::setI(int what,int val)
   
 }
 
+const char * PicosynthMachine::getMachineParamCharStar(int machineParam,int paramValue)
+{
+  static const char * str_null       = "NULL ";
+
+  static const char * str_sine       = "SINE ";
+  static const char * str_saw        = "SAW  ";
+  static const char * str_pulse      = "PULSE";
+  static const char * str_trgl       = "TRGL ";
+  static const char * str_noise      = "NOISE";
+  static const char * str_wtbl       = "WTBL ";
+
+  const char * str_osc[PICO_WAVETABLE_SIZE];
+
+  str_osc[PICO_WAVETABLE_SINE]  = str_sine;
+  str_osc[PICO_WAVETABLE_SAW]   = str_saw;
+  str_osc[PICO_WAVETABLE_PULSE] = str_pulse;
+  str_osc[PICO_WAVETABLE_TRGL]  = str_trgl;
+  str_osc[PICO_WAVETABLE_NOISE] = str_noise;
+
+  switch (machineParam)
+    {
+    case OSC1_TYPE:
+      return str_osc[paramValue];
+    case OSC2_TYPE:
+      return str_osc[paramValue];
+
+    }
+  return str_null;
+}
 
 
 

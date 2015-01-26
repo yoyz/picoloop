@@ -101,6 +101,46 @@ void dboplMachine::init()
 
 }
 
+const char * dboplMachine::getMachineParamCharStar(int machineParam,int paramValue)
+{
+  static const char * str_null       = "NULL ";
+
+  static const char * str_opl2_sine  = "  SIN";
+  static const char * str_opl2_hsin  = " HSIN";
+  static const char * str_opl2_absin = "ABSIN";
+  static const char * str_opl2_qsin  = " PSIN";
+
+  static const char * str_opl2_epsin = "EPSIN";
+  static const char * str_opl2_asin  = " ASIN";
+  static const char * str_opl2_sqr   = "  SQR";
+  static const char * str_opl2_dsqr  = " DSQR";
+
+
+  const char * str_osc[PICO_DBOPL_SIZE];
+
+  str_osc[PICO_DBOPL_SINE]  = str_opl2_sine;
+  str_osc[PICO_DBOPL_HSIN]  = str_opl2_hsin;
+  str_osc[PICO_DBOPL_ABSIN] = str_opl2_absin;
+  str_osc[PICO_DBOPL_QSIN]  = str_opl2_qsin;
+
+  str_osc[PICO_DBOPL_EPSIN] = str_opl2_epsin;
+  str_osc[PICO_DBOPL_ASIN]  = str_opl2_asin;
+  str_osc[PICO_DBOPL_SQR]   = str_opl2_sqr;
+  str_osc[PICO_DBOPL_DSQR]  = str_opl2_dsqr;
+
+  switch (machineParam)
+    {
+    case OSC1_TYPE:
+      return str_osc[paramValue];
+    case OSC2_TYPE:
+      return str_osc[paramValue];
+
+    }
+  return str_null;
+}
+
+
+
 void dboplMachine::reset()
 {
  sample_num=0;
@@ -119,13 +159,13 @@ int dboplMachine::checkI(int what,int val)
     {
     case OSC1_TYPE:
       if (val<0) return 0;
-      if (val>4) return 4;
+      if (val>7) return 7;
       return val;
       break;
 
     case OSC2_TYPE:
       if (val<0) return 0;
-      if (val>4) return 4;
+      if (val>7) return 7;
       return val;
       break;
 
@@ -213,11 +253,13 @@ void dboplMachine::setI(int what,int val)
 
     if (what==OSC1_TYPE)           
       { 
+	osc1_type=val;
 	HO->SetWaveform(1,1,w[val]);
 	HO->EnableWaveformControl();
       }
     if (what==OSC2_TYPE)           
       {
+	osc2_type=val;
 	HO->SetWaveform(1,2,w[val]);
 	HO->EnableWaveformControl();
       }

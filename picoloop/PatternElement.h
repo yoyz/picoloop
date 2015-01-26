@@ -10,23 +10,23 @@ using namespace std;
 
 
 
-enum 
-  {
-    SINE,
-    SAW,
-    PULSE,
-    //    WTBL,
-    TRGL,
-    NOISE,
-  };
+/* enum  */
+/*   { */
+/*     SINE, */
+/*     SAW, */
+/*     PULSE, */
+/*     //    WTBL, */
+/*     TRGL, */
+/*     NOISE, */
+/*   }; */
 
-enum
-  {
-    OPL2_SIN,
-    OPL2_HALF_SIN,
-    OPL2_ABS_SIN,
-    OPL2_QUART_SIN
-  };
+/* enum */
+/*   { */
+/*     OPL2_SIN, */
+/*     OPL2_HALF_SIN, */
+/*     OPL2_ABS_SIN, */
+/*     OPL2_QUART_SIN */
+/*   }; */
 
 enum
   {
@@ -54,9 +54,9 @@ public:
   const char * getMachineTypeCharStar();
   const char * getNoteCharStar();
   const char * getFMTypeCharStar();
-  const char * getOscOneTypeCharStar();
-  const char * getOscTwoTypeCharStar();
-  const char * getOscTypeCharStar(int oscType);
+  /* const char * getOscOneTypeCharStar(); */
+  /* const char * getOscTwoTypeCharStar(); */
+  /* const char * getOscTypeCharStar(int oscType); */
 
 
   void   set(int what, int val);

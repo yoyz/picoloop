@@ -24,6 +24,8 @@ class PicodrumMachine : public Machine
 
   int checkI(int what,int   val);
 
+  const char * getMachineParamCharStar(int machineParam,int paramValue);
+
  protected:
   
   PicodrumADSR   & getADSRAmp();
@@ -42,6 +44,10 @@ class PicodrumMachine : public Machine
 
   int                   note;
   int                   detune;
+
+  int                   osc1_type;
+  int                   osc2_type;
+
 };
 
 #endif

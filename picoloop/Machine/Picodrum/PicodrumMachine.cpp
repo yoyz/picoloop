@@ -118,8 +118,8 @@ void PicodrumMachine::setI(int what,int val)
   if (what==OSC1_NOTE)           note=val;
 
   //if (what==OSC1_FREQ)           this->getPicodrumVCO().setSynthFreq(val);
-  if (what==OSC1_TYPE)           this->getPicodrumVCO().setOscillator(0,val);
-  if (what==OSC2_TYPE)           this->getPicodrumVCO().setOscillator(1,val);
+  if (what==OSC1_TYPE)           { this->getPicodrumVCO().setOscillator(0,val); osc1_type=val; }
+  if (what==OSC2_TYPE)           { this->getPicodrumVCO().setOscillator(1,val); osc2_type=val; }
 
   if (what==OSC12_MIX)           this->getPicodrumVCO().setPicodrumVCOMix(val);
   if (what==OSC1_PHASE)          this->getPicodrumVCO().setPicodrumVCOPhase(val);
@@ -173,6 +173,38 @@ PicodrumVCO & PicodrumMachine::getPicodrumVCO()
 //{
 //  return bq;
 //}
+
+const char * PicodrumMachine::getMachineParamCharStar(int machineParam,int paramValue)
+{
+  static const char * str_null       = "NULL ";
+  static const char * str_sine       = "SINE ";
+  static const char * str_saw        = "SAW  ";
+  static const char * str_pulse      = "PULSE";
+  static const char * str_trgl       = "TRGL ";
+  static const char * str_noise      = "NOISE";
+  static const char * str_wtbl       = "WTBL ";
+
+  const char * str_osc[PICO_WAVETABLE_SIZE];
+
+  str_osc[PICO_WAVETABLE_SINE]  = str_sine;
+  str_osc[PICO_WAVETABLE_SAW]   = str_saw;
+  str_osc[PICO_WAVETABLE_PULSE] = str_pulse;
+  str_osc[PICO_WAVETABLE_TRGL]  = str_trgl;
+  str_osc[PICO_WAVETABLE_NOISE] = str_noise;
+
+  switch (machineParam)
+    {
+    case OSC1_TYPE:
+      return str_osc[paramValue];
+    case OSC2_TYPE:
+      return str_osc[paramValue];
+
+    }
+  return str_null;
+}
+
+
+
 
 void PicodrumMachine::reset()
 {

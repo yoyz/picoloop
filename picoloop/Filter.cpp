@@ -6,7 +6,7 @@ Filter::Filter() : bq(), lp()
   cutoff=120;
   resonance=10;
   needCalc=1;
-  filterType=FILTER_TYPE_LOWPASS;
+  filterType=FILTER_TYPE_LP;
   filterAlgo=FILTER_ALGO_AMSYNTH;
   //filterAlgo=ALGO_BIQUAD;
   //filterAlgo=ALGO_NOFILTER;
@@ -21,7 +21,7 @@ void Filter::init()
 {
   cutoff=120;
   resonance=10;
-  filterType=FILTER_TYPE_LOWPASS;
+  filterType=FILTER_TYPE_LP;
   filterAlgo=FILTER_ALGO_AMSYNTH;
   needCalc=1;
 }
