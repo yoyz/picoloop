@@ -112,11 +112,14 @@ using namespace std;
 #define FX2_PARAM2          89
 
 
-
-
-
-
-#define NOTE_ON             300  // Used by PatternPlayer sequencer 
+/*   HERE IS THE NOT RELATED TO MACHINE STUFF     */
+#define INVERT_TRIG         144  // invert the trig to on/off
+#define SWING               145  // used to store the +/- of swing
+#define BPM_DIVIDER         146  // used to store the +/- of bpm divider of pattern
+#define BPM                 147  // used to store the +/- of bpm
+#define PATTERN_LENGTH      148  // used to store the +/- of pattern size
+#define PATTERN_SHIFT       149  // used to shift the +/- of the pattern shift
+#define NOTE_ON             150  // Used by PatternPlayer sequencer 
                                  // external hardware/WaveSynth
 
 #define TRIG_TIME_MODE      101  // Used by PatternPlayer to predefined the time of NOTE_ON
