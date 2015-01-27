@@ -3084,6 +3084,44 @@ void handle_key()
  
 }
 
+void seq_update_tweakable_knob_one(int machineParam)
+{
+  int          cty=SEQ.getCurrentTrackY();
+  if (TK.get(machineParam)!=0)
+    {
+      update_SAMM(cty,cursor);
+      P[cty].getPatternElement(cursor).set(machineParam,
+					   SAM->checkI(machineParam,P[cty].getPatternElement(cursor).get(machineParam)+TK.get(machineParam)));
+      //SAM->checkI(machineParam,P[cty].getPatternElement(cursor).get(AMP)+TK.get(machineParam)));
+      TK.set(machineParam,0);
+      if (debug)
+	printf("[param:%d:%d]\n",machineParam,P[cty].getPatternElement(cursor).get(machineParam));
+    }  
+}
+
+void seq_update_tweakable_knob_all(int machineParam)
+{
+  int          cty=SEQ.getCurrentTrackY();
+  int          i;
+  
+  if (TK.getAll(machineParam)!=0)
+    {
+      for (i=0;i<16;i++)
+	{
+	  update_SAMM(cty,i);
+	  P[cty].getPatternElement(i).set(machineParam,
+					  SAM->checkI(machineParam,P[cty].getPatternElement(i).get(machineParam)+TK.getAll(machineParam)));
+					  //P[cty].getPatternElement(i).get(machineParam)+TK.getAll(machineParam));
+					  //SAM->checkI(machineParam,P[cty].getPatternElement(i).get(AMP)+TK.getAll(machineParam)));
+	}
+      
+      TK.setAll(machineParam,0);
+      if (debug)
+	printf("[paramAll:%d:%d]\n",machineParam,P[cty].getPatternElement(cursor).get(machineParam));
+    }  
+}
+
+
 
 void seq_update_multiple_time_by_step()
 {
@@ -3094,605 +3132,127 @@ void seq_update_multiple_time_by_step()
   int          oldstep=0;
   int          i=0;
 
-
-
-  
   // Change amp Amplification
-  if (TK.get(AMP)!=0)
-    {
-      P[cty].getPatternElement(cursor).set(AMP,
-					   P[cty].getPatternElement(cursor).get(AMP)+TK.get(AMP));
-      TK.set(AMP,0);
-      if (debug)
-	printf("[amp:%d]\n",P[cty].getPatternElement(cursor).get(AMP));
-    }
-  
-  // Change amp Amplification
-  if (TK.getAll(AMP)!=0)
-    {
-      for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).set(AMP,
-					P[cty].getPatternElement(i).get(AMP)+TK.getAll(AMP));
-      TK.setAll(AMP,0);
-      if (debug)
-	printf("[amp_all:%d]\n",P[cty].getPatternElement(cursor).get(AMP));
-    }
-  
-  // Change amp env Attack
-  if (TK.get(ADSR_AMP_ATTACK)!=0)
-    {
-      //P[cty].getPatternElement(cursor).setAttack_amp(P[cty].getPatternElement(cursor).getAttack_amp()+TK.attack_amp);
-      P[cty].getPatternElement(cursor).set(ADSR_AMP_ATTACK,
-					   P[cty].getPatternElement(cursor).get(ADSR_AMP_ATTACK)+TK.get(ADSR_AMP_ATTACK));
-      TK.set(ADSR_AMP_ATTACK,0);
-      if (debug)
-	printf("[attack_amp:%d]\n",P[cty].getPatternElement(cursor).get(ADSR_AMP_ATTACK));
-    }
-  
-  // Change amp env Attack
-  if (TK.getAll(ADSR_AMP_ATTACK)!=0)
-    {
-      for(i=0;i<16;i++)
-	P[cty].getPatternElement(i).set(ADSR_AMP_ATTACK,
-					P[cty].getPatternElement(i).get(ADSR_AMP_ATTACK)+TK.getAll(ADSR_AMP_ATTACK));
+  seq_update_tweakable_knob_one(AMP);
+  seq_update_tweakable_knob_all(AMP);
 
-      TK.setAll(ADSR_AMP_ATTACK,0);
-      if (debug)
-	printf("[attack_all:%d]\n",P[cty].getPatternElement(cursor).get(ADSR_AMP_ATTACK));
-    }
-
+  // Change amp env Attack
+  seq_update_tweakable_knob_one(ADSR_AMP_ATTACK);
+  seq_update_tweakable_knob_all(ADSR_AMP_ATTACK);
 
   // Change amp env Decay
-  if (TK.get(ADSR_AMP_DECAY)!=0)
-    {
-      P[cty].getPatternElement(cursor).set(ADSR_AMP_DECAY,
-					   P[cty].getPatternElement(cursor).get(ADSR_AMP_DECAY)+TK.get(ADSR_AMP_DECAY));
-      TK.set(ADSR_AMP_DECAY,0);
-      if (debug)
-	printf("[decay_amp:%d]\n",P[cty].getPatternElement(cursor).get(ADSR_AMP_DECAY));
-    }
-  
-  // Change amp env Decay
-  if (TK.getAll(ADSR_AMP_DECAY)!=0)
-    {
-      for(i=0;i<16;i++)
-	P[cty].getPatternElement(i).set(ADSR_AMP_DECAY,
-					P[cty].getPatternElement(i).get(ADSR_AMP_DECAY)+TK.getAll(ADSR_AMP_DECAY));
-      TK.setAll(ADSR_AMP_DECAY,0);
-      if (debug)
-	printf("[decay_all:%d]\n",P[cty].getPatternElement(cursor).get(ADSR_AMP_DECAY));
-    }
-
-
+  seq_update_tweakable_knob_one(ADSR_AMP_DECAY);
+  seq_update_tweakable_knob_all(ADSR_AMP_DECAY);
 
   // Change amp env Sustain
-  if (TK.get(ADSR_AMP_SUSTAIN)!=0)
-    {
-      P[cty].getPatternElement(cursor).set(ADSR_AMP_SUSTAIN,
-					   P[cty].getPatternElement(cursor).get(ADSR_AMP_SUSTAIN)+TK.get(ADSR_AMP_SUSTAIN));
-      TK.set(ADSR_AMP_SUSTAIN,0);
-      if (debug)
-	printf("[sustain_amp:%d]\n",P[cty].getPatternElement(cursor).get(ADSR_AMP_SUSTAIN));
-    }
-  
-  // Change amp env Sustain
-  if (TK.getAll(ADSR_AMP_SUSTAIN)!=0)
-    {
-      for(i=0;i<16;i++)
-	P[cty].getPatternElement(i).set(ADSR_AMP_SUSTAIN,
-					P[cty].getPatternElement(i).get(ADSR_AMP_SUSTAIN)+TK.getAll(ADSR_AMP_SUSTAIN));
-      TK.setAll(ADSR_AMP_SUSTAIN,0);
-      if (debug)
-	printf("[sustain_all:%d]\n",P[cty].getPatternElement(cursor).get(ADSR_AMP_SUSTAIN));
-    }
-  
+  seq_update_tweakable_knob_one(ADSR_AMP_SUSTAIN);
+  seq_update_tweakable_knob_all(ADSR_AMP_SUSTAIN);  
   
   // Change amp env Release
-  if (TK.get(ADSR_AMP_RELEASE)!=0)
-    {
-      P[cty].getPatternElement(cursor).set(ADSR_AMP_RELEASE,
-					   P[cty].getPatternElement(cursor).get(ADSR_AMP_RELEASE)+TK.get(ADSR_AMP_RELEASE));
-      TK.set(ADSR_AMP_RELEASE,0);
-      if (debug)
-	printf("[release_amp:%d]\n",P[cty].getPatternElement(cursor).get(ADSR_AMP_RELEASE));
-      
-    }
-  
-  // Change amp env Release
-  if (TK.getAll(ADSR_AMP_RELEASE)!=0)
-    {
-      for(i=0;i<16;i++)
-	P[cty].getPatternElement(i).set(ADSR_AMP_RELEASE,
-					P[cty].getPatternElement(i).get(ADSR_AMP_RELEASE)+TK.getAll(ADSR_AMP_RELEASE));
-      TK.setAll(ADSR_AMP_RELEASE,0);
-      if (debug)
-	printf("[release_amp_all:%d]\n",P[cty].getPatternElement(cursor).get(ADSR_AMP_RELEASE));
-      
-    }
-  
-
-
-
+  seq_update_tweakable_knob_one(ADSR_AMP_RELEASE);
+  seq_update_tweakable_knob_all(ADSR_AMP_RELEASE);
 
   // Change fltr env Attack
-  if (TK.get(ADSR_FLTR_ATTACK)!=0)
-    {
-      P[cty].getPatternElement(cursor).set(ADSR_FLTR_ATTACK,
-					   P[cty].getPatternElement(cursor).get(ADSR_FLTR_ATTACK)+TK.get(ADSR_FLTR_ATTACK));
-      TK.set(ADSR_FLTR_ATTACK,0);
-      if (debug)
-	printf("[attack_fltr:%d]\n",P[cty].getPatternElement(cursor).get(ADSR_FLTR_ATTACK));
-    }
-  
-  // Change fltr env Attack
-  if (TK.getAll(ADSR_FLTR_ATTACK)!=0)
-    {
-      for(i=0;i<16;i++)
-	P[cty].getPatternElement(i).set(ADSR_FLTR_ATTACK,P[cty].getPatternElement(i).get(ADSR_FLTR_ATTACK)+TK.getAll(ADSR_FLTR_ATTACK));
-      TK.setAll(ADSR_FLTR_ATTACK,0);
-      if (debug)
-	printf("[attack_all:%d]\n",P[cty].getPatternElement(cursor).get(ADSR_FLTR_ATTACK));
-    }
-
+  seq_update_tweakable_knob_one(ADSR_FLTR_ATTACK);
+  seq_update_tweakable_knob_all(ADSR_FLTR_ATTACK);
 
   // Change fltr env Decay
-  if (TK.get(ADSR_FLTR_DECAY)!=0)
-    {
-      P[cty].getPatternElement(cursor).set(ADSR_FLTR_DECAY,
-					   P[cty].getPatternElement(cursor).get(ADSR_FLTR_DECAY)+TK.get(ADSR_FLTR_DECAY));
-      TK.set(ADSR_FLTR_DECAY,0);
-      if (debug)
-	printf("[decay_fltr:%d]\n",P[cty].getPatternElement(cursor).get(ADSR_FLTR_DECAY));
-    }
-  
-  // Change fltr env Decay
-  if (TK.getAll(ADSR_FLTR_DECAY)!=0)
-    {
-      for(i=0;i<16;i++)
-	P[cty].getPatternElement(i).set(ADSR_FLTR_DECAY,
-					P[cty].getPatternElement(i).get(ADSR_FLTR_DECAY)+TK.getAll(ADSR_FLTR_DECAY));
-      TK.setAll(ADSR_FLTR_DECAY,0);
-      if (debug)
-	printf("[decay_fltr_all:%d]\n",P[cty].getPatternElement(cursor).get(ADSR_FLTR_DECAY));
-    }
-
+  seq_update_tweakable_knob_one(ADSR_FLTR_DECAY);
+  seq_update_tweakable_knob_all(ADSR_FLTR_DECAY);
 
   // Change fltr env Sustain
-  if (TK.get(ADSR_FLTR_SUSTAIN)!=0)
-    {
-      P[cty].getPatternElement(cursor).set(ADSR_FLTR_SUSTAIN,
-					   P[cty].getPatternElement(cursor).get(ADSR_FLTR_SUSTAIN)+TK.get(ADSR_FLTR_SUSTAIN));
-      TK.set(ADSR_FLTR_SUSTAIN,0);
-      if (debug)
-	printf("[sustain_fltr:%d]\n",P[cty].getPatternElement(cursor).get(ADSR_FLTR_SUSTAIN));
-    }
-  
-  // Change fltr env Sustain
-  if (TK.getAll(ADSR_FLTR_SUSTAIN)!=0)
-    {
-      for(i=0;i<16;i++)
-	P[cty].getPatternElement(i).set(ADSR_FLTR_SUSTAIN,
-					P[cty].getPatternElement(i).get(ADSR_FLTR_SUSTAIN)+TK.getAll(ADSR_FLTR_SUSTAIN));
-      TK.setAll(ADSR_FLTR_SUSTAIN,0);
-      if (debug)
-	printf("[sustain_all:%d]\n",P[cty].getPatternElement(cursor).get(ADSR_FLTR_SUSTAIN));
-    }
+  seq_update_tweakable_knob_one(ADSR_FLTR_SUSTAIN);
+  seq_update_tweakable_knob_all(ADSR_FLTR_SUSTAIN);
 
-  
-  
   // Change fltr env Release
-  if (TK.get(ADSR_FLTR_RELEASE)!=0)
-    {
-      //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
-      P[cty].getPatternElement(cursor).set(ADSR_FLTR_RELEASE,
-					   P[cty].getPatternElement(cursor).get(ADSR_FLTR_RELEASE)+TK.get(ADSR_FLTR_RELEASE));
-      TK.set(ADSR_FLTR_RELEASE,0);
-      if (debug)
-	printf("[release_fltr:%d]\n",P[cty].getPatternElement(cursor).get(ADSR_FLTR_RELEASE));
-      //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
-      
-    }
+  seq_update_tweakable_knob_one(ADSR_FLTR_RELEASE);
+  seq_update_tweakable_knob_all(ADSR_FLTR_RELEASE);
   
-  // Change fltr env Release
-  if (TK.getAll(ADSR_FLTR_RELEASE)!=0)
-    {
-      for(i=0;i<16;i++)
-	P[cty].getPatternElement(i).set(ADSR_FLTR_RELEASE,
-					P[cty].getPatternElement(i).get(ADSR_FLTR_RELEASE)+TK.getAll(ADSR_FLTR_RELEASE));
-      TK.setAll(ADSR_FLTR_RELEASE,0);
-      if (debug)
-	printf("[release_fltr_all:%d]\n",P[cty].getPatternElement(cursor).get(ADSR_FLTR_RELEASE));
-      
-    }
-  
-
   // Change fltr type
-  if (TK.get(FILTER1_TYPE)!=0)
-    {
-      update_SAMM(cty,cursor);
-      P[cty].getPatternElement(cursor).set(FILTER1_TYPE,
-					   SAM->checkI(FILTER1_TYPE,P[cty].getPatternElement(cursor).get(FILTER1_TYPE)+TK.get(FILTER1_TYPE)));
-      TK.set(FILTER1_TYPE,0);
-      if (debug)
-	printf("[filter_type:%d]\n",P[cty].getPatternElement(cursor).get(FILTER1_TYPE));
-    }
-  
-  // Change fltr
-  if (TK.getAll(FILTER1_TYPE)!=0)
-    {
-      for(i=0;i<16;i++)
-	{
-	  update_SAMM(cty,i);
-	  P[cty].getPatternElement(i).set(FILTER1_TYPE,
-					  SAM->checkI(FILTER1_TYPE,P[cty].getPatternElement(i).get(FILTER1_TYPE)+TK.getAll(FILTER1_TYPE)));
-	}
-      TK.setAll(FILTER1_TYPE,0);
-      if (debug)
-	printf("[filter_type:%d]\n",P[cty].getPatternElement(cursor).get(FILTER1_TYPE));
-    }
+  seq_update_tweakable_knob_one(FILTER1_TYPE);
+  seq_update_tweakable_knob_all(FILTER1_TYPE);
 
   // Change fltr env Attack
-  if (TK.get(FILTER1_ALGO)!=0)
-    {
-      update_SAMM(cty,cursor);
-      P[cty].getPatternElement(cursor).set(FILTER1_ALGO,
-					   SAM->checkI(FILTER1_ALGO,P[cty].getPatternElement(cursor).get(FILTER1_ALGO)+TK.get(FILTER1_ALGO)));
-      TK.set(FILTER1_ALGO,0);
-      if (debug)
-	printf("[filter_algo:%d]\n",P[cty].getPatternElement(cursor).get(FILTER1_ALGO));
-    }
-  
-  // Change fltr env Attack
-  if (TK.getAll(FILTER1_ALGO)!=0)
-    {
-      for(i=0;i<16;i++)
-	{
-	  update_SAMM(cty,i);
-	  P[cty].getPatternElement(i).set(FILTER1_ALGO,
-					  SAM->checkI(FILTER1_ALGO,P[cty].getPatternElement(i).get(FILTER1_ALGO)+TK.getAll(FILTER1_ALGO)));
-	}
-      TK.setAll(FILTER1_ALGO,0);
-      if (debug)
-	printf("[filter_algo:%d]\n",P[cty].getPatternElement(cursor).get(FILTER1_ALGO));
-    }
+  seq_update_tweakable_knob_one(FILTER1_ALGO);
+  seq_update_tweakable_knob_all(FILTER1_ALGO);
 
-
-
-
-  
   // Change VCOMix
-  if (TK.get(VCO_MIX)!=0)
-    {
-      //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
-      P[cty].getPatternElement(cursor).set(VCO_MIX,P[cty].getPatternElement(cursor).get(VCO_MIX)+TK.get(VCO_MIX));
-      TK.set(VCO_MIX,0);
-      if (debug)
-	printf("[vcomix:%d]\n",P[cty].getPatternElement(cursor).get(VCO_MIX));
-      //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
-      
-    }
-  
-  // Change VCOMix
-  if (TK.getAll(VCO_MIX)!=0)
-    {
-      for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).set(VCO_MIX,
-					P[cty].getPatternElement(i).get(VCO_MIX)+TK.getAll(VCO_MIX));
-      TK.setAll(VCO_MIX,0);
-      if (debug)
-	printf("[vcomix_all:%d]\n",P[cty].getPatternElement(cursor).get(VCO_MIX));
-      //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
-      
-    }
-
+  seq_update_tweakable_knob_one(VCO_MIX);
+  seq_update_tweakable_knob_all(VCO_MIX);
 
   // Change Fx Depth
-  if (TK.get(FX1_DEPTH)!=0)
-    {
-      P[cty].getPatternElement(cursor).set(FX1_DEPTH,P[cty].getPatternElement(cursor).get(FX1_DEPTH)+TK.get(FX1_DEPTH));
-      TK.set(FX1_DEPTH,0);
-      if (debug)
-	printf("[fx_depth:%d]\n",P[cty].getPatternElement(cursor).get(FX1_DEPTH));      
-    }
-  
-  // Change Fx Depth All
-  if (TK.getAll(FX1_DEPTH)!=0)
-    {
-      for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).set(FX1_DEPTH,P[cty].getPatternElement(i).get(FX1_DEPTH)+TK.getAll(FX1_DEPTH));
-      TK.setAll(FX1_DEPTH,0);
-      if (debug)
-	printf("[fx_depth_all:%d]\n",P[cty].getPatternElement(cursor).get(FX1_DEPTH));      
-    }
-
+  seq_update_tweakable_knob_one(FX1_DEPTH);
+  seq_update_tweakable_knob_all(FX1_DEPTH);
 
   // Change Fx Speed
-  if (TK.get(FX1_SPEED)!=0)
-    {
-      P[cty].getPatternElement(cursor).set(FX1_SPEED,
-					   P[cty].getPatternElement(cursor).get(FX1_SPEED)+TK.get(FX1_SPEED));
-      TK.set(FX1_SPEED,0);
-      if (debug)
-	printf("[fx_speed:%d]\n",P[cty].getPatternElement(cursor).get(FX1_SPEED));      
-    }
-  
-  // Change Fx Speed
-  if (TK.getAll(FX1_SPEED)!=0)
-    {
-      for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).set(FX1_SPEED,P[cty].getPatternElement(i).get(FX1_SPEED)+TK.getAll(FX1_SPEED));
-      TK.setAll(FX1_SPEED,0);
-      if (debug)
-	printf("[fx_speed_all:%d]\n",P[cty].getPatternElement(cursor).get(FX1_SPEED));      
-    }
-
-
+  seq_update_tweakable_knob_one(FX1_SPEED);
+  seq_update_tweakable_knob_all(FX1_SPEED);
 
   // Change osc1 amp
-  if (TK.get(OSC1_AMP)!=0)
-    {
-      //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
-      P[cty].getPatternElement(cursor).set(OSC1_AMP,
-					   P[cty].getPatternElement(cursor).get(OSC1_AMP)+TK.get(OSC1_AMP));
-      TK.set(OSC1_AMP,0);
-      if (debug)
-	printf("[osc1_amp:%d]\n",P[cty].getPatternElement(cursor).get(OSC1_AMP));
-      //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
-      
-    }
-  
-  // Change osc1 amp all
-  if (TK.getAll(OSC1_AMP)!=0)
-    {
-      for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).set(OSC1_AMP,
-					P[cty].getPatternElement(i).get(OSC1_AMP)+TK.getAll(OSC1_AMP));
-      TK.setAll(OSC1_AMP,0);
-      if (debug)
-	printf("[osc1_amp_all:%d]\n",P[cty].getPatternElement(cursor).get(OSC1_AMP));
-      //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
-      
-    }
+  seq_update_tweakable_knob_one(OSC1_AMP);
+  seq_update_tweakable_knob_all(OSC1_AMP);
 
   // Change osc2 amp
-  if (TK.get(OSC2_AMP)!=0)
-    {
-      //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
-      P[cty].getPatternElement(cursor).set(OSC2_AMP,
-					   P[cty].getPatternElement(cursor).get(OSC2_AMP)+TK.get(OSC2_AMP));
-      TK.set(OSC2_AMP,0);
-      if (debug)
-	printf("[osc2_amp:%d]\n",P[cty].getPatternElement(cursor).get(OSC2_AMP));
-      //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
-      
-    }
-  
-  // Change osc2 amp all
-  if (TK.getAll(OSC2_AMP)!=0)
-    {
-      for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).set(OSC2_AMP,
-					P[cty].getPatternElement(i).get(OSC2_AMP)+TK.getAll(OSC2_AMP));
-      TK.setAll(OSC2_AMP,0);
-      if (debug)
-	printf("[osc2_amp_all:%d]\n",P[cty].getPatternElement(cursor).get(OSC2_AMP));
-      //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
-      
-    }
-
-
-
-
+  seq_update_tweakable_knob_one(OSC2_AMP);
+  seq_update_tweakable_knob_all(OSC2_AMP);
 
   // Change trig time
-  if (TK.get(TRIG_TIME_DURATION)!=0)
-    {
-      P[cty].getPatternElement(cursor).set(TRIG_TIME_DURATION,
-					   P[cty].getPatternElement(cursor).get(TRIG_TIME_DURATION)+TK.get(TRIG_TIME_DURATION));
-      TK.set(TRIG_TIME_DURATION,0);
-      if (debug)
-	printf("[trig_time:%d]\n",P[cty].getPatternElement(cursor).get(TRIG_TIME_DURATION));
-    }
-  
-  // Change all trig time
-  if (TK.getAll(TRIG_TIME_DURATION)!=0)
-    {
-      for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).set(TRIG_TIME_DURATION,
-					P[cty].getPatternElement(i).get(TRIG_TIME_DURATION)+TK.getAll(TRIG_TIME_DURATION));
-      TK.setAll(TRIG_TIME_DURATION,0);
-      if (debug)
-	printf("[trig_time_all:%d]\n",P[cty].getPatternElement(cursor).get(TRIG_TIME_DURATION));      
-    }
-
-
-
+  seq_update_tweakable_knob_one(TRIG_TIME_DURATION);
+  seq_update_tweakable_knob_all(TRIG_TIME_DURATION);
 
   // Change phase osc1
-  if (TK.get(OSC1_PHASE)!=0)
-    {
-      //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
-      P[cty].getPatternElement(cursor).set(OSC1_PHASE,
-					   P[cty].getPatternElement(cursor).get(OSC1_PHASE)+TK.get(OSC1_PHASE));
-      TK.set(OSC1_PHASE,0);
-      if (debug)
-	printf("[phase_osc1:%d]\n",P[cty].getPatternElement(cursor).get(OSC1_PHASE));
-      //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
-      
-    }
-
-  // Change phase osc1
-  if (TK.getAll(OSC1_PHASE)!=0)
-    {
-      //	      m0.getADSR().setRelease(m0.getADSR().getRelease()+release);
-      for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).set(OSC1_PHASE,
-					P[cty].getPatternElement(i).get(OSC1_PHASE)+TK.getAll(OSC1_PHASE));
-      TK.setAll(OSC1_PHASE,0);
-      if (debug)
-	printf("[phase_osc1_all:%d]\n",P[cty].getPatternElement(cursor).get(OSC1_PHASE));
-      //	printf("[release:%d]\n",P[cty].getPatternElement(cursor).getRelease()+release);
-      
-    }
-
-
+  seq_update_tweakable_knob_one(OSC1_PHASE);
+  seq_update_tweakable_knob_all(OSC1_PHASE);
 
   // Change lfo depth
-  if (TK.get(LFO1_DEPTH)!=0)
-    {      
-      P[cty].getPatternElement(cursor).set(LFO1_DEPTH,
-					   P[cty].getPatternElement(cursor).get(LFO1_DEPTH)+TK.get(LFO1_DEPTH));
-      TK.set(LFO1_DEPTH,0);
-      if (debug)
-	printf("[lfo_depth:%d]\n",P[cty].getPatternElement(cursor).get(LFO1_DEPTH));
-      
-    }
+  seq_update_tweakable_knob_one(LFO1_DEPTH);
+  seq_update_tweakable_knob_all(LFO1_DEPTH);
 
+  // Change lfo freq
+  seq_update_tweakable_knob_one(LFO1_FREQ);
+  seq_update_tweakable_knob_all(LFO1_FREQ);
 
-  // Change lfo depth
-  if (TK.getAll(LFO1_DEPTH)!=0)
-    {
-      for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).set(LFO1_DEPTH,P[cty].getPatternElement(i).get(LFO1_DEPTH)+TK.getAll(LFO1_DEPTH));
-      TK.setAll(LFO1_DEPTH,0);  
-      if (debug)
-	printf("[lfo_depth_all:%d]\n",P[cty].getPatternElement(cursor).get(LFO1_DEPTH));
-      
-    }
-
-
-  // Change lfo speed
-  if (TK.get(LFO1_FREQ)!=0)
-    {
-      P[cty].getPatternElement(cursor).set(LFO1_FREQ,P[cty].getPatternElement(cursor).get(LFO1_FREQ)+TK.get(LFO1_FREQ));
-      TK.set(LFO1_FREQ,0);
-      if (debug)
-	printf("[lfo_speed:%d]\n",P[cty].getPatternElement(cursor).get(LFO1_FREQ));
-      
-    }
-
-  // Change lfo speed
-  if (TK.getAll(LFO1_FREQ)!=0)
-    {
-      for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).set(LFO1_FREQ,P[cty].getPatternElement(i).get(LFO1_FREQ)+TK.getAll(LFO1_FREQ));
-      TK.setAll(LFO1_FREQ,0);
-      if (debug)
-	printf("[lfo_speed:%d]\n",P[cty].getPatternElement(cursor).get(LFO1_FREQ));
-      
-    }
-
-
-  // Change pb depth
-  if (TK.get(PITCHBEND_DEPTH)!=0)
-    {      
-      P[cty].getPatternElement(cursor).set(PITCHBEND_DEPTH,P[cty].getPatternElement(cursor).get(PITCHBEND_DEPTH)+TK.get(PITCHBEND_DEPTH));
-      TK.set(PITCHBEND_DEPTH,0);
-      if (debug)
-	printf("[pb_depth:%d]\n",P[cty].getPatternElement(cursor).get(PITCHBEND_DEPTH));
-      
-    }
-
-
-  // Change pb depth
-  if (TK.getAll(PITCHBEND_DEPTH)!=0)
-    {
-      for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).set(PITCHBEND_DEPTH,P[cty].getPatternElement(i).get(PITCHBEND_DEPTH)+TK.getAll(PITCHBEND_DEPTH));
-      TK.setAll(PITCHBEND_DEPTH,0);
-      if (debug)
-	printf("[pb_depth_all:%d]\n",P[cty].getPatternElement(cursor).get(PITCHBEND_DEPTH));
-      
-    }
-
+  // Change pitchbend depth
+  seq_update_tweakable_knob_one(PITCHBEND_DEPTH);
+  seq_update_tweakable_knob_all(PITCHBEND_DEPTH);
 
   // Change pb speed
-  if (TK.get(PITCHBEND_SPEED)!=0)
-    {
-      P[cty].getPatternElement(cursor).set(PITCHBEND_SPEED,
-					   P[cty].getPatternElement(cursor).get(PITCHBEND_SPEED)+TK.get(PITCHBEND_SPEED));
-      TK.set(PITCHBEND_SPEED,0);
-      if (debug)
-	printf("[pb_speed:%d]\n",P[cty].getPatternElement(cursor).get(PITCHBEND_SPEED));
-      
-    }
-
-  // Change pb speed
-  if (TK.getAll(PITCHBEND_SPEED)!=0)
-    {
-      for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).set(PITCHBEND_SPEED,
-					P[cty].getPatternElement(i).get(PITCHBEND_SPEED)+TK.getAll(PITCHBEND_SPEED));
-      TK.setAll(PITCHBEND_SPEED,0);
-      if (debug)
-	printf("[pb_speed:%d]\n",P[cty].getPatternElement(cursor).get(PITCHBEND_SPEED));
-      
-    }
-
+  seq_update_tweakable_knob_one(PITCHBEND_SPEED);
+  seq_update_tweakable_knob_all(PITCHBEND_SPEED);
 
   // Change lfo type
-  if (TK.get(LFO_TYPE)!=0)
-    {
-      P[cty].getPatternElement(cursor).set(LFO_TYPE,
-					   P[cty].getPatternElement(cursor).get(LFO_TYPE)+TK.get(LFO_TYPE));
-      TK.set(LFO_TYPE,0);
-      if (debug)
-	printf("[lfo_type:%d]\n",P[cty].getPatternElement(cursor).get(LFO_TYPE));
-      
-    }
-
-  // Change pb speed
-  if (TK.getAll(LFO_TYPE)!=0)
-    {
-      for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).set(LFO_TYPE,P[cty].getPatternElement(i).get(LFO_TYPE)+TK.getAll(LFO_TYPE));
-      TK.setAll(LFO_TYPE,0);
-      if (debug)
-	printf("[lfo_type:%d]\n",P[cty].getPatternElement(cursor).get(LFO_TYPE));
-      
-    }
-
-  
+  seq_update_tweakable_knob_one(LFO_TYPE);
+  seq_update_tweakable_knob_all(LFO_TYPE);
   
   // Change filter cutoff
-  if (TK.get(FILTER1_CUTOFF)!=0)
-    {
-      P[cty].getPatternElement(cursor).set(FILTER1_CUTOFF,
-					   P[cty].getPatternElement(cursor).get(FILTER1_CUTOFF)+TK.get(FILTER1_CUTOFF));
-      TK.set(FILTER1_CUTOFF,0);
-      if (debug) printf("[cutoff:%d]\n",P[cty].getPatternElement(cursor).get(FILTER1_CUTOFF));	  
-    }
-  
-  // Change filter cutoff
-  if (TK.getAll(FILTER1_CUTOFF)!=0)
-    {
-      for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).set(FILTER1_CUTOFF,
-					P[cty].getPatternElement(i).get(FILTER1_CUTOFF)+TK.getAll(FILTER1_CUTOFF));
-      TK.setAll(FILTER1_CUTOFF,0);
-      if (debug) printf("[cutoff_all:%d]\n",P[cty].getPatternElement(cursor).get(FILTER1_CUTOFF));
-    }
-  
+  seq_update_tweakable_knob_one(FILTER1_CUTOFF);
+  seq_update_tweakable_knob_all(FILTER1_CUTOFF);
+ 
   // Change filter resonance
-  if (TK.get(FILTER1_RESONANCE)!=0)
-    {
-      P[cty].getPatternElement(cursor).set(FILTER1_RESONANCE,
-					   P[cty].getPatternElement(cursor).get(FILTER1_RESONANCE)+TK.get(FILTER1_RESONANCE));
-      TK.set(FILTER1_RESONANCE,0);
-      if (debug) printf("[resonance:%d]\n",P[cty].getPatternElement(cursor).get(FILTER1_RESONANCE));	  
-    }
+  seq_update_tweakable_knob_one(FILTER1_RESONANCE);
+  seq_update_tweakable_knob_all(FILTER1_RESONANCE);
   
-  // Change filter resonance
-  if (TK.getAll(FILTER1_RESONANCE)!=0)
-    {
-      for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).set(FILTER1_RESONANCE,
-					P[cty].getPatternElement(i).get(FILTER1_RESONANCE)+TK.getAll(FILTER1_RESONANCE));
-      TK.setAll(FILTER1_RESONANCE,0);
-      if (debug) printf("[resonance_all:%d]\n",P[cty].getPatternElement(cursor).get(FILTER1_RESONANCE));	  
-    }
+  // Change oscillator one
+  seq_update_tweakable_knob_one(OSC1_TYPE);
+  seq_update_tweakable_knob_all(OSC1_TYPE);
   
-    // Change step divider
+  // Change oscillator two
+  seq_update_tweakable_knob_one(OSC2_TYPE);
+  seq_update_tweakable_knob_all(OSC2_TYPE);
+ 
+  // Change oscillator one
+  seq_update_tweakable_knob_one(MACHINE_TYPE);
+  seq_update_tweakable_knob_all(MACHINE_TYPE);
+   
+  // Change Note
+  seq_update_tweakable_knob_one(NOTE);
+  seq_update_tweakable_knob_all(NOTE);
+
+  // Change FM
+  seq_update_tweakable_knob_one(FM_TYPE);
+  seq_update_tweakable_knob_all(FM_TYPE);
+
+
   if (TK.get(BPM_DIVIDER)!=0)
     {	  
       if (TK.get(BPM_DIVIDER)>0)
@@ -3702,116 +3262,6 @@ void seq_update_multiple_time_by_step()
       TK.set(BPM_DIVIDER,0);
       P[cty].setBPMDivider(SEQ.getPatternSequencer(cty).getBPMDivider());
     }
-  
-  // Change oscillator one
-  if (TK.get(OSC1_TYPE)!=0)
-    {
-      update_SAMM(cty,cursor);
-      P[cty].getPatternElement(cursor).set(OSC1_TYPE,
-					   SAM->checkI(OSC1_TYPE,P[cty].getPatternElement(cursor).get(OSC1_TYPE)+TK.get(OSC1_TYPE)));
-      TK.set(OSC1_TYPE,0);
-      if (debug)
-	printf("[osconetype:%d]\n",P[cty].getPatternElement(cursor).get(OSC1_TYPE));	  
-    }
-  
-  // Change oscillator one
-  if (TK.getAll(OSC1_TYPE)!=0)
-    {
-      for (i=0;i<16;i++)
-	{
-	  update_SAMM(cty,i);
-	  P[cty].getPatternElement(i).set(OSC1_TYPE,
-					  SAM->checkI(OSC1_TYPE,P[cty].getPatternElement(i).get(OSC1_TYPE)+TK.getAll(OSC1_TYPE)));
-	}
-      TK.setAll(OSC1_TYPE,0);
-      if (debug)
-	printf("[osconetype_all:%d]\n",P[cty].getPatternElement(cursor).get(OSC1_TYPE));	  
-    }
-  
-  // Change oscillator two
-  if (TK.get(OSC2_TYPE)!=0)
-    {
-      update_SAMM(cty,cursor);
-      P[cty].getPatternElement(cursor).set(OSC2_TYPE,
-					   SAM->checkI(OSC2_TYPE,P[cty].getPatternElement(cursor).get(OSC2_TYPE)+TK.get(OSC2_TYPE)));
-      TK.set(OSC2_TYPE,0);
-      if (debug)
-	printf("[osctwotype:%d]\n",P[cty].getPatternElement(cursor).get(OSC2_TYPE));	  
-    }
-  
-  // Change oscillator two
-  if (TK.getAll(OSC2_TYPE)!=0)
-    {
-      for (i=0;i<16;i++)
-	{
-	  update_SAMM(cty,i);
-	  P[cty].getPatternElement(i).set(OSC2_TYPE,
-					  SAM->checkI(OSC2_TYPE,P[cty].getPatternElement(i).get(OSC2_TYPE)+TK.getAll(OSC2_TYPE)));
-	}
-      TK.setAll(OSC2_TYPE,0);
-      if (debug)
-	printf("[osctwotype:%d]\n",P[cty].getPatternElement(cursor).get(OSC2_TYPE));	  
-    }
-  
-
-
-  // Change oscillator one
-  if (TK.get(MACHINE_TYPE)!=0)
-    {
-      P[cty].getPatternElement(cursor).set(MACHINE_TYPE,P[cty].getPatternElement(cursor).get(MACHINE_TYPE)+TK.get(MACHINE_TYPE));
-      TK.set(MACHINE_TYPE,0);
-      if (debug)
-	printf("[machine_type:%d]\n",P[cty].getPatternElement(cursor).get(MACHINE_TYPE));	  
-    }
-  
-  // Change oscillator one
-  if (TK.getAll(MACHINE_TYPE)!=0)
-    {
-      for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).set(MACHINE_TYPE,P[cty].getPatternElement(i).get(MACHINE_TYPE)+TK.getAll(MACHINE_TYPE));
-      TK.setAll(MACHINE_TYPE,0);
-      if (debug)
-	printf("[machine_type_all:%d]\n",P[cty].getPatternElement(cursor).get(MACHINE_TYPE));	  
-    }
-  
-  
-  // Change Note
-  if (TK.get(NOTE)!=0)
-    { 
-      P[cty].getPatternElement(cursor).set(NOTE,
-					   P[cty].getPatternElement(cursor).get(NOTE)+TK.get(NOTE));
-      TK.set(NOTE,0);
-      printf("[note:%d]\n",P[cty].getPatternElement(cursor).get(NOTE));	  
-    }
-  
-  // Change Note
-  if (TK.getAll(NOTE)!=0)
-    { 
-      for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).set(NOTE,
-					P[cty].getPatternElement(i).get(NOTE)+TK.getAll(NOTE));
-      TK.setAll(NOTE,0);
-      printf("[note_all:%d]\n",P[cty].getPatternElement(cursor).get(NOTE));	  
-    }
-
-
-  // Change Note
-  if (TK.get(FM_TYPE)!=0)
-    { 
-      P[cty].getPatternElement(cursor).set(FM_TYPE,P[cty].getPatternElement(cursor).get(FM_TYPE)+TK.get(FM_TYPE));
-      TK.set(FM_TYPE,0);
-      printf("[fmtype:%d]\n",P[cty].getPatternElement(cursor).get(FM_TYPE));	  
-    }
-  
-  // Change Note
-  if (TK.getAll(FM_TYPE)!=0)
-    { 
-      for (i=0;i<16;i++)
-	P[cty].getPatternElement(i).set(FM_TYPE,P[cty].getPatternElement(i).get(FM_TYPE)+TK.getAll(FM_TYPE));
-      TK.setAll(FM_TYPE,0);
-      printf("[fmtype_all:%d]\n",P[cty].getPatternElement(cursor).get(FM_TYPE));
-    }
-
 
 
   // Change Note
