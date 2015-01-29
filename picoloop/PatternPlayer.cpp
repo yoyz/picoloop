@@ -437,30 +437,6 @@ void display_board_bpm()
   if (menu_cursor==GLOBALMENU_BPM)
     {
       display_board_two_param(LFO1_DEPTH,LFO1_FREQ);
-      // // Cursor & step postion      
-      // SG.drawBoxNumber(cursor,CURSOR_COLOR);
-      // SG.drawBoxNumber(step,STEP_COLOR);  
-      // //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
-      
-      // //if (menu_ad==MENU_AD_AMP_ATTACK_RELEASE_)
-      // //	{
-      // for (i=0;i<16;i++)
-      // 	{
-      // 	  // Draw trigged box trig color   
-      // 	  if (P[cty].getPatternElement(i).get(NOTE_ON))
-      // 	    {
-      // 	      SG.drawBoxNumber(i,TRIG_COLOR);
-      // 	      if (i==cursor)
-      // 		SG.drawBoxNumber(cursor,CURSOR_COLOR);
-      // 	      if (i==step)
-      // 		SG.drawBoxNumber(step,STEP_COLOR);  
-      // 		  //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
-	      
-      // 		  // LFO
-      // 	      SG.smallBoxNumber(i,P[cty].getPatternElement(i).get(LFO1_DEPTH),128,SMALLBOX_COLOR);
-      // 	      SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).get(LFO1_FREQ),SMALLBOX_COLOR);
-      // 	    }
-      // 	}
     }
   
 }
@@ -753,23 +729,25 @@ void display_board_psh()
       // Cursor & step postion      
       SG.drawBoxNumber(cursor,CURSOR_COLOR);
       SG.drawBoxNumber(step,STEP_COLOR);  
-      for (i=0;i<16;i++)
-	{
-	  // Draw trigged box trig color   
-	  if (P[cty].getPatternElement(i).get(NOTE_ON))
-	    {
-	      SG.drawBoxNumber(i,TRIG_COLOR);
-	      if (i==cursor)
-		SG.drawBoxNumber(cursor,CURSOR_COLOR);
-	      if (i==step)
-		SG.drawBoxNumber(step,STEP_COLOR);  
-		  //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
+
+      display_board_two_param(LFO1_DEPTH,LFO1_FREQ);
+      // for (i=0;i<16;i++)
+      // 	{
+      // 	  // Draw trigged box trig color   
+      // 	  if (P[cty].getPatternElement(i).get(NOTE_ON))
+      // 	    {
+      // 	      SG.drawBoxNumber(i,TRIG_COLOR);
+      // 	      if (i==cursor)
+      // 		SG.drawBoxNumber(cursor,CURSOR_COLOR);
+      // 	      if (i==step)
+      // 		SG.drawBoxNumber(step,STEP_COLOR);  
+      // 		  //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
 	      
-		  // LFO
-	      SG.smallBoxNumber(i,P[cty].getPatternElement(i).get(LFO1_DEPTH),128,SMALLBOX_COLOR);
-	      SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).get(LFO1_FREQ),SMALLBOX_COLOR);
-	    }
-	}
+      // 		  // LFO
+      // 	      SG.smallBoxNumber(i,P[cty].getPatternElement(i).get(LFO1_DEPTH),128,SMALLBOX_COLOR);
+      // 	      SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).get(LFO1_FREQ),SMALLBOX_COLOR);
+      // 	    }
+      // 	}
     }                  
 }
 
@@ -1508,6 +1486,33 @@ void handle_key_sixteenbox()
 }
 
 
+int handle_tweakable_knob_key_two_button(int buttonPressed,int buttonKeyRepeat,int repeatInterval,int machineParam,int paramValue,int all)
+{
+  bool * keyState;
+  int  * keyRepeat;
+  int    lastEvent;
+  int    lastKey;
+
+  keyState=IE.keyState();
+  keyRepeat=IE.keyRepeat();
+  lastEvent=IE.lastEvent();
+  lastKey=IE.lastKey();
+
+
+  if (keyState[buttonPressed]  && keyState[buttonKeyRepeat])
+    if (keyRepeat[buttonKeyRepeat]==1 ||  keyRepeat[buttonKeyRepeat]%repeatInterval==0)
+      { 
+	if (all==0)
+	  { TK.set(machineParam,paramValue);    dirty_graphic=1; }
+	if (all==1)
+	  { TK.setAll(machineParam,paramValue); dirty_graphic=1; }
+      }
+}
+
+
+
+
+
 void handle_key_amp_env()
 {
   bool * keyState;
@@ -1530,25 +1535,13 @@ void handle_key_amp_env()
     {
       // Insert/Remove Trig
       sub_handle_invert_trig();
-      if (keyState[BUTTON_LEFT]  && keyState[BUTTON_B])
-	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { TK.set(ADSR_AMP_RELEASE,-1);   dirty_graphic=1; }
-        //{ TK.release_amp=-1;   dirty_graphic=1; }
-      
-      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { TK.set(ADSR_AMP_RELEASE,1);   dirty_graphic=1; }	  
-	  //{ TK.release_amp=1; 	  dirty_graphic=1; }
-      
-      if (keyState[BUTTON_UP]    && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { TK.set(ADSR_AMP_ATTACK,1);   dirty_graphic=1; }	  
-	  //{ TK.attack_amp=1;  	  dirty_graphic=1; }
-      
-      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { TK.set(ADSR_AMP_ATTACK,-11);   dirty_graphic=1; }	  
-      //{ TK.attack_amp=-1; 	  dirty_graphic=1; }
+
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, ADSR_AMP_RELEASE, -1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, ADSR_AMP_RELEASE,  1, 0);
+
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, ADSR_AMP_ATTACK,   1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, ADSR_AMP_ATTACK,  -1, 0);
+
     }  
 
 
@@ -1561,22 +1554,12 @@ void handle_key_amp_env()
     {
       // Insert/Remove Trig
       sub_handle_invert_trig();
-      if (keyState[BUTTON_LEFT]  && keyState[BUTTON_B])
-	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { TK.set(ADSR_AMP_DECAY,-1);   dirty_graphic=1; }
-	  //{ TK.decay_amp=-1;   dirty_graphic=1; }
-      
-      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { TK.set(ADSR_AMP_DECAY,1);    dirty_graphic=1; }
-      
-      if (keyState[BUTTON_UP]    && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { TK.set(ADSR_AMP_SUSTAIN,1);  dirty_graphic=1; }
-      
-      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { TK.set(ADSR_AMP_SUSTAIN,-1); dirty_graphic=1; }
+
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, ADSR_AMP_DECAY,    -1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, ADSR_AMP_DECAY,     1, 0);
+
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, ADSR_AMP_SUSTAIN,   1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, ADSR_AMP_SUSTAIN,  -1, 0);
     }  
 
 
@@ -1587,22 +1570,11 @@ void handle_key_amp_env()
       menu_cursor   == GLOBALMENU_AD     &&
       menu_ad      == MENU_AD_AMP_ATTACK_RELEASE)
     {
-      //printf("***********************\n");
-      if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A])
-	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { TK.setAll(ADSR_AMP_RELEASE,-1); dirty_graphic=1; }
-      
-      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { TK.setAll(ADSR_AMP_RELEASE,1); 	  dirty_graphic=1; }
-      
-      if (keyState[BUTTON_UP]    && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { TK.setAll(ADSR_AMP_ATTACK,1);  	  dirty_graphic=1; }
-      
-      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { TK.setAll(ADSR_AMP_ATTACK,-1);  	  dirty_graphic=1; }
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, ADSR_AMP_RELEASE, -1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, ADSR_AMP_RELEASE,  1, 1);
+
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, ADSR_AMP_ATTACK,   1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, ADSR_AMP_ATTACK,  -1, 1);
     }  
 
   // GLOBALMENU_AD AMP
@@ -1612,22 +1584,11 @@ void handle_key_amp_env()
       menu_cursor   == GLOBALMENU_AD     &&
       menu_ad      == MENU_AD_AMP_DECAY_SUSTAIN)
     {
-      //printf("***********************\n");
-      if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A])
-	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { TK.setAll(ADSR_AMP_DECAY,-1); dirty_graphic=1; }
-      
-      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { TK.setAll(ADSR_AMP_DECAY,1);  dirty_graphic=1; }
-      
-      if (keyState[BUTTON_UP]    && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { TK.setAll(ADSR_AMP_SUSTAIN,1);  	  dirty_graphic=1; }
-      
-      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { TK.setAll(ADSR_AMP_SUSTAIN,-1); 	  dirty_graphic=1; }
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, ADSR_AMP_DECAY,    -1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, ADSR_AMP_DECAY,     1, 1);
+
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, ADSR_AMP_SUSTAIN,   1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, ADSR_AMP_SUSTAIN,  -1, 1);
     }  
 
 
@@ -1642,21 +1603,12 @@ void handle_key_amp_env()
     {
       // Insert/Remove Trig
       sub_handle_invert_trig();
-      if (keyState[BUTTON_LEFT]  && keyState[BUTTON_B])
-	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { TK.set(ADSR_FLTR_RELEASE,-1);   dirty_graphic=1; }
-      
-      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { TK.set(ADSR_FLTR_RELEASE,1); 	  dirty_graphic=1; }
-      
-      if (keyState[BUTTON_UP]    && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { TK.set(ADSR_FLTR_ATTACK,1);  	  dirty_graphic=1; }
-      
-      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { TK.set(ADSR_FLTR_ATTACK,-1); 	  dirty_graphic=1; }
+
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, ADSR_FLTR_RELEASE, -1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, ADSR_FLTR_RELEASE,  1, 0);
+
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, ADSR_FLTR_ATTACK,   1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, ADSR_FLTR_ATTACK,  -1, 0);
     }  
 
   // GLOBALMENU_AD FLTR
@@ -1668,21 +1620,12 @@ void handle_key_amp_env()
     {
       // Insert/Remove Trig
       sub_handle_invert_trig();
-      if (keyState[BUTTON_LEFT]  && keyState[BUTTON_B])
-	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { TK.set(ADSR_FLTR_DECAY,-1);   dirty_graphic=1; }
-      
-      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { TK.set(ADSR_FLTR_DECAY,1); 	  dirty_graphic=1; }
-      
-      if (keyState[BUTTON_UP]    && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { TK.set(ADSR_FLTR_SUSTAIN,1);  	  dirty_graphic=1; }
-      
-      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { TK.set(ADSR_FLTR_SUSTAIN,-1); 	  dirty_graphic=1; }
+
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, ADSR_FLTR_DECAY,    -1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, ADSR_FLTR_DECAY,     1, 0);
+
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, ADSR_FLTR_SUSTAIN,   1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, ADSR_FLTR_SUSTAIN,  -1, 0);
     }  
 
 
@@ -1694,22 +1637,11 @@ void handle_key_amp_env()
       menu_cursor   == GLOBALMENU_AD     &&
       menu_ad      == MENU_AD_FLTR_ATTACK_RELEASE)
     {
-      //printf("***********************\n");
-      if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A])
-	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { TK.setAll(ADSR_FLTR_RELEASE,-1);   dirty_graphic=1; }
-      
-      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { TK.setAll(ADSR_FLTR_RELEASE,1); 	  dirty_graphic=1; }
-      
-      if (keyState[BUTTON_UP]    && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { TK.setAll(ADSR_FLTR_ATTACK,1);  	  dirty_graphic=1; }
-      
-      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { TK.setAll(ADSR_FLTR_ATTACK,-1); 	  dirty_graphic=1; }
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, ADSR_FLTR_RELEASE, -1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, ADSR_FLTR_RELEASE,  1, 1);
+
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, ADSR_FLTR_ATTACK,   1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, ADSR_FLTR_ATTACK,  -1, 1);
     }  
 
   // GLOBALMENU_AD FLTR
@@ -1719,22 +1651,11 @@ void handle_key_amp_env()
       menu_cursor   == GLOBALMENU_AD     &&
       menu_ad      == MENU_AD_FLTR_DECAY_SUSTAIN)
     {
-      //printf("***********************\n");
-      if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A])
-	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { TK.setAll(ADSR_FLTR_DECAY,-1);   dirty_graphic=1; }
-      
-      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { TK.setAll(ADSR_FLTR_DECAY,1); 	  dirty_graphic=1; }
-      
-      if (keyState[BUTTON_UP]    && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { TK.setAll(ADSR_FLTR_SUSTAIN,1);  	  dirty_graphic=1; }
-      
-      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { TK.setAll(ADSR_FLTR_SUSTAIN,-1); 	  dirty_graphic=1; }
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, ADSR_FLTR_DECAY,    -1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, ADSR_FLTR_DECAY,     1, 1);
+
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, ADSR_FLTR_SUSTAIN,   1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, ADSR_FLTR_SUSTAIN,  -1, 1);
     }  
 
 
@@ -1753,21 +1674,12 @@ void handle_key_amp_env()
 	  // dirty_graphic=1;
 	  // IE.clearLastKeyEvent();
 	}
-      if (keyState[BUTTON_LEFT]  && keyState[BUTTON_B])
-	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { TK.set(AMP,-1);   dirty_graphic=1; }
-      
-      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { TK.set(AMP,1); 	  dirty_graphic=1; }
-      
-      if (keyState[BUTTON_UP]    && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { TK.set(TRIG_TIME_DURATION,1);  	  dirty_graphic=1; }
-      
-      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { TK.set(TRIG_TIME_DURATION,-1); 	  dirty_graphic=1; }
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, AMP            ,     -1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, AMP            ,      1, 0);
+
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, TRIG_TIME_DURATION,   1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, TRIG_TIME_DURATION,  -1, 0);
+
     }  
 
 
@@ -1775,25 +1687,12 @@ void handle_key_amp_env()
       menu_cursor   == GLOBALMENU_AD     &&
       menu_ad      == MENU_AD_TRIGTIME_AMP)
     {
-      if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A])
-	if (keyRepeat[BUTTON_LEFT]==1 ||  keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { TK.setAll(AMP,-1);   dirty_graphic=1; }
-      
-      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { TK.setAll(AMP,1); 	  dirty_graphic=1; }
-      
-      if (keyState[BUTTON_UP]    && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { TK.setAll(TRIG_TIME_DURATION,1);  	  dirty_graphic=1; }
-      
-      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { TK.setAll(TRIG_TIME_DURATION,-1); 	  dirty_graphic=1; }
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, AMP            ,     -1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, AMP            ,      1, 1);
+
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, TRIG_TIME_DURATION,   1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, TRIG_TIME_DURATION,  -1, 1);
     }  
-
-
-
 }
 
 
@@ -1818,31 +1717,13 @@ void handle_key_note()
     {
       // copy/paste/insert/delete trig 
       sub_handle_invert_trig();
-      /*
-      if (lastKey   == BUTTON_A && 
-	  lastEvent ==  KEYRELEASED)
-	{
-	  invert_trig=1;
-	  printf("key lalt\n");      
-	  dirty_graphic=1;
-	  IE.clearLastKeyEvent();
-	}
-      */
-      if (keyState[BUTTON_LEFT]  && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_LONG==0) 
-	  { TK.set(NOTE,-1); 	  dirty_graphic=1;}
 
-      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_LONG==0) 
-	  { TK.set(NOTE,1);  	  dirty_graphic=1;}
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_LONG    , NOTE,             -1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_LONG    , NOTE,              1, 0);
 
-      if (keyState[BUTTON_UP]    && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONG==0) 
-	  { TK.set(NOTE,12);   	  dirty_graphic=1;}
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG    , NOTE           ,  12, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG    , NOTE           , -12, 0);
 
-      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONG==0) 
-	  { TK.set(NOTE,-12);  	  dirty_graphic=1;}
     }  
 
     // GLOBALMENU_NOTE
@@ -1850,22 +1731,13 @@ void handle_key_note()
   if (menu        != MENU_OFF && 
       menu_cursor == GLOBALMENU_NOTE)
     {
-      
-      if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_LONG==0) 
-	  { TK.setAll(NOTE,-1); 	  dirty_graphic=1;}
 
-      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_LONG==0) 
-	  { TK.setAll(NOTE,1);  	  dirty_graphic=1;}
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_LONG    , NOTE,             -1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_LONG    , NOTE,              1, 1);
 
-      if (keyState[BUTTON_UP]    && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONG==0) 
-	  { TK.setAll(NOTE,12);   	  dirty_graphic=1;}
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG    , NOTE           ,  12, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG    , NOTE           , -12, 1);
 
-      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONG==0) 
-	  { TK.setAll(NOTE,-12);  	  dirty_graphic=1;}
     }  
 
 
@@ -1904,21 +1776,11 @@ void handle_key_osc()
       // Insert/Remove Trig
       sub_handle_invert_trig();
 
-      if (keyState[BUTTON_LEFT] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_LONG==0) 
-	  { TK.setAll(OSC1_TYPE,-1); 	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_LONG==0) 
-	  { TK.set(OSC1_TYPE,1);  	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_UP] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONG==0) 
-	  { TK.set(OSC2_TYPE,1);   	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_DOWN] && keyState[BUTTON_B])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONG==0) 
-	  { TK.set(OSC2_TYPE,-1);  	  dirty_graphic=1;}
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_LONG    , OSC1_TYPE,        -1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_LONG    , OSC1_TYPE,         1, 0);
+
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG    , OSC2_TYPE      ,   1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG    , OSC2_TYPE      ,  -1, 0);
     }
 
   // GLOBALMENU_OSC
@@ -1926,21 +1788,13 @@ void handle_key_osc()
   if (menu        != MENU_OFF && 
       menu_cursor == GLOBALMENU_OSC )
     {
-      if (keyState[BUTTON_LEFT] && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_LONG==0) 
-	  { TK.setAll(OSC1_TYPE,-1); 	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_LONG==0) 
-	  { TK.setAll(OSC1_TYPE,1);  	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_UP] && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONG==0) 
-	  { TK.setAll(OSC2_TYPE,1);   	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_DOWN] && keyState[BUTTON_A])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONG==0) 
-	  { TK.setAll(OSC2_TYPE,-1);  	  dirty_graphic=1;}
+
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_LONG    , OSC1_TYPE,        -1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_LONG    , OSC1_TYPE,         1, 1);
+
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG    , OSC2_TYPE      ,   1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG    , OSC2_TYPE      ,  -1, 1);
+
     }
 
 }
@@ -1966,21 +1820,11 @@ void handle_key_fx()
       // Insert/Remove Trig
       sub_handle_invert_trig();
 
-      if (keyState[BUTTON_LEFT] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { TK.set(FX1_DEPTH,-1); 	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { TK.set(FX1_DEPTH,1);  	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_UP] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { TK.set(FX1_SPEED,1);   	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_DOWN] && keyState[BUTTON_B])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { TK.set(FX1_SPEED,-1);  	  dirty_graphic=1;}
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, FX1_DEPTH      ,     -1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, FX1_DEPTH      ,      1, 0);
+
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, FX1_SPEED         ,   1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, FX1_SPEED         ,  -1, 0);
     }
 
   // GLOBALMENU_FX
@@ -1991,21 +1835,12 @@ void handle_key_fx()
       // Insert/Remove Trig
       //sub_handle_invert_trig();
 
-      if (keyState[BUTTON_LEFT] && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { TK.setAll(FX1_DEPTH,-1); 	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { TK.setAll(FX1_DEPTH,1);  	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_UP] && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { TK.setAll(FX1_SPEED,1);   	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_DOWN] && keyState[BUTTON_A])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST) 
-	  { TK.setAll(FX1_SPEED,-1);  	  dirty_graphic=1;}
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, FX1_DEPTH      ,     -1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, FX1_DEPTH      ,      1, 1);
+
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, FX1_SPEED         ,   1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, FX1_SPEED         ,  -1, 1);
+
     }
 
 }
@@ -2035,21 +1870,12 @@ void handle_key_vco()
     {
       // Insert/Remove Trig
       sub_handle_invert_trig();
-      if (keyState[BUTTON_LEFT] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_SMALLEST==0) 
-	  { TK.set(VCO_MIX,-1); 	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_RIGHT]  && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_SMALLEST==0) 
-	  { TK.set(VCO_MIX,1);  	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_UP]  && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALLEST==0) 
-	  { TK.set(OSC1_PHASE,1);   	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALLEST==0) 
-	  { TK.set(OSC1_PHASE,-1);  	  dirty_graphic=1;}
+
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, VCO_MIX        ,     -1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, VCO_MIX        ,      1, 0);
+
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, OSC1_PHASE        ,   1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, OSC1_PHASE        ,  -1, 0);
     }
 
   if (menu        != MENU_OFF && 
@@ -2057,23 +1883,11 @@ void handle_key_vco()
       menu_vco    == MENU_VCO_OSCMIX_PHASE
       )
     {
-      if (keyState[BUTTON_LEFT] && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_SMALLEST==0) 
-	  { TK.setAll(VCO_MIX,-1); 	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_RIGHT]  && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_SMALLEST==0) 
-	  { TK.setAll(VCO_MIX,1);  	  dirty_graphic=1;}
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, VCO_MIX        ,     -1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, VCO_MIX        ,      1, 1);
 
-      // ????
-      if (keyState[BUTTON_UP]  && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALLEST==0) 
-	  { TK.setAll(OSC1_PHASE,1);   	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALLEST==0) 
-	  { TK.setAll(OSC1_PHASE,-1);  	  dirty_graphic=1;}
-      //????
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, OSC1_PHASE     ,      1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, OSC1_PHASE     ,     -1, 1);
     }
 
 
@@ -2087,21 +1901,12 @@ void handle_key_vco()
     {
       // Insert/Remove Trig
       sub_handle_invert_trig();
-      if (keyState[BUTTON_LEFT] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_SMALLEST==0) 
-	  { TK.set(OSC1_AMP,-1); 	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_RIGHT]  && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_SMALLEST==0) 
-	  { TK.set(OSC1_AMP,1);  	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_UP]  && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALLEST==0) 
-	  { TK.set(OSC2_AMP,1);   	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALLEST==0) 
-	  { TK.set(OSC2_AMP,-1);  	  dirty_graphic=1;}
+
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, OSC1_AMP        ,     -1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, OSC1_AMP        ,      1, 0);
+
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, OSC2_AMP        ,      1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, OSC2_AMP        ,     -1, 0);
     }
 
   if (menu        != MENU_OFF && 
@@ -2109,23 +1914,11 @@ void handle_key_vco()
       menu_vco    == MENU_VCO_OSCAMP
       )
     {
-      if (keyState[BUTTON_LEFT] && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_SMALLEST==0) 
-	  { TK.setAll(OSC1_AMP,-1); 	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_RIGHT]  && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_SMALLEST==0) 
-	  { TK.setAll(OSC1_AMP,1);  	  dirty_graphic=1;}
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, OSC1_AMP        ,     -1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, OSC1_AMP        ,      1, 1);
 
-      // ????
-      if (keyState[BUTTON_UP]  && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALLEST==0) 
-	  { TK.setAll(OSC2_AMP,1);   	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALLEST==0) 
-	  { TK.setAll(OSC2_AMP,-1);  	  dirty_graphic=1;}
-      //????
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, OSC2_AMP        ,      1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, OSC2_AMP        ,     -1, 1);
     }
 
 
@@ -2140,13 +1933,8 @@ void handle_key_vco()
       // Insert/Remove Trig
       sub_handle_invert_trig();
 
-      if (keyState[BUTTON_UP]  && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONG==0) 
-	  { TK.set(FM_TYPE,1);   	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONG==0) 
-	  { TK.set(FM_TYPE,-1);  	  dirty_graphic=1;}
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG,     FM_TYPE        ,      1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG,     FM_TYPE        ,     -1, 0);
     }
 
   if (menu        != MENU_OFF && 
@@ -2154,18 +1942,9 @@ void handle_key_vco()
       menu_vco    == MENU_VCO_FMTYPE
       )
     {
-
-      if (keyState[BUTTON_UP]  && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONG==0) 
-	  { TK.setAll(FM_TYPE,1);   	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONG==0) 
-	  { TK.setAll(FM_TYPE,-1);  	  dirty_graphic=1;}
-
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG,     FM_TYPE        ,      1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG,     FM_TYPE        ,     -1, 1);
     }
-
-
 }
 
 
@@ -2189,14 +1968,8 @@ void handle_key_mac()
       // Insert/Remove Trig
       sub_handle_invert_trig();
 
-      
-      if (keyState[BUTTON_UP] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONGEST==0) 
-	  { TK.set(MACHINE_TYPE,1);   	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_DOWN] && keyState[BUTTON_B])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONGEST==0) 
-	  { TK.set(MACHINE_TYPE,-1);  	  dirty_graphic=1;}
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG,     MACHINE_TYPE        ,      1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG,     MACHINE_TYPE        ,     -1, 0);      
     }
 
   // GLOBALMENU_MAC
@@ -2204,14 +1977,9 @@ void handle_key_mac()
   if (menu        != MENU_OFF && 
       menu_cursor == GLOBALMENU_MAC )
     {
-      
-      if (keyState[BUTTON_UP] && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONGEST==0) 
-	  { TK.setAll(MACHINE_TYPE,1);   	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_DOWN] && keyState[BUTTON_A])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONGEST==0) 
-	  { TK.setAll(MACHINE_TYPE,-1);  	  dirty_graphic=1;}
+
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG,     MACHINE_TYPE        ,      1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG,     MACHINE_TYPE        ,     -1, 1);
     }
 
 }
@@ -2239,21 +2007,12 @@ void handle_key_lfo()
     {
       // Insert/Remove Trig
       sub_handle_invert_trig();
-      if (keyState[BUTTON_LEFT] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_SMALL==0) 
-	  { TK.set(LFO1_DEPTH,-1); 	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_RIGHT]  && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_SMALL==0) 
-	  { TK.set(LFO1_DEPTH,1);  	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_UP]  && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALL==0) 
-	  { TK.set(LFO1_FREQ,1);   	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALL==0) 
-	  { TK.set(LFO1_FREQ,-1);  	  dirty_graphic=1;}
+
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, LFO1_DEPTH     ,     -1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, LFO1_DEPTH     ,      1, 0);
+
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, LFO1_FREQ      ,      1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, LFO1_FREQ      ,     -1, 0);
     }
 
 
@@ -2262,23 +2021,12 @@ void handle_key_lfo()
       menu_lfo    == MENU_LFO_LFOPITCH
       )
     {
-      if (keyState[BUTTON_LEFT] && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_SMALL==0) 
-	  { TK.setAll(LFO1_DEPTH,-1); 	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_RIGHT]  && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_SMALL==0) 
-	  { TK.setAll(LFO1_DEPTH,1);  	  dirty_graphic=1;}
 
-      // ????
-      if (keyState[BUTTON_UP]  && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALL==0) 
-	  { TK.setAll(LFO1_FREQ,1);   	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALL==0) 
-	  { TK.setAll(LFO1_FREQ,-1);  	  dirty_graphic=1;}
-      //????
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, LFO1_DEPTH     ,     -1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, LFO1_DEPTH     ,      1, 1);
+
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, LFO1_FREQ      ,      1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, LFO1_FREQ      ,     -1, 1);
     }
 
   // GLOBALMENU_LFO
@@ -2291,21 +2039,12 @@ void handle_key_lfo()
     {
       // Insert/Remove Trig
       sub_handle_invert_trig();
-      if (keyState[BUTTON_LEFT] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_SMALL==0) 
-	  { TK.set(PITCHBEND_DEPTH,-1); 	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_RIGHT]  && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_SMALL==0) 
-	  { TK.set(PITCHBEND_DEPTH,1);  	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_UP]  && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALL==0) 
-	  { TK.set(PITCHBEND_SPEED,1);   	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALL==0) 
-	  { TK.set(PITCHBEND_SPEED,-1);  	  dirty_graphic=1;}
+
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, PITCHBEND_DEPTH,     -1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, PITCHBEND_DEPTH,      1, 0);
+
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, PITCHBEND_SPEED,      1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, PITCHBEND_SPEED,     -1, 0);
     }
 
 
@@ -2314,23 +2053,11 @@ void handle_key_lfo()
       menu_lfo    == MENU_LFO_PITCHBEND
       )
     {
-      if (keyState[BUTTON_LEFT] && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_SMALL==0) 
-	  { TK.setAll(PITCHBEND_DEPTH,-1); 	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_RIGHT]  && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_SMALL==0) 
-	  { TK.setAll(PITCHBEND_DEPTH,1);  	  dirty_graphic=1;}
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, PITCHBEND_DEPTH,     -1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, PITCHBEND_DEPTH,      1, 1);
 
-      // ????
-      if (keyState[BUTTON_UP]  && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALL==0) 
-	  { TK.setAll(PITCHBEND_SPEED,1);   	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALL==0) 
-	  { TK.setAll(PITCHBEND_SPEED,-1);  	  dirty_graphic=1;}
-      //????
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, PITCHBEND_SPEED,      1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, PITCHBEND_SPEED,     -1, 1);
     }
 
 
@@ -2339,16 +2066,8 @@ void handle_key_lfo()
       menu_lfo    == MENU_LFO_TYPE
       )
     {
-
-
-      if (keyState[BUTTON_UP]  && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONG==0) 
-	  { TK.set(LFO_TYPE,1);   	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONG==0) 
-	  { TK.set(LFO_TYPE,-1);  	  dirty_graphic=1;}
-
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG,     LFO_TYPE      ,      1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG,     LFO_TYPE      ,     -1, 0);
     }
 
 
@@ -2358,20 +2077,9 @@ void handle_key_lfo()
       menu_lfo    == MENU_LFO_TYPE
       )
     {
-
-
-      if (keyState[BUTTON_UP]  && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALL==0) 
-	  { TK.setAll(LFO_TYPE,1);   	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALL==0) 
-	  { TK.setAll(LFO_TYPE,-1);  	  dirty_graphic=1;}
-
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG,     LFO_TYPE      ,      1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG,     LFO_TYPE      ,     -1, 1);
     }
-
-
-
 }
 
 
@@ -2394,21 +2102,11 @@ void handle_key_psh()
       menu_cursor == GLOBALMENU_PSH
       )
     {
-      if (keyState[BUTTON_LEFT] && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_LONGEST==0) 
-	  { TK.setAll(PATTERN_SHIFT,-1); 	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_RIGHT]  && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_LONGEST==0) 
-	  { TK.setAll(PATTERN_SHIFT,1);  	  dirty_graphic=1;}
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_LONG    , PATTERN_SHIFT,    -1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_LONG    , PATTERN_SHIFT,     1, 1);
 
-      if (keyState[BUTTON_UP]  && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONGEST==0) 
-	  { TK.setAll(PATTERN_LENGTH,1);   	  dirty_graphic=1;}
-      
-      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A])
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONGEST==0) 
-	  { TK.setAll(PATTERN_LENGTH,-1);  	  dirty_graphic=1;}
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG    , PATTERN_LENGTH ,   1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG    , PATTERN_LENGTH ,  -1, 1);
     }
 
 }
@@ -2439,21 +2137,11 @@ void handle_key_fltr()
     {
       sub_handle_invert_trig();
 
-      if (keyState[BUTTON_LEFT]  && keyState[BUTTON_B])
-	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST )  
-	  { TK.set(FILTER1_RESONANCE,-1);   dirty_graphic=1; }
-      
-      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST )  
-	  { TK.set(FILTER1_RESONANCE,1); 	  dirty_graphic=1; }
-      
-      if (keyState[BUTTON_UP]    && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST ) 
-	  { TK.set(FILTER1_CUTOFF,1);  	  dirty_graphic=1; }
-      
-      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST ) 
-	  { TK.set(FILTER1_CUTOFF,-1); 	  dirty_graphic=1; }
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, FILTER1_RESONANCE,    -1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, FILTER1_RESONANCE,     1, 0);
+
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, FILTER1_CUTOFF,        1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, FILTER1_CUTOFF,       -1, 0);
     }  
 
   // GLOBALMENU_FLTR
@@ -2463,21 +2151,11 @@ void handle_key_fltr()
       menu_cursor   == GLOBALMENU_FLTR   &&
       menu_fltr     == MENU_FLTR_CUTOFF_RESONANCE)
     {
-      if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A])
-	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST )  
-	  { TK.setAll(FILTER1_RESONANCE,-1);   dirty_graphic=1; }
-      
-      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST )  
-	  { TK.setAll(FILTER1_RESONANCE,1); 	  dirty_graphic=1; }
-      
-      if (keyState[BUTTON_UP]    && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST ) 
-	  { TK.setAll(FILTER1_CUTOFF,1);  	  dirty_graphic=1; }
-      
-      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST ) 
-	  { TK.setAll(FILTER1_CUTOFF,-1); 	  dirty_graphic=1; }
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, FILTER1_RESONANCE,    -1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, FILTER1_RESONANCE,     1, 1);
+
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, FILTER1_CUTOFF,        1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, FILTER1_CUTOFF,       -1, 1);
     }  
 
   // GLOBALMENU_FLTR
@@ -2489,21 +2167,11 @@ void handle_key_fltr()
     {
       sub_handle_invert_trig();
 
-      if (keyState[BUTTON_LEFT]  && keyState[BUTTON_B])
-	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_LONG )  
-	  { TK.set(FILTER1_ALGO,-1);   dirty_graphic=1; }
-      
-      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_LONG )  
-	  { TK.set(FILTER1_ALGO,1); 	  dirty_graphic=1; }
-      
-      if (keyState[BUTTON_UP]    && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_UP]==1 ||    keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_LONG) 
-	  { TK.set(FILTER1_TYPE,1);  	  dirty_graphic=1; }
-      
-      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_LONG ) 
-	  { TK.set(FILTER1_TYPE,-1); 	  dirty_graphic=1; }
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_LONG    , FILTER1_ALGO,             -1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_LONG    , FILTER1_ALGO,              1, 0);
+
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG    , FILTER1_TYPE           ,   1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG    , FILTER1_TYPE           ,  -1, 0);
     }  
 
 
@@ -2516,21 +2184,11 @@ void handle_key_fltr()
     {
       //sub_handle_invert_trig();
 
-      if (keyState[BUTTON_LEFT]  && keyState[BUTTON_A])
-	  if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]>KEY_REPEAT_INTERVAL_SMALLEST )  
-	    { TK.setAll(FILTER1_ALGO,-1);   dirty_graphic=1; }
-      
-      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]>KEY_REPEAT_INTERVAL_SMALLEST )  
-	  { TK.setAll(FILTER1_ALGO,1); 	  dirty_graphic=1; }
-      
-      if (keyState[BUTTON_UP]    && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]>KEY_REPEAT_INTERVAL_SMALLEST ) 
-	  { TK.setAll(FILTER1_TYPE,1);  	  dirty_graphic=1; }
-      
-      if (keyState[BUTTON_DOWN]  && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]>KEY_REPEAT_INTERVAL_SMALLEST ) 
-	  { TK.setAll(FILTER1_TYPE,-1); 	  dirty_graphic=1; }
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_LONG    , FILTER1_ALGO,             -1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_LONG    , FILTER1_ALGO,              1, 1);
+
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG    , FILTER1_TYPE           ,   1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG    , FILTER1_TYPE           ,  -1, 1);
     }  
 
 
@@ -2553,54 +2211,26 @@ void handle_key_bpm()
   if (menu        == MENU_OFF && 
       menu_cursor == GLOBALMENU_BPM )
     {
-      if (keyState[BUTTON_LEFT] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_LONGEST==0) 
-	  { TK.set(BPM,-1); 	  dirty_graphic=1; printf("[B+LEFT  t=%d]\n",bpm_current); }
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_LONG    , BPM ,             -1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_LONG    , BPM ,              1, 0);
 
-      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_LONGEST==0) 
-	  { TK.set(BPM,1); 	  dirty_graphic=1; printf("[B+RIGHT t=%d]\n",bpm_current);}
-
-      if (keyState[BUTTON_DOWN] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONGEST==0) 
-	  { TK.set(BPM,-10); 	  dirty_graphic=1; printf("[B+DOWN  t=%d]\n",bpm_current); }
-
-      if (keyState[BUTTON_UP] && keyState[BUTTON_B]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONGEST==0) 
-	  { TK.set(BPM,10); 	  dirty_graphic=1; printf("[B+UP    t=%d]\n",bpm_current);}
-
-
-      //if (bpm < 20) bpm=20;
-      //if (bpm > 260) bpm=260;
-
-      //nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG    , BPM            ,  10, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG    , BPM            , -10, 0);
     }  
 
   if (menu        == MENU_OFF && 
       menu_cursor == GLOBALMENU_BPM )
     {
-
-      if (keyState[BUTTON_DOWN] && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONGEST==0) 
-	  { TK.set(BPM_DIVIDER,-1); 	  dirty_graphic=1; printf("[A+DOWN  t=%d] divider\n",TK.get(BPM_DIVIDER)); }
-
-      if (keyState[BUTTON_UP] && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONGEST==0) 
-	  { TK.set(BPM_DIVIDER,1); 	  dirty_graphic=1; printf("[A+UP    t=%d] divider\n",TK.get(BPM_DIVIDER));}
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG    , BPM_DIVIDER    ,   1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG    , BPM_DIVIDER    ,  -1, 0);
     }  
 
 
   if (menu        == MENU_OFF && 
       menu_cursor == GLOBALMENU_BPM )
     {
-
-      if (keyState[BUTTON_LEFT] && keyState[BUTTON_A])
-	if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_LONGEST==0)
-	  { TK.set(SWING,-1); 	  dirty_graphic=1; printf("[A+DOWN  t=%d] swing\n",current_swing); }
-
-      if (keyState[BUTTON_RIGHT] && keyState[BUTTON_A]) 
-	if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_LONGEST==0) 
-	  { TK.set(SWING,1); 	  dirty_graphic=1; printf("[A+UP    t=%d] swing\n",current_swing);}
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_LONG    , SWING    ,   1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_LONG    , SWING    ,  -1, 0);
     }  
 
 
