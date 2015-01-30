@@ -147,9 +147,12 @@ public:
   void nextEntry();    // Env.AR => Env.DS
   void previousEntry();// Env.DS => Env.AR
 
-  int   menu_cursor_x;
-  int   menu_cursor_y;
+  int   menu_cursor_x; // store the 0-5,6-11 menu index
+  int   menu_cursor_y; // store the value of the submenu
 
+  int   menu_page;     // menu_cursor_x=0-5  => page1
+                       // menu_cursor_x=6-11 => page2
+                       // menu_cursor_x=-1   => NO_PAGE  // TODO CLEANUP
 };
 
 
