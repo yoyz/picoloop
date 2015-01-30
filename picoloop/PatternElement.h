@@ -10,29 +10,11 @@ using namespace std;
 
 
 
-/* enum  */
-/*   { */
-/*     SINE, */
-/*     SAW, */
-/*     PULSE, */
-/*     //    WTBL, */
-/*     TRGL, */
-/*     NOISE, */
-/*   }; */
-
 /* enum */
 /*   { */
-/*     OPL2_SIN, */
-/*     OPL2_HALF_SIN, */
-/*     OPL2_ABS_SIN, */
-/*     OPL2_QUART_SIN */
+/*     LFO_LFOPITCH, */
+/*     LFO_PITCHBEND */
 /*   }; */
-
-enum
-  {
-    LFO_LFOPITCH,
-    LFO_PITCHBEND
-  };
 
 /*
 enum 
@@ -53,57 +35,12 @@ public:
 
   const char * getMachineTypeCharStar();
   const char * getNoteCharStar();
-  const char * getFMTypeCharStar();
-  /* const char * getOscOneTypeCharStar(); */
-  /* const char * getOscTwoTypeCharStar(); */
-  /* const char * getOscTypeCharStar(int oscType); */
+  /* const char * getFMTypeCharStar(); */
 
 
   void   set(int what, int val);
   int    get(int what);
 
-  /* int    getAmp(); */
-  /* void   setAmp(int a); */
-
-
-  /* int    getPhaseOsc1(); */
-  /* void   setPhaseOsc1(int val); */
-
-  /* int    getFmType(); */
-  /* void   setFmType(int fm); */
-
-  /* int    getMachineType(); */
-  /* void   setMachineType(int val); */
-
-  /* int    getLfoType(); */
-  /* void   setLfoType(int val); */
-
-  /* int    getVCOMix(); */
-  /* void   setVCOMix(int mix); */
-
-  /* int    getOsc1Amp(); */
-  /* void   setOsc1Amp(int val); */
-
-  /* int    getOsc2Amp(); */
-  /* void   setOsc2Amp(int val); */
-
-  /* int    getTrigTime(); */
-  /* void   setTrigTime(int val); */
-
-
-
-  const char * getFilterTypeCharStar();
-  const char * getLFOTypeCharStar();
-  const char * getFilterAlgoCharStar();
-
-
-
-
-
-  /* bool   setChannel(int Channel); */
-  /* bool   setKeyValue(string key, string value); */
-  /* string getValueOfKey(string key); */
-  /* bool   clearKey(string key); */
   string getStr();
   void   print(); 
 private:

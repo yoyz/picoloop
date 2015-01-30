@@ -461,31 +461,31 @@ int PatternElement::checkSevenBitBoundarie(int val)
 
 
 
-const char * PatternElement::getFilterTypeCharStar()
-{
-  static const char * str_filter_type_unknown  = "UKNW";
-  static const char * str_filter_type_lowpass  = "LP";
-  static const char * str_filter_type_bandpass = "BP";
-  static const char * str_filter_type_hipass   = "HP";
+// const char * PatternElement::getFilterTypeCharStar()
+// {
+//   static const char * str_filter_type_unknown  = "UKNW";
+//   static const char * str_filter_type_lowpass  = "LP";
+//   static const char * str_filter_type_bandpass = "BP";
+//   static const char * str_filter_type_hipass   = "HP";
 
-  if (filterType==FILTER_ALGO_NOFILTER) return str_filter_type_lowpass;
-  if (filterType==FILTER_ALGO_BIQUAD)   return str_filter_type_bandpass;
-  if (filterType==FILTER_ALGO_AMSYNTH)  return str_filter_type_hipass;
-  return str_filter_type_unknown;
-}
-
-
-const char * PatternElement::getLFOTypeCharStar()
-{
-  static const char * str_lfo_type_unknown  = "UKNW";
-  static const char * str_lfo_type_lfopitch = "PLFO";
-  static const char * str_lfo_type_pitchbend= "PB";
+//   if (filterType==FILTER_ALGO_NOFILTER) return str_filter_type_lowpass;
+//   if (filterType==FILTER_ALGO_BIQUAD)   return str_filter_type_bandpass;
+//   if (filterType==FILTER_ALGO_AMSYNTH)  return str_filter_type_hipass;
+//   return str_filter_type_unknown;
+// }
 
 
-  if (lfo_type  ==LFO_LFOPITCH)         return str_lfo_type_lfopitch;
-  if (lfo_type  ==LFO_PITCHBEND)        return str_lfo_type_pitchbend;
-  return str_lfo_type_unknown;
-}
+// const char * PatternElement::getLFOTypeCharStar()
+// {
+//   static const char * str_lfo_type_unknown  = "UKNW";
+//   static const char * str_lfo_type_lfopitch = "PLFO";
+//   static const char * str_lfo_type_pitchbend= "PB";
+
+
+//   if (lfo_type  ==LFO_LFOPITCH)         return str_lfo_type_lfopitch;
+//   if (lfo_type  ==LFO_PITCHBEND)        return str_lfo_type_pitchbend;
+//   return str_lfo_type_unknown;
+// }
 
 
 // void PatternElement::setLfoType(int val)
@@ -503,18 +503,18 @@ const char * PatternElement::getLFOTypeCharStar()
 
 
 
-const char * PatternElement::getFilterAlgoCharStar()
-{
-  static const char * str_filter_algo_unknown  = "UKNW";
-  static const char * str_filter_algo_nofilter = "NOFL";
-  static const char * str_filter_algo_biquad   = "BIQU";
-  static const char * str_filter_algo_amsynth  = "AMST";
+// const char * PatternElement::getFilterAlgoCharStar()
+// {
+//   static const char * str_filter_algo_unknown  = "UKNW";
+//   static const char * str_filter_algo_nofilter = "NOFL";
+//   static const char * str_filter_algo_biquad   = "BIQU";
+//   static const char * str_filter_algo_amsynth  = "AMST";
 
-  if (filterAlgo==FILTER_ALGO_NOFILTER) return str_filter_algo_nofilter;
-  if (filterAlgo==FILTER_ALGO_BIQUAD)   return str_filter_algo_biquad;
-  if (filterAlgo==FILTER_ALGO_AMSYNTH)  return str_filter_algo_amsynth;
-  return str_filter_algo_unknown;
-}
+//   if (filterAlgo==FILTER_ALGO_NOFILTER) return str_filter_algo_nofilter;
+//   if (filterAlgo==FILTER_ALGO_BIQUAD)   return str_filter_algo_biquad;
+//   if (filterAlgo==FILTER_ALGO_AMSYNTH)  return str_filter_algo_amsynth;
+//   return str_filter_algo_unknown;
+// }
 
 
 const char * PatternElement::getMachineTypeCharStar()
@@ -533,19 +533,19 @@ const char * PatternElement::getMachineTypeCharStar()
 }
 
 
-const char * PatternElement::getFMTypeCharStar()
-{
-  static const char * str_2_op_AM   = "2OP_AM ";
-  static const char * str_2_op_FM   = "2OP_FM ";
+// const char * PatternElement::getFMTypeCharStar()
+// {
+//   static const char * str_2_op_AM   = "2OP_AM ";
+//   static const char * str_2_op_FM   = "2OP_FM ";
 
-  switch (fm_type)
-    {
-    case FMTYPE_2_OP_FM:  return str_2_op_FM;  break;
-    case FMTYPE_2_OP_AM:  return str_2_op_AM;  break; 
+//   switch (fm_type)
+//     {
+//     case FMTYPE_2_OP_FM:  return str_2_op_FM;  break;
+//     case FMTYPE_2_OP_AM:  return str_2_op_AM;  break; 
 
-    }
-  return str_2_op_AM;
-}
+//     }
+//   return str_2_op_AM;
+// }
 
 
 

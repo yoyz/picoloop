@@ -132,7 +132,25 @@ enum {
   MENU_LS_SONG,
 };
 
+class Menu
+{
+public:
+  Menu();
+  ~Menu();
 
+  void next();         // Env  => Note
+  void previous();     // Note => Env
+
+  void nextPage();     // Env  => L/S
+  void previousPage(); // L/S  => Env
+
+  void nextEntry();    // Env.AR => Env.DS
+  void previousEntry();// Env.DS => Env.AR
+
+  int   menu_cursor_x;
+  int   menu_cursor_y;
+
+};
 
 
 
@@ -184,7 +202,7 @@ int nb_tick_before_step_change; //=(60*DEFAULT_FREQ)/(bpm_current*4);
 
 int last_nbcb_ch_step=0;// nb audio callback from last step
 int debug=1;
-int t=0;                // index of track
+//int t=0;                // index of track
 
 
 
@@ -242,6 +260,7 @@ int current_swing=50;
 
 //int noteOffTrigger[TRACK_MAX];
 
+// SAMM is an AudioMixer which give access to a "Machine" pointer
 void update_SAMM(int trackNumber,int stepNumber)
 {
   SAMM.setMachineType(P[trackNumber].getPatternElement(stepNumber).get(MACHINE_TYPE));	  
@@ -790,7 +809,9 @@ void display_board_vco()
 		SG.drawBoxNumber(cursor,CURSOR_COLOR);
 	      if (i==step)
 		SG.drawBoxNumber(step,STEP_COLOR);  
-	      SG.drawTTFTextNumberFirstLine(i,P[cty].getPatternElement(i).getFMTypeCharStar());
+
+	      update_SAMM(cty,i);
+	      SG.drawTTFTextNumberFirstLine(i,SAM->getMachineParamCharStar(FM_TYPE,P[cty].getPatternElement(i).get(FM_TYPE)));
 	    }	  
 	}
     }
@@ -839,8 +860,10 @@ void display_board_lfo()
 		SG.drawBoxNumber(cursor,CURSOR_COLOR);
 	      if (i==step)
 		SG.drawBoxNumber(step,STEP_COLOR);  
+
+	      update_SAMM(cty,i);
 	      
-	      SG.drawTTFTextNumberFirstLine(i,P[cty].getPatternElement(i).getLFOTypeCharStar()); 
+	      SG.drawTTFTextNumberFirstLine(i,SAM->getMachineParamCharStar(LFO_TYPE,P[cty].getPatternElement(i).get(LFO_TYPE))); 
 	      //SG.drawTTFTextNumberSecondLine(i,P[cty].getPatternElement(i).getFilterTypeCharStar()); 
 	    }
 	}
@@ -939,8 +962,10 @@ void display_board_fltr()
 		  if (i==step)
 		    SG.drawBoxNumber(step,STEP_COLOR);  
 		  
-		  SG.drawTTFTextNumberFirstLine(i,P[cty].getPatternElement(i).getFilterAlgoCharStar()); 
-		  SG.drawTTFTextNumberSecondLine(i,P[cty].getPatternElement(i).getFilterTypeCharStar()); 
+		  update_SAMM(cty,i);
+
+		  SG.drawTTFTextNumberFirstLine(i, SAM->getMachineParamCharStar(FILTER1_ALGO,P[cty].getPatternElement(i).get(FILTER1_ALGO)));
+		  SG.drawTTFTextNumberSecondLine(i,SAM->getMachineParamCharStar(FILTER1_TYPE,P[cty].getPatternElement(i).get(FILTER1_TYPE))); 
 		}
 	    }
 	}
@@ -2761,6 +2786,7 @@ void seq_update_multiple_time_by_step()
   int          step=SEQ.getPatternSequencer(cty).getStep();
   int          oldstep=0;
   int          i=0;
+  int          t=0;
 
   // Change amp Amplification
   seq_update_tweakable_knob_one(AMP);
@@ -3345,6 +3371,7 @@ int seq()
   int          oldstep=0;
   int          i=0;
   int          delay=1;
+  int          t=0;
 
   dirty_graphic=1;
 
