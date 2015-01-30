@@ -115,18 +115,49 @@ const char * dboplMachine::getMachineParamCharStar(int machineParam,int paramVal
   static const char * str_opl2_sqr   = "  SQR";
   static const char * str_opl2_dsqr  = " DSQR";
 
-
   const char * str_osc[PICO_DBOPL_SIZE];
 
-  str_osc[PICO_DBOPL_SINE]  = str_opl2_sine;
-  str_osc[PICO_DBOPL_HSIN]  = str_opl2_hsin;
-  str_osc[PICO_DBOPL_ABSIN] = str_opl2_absin;
-  str_osc[PICO_DBOPL_QSIN]  = str_opl2_qsin;
+  static const char * str_fltr_algo_nofilter = "NOFL";
+  static const char * str_fltr_algo_biquad   = "BIQU";
+  static const char * str_fltr_algo_amsynth  = "AMST";
+  
+  const        char * str_fltr_algo[FILTER_ALGO_SIZE];
 
-  str_osc[PICO_DBOPL_EPSIN] = str_opl2_epsin;
-  str_osc[PICO_DBOPL_ASIN]  = str_opl2_asin;
-  str_osc[PICO_DBOPL_SQR]   = str_opl2_sqr;
-  str_osc[PICO_DBOPL_DSQR]  = str_opl2_dsqr;
+
+  static const char * str_fltr_type_lp   = "LP";
+  static const char * str_fltr_type_bp   = "BP";
+  static const char * str_fltr_type_hp   = "HP";
+
+  const        char * str_fltr_type[FILTER_TYPE_SIZE];
+
+  static const char * str_fm_type_am      = "2OP_AM ";
+  static const char * str_fm_type_fm      = "2OP_FM ";
+
+  const        char * str_fm_type[FM_TYPE_SIZE];
+
+
+  str_osc[PICO_DBOPL_SINE]            = str_opl2_sine;
+  str_osc[PICO_DBOPL_HSIN]            = str_opl2_hsin;
+  str_osc[PICO_DBOPL_ABSIN]           = str_opl2_absin;
+  str_osc[PICO_DBOPL_QSIN]            = str_opl2_qsin;
+
+  str_osc[PICO_DBOPL_EPSIN]           = str_opl2_epsin;
+  str_osc[PICO_DBOPL_ASIN]            = str_opl2_asin;
+  str_osc[PICO_DBOPL_SQR]             = str_opl2_sqr;
+  str_osc[PICO_DBOPL_DSQR]            = str_opl2_dsqr;
+
+  str_fltr_algo[FILTER_ALGO_NOFILTER] = str_fltr_algo_nofilter;
+  str_fltr_algo[FILTER_ALGO_BIQUAD]   = str_fltr_algo_biquad;
+  str_fltr_algo[FILTER_ALGO_AMSYNTH]  = str_fltr_algo_amsynth;
+
+  str_fltr_type[FILTER_TYPE_LP]       = str_fltr_type_lp;
+  str_fltr_type[FILTER_TYPE_BP]       = str_fltr_type_bp;
+  str_fltr_type[FILTER_TYPE_HP]       = str_fltr_type_hp;
+
+  str_fm_type[FM_TYPE_AM]             = str_fm_type_am;
+  str_fm_type[FM_TYPE_FM]             = str_fm_type_fm;
+
+
 
   switch (machineParam)
     {
@@ -134,6 +165,15 @@ const char * dboplMachine::getMachineParamCharStar(int machineParam,int paramVal
       return str_osc[paramValue];
     case OSC2_TYPE:
       return str_osc[paramValue];
+
+    case FILTER1_ALGO:
+      return str_fltr_algo[paramValue];
+
+    case FILTER1_TYPE:
+      return str_fltr_type[paramValue];
+
+    case FM_TYPE:
+      return str_fm_type[paramValue];
 
     }
   return str_null;

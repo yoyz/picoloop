@@ -276,6 +276,21 @@ enum
     FILTER_ALGO_SIZE,
   };
 
+enum
+  {
+    LFO_TYPE_PITCHLFO,
+    LFO_TYPE_PITCHBEND,
+    LFO_TYPE_SIZE,
+  };
+
+
+enum
+  {
+    FM_TYPE_AM,
+    FM_TYPE_FM,
+    FM_TYPE_SIZE,
+  };
+
 
 
 

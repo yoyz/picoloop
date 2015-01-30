@@ -121,6 +121,7 @@ int PicosynthMachine::checkI(int what,int val)
       return val;
       break;      
     }
+  return val;
 }
 
 int PicosynthMachine::getI(int what)
@@ -223,13 +224,48 @@ const char * PicosynthMachine::getMachineParamCharStar(int machineParam,int para
   static const char * str_noise      = "NOISE";
   static const char * str_wtbl       = "WTBL ";
 
-  const char * str_osc[PICO_WAVETABLE_SIZE];
+  const        char * str_osc[PICO_WAVETABLE_SIZE];
 
-  str_osc[PICO_WAVETABLE_SINE]  = str_sine;
-  str_osc[PICO_WAVETABLE_SAW]   = str_saw;
-  str_osc[PICO_WAVETABLE_PULSE] = str_pulse;
-  str_osc[PICO_WAVETABLE_TRGL]  = str_trgl;
-  str_osc[PICO_WAVETABLE_NOISE] = str_noise;
+
+  static const char * str_fltr_algo_nofilter = "NOFL";
+  static const char * str_fltr_algo_biquad   = "BIQU";
+  static const char * str_fltr_algo_amsynth  = "AMST";
+  
+  const        char * str_fltr_algo[FILTER_ALGO_SIZE];
+
+
+  static const char * str_fltr_type_lp   = "LP";
+  static const char * str_fltr_type_bp   = "BP";
+  static const char * str_fltr_type_hp   = "HP";
+
+  const        char * str_fltr_type[FILTER_TYPE_SIZE];
+
+
+  static const char * str_lfo_type_lfo   = "PLFO";
+  static const char * str_lfo_type_pb    = "PB";
+
+  const        char * str_lfo_type[LFO_TYPE_SIZE];
+
+
+
+
+
+  str_osc[PICO_WAVETABLE_SINE]        = str_sine;
+  str_osc[PICO_WAVETABLE_SAW]         = str_saw;
+  str_osc[PICO_WAVETABLE_PULSE]       = str_pulse;
+  str_osc[PICO_WAVETABLE_TRGL]        = str_trgl;
+  str_osc[PICO_WAVETABLE_NOISE]       = str_noise;
+
+  str_fltr_algo[FILTER_ALGO_NOFILTER] = str_fltr_algo_nofilter;
+  str_fltr_algo[FILTER_ALGO_BIQUAD]   = str_fltr_algo_biquad;
+  str_fltr_algo[FILTER_ALGO_AMSYNTH]  = str_fltr_algo_amsynth;
+
+  str_fltr_type[FILTER_TYPE_LP]       = str_fltr_type_lp;
+  str_fltr_type[FILTER_TYPE_BP]       = str_fltr_type_bp;
+  str_fltr_type[FILTER_TYPE_HP]       = str_fltr_type_hp;
+
+  str_lfo_type[LFO_TYPE_PITCHLFO]     = str_lfo_type_lfo;
+  str_lfo_type[LFO_TYPE_PITCHBEND]    = str_lfo_type_pb;
 
   switch (machineParam)
     {
@@ -237,6 +273,15 @@ const char * PicosynthMachine::getMachineParamCharStar(int machineParam,int para
       return str_osc[paramValue];
     case OSC2_TYPE:
       return str_osc[paramValue];
+     
+    case FILTER1_ALGO:
+      return str_fltr_algo[paramValue];
+
+    case FILTER1_TYPE:
+      return str_fltr_type[paramValue];
+
+    case LFO_TYPE:
+      return str_lfo_type[paramValue];
 
     }
   return str_null;

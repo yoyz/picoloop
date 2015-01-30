@@ -177,6 +177,7 @@ PicodrumVCO & PicodrumMachine::getPicodrumVCO()
 const char * PicodrumMachine::getMachineParamCharStar(int machineParam,int paramValue)
 {
   static const char * str_null       = "NULL ";
+
   static const char * str_sine       = "SINE ";
   static const char * str_saw        = "SAW  ";
   static const char * str_pulse      = "PULSE";
@@ -184,13 +185,35 @@ const char * PicodrumMachine::getMachineParamCharStar(int machineParam,int param
   static const char * str_noise      = "NOISE";
   static const char * str_wtbl       = "WTBL ";
 
-  const char * str_osc[PICO_WAVETABLE_SIZE];
+  const        char * str_osc[PICO_WAVETABLE_SIZE];
 
-  str_osc[PICO_WAVETABLE_SINE]  = str_sine;
-  str_osc[PICO_WAVETABLE_SAW]   = str_saw;
-  str_osc[PICO_WAVETABLE_PULSE] = str_pulse;
-  str_osc[PICO_WAVETABLE_TRGL]  = str_trgl;
-  str_osc[PICO_WAVETABLE_NOISE] = str_noise;
+
+  static const char * str_fltr_algo_nofilter = "NOFL";
+  static const char * str_fltr_algo_biquad   = "BIQU";
+  static const char * str_fltr_algo_amsynth  = "AMST";
+  
+  const        char * str_fltr_algo[FILTER_ALGO_SIZE];
+
+
+  static const char * str_fltr_type_lp   = "LP";
+  static const char * str_fltr_type_bp   = "BP";
+  static const char * str_fltr_type_hp   = "HP";
+
+  const        char * str_fltr_type[FILTER_TYPE_SIZE];
+
+  str_osc[PICO_WAVETABLE_SINE]        = str_sine;
+  str_osc[PICO_WAVETABLE_SAW]         = str_saw;
+  str_osc[PICO_WAVETABLE_PULSE]       = str_pulse;
+  str_osc[PICO_WAVETABLE_TRGL]        = str_trgl;
+  str_osc[PICO_WAVETABLE_NOISE]       = str_noise;
+
+  str_fltr_algo[FILTER_ALGO_NOFILTER] = str_fltr_algo_nofilter;
+  str_fltr_algo[FILTER_ALGO_BIQUAD]   = str_fltr_algo_biquad;
+  str_fltr_algo[FILTER_ALGO_AMSYNTH]  = str_fltr_algo_amsynth;
+
+  str_fltr_type[FILTER_TYPE_LP]       = str_fltr_type_lp;
+  str_fltr_type[FILTER_TYPE_BP]       = str_fltr_type_bp;
+  str_fltr_type[FILTER_TYPE_HP]       = str_fltr_type_hp;
 
   switch (machineParam)
     {
@@ -198,6 +221,12 @@ const char * PicodrumMachine::getMachineParamCharStar(int machineParam,int param
       return str_osc[paramValue];
     case OSC2_TYPE:
       return str_osc[paramValue];
+     
+    case FILTER1_ALGO:
+      return str_fltr_algo[paramValue];
+
+    case FILTER1_TYPE:
+      return str_fltr_type[paramValue];
 
     }
   return str_null;
