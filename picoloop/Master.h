@@ -74,6 +74,9 @@
 #define BUTTON_SELECT       SDLK_ESCAPE
 #define BUTTON_START        SDLK_RETURN
 
+#define BUTTON_POWER        SDLK_POWER
+#define BUTTON_PAUSE        SDLK_PAUSE
+
 #define KEYPRESSED          SDL_KEYDOWN
 #define KEYRELEASED         SDL_KEYUP
 
@@ -109,6 +112,8 @@
 
 #define BUTTON_SELECT       SDLK_ESCAPE
 #define BUTTON_START        SDLK_RETURN
+
+
 
 #define KEYPRESSED          SDL_KEYDOWN
 #define KEYRELEASED         SDL_KEYUP

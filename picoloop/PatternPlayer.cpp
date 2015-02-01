@@ -309,7 +309,7 @@ void refresh_bpm()
 
 void display_board_two_param(int machineParam1,int machineParam2)
 {
-  int i;
+  int  i;
   int  cty=SEQ.getCurrentTrackY();
   int  step=SEQ.getPatternSequencer(cty).getStep();
 
@@ -325,14 +325,66 @@ void display_board_two_param(int machineParam1,int machineParam2)
 	    SG.drawBoxNumber(cursor,CURSOR_COLOR);
 	  if (i==step)
 	    SG.drawBoxNumber(step,STEP_COLOR);  
-	  //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
-	  
-	  // LFO
 	  SG.smallBoxNumber(i,P[cty].getPatternElement(i).get(machineParam1),128,SMALLBOX_COLOR);
 	  SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).get(machineParam2),SMALLBOX_COLOR);
 	}
     }  
 }
+
+
+void display_board_one_param_text(int machineParam1)
+{
+  int  i;
+  int  cty=SEQ.getCurrentTrackY();
+  int  step=SEQ.getPatternSequencer(cty).getStep();
+
+  // Cursor & step postion      
+  SG.drawBoxNumber(cursor,CURSOR_COLOR);
+  SG.drawBoxNumber(step,STEP_COLOR);  
+  for (i=0;i<16;i++)
+    {	  // Draw trigged box trig color   
+      if (P[cty].getPatternElement(i).get(NOTE_ON))
+	{
+	  SG.drawBoxNumber(i,TRIG_COLOR);
+	  if (i==cursor)
+	    SG.drawBoxNumber(cursor,CURSOR_COLOR);
+	  if (i==step)
+	    SG.drawBoxNumber(step,STEP_COLOR);  
+
+	  update_SAMM(cty,i);
+	  SG.drawTTFTextNumberFirstLine(i,SAM->getMachineParamCharStar(machineParam1,P[cty].getPatternElement(i).get(machineParam1)));	  
+
+	}
+    }  
+}
+
+
+void display_board_two_param_text(int machineParam1,int machineParam2)
+{
+  int  i;
+  int  cty=SEQ.getCurrentTrackY();
+  int  step=SEQ.getPatternSequencer(cty).getStep();
+
+  // Cursor & step postion      
+  SG.drawBoxNumber(cursor,CURSOR_COLOR);
+  SG.drawBoxNumber(step,STEP_COLOR);  
+  for (i=0;i<16;i++)
+    {	  // Draw trigged box trig color   
+      if (P[cty].getPatternElement(i).get(NOTE_ON))
+	{
+	  SG.drawBoxNumber(i,TRIG_COLOR);
+	  if (i==cursor)
+	    SG.drawBoxNumber(cursor,CURSOR_COLOR);
+	  if (i==step)
+	    SG.drawBoxNumber(step,STEP_COLOR);  
+
+	  update_SAMM(cty,i);
+	  SG.drawTTFTextNumberFirstLine( i,SAM->getMachineParamCharStar(machineParam1,P[cty].getPatternElement(i).get(machineParam1)));	  
+	  SG.drawTTFTextNumberSecondLine(i,SAM->getMachineParamCharStar(machineParam2,P[cty].getPatternElement(i).get(machineParam2)));	  
+	}
+    }  
+}
+
 
 
 void display_board_amp_env()
@@ -445,6 +497,115 @@ void display_board_note()
     }
   
 }
+
+void display_board_vco()
+{
+  int  i;
+  int  cty=SEQ.getCurrentTrackY();
+  int  step=SEQ.getPatternSequencer(cty).getStep();
+
+  // VCO
+  if (menu_cursor == GLOBALMENU_VCO  && 
+      menu_vco    == MENU_VCO_OSCMIX_PHASE)
+    {
+      display_board_two_param(VCO_MIX,OSC1_PHASE);
+    }
+
+  // VCO
+  if (menu_cursor == GLOBALMENU_VCO  && 
+      menu_vco    == MENU_VCO_OSCAMP)
+    {
+       display_board_two_param(OSC1_AMP,OSC2_AMP);
+    }
+
+  if (menu_cursor == GLOBALMENU_VCO  && 
+      menu_vco    == MENU_VCO_FMTYPE)
+    {	  
+      display_board_one_param_text(FM_TYPE); 
+    }
+  
+}
+
+
+
+
+void display_board_lfo()
+{
+  int  i;
+  int  cty=SEQ.getCurrentTrackY();
+  int  step=SEQ.getPatternSequencer(cty).getStep();
+
+  // LFOPITCH
+
+  if (menu_cursor==GLOBALMENU_LFO &&
+      menu_lfo   ==MENU_LFO_LFOPITCH)
+    {
+
+      display_board_two_param(LFO1_DEPTH,LFO1_FREQ);
+    }
+
+  // PITCHBEND
+
+  if (menu_cursor==GLOBALMENU_LFO &&
+      menu_lfo   ==MENU_LFO_PITCHBEND)
+    {
+      display_board_two_param(PITCHBEND_DEPTH,PITCHBEND_SPEED);
+    }
+
+  if (menu_lfo==MENU_LFO_TYPE)
+    {
+      display_board_one_param_text(LFO_TYPE);
+    }
+}
+
+void display_board_osc()
+{
+  int  i;
+  int  cty=SEQ.getCurrentTrackY();
+  int  step=SEQ.getPatternSequencer(cty).getStep();
+
+  if (menu_cursor==GLOBALMENU_OSC)
+    {
+      display_board_two_param_text(OSC1_TYPE,OSC2_TYPE);
+    }
+}
+
+void display_board_fltr()
+{
+  int  i;
+  int  cty=SEQ.getCurrentTrackY();
+  int  step=SEQ.getPatternSequencer(cty).getStep();
+
+  if (menu_cursor==GLOBALMENU_FLTR)
+    {
+
+      if (menu_fltr==MENU_FLTR_CUTOFF_RESONANCE)
+	{
+	  display_board_two_param(FILTER1_RESONANCE,FILTER1_CUTOFF);
+	}
+      if (menu_fltr==MENU_FLTR_ALGO_TYPE)
+	{
+	  display_board_two_param_text(FILTER1_ALGO,FILTER1_TYPE);
+	}
+    }
+}
+
+
+void display_board_fx()
+{
+  int  i;
+  int  cty=SEQ.getCurrentTrackY();
+  int  step=SEQ.getPatternSequencer(cty).getStep();
+
+  if (menu_cursor==GLOBALMENU_FX)
+    {      
+      if (menu_fx==MENU_FX_DEPTH_SPEED)
+	{
+	  display_board_two_param(FX1_DEPTH,FX1_SPEED);
+	}
+    }
+}
+
 
 
 
@@ -775,136 +936,6 @@ void display_board_psh()
 
 
 
-void display_board_vco()
-{
-  int  i;
-  int  cty=SEQ.getCurrentTrackY();
-  int  step=SEQ.getPatternSequencer(cty).getStep();
-
-  // VCO
-  if (menu_cursor == GLOBALMENU_VCO  && 
-      menu_vco    == MENU_VCO_OSCMIX_PHASE)
-    {
-      display_board_two_param(VCO_MIX,OSC1_PHASE);
-    }
-
-  // VCO
-  if (menu_cursor == GLOBALMENU_VCO  && 
-      menu_vco    == MENU_VCO_OSCAMP)
-    {
-       display_board_two_param(OSC1_AMP,OSC2_AMP);
-    }
-
-  if (menu_cursor == GLOBALMENU_VCO  && 
-      menu_vco    == MENU_VCO_FMTYPE)
-    {	  
-      SG.drawBoxNumber(step,STEP_COLOR);  
-      SG.drawBoxNumber(cursor,CURSOR_COLOR);
-      
-      for (i=0;i<16;i++)
-	{
-	  // Draw trig note color
-	  if (P[cty].getPatternElement(i).get(NOTE_ON))
-	    {
-	      SG.drawBoxNumber(i,NOTE_COLOR);
-	      
-	      if (i==cursor)
-		SG.drawBoxNumber(cursor,CURSOR_COLOR);
-	      if (i==step)
-		SG.drawBoxNumber(step,STEP_COLOR);  
-
-	      update_SAMM(cty,i);
-	      SG.drawTTFTextNumberFirstLine(i,SAM->getMachineParamCharStar(FM_TYPE,P[cty].getPatternElement(i).get(FM_TYPE)));
-	    }	  
-	}
-    }
-     
-}
-
-
-
-
-void display_board_lfo()
-{
-  int  i;
-  int  cty=SEQ.getCurrentTrackY();
-  int  step=SEQ.getPatternSequencer(cty).getStep();
-
-  // LFOPITCH
-
-  if (menu_cursor==GLOBALMENU_LFO &&
-      menu_lfo   ==MENU_LFO_LFOPITCH)
-    {
-
-      display_board_two_param(LFO1_DEPTH,LFO1_FREQ);
-    }
-
-  // PITCHBEND
-
-  if (menu_cursor==GLOBALMENU_LFO &&
-      menu_lfo   ==MENU_LFO_PITCHBEND)
-    {
-      display_board_two_param(PITCHBEND_DEPTH,PITCHBEND_SPEED);
-    }
-
-  if (menu_lfo==MENU_LFO_TYPE)
-    {
-      // Cursor & step postion      
-      SG.drawBoxNumber(cursor,CURSOR_COLOR);
-      SG.drawBoxNumber(step,STEP_COLOR);  
-      
-      for (i=0;i<16;i++)
-	{
-	  // Draw trigged box trig color   
-	  if (P[cty].getPatternElement(i).get(NOTE_ON))
-	    {
-	      SG.drawBoxNumber(i,TRIG_COLOR);
-	      if (i==cursor)
-		SG.drawBoxNumber(cursor,CURSOR_COLOR);
-	      if (i==step)
-		SG.drawBoxNumber(step,STEP_COLOR);  
-
-	      update_SAMM(cty,i);
-	      
-	      SG.drawTTFTextNumberFirstLine(i,SAM->getMachineParamCharStar(LFO_TYPE,P[cty].getPatternElement(i).get(LFO_TYPE))); 
-	      //SG.drawTTFTextNumberSecondLine(i,P[cty].getPatternElement(i).getFilterTypeCharStar()); 
-	    }
-	}
-    }
-
-  
-}
-
-void display_board_osc()
-{
-  int  i;
-  int  cty=SEQ.getCurrentTrackY();
-  int  step=SEQ.getPatternSequencer(cty).getStep();
-
-    if (menu_cursor==GLOBALMENU_OSC)
-    {
-      for (i=0;i<16;i++)
-	{
-	  if (P[cty].getPatternElement(i).get(NOTE_ON))
-	    {
-	      SG.drawBoxNumber(i,TRIG_COLOR);
-	      if (i==cursor)       SG.drawBoxNumber(cursor,CURSOR_COLOR);
-	      if (i==step)         SG.drawBoxNumber(step,STEP_COLOR);  
-	      //SG.drawTTFTextNumberFirstLine(i, P[cty].getPatternElement(i).getOscOneTypeCharStar());
-	      //SG.drawTTFTextNumberSecondLine(i,P[cty].getPatternElement(i).getOscTwoTypeCharStar());
-	      update_SAMM(cty,i);
-	      SG.drawTTFTextNumberFirstLine(i, SAM->getMachineParamCharStar(OSC1_TYPE,P[cty].getPatternElement(i).get(OSC1_TYPE)));
-	      SG.drawTTFTextNumberSecondLine(i, SAM->getMachineParamCharStar(OSC2_TYPE,P[cty].getPatternElement(i).get(OSC2_TYPE)));
-	    }
-	  else
-	    {
-	      if (i==cursor)SG.drawBoxNumber(cursor,CURSOR_COLOR);
-	      if (i==step)  SG.drawBoxNumber(step,STEP_COLOR);  
-	    }
-
-	}
-    }
-}
 
 
 void display_board_mac()
@@ -930,65 +961,6 @@ void display_board_mac()
 	      if (i==step)  SG.drawBoxNumber(step,STEP_COLOR);  
 	    }
 
-	}
-    }
-}
-
-
-void display_board_fltr()
-{
-  int  i;
-  int  cty=SEQ.getCurrentTrackY();
-  int  step=SEQ.getPatternSequencer(cty).getStep();
-
-  if (menu_cursor==GLOBALMENU_FLTR)
-    {
-
-      if (menu_fltr==MENU_FLTR_CUTOFF_RESONANCE)
-	{
-	  display_board_two_param(FILTER1_RESONANCE,FILTER1_CUTOFF);
-	}
-      if (menu_fltr==MENU_FLTR_ALGO_TYPE)
-	{
-	  // Cursor & step postion      
-	  SG.drawBoxNumber(cursor,CURSOR_COLOR);
-	  SG.drawBoxNumber(step,STEP_COLOR);  
-	  
-	  for (i=0;i<16;i++)
-	    {
-	      // Draw trigged box trig color   
-	      if (P[cty].getPatternElement(i).get(NOTE_ON))
-		{
-		  SG.drawBoxNumber(i,TRIG_COLOR);
-		  if (i==cursor)
-		    SG.drawBoxNumber(cursor,CURSOR_COLOR);
-		  if (i==step)
-		    SG.drawBoxNumber(step,STEP_COLOR);  
-		  
-		  update_SAMM(cty,i);
-
-		  SG.drawTTFTextNumberFirstLine(i, SAM->getMachineParamCharStar(FILTER1_ALGO,P[cty].getPatternElement(i).get(FILTER1_ALGO)));
-		  SG.drawTTFTextNumberSecondLine(i,SAM->getMachineParamCharStar(FILTER1_TYPE,P[cty].getPatternElement(i).get(FILTER1_TYPE))); 
-		}
-	    }
-	}
-
-    }
-}
-
-
-void display_board_fx()
-{
-  int  i;
-  int  cty=SEQ.getCurrentTrackY();
-  int  step=SEQ.getPatternSequencer(cty).getStep();
-
-  if (menu_cursor==GLOBALMENU_FX)
-    {
-
-      if (menu_fx==MENU_FX_DEPTH_SPEED)
-	{
-	  display_board_two_param(FX1_DEPTH,FX1_SPEED);
 	}
     }
 }
@@ -2704,6 +2676,27 @@ void handle_key()
   lastEvent=IE.lastEvent();
   lastKey=IE.lastKey();
 
+
+  //#ifdef OPENDINGUX
+  if (keyState[BUTTON_SELECT] && keyState[BUTTON_DOWN])
+    if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%4==0)
+      {
+	AudioMixer & am=AE.getAudioMixer();
+	am.setAudioVolume(am.getAudioVolume()-1);
+	IE.clearLastKeyEvent();
+	return;
+      }
+  if (keyState[BUTTON_SELECT] && keyState[BUTTON_UP])
+    if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%4==0)
+      {
+	AudioMixer & am=AE.getAudioMixer();
+	am.setAudioVolume(am.getAudioVolume()+1);
+	IE.clearLastKeyEvent();
+	return;
+      }
+  //  #endif
+
+
   if (IE.shouldExit())
     quit=1;
     //exit(0);
@@ -3375,6 +3368,9 @@ int seq()
   int          i=0;
   int          delay=1;
   int          t=0;
+
+  am.setAudioVolume(127);
+
 
   dirty_graphic=1;
 
