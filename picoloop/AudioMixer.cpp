@@ -4,7 +4,7 @@
 AudioMixer::AudioMixer() : T(TRACK_MAX)
 {
   printf("AudioMixer::AudioMixer()\n");  
-  volume=127;
+  volume=64;
 }
 
 AudioMixer::~AudioMixer()

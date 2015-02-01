@@ -2679,7 +2679,7 @@ void handle_key()
 
   //#ifdef OPENDINGUX
   if (keyState[BUTTON_SELECT] && keyState[BUTTON_DOWN])
-    if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%4==0)
+    if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALLEST==0)
       {
 	AudioMixer & am=AE.getAudioMixer();
 	am.setAudioVolume(am.getAudioVolume()-1);
@@ -2687,7 +2687,7 @@ void handle_key()
 	return;
       }
   if (keyState[BUTTON_SELECT] && keyState[BUTTON_UP])
-    if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%4==0)
+    if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALLEST==0)
       {
 	AudioMixer & am=AE.getAudioMixer();
 	am.setAudioVolume(am.getAudioVolume()+1);
@@ -3369,7 +3369,7 @@ int seq()
   int          delay=1;
   int          t=0;
 
-  am.setAudioVolume(127);
+  am.setAudioVolume(DEFAULT_VOLUME);
 
 
   dirty_graphic=1;
