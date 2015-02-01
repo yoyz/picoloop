@@ -4,6 +4,7 @@
 AudioMixer::AudioMixer() : T(TRACK_MAX)
 {
   printf("AudioMixer::AudioMixer()\n");  
+  volume=127;
 }
 
 AudioMixer::~AudioMixer()
@@ -47,6 +48,18 @@ Sint16 AudioMixer::twoChannel(Sint16 a,Sint16 b)
 }
 
 
+void AudioMixer::setAudioVolume(int v)
+{
+  if (v>=0 &&
+      v<=127)
+    volume=v;
+  printf("AudioVolume:%d\n",volume);
+}
+
+int AudioMixer::getAudioVolume()
+{
+  return volume;
+}
 
 Sint16 AudioMixer::tick()
 {
@@ -60,7 +73,7 @@ Sint16 AudioMixer::tick()
   //Sint16 inttick=T.tick();
   //Sint32 sint32tick=(T0.tick()/2)+(T1.tick()/2);
   //Sint32 sint32tick=this->twoChannel(T[0].tick(),T[1].tick());
-
+  val=(val*volume)>>7;
   
   //  sint16tick=sint32tick;
 
