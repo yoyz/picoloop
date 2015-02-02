@@ -278,19 +278,19 @@ void PBSynthMachine::setI(int what,int val)
       }
 
 
-    if (what==ADSR_ENV0_ATTACK)    SE.getEnvelope(0)->setA(-1.0f/val);
-    if (what==ADSR_ENV0_DECAY)     SE.getEnvelope(0)->setD(-1.0f/val);
-    if (what==ADSR_ENV0_SUSTAIN)   SE.getEnvelope(0)->setS( 1.0f/val);
-    if (what==ADSR_ENV0_RELEASE)   SE.getEnvelope(0)->setR(-1.0f/val);
+    if (what==ADSR_ENV0_ATTACK)    SE.getEnvelope(0)->setA(-1.0f/(val+1));
+    if (what==ADSR_ENV0_DECAY)     SE.getEnvelope(0)->setD(-1.0f/(val+1));
+    if (what==ADSR_ENV0_SUSTAIN)   SE.getEnvelope(0)->setS( 1.0f/(val+1));
+    if (what==ADSR_ENV0_RELEASE)   SE.getEnvelope(0)->setR(-1.0f/(val+1));
 
 
-    if (what==ADSR_ENV1_ATTACK)    SE.getEnvelope(1)->setA(-1.0f/val);
-    if (what==ADSR_ENV1_DECAY)     SE.getEnvelope(1)->setD(-1.0f/val);
-    if (what==ADSR_ENV1_SUSTAIN)   SE.getEnvelope(1)->setS( 1.0f/val);
-    if (what==ADSR_ENV1_RELEASE)   SE.getEnvelope(1)->setR(-1.0f/val);
+    if (what==ADSR_ENV1_ATTACK)    SE.getEnvelope(1)->setA(-1.0f/(val+1));
+    if (what==ADSR_ENV1_DECAY)     SE.getEnvelope(1)->setD(-1.0f/(val+1));
+    if (what==ADSR_ENV1_SUSTAIN)   SE.getEnvelope(1)->setS( 1.0f/(val+1));
+    if (what==ADSR_ENV1_RELEASE)   SE.getEnvelope(1)->setR(-1.0f/(val+1));
 
     //if (what==VCO_MIX)             SE.setParameter(SENGINE_OSCMIX,1.0f/val);
-    if (what==VCO_MIX)             SE.setParameter(SENGINE_ENV2_TO_CUTOFF,1.0f/val);
+    if (what==VCO_MIX)             SE.setParameter(SENGINE_ENV2_TO_CUTOFF,1.0f/(val+1));
 
 
   if (what==OSC1_NOTE)                note=val;
@@ -299,8 +299,8 @@ void PBSynthMachine::setI(int what,int val)
   // if (what==FILTER1_CUTOFF)         SE.setParameter(SENGINE_FILTFREQ,(2.0f/(val)-1));
   // if (what==FILTER1_RESONANCE)      SE.setParameter(SENGINE_FILTRESO,(2.0f/(val)-1));
 
-  if (what==FILTER1_CUTOFF)         SE.setParameter(SENGINE_FILTFREQ,1.0f/val);
-  if (what==FILTER1_RESONANCE)      SE.setParameter(SENGINE_FILTRESO,1.0f/val);
+  if (what==FILTER1_CUTOFF)         SE.setParameter(SENGINE_FILTFREQ,1.0f/(val+1));
+  if (what==FILTER1_RESONANCE)      SE.setParameter(SENGINE_FILTRESO,1.0f/(val+1));
 
     // if (what==FILTER1_CUTOFF)      
     //   { 
