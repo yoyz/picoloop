@@ -234,7 +234,7 @@ void PatternElement::set(int what,int val)
       break;
 
     case MACHINE_TYPE:
-      machine_type=checkSevenBitBoundarie(val)%3; // HACK TO make the DBOPL/PICOSYNTH/PICODRUM TO WORK
+      machine_type=checkSevenBitBoundarie(val)%4; // HACK TO make the DBOPL/PICOSYNTH/PICODRUM TO WORK
       break;
 
 
@@ -522,12 +522,14 @@ const char * PatternElement::getMachineTypeCharStar()
   static const char * str_picosynth   = "PSYNTH ";
   static const char * str_picodrum    = "PDRUM  ";
   static const char * str_opl2        = "OPL2 ";
+  static const char * str_pbsynth     = "PBS ";
 
   switch (machine_type)
     {
     case SYNTH_PICOSYNTH:  return str_picosynth;   break;
     case SYNTH_PICODRUM:   return str_picodrum;    break;
     case SYNTH_OPL2:       return str_opl2;        break; 
+    case SYNTH_PBSYNTH:    return str_pbsynth;     break; 
     }
   return str_picosynth;
 }
