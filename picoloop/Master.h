@@ -239,7 +239,8 @@ enum
   {
     SYNTH_PICOSYNTH,
     SYNTH_OPL2,
-    SYNTH_PICODRUM
+    SYNTH_PICODRUM,
+    SYNTH_PBSYNTH,
   };
 
 enum 

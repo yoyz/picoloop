@@ -4,7 +4,7 @@
 
 			//MonoMixer::MonoMixer(): M()
 //MonoMixer::MonoMixer()
-MonoMixer::MonoMixer(): PD(), PM(), OPLM(), FXDelay(), FXDisabled()
+MonoMixer::MonoMixer(): PD(), PM(), OPLM(), PBS(), FXDelay(), FXDisabled()
 {
   printf("MonoMixer::MonoMixer()\n");  
   amplitude=127;
@@ -34,6 +34,7 @@ void MonoMixer::init()
   PM.init();
   PD.init();
   OPLM.init();
+  PBS.init();
 
   //FX=&FXDelay;
   FX=&FXDelay;
@@ -55,6 +56,8 @@ void MonoMixer::init()
     M=&OPLM;
   if (machine_type==2)
     M=&PD;
+  if (machine_type==3)
+    M=&PBS;
 
   //M=&OPLM;
   //M=&PM;
@@ -79,6 +82,11 @@ void MonoMixer::setMachineType(int type)
     case SYNTH_PICODRUM:
       M=&PD;
       break;
+
+    case SYNTH_PBSYNTH:
+      M=&PBS;
+      break;
+
 
     default:
       printf("void MonoMixer::setMachineType(%d)\n",type);
@@ -129,6 +137,7 @@ Sint16 MonoMixer::tick()
   //tick=M->tick();
   //tick=FX.process(M->tick());
   //tick=FXDelay.process(M->tick());
+
   tick=FX->process(M->tick());
   res32=tick*amplitude;
   //  res32=tick*127;
