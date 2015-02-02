@@ -66,15 +66,25 @@ void MonoMixer::setMachineType(int type)
   printf("MonoMixer::setMachineType :%d\n",type);  
   machine_type=type;
 
-  if (type==0)
+  switch (type)
+    {
+    case SYNTH_PICOSYNTH:
       M=&PM;
+      break;
 
-  if (type==1)
+    case SYNTH_OPL2:
       M=&OPLM;
+      break;
 
-  if (type==2)
+    case SYNTH_PICODRUM:
       M=&PD;
+      break;
 
+    default:
+      printf("void MonoMixer::setMachineType(%d)\n",type);
+      exit(1);
+      break;
+    }
 }
 
 void MonoMixer::setAmplitude(int amp)
