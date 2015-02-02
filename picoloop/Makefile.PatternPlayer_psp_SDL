@@ -47,6 +47,17 @@ OBJS=PatternPlayer.o \
 		      Machine/Dbopl/dbopl.o                    \
 		      Machine/Dbopl/hiopl.o                    \
 		      Machine/Dbopl/DboplMachine.o             \
+		      Machine/PBSynth/synthengine.o            \
+		      Machine/PBSynth/osc.o                    \
+		      Machine/PBSynth/lfo.o                    \
+		      Machine/PBSynth/filter.o                 \
+		      Machine/PBSynth/env.o                    \
+		      Machine/PBSynth/echo.o                   \
+		      Machine/PBSynth/osctab.o                 \
+		      Machine/PBSynth/lfotab.o                 \
+		      Machine/PBSynth/envtab.o                 \
+		      Machine/PBSynth/coeff.o                  \
+		      Machine/PBSynth/PBSynthMachine.o         \
 		      psp_callback.o                           \
 
 
@@ -57,7 +68,7 @@ BUILD_PRX=1
 PSP_FW_VERSION = 500
 
 INCDIR		=
-CFLAGS		= -O3  -G0 -Wall  -I${PSPDEV}/psp/include/ -L${PSPDEV}/psp/lib -D__SDL_AUDIO__ -DPSP -g -ggdb
+CFLAGS		= -O3  -G0 -Wall  -I${PSPDEV}/psp/include/ -L${PSPDEV}/psp/lib -D__SDL_AUDIO__ -DPSP -DFIXED -g -ggdb
 CXXFLAGS	= $(CFLAGS) -fno-exceptions -fno-rtti
 ASFLAGS	        = $(CFLAGS)
 
