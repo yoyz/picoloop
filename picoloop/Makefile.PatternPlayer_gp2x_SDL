@@ -11,11 +11,14 @@ CFLAGS=-c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb -ffast-math
 CFLAGS=-c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb  
 CFLAGS=-c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb  -pg
 CFLAGS=-c -O3 -DLINUX -I. -DGP2X -D__SDL_AUDIO__ -I/opt/open2x/include/SDL/ -I/opt/open2x/include/ -L/opt/open2x/lib/ -g -fpermissive
+CFLAGS=-c -O3 -DLINUX -I. -DGP2X -D__SDL_AUDIO__ -I/opt/open2x/include/SDL/ -I/opt/open2x/include/ -L/opt/open2x/lib/ -g -fpermissive -pg
+CFLAGS=-c -O3 -DLINUX -I. -DGP2X -D__SDL_AUDIO__ -I/opt/open2x/include/SDL/ -I/opt/open2x/include/ -L/opt/open2x/lib/ -g -fpermissive
 
 LDFLAGS=-lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread 
 LDFLAGS=-lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread -pg
 LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf -L/opt/open2x/lib/ -lfreetype -lz
-
+LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf -L/opt/open2x/lib/ -lfreetype -lz -pg
+LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf -L/opt/open2x/lib/ -lfreetype -lz
 
 #OBJTOLINK=RtAudio.o
 

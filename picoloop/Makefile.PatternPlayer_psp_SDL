@@ -25,6 +25,7 @@ OBJS=PatternPlayer.o \
 		      AMSynthLowPassFilter.o \
 		      Effect.o               \
 		      EffectDelay.o          \
+		      EffectDisabled.o       \
 		      WaveTableManager.o     \
 		      WaveTable.o            \
 		      Generator.o            \
@@ -56,7 +57,7 @@ BUILD_PRX=1
 PSP_FW_VERSION = 500
 
 INCDIR		=
-CFLAGS		= -O2  -G0 -Wall  -I${PSPDEV}/psp/include/ -L${PSPDEV}/psp/lib -D__SDL_AUDIO__ -DPSP -g -ggdb
+CFLAGS		= -O3  -G0 -Wall  -I${PSPDEV}/psp/include/ -L${PSPDEV}/psp/lib -D__SDL_AUDIO__ -DPSP -g -ggdb
 CXXFLAGS	= $(CFLAGS) -fno-exceptions -fno-rtti
 ASFLAGS	        = $(CFLAGS)
 

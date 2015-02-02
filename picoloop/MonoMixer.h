@@ -6,6 +6,7 @@ using namespace std;
 #include "Machine/Dbopl/DboplMachine.h"
 //#include "Effect.h"
 #include "EffectDelay.h"
+#include "EffectDisabled.h"
 #include <SDL/SDL_types.h>
 
 #ifndef __MONOMIXER____
@@ -33,6 +34,7 @@ class MonoMixer
 
   Effect                *FX;
   EffectDelay           FXDelay;
+  EffectDisabled        FXDisabled;
 
   Sint16                amplitude;
   int                   machine_type;

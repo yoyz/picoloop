@@ -4,7 +4,7 @@
 
 			//MonoMixer::MonoMixer(): M()
 //MonoMixer::MonoMixer()
-MonoMixer::MonoMixer(): PD(), PM(), OPLM(), FXDelay()
+MonoMixer::MonoMixer(): PD(), PM(), OPLM(), FXDelay(), FXDisabled()
 {
   printf("MonoMixer::MonoMixer()\n");  
   amplitude=127;
@@ -37,6 +37,7 @@ void MonoMixer::init()
 
   //FX=&FXDelay;
   FX=&FXDelay;
+  FX=&FXDisabled;
   FX->init();
   FX->setDepth(fx_depth);
   FX->setSpeed(fx_speed);
