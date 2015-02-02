@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <stdint.h>
 //#define FTYPE signed long
 #define FTYPE int32_t
 #define NUMBITS (sizeof(FTYPE) * 8)
