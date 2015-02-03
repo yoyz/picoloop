@@ -1,6 +1,6 @@
 #include "PBSynthMachine.h"
 //#define SAM 512
-#define SAM 512
+#define SAM 128
 
 //enum {
 //  FMTYPE_2_OP_AM,
@@ -217,6 +217,10 @@ void PBSynthMachine::setI(int what,int val)
 {
   float        f_val_cutoff;
   float        f_val_resonance;
+  float        f_val;
+
+  f_val=val;
+  f_val=f_val/128;
   //FreqMultiple freqM[15];
   //Waveform     w[4];
   // w[0]=SIN;
@@ -278,19 +282,25 @@ void PBSynthMachine::setI(int what,int val)
       }
 
 
-    if (what==ADSR_ENV0_ATTACK)    SE.getEnvelope(0)->setA(-1.0f/(val+1));
-    if (what==ADSR_ENV0_DECAY)     SE.getEnvelope(0)->setD(-1.0f/(val+1));
-    if (what==ADSR_ENV0_SUSTAIN)   SE.getEnvelope(0)->setS( 1.0f/(val+1));
-    if (what==ADSR_ENV0_RELEASE)   SE.getEnvelope(0)->setR(-1.0f/(val+1));
+    //if (what==ADSR_ENV0_ATTACK)    SE.getEnvelope(0)->setA(-1.0f/(val+1));
+    // if (what==ADSR_ENV0_DECAY)     SE.getEnvelope(0)->setD(-1.0f/(val+1));
+    // if (what==ADSR_ENV0_SUSTAIN)   SE.getEnvelope(0)->setS( 1.0f/(val+1));
+    // if (what==ADSR_ENV0_RELEASE)   SE.getEnvelope(0)->setR(-1.0f/(val+1));
+
+    if (what==ADSR_ENV0_ATTACK)    SE.getEnvelope(0)->setA(-1+f_val);
+    if (what==ADSR_ENV0_DECAY)     SE.getEnvelope(0)->setD(-1+f_val);
+    if (what==ADSR_ENV0_SUSTAIN)   SE.getEnvelope(0)->setS( f_val);
+    if (what==ADSR_ENV0_RELEASE)   SE.getEnvelope(0)->setR(-1+f_val);
 
 
-    if (what==ADSR_ENV1_ATTACK)    SE.getEnvelope(1)->setA(-1.0f/(val+1));
-    if (what==ADSR_ENV1_DECAY)     SE.getEnvelope(1)->setD(-1.0f/(val+1));
-    if (what==ADSR_ENV1_SUSTAIN)   SE.getEnvelope(1)->setS( 1.0f/(val+1));
-    if (what==ADSR_ENV1_RELEASE)   SE.getEnvelope(1)->setR(-1.0f/(val+1));
+    if (what==ADSR_ENV1_ATTACK)    SE.getEnvelope(1)->setA(-1+f_val);
+    if (what==ADSR_ENV1_DECAY)     SE.getEnvelope(1)->setD(-1+f_val);
+    if (what==ADSR_ENV1_SUSTAIN)   SE.getEnvelope(1)->setS( 1+f_val);
+    if (what==ADSR_ENV1_RELEASE)   SE.getEnvelope(1)->setR(-1+f_val);
 
     //if (what==VCO_MIX)             SE.setParameter(SENGINE_OSCMIX,1.0f/val);
-    if (what==VCO_MIX)             SE.setParameter(SENGINE_ENV2_TO_CUTOFF,1.0f/(val+1));
+    //if (what==VCO_MIX)             SE.setParameter(SENGINE_ENV2_TO_CUTOFF,1.0f/(val+1));
+    if (what==VCO_MIX)             SE.setParameter(SENGINE_ENV2_TO_CUTOFF,(f_val*2)-1);
 
 
   if (what==OSC1_NOTE)                note=val;
@@ -299,8 +309,10 @@ void PBSynthMachine::setI(int what,int val)
   // if (what==FILTER1_CUTOFF)         SE.setParameter(SENGINE_FILTFREQ,(2.0f/(val)-1));
   // if (what==FILTER1_RESONANCE)      SE.setParameter(SENGINE_FILTRESO,(2.0f/(val)-1));
 
-  if (what==FILTER1_CUTOFF)         SE.setParameter(SENGINE_FILTFREQ,1.0f/(val+1));
-  if (what==FILTER1_RESONANCE)      SE.setParameter(SENGINE_FILTRESO,1.0f/(val+1));
+  // if (what==FILTER1_CUTOFF)         SE.setParameter(SENGINE_FILTFREQ,1.0f/(val+1));
+  // if (what==FILTER1_RESONANCE)      SE.setParameter(SENGINE_FILTRESO,1.0f/(val+1));
+  if (what==FILTER1_CUTOFF)         SE.setParameter(SENGINE_FILTFREQ,(f_val*2)-1);
+  if (what==FILTER1_RESONANCE)      SE.setParameter(SENGINE_FILTRESO,(f_val*2)-1);
 
     // if (what==FILTER1_CUTOFF)      
     //   { 
