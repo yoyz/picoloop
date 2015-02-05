@@ -17,6 +17,7 @@ public:
   void pulse();
   void triangle();
   void noise();
+  void one();
   Sint16 * getBuffer();
 
  private:
