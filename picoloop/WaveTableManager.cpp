@@ -36,7 +36,7 @@ void WaveTableManager::addWaveTable(WaveTable * WT)
 void WaveTableManager::insert(WaveTable * WT,int position)
 {
   if (wtvector.size()<=position)
-    wtvector.resize(position);
+    wtvector.resize(position+1);
   wtvector[position]=WT;
 }
 

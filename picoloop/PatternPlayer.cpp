@@ -3522,11 +3522,6 @@ void wtg()
   WaveTableManager & WTM = WaveTableManager::getInstance();
   WaveTable* WT;
 
-  WT = new WaveTable();
-  WT->setSize(WAVETABLE_SIZE);
-  G.noise();
-  memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE*DEFAULTBITRATE/8);
-  WTM.insert(WT,PICO_WAVETABLE_NOISE);
 
 
   WT = new WaveTable();
@@ -3552,6 +3547,19 @@ void wtg()
   G.triangle();
   memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE*DEFAULTBITRATE/8);
   WTM.insert(WT,PICO_WAVETABLE_TRGL);
+
+  WT = new WaveTable();
+  WT->setSize(WAVETABLE_SIZE);
+  G.one();
+  memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE*DEFAULTBITRATE/8);
+  WTM.insert(WT,PICO_WAVETABLE_ONE);
+
+  WT = new WaveTable();
+  WT->setSize(WAVETABLE_SIZE);
+  G.noise();
+  memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE*DEFAULTBITRATE/8);
+  WTM.insert(WT,PICO_WAVETABLE_NOISE);
+
 
   printf("wavetablemanager.getSize : %d\n",WTM.getSize());
 

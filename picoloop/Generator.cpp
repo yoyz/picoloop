@@ -117,6 +117,23 @@ void Generator::noise()
 }
 
 
+void Generator::one()
+{
+  int i;
+  float f;
+  Sint16 s;
+  Sint16 bitdepth=16;
+
+  printf("Generator::one() 0x%08.8X\n",table);
+
+  for (i=0;i<table_size;i++)
+    {
+      table[i]=1<<bitdepth-1;
+    }  
+}
+
+
+
 Sint16 * Generator::getBuffer()
 {
   return table;
