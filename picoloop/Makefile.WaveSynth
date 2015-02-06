@@ -23,6 +23,7 @@ SOURCES=WaveSynth.cpp            \
 		      AMSynthLowPassFilter.cpp \
 		      Effect.cpp               \
 		      EffectDelay.cpp          \
+		      EffectDisabled.cpp       \
 		      WaveTableManager.cpp     \
 		      WaveTable.cpp            \
 		      Generator.cpp            \
@@ -38,6 +39,18 @@ SOURCES=WaveSynth.cpp            \
 		      Machine/Dbopl/dbopl.cpp                    \
 		      Machine/Dbopl/hiopl.cpp                    \
 		      Machine/Dbopl/DboplMachine.cpp             \
+		      Machine/PBSynth/synthengine.cpp            \
+		      Machine/PBSynth/osc.cpp                    \
+		      Machine/PBSynth/lfo.cpp                    \
+		      Machine/PBSynth/filter.cpp                 \
+		      Machine/PBSynth/env.cpp                    \
+		      Machine/PBSynth/echo.cpp                   \
+		      Machine/PBSynth/osctab.cpp                 \
+		      Machine/PBSynth/lfotab.cpp                 \
+		      Machine/PBSynth/envtab.cpp                 \
+		      Machine/PBSynth/coeff.cpp                  \
+		      Machine/PBSynth/PBSynthMachine.cpp         \
+
 		      
 
 

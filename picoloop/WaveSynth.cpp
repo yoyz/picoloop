@@ -76,7 +76,7 @@ bool left_key=false;
 bool right_key=false;
 
 int    noteon=0;
-int    note=0;
+int    noteValue=0;
 
 //PatternElement PE;
 
@@ -180,7 +180,7 @@ void handle_key()
     {
       current_machine=current_machine-1;
       if (current_machine<0)
-	current_machine=2;
+	current_machine=3;
       printf("current_machine:%d\n",current_machine);
       redraw=true;
 
@@ -194,7 +194,7 @@ void handle_key()
       )
     {
       current_machine=current_machine+1;
-      if (current_machine>2)
+      if (current_machine>3)
 	current_machine=0;
       printf("current_machine:%d\n",current_machine);
       redraw=true;
@@ -617,46 +617,46 @@ void handle_key()
 
   if (lastEvent ==  SDL_KEYDOWN)
     {
-      if (lastKey==SDLK_q) { printf("key q\n"); note=0+octave;  noteon=1; }
-      if (lastKey==SDLK_z) { printf("key z\n"); note=1+octave;  noteon=1; }
-      if (lastKey==SDLK_s) { printf("key s\n"); note=2+octave;  noteon=1; }
-      if (lastKey==SDLK_e) { printf("key e\n"); note=3+octave;  noteon=1; }
-      if (lastKey==SDLK_d) { printf("key d\n"); note=4+octave;  noteon=1; }
-      if (lastKey==SDLK_f) { printf("key f\n"); note=5+octave;  noteon=1; }
-      if (lastKey==SDLK_t) { printf("key t\n"); note=6+octave;  noteon=1; }
-      if (lastKey==SDLK_g) { printf("key g\n"); note=7+octave;  noteon=1; }
-      if (lastKey==SDLK_y) { printf("key y\n"); note=8+octave;  noteon=1; }
-      if (lastKey==SDLK_h) { printf("key h\n"); note=9+octave;  noteon=1; }
-      if (lastKey==SDLK_u) { printf("key u\n"); note=10+octave; noteon=1; }
-      if (lastKey==SDLK_j) { printf("key j\n"); note=11+octave; noteon=1; }
+      if (lastKey==SDLK_q) { printf("key q\n"); noteValue=0+octave;  noteon=1; }
+      if (lastKey==SDLK_z) { printf("key z\n"); noteValue=1+octave;  noteon=1; }
+      if (lastKey==SDLK_s) { printf("key s\n"); noteValue=2+octave;  noteon=1; }
+      if (lastKey==SDLK_e) { printf("key e\n"); noteValue=3+octave;  noteon=1; }
+      if (lastKey==SDLK_d) { printf("key d\n"); noteValue=4+octave;  noteon=1; }
+      if (lastKey==SDLK_f) { printf("key f\n"); noteValue=5+octave;  noteon=1; }
+      if (lastKey==SDLK_t) { printf("key t\n"); noteValue=6+octave;  noteon=1; }
+      if (lastKey==SDLK_g) { printf("key g\n"); noteValue=7+octave;  noteon=1; }
+      if (lastKey==SDLK_y) { printf("key y\n"); noteValue=8+octave;  noteon=1; }
+      if (lastKey==SDLK_h) { printf("key h\n"); noteValue=9+octave;  noteon=1; }
+      if (lastKey==SDLK_u) { printf("key u\n"); noteValue=10+octave; noteon=1; }
+      if (lastKey==SDLK_j) { printf("key j\n"); noteValue=11+octave; noteon=1; }
       
-      if (lastKey==SDLK_k) { printf("key k\n"); note=12+octave; noteon=1; }
-      if (lastKey==SDLK_o) { printf("key o\n"); note=13+octave; noteon=1; }
-      if (lastKey==SDLK_l) { printf("key l\n"); note=14+octave; noteon=1; }
-      if (lastKey==SDLK_p) { printf("key p\n"); note=15+octave; noteon=1; }
-      if (lastKey==SDLK_m) { printf("key m\n"); note=16+octave; noteon=1; }
+      if (lastKey==SDLK_k) { printf("key k\n"); noteValue=12+octave; noteon=1; }
+      if (lastKey==SDLK_o) { printf("key o\n"); noteValue=13+octave; noteon=1; }
+      if (lastKey==SDLK_l) { printf("key l\n"); noteValue=14+octave; noteon=1; }
+      if (lastKey==SDLK_p) { printf("key p\n"); noteValue=15+octave; noteon=1; }
+      if (lastKey==SDLK_m) { printf("key m\n"); noteValue=16+octave; noteon=1; }
     }
 
   if (lastEvent ==  SDL_KEYUP)
     {
-      if (lastKey==SDLK_q) { printf("key q\n"); note=0+octave;  noteon=0; }
-      if (lastKey==SDLK_z) { printf("key z\n"); note=1+octave;  noteon=0; }
-      if (lastKey==SDLK_s) { printf("key s\n"); note=2+octave;  noteon=0; }
-      if (lastKey==SDLK_e) { printf("key e\n"); note=3+octave;  noteon=0; }
-      if (lastKey==SDLK_d) { printf("key d\n"); note=4+octave;  noteon=0; }
-      if (lastKey==SDLK_f) { printf("key f\n"); note=5+octave;  noteon=0; }
-      if (lastKey==SDLK_t) { printf("key t\n"); note=6+octave;  noteon=0; }
-      if (lastKey==SDLK_g) { printf("key g\n"); note=7+octave;  noteon=0; }
-      if (lastKey==SDLK_y) { printf("key y\n"); note=8+octave;  noteon=0; }
-      if (lastKey==SDLK_h) { printf("key h\n"); note=9+octave;  noteon=0; }
-      if (lastKey==SDLK_u) { printf("key u\n"); note=10+octave; noteon=0; }
-      if (lastKey==SDLK_j) { printf("key j\n"); note=11+octave; noteon=0; }
+      if (lastKey==SDLK_q) { printf("key q\n"); noteValue=0+octave;  noteon=0; }
+      if (lastKey==SDLK_z) { printf("key z\n"); noteValue=1+octave;  noteon=0; }
+      if (lastKey==SDLK_s) { printf("key s\n"); noteValue=2+octave;  noteon=0; }
+      if (lastKey==SDLK_e) { printf("key e\n"); noteValue=3+octave;  noteon=0; }
+      if (lastKey==SDLK_d) { printf("key d\n"); noteValue=4+octave;  noteon=0; }
+      if (lastKey==SDLK_f) { printf("key f\n"); noteValue=5+octave;  noteon=0; }
+      if (lastKey==SDLK_t) { printf("key t\n"); noteValue=6+octave;  noteon=0; }
+      if (lastKey==SDLK_g) { printf("key g\n"); noteValue=7+octave;  noteon=0; }
+      if (lastKey==SDLK_y) { printf("key y\n"); noteValue=8+octave;  noteon=0; }
+      if (lastKey==SDLK_h) { printf("key h\n"); noteValue=9+octave;  noteon=0; }
+      if (lastKey==SDLK_u) { printf("key u\n"); noteValue=10+octave; noteon=0; }
+      if (lastKey==SDLK_j) { printf("key j\n"); noteValue=11+octave; noteon=0; }
      
-      if (lastKey==SDLK_k) { printf("key k\n"); note=12+octave; noteon=0; }
-      if (lastKey==SDLK_o) { printf("key o\n"); note=13+octave; noteon=0; }
-      if (lastKey==SDLK_l) { printf("key l\n"); note=14+octave; noteon=0; }
-      if (lastKey==SDLK_p) { printf("key p\n"); note=15+octave; noteon=0; }
-      if (lastKey==SDLK_m) { printf("key m\n"); note=16+octave; noteon=0; }
+      if (lastKey==SDLK_k) { printf("key k\n"); noteValue=12+octave; noteon=0; }
+      if (lastKey==SDLK_o) { printf("key o\n"); noteValue=13+octave; noteon=0; }
+      if (lastKey==SDLK_l) { printf("key l\n"); noteValue=14+octave; noteon=0; }
+      if (lastKey==SDLK_p) { printf("key p\n"); noteValue=15+octave; noteon=0; }
+      if (lastKey==SDLK_m) { printf("key m\n"); noteValue=16+octave; noteon=0; }
     }
   IE.clearLastKeyEvent(); 
 
@@ -702,7 +702,7 @@ void handle_key()
 	  //M[t]->setF(OSC1_FREQ,f);
 
 	  M[t]->reset();
-	  M[t]->setI(OSC1_NOTE,note);
+	  M[t]->setI(OSC1_NOTE,noteValue);
 
 	  M[t]->setI(OSC1_TYPE,2);
 	  M[t]->setI(OSC2_TYPE,2);
@@ -727,7 +727,7 @@ void handle_key()
 
 
 	  M[t]->setI(FILTER1_CUTOFF,cutoff);
-	  M[t]->setI(FILTER1_RES,resonance);
+	  M[t]->setI(FILTER1_RESONANCE,resonance);
 
 	  M[t]->setI(NOTE_ON,1);
 
