@@ -3247,7 +3247,7 @@ void seq_update_track(int t)
 	  M[t]->setI(OSC1_PHASE,P[t].getPatternElement(step).get(OSC1_PHASE));
 
 	  M[t]->setI(LFO1_DEPTH,P[t].getPatternElement(step).get(LFO1_DEPTH));
-	  M[t]->setI(LFO1_FREQ,P[t].getPatternElement(step).get(LFO1_FREQ));
+	  M[t]->setF(LFO1_FREQ,P[t].getPatternElement(step).get(LFO1_FREQ));
 
 	  M[t]->setI(PITCHBEND_DEPTH,P[t].getPatternElement(step).get(PITCHBEND_DEPTH));
 	  M[t]->setI(PITCHBEND_SPEED,P[t].getPatternElement(step).get(PITCHBEND_SPEED));
@@ -3522,6 +3522,18 @@ void wtg()
   WaveTableManager & WTM = WaveTableManager::getInstance();
   WaveTable* WT;
 
+  WT = new WaveTable();
+  WT->setSize(WAVETABLE_SIZE);
+  G.noise();
+  memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE*DEFAULTBITRATE/8);
+  WTM.insert(WT,PICO_WAVETABLE_NOISE);
+
+
+  WT = new WaveTable();
+  WT->setSize(WAVETABLE_SIZE);
+  G.noise();
+  memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE*DEFAULTBITRATE/8);
+  WTM.insert(WT,PICO_WAVETABLE_NOISE);
 
 
   WT = new WaveTable();
@@ -3547,19 +3559,6 @@ void wtg()
   G.triangle();
   memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE*DEFAULTBITRATE/8);
   WTM.insert(WT,PICO_WAVETABLE_TRGL);
-
-  WT = new WaveTable();
-  WT->setSize(WAVETABLE_SIZE);
-  G.one();
-  memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE*DEFAULTBITRATE/8);
-  WTM.insert(WT,PICO_WAVETABLE_ONE);
-
-  WT = new WaveTable();
-  WT->setSize(WAVETABLE_SIZE);
-  G.noise();
-  memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE*DEFAULTBITRATE/8);
-  WTM.insert(WT,PICO_WAVETABLE_NOISE);
-
 
   printf("wavetablemanager.getSize : %d\n",WTM.getSize());
 
