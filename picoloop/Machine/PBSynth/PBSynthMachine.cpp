@@ -395,6 +395,8 @@ int PBSynthMachine::tick()
   s_in32=buffer[index];
   //printf("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ %d %d %d %d\n",index,s_in32,buffer[index],sizeof(mfloat));
   //s_out=filter.process(s_in);
+  if (s_in32>32000)  s_in32=32000;
+  if (s_in32<-32000) s_in32=-32000;
   s_out=s_in32;
 
   index++;
