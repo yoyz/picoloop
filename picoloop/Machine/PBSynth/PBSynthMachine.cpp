@@ -316,6 +316,10 @@ void PBSynthMachine::setI(int what,int val)
   if (what==FILTER1_CUTOFF)         SE.setParameter(SENGINE_FILTFREQ,(f_val*2)-1);
   if (what==FILTER1_RESONANCE)      SE.setParameter(SENGINE_FILTRESO,(f_val*2)-1);
 
+  if (what==OSC1_AMP)               SE.setParameter(SENGINE_ENV1_TO_OSC1PW,(f_val*2)-1);
+  if (what==OSC2_AMP)               SE.setParameter(SENGINE_ENV1_TO_OSC2PW,(f_val*2)-1);
+
+
     // if (what==FILTER1_CUTOFF)      
     //   { 
     // 	cutoff=val;
