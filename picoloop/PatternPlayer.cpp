@@ -3247,7 +3247,7 @@ void seq_update_track(int t)
 	  M[t]->setI(OSC1_PHASE,P[t].getPatternElement(step).get(OSC1_PHASE));
 
 	  M[t]->setI(LFO1_DEPTH,P[t].getPatternElement(step).get(LFO1_DEPTH));
-	  M[t]->setF(LFO1_FREQ,P[t].getPatternElement(step).get(LFO1_FREQ));
+	  M[t]->setI(LFO1_FREQ,P[t].getPatternElement(step).get(LFO1_FREQ));
 
 	  M[t]->setI(PITCHBEND_DEPTH,P[t].getPatternElement(step).get(PITCHBEND_DEPTH));
 	  M[t]->setI(PITCHBEND_SPEED,P[t].getPatternElement(step).get(PITCHBEND_SPEED));

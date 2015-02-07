@@ -132,7 +132,7 @@ int PicosynthMachine::getI(int what)
 void PicosynthMachine::setF(int what,float val)
 {
   //if (what==OSC1_FREQ)           this->getVCO().setSynthFreq(val);
-  if (what==LFO1_FREQ)           this->getVCO().setLfoSpeed(val);
+  //if (what==LFO1_FREQ)           this->getVCO().setLfoSpeed(val);
 }
 
 void PicosynthMachine::setI(int what,int val)
@@ -169,6 +169,7 @@ void PicosynthMachine::setI(int what,int val)
   if (what==OSC1_PHASE)          this->getVCO().setVCOPhase(val);
 
   if (what==LFO1_DEPTH)          this->getVCO().setLfoDepth(val);
+  if (what==LFO1_FREQ)           this->getVCO().setLfoSpeed(val);
   if (what==LFO_TYPE)            this->getVCO().setLfoType(val);
 
   if (what==PITCHBEND_DEPTH)     this->getVCO().setPitchBendDepth(val);
