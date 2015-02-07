@@ -116,7 +116,6 @@ void Generator::noise()
     }  
 }
 
-
 void Generator::one()
 {
   int i;

@@ -71,7 +71,6 @@ void PBSynthMachine::init()
   //SE.reset();
 }
 
-
 const char * PBSynthMachine::getMachineParamCharStar(int machineParam,int paramValue)
 {
   static const char * str_null       = "NULL ";
@@ -160,7 +159,6 @@ void PBSynthMachine::reset()
  trig_time_mode=0;
  trig_time_duration=0;
  trig_time_duration_sample=0;
- SE.reset();
 }
 
 int PBSynthMachine::checkI(int what,int val)
@@ -205,16 +203,12 @@ int PBSynthMachine::checkI(int what,int val)
 int PBSynthMachine::getI(int what)
 {
   if (what==NOTE_ON) return keyon;
-
 }
 
 void PBSynthMachine::setF(int what,float val)
 {
-  //printf("PBSynthMachine::setF(%d,%f)\n",what,val/128);
   //if (what==OSC1_FREQ)           { freq=val; }
   //  if (what==LFO1_FREQ)           { lfo_speed=val/4.0; sineLfoOsc1.setFreq(lfo_speed); }
-  //if (what==LFO1_FREQ)           SE.setParameter(setLfoSpeed(val);
-  //if (what==LFO1_FREQ)           SE.getLFO(1)->setRate(val);
 }
 
 
@@ -306,11 +300,12 @@ void PBSynthMachine::setI(int what,int val)
 
     //if (what==VCO_MIX)             SE.setParameter(SENGINE_OSCMIX,1.0f/val);
     //if (what==VCO_MIX)             SE.setParameter(SENGINE_ENV2_TO_CUTOFF,1.0f/(val+1));
+    //if (what==VCO_MIX)             SE.setParameter(SENGINE_ENV2_TO_CUTOFF,(f_val*2)-1);
     if (what==OSC1_PHASE)          SE.setParameter(SENGINE_ENV2_TO_CUTOFF,(f_val*2)-1);
     if (what==VCO_MIX)             SE.setParameter(SENGINE_OSCMIX,(f_val));
 
 
-  if (what==OSC1_NOTE)              note=val;
+  if (what==OSC1_NOTE)                note=val;
     //if (what==OSC1_FREQ)           freq=val;
 
   // if (what==FILTER1_CUTOFF)         SE.setParameter(SENGINE_FILTFREQ,(2.0f/(val)-1));
@@ -320,12 +315,6 @@ void PBSynthMachine::setI(int what,int val)
   // if (what==FILTER1_RESONANCE)      SE.setParameter(SENGINE_FILTRESO,1.0f/(val+1));
   if (what==FILTER1_CUTOFF)         SE.setParameter(SENGINE_FILTFREQ,(f_val*2)-1);
   if (what==FILTER1_RESONANCE)      SE.setParameter(SENGINE_FILTRESO,(f_val*2)-1);
-
-  //if (what==LFO1_DEPTH)             SE.setParameter(SENGINE_LFO2_TO_CUTOFF,(f_val));
-
-
-
-
 
     // if (what==FILTER1_CUTOFF)      
     //   { 

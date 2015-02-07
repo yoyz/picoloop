@@ -181,6 +181,7 @@ void PBSynthOscillator::setNote(int note) {
 	long i;
 
 	i = ((note * 128) + parameters.detune) * 2;
+	if (i<0) i=0;
 	
 	wlength = osctab[i];
 	sawInc = osctab[i + 1];
