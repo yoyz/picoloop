@@ -199,12 +199,12 @@ void PBSynthOscillator::reset() {
 	sqp = 1.0f;
 	sqc = 0;
 	parameters.pulsewidth = 0.0f;
-	parameters.detune = 0;
+	//parameters.detune = 0;
 	setAmp(1.0f);
 	setWave(OSC_SAWTOOTH);
 	setPulseWidth(0.0f);
 	setNote(12);
-	setDetune(0);
+	setDetune(-128);
 }
 
 void PBSynthOscillator::setDetune(long detune) {

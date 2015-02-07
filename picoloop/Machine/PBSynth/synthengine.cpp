@@ -33,15 +33,15 @@ SynthEngine::SynthEngine(int samplesPerTick, long max_delaylen) {
 
 SynthEngine::~SynthEngine() {
 
-   // delete lfos[0];
-   // delete lfos[1];
-   // delete envelopes[0];
-   // delete envelopes[1];
-   // delete oscillators[0];
-   // delete oscillators[1];
-   // delete filters[0];
-   // delete filters[1];
-   // delete echo;
+  // delete lfos[0];
+  // delete lfos[1];
+  // delete envelopes[0];
+  // delete envelopes[1];
+  // delete oscillators[0];
+  // delete oscillators[1];
+  // delete filters[0];
+  // delete filters[1];
+  // delete echo;
 }
 
 void SynthEngine::init()
