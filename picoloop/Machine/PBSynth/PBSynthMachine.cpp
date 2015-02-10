@@ -300,7 +300,9 @@ void PBSynthMachine::setI(int what,int val)
 
     //if (what==VCO_MIX)             SE.setParameter(SENGINE_OSCMIX,1.0f/val);
     //if (what==VCO_MIX)             SE.setParameter(SENGINE_ENV2_TO_CUTOFF,1.0f/(val+1));
-    if (what==VCO_MIX)             SE.setParameter(SENGINE_ENV2_TO_CUTOFF,(f_val*2)-1);
+    //if (what==VCO_MIX)             SE.setParameter(SENGINE_ENV2_TO_CUTOFF,(f_val*2)-1);
+    if (what==OSC1_PHASE)          SE.setParameter(SENGINE_ENV2_TO_CUTOFF,(f_val*2)-1);
+    if (what==VCO_MIX)             SE.setParameter(SENGINE_OSCMIX,(f_val));
 
 
   if (what==OSC1_NOTE)                note=val;
@@ -313,6 +315,10 @@ void PBSynthMachine::setI(int what,int val)
   // if (what==FILTER1_RESONANCE)      SE.setParameter(SENGINE_FILTRESO,1.0f/(val+1));
   if (what==FILTER1_CUTOFF)         SE.setParameter(SENGINE_FILTFREQ,(f_val*2)-1);
   if (what==FILTER1_RESONANCE)      SE.setParameter(SENGINE_FILTRESO,(f_val*2)-1);
+
+  if (what==OSC1_AMP)               SE.setParameter(SENGINE_ENV1_TO_OSC1PW,(f_val*2)-1);
+  if (what==OSC2_AMP)               SE.setParameter(SENGINE_ENV1_TO_OSC2PW,(f_val*2)-1);
+
 
     // if (what==FILTER1_CUTOFF)      
     //   { 
@@ -389,6 +395,8 @@ int PBSynthMachine::tick()
   s_in32=buffer[index];
   //printf("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ %d %d %d %d\n",index,s_in32,buffer[index],sizeof(mfloat));
   //s_out=filter.process(s_in);
+  if (s_in32>32000)  s_in32=32000;
+  if (s_in32<-32000) s_in32=-32000;
   s_out=s_in32;
 
   index++;
