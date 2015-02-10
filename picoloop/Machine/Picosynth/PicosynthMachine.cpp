@@ -91,13 +91,13 @@ int PicosynthMachine::checkI(int what,int val)
     {
     case OSC1_TYPE:
       if (val<0) return 0;
-      if (val>PICO_WAVETABLE_SIZE-1) return PICO_WAVETABLE_SIZE-1;
+      if (val>PICO_WAVETABLE_SIZE-2) return PICO_WAVETABLE_SIZE-1;
       return val;
       break;
 
     case OSC2_TYPE:
       if (val<0) return 0;
-      if (val>PICO_WAVETABLE_SIZE-1) return PICO_WAVETABLE_SIZE-1;
+      if (val>PICO_WAVETABLE_SIZE-2) return PICO_WAVETABLE_SIZE-1;
       return val;
       break;
 

@@ -165,10 +165,10 @@ int16_t Filter::process_amsynth(int16_t in)
       //bq.calcBiquad(); 
       
       needCalc=0;      
-      lp.SetSampleRate(44100);
+      lp.SetSampleRate(4100);
       lp.reset();
-      //lp.calc(100,0.8);
-      lp.calc(cutoff*256,resonance/128);
+      //lp.calc(f_val_cutoff*256,f_val_resonance/128);
+      lp.calc(f_val_cutoff*32,f_val_resonance/160);
     }
   //return bq.process(in);
   //lp.ProcessSamples(f_in,1,f_val_cutoff/127,f_val_resonance/127);

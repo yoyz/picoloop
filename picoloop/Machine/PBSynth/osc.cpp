@@ -181,6 +181,7 @@ void PBSynthOscillator::setNote(int note) {
 	long i;
 
 	i = ((note * 128) + parameters.detune) * 2;
+	if (i<0) i=0;
 	
 	wlength = osctab[i];
 	sawInc = osctab[i + 1];
@@ -199,12 +200,12 @@ void PBSynthOscillator::reset() {
 	sqp = 1.0f;
 	sqc = 0;
 	parameters.pulsewidth = 0.0f;
-	parameters.detune = 0;
+	//parameters.detune = 0;
 	setAmp(1.0f);
 	setWave(OSC_SAWTOOTH);
 	setPulseWidth(0.0f);
 	setNote(12);
-	setDetune(0);
+	setDetune(-128);
 }
 
 void PBSynthOscillator::setDetune(long detune) {

@@ -54,8 +54,8 @@ void AMSynthLowPassFilter::calc(float fc, float res)
 	i_b1=b1             * AM_DECAL;
 	i_b2=b2             * AM_DECAL;
 
-	i_d1=d1             * AM_DECAL;
-	i_d2=d2             * AM_DECAL;
+	//i_d1=d1             * AM_DECAL;
+	//i_d2=d2             * AM_DECAL;
 
 }
 

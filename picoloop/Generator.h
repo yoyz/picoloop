@@ -15,9 +15,9 @@ public:
   void sine();
   void saw();
   void pulse();
+  void one();
   void triangle();
   void noise();
-  void one();
   Sint16 * getBuffer();
 
  private:
