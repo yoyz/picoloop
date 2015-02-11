@@ -194,7 +194,7 @@ TweakableKnob  TK;          // used to  store "variation" which will be applied 
 //Wave           cowbell;     // used ?
 //Instrument     inst;        // used ?
 
-int running;
+//int running;
 
 int save=false;
 int load=false;
@@ -3380,7 +3380,7 @@ int seq()
   int          i=0;
   int          delay=1;
   int          t=0;
-
+  int          running=1;
   am.setAudioVolume(DEFAULT_VOLUME);
 
 
@@ -3583,6 +3583,8 @@ int main(int argc,char **argv)
 {
   int i;
   int cpu_speed;
+  int running=1;
+
 #ifdef PSP
   running = isRunning();
   setupExitCallback();
@@ -3625,8 +3627,8 @@ int main(int argc,char **argv)
   printf("[openVideo output]\n");
   SG.initVideo();
   //SDL_InitSubSystem(SDL_INIT_AUDIO);
-  //handle_key();
-  //  SDL_EnableKeyRepeat(500,500);
+  //handle_key(); 
+ //  SDL_EnableKeyRepeat(500,500);
   SG.openBMPFont();
   if (SG.openTTFFont()==false) { printf("ttf font error\n"); exit(1); }
   SG.loadingScreen();
