@@ -207,13 +207,14 @@ int patternRemove=false;
 int bpm_current=120;    // current value for the four ( TRACK_MAX ) tracks
 
 
-int nbcb=0;             // current nb audio callback 
-int last_nbcb=0;        // number of occurence of AudioEngine callback before changing step
+//int nbcb=0;             // current nb audio callback 
+//int last_nbcb=0;        // number of occurence of AudioEngine callback before changing step
 //int nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm); // Weird ?
-int nb_cb_ch_step;              //=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
+//int nb_cb_ch_step;              //=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
+
 int nb_tick_before_step_change; //=(60*DEFAULT_FREQ)/(bpm_current*4);
 
-int last_nbcb_ch_step=0;// nb audio callback from last step
+//int last_nbcb_ch_step=0;// nb audio callback from last step
 int debug=1;
 //int t=0;                // index of track
 
@@ -265,7 +266,8 @@ int menu_ad_dirty_keyboard=0;
 int dirty_graphic=1;           // 1 : the UI need to be updated
 
 int seq_update_by_step_next=0; // 0 : the UI audio and seq are sync
-                               // 1 : the audio callback update the seq, 
+                               // 1 : the audio callback increment the variable
+                               //   : the sequencer is notified by this shared variable,
                                //   : other stuff need to be updated 
                                //   : seq_update_by_step(), load,save...
 
@@ -311,7 +313,7 @@ void refresh_swing()
 void refresh_bpm()
 {
 
-  nb_cb_ch_step=(60*DEFAULTFREQ)/(BUFFER_FRAME*4*bpm_current);
+  //nb_cb_ch_step=(60*DEFAULTFREQ)/(BUFFER_FRAME*4*bpm_current);
   nb_tick_before_step_change=(60*DEFAULTFREQ)/(bpm_current*4);
   refresh_swing();
 }
@@ -3381,6 +3383,8 @@ int seq()
   int          delay=1;
   int          t=0;
   int          running=1;
+  int          nbcb;        // current nb audio callback 
+  int          last_nbcb;   // number of occurence of AudioEngine callback before changing step
   am.setAudioVolume(DEFAULT_VOLUME);
 
 
@@ -3477,7 +3481,7 @@ int seq()
       //if (nbcb-last_nbcb_ch_step>nb_cb_ch_step)
       if (seq_update_by_step_next)
 	{	 
-	  last_nbcb_ch_step=nbcb;
+	  //last_nbcb_ch_step=nbcb;
 	  seq_update_by_step();
 	  seq_update_by_step_next=0;
 	}
