@@ -48,6 +48,9 @@ PSP_HEAP_SIZE_KB(-8192) ;
 
 #include "UserInterface.h"
 #include "Machine/Picosynth/PicosynthUserInterface.h"
+#include "Machine/Picodrum/PicodrumUserInterface.h"
+#include "Machine/Dbopl/DboplUserInterface.h"
+#include "Machine/PBSynth/PBSynthUserInterface.h"
 
 
 
@@ -85,7 +88,10 @@ public:
 
 
 UserInterface * UI;
-PicosynthUserInterface PUI;
+PicosynthUserInterface PSUI;
+PicodrumUserInterface  PDUI;
+DboplUserInterface     DBUI;
+PBSynthUserInterface   PBUI;
 
 //UI.handle_key(1,1);
 //UI.a=1;
@@ -2805,7 +2811,7 @@ int main(int argc,char **argv)
   int cpu_speed;
   int running=1;
 
-  UI=&PUI;
+  UI=&PSUI;
   //UI->handle_key(1,2);
 
 #ifdef PSP
