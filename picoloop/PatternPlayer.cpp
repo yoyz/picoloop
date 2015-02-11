@@ -133,6 +133,15 @@ enum {
   MENU_LS_SONG,
 };
 
+class Cursor
+{
+public:
+  int x;
+  int y;
+  Cursor() { x=0; y=0; }
+};
+
+
 class Menu
 {
 public:
@@ -216,11 +225,13 @@ int cursor=0;           // cursor position in a sequencer track
 
 
 
-int loadsave_cursor_x=0; // index in the load/save menu
-int loadsave_cursor_y=0; // index in the load/save menu
+//int loadsave_cursor_x=0; // index in the load/save menu
+//int loadsave_cursor_y=0; // index in the load/save menu
+Cursor loadsave_cursor;
 
-int song_cursor_x=0; // index in the song menu
-int song_cursor_y=0; // index in the song menu
+Cursor song_cursor;
+//int song_cursor_x=0; // index in the song menu
+//int song_cursor_y=0; // index in the song menu
 
 int loadsave_cursor_mode=0; // 0 loadsave mode cursor // 1 song mode cursor
 int pattern_song_inc=0;     // increment/decrement the current value of song_cursor_x/song_cursor_y
@@ -686,10 +697,10 @@ void display_board_load_save()
   int  step=SEQ.getPatternSequencer(cty).getStep();
   int  bank=PR.getBank();
 
-  int loadsave_cursor_x_div_sixteen=loadsave_cursor_x/16;
+  int loadsave_cursor_x_div_sixteen=loadsave_cursor.x/16;
   int loadsave_cursor_x_divmul_sixteen=loadsave_cursor_x_div_sixteen*16;
 
-  int song_cursor_x_div_sixteen=song_cursor_x/16;
+  int song_cursor_x_div_sixteen=song_cursor.x/16;
   int song_cursor_x_divmul_sixteen=song_cursor_x_div_sixteen*16;
 
 
@@ -817,15 +828,15 @@ void display_board_load_save()
       // we are in loadsave mode
       // Display your current position
       if (loadsave_cursor_mode==CURSOR_LOADSAVE)
-	SG.middleBoxNumberUp(loadsave_cursor_x%16,
-			     loadsave_cursor_y,
+	SG.middleBoxNumberUp(loadsave_cursor.x%16,
+			     loadsave_cursor.y,
 			     TRIG_COLOR);
 
       // we are in song mode
       // Display your current position
       if (loadsave_cursor_mode==CURSOR_SONG)
-	SG.middleBoxNumberDown(song_cursor_x%16,
-			       song_cursor_y,
+	SG.middleBoxNumberDown(song_cursor.x%16,
+			       song_cursor.y,
 			       TRIG_COLOR);
 
       
@@ -1312,7 +1323,7 @@ void handle_key_menu()
 	  menu             == MENU_OFF &&
 	  menu_cursor      == GLOBALMENU_LS)
 	{
-	  SEQ.setCurrentTrackY(loadsave_cursor_y);
+	  SEQ.setCurrentTrackY(loadsave_cursor.y);
 	  PR.saveSong(SEQ.getSongSequencer());
 	}
 
@@ -1329,7 +1340,7 @@ void handle_key_menu()
     {
       last_menu        = menu;
       menu=MENU_OFF;
-      loadsave_cursor_y=SEQ.getCurrentTrackY();
+      loadsave_cursor.y=SEQ.getCurrentTrackY();
       dirty_graphic=1;
       IE.clearLastKeyEvent();
       printf("[gmenu : %d cmenu : %d]\n",menu,menu_cursor);
@@ -2347,27 +2358,27 @@ void handle_key_load_save()
 	{
 	  if (keyState[BUTTON_LEFT])
 	    if (keyRepeat[BUTTON_LEFT]==1  || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_LONG==0)  
-	      { loadsave_cursor_x--;  dirty_graphic=1;}
+	      { loadsave_cursor.x--;  dirty_graphic=1;}
 	  
 	  if (keyState[BUTTON_RIGHT])
 	    if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_LONG==0) 
-	      { loadsave_cursor_x++;  dirty_graphic=1;}
+	      { loadsave_cursor.x++;  dirty_graphic=1;}
 	  
 	  if (keyState[BUTTON_UP])
 	    if (keyRepeat[BUTTON_UP]==1    || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONG==0)    
-	      { loadsave_cursor_y--;  dirty_graphic=1;}
+	      { loadsave_cursor.y--;  dirty_graphic=1;}
 	  
 	  if (keyState[BUTTON_DOWN])
 	    if (keyRepeat[BUTTON_DOWN]==1  || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONG==0)  
-	      { loadsave_cursor_y++;  dirty_graphic=1;}
+	      { loadsave_cursor.y++;  dirty_graphic=1;}
 	  
-	  if (loadsave_cursor_x>MAX_PATTERN_BY_PROJECT-1)        { loadsave_cursor_x=0;                           }
-	  if (loadsave_cursor_x<0)                               { loadsave_cursor_x=MAX_PATTERN_BY_PROJECT-1;    }
+	  if (loadsave_cursor.x>MAX_PATTERN_BY_PROJECT-1)        { loadsave_cursor.x=0;                           }
+	  if (loadsave_cursor.x<0)                               { loadsave_cursor.x=MAX_PATTERN_BY_PROJECT-1;    }
 
-	  if (loadsave_cursor_y>TRACK_MAX-1)                     { loadsave_cursor_y=0;                           }
-	  if (loadsave_cursor_y<0)                               { loadsave_cursor_y=TRACK_MAX-1;                 }  
+	  if (loadsave_cursor.y>TRACK_MAX-1)                     { loadsave_cursor.y=0;                           }
+	  if (loadsave_cursor.y<0)                               { loadsave_cursor.y=TRACK_MAX-1;                 }  
 	  
-	  SEQ.setCurrentTrackY(loadsave_cursor_y);
+	  SEQ.setCurrentTrackY(loadsave_cursor.y);
 	}
 
       if (menu                 == MENU_OFF     && 	  
@@ -2378,25 +2389,25 @@ void handle_key_load_save()
 	{
 	  if (keyState[BUTTON_LEFT])
 	    if (keyRepeat[BUTTON_LEFT]==1  || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_LONG==0)  
-	      { song_cursor_x--;  dirty_graphic=1;}
+	      { song_cursor.x--;  dirty_graphic=1;}
 	  
 	  if (keyState[BUTTON_RIGHT])
 	    if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_LONG==0) 
-	      { song_cursor_x++;  dirty_graphic=1;}
+	      { song_cursor.x++;  dirty_graphic=1;}
 	  
 	  if (keyState[BUTTON_UP])
 	    if (keyRepeat[BUTTON_UP]==1    || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONG==0)    
-	      { song_cursor_y--;  dirty_graphic=1;}
+	      { song_cursor.y--;  dirty_graphic=1;}
 	  
 	  if (keyState[BUTTON_DOWN])
 	    if (keyRepeat[BUTTON_DOWN]==1  || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONG==0)  
-	      { song_cursor_y++;  dirty_graphic=1;}
+	      { song_cursor.y++;  dirty_graphic=1;}
 	  
-	  if (song_cursor_x>MAX_PATTERN_BY_PROJECT-1)            { song_cursor_x=0;                           }
-	  if (song_cursor_x<0)                                   { song_cursor_x=MAX_PATTERN_BY_PROJECT-1;    }
+	  if (song_cursor.x>MAX_PATTERN_BY_PROJECT-1)            { song_cursor.x=0;                           }
+	  if (song_cursor.x<0)                                   { song_cursor.x=MAX_PATTERN_BY_PROJECT-1;    }
 
-	  if (song_cursor_y>TRACK_MAX-1)                         { song_cursor_y=0;                           }
-	  if (song_cursor_y<0)                                   { song_cursor_y=TRACK_MAX-1;                 }  
+	  if (song_cursor.y>TRACK_MAX-1)                         { song_cursor.y=0;                           }
+	  if (song_cursor.y<0)                                   { song_cursor.y=TRACK_MAX-1;                 }  
 	  
 	  //SEQ.setCurrentTrackY(loadsave_cursor_y);
 	}
@@ -2415,11 +2426,11 @@ void handle_key_load_save()
 	  */
 	  if (keyState[BUTTON_RIGHT])
 	    if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_LONG==0) 
-	      { song_cursor_x++; dirty_graphic=1; SEQ.getSongSequencer().setPatternNumber(song_cursor_x,song_cursor_y,SEQ.getSongSequencer().getPatternNumber(song_cursor_x-1,song_cursor_y));}
+	      { song_cursor.x++; dirty_graphic=1; SEQ.getSongSequencer().setPatternNumber(song_cursor.x,song_cursor.y,SEQ.getSongSequencer().getPatternNumber(song_cursor.x-1,song_cursor.y));}
 
 	  if (keyState[BUTTON_LEFT])
 	    if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_LONG==0) 
-	      { song_cursor_x--; dirty_graphic=1; SEQ.getSongSequencer().setPatternNumber(song_cursor_x,song_cursor_y,SEQ.getSongSequencer().getPatternNumber(song_cursor_x+1,song_cursor_y));}
+	      { song_cursor.x--; dirty_graphic=1; SEQ.getSongSequencer().setPatternNumber(song_cursor.x,song_cursor.y,SEQ.getSongSequencer().getPatternNumber(song_cursor.x+1,song_cursor.y));}
 
 	  /*
 	  if (keyState[BUTTON_UP])
@@ -2430,11 +2441,11 @@ void handle_key_load_save()
 	    if (keyRepeat[BUTTON_DOWN]==1  || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONG==0)  
 	      { song_cursor_y++;  dirty_graphic=1;}
 	  */
-	  if (song_cursor_x>MAX_PATTERN_BY_PROJECT-1)            { song_cursor_x=0;                           }
-	  if (song_cursor_x<0)                                   { song_cursor_x=MAX_PATTERN_BY_PROJECT-1;    }
+	  if (song_cursor.x>MAX_PATTERN_BY_PROJECT-1)            { song_cursor.x=0;                           }
+	  if (song_cursor.x<0)                                   { song_cursor.x=MAX_PATTERN_BY_PROJECT-1;    }
 
-	  if (song_cursor_y>TRACK_MAX-1)                         { song_cursor_y=0;                           }
-	  if (song_cursor_y<0)                                   { song_cursor_y=TRACK_MAX-1;                 }  
+	  if (song_cursor.y>TRACK_MAX-1)                         { song_cursor.y=0;                           }
+	  if (song_cursor.y<0)                                   { song_cursor.y=TRACK_MAX-1;                 }  
 	  
 	  //SEQ.setCurrentTrackY(loadsave_cursor_y);
 	}
@@ -3047,10 +3058,10 @@ int seq_update_by_step()
   if (pattern_song_inc!=0)
     {
 
-      SEQ.getSongSequencer().setPatternNumber(song_cursor_x,
-					      song_cursor_y,
-					      SEQ.getSongSequencer().getPatternNumber(song_cursor_x,
-										      song_cursor_y)+
+      SEQ.getSongSequencer().setPatternNumber(song_cursor.x,
+					      song_cursor.y,
+					      SEQ.getSongSequencer().getPatternNumber(song_cursor.x,
+										      song_cursor.y)+
 					      pattern_song_inc);
       pattern_song_inc=0;
     }
@@ -3058,7 +3069,7 @@ int seq_update_by_step()
   if (pattern_song_reload!=0)
     {
 
-      SEQ.getSongSequencer().setStep(song_cursor_x);      
+      SEQ.getSongSequencer().setStep(song_cursor.x);
       pattern_song_reload=0;
       SEQ.setSongMode(1);
     }
@@ -3066,7 +3077,7 @@ int seq_update_by_step()
   if (pattern_song_loop!=0)
     {
 
-      SEQ.getSongSequencer().setLoopPoint(song_cursor_x);
+      SEQ.getSongSequencer().setLoopPoint(song_cursor.x);
       pattern_song_loop=0;
       SEQ.setSongMode(1);
     }
@@ -3085,7 +3096,7 @@ int seq_update_by_step()
     {
       printf("<==[SAVE]==>\n");
       //PR.writePattern(1,ct+1,P[ct]);
-      PR.writePattern(loadsave_cursor_x,loadsave_cursor_y,P[cty]);
+      PR.writePattern(loadsave_cursor.x,loadsave_cursor.y,P[cty]);
       dirty_graphic=1;
       save=false;
     }
@@ -3094,9 +3105,9 @@ int seq_update_by_step()
   if (load)
     {
       printf("<==[LOAD]==>\n");
-      if (PR.PatternDataExist(loadsave_cursor_x,loadsave_cursor_y)==true)
+      if (PR.PatternDataExist(loadsave_cursor.x,loadsave_cursor.y)==true)
 	{
-	  PR.readPatternData(loadsave_cursor_x,loadsave_cursor_y,P[cty]);
+	  PR.readPatternData(loadsave_cursor.x,loadsave_cursor.y,P[cty]);
 
 	  // Don't update BPM and Swing on single pattern load
 	  // Do it only on "loadall"
@@ -3123,9 +3134,9 @@ int seq_update_by_step()
       printf("<==[LOAD_ALL]==>\n");
       for (t=0;t<TRACK_MAX;t++)
 	{
-	  if (PR.PatternDataExist(loadsave_cursor_x,t)==true)
+	  if (PR.PatternDataExist(loadsave_cursor.x,t)==true)
 	    {
-	      PR.readPatternData(loadsave_cursor_x,t,P[t]);
+	      PR.readPatternData(loadsave_cursor.x,t,P[t]);
 	      bpm_current=P[t].getBPM();
 	      current_swing=P[t].getSwing();
 	      //nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
@@ -3150,7 +3161,7 @@ int seq_update_by_step()
       printf("<==[SAVE_ALL]==>\n");
       //PR.writePattern(1,ct+1,P[ct]);
       for (t=0;t<TRACK_MAX;t++)
-	PR.writePattern(loadsave_cursor_x,t,P[t]);
+	PR.writePattern(loadsave_cursor.x,t,P[t]);
       dirty_graphic=1;
       saveall=false;      
     }
@@ -3161,9 +3172,9 @@ int seq_update_by_step()
   if (patternRemove)
     {
       printf("<==[REMOVE]==>\n");
-      if (PR.PatternDataExist(loadsave_cursor_x,loadsave_cursor_y)==true)
+      if (PR.PatternDataExist(loadsave_cursor.x,loadsave_cursor.y)==true)
 	{
-	  if (PR.PatternRemove(loadsave_cursor_x,loadsave_cursor_y))
+	  if (PR.PatternRemove(loadsave_cursor.x,loadsave_cursor.y))
 	    {
 	      printf("<==[REMOVE==Success]==>\n");
 	      dirty_graphic=1;
