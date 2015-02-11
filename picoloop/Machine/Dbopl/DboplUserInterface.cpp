@@ -215,6 +215,60 @@ void DboplUserInterface::handle_key_amp_env()
       handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, TRIG_TIME_DURATION,   1, 1);
       handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, TRIG_TIME_DURATION,  -1, 1);
     }  
+
+
+
+  // change GLOBALMENU_AD SUBMENU
+  if (keyState[BUTTON_START]       &&
+      keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONGEST==127   &&
+      menu_cursor ==  GLOBALMENU_AD)
+    {
+      menu_ad--;
+      if (menu_ad<=-1)
+	menu_ad=4;
+      dirty_graphic=1;
+      IE.clearLastKeyEvent();
+      menu_ad_dirty_keyboard=1;
+      printf("[sub menu env : %d]\n",menu_ad);
+    }
+
+  // change GLOBALMENU_AD SUBMENU
+  if (keyState[BUTTON_START] &&
+      keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONGEST==127  &&
+      menu_cursor ==  GLOBALMENU_AD)
+    {
+      menu_ad++;
+      if (menu_ad>=4)
+	menu_ad=0;
+      dirty_graphic=1;
+      IE.clearLastKeyEvent();
+      menu_ad_dirty_keyboard=1;
+      printf("[sub menu env : %d]\n",menu_ad);
+    }
+
+  // change GLOBALMENU_AD SUBMENU
+  if (lastKey     ==  BUTTON_START  && 
+      lastEvent   ==  KEYRELEASED     && 
+      menu_cursor ==  GLOBALMENU_AD)
+    {
+      if (menu_ad_dirty_keyboard==0)
+	{
+	  if      (menu_ad==MENU_AD_AMP_ATTACK_RELEASE)       { menu_ad=MENU_AD_AMP_DECAY_SUSTAIN;        }
+	  else if (menu_ad==MENU_AD_AMP_DECAY_SUSTAIN)        { menu_ad=MENU_AD_FLTR_ATTACK_RELEASE;      }   
+	  else if (menu_ad==MENU_AD_FLTR_ATTACK_RELEASE)      { menu_ad=MENU_AD_FLTR_DECAY_SUSTAIN;       }   
+	  else if (menu_ad==MENU_AD_FLTR_DECAY_SUSTAIN)       { menu_ad=MENU_AD_TRIGTIME_AMP;             }   
+	  else if (menu_ad==MENU_AD_TRIGTIME_AMP)             { menu_ad=MENU_AD_AMP_ATTACK_RELEASE;      }   
+	  dirty_graphic=1;
+	}
+      menu_ad_dirty_keyboard=0;
+      IE.clearLastKeyEvent();
+      printf("[sub menu env : %d]\n",menu_ad);
+    }
+
+
+
+
+
 }
 
 void DboplUserInterface::handle_key_note()
@@ -421,6 +475,25 @@ void DboplUserInterface::handle_key_vco()
       handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG,     FM_TYPE        ,      1, 1);
       handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG,     FM_TYPE        ,     -1, 1);
     }
+
+
+  // change GLOBALMENU_VCO SUBMENU
+  if (lastKey     ==  BUTTON_START  && 
+      lastEvent   ==  KEYRELEASED     && 
+      menu_cursor ==  GLOBALMENU_VCO)
+    {
+      if (menu_ad_dirty_keyboard==0)
+	{
+	  if      (menu_vco==MENU_VCO_FMTYPE)              { menu_vco=MENU_VCO_OSCAMP;            }
+	  else if (menu_vco==MENU_VCO_OSCAMP)              { menu_vco=MENU_VCO_OSCMIX_PHASE;      }   
+	  else if (menu_vco==MENU_VCO_OSCMIX_PHASE)        { menu_vco=MENU_VCO_FMTYPE;            }   
+	  dirty_graphic=1;
+	}
+      menu_ad_dirty_keyboard=0;
+      IE.clearLastKeyEvent();
+      printf("[sub menu env : %d]\n",menu_ad);
+    }
+
 }
 
 
@@ -519,6 +592,31 @@ void DboplUserInterface::handle_key_lfo()
       handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG,     LFO_TYPE      ,      1, 1);
       handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG,     LFO_TYPE      ,     -1, 1);
     }
+
+
+
+
+  // change GLOBALMENU_VCO SUBMENU
+  if (lastKey     ==  BUTTON_START  && 
+      lastEvent   ==  KEYRELEASED     && 
+      menu_cursor ==  GLOBALMENU_LFO)
+    {
+      if (menu_ad_dirty_keyboard==0)
+	{
+	  if      (menu_lfo==MENU_LFO_LFOPITCH)               { menu_lfo=MENU_LFO_PITCHBEND;       }
+	  else if (menu_lfo==MENU_LFO_PITCHBEND)              { menu_lfo=MENU_LFO_TYPE;            } 
+	  else if (menu_lfo==MENU_LFO_TYPE)                   { menu_lfo=MENU_LFO_LFOPITCH;        }  
+	  dirty_graphic=1;
+	}
+      menu_ad_dirty_keyboard=0;
+      IE.clearLastKeyEvent();
+      printf("[sub menu lfo : %d]\n",menu_lfo);
+    }
+
+
+
+
+
 }
 
 
@@ -598,6 +696,22 @@ void DboplUserInterface::handle_key_fltr()
       handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG    , FILTER1_TYPE           ,   1, 1);
       handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG    , FILTER1_TYPE           ,  -1, 1);
     }  
+
+  // change GLOBALMENU_FLTR SUBMENU
+  if (lastKey     ==  BUTTON_START  && 
+      lastEvent   ==  KEYRELEASED     && 
+      menu_cursor ==  GLOBALMENU_FLTR)
+    {
+      if (menu_ad_dirty_keyboard==0)
+	{
+	  if      (menu_fltr==MENU_FLTR_CUTOFF_RESONANCE)   { menu_fltr=MENU_FLTR_ALGO_TYPE;            }
+	  else if (menu_fltr==MENU_FLTR_ALGO_TYPE)          { menu_fltr=MENU_FLTR_CUTOFF_RESONANCE;     }   
+	  dirty_graphic=1;
+	}
+      menu_ad_dirty_keyboard=0;
+      IE.clearLastKeyEvent();
+      printf("[sub menu_fltr : %d]\n",menu_fltr);
+    }
 
 
 }

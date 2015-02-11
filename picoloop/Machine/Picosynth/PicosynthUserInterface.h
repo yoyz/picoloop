@@ -54,6 +54,7 @@ extern int dirty_graphic;
 
 extern int cursor;
 
+extern int menu_ad_dirty_keyboard;
 
 
 

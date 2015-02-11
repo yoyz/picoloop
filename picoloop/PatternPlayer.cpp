@@ -1193,6 +1193,8 @@ void handle_key_sixteenbox()
   int    lastEvent;
   int    lastKey;
 
+  int          cty=SEQ.getCurrentTrackY();
+
   keyState=IE.keyState();
   keyRepeat=IE.keyRepeat();
   lastEvent=IE.lastEvent();
@@ -1219,7 +1221,7 @@ void handle_key_sixteenbox()
 	 !keyState[BUTTON_B])
 	{
 	  if (keyRepeat[BUTTON_UP]   ==1 || 
-	      keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONG==0)
+	      keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONG==0)	    
 	    cursor=cursor-4;
 	  if (cursor < 0) cursor=cursor +16;
 	  printf("key down : up \n");
@@ -1738,161 +1740,11 @@ void handle_key_bank()
 }
 
 
-void handle_key_submenu_ad()
-{
-  bool * keyState;
-  int  * keyRepeat;
-  int    lastEvent;
-  int    lastKey;
-
-  keyState=IE.keyState();
-  keyRepeat=IE.keyRepeat();
-  lastEvent=IE.lastEvent();
-  lastKey=IE.lastKey();
-
-
-  // change GLOBALMENU_AD SUBMENU
-  if (keyState[BUTTON_START]       &&
-      keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONGEST==127   &&
-      menu_cursor ==  GLOBALMENU_AD)
-    {
-      menu_ad--;
-      if (menu_ad<=-1)
-	menu_ad=4;
-      dirty_graphic=1;
-      IE.clearLastKeyEvent();
-      menu_ad_dirty_keyboard=1;
-      printf("[sub menu env : %d]\n",menu_ad);
-    }
-
-  // change GLOBALMENU_AD SUBMENU
-  if (keyState[BUTTON_START] &&
-      keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONGEST==127  &&
-      menu_cursor ==  GLOBALMENU_AD)
-    {
-      menu_ad++;
-      if (menu_ad>=4)
-	menu_ad=0;
-      dirty_graphic=1;
-      IE.clearLastKeyEvent();
-      menu_ad_dirty_keyboard=1;
-      printf("[sub menu env : %d]\n",menu_ad);
-    }
-
-  // change GLOBALMENU_AD SUBMENU
-  if (lastKey     ==  BUTTON_START  && 
-      lastEvent   ==  KEYRELEASED     && 
-      menu_cursor ==  GLOBALMENU_AD)
-    {
-      if (menu_ad_dirty_keyboard==0)
-	{
-	  if      (menu_ad==MENU_AD_AMP_ATTACK_RELEASE)       { menu_ad=MENU_AD_AMP_DECAY_SUSTAIN;        }
-	  else if (menu_ad==MENU_AD_AMP_DECAY_SUSTAIN)        { menu_ad=MENU_AD_FLTR_ATTACK_RELEASE;      }   
-	  else if (menu_ad==MENU_AD_FLTR_ATTACK_RELEASE)      { menu_ad=MENU_AD_FLTR_DECAY_SUSTAIN;       }   
-	  else if (menu_ad==MENU_AD_FLTR_DECAY_SUSTAIN)       { menu_ad=MENU_AD_TRIGTIME_AMP;             }   
-	  else if (menu_ad==MENU_AD_TRIGTIME_AMP)             { menu_ad=MENU_AD_AMP_ATTACK_RELEASE;      }   
-	  dirty_graphic=1;
-	}
-      menu_ad_dirty_keyboard=0;
-      IE.clearLastKeyEvent();
-      printf("[sub menu env : %d]\n",menu_ad);
-    }
-
-
-}
-
-
-void handle_key_submenu_vco()
-{
-  bool * keyState;
-  int  * keyRepeat;
-  int    lastEvent;
-  int    lastKey;
-
-  keyState=IE.keyState();
-  keyRepeat=IE.keyRepeat();
-  lastEvent=IE.lastEvent();
-  lastKey=IE.lastKey();
-
-  // change GLOBALMENU_VCO SUBMENU
-  if (lastKey     ==  BUTTON_START  && 
-      lastEvent   ==  KEYRELEASED     && 
-      menu_cursor ==  GLOBALMENU_VCO)
-    {
-      if (menu_ad_dirty_keyboard==0)
-	{
-	  if      (menu_vco==MENU_VCO_FMTYPE)              { menu_vco=MENU_VCO_OSCAMP;            }
-	  else if (menu_vco==MENU_VCO_OSCAMP)              { menu_vco=MENU_VCO_OSCMIX_PHASE;      }   
-	  else if (menu_vco==MENU_VCO_OSCMIX_PHASE)        { menu_vco=MENU_VCO_FMTYPE;            }   
-	  dirty_graphic=1;
-	}
-      menu_ad_dirty_keyboard=0;
-      IE.clearLastKeyEvent();
-      printf("[sub menu env : %d]\n",menu_ad);
-    }
-}
-
-void handle_key_submenu_lfo()
-{
-  bool * keyState;
-  int  * keyRepeat;
-  int    lastEvent;
-  int    lastKey;
-
-  keyState=IE.keyState();
-  keyRepeat=IE.keyRepeat();
-  lastEvent=IE.lastEvent();
-  lastKey=IE.lastKey();
-
-  // change GLOBALMENU_VCO SUBMENU
-  if (lastKey     ==  BUTTON_START  && 
-      lastEvent   ==  KEYRELEASED     && 
-      menu_cursor ==  GLOBALMENU_LFO)
-    {
-      if (menu_ad_dirty_keyboard==0)
-	{
-	  if      (menu_lfo==MENU_LFO_LFOPITCH)               { menu_lfo=MENU_LFO_PITCHBEND;       }
-	  else if (menu_lfo==MENU_LFO_PITCHBEND)              { menu_lfo=MENU_LFO_TYPE;            } 
-	  else if (menu_lfo==MENU_LFO_TYPE)                   { menu_lfo=MENU_LFO_LFOPITCH;        }  
-	  dirty_graphic=1;
-	}
-      menu_ad_dirty_keyboard=0;
-      IE.clearLastKeyEvent();
-      printf("[sub menu lfo : %d]\n",menu_lfo);
-    }
-}
 
 
 
-void handle_key_submenu_fltr()
-{
-  bool * keyState;
-  int  * keyRepeat;
-  int    lastEvent;
-  int    lastKey;
-
-  keyState=IE.keyState();
-  keyRepeat=IE.keyRepeat();
-  lastEvent=IE.lastEvent();
-  lastKey=IE.lastKey();
 
 
-  // change GLOBALMENU_FLTR SUBMENU
-  if (lastKey     ==  BUTTON_START  && 
-      lastEvent   ==  KEYRELEASED     && 
-      menu_cursor ==  GLOBALMENU_FLTR)
-    {
-      if (menu_ad_dirty_keyboard==0)
-	{
-	  if      (menu_fltr==MENU_FLTR_CUTOFF_RESONANCE)   { menu_fltr=MENU_FLTR_ALGO_TYPE;            }
-	  else if (menu_fltr==MENU_FLTR_ALGO_TYPE)          { menu_fltr=MENU_FLTR_CUTOFF_RESONANCE;     }   
-	  dirty_graphic=1;
-	}
-      menu_ad_dirty_keyboard=0;
-      IE.clearLastKeyEvent();
-      printf("[sub menu_fltr : %d]\n",menu_fltr);
-    }
-}
 
 
 void handle_key()
@@ -1947,19 +1799,23 @@ void handle_key()
 
   // Refresh the PECursor with the current Element
   PECursor=P[cty].getPatternElement(cursor);  
+  if (PECursor.get(MACHINE_TYPE)==SYNTH_PICOSYNTH) UI=&PSUI;
+  if (PECursor.get(MACHINE_TYPE)==SYNTH_PICODRUM)  UI=&PDUI;
+  if (PECursor.get(MACHINE_TYPE)==SYNTH_OPL2    )  UI=&DBUI;
+  if (PECursor.get(MACHINE_TYPE)==SYNTH_PBSYNTH)   UI=&PBUI;
 
   if (menu_cursor==GLOBALMENU_AD)   
-    { handle_key_amp_env(); handle_key_submenu_ad(); }
+    { handle_key_amp_env(); } //handle_key_submenu_ad(); }
   if (menu_cursor==GLOBALMENU_NOTE) 
     { handle_key_note();                             }
   if (menu_cursor==GLOBALMENU_OSC)  
     { handle_key_osc();                              }
   if (menu_cursor==GLOBALMENU_VCO)  
-    { handle_key_vco(); handle_key_submenu_vco();    }
+    { handle_key_vco(); } //handle_key_submenu_vco();    }
   if (menu_cursor==GLOBALMENU_LFO)  
-    { handle_key_lfo(); handle_key_submenu_lfo();    }
+    { handle_key_lfo(); } //handle_key_submenu_lfo();    }
   if (menu_cursor==GLOBALMENU_FLTR) 
-    { handle_key_fltr(); handle_key_submenu_fltr();  }
+    { handle_key_fltr(); } //handle_key_submenu_fltr();  }
 
   if (menu_cursor==GLOBALMENU_LS)   handle_key_load_save();
   if (menu_cursor==GLOBALMENU_BANK) handle_key_bank();
