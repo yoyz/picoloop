@@ -35,6 +35,117 @@
 
 #define DEFAULT_VOLUME   64
 
+
+#define KEY_REPEAT_INTERVAL 400
+
+
+
+#define DISABLEDBOX_COLOR   0x0AF0FE
+#define BOX_COLOR           0xAECD15
+#define TRIG_COLOR          0x0E4C15
+#define NOTE_COLOR          0x46DC65
+#define CURSOR_COLOR        0x1515CD
+#define STEP_COLOR          0x242C45
+
+#define SMALLBOX_COLOR      0x442233
+
+#define DISABLE             0
+#define ENABLE              1
+
+#define MENU_OFF      0
+#define MENU_ON_PAGE1 1
+#define MENU_ON_PAGE2 2
+
+//menu
+/* enum { */
+/*   MENU_OFF, */
+/*   MENU_ON_PAGE1, */
+/*   MENU_ON_PAGE2 */
+/* }; */
+
+#define CURSOR_LOADSAVE 0
+#define CURSOR_SONG     1
+
+/* enum { */
+/*   CURSOR_LOADSAVE, */
+/*   CURSOR_SONG */
+/* }; */
+  
+
+//menu_cursor
+
+#define GLOBALMENU_AD         0
+#define GLOBALMENU_NOTE       1
+#define GLOBALMENU_OSC        2
+#define GLOBALMENU_VCO        3
+#define GLOBALMENU_LFO        4
+#define GLOBALMENU_FLTR       5
+
+#define GLOBALMENU_LS         6
+#define GLOBALMENU_BANK       7
+#define GLOBALMENU_PSH        8
+#define GLOBALMENU_MAC        9
+#define GLOBALMENU_FX         10
+#define GLOBALMENU_BPM        11
+
+
+/* enum { */
+/*   GLOBALMENU_AD,         // 0 */
+/*   GLOBALMENU_NOTE,       // 1 */
+/*   GLOBALMENU_OSC,        // 2  */
+/*   GLOBALMENU_VCO,        // 3 */
+/*   GLOBALMENU_LFO,        // 4 */
+/*   GLOBALMENU_FLTR,       // 5 */
+
+/*   GLOBALMENU_LS,         // 6 */
+/*   GLOBALMENU_BANK,       // 7 */
+/*   GLOBALMENU_PSH,        // 8 */
+/*   GLOBALMENU_MAC,        // 9 */
+/*   GLOBALMENU_FX,         // 10 */
+/*   GLOBALMENU_BPM,        // 11 */
+
+/* }; */
+
+
+//menu_ad
+enum {
+  MENU_AD_AMP_ATTACK_RELEASE,
+  MENU_AD_AMP_DECAY_SUSTAIN,
+  MENU_AD_FLTR_ATTACK_RELEASE,
+  MENU_AD_FLTR_DECAY_SUSTAIN,
+  MENU_AD_TRIGTIME_AMP,
+};
+
+enum {
+  MENU_FLTR_CUTOFF_RESONANCE,
+  MENU_FLTR_ALGO_TYPE, 
+};
+
+enum {
+  MENU_VCO_OSCMIX_PHASE,
+  MENU_VCO_OSCAMP,
+  MENU_VCO_FMTYPE
+};
+
+
+enum {
+  MENU_LFO_LFOPITCH,
+  MENU_LFO_PITCHBEND,
+  MENU_LFO_TYPE,
+};
+
+
+enum {
+  MENU_FX_DEPTH_SPEED
+};
+
+enum {
+  MENU_LS_PATTERN,
+  MENU_LS_SONG,
+};
+
+
+
 //INTERNAL
 
 /* #define FILTER_TYPE_LOWPASS   0 */

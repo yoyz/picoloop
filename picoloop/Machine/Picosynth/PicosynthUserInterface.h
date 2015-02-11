@@ -1,5 +1,7 @@
 using namespace std;
-#include <stdio.h>
+//#include <stdio.h>
+
+#include "UserInterface.h"
 
 #include "Master.h"
 #include "InputManager.h"
@@ -12,9 +14,10 @@ using namespace std;
 #include "TweakableKnob.h"
 #include <vector>
 
+#ifndef __PICOSYNTHUSERINTERFACE____
+#define __PICOSYNTHUSERINTERFACE____
 
-#ifndef __USERINTERFACE____
-#define __USERINTERFACE____
+
 
 extern vector <Pattern>            P;  
 extern vector <Machine   *>        M;
@@ -39,20 +42,44 @@ extern InputManager   IE;          // used to  fetch key
 extern SDL_GUI        SG;          // used to  open a gui and display stuff
 extern TweakableKnob  TK;          // used to  store "variation" which will be applied on Pattern/PatternElement object
 
+extern int menu;
 extern int menu_cursor;
 extern int menu_ad;
+extern int menu_note;
+extern int menu_vco;
+extern int menu_lfo;
+extern int menu_fltr;
+
+extern int dirty_graphic;
 
 extern int cursor;
 
 
 
-class UserInterface
+
+
+
+class PicosynthUserInterface : public UserInterface
 {
  public:
-  UserInterface();
-  ~UserInterface();
-  virtual void handle_key(int menu);
-  virtual void display_board(int menu);  
+  PicosynthUserInterface();
+  ~PicosynthUserInterface();
+  void handle_key(int menu);
+  void handle_key_amp_env();
+  void handle_key_note();
+  void handle_key_osc();
+  void handle_key_vco();
+  void handle_key_lfo();
+  void handle_key_fltr();
+
+  void display_board(int menu); 
+  void display_board_amp_env();
+  void display_board_note();
+  void display_board_vco();
+  void display_board_osc();
+  void display_board_lfo();
+  void display_board_fltr();
+
   int a;
 };
 
