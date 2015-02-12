@@ -352,6 +352,7 @@ enum
     SYNTH_OPL2,
     SYNTH_PICODRUM,
     SYNTH_PBSYNTH,
+    SYNTH_CURSYNTH,
   };
 
 enum 

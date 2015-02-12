@@ -4,7 +4,7 @@
 
 			//MonoMixer::MonoMixer(): M()
 //MonoMixer::MonoMixer()
-MonoMixer::MonoMixer(): PD(), PM(), OPLM(), PBS(), FXDelay(), FXDisabled()
+MonoMixer::MonoMixer(): PD(), PM(), OPLM(), PBS(), CS(), FXDelay(), FXDisabled()
 {
   printf("MonoMixer::MonoMixer()\n");  
   amplitude=127;
@@ -35,6 +35,7 @@ void MonoMixer::init()
   PD.init();
   OPLM.init();
   PBS.init();
+  CS.init();
 
   //FX=&FXDelay;
   FX=&FXDelay;
@@ -58,6 +59,8 @@ void MonoMixer::init()
     M=&PD;
   if (machine_type==3)
     M=&PBS;
+  if (machine_type==4)
+    M=&CS;
 
   //M=&OPLM;
   //M=&PM;
@@ -85,6 +88,10 @@ void MonoMixer::setMachineType(int type)
 
     case SYNTH_PBSYNTH:
       M=&PBS;
+      break;
+
+    case SYNTH_CURSYNTH:
+      M=&CS;
       break;
 
 

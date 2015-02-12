@@ -51,6 +51,7 @@ PSP_HEAP_SIZE_KB(-8192) ;
 #include "Machine/Picodrum/PicodrumUserInterface.h"
 #include "Machine/Dbopl/DboplUserInterface.h"
 #include "Machine/PBSynth/PBSynthUserInterface.h"
+//#include "Machine/PBSynth/PBSynthUserInterface.h"
 
 
 

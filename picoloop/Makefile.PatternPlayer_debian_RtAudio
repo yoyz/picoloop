@@ -85,6 +85,29 @@ SOURCES=PatternPlayer.cpp \
 		      Machine/PBSynth/envtab.cpp                 \
 		      Machine/PBSynth/coeff.cpp                  \
 		      Machine/PBSynth/PBSynthMachine.cpp         \
+		      Machine/Cursynth/CursynthUserInterface.cpp \
+		      Machine/Cursynth/processor_router.cpp	 \
+		      Machine/Cursynth/processor.cpp		 \
+		      Machine/Cursynth/oscillator.cpp		 \
+		      Machine/Cursynth/operators.cpp		 \
+		      Machine/Cursynth/mono_panner.cpp		 \
+		      Machine/Cursynth/midi_lookup.cpp		 \
+		      Machine/Cursynth/linear_slope.cpp		 \
+		      Machine/Cursynth/filter.cpp		 \
+		      Machine/Cursynth/feedback.cpp		 \
+		      Machine/Cursynth/envelope.cpp		 \
+		      Machine/Cursynth/delay.cpp		 \
+		      Machine/Cursynth/cursynth_strings.cpp	 \
+		      Machine/Cursynth/cursynth_engine.cpp	 \
+		      Machine/Cursynth/wave.cpp			 \
+		      Machine/Cursynth/voice_handler.cpp	 \
+		      Machine/Cursynth/value.cpp		 \
+		      Machine/Cursynth/trigger_operators.cpp	 \
+		      Machine/Cursynth/step_generator.cpp	 \
+		      Machine/Cursynth/smooth_value.cpp		 \
+		      Machine/Cursynth/smooth_filter.cpp	 \
+		      Machine/Cursynth/send_receive.cpp		 \
+		      Machine/Cursynth/CursynthMachine.cpp	 \
 
 
 

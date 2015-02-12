@@ -5,6 +5,7 @@ using namespace std;
 #include "Machine/Picodrum/PicodrumMachine.h"
 #include "Machine/Dbopl/DboplMachine.h"
 #include "Machine/PBSynth/PBSynthMachine.h"
+#include "Machine/Cursynth/CursynthMachine.h"
 //#include "Effect.h"
 #include "EffectDelay.h"
 #include "EffectDisabled.h"
@@ -33,6 +34,7 @@ class MonoMixer
   PicodrumMachine       PD;
   dboplMachine          OPLM;
   PBSynthMachine        PBS;
+  CursynthMachine       CS;
 
   Effect                *FX;
   EffectDelay           FXDelay;
