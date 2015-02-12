@@ -25,7 +25,7 @@ class CursynthMachine : public Machine
 
  protected:
 
-  mopo::CursynthEngine * CS;
+  mopo::CursynthEngine * CSE;
 
   int                   cutoff;
   int                   resonance;

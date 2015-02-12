@@ -31,13 +31,13 @@ void CursynthMachine::init()
   if (buffer_i==0 ||
       buffer_f==0)
     {
-      CS=new mopo::CursynthEngine();
+      CSE=new mopo::CursynthEngine();
       //CS->setBufferSize(SAM);     
       buffer_i = (Sint16*)malloc(sizeof(Sint16)*SAM*8);
       buffer_f = (mopo::mopo_float*)malloc(sizeof(mopo::mopo_float)*SAM*8);
 
-      CS->setBufferSize(SAM);
-      CS->setSampleRate(44100);
+      CSE->setBufferSize(SAM);
+      CSE->setSampleRate(44100);
 
     }
   for (i=0;i<SAM;i++)
@@ -123,17 +123,19 @@ void CursynthMachine::setI(int what,int val)
     { 
       NoteFreq & NF = NoteFreq::getInstance(); 
       note_on=1;
-      CS->noteOn(NF.getINoteFreq(note),1.0);
+      //CS->noteOn(NF.getINoteFreq(note),1.0);
+      CSE->noteOn(note,1.0);
+      CSE->getControls();
     }
   if (what==NOTE_ON && val==0) 
     { 
       note_on=0;
-      CS->noteOff(val);
+      CSE->noteOff(val);
     }
 
   if (what==OSC1_NOTE)           note=val;
 
-
+  if (what==ADSR_ENV0_ATTACK)    CSE->getControls().at("amp attack")->set(val);
 
   
 }
@@ -268,10 +270,10 @@ int CursynthMachine::tick()
   if (sample_num==0 || 
       index==0 )
     {
-      CS->process();
+      CSE->process();
     }
  
-  buffer_f[index]=CS->output()->buffer[index];
+  buffer_f[index]=CSE->output()->buffer[index];
   buffer_f[index]=buffer_f[index]*16384;
   buffer_i[index]=buffer_f[index];
     
