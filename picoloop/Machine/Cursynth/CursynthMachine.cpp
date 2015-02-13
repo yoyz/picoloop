@@ -1,7 +1,8 @@
 #include "Master.h"
 #include "CursynthMachine.h"
 
-#define SAM 256
+//#define SAM 256
+#define SAM 64
 
 CursynthMachine::CursynthMachine()
 {
@@ -116,16 +117,25 @@ void CursynthMachine::setI(int what,int val)
   float f_val_cutoff;
   float f_val_resonance;
 
+  float f_val=val;
+  f_val=f_val/128;
+
   if (what==TRIG_TIME_MODE)       trig_time_mode=val;
-  if (what==TRIG_TIME_DURATION) { trig_time_duration=val; trig_time_duration_sample=val*512; }
+  if (what==TRIG_TIME_DURATION) 
+    { 
+      trig_time_duration=val;
+      trig_time_duration_sample=val*512; 
+    }
 
   if (what==NOTE_ON && val==1) 
     { 
       NoteFreq & NF = NoteFreq::getInstance(); 
       note_on=1;
       //CS->noteOn(NF.getINoteFreq(note),1.0);
-      CSE->noteOn(note,1.0);
-      CSE->getControls();
+      CSE->noteOn(note,0.8);
+      //CSE->getControls();
+      //f_val=trig_time_duration;
+      //CSE->getControls().at("velocity track")->set(trig_time_duration);
     }
   if (what==NOTE_ON && val==0) 
     { 
@@ -135,9 +145,54 @@ void CursynthMachine::setI(int what,int val)
 
   if (what==OSC1_NOTE)           note=val;
 
-  if (what==ADSR_ENV0_ATTACK)    CSE->getControls().at("amp attack")->set(val);
+  //if (what==ADSR_ENV0_ATTACK)    CSE->getControls().at("amp attack")->set(val);
+  //delay time"
+  //if (what==ADSR_ENV0_ATTACK)    CSE->getControls().at("delay time")->set(f_val);
+  //if (what==ADSR_ENV0_RELEASE)   CSE->getControls().at("delay dry/wet")->set(f_val);
+  //if (what==ADSR_ENV0_DECAY)     CSE->getControls().at("delay feedback")->set(f_val);
+  CSE->getControls().at("delay time")->set(0);      
+  CSE->getControls().at("delay dry/wet")->set(0);   
+  CSE->getControls().at("delay feedback")->set(0);
+  CSE->getControls().at("cross modulation")->set(0);  
 
-  
+  CSE->getControls().at("osc 2 transpose")->set(0); 
+  CSE->getControls().at("osc 2 tune")->set(0); 
+  CSE->getControls().at("volume")->set(0.5);     
+
+  if (what==OSC1_TYPE)           { CSE->getControls().at("osc 1 waveform")->set(f_val*127); }
+  if (what==OSC2_TYPE)           { CSE->getControls().at("osc 2 waveform")->set(f_val*127); }
+
+  if (what==ADSR_ENV0_ATTACK)    CSE->getControls().at("amp attack")->set(f_val*3);
+  if (what==ADSR_ENV0_DECAY)     CSE->getControls().at("amp decay")->set(f_val*3);
+  if (what==ADSR_ENV0_SUSTAIN)   CSE->getControls().at("amp sustain")->set(f_val);
+  if (what==ADSR_ENV0_RELEASE)   CSE->getControls().at("amp release")->set(f_val*3);
+
+
+  if (what==ADSR_ENV1_ATTACK)    CSE->getControls().at("fil attack")->set(f_val*3);
+  if (what==ADSR_ENV1_DECAY)     CSE->getControls().at("fil decay")->set(f_val*3);
+  if (what==ADSR_ENV1_SUSTAIN)   CSE->getControls().at("fil sustain")->set(f_val);
+  if (what==ADSR_ENV1_RELEASE)   CSE->getControls().at("fil release")->set(f_val*3);
+
+  if (what==OSC1_PHASE)          CSE->getControls().at("fil env depth")->set(((f_val*2)-1)*128);
+  if (what==OSC12_MIX)           CSE->getControls().at("osc mix")->set(f_val);
+  //if (what==OSC12_MIX)           CSE->getControls().at("amp env depth")->set(f_val*12);
+
+
+  if (what==OSC12_MIX)           CSE->getControls().at("osc mix")->set(f_val);
+
+  //if (what==OSC1_AMP)            CSE->getControls().at("velocity track")->set(f_val);
+
+
+    if (what==FILTER1_CUTOFF)      
+      { 
+	CSE->getControls().at("cutoff")->set(28+f_val*100);
+      }
+    
+    if (what==FILTER1_RESONANCE)         
+      { 
+	CSE->getControls().at("resonance")->set(0.5+(f_val*10));
+      }
+
 }
 
 const char * CursynthMachine::getMachineParamCharStar(int machineParam,int paramValue)
@@ -274,7 +329,8 @@ int CursynthMachine::tick()
     }
  
   buffer_f[index]=CSE->output()->buffer[index];
-  buffer_f[index]=buffer_f[index]*16384;
+  buffer_f[index]=buffer_f[index]*8192;
+  //buffer_f[index]=buffer_f[index]*1024;
   buffer_i[index]=buffer_f[index];
     
   s_out=buffer_i[index];
