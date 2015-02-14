@@ -20,7 +20,7 @@ void display_board_two_param_text(int machineParam1,int machineParam2);
 
 void CursynthUserInterface::handle_key(int menu)
 {
-  printf("CursynthUserInterface::handle_key(%d,%d)\n",menu);
+  //printf("CursynthUserInterface::handle_key(%d,%d)\n",menu);
   if (menu==GLOBALMENU_AD) 
     this->handle_key_amp_env();
   if (menu==GLOBALMENU_NOTE) 

@@ -68,13 +68,13 @@ int CursynthMachine::checkI(int what,int val)
     {
     case OSC1_TYPE:
       if (val<0) return 0;
-      if (val>PICO_WAVETABLE_SIZE-2) return PICO_WAVETABLE_SIZE-1;
+      if (val>PICO_CURSYNTH_SIZE-1) return PICO_CURSYNTH_SIZE-1;
       return val;
       break;
 
     case OSC2_TYPE:
       if (val<0) return 0;
-      if (val>PICO_WAVETABLE_SIZE-2) return PICO_WAVETABLE_SIZE-1;
+      if (val>PICO_CURSYNTH_SIZE-1) return PICO_CURSYNTH_SIZE-1;
       return val;
       break;
 
@@ -167,7 +167,6 @@ void CursynthMachine::setI(int what,int val)
   if (what==ADSR_ENV0_SUSTAIN)   CSE->getControls().at("amp sustain")->set(f_val);
   if (what==ADSR_ENV0_RELEASE)   CSE->getControls().at("amp release")->set(f_val*3);
 
-
   if (what==ADSR_ENV1_ATTACK)    CSE->getControls().at("fil attack")->set(f_val*3);
   if (what==ADSR_ENV1_DECAY)     CSE->getControls().at("fil decay")->set(f_val*3);
   if (what==ADSR_ENV1_SUSTAIN)   CSE->getControls().at("fil sustain")->set(f_val);
@@ -178,7 +177,7 @@ void CursynthMachine::setI(int what,int val)
   //if (what==OSC12_MIX)           CSE->getControls().at("amp env depth")->set(f_val*12);
 
 
-  if (what==OSC12_MIX)           CSE->getControls().at("osc mix")->set(f_val);
+  //if (what==OSC12_MIX)           CSE->getControls().at("osc mix")->set(f_val);
 
   //if (what==OSC1_AMP)            CSE->getControls().at("velocity track")->set(f_val);
 
@@ -199,14 +198,24 @@ const char * CursynthMachine::getMachineParamCharStar(int machineParam,int param
 {
   static const char * str_null       = "NULL ";
 
-  static const char * str_sine       = "SINE ";
-  static const char * str_saw        = "SAW  ";
-  static const char * str_pulse      = "PULSE";
-  static const char * str_trgl       = "TRGL ";
-  static const char * str_noise      = "NOISE";
-  static const char * str_wtbl       = "WTBL ";
+  static const char * str_sin           = "SIN  ";
+  static const char * str_triangle      = "TRGL ";
+  static const char * str_square        = "SQR  ";
+  static const char * str_downsaw       = "DSAW ";
+  static const char * str_upsaw         = "USAW ";
 
-  const        char * str_osc[PICO_WAVETABLE_SIZE];
+  static const char * str_threestep     = "TSTEP";
+  static const char * str_fourstep      = "FSTEP";
+  static const char * str_heightstep    = "HSTEP";
+
+  static const char * str_threepyramid  = "TPYR ";
+  static const char * str_fivepyramid   = "FPYR ";
+  static const char * str_ninepyramid   = "NPYR ";
+  static const char * str_whitenoise    = "NOISE";
+
+  //static const char * str_wtbl          = "WTBL ";
+
+  const        char * str_osc[PICO_CURSYNTH_SIZE];
 
 
   static const char * str_fltr_algo_nofilter = "NOFL";
@@ -232,11 +241,21 @@ const char * CursynthMachine::getMachineParamCharStar(int machineParam,int param
 
 
 
-  str_osc[PICO_WAVETABLE_SINE]        = str_sine;
-  str_osc[PICO_WAVETABLE_SAW]         = str_saw;
-  str_osc[PICO_WAVETABLE_PULSE]       = str_pulse;
-  str_osc[PICO_WAVETABLE_TRGL]        = str_trgl;
-  str_osc[PICO_WAVETABLE_NOISE]       = str_noise;
+  str_osc[PICO_CURSYNTH_SIN]              = str_sin;
+  str_osc[PICO_CURSYNTH_TRIANGLE]         = str_triangle;
+  str_osc[PICO_CURSYNTH_SQUARE]           = str_square;
+  str_osc[PICO_CURSYNTH_DOWNSAW]          = str_downsaw;
+  str_osc[PICO_CURSYNTH_UPSAW]            = str_upsaw;
+
+  str_osc[PICO_CURSYNTH_THREESTEP]        = str_threestep;
+  str_osc[PICO_CURSYNTH_FOURSTEP]         = str_fourstep;
+  str_osc[PICO_CURSYNTH_HEIGHTSTEP]       = str_heightstep;
+
+  str_osc[PICO_CURSYNTH_THREEPYRAMID]     = str_threepyramid;
+  str_osc[PICO_CURSYNTH_FIVEPYRAMID]      = str_fivepyramid;
+  str_osc[PICO_CURSYNTH_NINEPYRAMID]      = str_ninepyramid;
+
+  str_osc[PICO_CURSYNTH_WHITENOISE]       = str_whitenoise;
 
   str_fltr_algo[FILTER_ALGO_NOFILTER] = str_fltr_algo_nofilter;
   str_fltr_algo[FILTER_ALGO_BIQUAD]   = str_fltr_algo_biquad;
