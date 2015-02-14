@@ -521,8 +521,9 @@ const char * PatternElement::getMachineTypeCharStar()
 {
   static const char * str_picosynth   = "PSYNTH ";
   static const char * str_picodrum    = "PDRUM  ";
-  static const char * str_opl2        = "OPL2 ";
-  static const char * str_pbsynth     = "PBS ";
+  static const char * str_opl2        = "OPL2   ";
+  static const char * str_pbsynth     = "PBS    ";
+  static const char * str_cursynth    = "CSYNTH ";
 
   switch (machine_type)
     {
@@ -530,6 +531,7 @@ const char * PatternElement::getMachineTypeCharStar()
     case SYNTH_PICODRUM:   return str_picodrum;    break;
     case SYNTH_OPL2:       return str_opl2;        break; 
     case SYNTH_PBSYNTH:    return str_pbsynth;     break; 
+    case SYNTH_CURSYNTH:   return str_cursynth;    break; 
     }
   return str_picosynth;
 }
