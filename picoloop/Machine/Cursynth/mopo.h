@@ -41,6 +41,7 @@ namespace mopo {
   const int MIDI_SIZE = 128;
   const int PPQ = 15360; // Pulses per quarter note.
 
+  //typedef double mopo_float;
   typedef double mopo_float;
 
   // Common types of events across different Processors.
