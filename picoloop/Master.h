@@ -379,6 +379,16 @@ enum
     PICO_DBOPL_SIZE
   };
 
+
+enum 
+  {
+    PICO_PBSYNTH_SQUARE,
+    PICO_PBSYNTH_SAW,
+    PICO_PBSYNTH_TRIANGLE,
+    PICO_PBSYNTH_SIZE,
+  };
+
+
 enum 
   {
     PICO_CURSYNTH_SIN,

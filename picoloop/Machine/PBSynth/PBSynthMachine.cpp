@@ -167,13 +167,13 @@ int PBSynthMachine::checkI(int what,int val)
     {
     case OSC1_TYPE:
       if (val<0) return 0;
-      if (val>2) return 2;
+      if (val>2) return PICO_PBSYNTH_SIZE;
       return val;
       break;
 
     case OSC2_TYPE:
       if (val<0) return 0;
-      if (val>2) return 2;
+      if (val>2) return PICO_PBSYNTH_SIZE;
       return val;
       break;
 
@@ -268,7 +268,7 @@ void PBSynthMachine::setI(int what,int val)
       { 
 	osc1_type=val;
 	//SE.getPBSynthOscillator(0)->setWave(val%2);
-	SE.getPBSynthOscillator(0)->setWave(val);
+	SE.getPBSynthOscillator(0)->setWave(val%PICO_PBSYNTH_SIZE);
 	//HO->SetWaveform(1,1,w[val]);
 	//HO->EnableWaveformControl();
       }
@@ -276,7 +276,7 @@ void PBSynthMachine::setI(int what,int val)
       {
 	osc2_type=val;
 	//SE.getPBSynthOscillator(1)->setWave(val%2);
-	SE.getPBSynthOscillator(1)->setWave(val);
+	SE.getPBSynthOscillator(1)->setWave(val%PICO_PBSYNTH_SIZE);
 	// HO->SetWaveform(1,2,w[val]);
 	// HO->EnableWaveformControl();
       }
