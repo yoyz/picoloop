@@ -73,19 +73,12 @@ void PBSynthMachine::init()
 
 const char * PBSynthMachine::getMachineParamCharStar(int machineParam,int paramValue)
 {
-  static const char * str_null       = "NULL ";
+  static const char * str_pbsynth_null       = " NULL";
+  static const char * str_pbsynth_sqr        = "  SQR";
+  static const char * str_pbsynth_trgl       = " TRGL";
+  static const char * str_pbsynth_saw        = "  SAW";
 
-  static const char * str_opl2_sine  = "  SIN";
-  static const char * str_opl2_hsin  = " HSIN";
-  static const char * str_opl2_absin = "ABSIN";
-  static const char * str_opl2_qsin  = " PSIN";
-
-  static const char * str_opl2_epsin = "EPSIN";
-  static const char * str_opl2_asin  = " ASIN";
-  static const char * str_opl2_sqr   = "  SQR";
-  static const char * str_opl2_dsqr  = " DSQR";
-
-  const char * str_osc[PICO_DBOPL_SIZE];
+  const char * str_osc[PICO_PBSYNTH_SIZE];
 
   static const char * str_fltr_algo_nofilter = "NOFL";
   static const char * str_fltr_algo_biquad   = "BIQU";
@@ -106,15 +99,9 @@ const char * PBSynthMachine::getMachineParamCharStar(int machineParam,int paramV
   const        char * str_fm_type[FM_TYPE_SIZE];
 
 
-  str_osc[PICO_DBOPL_SINE]            = str_opl2_sine;
-  str_osc[PICO_DBOPL_HSIN]            = str_opl2_hsin;
-  str_osc[PICO_DBOPL_ABSIN]           = str_opl2_absin;
-  str_osc[PICO_DBOPL_QSIN]            = str_opl2_qsin;
-
-  str_osc[PICO_DBOPL_EPSIN]           = str_opl2_epsin;
-  str_osc[PICO_DBOPL_ASIN]            = str_opl2_asin;
-  str_osc[PICO_DBOPL_SQR]             = str_opl2_sqr;
-  str_osc[PICO_DBOPL_DSQR]            = str_opl2_dsqr;
+  str_osc[PICO_PBSYNTH_SQUARE]        = str_pbsynth_sqr;
+  str_osc[PICO_PBSYNTH_SAW]           = str_pbsynth_saw;
+  str_osc[PICO_PBSYNTH_TRIANGLE]      = str_pbsynth_trgl;
 
   str_fltr_algo[FILTER_ALGO_NOFILTER] = str_fltr_algo_nofilter;
   str_fltr_algo[FILTER_ALGO_BIQUAD]   = str_fltr_algo_biquad;
@@ -146,7 +133,7 @@ const char * PBSynthMachine::getMachineParamCharStar(int machineParam,int paramV
       return str_fm_type[paramValue];
 
     }
-  return str_null;
+  return str_pbsynth_null;
 }
 
 
@@ -167,13 +154,13 @@ int PBSynthMachine::checkI(int what,int val)
     {
     case OSC1_TYPE:
       if (val<0) return 0;
-      if (val>2) return PICO_PBSYNTH_SIZE;
+      if (val>2) return PICO_PBSYNTH_SIZE-1;
       return val;
       break;
 
     case OSC2_TYPE:
       if (val<0) return 0;
-      if (val>2) return PICO_PBSYNTH_SIZE;
+      if (val>2) return PICO_PBSYNTH_SIZE-1;
       return val;
       break;
 
