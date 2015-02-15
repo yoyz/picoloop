@@ -132,7 +132,7 @@ void CursynthMachine::setI(int what,int val)
       NoteFreq & NF = NoteFreq::getInstance(); 
       note_on=1;
       //CS->noteOn(NF.getINoteFreq(note),1.0);
-      CSE->noteOn(note,0.8);
+      CSE->noteOn(note+11,0.8);
       //CSE->getControls();
       //f_val=trig_time_duration;
       //CSE->getControls().at("velocity track")->set(trig_time_duration);
