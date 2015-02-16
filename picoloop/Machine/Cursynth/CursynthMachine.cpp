@@ -46,11 +46,22 @@ void CursynthMachine::init()
   for (i=0;i<SAM;i++)
     buffer_f[i]=0.0;
 
+  CSE->getControls().at("delay time")->set(0);      
+  CSE->getControls().at("delay dry/wet")->set(0);   
+  CSE->getControls().at("delay feedback")->set(0);
+  CSE->getControls().at("cross modulation")->set(0);  
+
+  CSE->getControls().at("osc 2 transpose")->set(0); 
+  CSE->getControls().at("osc 2 tune")->set(0.1); 
+  CSE->getControls().at("volume")->set(0.1);     
+
+
 
   //bq.reset();
   note_on=0;
 
   sample_num=0;
+
 
 
   note=0;
@@ -150,14 +161,6 @@ void CursynthMachine::setI(int what,int val)
   //if (what==ADSR_ENV0_ATTACK)    CSE->getControls().at("delay time")->set(f_val);
   //if (what==ADSR_ENV0_RELEASE)   CSE->getControls().at("delay dry/wet")->set(f_val);
   //if (what==ADSR_ENV0_DECAY)     CSE->getControls().at("delay feedback")->set(f_val);
-  CSE->getControls().at("delay time")->set(0);      
-  CSE->getControls().at("delay dry/wet")->set(0);   
-  CSE->getControls().at("delay feedback")->set(0);
-  CSE->getControls().at("cross modulation")->set(0);  
-
-  CSE->getControls().at("osc 2 transpose")->set(0); 
-  CSE->getControls().at("osc 2 tune")->set(0); 
-  CSE->getControls().at("volume")->set(0.5);     
 
   if (what==OSC1_TYPE)           { CSE->getControls().at("osc 1 waveform")->set(f_val*127); }
   if (what==OSC2_TYPE)           { CSE->getControls().at("osc 2 waveform")->set(f_val*127); }
@@ -349,6 +352,8 @@ int CursynthMachine::tick()
  
   buffer_f[index]=CSE->output()->buffer[index];
   buffer_f[index]=buffer_f[index]*8192;
+  //buffer_f[index]=buffer_f[index]*14336;
+  //buffer_f[index]=buffer_f[index]*2048;
   //buffer_f[index]=buffer_f[index]*1024;
   buffer_i[index]=buffer_f[index];
     
