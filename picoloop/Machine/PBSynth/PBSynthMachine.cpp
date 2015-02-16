@@ -8,15 +8,17 @@
 //};
 
 
-int arpMode = 0;
-int arpSpeed = 200;
-int arpOctaveMax = 4;
-int arpInc = 1;
-int oscBase[2];
-int note[2];
+// int arpMode = 0;
+// int arpSpeed = 200;
+// int arpOctaveMax = 4;
+// int arpInc = 1;
+// int oscBase[2];
+// int note[2];
 
 
-PBSynthMachine::PBSynthMachine() : SE(SAM,100)
+//PBSynthMachine::PBSynthMachine() : SE(SAM,100)
+//PBSynthMachine::PBSynthMachine() : 
+PBSynthMachine::PBSynthMachine()
 {
   printf("PBSynthMachine::PBSynthMachine()\n");  
   buffer=0;
@@ -52,6 +54,7 @@ void PBSynthMachine::init()
   //HO(44100);
   if (buffer==0)
     {
+      SE=new SynthEngine(SAM,100);
       buffer = (mfloat*)malloc(sizeof(mfloat)*SAM*8);
     }
 
@@ -64,8 +67,8 @@ void PBSynthMachine::init()
   freq=110.0;
   keyon=0;
 
-  SE.init();
-  SE.setPBSynthFilter24dB(1);
+  SE->init();
+  SE->setPBSynthFilter24dB(1);
   //SE.getPBSynthOscillator(0)->setWave(0);
   //SE.getPBSynthOscillator(1)->setWave(0);
   //SE.reset();
@@ -238,7 +241,7 @@ void PBSynthMachine::setI(int what,int val)
     if (what==NOTE_ON && val==1) 
     { 
       keyon=1;
-      SE.triggerNote(note);
+      SE->triggerNote(note);
       // sineLfoOsc1.reset();
       // NoteFreq & NF = NoteFreq::getInstance();
       // HO->KeyOn(1,NF.getINoteFreq(note));
@@ -247,7 +250,7 @@ void PBSynthMachine::setI(int what,int val)
 
     if (what==NOTE_ON && val==0) 
     { 
-      SE.releaseNote();
+      SE->releaseNote();
       keyon=0;
     }
 
@@ -255,7 +258,7 @@ void PBSynthMachine::setI(int what,int val)
       { 
 	osc1_type=val;
 	//SE.getPBSynthOscillator(0)->setWave(val%2);
-	SE.getPBSynthOscillator(0)->setWave(val%PICO_PBSYNTH_SIZE);
+	SE->getPBSynthOscillator(0)->setWave(val%PICO_PBSYNTH_SIZE);
 	//HO->SetWaveform(1,1,w[val]);
 	//HO->EnableWaveformControl();
       }
@@ -263,7 +266,7 @@ void PBSynthMachine::setI(int what,int val)
       {
 	osc2_type=val;
 	//SE.getPBSynthOscillator(1)->setWave(val%2);
-	SE.getPBSynthOscillator(1)->setWave(val%PICO_PBSYNTH_SIZE);
+	SE->getPBSynthOscillator(1)->setWave(val%PICO_PBSYNTH_SIZE);
 	// HO->SetWaveform(1,2,w[val]);
 	// HO->EnableWaveformControl();
       }
@@ -274,22 +277,22 @@ void PBSynthMachine::setI(int what,int val)
     // if (what==ADSR_ENV0_SUSTAIN)   SE.getEnvelope(0)->setS( 1.0f/(val+1));
     // if (what==ADSR_ENV0_RELEASE)   SE.getEnvelope(0)->setR(-1.0f/(val+1));
 
-    if (what==ADSR_ENV0_ATTACK)    SE.getEnvelope(0)->setA(-1+f_val);
-    if (what==ADSR_ENV0_DECAY)     SE.getEnvelope(0)->setD(-1+f_val);
-    if (what==ADSR_ENV0_SUSTAIN)   SE.getEnvelope(0)->setS( f_val);
-    if (what==ADSR_ENV0_RELEASE)   SE.getEnvelope(0)->setR(-1+f_val);
+    if (what==ADSR_ENV0_ATTACK)    SE->getEnvelope(0)->setA(-1+f_val);
+    if (what==ADSR_ENV0_DECAY)     SE->getEnvelope(0)->setD(-1+f_val);
+    if (what==ADSR_ENV0_SUSTAIN)   SE->getEnvelope(0)->setS( f_val);
+    if (what==ADSR_ENV0_RELEASE)   SE->getEnvelope(0)->setR(-1+f_val);
 
 
-    if (what==ADSR_ENV1_ATTACK)    SE.getEnvelope(1)->setA(-1+f_val);
-    if (what==ADSR_ENV1_DECAY)     SE.getEnvelope(1)->setD(-1+f_val);
-    if (what==ADSR_ENV1_SUSTAIN)   SE.getEnvelope(1)->setS( 1+f_val);
-    if (what==ADSR_ENV1_RELEASE)   SE.getEnvelope(1)->setR(-1+f_val);
+    if (what==ADSR_ENV1_ATTACK)    SE->getEnvelope(1)->setA(-1+f_val);
+    if (what==ADSR_ENV1_DECAY)     SE->getEnvelope(1)->setD(-1+f_val);
+    if (what==ADSR_ENV1_SUSTAIN)   SE->getEnvelope(1)->setS( 1+f_val);
+    if (what==ADSR_ENV1_RELEASE)   SE->getEnvelope(1)->setR(-1+f_val);
 
     //if (what==VCO_MIX)             SE.setParameter(SENGINE_OSCMIX,1.0f/val);
     //if (what==VCO_MIX)             SE.setParameter(SENGINE_ENV2_TO_CUTOFF,1.0f/(val+1));
     //if (what==VCO_MIX)             SE.setParameter(SENGINE_ENV2_TO_CUTOFF,(f_val*2)-1);
-    if (what==OSC1_PHASE)          SE.setParameter(SENGINE_ENV2_TO_CUTOFF,(f_val*2)-1);
-    if (what==VCO_MIX)             SE.setParameter(SENGINE_OSCMIX,(f_val));
+    if (what==OSC1_PHASE)          SE->setParameter(SENGINE_ENV2_TO_CUTOFF,(f_val*2)-1);
+    if (what==VCO_MIX)             SE->setParameter(SENGINE_OSCMIX,(f_val));
 
 
   if (what==OSC1_NOTE)                note=val;
@@ -300,11 +303,11 @@ void PBSynthMachine::setI(int what,int val)
 
   // if (what==FILTER1_CUTOFF)         SE.setParameter(SENGINE_FILTFREQ,1.0f/(val+1));
   // if (what==FILTER1_RESONANCE)      SE.setParameter(SENGINE_FILTRESO,1.0f/(val+1));
-  if (what==FILTER1_CUTOFF)         SE.setParameter(SENGINE_FILTFREQ,(f_val*2)-1);
-  if (what==FILTER1_RESONANCE)      SE.setParameter(SENGINE_FILTRESO,(f_val*2)-1);
+  if (what==FILTER1_CUTOFF)         SE->setParameter(SENGINE_FILTFREQ,(f_val*2)-1);
+  if (what==FILTER1_RESONANCE)      SE->setParameter(SENGINE_FILTRESO,(f_val*2)-1);
 
-  if (what==OSC1_AMP)               SE.setParameter(SENGINE_ENV1_TO_OSC1PW,(f_val*2)-1);
-  if (what==OSC2_AMP)               SE.setParameter(SENGINE_ENV1_TO_OSC2PW,(f_val*2)-1);
+  if (what==OSC1_AMP)               SE->setParameter(SENGINE_ENV1_TO_OSC1PW,(f_val*2)-1);
+  if (what==OSC2_AMP)               SE->setParameter(SENGINE_ENV1_TO_OSC2PW,(f_val*2)-1);
 
 
     // if (what==FILTER1_CUTOFF)      
@@ -359,7 +362,7 @@ int PBSynthMachine::tick()
       //modulated_freq=((sineLfoOsc1.tick()>>5)/(128-lfo_depth));
       
       //HO->Generate(SAM,buffer);
-      SE.process(buffer,SAM);
+      SE->process(buffer,SAM);
       for(i=0;i<SAM;i++)
        	{
        	  //buffer[i]=buffer[i]/64;

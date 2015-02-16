@@ -7,7 +7,7 @@
 
 PBSynthOscillator::PBSynthOscillator() {
 	
-	reset();
+  reset();
 }
 
 PBSynthOscillator::~PBSynthOscillator() {
@@ -182,7 +182,7 @@ void PBSynthOscillator::setNote(int note) {
 
 	i = ((note * 128) + parameters.detune) * 2;
 	if (i<0) i=0;
-	
+	if (i>32000) i=32000;
 	wlength = osctab[i];
 	sawInc = osctab[i + 1];
 

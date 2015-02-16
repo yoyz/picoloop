@@ -9,7 +9,7 @@ CC=i586-mingw32msvc-g++
 CFLAGS=-c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb -ffast-math
 CFLAGS=-c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb  -pg
 CFLAGS=-Wall -c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb  
-CFLAGS= -c -O3 -D__WIN32__ -I/c/MinGW/include/  -DLINUX -I. -ISDL_windows -D__RTAUDIO__ -DLINUX_DESKTOP -ggdb 
+CFLAGS= -O3 -D__WIN32__ -I/c/MinGW/include/  -DLINUX -I. -ISDL_windows -D__RTAUDIO__ -DLINUX_DESKTOP -ggdb 
 
 LDFLAGS=-lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread -pg
 #LDFLAGS=-L. -lmingw32 -lSDLmain -lSDL -lSDL_ttf
@@ -39,6 +39,7 @@ SOURCES=PatternPlayer.cpp			\
 			AMSynthLowPassFilter.cpp\
 			Effect.cpp		\
 			EffectDelay.cpp		\
+			EffectDisabled.cpp       \
 			WaveTableManager.cpp	\
 			WaveTable.cpp		\
 			Generator.cpp		\
@@ -51,15 +52,57 @@ SOURCES=PatternPlayer.cpp			\
 			NoteFreq.cpp            \
 			PitchBend.cpp           \
 			TweakableKnob.cpp       \
+			UserInterface.cpp	       \
+			Machine/Picosynth/PicosynthMachine.cpp		\
+			Machine/Picosynth/PicosynthUserInterface.cpp	\
 			Machine/Picosynth/PicosynthADSR.cpp		\
 			Machine/Picosynth/PicosynthVCO.cpp		\
-			Machine/Picosynth/PicosynthMachine.cpp		\
-			Machine/Picodrum/PicodrumVCO.cpp		\
-			Machine/Picodrum/PicodrumADSR.cpp		\
 			Machine/Picodrum/PicodrumMachine.cpp		\
+			Machine/Picodrum/PicodrumUserInterface.cpp 	\
+			Machine/Picodrum/PicodrumVCO.cpp           	\
+			Machine/Picodrum/PicodrumADSR.cpp          	\
+			Machine/Dbopl/DboplMachine.cpp			\
+			Machine/Dbopl/DboplUserInterface.cpp 		\
 			Machine/Dbopl/dbopl.cpp				\
 			Machine/Dbopl/hiopl.cpp				\
-			Machine/Dbopl/DboplMachine.cpp			\
+			Machine/PBSynth/PBSynthMachine.cpp         	\
+			Machine/PBSynth/PBSynthUserInterface.cpp 	\
+			Machine/PBSynth/synthengine.cpp            	\
+			Machine/PBSynth/osc.cpp                    	\
+			Machine/PBSynth/lfo.cpp                    	\
+			Machine/PBSynth/filter.cpp                 	\
+			Machine/PBSynth/env.cpp                    	\
+			Machine/PBSynth/echo.cpp                   	\
+			Machine/PBSynth/osctab.cpp                 	\
+			Machine/PBSynth/lfotab.cpp                 	\
+			Machine/PBSynth/envtab.cpp                 	\
+			Machine/PBSynth/coeff.cpp                  	\
+			Machine/Cursynth/CursynthMachine.cpp	 	\
+			Machine/Cursynth/CursynthUserInterface.cpp 	\
+			Machine/Cursynth/processor_router.cpp	   	\
+			Machine/Cursynth/processor.cpp		   	\
+			Machine/Cursynth/oscillator.cpp		 	\
+			Machine/Cursynth/operators.cpp		 	\
+			Machine/Cursynth/mono_panner.cpp	 	\
+			Machine/Cursynth/midi_lookup.cpp	 	\
+			Machine/Cursynth/linear_slope.cpp	 	\
+			Machine/Cursynth/filter.cpp		 	\
+			Machine/Cursynth/feedback.cpp		 	\
+			Machine/Cursynth/envelope.cpp		 	\
+			Machine/Cursynth/delay.cpp		 	\
+			Machine/Cursynth/cursynth_strings.cpp	 	\
+			Machine/Cursynth/cursynth_engine.cpp	 	\
+			Machine/Cursynth/wave.cpp		 	\
+			Machine/Cursynth/voice_handler.cpp	 	\
+			Machine/Cursynth/value.cpp		 	\
+			Machine/Cursynth/trigger_operators.cpp	 	\
+			Machine/Cursynth/step_generator.cpp	 	\
+			Machine/Cursynth/smooth_value.cpp	 	\
+			Machine/Cursynth/smooth_filter.cpp	 	\
+			Machine/Cursynth/send_receive.cpp	 	\
+
+
+
 
 
 OBJECTS=$(SOURCES:.cpp=.o)
@@ -70,11 +113,10 @@ all: $(SOURCES) $(DEPENDENCY) $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJECTS)
 	$(CC) $(OBJTOLINK)  $(OBJECTS) -o $@ $(LDFLAGS)
-#	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
 
-#.cpp.o:
+
 %.o : %.cpp 
-	$(CC) $(CFLAGS) $< -o $@
+	$(CC) -c $(CFLAGS) $< -o $@
 
 
 # include all the dependency .d file into the makefile 

@@ -1,8 +1,10 @@
-#ifndef __PicosynthVCO____
-#define __PicosynthVCO____
-
 #include "Oscillator.h"
 #include "PitchBend.h"
+
+#ifndef __PICOSYNTHVCO__
+#define __PICOSYNTHVCO__
+
+
 //#include "NoteFreq.h"
 //#include "SineOscillator.h"
 //#include "SawOscillator.h"
