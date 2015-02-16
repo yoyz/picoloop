@@ -337,12 +337,12 @@ int SynthEngine::loadProgram(char *filename) {
 	echo->setParameters(parameters);
 	free(parameters);
 
-	fread(&arpMode, sizeof(arpMode), 1, fh);
-	fread(&arpSpeed, sizeof(arpSpeed), 1, fh);
-	fread(&arpOctaveMax, sizeof(arpOctaveMax), 1, fh);
+	// fread(&arpMode, sizeof(arpMode), 1, fh);
+	// fread(&arpSpeed, sizeof(arpSpeed), 1, fh);
+	// fread(&arpOctaveMax, sizeof(arpOctaveMax), 1, fh);
 
-	fread(&oscBase[0], sizeof(oscBase), 1, fh);
-	fread(&note[0], sizeof(note), 1, fh);
+	// fread(&oscBase[0], sizeof(oscBase), 1, fh);
+	// fread(&note[0], sizeof(note), 1, fh);
 
 	fclose(fh);
 
@@ -408,12 +408,12 @@ int SynthEngine::saveProgram(char *filename) {
 	fwrite(parameters, size, 1, fh);
 	free(parameters);
 
-	fwrite(&arpMode, sizeof(arpMode), 1, fh);
-	fwrite(&arpSpeed, sizeof(arpSpeed), 1, fh);
-	fwrite(&arpOctaveMax, sizeof(arpOctaveMax), 1, fh);
+	// fwrite(&arpMode, sizeof(arpMode), 1, fh);
+	// fwrite(&arpSpeed, sizeof(arpSpeed), 1, fh);
+	// fwrite(&arpOctaveMax, sizeof(arpOctaveMax), 1, fh);
 
-	fwrite(&oscBase[0], sizeof(oscBase), 1, fh);
-	fwrite(&note[0], sizeof(note), 1, fh);
+	// fwrite(&oscBase[0], sizeof(oscBase), 1, fh);
+	// fwrite(&note[0], sizeof(note), 1, fh);
 
 	fclose(fh);
 

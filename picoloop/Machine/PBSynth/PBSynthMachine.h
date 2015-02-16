@@ -33,7 +33,7 @@ class PBSynthMachine : public Machine
 
  protected:
   //Hiopl                 * HO;
-  SynthEngine           SE;
+  SynthEngine           * SE;
 
   //Biquad                bq;
   //PBSynthFilter                filter;

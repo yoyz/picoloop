@@ -40,7 +40,7 @@ void Envelope::setA(mfloat a) {
 	
 	this->a = param2IncVal(a);
 	parameters.a = a;
-	printf("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ %d\n",parameters.a);
+	//printf("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ %d\n",parameters.a);
 }
 
 void Envelope::setD(mfloat d) {
