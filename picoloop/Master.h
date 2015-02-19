@@ -22,7 +22,7 @@
 #define WAVETABLE_SIZE  1024*16
 //#define WAVETABLE_SIZE  1024
 //#define WAVETABLE_SIZE  128
-#define FPU 0
+//#define FPU 0
 
 //#define MAX_PATTERN_BY_PROJECT 256
 //#define MAX_PATTERN_BY_PROJECT 16
@@ -196,6 +196,9 @@ enum {
 #endif
 
 #ifdef LINUX_DESKTOP
+
+#define __FPU__         1
+
 #define SCREEN_WIDTH	320
 #define SCREEN_HEIGHT	240
 #define SCREEN_DEPTH	16
@@ -346,14 +349,27 @@ enum
     FMTYPE_2_OP_AM
   };
 
-enum 
-  {
-    SYNTH_PICOSYNTH,
-    SYNTH_OPL2,
-    SYNTH_PICODRUM,
-    SYNTH_PBSYNTH,
-    SYNTH_CURSYNTH,
-  };
+
+#define SYNTH_PICOSYNTH 0
+#define SYNTH_OPL2      1
+#define SYNTH_PICODRUM  2
+#define SYNTH_PBSYNTH   3
+#define SYNTH_CURSYNTH  4
+
+#ifdef __FPU__
+#define SYNTH_SIZE 5
+#else
+#define SYNTH_SIZE 4
+#endif
+
+/* enum  */
+/*   { */
+/*     SYNTH_PICOSYNTH, */
+/*     SYNTH_OPL2, */
+/*     SYNTH_PICODRUM, */
+/*     SYNTH_PBSYNTH, */
+/*     SYNTH_CURSYNTH, */
+/*   }; */
 
 enum 
   {

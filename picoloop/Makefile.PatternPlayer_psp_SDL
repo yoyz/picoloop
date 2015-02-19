@@ -38,15 +38,20 @@ OBJS=PatternPlayer.o \
 		      NoteFreq.o             \
 		      PitchBend.o            \
 		      TweakableKnob.o	       \
+		      UserInterface.cpp	       \
+		      Machine/Picosynth/PicosynthUserInterface.o \
 		      Machine/Picosynth/PicosynthADSR.o        \
 		      Machine/Picosynth/PicosynthVCO.o         \
 		      Machine/Picosynth/PicosynthMachine.o     \
+		      Machine/Picodrum/PicodrumUserInterface.o \
 		      Machine/Picodrum/PicodrumVCO.o           \
 		      Machine/Picodrum/PicodrumADSR.o          \
 		      Machine/Picodrum/PicodrumMachine.o       \
+		      Machine/Dbopl/DboplUserInterface.o       \
 		      Machine/Dbopl/dbopl.o                    \
 		      Machine/Dbopl/hiopl.o                    \
 		      Machine/Dbopl/DboplMachine.o             \
+		      Machine/PBSynth/PBSynthUserInterface.o   \
 		      Machine/PBSynth/synthengine.o            \
 		      Machine/PBSynth/osc.o                    \
 		      Machine/PBSynth/lfo.o                    \

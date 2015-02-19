@@ -5,7 +5,9 @@ using namespace std;
 #include "Machine/Picodrum/PicodrumMachine.h"
 #include "Machine/Dbopl/DboplMachine.h"
 #include "Machine/PBSynth/PBSynthMachine.h"
+#ifdef __FPU__
 #include "Machine/Cursynth/CursynthMachine.h"
+#endif 
 //#include "Effect.h"
 #include "EffectDelay.h"
 #include "EffectDisabled.h"
@@ -30,11 +32,14 @@ class MonoMixer
  private:
 
   Machine              *M;
-  PicosynthMachine      PM;
+  PicosynthMachine      PS;
   PicodrumMachine       PD;
   dboplMachine          OPLM;
   PBSynthMachine        PBS;
+
+#ifdef __FPU__
   CursynthMachine       CS;
+#endif
 
   Effect                *FX;
   EffectDelay           FXDelay;

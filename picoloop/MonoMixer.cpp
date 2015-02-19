@@ -4,7 +4,11 @@
 
 			//MonoMixer::MonoMixer(): M()
 //MonoMixer::MonoMixer()
-MonoMixer::MonoMixer(): PD(), PM(), OPLM(), PBS(), CS(), FXDelay(), FXDisabled()
+#ifdef __FPU__
+MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(), CS(), FXDelay(), FXDisabled()
+#else
+MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(),       FXDelay(), FXDisabled()
+#endif
 {
   printf("MonoMixer::MonoMixer()\n");  
   amplitude=127;
@@ -14,7 +18,7 @@ MonoMixer::MonoMixer(): PD(), PM(), OPLM(), PBS(), CS(), FXDelay(), FXDisabled()
   //printf("MonoMixer::MonoMixer()  M=0x%08.8X\n",M);
   //M=&OPLM;
   machine_type=0;
-  M=&PM;
+  M=&PS;
 
 
   //FX=&FXDelay;
@@ -31,11 +35,14 @@ MonoMixer::~MonoMixer()
 
 void MonoMixer::init()
 {
-  PM.init();
+  PS.init();
   PD.init();
   OPLM.init();
   PBS.init();
+
+  #ifdef __FPU__
   CS.init();
+  #endif
 
   //FX=&FXDelay;
   FX=&FXDelay;
@@ -52,15 +59,17 @@ void MonoMixer::init()
   
 
   if (machine_type==0)
-    M=&PM;
+    M=&PS;
   if (machine_type==1)
     M=&OPLM;
   if (machine_type==2)
     M=&PD;
   if (machine_type==3)
     M=&PBS;
+  #ifdef __FPU__
   if (machine_type==4)
     M=&CS;
+  #endif
 
   //M=&OPLM;
   //M=&PM;
@@ -75,7 +84,7 @@ void MonoMixer::setMachineType(int type)
   switch (type)
     {
     case SYNTH_PICOSYNTH:
-      M=&PM;
+      M=&PS;
       break;
 
     case SYNTH_OPL2:
@@ -89,10 +98,11 @@ void MonoMixer::setMachineType(int type)
     case SYNTH_PBSYNTH:
       M=&PBS;
       break;
-
+#ifdef __FPU__
     case SYNTH_CURSYNTH:
       M=&CS;
       break;
+#endif
 
 
     default:

@@ -81,6 +81,9 @@ class PicosynthUserInterface : public UserInterface
   void display_board_lfo();
   void display_board_fltr();
 
+
+
+
   int a;
 };
 
