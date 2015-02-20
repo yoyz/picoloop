@@ -17,9 +17,9 @@ PatternElement::PatternElement()
 
   amp=127;
 
-  amp_attack=64;
+  amp_attack=0;
   amp_decay=64;
-  amp_sustain=64;
+  amp_sustain=32;
   amp_release=64;
 
   fltr_attack=64;
@@ -51,7 +51,7 @@ PatternElement::PatternElement()
 
   machine_type=0;
 
-  trig_time=0;
+  trig_time=16;
 
   filterType=FILTER_TYPE_LP;
   filterAlgo=FILTER_ALGO_AMSYNTH;

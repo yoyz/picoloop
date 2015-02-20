@@ -252,8 +252,9 @@ void PicodrumUserInterface::handle_key_amp_env()
     {
       if (menu_ad_dirty_keyboard==0)
 	{
-	  if      (menu_ad==MENU_AD_AMP_ATTACK_RELEASE)       { menu_ad=MENU_AD_TRIGTIME_AMP;        }
+	  if      (menu_ad==MENU_AD_AMP_ATTACK_RELEASE)       { menu_ad=MENU_AD_TRIGTIME_AMP;            }
 	  else if (menu_ad==MENU_AD_TRIGTIME_AMP)             { menu_ad=MENU_AD_AMP_ATTACK_RELEASE;      }   
+	  else                                                { menu_ad=MENU_AD_AMP_ATTACK_RELEASE;      }
 	  dirty_graphic=1;
 	}
       menu_ad_dirty_keyboard=0;
