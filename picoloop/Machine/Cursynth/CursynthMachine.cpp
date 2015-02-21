@@ -143,7 +143,8 @@ void CursynthMachine::setI(int what,int val)
       NoteFreq & NF = NoteFreq::getInstance(); 
       note_on=1;
       //CS->noteOn(NF.getINoteFreq(note),1.0);
-      CSE->noteOn(note+11,0.8);
+      //CSE->noteOn(note+11,0.8);
+      CSE->noteOn(note+11,trig_time_duration/32);
       //CSE->getControls();
       //f_val=trig_time_duration;
       //CSE->getControls().at("velocity track")->set(trig_time_duration);
@@ -151,7 +152,7 @@ void CursynthMachine::setI(int what,int val)
   if (what==NOTE_ON && val==0) 
     { 
       note_on=0;
-      CSE->noteOff(val);
+      CSE->noteOff(note);
     }
 
   if (what==OSC1_NOTE)           note=val;
@@ -162,8 +163,8 @@ void CursynthMachine::setI(int what,int val)
   //if (what==ADSR_ENV0_RELEASE)   CSE->getControls().at("delay dry/wet")->set(f_val);
   //if (what==ADSR_ENV0_DECAY)     CSE->getControls().at("delay feedback")->set(f_val);
 
-  if (what==OSC1_TYPE)           { CSE->getControls().at("osc 1 waveform")->set(f_val*127); }
-  if (what==OSC2_TYPE)           { CSE->getControls().at("osc 2 waveform")->set(f_val*127); }
+  if (what==OSC1_TYPE)           { CSE->getControls().at("osc 1 waveform")->set(f_val*128); }
+  if (what==OSC2_TYPE)           { CSE->getControls().at("osc 2 waveform")->set(f_val*128); }
 
   if (what==ADSR_ENV0_ATTACK)    CSE->getControls().at("amp attack")->set(f_val*3);
   if (what==ADSR_ENV0_DECAY)     CSE->getControls().at("amp decay")->set(f_val*3);
