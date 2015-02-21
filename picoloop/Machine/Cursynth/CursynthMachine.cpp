@@ -55,9 +55,12 @@ void CursynthMachine::init()
   CSE->getControls().at("osc 2 tune")->set(0); 
   CSE->getControls().at("volume")->set(0.1);
 
+  CSE->getControls().at("lfo 1 waveform")->set(2); 
+  CSE->getControls().at("lfo 2 waveform")->set(0); 
+
 
   CSE->getControls().at("mod source 1")->set(3);     
-  CSE->getControls().at("mod destination 1")->set(2);     
+  CSE->getControls().at("mod destination 1")->set(4);     
   CSE->getControls().at("mod scale 1")->set(0.9);     
   CSE->getControls().at("lfo 1 frequency")->set(2.2);     
 
@@ -130,6 +133,7 @@ void CursynthMachine::setF(int what,float val)
   float f_val=val;
   f_val=f_val/128;
 
+  //if (what==LFO1_FREQ)             CSE->getControls().at("lfo 1 frequency")->set(f_val*10); 
   if (what==LFO1_FREQ)             CSE->getControls().at("lfo 1 frequency")->set(f_val*10); 
   if (what==LFO2_FREQ)             CSE->getControls().at("lfo 2 frequency")->set(f_val*10); 
 }
