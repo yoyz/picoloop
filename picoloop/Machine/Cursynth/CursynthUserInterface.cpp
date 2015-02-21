@@ -911,7 +911,8 @@ void CursynthUserInterface::display_board_fltr()
 	}
       if (menu_fltr==MENU_FLTR_ALGO_TYPE)
 	{
-	  display_board_two_param_text(FILTER1_ALGO,FILTER1_TYPE);
+	  //display_board_two_param_text(FILTER1_ALGO,FILTER1_TYPE);
+	  display_board_one_param_text(FILTER1_TYPE);
 	}
     }
 }
