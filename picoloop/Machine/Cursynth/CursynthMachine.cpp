@@ -52,7 +52,7 @@ void CursynthMachine::init()
   CSE->getControls().at("cross modulation")->set(0);  
 
   CSE->getControls().at("osc 2 transpose")->set(0); 
-  CSE->getControls().at("osc 2 tune")->set(0.1); 
+  CSE->getControls().at("osc 2 tune")->set(0); 
   CSE->getControls().at("volume")->set(0.1);     
 
 
@@ -237,10 +237,10 @@ const char * CursynthMachine::getMachineParamCharStar(int machineParam,int param
 
 
   static const char * str_fltr_type_lp   = "LP";
-  static const char * str_fltr_type_bp   = "BP";
   static const char * str_fltr_type_hp   = "HP";
+  //static const char * str_fltr_type_hp   = "HP";
 
-  const        char * str_fltr_type[FILTER_TYPE_SIZE];
+  const        char * str_fltr_type[CURSYNTH_FILTER_TYPE_SIZE];
 
 
   static const char * str_lfo_type_lfo   = "PLFO";
@@ -268,13 +268,13 @@ const char * CursynthMachine::getMachineParamCharStar(int machineParam,int param
 
   str_osc[PICO_CURSYNTH_WHITENOISE]       = str_whitenoise;
 
-  str_fltr_algo[FILTER_ALGO_NOFILTER] = str_fltr_algo_nofilter;
-  str_fltr_algo[FILTER_ALGO_BIQUAD]   = str_fltr_algo_biquad;
-  str_fltr_algo[FILTER_ALGO_AMSYNTH]  = str_fltr_algo_amsynth;
+  // str_fltr_algo[FILTER_ALGO_NOFILTER] = str_fltr_algo_nofilter;
+  // str_fltr_algo[FILTER_ALGO_BIQUAD]   = str_fltr_algo_biquad;
+  // str_fltr_algo[FILTER_ALGO_AMSYNTH]  = str_fltr_algo_amsynth;
 
-  str_fltr_type[FILTER_TYPE_LP]       = str_fltr_type_lp;
-  str_fltr_type[FILTER_TYPE_BP]       = str_fltr_type_bp;
-  str_fltr_type[FILTER_TYPE_HP]       = str_fltr_type_hp;
+  str_fltr_type[CURSYNTH_FILTER_TYPE_LP]       = str_fltr_type_lp;
+  str_fltr_type[CURSYNTH_FILTER_TYPE_HP]       = str_fltr_type_hp;
+  //str_fltr_type[FILTER_TYPE_HP]       = str_fltr_type_hp;
 
   str_lfo_type[LFO_TYPE_PITCHLFO]     = str_lfo_type_lfo;
   str_lfo_type[LFO_TYPE_PITCHBEND]    = str_lfo_type_pb;
@@ -286,8 +286,8 @@ const char * CursynthMachine::getMachineParamCharStar(int machineParam,int param
     case OSC2_TYPE:
       return str_osc[paramValue];
      
-    case FILTER1_ALGO:
-      return str_fltr_algo[paramValue];
+    // case FILTER1_ALGO:
+    //   return str_fltr_algo[paramValue];
 
     case FILTER1_TYPE:
       return str_fltr_type[paramValue];
