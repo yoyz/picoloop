@@ -91,7 +91,7 @@ int CursynthMachine::checkI(int what,int val)
 
     case FILTER1_TYPE:
       if (val<0) return 0;
-      if (val>FILTER_TYPE_SIZE-1) return FILTER_TYPE_SIZE-1;
+      if (val>CURSYNTH_FILTER_TYPE_SIZE-1) return CURSYNTH_FILTER_TYPE_SIZE-1;
       return val;
       break;
 
@@ -176,7 +176,7 @@ void CursynthMachine::setI(int what,int val)
   if (what==ADSR_ENV1_SUSTAIN)   CSE->getControls().at("fil sustain")->set(f_val);
   if (what==ADSR_ENV1_RELEASE)   CSE->getControls().at("fil release")->set(f_val*3);
 
-  if (what==OSC1_PHASE)          CSE->getControls().at("fil env depth")->set(((f_val*2)-1)*128);
+  //if (what==OSC1_PHASE)          CSE->getControls().at("fil env depth")->set(((f_val*2)-1)*128);
   if (what==OSC12_MIX)           CSE->getControls().at("osc mix")->set(f_val);
   //if (what==OSC12_MIX)           CSE->getControls().at("amp env depth")->set(f_val*12);
 
@@ -184,6 +184,13 @@ void CursynthMachine::setI(int what,int val)
   //if (what==OSC12_MIX)           CSE->getControls().at("osc mix")->set(f_val);
 
   //if (what==OSC1_AMP)            CSE->getControls().at("velocity track")->set(f_val);
+  if (what==OSC1_AMP)            CSE->getControls().at("keytrack"     )->set(((f_val*2)-1)*128);
+  if (what==OSC2_AMP)            CSE->getControls().at("fil env depth")->set(((f_val*2)-1)*128);
+  //if (what==OSC1_AMP)            CSE->getControls().at("velocity track")->set(f_val);
+  
+  if (what==FILTER1_TYPE)        CSE->getControls().at("filter type")->set(f_val*128);
+    //filter.setFilterType(val);
+  //"filter type"
 
 
     if (what==FILTER1_CUTOFF)      
