@@ -63,9 +63,12 @@ using namespace std;
 
 #define AMP                 35
 
+#define LFO1_ENV_AMOUNT     38
+#define LFO2_ENV_AMOUNT     39
 
 #define LFO1_DEPTH          41
 #define LFO1_FREQ           42
+
 #define LFO2_DEPTH          43
 #define LFO2_FREQ           44
 

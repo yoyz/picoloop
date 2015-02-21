@@ -10,56 +10,7 @@ using namespace std;
 PatternElement::PatternElement()
 {
   printf("PatternElement::PatternElement()\n");
-  note=0;
-  note_on=0;
-  Channel=0;
-  vcomix=64;
-
-  amp=127;
-
-  amp_attack=0;
-  amp_decay=64;
-  amp_sustain=32;
-  amp_release=64;
-
-  fltr_attack=64;
-  fltr_decay=64;
-  fltr_sustain=64;
-  fltr_release=64;
-
-  osc1_amp=64;
-  osc2_amp=64;
-
-
-  fltr_cutoff=64;
-  fltr_resonance=30;
-
-  lfo_depth=0;
-  lfo_speed=0;
-
-
-  pb_depth=64; // middle so no pitch bend
-  pb_speed=0;
-
-  lfo_type=0;  // 0 lfo pitch, 1 pitchbend
-    
-
-  oscOneType=PICO_WAVETABLE_SAW;
-  oscTwoType=PICO_WAVETABLE_PULSE;
-
-  adsr_note=1;
-
-  machine_type=0;
-
-  trig_time=16;
-
-  filterType=FILTER_TYPE_LP;
-  filterAlgo=FILTER_ALGO_AMSYNTH;
-
-  fx_depth=0;
-  fx_speed=0;
-
-  fm_type=0;
+  this->init();
 }
 
 PatternElement::~PatternElement()
@@ -105,6 +56,8 @@ void PatternElement::init()
   filterType=FILTER_TYPE_LP;
   filterAlgo=FILTER_ALGO_AMSYNTH;
 
+  lfo1_env_amount=64;
+  lfo2_env_amount=64;
 }
 
 void PatternElement::set(int what,int val)
