@@ -89,22 +89,6 @@
 #define GLOBALMENU_BPM        11
 
 
-/* enum { */
-/*   GLOBALMENU_AD,         // 0 */
-/*   GLOBALMENU_NOTE,       // 1 */
-/*   GLOBALMENU_OSC,        // 2  */
-/*   GLOBALMENU_VCO,        // 3 */
-/*   GLOBALMENU_LFO,        // 4 */
-/*   GLOBALMENU_FLTR,       // 5 */
-
-/*   GLOBALMENU_LS,         // 6 */
-/*   GLOBALMENU_BANK,       // 7 */
-/*   GLOBALMENU_PSH,        // 8 */
-/*   GLOBALMENU_MAC,        // 9 */
-/*   GLOBALMENU_FX,         // 10 */
-/*   GLOBALMENU_BPM,        // 11 */
-
-/* }; */
 
 
 //menu_ad
@@ -132,6 +116,29 @@ enum {
   MENU_LFO_LFOPITCH,
   MENU_LFO_PITCHBEND,
   MENU_LFO_TYPE,
+};
+
+
+enum {
+  MENU_CURSYNTHLFO_SRC_AMPENV,          // amp env
+  MENU_CURSYNTHLFO_SRC_FILTERENV,       // filter env
+  MENU_CURSYNTHLFO_SRC_LFO1,            // lfo 1
+  MENU_CURSYNTHLFO_SRC_LFO2,            // lfo 2
+  MENU_CURSYNTHLFO_SRC_MODWHEEL,        // mod wheel
+  MENU_CURSYNTHLFO_SRC_NOTE,            // note
+  MENU_CURSYNTHLFO_SRC_PITCHWHEEL,      // pitch wheel
+  MENU_CURSYNTHLFO_SRC_VELOCITY,        // velocity
+  MENU_CURSYNTHLFO_SRC_SIZE,      
+};
+
+
+enum {
+  MENU_CURSYNTHLFO_DST_CROSSMODULATION, // cross modulation 
+  MENU_CURSYNTHLFO_DST_CUTOFF,          // cutoff
+  MENU_CURSYNTHLFO_DST_OSCMIX,          // osc mix
+  MENU_CURSYNTHLFO_DST_PITCH,           // pitch
+  MENU_CURSYNTHLFO_DST_RESONANCE,       // resonance
+  MENU_CURSYNTHLFO_DST_SIZE,
 };
 
 

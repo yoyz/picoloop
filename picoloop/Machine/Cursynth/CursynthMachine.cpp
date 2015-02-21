@@ -53,8 +53,13 @@ void CursynthMachine::init()
 
   CSE->getControls().at("osc 2 transpose")->set(0); 
   CSE->getControls().at("osc 2 tune")->set(0); 
-  CSE->getControls().at("volume")->set(0.1);     
+  CSE->getControls().at("volume")->set(0.1);
 
+
+  CSE->getControls().at("mod source 1")->set(3);     
+  CSE->getControls().at("mod destination 1")->set(2);     
+  CSE->getControls().at("mod scale 1")->set(0.9);     
+  CSE->getControls().at("lfo 1 frequency")->set(2.2);     
 
 
   //bq.reset();
@@ -119,8 +124,14 @@ int CursynthMachine::getI(int what)
 
 void CursynthMachine::setF(int what,float val)
 {
-  //if (what==OSC1_FREQ)           this->getVCO().setSynthFreq(val);
-  //if (what==LFO1_FREQ)           this->getVCO().setLfoSpeed(val);
+  float f_val_cutoff;
+  float f_val_resonance;
+
+  float f_val=val;
+  f_val=f_val/128;
+
+  if (what==LFO1_FREQ)             CSE->getControls().at("lfo 1 frequency")->set(f_val*128); 
+  if (what==LFO2_FREQ)             CSE->getControls().at("lfo 2 frequency")->set(f_val*128); 
 }
 
 void CursynthMachine::setI(int what,int val)
@@ -176,6 +187,10 @@ void CursynthMachine::setI(int what,int val)
   if (what==ADSR_ENV1_SUSTAIN)   CSE->getControls().at("fil sustain")->set(f_val);
   if (what==ADSR_ENV1_RELEASE)   CSE->getControls().at("fil release")->set(f_val*3);
 
+
+  if (what==LFO1_DEPTH)          CSE->getControls().at("mod scale 1")->set(f_val);
+
+
   //if (what==OSC1_PHASE)          CSE->getControls().at("fil env depth")->set(((f_val*2)-1)*128);
   if (what==OSC12_MIX)           CSE->getControls().at("osc mix")->set(f_val);
   //if (what==OSC12_MIX)           CSE->getControls().at("amp env depth")->set(f_val*12);
@@ -193,15 +208,17 @@ void CursynthMachine::setI(int what,int val)
   //"filter type"
 
 
-    if (what==FILTER1_CUTOFF)      
-      { 
-	CSE->getControls().at("cutoff")->set(28+f_val*100);
-      }
-    
-    if (what==FILTER1_RESONANCE)         
-      { 
-	CSE->getControls().at("resonance")->set(0.5+(f_val*10));
-      }
+  if (what==FILTER1_CUTOFF)      
+    { 
+      CSE->getControls().at("cutoff")->set(28+f_val*100);
+    }
+  
+  if (what==FILTER1_RESONANCE)         
+    { 
+      CSE->getControls().at("resonance")->set(0.5+(f_val*10));
+    }
+
+
 
 }
 
