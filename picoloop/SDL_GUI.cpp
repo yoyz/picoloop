@@ -118,6 +118,7 @@ void SDL_GUI::refresh()
 
 void SDL_GUI::clearScreen()
 {
+  printf("SDL_GUI::clearScreen()\n");
   SDL_FillRect(screen,NULL, 0x000000);
 }
 
