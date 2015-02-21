@@ -180,7 +180,7 @@ void handle_key()
     {
       current_machine=current_machine-1;
       if (current_machine<0)
-	current_machine=3;
+	current_machine=SYNTH_SIZE-1;
       printf("current_machine:%d\n",current_machine);
       redraw=true;
 
@@ -194,7 +194,7 @@ void handle_key()
       )
     {
       current_machine=current_machine+1;
-      if (current_machine>3)
+      if (current_machine>SYNTH_SIZE)
 	current_machine=0;
       printf("current_machine:%d\n",current_machine);
       redraw=true;
