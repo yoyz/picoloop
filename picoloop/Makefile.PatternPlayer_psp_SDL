@@ -38,7 +38,7 @@ OBJS=PatternPlayer.o \
 		      NoteFreq.o             \
 		      PitchBend.o            \
 		      TweakableKnob.o	       \
-		      UserInterface.cpp	       \
+		      UserInterface.o	       \
 		      Machine/Picosynth/PicosynthUserInterface.o \
 		      Machine/Picosynth/PicosynthADSR.o        \
 		      Machine/Picosynth/PicosynthVCO.o         \
