@@ -432,6 +432,14 @@ enum
     FILTER_TYPE_SIZE
   };
 
+enum
+  {
+    CURSYNTH_FILTER_TYPE_LP,
+    CURSYNTH_FILTER_TYPE_HP,
+    CURSYNTH_FILTER_TYPE_SIZE
+  };
+
+
 
 enum
   {
