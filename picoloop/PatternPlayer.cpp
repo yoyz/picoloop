@@ -51,8 +51,10 @@ PSP_HEAP_SIZE_KB(-8192) ;
 #include "Machine/Picodrum/PicodrumUserInterface.h"
 #include "Machine/Dbopl/DboplUserInterface.h"
 #include "Machine/PBSynth/PBSynthUserInterface.h"
-//#include "Machine/PBSynth/PBSynthUserInterface.h"
 
+#ifdef __FPU__
+#include "Machine/Cursynth/CursynthUserInterface.h"
+#endif
 
 
 class Cursor
@@ -93,6 +95,10 @@ PicosynthUserInterface PSUI;
 PicodrumUserInterface  PDUI;
 DboplUserInterface     DBUI;
 PBSynthUserInterface   PBUI;
+
+#ifdef __FPU__
+CursynthUserInterface  CSUI;
+#endif
 
 //UI.handle_key(1,1);
 //UI.a=1;
@@ -808,7 +814,7 @@ void display_board()
   if (menu_ad==MENU_AD_AMP_DECAY_SUSTAIN &&
       menu_cursor==GLOBALMENU_AD)
     {
-      sprintf(str_submenu,"AMP  D/S");
+      sprintf(str_submenu,"AMP  S/D");
       SG.guiTTFText(right_x_display_offset,
 		    right_y_display_offset_line2,str_submenu);
     }
@@ -825,7 +831,7 @@ void display_board()
   if (menu_ad==MENU_AD_FLTR_DECAY_SUSTAIN &&
       menu_cursor==GLOBALMENU_AD)
     {
-      sprintf(str_submenu,"FLTR D/S");
+      sprintf(str_submenu,"FLTR S/D");
       SG.guiTTFText(right_x_display_offset,
 		    right_y_display_offset_line2,str_submenu);
     }
@@ -1804,7 +1810,9 @@ void handle_key()
   if (PECursor.get(MACHINE_TYPE)==SYNTH_PICODRUM)  UI=&PDUI;
   if (PECursor.get(MACHINE_TYPE)==SYNTH_OPL2    )  UI=&DBUI;
   if (PECursor.get(MACHINE_TYPE)==SYNTH_PBSYNTH)   UI=&PBUI;
-
+  #ifdef __FPU__
+  if (PECursor.get(MACHINE_TYPE)==SYNTH_CURSYNTH)  UI=&CSUI;
+  #endif
   if (menu_cursor==GLOBALMENU_AD)   
     { handle_key_amp_env(); } //handle_key_submenu_ad(); }
   if (menu_cursor==GLOBALMENU_NOTE) 
