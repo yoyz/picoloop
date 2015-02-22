@@ -1953,9 +1953,15 @@ void seq_update_multiple_time_by_step()
   seq_update_tweakable_knob_one(TRIG_TIME_DURATION);
   seq_update_tweakable_knob_all(TRIG_TIME_DURATION);
 
-  // Change phase osc1
+  // // Change phase osc1
   seq_update_tweakable_knob_one(OSC1_PHASE);
   seq_update_tweakable_knob_all(OSC1_PHASE);
+
+  // Change osc1 detune
+  seq_update_tweakable_knob_one(OSC1_DETUNE);
+  seq_update_tweakable_knob_all(OSC1_DETUNE);
+
+
 
   // Change lfo depth
   seq_update_tweakable_knob_one(LFO1_DEPTH);
@@ -2367,8 +2373,10 @@ void seq_update_track(int t)
 	  M[t]->setI(FILTER1_ALGO,P[t].getPatternElement(step).get(FILTER1_ALGO));;
 
 
-	  M[t]->setI(FILTER1_CUTOFF,P[t].getPatternElement(step).get(FILTER1_CUTOFF));
+	  M[t]->setI(FILTER1_CUTOFF,   P[t].getPatternElement(step).get(FILTER1_CUTOFF));
 	  M[t]->setI(FILTER1_RESONANCE,P[t].getPatternElement(step).get(FILTER1_RESONANCE));
+
+	  M[t]->setI(OSC1_DETUNE,      P[t].getPatternElement(step).get(OSC1_DETUNE));
 
 
 

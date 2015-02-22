@@ -28,7 +28,7 @@ void PatternElement::init()
 
   amp=127;
 
-  amp_attack=64;
+  amp_attack=0;
   amp_decay=64;
   amp_sustain=64;
   amp_release=64;
@@ -58,6 +58,8 @@ void PatternElement::init()
 
   lfo1_env_amount=64;
   lfo2_env_amount=64;
+
+  osc1_detune=64;
 }
 
 void PatternElement::set(int what,int val)
@@ -198,6 +200,11 @@ void PatternElement::set(int what,int val)
     case LFO_TYPE:
       lfo_type=checkSevenBitBoundarie(val)%2; // HACK TO make LFOPITCH/PB
       break;
+
+
+    case OSC1_DETUNE:
+      osc1_detune=checkSevenBitBoundarie(val);
+      break;
       
 
       
@@ -335,6 +342,11 @@ int PatternElement::get(int what)
 
     case LFO_TYPE:
       return lfo_type;      // HACK TO make LFOPITCH/PB
+      break;
+
+
+    case OSC1_DETUNE:
+      return osc1_detune;
       break;
 
 
