@@ -213,15 +213,18 @@ You need two file font.bmp and font.ttf which are located next to the source.
 
 
 You need your psp gcc compiler, the library and psplinkusb.
-Launch psplink on the psp this is an EBOOT.PBP.
-Launch usbhostfs_pc ( you need to be root to access the psp by usb and you need to be in the somewhere/psplinkusb/usbhostfs_pc/ folder ).
-You should see it is connected.
-In another terminal launch pspsh.
-Try to 'ls -l', to see if all is ok.
-Copy the prx file in the usbhostfs_pc directory.
 
-If you want to launch PatternPlayer.prx, launch it with pspsh.
-You need a prx file with usbhostfs_pc and pspsh not an elf or EBOOT.PBP.
+
+
+1) Launch psplink on the psp this is an EBOOT.PBP.
+2) as root, launch usbhostfs_pc ( you need to be root to access the psp by usb and you need to be in the somewhere/psplinkusb/usbhostfs_pc/ folder ).
+You should see it is connected.
+
+3) In another terminal launch pspsh.  Try to 'ls -l', to see if all is ok.
+Copy the prx file in the usbhostfs_pc directory, you should see it with 'ls -l'
+
+If you want to launch PatternPlayer.prx, launch it with pspsh : ./PatternPlayer.prx
+In this case, you need the prx file ( not an elf or EBOOT.PBP ).
 
 
 
