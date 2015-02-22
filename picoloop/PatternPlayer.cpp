@@ -828,11 +828,13 @@ void display_board_text_global()
   if (menu_cursor==GLOBALMENU_FX)               sprintf(str_up,"FX      ");
 
 
-  SG.guiTTFText(right_x_display_offset,
-		right_y_display_offset_line4,str_up);
+  if (menu==MENU_ON_PAGE2)
+    SG.guiTTFText(right_x_display_offset,
+		  right_y_display_offset_line4,str_up);
 
-  SG.guiTTFText(menu_x_display_offset,
-		menu_y_display_offset,str_down);
+  if (menu==MENU_ON_PAGE2)
+    SG.guiTTFText(menu_x_display_offset,
+		  menu_y_display_offset,str_down);
 
 
 }
@@ -861,10 +863,6 @@ void display_board()
   dirty_graphic=0;
 
   SG.clearScreen();
-  //  sprintf(str,"Track %d ",ct);
-
-  // Draw all box default color   
-  //for (i=0;i<16;i++)
 
   display_board_text_global();
   UI->display_board_text();
@@ -1632,7 +1630,19 @@ void handle_key_bank()
 
 
 
-
+void refresh_pecursor()
+{
+  int  cty=SEQ.getCurrentTrackY();
+  // Refresh the PECursor with the current Element
+  PECursor=P[cty].getPatternElement(cursor);  
+  if (PECursor.get(MACHINE_TYPE)==SYNTH_PICOSYNTH) UI=&PSUI;
+  if (PECursor.get(MACHINE_TYPE)==SYNTH_PICODRUM)  UI=&PDUI;
+  if (PECursor.get(MACHINE_TYPE)==SYNTH_OPL2    )  UI=&DBUI;
+  if (PECursor.get(MACHINE_TYPE)==SYNTH_PBSYNTH)   UI=&PBUI;
+  #ifdef __FPU__
+  if (PECursor.get(MACHINE_TYPE)==SYNTH_CURSYNTH)  UI=&CSUI;
+  #endif
+}
 
 
 
@@ -1687,15 +1697,9 @@ void handle_key()
   handle_key_menu();
   handle_key_sixteenbox();
 
-  // Refresh the PECursor with the current Element
-  PECursor=P[cty].getPatternElement(cursor);  
-  if (PECursor.get(MACHINE_TYPE)==SYNTH_PICOSYNTH) UI=&PSUI;
-  if (PECursor.get(MACHINE_TYPE)==SYNTH_PICODRUM)  UI=&PDUI;
-  if (PECursor.get(MACHINE_TYPE)==SYNTH_OPL2    )  UI=&DBUI;
-  if (PECursor.get(MACHINE_TYPE)==SYNTH_PBSYNTH)   UI=&PBUI;
-  #ifdef __FPU__
-  if (PECursor.get(MACHINE_TYPE)==SYNTH_CURSYNTH)  UI=&CSUI;
-  #endif
+  refresh_pecursor();
+
+
   if (menu_cursor==GLOBALMENU_AD)   
     { handle_key_amp_env(); } //handle_key_submenu_ad(); }
   if (menu_cursor==GLOBALMENU_NOTE) 
@@ -2387,6 +2391,8 @@ int seq()
   // Init all track to the current step, step0 in this particular case 
   for (i=0;i<TRACK_MAX;i++)
     seq_update_track(i);
+
+  refresh_pecursor();
 
   printf("openAudio start streaming\n");
   AE.startAudio();

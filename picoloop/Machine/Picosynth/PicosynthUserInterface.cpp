@@ -707,7 +707,7 @@ void PicosynthUserInterface::display_board_text()
 
 
 
-  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_AD)    sprintf(str_down,"[ENV] Note  OSC   VCO   LFO   FLTR   ",cty);  
+  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_AD)    sprintf(str_down,"[ENV] Note  OSC   VCO   LFO   FLTR   ",cty);
   if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_NOTE)  sprintf(str_down," ENV [Note] OSC   VCO   LFO   FLTR   ",cty);
   if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_OSC)   sprintf(str_down," ENV  Note [OSC]  VCO   LFO   FLTR   ",cty);
   if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_VCO)   sprintf(str_down," ENV  Note  OSC  [VCO]  LFO   FLTR   ",cty);
@@ -729,7 +729,7 @@ void PicosynthUserInterface::display_board_text()
 		right_y_display_offset_line4,str_up);
 
   SG.guiTTFText(menu_x_display_offset,
-		menu_y_display_offset,str_down);
+		 menu_y_display_offset,str_down);
 
 
 }
