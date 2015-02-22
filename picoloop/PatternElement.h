@@ -83,6 +83,8 @@ private:
 
   int lfo1_env_amount;
   int lfo2_env_amount;
+
+  int osc1_detune;
 };
 
 #endif
