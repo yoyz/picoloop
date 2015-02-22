@@ -745,7 +745,7 @@ void PicodrumUserInterface::display_board_text()
   if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_FLTR)  sprintf(str_down," A/R  Note  OSC   VCO   LFO  [FLTR]  ",cty);
 
 
-  if (menu==0)                         sprintf(str_down,"                     ",cty);
+  if (menu==0)                                              sprintf(str_down,"                                     ",cty);
 
   if (menu_cursor==GLOBALMENU_AD)               sprintf(str_up,"A/R     ");
   if (menu_cursor==GLOBALMENU_NOTE)             sprintf(str_up,"Note    ");
@@ -755,11 +755,13 @@ void PicodrumUserInterface::display_board_text()
   if (menu_cursor==GLOBALMENU_FLTR)             sprintf(str_up,"FLTR    ");
 
 
-  SG.guiTTFText(right_x_display_offset,
-		right_y_display_offset_line4,str_up);
+  if (menu==MENU_ON_PAGE1)
+    SG.guiTTFText(right_x_display_offset,
+		  right_y_display_offset_line4,str_up);
 
-  SG.guiTTFText(menu_x_display_offset,
-		menu_y_display_offset,str_down);
+  if (menu==MENU_ON_PAGE1)
+    SG.guiTTFText(menu_x_display_offset,
+		  menu_y_display_offset,str_down);
 
 
 }
