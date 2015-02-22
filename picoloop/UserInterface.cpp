@@ -18,3 +18,8 @@ void UserInterface::display_board(int menu)
 {
   printf("UserInterface::display_board(%d)\n",menu);
 }
+
+void UserInterface::display_board_text()
+{
+  printf("UserInterface::display_board_text()\n");
+}

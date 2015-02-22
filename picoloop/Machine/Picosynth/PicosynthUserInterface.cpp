@@ -601,6 +601,143 @@ void PicosynthUserInterface::handle_key_fltr()
 
 
 
+void PicosynthUserInterface::display_board_text()
+{
+  int  i;
+  char str_up[64];
+  char str_down[64];
+  char str_divider[64];
+  char str_submenu[64];
+
+  int  right_x_display_offset=      200*SCREEN_MULT;
+  int  right_y_display_offset_line1=20*SCREEN_MULT;
+  int  right_y_display_offset_line2=40*SCREEN_MULT;
+  int  right_y_display_offset_line3=60*SCREEN_MULT;
+  int  right_y_display_offset_line4=80*SCREEN_MULT;
+
+  int  menu_x_display_offset=       10*SCREEN_MULT;
+  int  menu_y_display_offset=      200*SCREEN_MULT;
+
+  int  cty=SEQ.getCurrentTrackY();
+  int  stepdiv=SEQ.getPatternSequencer(cty).getBPMDivider();
+
+
+  
+  if (menu_ad==MENU_AD_AMP_ATTACK_RELEASE &&
+      menu_cursor==GLOBALMENU_AD)
+    {
+      sprintf(str_submenu,"AMP  A/R");
+      SG.guiTTFText(right_x_display_offset,
+		    right_y_display_offset_line2,str_submenu);
+    }
+
+  if (menu_ad==MENU_AD_AMP_DECAY_SUSTAIN &&
+      menu_cursor==GLOBALMENU_AD)
+    {
+      sprintf(str_submenu,"AMP  S/D");
+      SG.guiTTFText(right_x_display_offset,
+		    right_y_display_offset_line2,str_submenu);
+    }
+
+
+  if (menu_ad==MENU_AD_TRIGTIME_AMP &&
+      menu_cursor==GLOBALMENU_AD)
+    {
+      sprintf(str_submenu,"T/N AMP");
+      SG.guiTTFText(right_x_display_offset,
+		    right_y_display_offset_line2,str_submenu);
+    }
+
+  if (menu_fltr==MENU_FLTR_CUTOFF_RESONANCE &&
+      menu_cursor==GLOBALMENU_FLTR)
+    {
+      sprintf(str_submenu,"CUTOFF/RES");
+      SG.guiTTFText(right_x_display_offset,
+		    right_y_display_offset_line2,str_submenu);
+    }
+
+  if (menu_fltr==MENU_FLTR_ALGO_TYPE &&
+      menu_cursor==GLOBALMENU_FLTR
+      )
+    {
+      sprintf(str_submenu,"ALGO/TYPE");
+      SG.guiTTFText(right_x_display_offset,
+		    right_y_display_offset_line2,str_submenu);
+    }
+
+
+  if (menu_vco==MENU_VCO_OSCMIX_PHASE &&
+      menu_cursor==GLOBALMENU_VCO
+      )
+    {
+      sprintf(str_submenu,"DETUNE/VCOMIX");
+      SG.guiTTFText(right_x_display_offset,
+		    right_y_display_offset_line2,str_submenu);
+    }
+
+
+  if (menu_lfo==MENU_LFO_LFOPITCH &&
+      menu_cursor==GLOBALMENU_LFO
+      )
+    {
+      sprintf(str_submenu,"LFOPitch Depth/Speed");
+      SG.guiTTFText(right_x_display_offset,
+		    right_y_display_offset_line2,str_submenu);
+    }
+
+  if (menu_lfo==MENU_LFO_PITCHBEND &&
+      menu_cursor==GLOBALMENU_LFO
+      )
+    {
+      sprintf(str_submenu,"PitchBend Depth/Speed");
+      SG.guiTTFText(right_x_display_offset,
+		    right_y_display_offset_line2,str_submenu);
+    }
+
+
+  if (menu_lfo==MENU_LFO_TYPE &&
+      menu_cursor==GLOBALMENU_LFO
+      )
+    {
+      sprintf(str_submenu,"LFOType");
+      SG.guiTTFText(right_x_display_offset,
+		    right_y_display_offset_line2,str_submenu);
+    }
+
+
+
+
+  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_AD)    sprintf(str_down,"[ENV] Note  OSC   VCO   LFO   FLTR   ",cty);  
+  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_NOTE)  sprintf(str_down," ENV [Note] OSC   VCO   LFO   FLTR   ",cty);
+  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_OSC)   sprintf(str_down," ENV  Note [OSC]  VCO   LFO   FLTR   ",cty);
+  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_VCO)   sprintf(str_down," ENV  Note  OSC  [VCO]  LFO   FLTR   ",cty);
+  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_LFO)   sprintf(str_down," ENV  Note  OSC   VCO  [LFO]  FLTR   ",cty);
+  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_FLTR)  sprintf(str_down," ENV  Note  OSC   VCO   LFO  [FLTR]  ",cty);
+
+
+  if (menu==0)                         sprintf(str_down,"                     ",cty);
+
+  if (menu_cursor==GLOBALMENU_AD)               sprintf(str_up,"ENV     ");
+  if (menu_cursor==GLOBALMENU_NOTE)             sprintf(str_up,"Note    ");
+  if (menu_cursor==GLOBALMENU_OSC)              sprintf(str_up,"OSC     ");
+  if (menu_cursor==GLOBALMENU_VCO)              sprintf(str_up,"VCO     ");
+  if (menu_cursor==GLOBALMENU_LFO)              sprintf(str_up,"LFO     ");
+  if (menu_cursor==GLOBALMENU_FLTR)             sprintf(str_up,"FLTR    ");
+
+
+  SG.guiTTFText(right_x_display_offset,
+		right_y_display_offset_line4,str_up);
+
+  SG.guiTTFText(menu_x_display_offset,
+		menu_y_display_offset,str_down);
+
+
+}
+
+
+
+
+
 void PicosynthUserInterface::display_board(int menu)
 {
   printf("UserInterface::display_board(%d,)\n",menu);

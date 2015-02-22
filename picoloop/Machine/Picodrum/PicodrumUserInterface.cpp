@@ -538,57 +538,6 @@ void PicodrumUserInterface::handle_key_lfo()
       handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, LFO1_FREQ      ,     -1, 1);
     }
 
-  // GLOBALMENU_LFO
-  // LFO Menu
-  // Change Value
-  if (menu        == MENU_OFF && 
-      menu_cursor == GLOBALMENU_LFO &&
-      menu_lfo    == MENU_LFO_PITCHBEND
-      )
-    {
-      // Insert/Remove Trig
-      sub_handle_invert_trig();
-
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, PITCHBEND_DEPTH,     -1, 0);
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, PITCHBEND_DEPTH,      1, 0);
-
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, PITCHBEND_SPEED,      1, 0);
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, PITCHBEND_SPEED,     -1, 0);
-    }
-
-
-  if (menu        != MENU_OFF && 
-      menu_cursor == GLOBALMENU_LFO &&
-      menu_lfo    == MENU_LFO_PITCHBEND
-      )
-    {
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, PITCHBEND_DEPTH,     -1, 1);
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, PITCHBEND_DEPTH,      1, 1);
-
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, PITCHBEND_SPEED,      1, 1);
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, PITCHBEND_SPEED,     -1, 1);
-    }
-
-
-  if (menu        == MENU_OFF && 
-      menu_cursor == GLOBALMENU_LFO &&
-      menu_lfo    == MENU_LFO_TYPE
-      )
-    {
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG,     LFO_TYPE      ,      1, 0);
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG,     LFO_TYPE      ,     -1, 0);
-    }
-
-
-
-  if (menu        != MENU_OFF && 
-      menu_cursor == GLOBALMENU_LFO &&
-      menu_lfo    == MENU_LFO_TYPE
-      )
-    {
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG,     LFO_TYPE      ,      1, 1);
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG,     LFO_TYPE      ,     -1, 1);
-    }
 
 
   // change GLOBALMENU_VCO SUBMENU
@@ -598,9 +547,11 @@ void PicodrumUserInterface::handle_key_lfo()
     {
       if (menu_ad_dirty_keyboard==0)
 	{
-	  if      (menu_lfo==MENU_LFO_LFOPITCH)               { menu_lfo=MENU_LFO_PITCHBEND;       }
-	  else if (menu_lfo==MENU_LFO_PITCHBEND)              { menu_lfo=MENU_LFO_TYPE;            } 
-	  else if (menu_lfo==MENU_LFO_TYPE)                   { menu_lfo=MENU_LFO_LFOPITCH;        }  
+	  // if      (menu_lfo==MENU_LFO_LFOPITCH)               { menu_lfo=MENU_LFO_PITCHBEND;       }
+	  // else if (menu_lfo==MENU_LFO_PITCHBEND)              { menu_lfo=MENU_LFO_TYPE;            } 
+	  // else if (menu_lfo==MENU_LFO_TYPE)                   { menu_lfo=MENU_LFO_LFOPITCH;        }  
+	  // else                                                { menu_lfo=MENU_LFO_LFOPITCH;        }
+	  menu_lfo=MENU_LFO_LFOPITCH;
 	  dirty_graphic=1;
 	}
       menu_ad_dirty_keyboard=0;
@@ -707,6 +658,108 @@ void PicodrumUserInterface::handle_key_fltr()
       IE.clearLastKeyEvent();
       printf("[sub menu_fltr : %d]\n",menu_fltr);
     }
+
+
+}
+void PicodrumUserInterface::display_board_text()
+{
+  int  i;
+  char str_up[64];
+  char str_down[64];
+  char str_divider[64];
+  char str_submenu[64];
+
+  int  right_x_display_offset=      200*SCREEN_MULT;
+  int  right_y_display_offset_line1=20*SCREEN_MULT;
+  int  right_y_display_offset_line2=40*SCREEN_MULT;
+  int  right_y_display_offset_line3=60*SCREEN_MULT;
+  int  right_y_display_offset_line4=80*SCREEN_MULT;
+
+  int  menu_x_display_offset=       10*SCREEN_MULT;
+  int  menu_y_display_offset=      200*SCREEN_MULT;
+
+  int  cty=SEQ.getCurrentTrackY();
+  int  stepdiv=SEQ.getPatternSequencer(cty).getBPMDivider();
+
+
+  
+  if (menu_ad==MENU_AD_AMP_ATTACK_RELEASE &&
+      menu_cursor==GLOBALMENU_AD)
+    {
+      sprintf(str_submenu,"AMP  A/R");
+      SG.guiTTFText(right_x_display_offset,
+		    right_y_display_offset_line2,str_submenu);
+    }
+
+  if (menu_ad==MENU_AD_TRIGTIME_AMP &&
+      menu_cursor==GLOBALMENU_AD)
+    {
+      sprintf(str_submenu,"T/N AMP");
+      SG.guiTTFText(right_x_display_offset,
+		    right_y_display_offset_line2,str_submenu);
+    }
+
+  if (menu_fltr==MENU_FLTR_CUTOFF_RESONANCE &&
+      menu_cursor==GLOBALMENU_FLTR)
+    {
+      sprintf(str_submenu,"CUTOFF/RES");
+      SG.guiTTFText(right_x_display_offset,
+		    right_y_display_offset_line2,str_submenu);
+    }
+
+  if (menu_fltr==MENU_FLTR_ALGO_TYPE &&
+      menu_cursor==GLOBALMENU_FLTR
+      )
+    {
+      sprintf(str_submenu,"ALGO/TYPE");
+      SG.guiTTFText(right_x_display_offset,
+		    right_y_display_offset_line2,str_submenu);
+    }
+
+  if (menu_vco==MENU_VCO_OSCMIX_PHASE &&
+      menu_cursor==GLOBALMENU_VCO
+      )
+    {
+      sprintf(str_submenu,"VCOMIX/OSC1_PHASE");
+      SG.guiTTFText(right_x_display_offset,
+		    right_y_display_offset_line2,str_submenu);
+    }
+
+
+  if (menu_lfo==MENU_LFO_LFOPITCH &&
+      menu_cursor==GLOBALMENU_LFO
+      )
+    {
+      sprintf(str_submenu,"LFOPitch Depth/Speed");
+      SG.guiTTFText(right_x_display_offset,
+		    right_y_display_offset_line2,str_submenu);
+    }
+
+
+
+  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_AD)    sprintf(str_down,"[A/R] Note  OSC   VCO   LFO   FLTR   ",cty);  
+  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_NOTE)  sprintf(str_down," A/R [Note] OSC   VCO   LFO   FLTR   ",cty);
+  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_OSC)   sprintf(str_down," A/R  Note [OSC]  VCO   LFO   FLTR   ",cty);
+  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_VCO)   sprintf(str_down," A/R  Note  OSC  [VCO]  LFO   FLTR   ",cty);
+  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_LFO)   sprintf(str_down," A/R  Note  OSC   VCO  [LFO]  FLTR   ",cty);
+  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_FLTR)  sprintf(str_down," A/R  Note  OSC   VCO   LFO  [FLTR]  ",cty);
+
+
+  if (menu==0)                         sprintf(str_down,"                     ",cty);
+
+  if (menu_cursor==GLOBALMENU_AD)               sprintf(str_up,"A/R     ");
+  if (menu_cursor==GLOBALMENU_NOTE)             sprintf(str_up,"Note    ");
+  if (menu_cursor==GLOBALMENU_OSC)              sprintf(str_up,"OSC     ");
+  if (menu_cursor==GLOBALMENU_VCO)              sprintf(str_up,"VCO     ");
+  if (menu_cursor==GLOBALMENU_LFO)              sprintf(str_up,"LFO     ");
+  if (menu_cursor==GLOBALMENU_FLTR)             sprintf(str_up,"FLTR    ");
+
+
+  SG.guiTTFText(right_x_display_offset,
+		right_y_display_offset_line4,str_up);
+
+  SG.guiTTFText(menu_x_display_offset,
+		menu_y_display_offset,str_down);
 
 
 }

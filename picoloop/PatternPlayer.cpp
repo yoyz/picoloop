@@ -749,8 +749,7 @@ void display_board_mac()
 
 
 
-
-void display_board()
+void display_board_text_global()
 {
   int  i;
   char str_up[64];
@@ -766,14 +765,11 @@ void display_board()
 
   int  menu_x_display_offset=       10*SCREEN_MULT;
   int  menu_y_display_offset=      200*SCREEN_MULT;
-  //int  
 
   int  cty=SEQ.getCurrentTrackY();
   int  stepdiv=SEQ.getPatternSequencer(cty).getBPMDivider();
-  dirty_graphic=0;
 
-  SG.clearScreen();
-  //  sprintf(str,"Track %d ",ct);
+
   sprintf(str_up,"Track %d ",cty);
   SG.guiTTFText(right_x_display_offset,
 		right_y_display_offset_line1,str_up);
@@ -803,134 +799,9 @@ void display_board()
       SG.guiTTFText(right_x_display_offset,
 		    right_y_display_offset_line2,str_submenu);
     }
-  if (menu_ad==MENU_AD_AMP_ATTACK_RELEASE &&
-      menu_cursor==GLOBALMENU_AD)
-    {
-      sprintf(str_submenu,"AMP  A/R");
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
-    }
-
-  if (menu_ad==MENU_AD_AMP_DECAY_SUSTAIN &&
-      menu_cursor==GLOBALMENU_AD)
-    {
-      sprintf(str_submenu,"AMP  S/D");
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
-    }
-
-
-  if (menu_ad==MENU_AD_FLTR_ATTACK_RELEASE &&
-      menu_cursor==GLOBALMENU_AD)
-    {
-      sprintf(str_submenu,"FLTR A/R");
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
-    }
-
-  if (menu_ad==MENU_AD_FLTR_DECAY_SUSTAIN &&
-      menu_cursor==GLOBALMENU_AD)
-    {
-      sprintf(str_submenu,"FLTR S/D");
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
-    }
-
-
-  if (menu_ad==MENU_AD_TRIGTIME_AMP &&
-      menu_cursor==GLOBALMENU_AD)
-    {
-      sprintf(str_submenu,"T/N AMP");
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
-    }
-
-  if (menu_fltr==MENU_FLTR_CUTOFF_RESONANCE &&
-      menu_cursor==GLOBALMENU_FLTR)
-    {
-      sprintf(str_submenu,"CUTOFF/RES");
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
-    }
-
-  if (menu_fltr==MENU_FLTR_ALGO_TYPE &&
-      menu_cursor==GLOBALMENU_FLTR
-      )
-    {
-      sprintf(str_submenu,"ALGO/TYPE");
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
-    }
-
-
-  if (menu_vco==MENU_VCO_OSCAMP &&
-      menu_cursor==GLOBALMENU_VCO
-      )
-    {
-      sprintf(str_submenu,"OP1AMP/AP2AMP");
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
-    }
-
-  if (menu_vco==MENU_VCO_OSCMIX_PHASE &&
-      menu_cursor==GLOBALMENU_VCO
-      )
-    {
-      sprintf(str_submenu,"Frq1&Frq2|OSCMix&Ph");
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
-    }
-
-
-  if (menu_vco==MENU_VCO_FMTYPE &&
-      menu_cursor==GLOBALMENU_VCO
-      )
-    {
-      sprintf(str_submenu,"FMType");
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
-    }
 
 
 
-  if (menu_lfo==MENU_LFO_LFOPITCH &&
-      menu_cursor==GLOBALMENU_LFO
-      )
-    {
-      sprintf(str_submenu,"LFOPitch Depth/Speed");
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
-    }
-
-  if (menu_lfo==MENU_LFO_PITCHBEND &&
-      menu_cursor==GLOBALMENU_LFO
-      )
-    {
-      sprintf(str_submenu,"PitchBend Depth/Speed");
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
-    }
-
-
-  if (menu_lfo==MENU_LFO_TYPE &&
-      menu_cursor==GLOBALMENU_LFO
-      )
-    {
-      sprintf(str_submenu,"LFOType");
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
-    }
-
-
-
-  /*
-  if (menu_ad==MENU_AD_ATTACK_AMP &&
-      menu_cursor==GLOBALMENU_AD)
-    {
-      sprintf(str_submenu,"ATTACK/AMP");
-      SG.guiTTFText(right_x_display_offset,60,str_submenu);
-    }
-  */
   if (menu_cursor==GLOBALMENU_BPM)
     {
       //sprintf(str_submenu,"SWING %d",(current_swing*100)/127);
@@ -939,17 +810,6 @@ void display_board()
 		    right_y_display_offset_line2,str_submenu);
     }
 
-//  sprintf(str_down,"[A/D] Note L/S",cty);
-  
-  //  printf("           AD:%d FX:%d\n",AD,FX);
-  //  exit(0);
-
-  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_AD)    sprintf(str_down,"[A/R] Note  OSC   VCO   LFO   FLTR   ",cty);  
-  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_NOTE)  sprintf(str_down," A/R [Note] OSC   VCO   LFO   FLTR   ",cty);
-  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_OSC)   sprintf(str_down," A/R  Note [OSC]  VCO   LFO   FLTR   ",cty);
-  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_VCO)   sprintf(str_down," A/R  Note  OSC  [VCO]  LFO   FLTR   ",cty);
-  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_LFO)   sprintf(str_down," A/R  Note  OSC   VCO  [LFO]  FLTR   ",cty);
-  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_FLTR)  sprintf(str_down," A/R  Note  OSC   VCO   LFO  [FLTR]  ",cty);
 
   if (menu==MENU_ON_PAGE2 && menu_cursor==GLOBALMENU_LS)    sprintf(str_down,"[L/S] BANK  PSH   MAC   FX    BPM    ",cty);  
   if (menu==MENU_ON_PAGE2 && menu_cursor==GLOBALMENU_BANK)  sprintf(str_down," L/S [BANK] PSH   MAC   FX    BPM    ",cty);
@@ -960,14 +820,6 @@ void display_board()
 
   if (menu==0)                         sprintf(str_down,"                     ",cty);
 
-  if (menu_cursor==GLOBALMENU_AD)               sprintf(str_up,"A/R     ");
-  if (menu_cursor==GLOBALMENU_NOTE)             sprintf(str_up,"Note    ");
-  if (menu_cursor==GLOBALMENU_OSC)              sprintf(str_up,"OSC     ");
-  if (menu_cursor==GLOBALMENU_VCO)              sprintf(str_up,"VCO     ");
-  if (menu_cursor==GLOBALMENU_LFO)              sprintf(str_up,"LFO     ");
-  if (menu_cursor==GLOBALMENU_FLTR)             sprintf(str_up,"FLTR    ");
-
-
   if (menu_cursor==GLOBALMENU_LS)               sprintf(str_up,"L/S     ");
   if (menu_cursor==GLOBALMENU_BANK)             sprintf(str_up,"BANK    ");
   if (menu_cursor==GLOBALMENU_PSH)              sprintf(str_up,"PSH     ");
@@ -976,16 +828,47 @@ void display_board()
   if (menu_cursor==GLOBALMENU_FX)               sprintf(str_up,"FX      ");
 
 
-
-
   SG.guiTTFText(right_x_display_offset,
 		right_y_display_offset_line4,str_up);
 
   SG.guiTTFText(menu_x_display_offset,
 		menu_y_display_offset,str_down);
 
+
+}
+
+
+void display_board()
+{
+  int  i;
+  char str_up[64];
+  char str_down[64];
+  char str_divider[64];
+  char str_submenu[64];
+
+  int  right_x_display_offset=      200*SCREEN_MULT;
+  int  right_y_display_offset_line1=20*SCREEN_MULT;
+  int  right_y_display_offset_line2=40*SCREEN_MULT;
+  int  right_y_display_offset_line3=60*SCREEN_MULT;
+  int  right_y_display_offset_line4=80*SCREEN_MULT;
+
+  int  menu_x_display_offset=       10*SCREEN_MULT;
+  int  menu_y_display_offset=      200*SCREEN_MULT;
+  //int  
+
+  int  cty=SEQ.getCurrentTrackY();
+  int  stepdiv=SEQ.getPatternSequencer(cty).getBPMDivider();
+  dirty_graphic=0;
+
+  SG.clearScreen();
+  //  sprintf(str,"Track %d ",ct);
+
   // Draw all box default color   
   //for (i=0;i<16;i++)
+
+  display_board_text_global();
+  UI->display_board_text();
+
   for (i=0;i<SEQ.getPatternSequencer(cty).getPatternLenght();i++)
     { SG.drawBoxNumber(i,BOX_COLOR); }
   for (i=i;i<16;i++)

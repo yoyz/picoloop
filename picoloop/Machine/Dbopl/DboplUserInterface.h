@@ -73,6 +73,8 @@ class DboplUserInterface : public UserInterface
   void handle_key_lfo();
   void handle_key_fltr();
 
+  void display_board_text();
+
   void display_board(int menu); 
   void display_board_amp_env();
   void display_board_note();
