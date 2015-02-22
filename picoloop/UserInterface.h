@@ -53,6 +53,7 @@ class UserInterface
   ~UserInterface();
   virtual void handle_key(int menu);
   virtual void display_board(int menu);  
+  virtual void display_board_text();  
   int a;
 };
 
