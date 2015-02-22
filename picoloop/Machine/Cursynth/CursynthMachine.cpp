@@ -46,9 +46,9 @@ void CursynthMachine::init()
   for (i=0;i<SAM;i++)
     buffer_f[i]=0.0;
 
-  CSE->getControls().at("delay time")->set(0);      
-  CSE->getControls().at("delay dry/wet")->set(0);   
-  CSE->getControls().at("delay feedback")->set(0);
+  CSE->getControls().at("delay time")->set(0.1);      
+  CSE->getControls().at("delay dry/wet")->set(0.2);   
+  CSE->getControls().at("delay feedback")->set(0.4);
   CSE->getControls().at("cross modulation")->set(0);  
 
   CSE->getControls().at("osc 2 transpose")->set(0); 
@@ -219,10 +219,13 @@ void CursynthMachine::setI(int what,int val)
   
   if (what==FILTER1_RESONANCE)         
     { 
-      CSE->getControls().at("resonance")->set(0.5+(f_val*10));
+      //CSE->getControls().at("resonance")->set(0.5+(f_val*10));
+      CSE->getControls().at("resonance")->set(0+(f_val*10));
     }
 
-
+  if (what==FX1_DEPTH)          CSE->getControls().at("delay dry/wet")->set(f_val*128);   
+  if (what==FX1_SPEED)          CSE->getControls().at("delay time"   )->set(f_val*128);      
+  
 
 }
 
