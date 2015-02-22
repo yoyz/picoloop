@@ -835,7 +835,7 @@ void PicodrumUserInterface::display_board_note()
 		  //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
 
 		  SG.smallBoxNumber(i,
-				    (P[cty].getPatternElement(i).get(NOTE)%12)*10,
+				    (P[cty].getPatternElement(i).get(NOTE)%12-1)*10,
 				    (128-(P[cty].getPatternElement(i).get(NOTE)/12)*10),
 				    SMALLBOX_COLOR);
 
