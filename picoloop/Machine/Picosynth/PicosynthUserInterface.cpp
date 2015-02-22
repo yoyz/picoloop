@@ -116,69 +116,7 @@ void PicosynthUserInterface::handle_key_amp_env()
 
 
 
-  // GLOBALMENU_AD FLTR
-  // Move Attack Release 
-  // Insert/Remove Trig
-  if (menu          == MENU_OFF && 
-      menu_cursor   == GLOBALMENU_AD     &&
-      menu_ad      == MENU_AD_FLTR_ATTACK_RELEASE)
-    {
-      // Insert/Remove Trig
-      sub_handle_invert_trig();
 
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, ADSR_FLTR_RELEASE, -1, 0);
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, ADSR_FLTR_RELEASE,  1, 0);
-
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, ADSR_FLTR_ATTACK,   1, 0);
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, ADSR_FLTR_ATTACK,  -1, 0);
-    }  
-
-  // GLOBALMENU_AD FLTR
-  // Move Decay Sustain
-  // Insert/Remove Trig
-  if (menu          == MENU_OFF && 
-      menu_cursor   == GLOBALMENU_AD     &&
-      menu_ad      == MENU_AD_FLTR_DECAY_SUSTAIN)
-    {
-      // Insert/Remove Trig
-      sub_handle_invert_trig();
-
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, ADSR_FLTR_DECAY,    -1, 0);
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, ADSR_FLTR_DECAY,     1, 0);
-
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, ADSR_FLTR_SUSTAIN,   1, 0);
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, ADSR_FLTR_SUSTAIN,  -1, 0);
-    }  
-
-
-
-  // GLOBALMENU_AD FLTR
-  // Move Attack Release 
-  // Insert/Remove Trig
-  if (menu          != MENU_OFF && 
-      menu_cursor   == GLOBALMENU_AD     &&
-      menu_ad      == MENU_AD_FLTR_ATTACK_RELEASE)
-    {
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, ADSR_FLTR_RELEASE, -1, 1);
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, ADSR_FLTR_RELEASE,  1, 1);
-
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, ADSR_FLTR_ATTACK,   1, 1);
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, ADSR_FLTR_ATTACK,  -1, 1);
-    }  
-
-  // GLOBALMENU_AD FLTR
-  // Move Decay Sustain
-  // Insert/Remove Trig
-  if (menu          != MENU_OFF && 
-      menu_cursor   == GLOBALMENU_AD     &&
-      menu_ad      == MENU_AD_FLTR_DECAY_SUSTAIN)
-    {
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, ADSR_FLTR_DECAY,    -1, 1);
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, ADSR_FLTR_DECAY,     1, 1);
-
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, ADSR_FLTR_SUSTAIN,   1, 1);
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, ADSR_FLTR_SUSTAIN,  -1, 1);
-    }  
 
 
 
@@ -698,12 +636,6 @@ void PicosynthUserInterface::display_board_amp_env()
       if (menu_ad==MENU_AD_AMP_DECAY_SUSTAIN)
 	display_board_two_param(ADSR_AMP_DECAY,ADSR_AMP_SUSTAIN);
 
-      if (menu_ad==MENU_AD_FLTR_ATTACK_RELEASE)
-	display_board_two_param(ADSR_FLTR_RELEASE,ADSR_FLTR_ATTACK);
-
-      if (menu_ad==MENU_AD_FLTR_DECAY_SUSTAIN)
-	display_board_two_param(ADSR_FLTR_DECAY,ADSR_FLTR_SUSTAIN);
-
       if (menu_ad==MENU_AD_TRIGTIME_AMP)
 	display_board_two_param(AMP,TRIG_TIME_DURATION);	
     }  
@@ -729,16 +661,6 @@ void PicosynthUserInterface::display_board_note()
 	  SG.drawBoxNumber(cursor,CURSOR_COLOR);	  
 	  SG.drawBoxNumber(step,STEP_COLOR);  
     
-	  /*
-	  SG.smallBoxNumber(cursor,
-			    (P[cty].getPatternElement(cursor).getNote()%12)*10,
-			    (P[cty].getPatternElement(cursor).getNote()/12)*10,
-			    SMALLBOX_COLOR);
-	  SG.smallBoxNumber(step,  
-			    (P[cty].getPatternElement(step).getNote()%12)*10,
-			    (P[cty].getPatternElement(step).getNote()/12)*10,
-			    SMALLBOX_COLOR);
-	  */
 	}
       // Note C3 
       if (menu_note==ENABLE)
@@ -784,7 +706,7 @@ void PicosynthUserInterface::display_board_note()
 		  //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
 
 		  SG.smallBoxNumber(i,
-				    (P[cty].getPatternElement(i).get(NOTE)%12)*10,
+				    (P[cty].getPatternElement(i).get(NOTE)%12-1)*10,
 				    (128-(P[cty].getPatternElement(i).get(NOTE)/12)*10),
 				    SMALLBOX_COLOR);
 
@@ -810,19 +732,6 @@ void PicosynthUserInterface::display_board_vco()
       display_board_two_param(VCO_MIX,OSC1_DETUNE);
     }
 
-  // VCO
-  if (menu_cursor == GLOBALMENU_VCO  && 
-      menu_vco    == MENU_VCO_OSCAMP)
-    {
-       display_board_two_param(OSC1_AMP,OSC2_AMP);
-    }
-
-  if (menu_cursor == GLOBALMENU_VCO  && 
-      menu_vco    == MENU_VCO_FMTYPE)
-    {	  
-      display_board_one_param_text(FM_TYPE); 
-    }
-  
 }
 
 void PicosynthUserInterface::display_board_osc()
