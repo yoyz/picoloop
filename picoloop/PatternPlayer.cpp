@@ -818,7 +818,7 @@ void display_board_text_global()
   if (menu==MENU_ON_PAGE2 && menu_cursor==GLOBALMENU_FX)    sprintf(str_down," L/S  BANK  PSH   MAC  [FX]   BPM    ",cty);
   if (menu==MENU_ON_PAGE2 && menu_cursor==GLOBALMENU_BPM)   sprintf(str_down," L/S  BANK  PSH   MAC   FX   [BPM]   ",cty);
 
-  if (menu==0)                         sprintf(str_down,"                     ",cty);
+  if (menu==0)                                              sprintf(str_down,"                                     ",cty);
 
   if (menu_cursor==GLOBALMENU_LS)               sprintf(str_up,"L/S     ");
   if (menu_cursor==GLOBALMENU_BANK)             sprintf(str_up,"BANK    ");
