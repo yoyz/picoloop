@@ -84,6 +84,9 @@ private:
   int lfo1_env_amount;
   int lfo2_env_amount;
 
+  int lfo1Waveform;
+  int lfo2Waveform;
+
   int osc1_detune;
 };
 

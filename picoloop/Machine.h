@@ -63,6 +63,9 @@ using namespace std;
 
 #define AMP                 35
 
+#define LFO1_WAVEFORM       36
+#define LFO2_WAVEFORM       37
+
 #define LFO1_ENV_AMOUNT     38
 #define LFO2_ENV_AMOUNT     39
 
