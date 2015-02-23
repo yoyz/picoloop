@@ -81,11 +81,11 @@ int main()
 
   for (x=0;x<16;x++)
     for (y=0;y<8;y++)
-      sg.middleBoxNumber(x,y,0x46DC65);
+      sg.middleBoxNumberUp(x,y,0x46DC65);
 
-  for (x=0;x<16;x++)
-    for (y=0;y<8;y++)
-      sg.drawTTFTextLoadSaveBoxNumer(x,y,tmp_txt);
+  // for (x=0;x<16;x++)
+  //   for (y=0;y<8;y++)
+  //     sg.drawTTFTextNumberFirstLine(x,tmp_txt);
 
 
   sg.refresh();
