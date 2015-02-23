@@ -354,8 +354,6 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
   fgets(line,512,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
-
-
   machineParam=LFO1_FREQ;
   fgets(line,512,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
@@ -555,6 +553,22 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
   fgets(line,512,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
+  machineParam=LFO1_ENV_AMOUNT;
+  fgets(line,512,fd);
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
+
+  machineParam=LFO2_ENV_AMOUNT;
+  fgets(line,512,fd);
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
+
+  machineParam=LFO2_DEPTH;
+  fgets(line,512,fd);
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
+
+  machineParam=LFO2_FREQ;
+  fgets(line,512,fd);
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
+
 
 
 
@@ -676,8 +690,6 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
 
   this->writePatternDataLine(PatternNumber,TrackNumber,P,line,LFO1_DEPTH);
   data.insert(data.end(),line);
-
-
 
   this->writePatternDataLine(PatternNumber,TrackNumber,P,line,LFO1_FREQ);
   data.insert(data.end(),line);
@@ -843,6 +855,26 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
 
 
 
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,LFO1_WAVEFORM);
+  data.insert(data.end(),line);
+
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,LFO2_WAVEFORM);
+  data.insert(data.end(),line);
+
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,LFO1_ENV_AMOUNT);
+  data.insert(data.end(),line);
+
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,LFO2_ENV_AMOUNT);
+  data.insert(data.end(),line);
+
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,LFO2_DEPTH);
+  data.insert(data.end(),line);
+
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,LFO2_FREQ);
+  data.insert(data.end(),line);
+
+
+
   sprintf(line,"\n");
   data.insert(data.end(),line);
 
@@ -919,8 +951,12 @@ const char * PatternReader::getParameterCharStar(int param)
   
   static const char * lfo_type="LfoType";
 
-  static const char * lfo1_depth="PitchLfoDepth";
-  static const char * lfo1_freq="PitchLfoSpeed";
+  static const char * lfo1_depth="LFO1Depth";
+  static const char * lfo1_freq="LFO1Speed";
+
+  static const char * lfo2_depth="LFO2Depth";
+  static const char * lfo2_freq="LFO2Speed";
+
 
   static const char * amp="Amp";
 
@@ -934,6 +970,10 @@ const char * PatternReader::getParameterCharStar(int param)
 
   static const char * lfo1_waveform="LFO1Waveform";
   static const char * lfo2_waveform="LFO2Waveform";
+
+  static const char * lfo1_env_amount="LFO1EnvAmount";
+  static const char * lfo2_env_amount="LFO2EnvAmount";
+
 
   switch (param)
     {
@@ -979,6 +1019,9 @@ const char * PatternReader::getParameterCharStar(int param)
     case LFO1_DEPTH:         return lfo1_depth;               break;
     case LFO1_FREQ:          return lfo1_freq;                break;
 
+    case LFO2_DEPTH:         return lfo2_depth;               break;
+    case LFO2_FREQ:          return lfo2_freq;                break;
+
     case AMP:                return amp;                      break;
 
     case NOTE:               return note;                     break;
@@ -991,6 +1034,9 @@ const char * PatternReader::getParameterCharStar(int param)
 
     case LFO1_WAVEFORM:      return lfo1_waveform;            break;
     case LFO2_WAVEFORM:      return lfo2_waveform;            break;
+
+    case LFO1_ENV_AMOUNT:    return lfo1_env_amount;          break;
+    case LFO2_ENV_AMOUNT:    return lfo2_env_amount;          break;
     
     default:                 printf("PatternReader::getParameterCharStar(%d) not found => exit\n"); exit(1); break;
     }

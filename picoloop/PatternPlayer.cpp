@@ -1860,9 +1860,19 @@ void seq_update_multiple_time_by_step()
   seq_update_tweakable_knob_one(LFO1_DEPTH);
   seq_update_tweakable_knob_all(LFO1_DEPTH);
 
-  // Change lfo freq
+  // Change lfo depth
+  seq_update_tweakable_knob_one(LFO2_DEPTH);
+  seq_update_tweakable_knob_all(LFO2_DEPTH);
+
+
+  // Change lfo1 freq
   seq_update_tweakable_knob_one(LFO1_FREQ);
   seq_update_tweakable_knob_all(LFO1_FREQ);
+
+  // Change lfo1 freq
+  seq_update_tweakable_knob_one(LFO2_FREQ);
+  seq_update_tweakable_knob_all(LFO2_FREQ);
+
 
   // Change pitchbend depth
   seq_update_tweakable_knob_one(PITCHBEND_DEPTH);
@@ -1911,6 +1921,15 @@ void seq_update_multiple_time_by_step()
   // change LFO2 WAVEFORM
   seq_update_tweakable_knob_one(LFO2_WAVEFORM);
   seq_update_tweakable_knob_all(LFO2_WAVEFORM);
+
+
+  // change LFO1 WAVEFORM
+  seq_update_tweakable_knob_one(LFO1_ENV_AMOUNT);
+  seq_update_tweakable_knob_all(LFO1_ENV_AMOUNT);
+
+  // change LFO2 WAVEFORM
+  seq_update_tweakable_knob_one(LFO2_ENV_AMOUNT);
+  seq_update_tweakable_knob_all(LFO2_ENV_AMOUNT);
 
 
   if (TK.get(BPM_DIVIDER)!=0)
@@ -2254,8 +2273,13 @@ void seq_update_track(int t)
 	  M[t]->setI(OSC12_MIX,P[t].getPatternElement(step).get(VCO_MIX));
 	  M[t]->setI(OSC1_PHASE,P[t].getPatternElement(step).get(OSC1_PHASE));
 
-	  M[t]->setI(LFO1_DEPTH,P[t].getPatternElement(step).get(LFO1_DEPTH));
-	  M[t]->setF(LFO1_FREQ,P[t].getPatternElement(step).get(LFO1_FREQ));
+	  M[t]->setI(LFO1_DEPTH,     P[t].getPatternElement(step).get(LFO1_DEPTH));
+	  M[t]->setI(LFO1_ENV_AMOUNT,P[t].getPatternElement(step).get(LFO1_ENV_AMOUNT));
+	  M[t]->setF(LFO1_FREQ,      P[t].getPatternElement(step).get(LFO1_FREQ));
+
+	  M[t]->setI(LFO2_DEPTH,     P[t].getPatternElement(step).get(LFO2_DEPTH));
+	  M[t]->setI(LFO2_ENV_AMOUNT,P[t].getPatternElement(step).get(LFO2_ENV_AMOUNT));
+	  M[t]->setF(LFO2_FREQ,      P[t].getPatternElement(step).get(LFO2_FREQ));
 
 	  M[t]->setI(PITCHBEND_DEPTH,P[t].getPatternElement(step).get(PITCHBEND_DEPTH));
 	  M[t]->setI(PITCHBEND_SPEED,P[t].getPatternElement(step).get(PITCHBEND_SPEED));
@@ -2265,6 +2289,10 @@ void seq_update_track(int t)
 
 	  M[t]->setI(OSC1_TYPE,P[t].getPatternElement(step).get(OSC1_TYPE));
 	  M[t]->setI(OSC2_TYPE,P[t].getPatternElement(step).get(OSC2_TYPE));
+
+	  M[t]->setI(LFO1_WAVEFORM,P[t].getPatternElement(step).get(LFO1_WAVEFORM));
+	  M[t]->setI(LFO2_WAVEFORM,P[t].getPatternElement(step).get(LFO2_WAVEFORM));
+
 
 	  M[t]->setI(OSC1_AMP,P[t].getPatternElement(step).get(OSC1_AMP));
 	  M[t]->setI(OSC2_AMP,P[t].getPatternElement(step).get(OSC2_AMP));

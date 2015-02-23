@@ -56,13 +56,17 @@ void CursynthMachine::init()
   CSE->getControls().at("volume")->set(0.1);
 
   CSE->getControls().at("lfo 1 waveform")->set(2); 
-  CSE->getControls().at("lfo 2 waveform")->set(0); 
+  CSE->getControls().at("lfo 2 waveform")->set(2); 
 
 
   CSE->getControls().at("mod source 1")->set(3);     
+  CSE->getControls().at("mod source 2")->set(4);     
   CSE->getControls().at("mod destination 1")->set(4);     
+  CSE->getControls().at("mod destination 2")->set(2);     
   CSE->getControls().at("mod scale 1")->set(0.9);     
+  CSE->getControls().at("mod scale 2")->set(0.9);     
   CSE->getControls().at("lfo 1 frequency")->set(2.2);     
+  CSE->getControls().at("lfo 1 frequency")->set(3.2);     
 
 
   //bq.reset();
@@ -195,6 +199,10 @@ void CursynthMachine::setI(int what,int val)
   if (what==OSC1_TYPE)           { CSE->getControls().at("osc 1 waveform")->set(f_val*128); }
   if (what==OSC2_TYPE)           { CSE->getControls().at("osc 2 waveform")->set(f_val*128); }
 
+  if (what==LFO1_WAVEFORM)       { CSE->getControls().at("lfo 1 waveform")->set(f_val*128); }
+  if (what==LFO2_WAVEFORM)       { CSE->getControls().at("lfo 2 waveform")->set(f_val*128); }
+
+
   if (what==ADSR_ENV0_ATTACK)    CSE->getControls().at("amp attack")->set(f_val*3);
   if (what==ADSR_ENV0_DECAY)     CSE->getControls().at("amp decay")->set(f_val*3);
   if (what==ADSR_ENV0_SUSTAIN)   CSE->getControls().at("amp sustain")->set(f_val);
@@ -206,7 +214,8 @@ void CursynthMachine::setI(int what,int val)
   if (what==ADSR_ENV1_RELEASE)   CSE->getControls().at("fil release")->set(f_val*3);
 
 
-  if (what==LFO1_DEPTH)          CSE->getControls().at("mod scale 1")->set(f_val);
+  if (what==LFO1_ENV_AMOUNT)     CSE->getControls().at("mod scale 1")->set(f_val);
+  if (what==LFO2_ENV_AMOUNT)     CSE->getControls().at("mod scale 2")->set(f_val);
 
 
   //if (what==OSC1_PHASE)          CSE->getControls().at("fil env depth")->set(((f_val*2)-1)*128);

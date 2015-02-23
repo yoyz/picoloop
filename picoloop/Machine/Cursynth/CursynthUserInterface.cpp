@@ -546,8 +546,8 @@ void CursynthUserInterface::handle_key_lfo()
       // Insert/Remove Trig
       sub_handle_invert_trig();
 
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, LFO1_DEPTH     ,     -1, 0);
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, LFO1_DEPTH     ,      1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, LFO1_ENV_AMOUNT,     -1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, LFO1_ENV_AMOUNT,      1, 0);
 
       handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, LFO1_FREQ      ,      1, 0);
       handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, LFO1_FREQ      ,     -1, 0);
@@ -560,8 +560,8 @@ void CursynthUserInterface::handle_key_lfo()
       )
     {
 
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, LFO1_DEPTH     ,     -1, 1);
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, LFO1_DEPTH     ,      1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, LFO1_ENV_AMOUNT,     -1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, LFO1_ENV_AMOUNT,      1, 1);
 
       handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, LFO1_FREQ      ,      1, 1);
       handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, LFO1_FREQ      ,     -1, 1);
@@ -578,11 +578,11 @@ void CursynthUserInterface::handle_key_lfo()
       // Insert/Remove Trig
       sub_handle_invert_trig();
 
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, PITCHBEND_DEPTH,     -1, 0);
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, PITCHBEND_DEPTH,      1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, LFO2_ENV_AMOUNT,     -1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, LFO2_ENV_AMOUNT,      1, 0);
 
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, PITCHBEND_SPEED,      1, 0);
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, PITCHBEND_SPEED,     -1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, LFO2_FREQ,      1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, LFO2_FREQ,     -1, 0);
     }
 
 
@@ -591,11 +591,11 @@ void CursynthUserInterface::handle_key_lfo()
       menu_lfo    == MENU_LFO_PITCHBEND
       )
     {
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, PITCHBEND_DEPTH,     -1, 1);
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, PITCHBEND_DEPTH,      1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, LFO2_ENV_AMOUNT,     -1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, LFO2_ENV_AMOUNT,      1, 1);
 
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, PITCHBEND_SPEED,      1, 1);
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, PITCHBEND_SPEED,     -1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, LFO2_FREQ      ,      1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, LFO2_FREQ      ,     -1, 1);
     }
 
 
@@ -856,7 +856,7 @@ void CursynthUserInterface::display_board_text()
       menu_cursor==GLOBALMENU_LFO
       )
     {
-      sprintf(str_submenu,"LFOPitch Depth/Speed");
+      sprintf(str_submenu,"LFO1 Amount/Speed");
       SG.guiTTFText(right_x_display_offset,
 		    right_y_display_offset_line2,str_submenu);
     }
@@ -865,7 +865,7 @@ void CursynthUserInterface::display_board_text()
       menu_cursor==GLOBALMENU_LFO
       )
     {
-      sprintf(str_submenu,"PitchBend Depth/Speed");
+      sprintf(str_submenu,"LFO2 Amount/Speed");
       SG.guiTTFText(right_x_display_offset,
 		    right_y_display_offset_line2,str_submenu);
     }
@@ -1116,22 +1116,22 @@ void CursynthUserInterface::display_board_lfo()
 
   // LFOPITCH
 
-  if (menu_cursor==GLOBALMENU_LFO &&
-      menu_lfo   ==MENU_LFO_LFOPITCH)
+  if (menu_cursor == GLOBALMENU_LFO &&
+      menu_lfo    == MENU_LFO_LFOPITCH)
     {
-
-      display_board_two_param(LFO1_DEPTH,LFO1_FREQ);
+      display_board_two_param(LFO1_ENV_AMOUNT,LFO1_FREQ);
     }
 
   // PITCHBEND
 
-  if (menu_cursor==GLOBALMENU_LFO &&
-      menu_lfo   ==MENU_LFO_PITCHBEND)
+  if (menu_cursor == GLOBALMENU_LFO &&
+      menu_lfo    == MENU_LFO_PITCHBEND)
     {
-      display_board_two_param(PITCHBEND_DEPTH,PITCHBEND_SPEED);
+      display_board_two_param(LFO2_ENV_AMOUNT,LFO2_FREQ);
     }
 
-  if (menu_lfo==MENU_LFO_TYPE)
+  if (menu_cursor == GLOBALMENU_LFO &&
+      menu_lfo    == MENU_LFO_TYPE)
     {
       display_board_one_param_text(LFO_TYPE);
     }
