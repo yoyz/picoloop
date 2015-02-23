@@ -832,7 +832,7 @@ void DboplUserInterface::display_board_text()
       menu_cursor==GLOBALMENU_VCO
       )
     {
-      sprintf(str_submenu,"OP1AMP/AP2AMP");
+      sprintf(str_submenu,"OP1Amp/AP2Amp");
       SG.guiTTFText(right_x_display_offset,
 		    right_y_display_offset_line2,str_submenu);
     }
@@ -841,7 +841,7 @@ void DboplUserInterface::display_board_text()
       menu_cursor==GLOBALMENU_VCO
       )
     {
-      sprintf(str_submenu,"Frq1&Frq2|OSCMix&Ph");
+      sprintf(str_submenu,"Op1Freq/Op2Freq");
       SG.guiTTFText(right_x_display_offset,
 		    right_y_display_offset_line2,str_submenu);
     }

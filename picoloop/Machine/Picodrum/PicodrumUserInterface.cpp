@@ -417,60 +417,6 @@ void PicodrumUserInterface::handle_key_vco()
     }
 
 
-  // GLOBALMENU_VCO
-  // VCO Menu
-  // Change Value
-  if (menu        == MENU_OFF && 
-      menu_cursor == GLOBALMENU_VCO    &&
-      menu_vco    == MENU_VCO_OSCAMP
-      )
-    {
-      // Insert/Remove Trig
-      sub_handle_invert_trig();
-
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, OSC1_AMP        ,     -1, 0);
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, OSC1_AMP        ,      1, 0);
-
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, OSC2_AMP        ,      1, 0);
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, OSC2_AMP        ,     -1, 0);
-    }
-
-  if (menu        != MENU_OFF && 
-      menu_cursor == GLOBALMENU_VCO   &&
-      menu_vco    == MENU_VCO_OSCAMP
-      )
-    {
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, OSC1_AMP        ,     -1, 1);
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, OSC1_AMP        ,      1, 1);
-
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, OSC2_AMP        ,      1, 1);
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, OSC2_AMP        ,     -1, 1);
-    }
-
-
-  // GLOBALMENU_VCO
-  // VCO Menu
-  // Change Value
-  if (menu        == MENU_OFF && 
-      menu_cursor == GLOBALMENU_VCO    &&
-      menu_vco    == MENU_VCO_FMTYPE
-      )
-    {
-      // Insert/Remove Trig
-      sub_handle_invert_trig();
-
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG,     FM_TYPE        ,      1, 0);
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG,     FM_TYPE        ,     -1, 0);
-    }
-
-  if (menu        != MENU_OFF && 
-      menu_cursor == GLOBALMENU_VCO   &&
-      menu_vco    == MENU_VCO_FMTYPE
-      )
-    {
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG,     FM_TYPE        ,      1, 1);
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG,     FM_TYPE        ,     -1, 1);
-    }
 
 
 
@@ -481,9 +427,7 @@ void PicodrumUserInterface::handle_key_vco()
     {
       if (menu_ad_dirty_keyboard==0)
 	{
-	  if      (menu_vco==MENU_VCO_FMTYPE)              { menu_vco=MENU_VCO_OSCAMP;            }
-	  else if (menu_vco==MENU_VCO_OSCAMP)              { menu_vco=MENU_VCO_OSCMIX_PHASE;      }   
-	  else if (menu_vco==MENU_VCO_OSCMIX_PHASE)        { menu_vco=MENU_VCO_FMTYPE;            }   
+	  menu_vco=MENU_VCO_OSCMIX_PHASE;
 	  dirty_graphic=1;
 	}
       menu_ad_dirty_keyboard=0;
@@ -909,26 +853,17 @@ void PicodrumUserInterface::display_board_vco()
   int  cty=SEQ.getCurrentTrackY();
   int  step=SEQ.getPatternSequencer(cty).getStep();
 
+
+  if (menu_cursor == GLOBALMENU_VCO)
+    menu_vco = MENU_VCO_OSCMIX_PHASE; // enforce this menu_vco to avoid blank screen
+
+
   // VCO
   if (menu_cursor == GLOBALMENU_VCO  && 
       menu_vco    == MENU_VCO_OSCMIX_PHASE)
     {
       display_board_two_param(VCO_MIX,OSC1_PHASE);
     }
-
-  // VCO
-  if (menu_cursor == GLOBALMENU_VCO  && 
-      menu_vco    == MENU_VCO_OSCAMP)
-    {
-       display_board_two_param(OSC1_AMP,OSC2_AMP);
-    }
-
-  if (menu_cursor == GLOBALMENU_VCO  && 
-      menu_vco    == MENU_VCO_FMTYPE)
-    {	  
-      display_board_one_param_text(FM_TYPE); 
-    }
-  
 }
 
 void PicodrumUserInterface::display_board_osc()
