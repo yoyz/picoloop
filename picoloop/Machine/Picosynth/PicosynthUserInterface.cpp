@@ -863,6 +863,9 @@ void PicosynthUserInterface::display_board_vco()
   int  cty=SEQ.getCurrentTrackY();
   int  step=SEQ.getPatternSequencer(cty).getStep();
 
+  if (menu_cursor == GLOBALMENU_VCO)
+    menu_vco = MENU_VCO_OSCMIX_PHASE; // enforce this menu_vco to avoid blank screen
+
   // VCO
   if (menu_cursor == GLOBALMENU_VCO  && 
       menu_vco    == MENU_VCO_OSCMIX_PHASE)

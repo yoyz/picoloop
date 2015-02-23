@@ -1636,14 +1636,17 @@ void refresh_pecursor()
 {
   int  cty=SEQ.getCurrentTrackY();
   // Refresh the PECursor with the current Element
-  PECursor=P[cty].getPatternElement(cursor);  
-  if (PECursor.get(MACHINE_TYPE)==SYNTH_PICOSYNTH) UI=&PSUI;
-  if (PECursor.get(MACHINE_TYPE)==SYNTH_PICODRUM)  UI=&PDUI;
-  if (PECursor.get(MACHINE_TYPE)==SYNTH_OPL2    )  UI=&DBUI;
-  if (PECursor.get(MACHINE_TYPE)==SYNTH_PBSYNTH)   UI=&PBUI;
-  #ifdef __FPU__
-  if (PECursor.get(MACHINE_TYPE)==SYNTH_CURSYNTH)  UI=&CSUI;
-  #endif
+  if (P[cty].getPatternElement(cursor).get(NOTE_ON))
+    {
+      PECursor=P[cty].getPatternElement(cursor);  
+      if (PECursor.get(MACHINE_TYPE)==SYNTH_PICOSYNTH) UI=&PSUI;
+      if (PECursor.get(MACHINE_TYPE)==SYNTH_PICODRUM)  UI=&PDUI;
+      if (PECursor.get(MACHINE_TYPE)==SYNTH_OPL2    )  UI=&DBUI;
+      if (PECursor.get(MACHINE_TYPE)==SYNTH_PBSYNTH)   UI=&PBUI;
+#ifdef __FPU__
+      if (PECursor.get(MACHINE_TYPE)==SYNTH_CURSYNTH)  UI=&CSUI;
+#endif
+    }
 }
 
 
