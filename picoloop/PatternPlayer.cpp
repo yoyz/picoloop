@@ -192,6 +192,7 @@ int menu_note=ENABLE;
 int menu_ad=MENU_AD_AMP_ATTACK_RELEASE;
 int menu_fltr=MENU_FLTR_CUTOFF_RESONANCE;
 int menu_fx=MENU_FX_DEPTH_SPEED;
+int menu_osc=MENU_OSC_OSC1OSC2;
 int menu_vco=MENU_VCO_OSCMIX_PHASE;
 int menu_lfo=MENU_LFO_LFOPITCH;
 int menu_ls=MENU_LS_PATTERN;
@@ -1902,6 +1903,14 @@ void seq_update_multiple_time_by_step()
   // Change FM
   seq_update_tweakable_knob_one(FM_TYPE);
   seq_update_tweakable_knob_all(FM_TYPE);
+
+  // change LFO1 WAVEFORM
+  seq_update_tweakable_knob_one(LFO1_WAVEFORM);
+  seq_update_tweakable_knob_all(LFO1_WAVEFORM);
+
+  // change LFO2 WAVEFORM
+  seq_update_tweakable_knob_one(LFO2_WAVEFORM);
+  seq_update_tweakable_knob_all(LFO2_WAVEFORM);
 
 
   if (TK.get(BPM_DIVIDER)!=0)

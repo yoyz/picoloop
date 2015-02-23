@@ -371,6 +371,23 @@ void PBSynthUserInterface::handle_key_osc()
 
     }
 
+  // change GLOBALMENU_OSC SUBMENU
+  if (lastKey     ==  BUTTON_START  && 
+      lastEvent   ==  KEYRELEASED     && 
+      menu_cursor ==  GLOBALMENU_OSC)
+    {
+      if (menu_ad_dirty_keyboard==0)
+	{
+	  // if      (menu_osc==MENU_OSC_OSC1OSC2)            { menu_osc=MENU_OSC_LFO1LFO2;            }
+	  // else if (menu_osc==MENU_OSC_LFO1LFO2)            { menu_osc=MENU_OSC_OSC1OSC2;            }
+	  // else                                             { menu_osc=MENU_OSC_OSC1OSC2;            }
+	  menu_osc=MENU_OSC_OSC1OSC2;
+	  dirty_graphic=1;
+	}
+      menu_ad_dirty_keyboard=0;
+      IE.clearLastKeyEvent();
+      printf("[sub menu env : %d]\n",menu_ad);
+    }
 }
 
 
@@ -789,6 +806,17 @@ void PBSynthUserInterface::display_board_text()
       SG.guiTTFText(right_x_display_offset,
 		    right_y_display_offset_line2,str_submenu);
     }
+
+
+
+  if (menu_osc    == MENU_OSC_OSC1OSC2 &&
+      menu_cursor == GLOBALMENU_OSC)
+    {
+      sprintf(str_submenu,"OSC WAVEFORM");
+      SG.guiTTFText(right_x_display_offset,
+		    right_y_display_offset_line2,str_submenu);
+    }
+
 
 
 

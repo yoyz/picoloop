@@ -210,6 +210,15 @@ void PatternElement::set(int what,int val)
     case OSC1_DETUNE:
       osc1_detune=checkSevenBitBoundarie(val);
       break;
+
+
+    case LFO1_WAVEFORM:
+      lfo1Waveform=checkSevenBitBoundarie(val);
+      break;
+
+    case LFO2_WAVEFORM:
+      lfo2Waveform=checkSevenBitBoundarie(val);
+      break;
       
 
       
@@ -352,6 +361,14 @@ int PatternElement::get(int what)
 
     case OSC1_DETUNE:
       return osc1_detune;
+      break;
+
+    case LFO1_WAVEFORM:
+      return lfo1Waveform;
+      break;
+
+    case LFO2_WAVEFORM:
+      return lfo2Waveform;
       break;
 
 
