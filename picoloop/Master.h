@@ -123,6 +123,12 @@ enum {
 
 
 enum {
+  MENU_OSC_OSC1OSC2,
+  MENU_OSC_LFO1LFO2,
+};
+
+
+enum {
   MENU_LFO_LFOPITCH,
   MENU_LFO_PITCHBEND,
   MENU_LFO_TYPE,

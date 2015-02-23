@@ -47,6 +47,7 @@ extern int menu_cursor;
 extern int menu_ad;
 extern int menu_note;
 extern int menu_vco;
+extern int menu_osc;
 extern int menu_lfo;
 extern int menu_fltr;
 

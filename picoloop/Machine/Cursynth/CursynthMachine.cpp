@@ -110,6 +110,20 @@ int CursynthMachine::checkI(int what,int val)
       break;
 
 
+    case LFO1_WAVEFORM:
+      if (val<0) return 0;
+      if (val>PICO_CURSYNTH_SIZE-2) return PICO_CURSYNTH_SIZE-2;
+      return val;
+      break;
+
+
+    case LFO2_WAVEFORM:
+      if (val<0) return 0;
+      if (val>PICO_CURSYNTH_SIZE-2) return PICO_CURSYNTH_SIZE-2;
+      return val;
+      break;
+
+
     default:
       if (val<0)   return 0;
       if (val>127) return 127;
@@ -318,6 +332,12 @@ const char * CursynthMachine::getMachineParamCharStar(int machineParam,int param
 
     case LFO_TYPE:
       return str_lfo_type[paramValue];
+
+    case LFO1_WAVEFORM:
+      return str_osc[paramValue];
+    case LFO2_WAVEFORM:
+      return str_osc[paramValue];
+
 
     }
   return str_null;

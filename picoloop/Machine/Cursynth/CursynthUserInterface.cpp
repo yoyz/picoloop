@@ -257,7 +257,7 @@ void CursynthUserInterface::handle_key_amp_env()
 	  else if (menu_ad==MENU_AD_AMP_DECAY_SUSTAIN)        { menu_ad=MENU_AD_FLTR_ATTACK_RELEASE;      }   
 	  else if (menu_ad==MENU_AD_FLTR_ATTACK_RELEASE)      { menu_ad=MENU_AD_FLTR_DECAY_SUSTAIN;       }   
 	  else if (menu_ad==MENU_AD_FLTR_DECAY_SUSTAIN)       { menu_ad=MENU_AD_TRIGTIME_AMP;             }   
-	  else if (menu_ad==MENU_AD_TRIGTIME_AMP)             { menu_ad=MENU_AD_AMP_ATTACK_RELEASE;      }   
+	  else if (menu_ad==MENU_AD_TRIGTIME_AMP)             { menu_ad=MENU_AD_AMP_ATTACK_RELEASE;       }   
 	  dirty_graphic=1;
 	}
       menu_ad_dirty_keyboard=0;
@@ -344,8 +344,9 @@ void CursynthUserInterface::handle_key_osc()
 
   // GLOBALMENU_OSC
   // change oscilltor one and two type
-  if (menu        == MENU_OFF && 
-      menu_cursor == GLOBALMENU_OSC )
+  if (menu        == MENU_OFF       && 
+      menu_cursor == GLOBALMENU_OSC &&
+      menu_osc    == MENU_OSC_OSC1OSC2)
     {
       // Insert/Remove Trig
       sub_handle_invert_trig();
@@ -359,18 +360,64 @@ void CursynthUserInterface::handle_key_osc()
 
   // GLOBALMENU_OSC
   // change oscilltor one and two type
-  if (menu        != MENU_OFF && 
-      menu_cursor == GLOBALMENU_OSC )
+  if (menu        != MENU_OFF       && 
+      menu_cursor == GLOBALMENU_OSC &&
+      menu_osc    == MENU_OSC_OSC1OSC2)
     {
-
       handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_LONG    , OSC1_TYPE,        -1, 1);
       handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_LONG    , OSC1_TYPE,         1, 1);
 
       handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG    , OSC2_TYPE      ,   1, 1);
       handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG    , OSC2_TYPE      ,  -1, 1);
-
     }
 
+
+
+  // GLOBALMENU_OSC
+  // change lfo one and two waveform
+  if (menu        == MENU_OFF       && 
+      menu_cursor == GLOBALMENU_OSC &&
+      menu_osc    == MENU_OSC_LFO1LFO2)
+    {
+      // Insert/Remove Trig
+      sub_handle_invert_trig();
+
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_LONG    , LFO1_WAVEFORM,    -1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_LONG    , LFO1_WAVEFORM,     1, 0);
+
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG    , LFO2_WAVEFORM  ,   1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG    , LFO2_WAVEFORM  ,  -1, 0);
+    }
+
+  // GLOBALMENU_OSC
+  // change oscilltor one and two type
+  if (menu        != MENU_OFF       && 
+      menu_cursor == GLOBALMENU_OSC &&
+      menu_osc    == MENU_OSC_LFO1LFO2)
+    {
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_LONG    , LFO1_WAVEFORM,    -1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_LONG    , LFO1_WAVEFORM,     1, 1);
+
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG    , LFO2_WAVEFORM  ,   1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG    , LFO2_WAVEFORM  ,  -1, 1);
+    }
+
+  // change GLOBALMENU_OSC SUBMENU
+  if (lastKey     ==  BUTTON_START  && 
+      lastEvent   ==  KEYRELEASED     && 
+      menu_cursor ==  GLOBALMENU_OSC)
+    {
+      if (menu_ad_dirty_keyboard==0)
+	{
+	  if      (menu_osc==MENU_OSC_OSC1OSC2)            { menu_osc=MENU_OSC_LFO1LFO2;            }
+	  else if (menu_osc==MENU_OSC_LFO1LFO2)            { menu_osc=MENU_OSC_OSC1OSC2;            }
+	  else                                             { menu_osc=MENU_OSC_OSC1OSC2;            }
+	  dirty_graphic=1;
+	}
+      menu_ad_dirty_keyboard=0;
+      IE.clearLastKeyEvent();
+      printf("[sub menu env : %d]\n",menu_ad);
+    }
 }
 
 
@@ -833,6 +880,22 @@ void CursynthUserInterface::display_board_text()
 		    right_y_display_offset_line2,str_submenu);
     }
 
+  if (menu_osc    == MENU_OSC_OSC1OSC2 &&
+      menu_cursor == GLOBALMENU_OSC)
+    {
+      sprintf(str_submenu,"OSC WAVEFORM");
+      SG.guiTTFText(right_x_display_offset,
+		    right_y_display_offset_line2,str_submenu);
+    }
+
+
+  if (menu_osc    == MENU_OSC_LFO1LFO2 &&
+      menu_cursor == GLOBALMENU_OSC)
+    {
+      sprintf(str_submenu,"LFO WAVEFORM  ");
+      SG.guiTTFText(right_x_display_offset,
+		    right_y_display_offset_line2,str_submenu);
+    }
 
 
 
@@ -1031,10 +1094,17 @@ void CursynthUserInterface::display_board_osc()
   int  cty=SEQ.getCurrentTrackY();
   int  step=SEQ.getPatternSequencer(cty).getStep();
 
-  if (menu_cursor==GLOBALMENU_OSC)
+  if (menu_cursor == GLOBALMENU_OSC    &&
+      menu_osc    == MENU_OSC_OSC1OSC2)
     {
       display_board_two_param_text(OSC1_TYPE,OSC2_TYPE);
     }
+  if (menu_cursor == GLOBALMENU_OSC    &&
+      menu_osc    == MENU_OSC_LFO1LFO2)
+    {
+      display_board_two_param_text(LFO1_WAVEFORM,LFO2_WAVEFORM);
+    }
+
 }
 
 
