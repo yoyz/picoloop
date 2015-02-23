@@ -365,11 +365,11 @@ void dboplMachine::setI(int what,int val)
       {
 	// AM
 	if (val==FMTYPE_2_OP_AM)
-	  HO->EnableAdditiveSynthesis(1,true);
+	  HO->EnableAdditiveSynthesis(1,false);
 
 	// FM
 	if (val==FMTYPE_2_OP_FM)
-	  HO->EnableAdditiveSynthesis(1,false);
+	  HO->EnableAdditiveSynthesis(1,true);
       }
 
 
