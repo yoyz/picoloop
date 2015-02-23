@@ -54,8 +54,11 @@ private:
   int fltr_cutoff;
   int fltr_resonance;
 
-  int lfo_depth;
-  int lfo_speed;
+  int lfo1_depth;
+  int lfo1_speed;
+
+  int lfo2_depth;
+  int lfo2_speed;
 
   int pb_depth;
   int pb_speed;

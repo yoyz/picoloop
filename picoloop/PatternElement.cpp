@@ -43,8 +43,12 @@ void PatternElement::init()
   fltr_cutoff=64;
   fltr_resonance=80;
 
-  lfo_depth=0;
-  lfo_speed=0;
+  lfo1_depth=0;
+  lfo1_speed=0;
+
+  lfo2_depth=0;
+  lfo2_speed=0;
+
     
   lfo_type=0;
 
@@ -117,11 +121,23 @@ void PatternElement::set(int what,int val)
 
 
     case LFO1_DEPTH:
-      lfo_depth=checkSevenBitBoundarie(val);
+      lfo1_depth=checkSevenBitBoundarie(val);
       break;
-
+    case LFO1_ENV_AMOUNT:
+      lfo1_env_amount=checkSevenBitBoundarie(val);
+      break;      
     case LFO1_FREQ:
-      lfo_speed=checkSevenBitBoundarie(val);
+      lfo1_speed=checkSevenBitBoundarie(val);
+      break;      
+
+    case LFO2_DEPTH:
+      lfo2_depth=checkSevenBitBoundarie(val);
+      break;
+    case LFO2_ENV_AMOUNT:
+      lfo2_env_amount=checkSevenBitBoundarie(val);
+      break;      
+    case LFO2_FREQ:
+      lfo2_speed=checkSevenBitBoundarie(val);
       break;      
 
 
@@ -271,11 +287,26 @@ int PatternElement::get(int what)
       break;
 
     case LFO1_DEPTH:
-      return lfo_depth;
+      return lfo1_depth;
+      break;      
+    case LFO1_ENV_AMOUNT:
+      return lfo1_env_amount;
       break;      
     case LFO1_FREQ:
-      return lfo_speed;
+      return lfo1_speed;
       break;
+
+
+    case LFO2_DEPTH:
+      return lfo2_depth;
+      break;      
+    case LFO2_ENV_AMOUNT:
+      return lfo2_env_amount;
+      break;      
+    case LFO2_FREQ:
+      return lfo2_speed;
+      break;
+
 
     case FX1_DEPTH:
       return fx_depth;
