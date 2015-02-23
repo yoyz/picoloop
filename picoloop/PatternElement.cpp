@@ -51,6 +51,9 @@ void PatternElement::init()
   oscOneType=PICO_WAVETABLE_SAW;
   oscTwoType=PICO_WAVETABLE_PULSE;
 
+  lfo1Waveform=PICO_CURSYNTH_SIN;   // used by lfo1 cursynth
+  lfo2Waveform=PICO_CURSYNTH_SIN;   // used by lfo2 cursynth
+
   adsr_note=1;
 
   filterType=FILTER_TYPE_LP;

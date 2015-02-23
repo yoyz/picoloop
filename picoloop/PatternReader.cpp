@@ -547,6 +547,15 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
+  machineParam=LFO1_WAVEFORM;
+  fgets(line,512,fd);
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
+
+  machineParam=LFO2_WAVEFORM;
+  fgets(line,512,fd);
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
+
+
 
 
   if (retcode==true)
@@ -923,6 +932,9 @@ const char * PatternReader::getParameterCharStar(int param)
 
   static const char * osc1_detune="OSC1Detune";
 
+  static const char * lfo1_waveform="LFO1Waveform";
+  static const char * lfo2_waveform="LFO2Waveform";
+
   switch (param)
     {
     case ADSR_ENV0_ATTACK:   return adsr_env0_attack;         break;
@@ -976,6 +988,9 @@ const char * PatternReader::getParameterCharStar(int param)
     case VCO_MIX:            return vcomix;                   break;
 
     case OSC1_DETUNE:        return osc1_detune;              break;
+
+    case LFO1_WAVEFORM:      return lfo1_waveform;            break;
+    case LFO2_WAVEFORM:      return lfo2_waveform;            break;
     
     default:                 printf("PatternReader::getParameterCharStar(%d) not found => exit\n"); exit(1); break;
     }
