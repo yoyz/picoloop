@@ -32,6 +32,7 @@ void Open303Machine::init()
 
   O303E=new rosic::Open303();
   O303E->setSampleRate(44100);
+  O303E->setAccent(0.0);
   //O303E->setDecay(0.4);
   //O303E->setEnvMod(0.4);
 
@@ -116,15 +117,15 @@ int Open303Machine::checkI(int what,int val)
 
     case FILTER1_TYPE:
       if (val<0) return 0;
-      if (val>CURSYNTH_FILTER_TYPE_SIZE-1) return CURSYNTH_FILTER_TYPE_SIZE-1;
+      if (val>OPEN303_FILTER_TYPE_SIZE-1) return OPEN303_FILTER_TYPE_SIZE-1;
       return val;
       break;
 
-    case FILTER1_ALGO:
-      if (val<0) return 0;
-      if (val>FILTER_ALGO_SIZE-1) return FILTER_ALGO_SIZE-1;
-      return val;
-      break;
+    // case FILTER1_ALGO:
+    //   if (val<0) return 0;
+    //   if (val>OPEN303_FILTER_TYPE_SIZE-1) return OPEN303_FILTER_TYPE_SIZE-1;
+    //   return val;
+    //   break;
 
 
     case LFO1_WAVEFORM:
@@ -190,7 +191,7 @@ void Open303Machine::setI(int what,int val)
        note_on=0;
        //CSE->noteOff(note);
        //O303E->releaseNote(note+24);
-       O303E->noteOn(note+24,5,0.0);
+       O303E->noteOn(note+23,5,0.0);
       
   //     NoteFreq & NF = NoteFreq::getInstance(); 
   //     note_on=1;
@@ -204,7 +205,7 @@ void Open303Machine::setI(int what,int val)
   if (what==NOTE_ON && val==0) 
     { 
        note_on=0;
-       O303E->noteOn(note+24,0,0.0);
+       O303E->noteOn(note+23,0,0.0);
        //CSE->noteOff(note);
        //O303E->releaseNote(note);
        //O303E->allNotesOff();
@@ -226,11 +227,15 @@ void Open303Machine::setI(int what,int val)
 
 
   // if (what==ADSR_ENV0_ATTACK)    CSE->getControls().at("amp attack")->set(f_val*3);
-  if (what==ADSR_ENV0_DECAY)        O303E->setDecay(f_val*32);
+  if (what==ADSR_ENV0_DECAY)        O303E->setDecay(200+val*14);
+  //if (what==ADSR_ENV0_SUSTAIN)      O303E->setAccent(1-(f_val*128));  
+  if (what==ADSR_ENV0_SUSTAIN)      O303E->setAccent(f_val*128);  
   //if (what==ADSR_ENV0_SUSTAIN)      O303E->setAmpSustain(f_val*128);  
   // if (what==ADSR_ENV0_RELEASE)   CSE->getControls().at("amp release")->set(f_val*3);
+  //if (what==ADSR_ENV0_RELEASE)       O303E->filter.setMode(val/8);
 
-  // if (what==ADSR_ENV1_ATTACK)    CSE->getControls().at("fil attack")->set(f_val*3);
+  //if (what==ADSR_ENV1_ATTACK)       O303E->setPreFilterHighpass(10+(f_val*128)*50);
+  //if (what==ADSR_ENV1_RELEASE)      O303E->setPostFilterHighpass(10+(f_val*128)*50);
   // if (what==ADSR_ENV1_DECAY)     CSE->getControls().at("fil decay")->set(f_val*3);
   // if (what==ADSR_ENV1_SUSTAIN)   CSE->getControls().at("fil sustain")->set(f_val);
   // if (what==ADSR_ENV1_RELEASE)   CSE->getControls().at("fil release")->set(f_val*3);
@@ -240,8 +245,8 @@ void Open303Machine::setI(int what,int val)
   // if (what==LFO2_ENV_AMOUNT)     CSE->getControls().at("mod scale 2")->set(f_val);
 
 
-  if (what==OSC1_PHASE)             O303E->setEnvMod(f_val*100);    
-  // if (what==OSC12_MIX)           CSE->getControls().at("osc mix")->set(f_val);
+  if (what==OSC1_PHASE)             O303E->setEnvMod(1-(f_val*128));    
+  if (what==OSC12_MIX)              O303E->setWaveform(f_val); 
   // //if (what==OSC12_MIX)           CSE->getControls().at("amp env depth")->set(f_val*12);
 
 
@@ -252,14 +257,14 @@ void Open303Machine::setI(int what,int val)
   // if (what==OSC2_AMP)            CSE->getControls().at("fil env depth")->set(((f_val*2)-1)*128);
   // //if (what==OSC1_AMP)            CSE->getControls().at("velocity track")->set(f_val);
   
-  // if (what==FILTER1_TYPE)        CSE->getControls().at("filter type")->set(f_val*128);
+  if (what==FILTER1_TYPE)            O303E->filter.setMode(val);
   //   //filter.setFilterType(val);
   // //"filter type"
 
 
   if (what==FILTER1_CUTOFF)      
      { 
-       O303E->setCutoff(10+val*128);
+       O303E->setCutoff(314+val*16);
      }
   
    if (what==FILTER1_RESONANCE)         
@@ -304,8 +309,26 @@ const char * Open303Machine::getMachineParamCharStar(int machineParam,int paramV
   const        char * str_fltr_algo[FILTER_ALGO_SIZE];
 
 
-  static const char * str_fltr_type_lp   = "LP";
-  static const char * str_fltr_type_hp   = "HP";
+  static const char * str_fltr_type_flat   = "FLAT  ";
+  static const char * str_fltr_type_lp6    = "LP6   ";
+  static const char * str_fltr_type_lp12   = "LP12  ";
+  static const char * str_fltr_type_lp18   = "LP18  ";
+  static const char * str_fltr_type_lp24   = "LP24  ";
+
+  static const char * str_fltr_type_hp6    = "HP6   ";
+  static const char * str_fltr_type_hp12   = "HP12  ";
+  static const char * str_fltr_type_hp18   = "HP18  ";
+  static const char * str_fltr_type_hp24   = "HP24  ";
+
+  static const char * str_fltr_type_bp1212 = "BP1212";
+  static const char * str_fltr_type_bp6_18 = "BP6_18";
+  static const char * str_fltr_type_bp18_6 = "BP18_6";
+  static const char * str_fltr_type_bp6_12 = "BP6_12";
+  static const char * str_fltr_type_bp12_6 = "BP12_6";
+  static const char * str_fltr_type_bp6__6 = "BP6__6";
+
+  static const char * str_fltr_type_tb303  = "TB303 ";
+
   //static const char * str_fltr_type_hp   = "HP";
 
   const        char * str_fltr_type[CURSYNTH_FILTER_TYPE_SIZE];
@@ -340,8 +363,28 @@ const char * Open303Machine::getMachineParamCharStar(int machineParam,int paramV
   // str_fltr_algo[FILTER_ALGO_BIQUAD]   = str_fltr_algo_biquad;
   // str_fltr_algo[FILTER_ALGO_AMSYNTH]  = str_fltr_algo_amsynth;
 
-  str_fltr_type[CURSYNTH_FILTER_TYPE_LP]       = str_fltr_type_lp;
-  str_fltr_type[CURSYNTH_FILTER_TYPE_HP]       = str_fltr_type_hp;
+  str_fltr_type[OPEN303_FILTER_TYPE_FLAT]      = str_fltr_type_flat;
+
+  str_fltr_type[OPEN303_FILTER_TYPE_LP_6]      = str_fltr_type_lp6;
+  str_fltr_type[OPEN303_FILTER_TYPE_LP_12]     = str_fltr_type_lp12;
+  str_fltr_type[OPEN303_FILTER_TYPE_LP_18]     = str_fltr_type_lp18;
+  str_fltr_type[OPEN303_FILTER_TYPE_LP_24]     = str_fltr_type_lp24;
+
+  str_fltr_type[OPEN303_FILTER_TYPE_HP_6]      = str_fltr_type_hp6;
+  str_fltr_type[OPEN303_FILTER_TYPE_HP_12]     = str_fltr_type_hp12;
+  str_fltr_type[OPEN303_FILTER_TYPE_HP_18]     = str_fltr_type_hp18;
+  str_fltr_type[OPEN303_FILTER_TYPE_HP_24]     = str_fltr_type_hp24;
+
+  str_fltr_type[OPEN303_FILTER_TYPE_BP_12_12]  = str_fltr_type_bp1212;
+  str_fltr_type[OPEN303_FILTER_TYPE_BP_6_18]   = str_fltr_type_bp6_18;
+  str_fltr_type[OPEN303_FILTER_TYPE_BP_18_6]   = str_fltr_type_bp18_6;
+  str_fltr_type[OPEN303_FILTER_TYPE_BP_6_12]   = str_fltr_type_bp6_12;
+  str_fltr_type[OPEN303_FILTER_TYPE_BP_12_6]   = str_fltr_type_bp12_6;
+  str_fltr_type[OPEN303_FILTER_TYPE_BP_6_6]    = str_fltr_type_bp6__6;
+
+  str_fltr_type[OPEN303_FILTER_TYPE_TB_303]    = str_fltr_type_tb303;
+
+
   //str_fltr_type[FILTER_TYPE_HP]       = str_fltr_type_hp;
 
   str_lfo_type[LFO_TYPE_PITCHLFO]     = str_lfo_type_lfo;
@@ -365,6 +408,7 @@ const char * Open303Machine::getMachineParamCharStar(int machineParam,int paramV
 
     case LFO1_WAVEFORM:
       return str_osc[paramValue];
+
     case LFO2_WAVEFORM:
       return str_osc[paramValue];
 
