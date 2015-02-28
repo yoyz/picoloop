@@ -2,7 +2,7 @@
 set -x
 
 
-g++ -c fft4g.c 					-o fft4g.o
+#g++ -c fft4g.c 					-o fft4g.o
 g++ -c StringConversions.c 			-o StringConversions.o
 g++ -c rosic_TeeBeeFilter.cpp 			-o rosic_TeeBeeFilter.o
 g++ -c rosic_RealFunctions.cpp 			-o rosic_RealFunctions.o
@@ -23,6 +23,9 @@ g++ -c rosic_AnalogEnvelope.cpp 		-o rosic_AnalogEnvelope.o
 g++ -c rosic_AcidSequencer.cpp 			-o rosic_AcidSequencer.o
 g++ -c rosic_AcidPattern.cpp 			-o rosic_AcidPattern.o
 g++ -c GlobalFunctions.cpp 			-o GlobalFunctions.o
+g++ -c main.cpp                                 -o main.o
+
+g++ StringConversions.o rosic_TeeBeeFilter.o rosic_RealFunctions.o rosic_Open303.o rosic_OnePoleFilter.o rosic_NumberManipulations.o rosic_MipMappedWaveTable.o rosic_MidiNoteEvent.o rosic_LeakyIntegrator.o rosic_FunctionTemplates.o rosic_FourierTransformerRadix2.o rosic_EllipticQuarterBandFilter.o rosic_DecayEnvelope.o rosic_Complex.o rosic_BlendOscillator.o rosic_BiquadFilter.o rosic_AnalogEnvelope.o rosic_AcidSequencer.o rosic_AcidPattern.o GlobalFunctions.o main.o -o main
 
 #g++ cursynth_engine.o wave.o voice_handler.o value.o trigger_operators.o step_generator.o smooth_value.o smooth_filter.o send_receive.o processor_router.o processor.o oscillator.o operators.o mono_panner.o midi_lookup.o linear_slope.o filter.o feedback.o envelope.o delay.o cursynth_strings.o main.o -o main
 
