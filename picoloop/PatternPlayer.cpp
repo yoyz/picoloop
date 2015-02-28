@@ -56,6 +56,7 @@ PSP_HEAP_SIZE_KB(-6144) ;
 
 #ifdef __FPU__
 #include "Machine/Cursynth/CursynthUserInterface.h"
+#include "Machine/Open303/Open303UserInterface.h"
 #endif
 
 
@@ -100,6 +101,7 @@ PBSynthUserInterface   PBUI;
 
 #ifdef __FPU__
 CursynthUserInterface  CSUI;
+Open303UserInterface   O303UI;
 #endif
 
 //UI.handle_key(1,1);
@@ -1646,6 +1648,7 @@ void refresh_pecursor()
       if (PECursor.get(MACHINE_TYPE)==SYNTH_PBSYNTH)   UI=&PBUI;
 #ifdef __FPU__
       if (PECursor.get(MACHINE_TYPE)==SYNTH_CURSYNTH)  UI=&CSUI;
+      if (PECursor.get(MACHINE_TYPE)==SYNTH_OPEN303)   UI=&O303UI;
 #endif
     }
 }
