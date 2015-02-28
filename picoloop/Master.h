@@ -378,9 +378,10 @@ enum
 #define SYNTH_PICODRUM  2
 #define SYNTH_PBSYNTH   3
 #define SYNTH_CURSYNTH  4
+#define SYNTH_OPEN303   5
 
 #ifdef __FPU__
-#define SYNTH_SIZE 5
+#define SYNTH_SIZE 6
 #else
 #define SYNTH_SIZE 4
 #endif
