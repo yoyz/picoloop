@@ -169,10 +169,12 @@ void PatternElement::set(int what,int val)
 
 
     case FILTER1_TYPE:
-      filterType=checkSevenBitBoundarie(val)%3; //HACKISH
+      //filterType=checkSevenBitBoundarie(val)%3; //HACKISH
+      filterType=checkSevenBitBoundarie(val); //HACKISH
       break;
     case FILTER1_ALGO:
-      filterAlgo=checkSevenBitBoundarie(val)%3; //HACKISH
+      //filterAlgo=checkSevenBitBoundarie(val)%3; //HACKISH
+      filterAlgo=checkSevenBitBoundarie(val); //HACKISH
       break;      
 
 
