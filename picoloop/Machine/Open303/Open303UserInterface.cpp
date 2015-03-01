@@ -478,8 +478,8 @@ void Open303UserInterface::handle_key_vco()
       // Insert/Remove Trig
       sub_handle_invert_trig();
 
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, OSC1_AMP        ,     -1, 0);
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, OSC1_AMP        ,      1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, OSC1_AMP        ,     -127, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, OSC1_AMP        ,      127, 0);
 
       handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, OSC2_AMP        ,      1, 0);
       handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, OSC2_AMP        ,     -1, 0);
@@ -490,8 +490,8 @@ void Open303UserInterface::handle_key_vco()
       menu_vco    == MENU_VCO_OSCAMP
       )
     {
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, OSC1_AMP        ,     -1, 1);
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, OSC1_AMP        ,      1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, OSC1_AMP        ,     -127, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, OSC1_AMP        ,      127, 1);
 
       handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, OSC2_AMP        ,      1, 1);
       handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, OSC2_AMP        ,     -1, 1);
@@ -826,7 +826,7 @@ void Open303UserInterface::display_board_text()
       menu_cursor==GLOBALMENU_VCO
       )
     {
-      sprintf(str_submenu,"envdepth/keytrack");
+      sprintf(str_submenu,"velocity/accent");
       SG.guiTTFText(right_x_display_offset,
 		    right_y_display_offset_line2,str_submenu);
     }
