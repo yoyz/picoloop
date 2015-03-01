@@ -50,6 +50,9 @@ class Open303Machine : public Machine
   int                   osc1_type;
   int                   osc2_type;
 
+  int                   velocity;
+  int                   old_note;
+
 };
 
 #endif

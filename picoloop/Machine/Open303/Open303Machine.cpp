@@ -10,6 +10,7 @@ Open303Machine::Open303Machine()
   int   i;
   printf("Open303Machine::Open303Machine()\n");  
   note_on=0;
+  velocity=5;
   //buffer_i=0;
   //buffer_f=0;
 
@@ -142,6 +143,14 @@ int Open303Machine::checkI(int what,int val)
       break;
 
 
+    case OSC1_AMP:
+      if (val<1) return 1;
+      if (val>127) return 127;
+      return val;
+      break;
+
+
+
     default:
       if (val<0)   return 0;
       if (val>127) return 127;
@@ -188,10 +197,12 @@ void Open303Machine::setI(int what,int val)
 
   if (what==NOTE_ON && val==1) 
     { 
-       note_on=0;
+       note_on=1;
        //CSE->noteOff(note);
        //O303E->releaseNote(note+24);
-       O303E->noteOn(note+23,5,0.0);
+
+       O303E->noteOn(note+11,velocity,0.0);
+       O303E->noteOn(old_note+11,0,0.0);
       
   //     NoteFreq & NF = NoteFreq::getInstance(); 
   //     note_on=1;
@@ -205,13 +216,14 @@ void Open303Machine::setI(int what,int val)
   if (what==NOTE_ON && val==0) 
     { 
        note_on=0;
-       O303E->noteOn(note+23,0,0.0);
+       O303E->noteOn(note+11,0,0.0);
        //CSE->noteOff(note);
        //O303E->releaseNote(note);
        //O303E->allNotesOff();
     }
 
-  if (what==OSC1_NOTE)           note=val;
+  //if (what==OSC1_NOTE)              { O303E->noteOn(note+11,0,0.0); note=val; }
+  if (what==OSC1_NOTE)              {  old_note=note; note=val; }
 
   // //if (what==ADSR_ENV0_ATTACK)    CSE->getControls().at("amp attack")->set(val);
   // //delay time"
@@ -227,10 +239,11 @@ void Open303Machine::setI(int what,int val)
 
 
   // if (what==ADSR_ENV0_ATTACK)    CSE->getControls().at("amp attack")->set(f_val*3);
-  if (what==ADSR_ENV0_DECAY)        O303E->setDecay(200+val*14);
+  if (what==ADSR_ENV0_DECAY)        O303E->setAmpDecay(200+val*14);
   //if (what==ADSR_ENV0_SUSTAIN)      O303E->setAccent(1-(f_val*128));  
   //if (what==ADSR_ENV0_SUSTAIN)      O303E->setAccent(f_val*128);  
-  if (what==ADSR_ENV0_SUSTAIN)      O303E->setAccent(val);  
+
+  if (what==ADSR_ENV0_SUSTAIN)      O303E->setAmpSustain(f_val);  
   //if (what==ADSR_ENV0_SUSTAIN)      O303E->setAmpSustain(f_val*128);  
   if (what==ADSR_ENV0_RELEASE)      O303E->setAmpRelease(val);  
   //if (what==ADSR_ENV0_RELEASE)       O303E->filter.setMode(val/8);
@@ -238,6 +251,8 @@ void Open303Machine::setI(int what,int val)
   //if (what==ADSR_ENV1_ATTACK)       O303E->setPreFilterHighpass(10+(f_val*128)*50);
   //if (what==ADSR_ENV1_ATTACK)       O303E->setNormalAttack(val);
   if (what==ADSR_ENV1_ATTACK)       O303E->setAccentAttack(val);
+  if (what==ADSR_ENV2_DECAY)        O303E->setDecay(16+val*23);
+  //if (what==ADSR_ENV1_RELEASE)      O303E->setAccent(val);  
   //if (what==ADSR_ENV1_RELEASE)      O303E->setPostFilterHighpass(10+(f_val*128)*50);
   // if (what==ADSR_ENV1_DECAY)     CSE->getControls().at("fil decay")->set(f_val*3);
   // if (what==ADSR_ENV1_SUSTAIN)   CSE->getControls().at("fil sustain")->set(f_val);
@@ -248,14 +263,16 @@ void Open303Machine::setI(int what,int val)
   // if (what==LFO2_ENV_AMOUNT)     CSE->getControls().at("mod scale 2")->set(f_val);
 
 
-  if (what==OSC1_PHASE)             O303E->setEnvMod(1-(f_val*128));    
+  //if (what==OSC1_PHASE)             O303E->setEnvMod(1-(f_val*128));    
+  if (what==OSC1_PHASE)             O303E->setEnvMod(1.5-(f_val*192));    
   if (what==OSC12_MIX)              O303E->setWaveform(f_val); 
   // //if (what==OSC12_MIX)           CSE->getControls().at("amp env depth")->set(f_val*12);
 
 
   // //if (what==OSC12_MIX)           CSE->getControls().at("osc mix")->set(f_val);
 
-  // //if (what==OSC1_AMP)            CSE->getControls().at("velocity track")->set(f_val);
+  if (what==OSC1_AMP)               velocity=val;
+  if (what==OSC2_AMP)               O303E->setAccent(val);
   // if (what==OSC1_AMP)            CSE->getControls().at("keytrack"     )->set(((f_val*2)-1)*128);
   // if (what==OSC2_AMP)            CSE->getControls().at("fil env depth")->set(((f_val*2)-1)*128);
   // //if (what==OSC1_AMP)            CSE->getControls().at("velocity track")->set(f_val);
