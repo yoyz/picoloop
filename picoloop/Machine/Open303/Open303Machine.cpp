@@ -229,12 +229,15 @@ void Open303Machine::setI(int what,int val)
   // if (what==ADSR_ENV0_ATTACK)    CSE->getControls().at("amp attack")->set(f_val*3);
   if (what==ADSR_ENV0_DECAY)        O303E->setDecay(200+val*14);
   //if (what==ADSR_ENV0_SUSTAIN)      O303E->setAccent(1-(f_val*128));  
-  if (what==ADSR_ENV0_SUSTAIN)      O303E->setAccent(f_val*128);  
+  //if (what==ADSR_ENV0_SUSTAIN)      O303E->setAccent(f_val*128);  
+  if (what==ADSR_ENV0_SUSTAIN)      O303E->setAccent(val);  
   //if (what==ADSR_ENV0_SUSTAIN)      O303E->setAmpSustain(f_val*128);  
-  // if (what==ADSR_ENV0_RELEASE)   CSE->getControls().at("amp release")->set(f_val*3);
+  if (what==ADSR_ENV0_RELEASE)      O303E->setAmpRelease(val);  
   //if (what==ADSR_ENV0_RELEASE)       O303E->filter.setMode(val/8);
 
   //if (what==ADSR_ENV1_ATTACK)       O303E->setPreFilterHighpass(10+(f_val*128)*50);
+  //if (what==ADSR_ENV1_ATTACK)       O303E->setNormalAttack(val);
+  if (what==ADSR_ENV1_ATTACK)       O303E->setAccentAttack(val);
   //if (what==ADSR_ENV1_RELEASE)      O303E->setPostFilterHighpass(10+(f_val*128)*50);
   // if (what==ADSR_ENV1_DECAY)     CSE->getControls().at("fil decay")->set(f_val*3);
   // if (what==ADSR_ENV1_SUSTAIN)   CSE->getControls().at("fil sustain")->set(f_val);
@@ -264,7 +267,8 @@ void Open303Machine::setI(int what,int val)
 
   if (what==FILTER1_CUTOFF)      
      { 
-       O303E->setCutoff(314+val*16);
+       //O303E->setCutoff(314+val*16);
+       O303E->setCutoff(100+val*17);
      }
   
    if (what==FILTER1_RESONANCE)         
@@ -331,7 +335,7 @@ const char * Open303Machine::getMachineParamCharStar(int machineParam,int paramV
 
   //static const char * str_fltr_type_hp   = "HP";
 
-  const        char * str_fltr_type[CURSYNTH_FILTER_TYPE_SIZE];
+  const        char * str_fltr_type[OPEN303_FILTER_TYPE_SIZE];
 
 
   static const char * str_lfo_type_lfo   = "PLFO";
