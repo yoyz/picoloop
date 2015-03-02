@@ -69,6 +69,8 @@ void PatternElement::init()
   osc1_detune=64;
 
   machine_type=SYNTH_PICOSYNTH;
+
+  velocity=64;
 }
 
 void PatternElement::set(int what,int val)
@@ -237,6 +239,11 @@ void PatternElement::set(int what,int val)
     case LFO2_WAVEFORM:
       lfo2Waveform=checkSevenBitBoundarie(val);
       break;
+
+
+    case VELOCITY:
+      velocity=checkSevenBitBoundarie(val);
+      break;
       
 
       
@@ -402,6 +409,11 @@ int PatternElement::get(int what)
 
     case LFO2_WAVEFORM:
       return lfo2Waveform;
+      break;
+
+
+    case VELOCITY:
+      return velocity;
       break;
 
 

@@ -441,7 +441,7 @@ void CursynthUserInterface::handle_key_vco()
   // Change Value
   if (menu        == MENU_OFF && 
       menu_cursor == GLOBALMENU_VCO    &&
-      menu_vco    == MENU_VCO_OSCMIX_PHASE
+      menu_vco    == MENU_VCO_OSCMIX_VELOCITY
       )
     {
       // Insert/Remove Trig
@@ -450,20 +450,20 @@ void CursynthUserInterface::handle_key_vco()
       handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, VCO_MIX        ,     -1, 0);
       handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, VCO_MIX        ,      1, 0);
 
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, OSC1_PHASE        ,   1, 0);
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, OSC1_PHASE        ,  -1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, VELOCITY          ,   1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, VELOCITY        ,  -1, 0);
     }
 
   if (menu        != MENU_OFF && 
       menu_cursor == GLOBALMENU_VCO   &&
-      menu_vco    == MENU_VCO_OSCMIX_PHASE
+      menu_vco    == MENU_VCO_OSCMIX_VELOCITY
       )
     {
       handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, VCO_MIX        ,     -1, 1);
       handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, VCO_MIX        ,      1, 1);
 
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, OSC1_PHASE     ,      1, 1);
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, OSC1_PHASE     ,     -1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, VELOCITY     ,      1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, VELOCITY     ,     -1, 1);
     }
 
 
@@ -487,7 +487,7 @@ void CursynthUserInterface::handle_key_vco()
 
   if (menu        != MENU_OFF && 
       menu_cursor == GLOBALMENU_VCO   &&
-      menu_vco    == MENU_VCO_OSCAMP
+      menu_vco    == MENU_VCO_KEYTRACKENVDEPTH
       )
     {
       handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, OSC1_AMP        ,     -1, 1);
@@ -508,9 +508,9 @@ void CursynthUserInterface::handle_key_vco()
     {
       if (menu_ad_dirty_keyboard==0)
 	{
-	  if      (menu_vco==MENU_VCO_OSCMIX_PHASE)        { menu_vco=MENU_VCO_OSCAMP;            }
-	  else if (menu_vco==MENU_VCO_OSCAMP)              { menu_vco=MENU_VCO_OSCMIX_PHASE;      }
-	  else                                             { menu_vco=MENU_VCO_OSCMIX_PHASE;      }
+	  if      (menu_vco==MENU_VCO_OSCMIX_VELOCITY)     { menu_vco=MENU_VCO_KEYTRACKENVDEPTH;  }
+	  else if (menu_vco==MENU_VCO_KEYTRACKENVDEPTH)    { menu_vco=MENU_VCO_OSCMIX_VELOCITY;   }
+	  else                                             { menu_vco=MENU_VCO_OSCMIX_VELOCITY;   }
 	  dirty_graphic=1;
 	}
       menu_ad_dirty_keyboard=0;
@@ -835,7 +835,7 @@ void CursynthUserInterface::display_board_text()
       menu_cursor==GLOBALMENU_VCO
       )
     {
-      sprintf(str_submenu,"VCOMIX");
+      sprintf(str_submenu,"Velocity/VCOMIX");
       SG.guiTTFText(right_x_display_offset,
 		    right_y_display_offset_line2,str_submenu);
     }
@@ -1073,14 +1073,14 @@ void CursynthUserInterface::display_board_vco()
 
   // VCO
   if (menu_cursor == GLOBALMENU_VCO  && 
-      menu_vco    == MENU_VCO_OSCMIX_PHASE)
+      menu_vco    == MENU_VCO_OSCMIX_VELOCITY)
     {
-      display_board_two_param(VCO_MIX,OSC1_PHASE);
+      display_board_two_param(VCO_MIX,VELOCITY);
     }
 
   // VCO
   if (menu_cursor == GLOBALMENU_VCO  && 
-      menu_vco    == MENU_VCO_OSCAMP)
+      menu_vco    == MENU_VCO_KEYTRACKENVDEPTH)
     {
        display_board_two_param(OSC1_AMP,OSC2_AMP);
     }
