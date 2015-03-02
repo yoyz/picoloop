@@ -143,7 +143,7 @@ int Open303Machine::checkI(int what,int val)
       break;
 
 
-    case OSC1_AMP:
+    case OSC1_AMP: // linked to velocity
       if (val<1) return 1;
       if (val>127) return 127;
       return val;
@@ -201,8 +201,16 @@ void Open303Machine::setI(int what,int val)
        //CSE->noteOff(note);
        //O303E->releaseNote(note+24);
 
-       O303E->noteOn(note+11,velocity,0.0);
-       O303E->noteOn(old_note+11,0,0.0);
+       if (old_note!=note)
+	 {
+	   O303E->noteOn(note+11,velocity,0.0);
+	   O303E->noteOn(old_note+11,0,0.0);
+	 }
+       else
+	 {
+	   O303E->noteOn(old_note+11,0,0.0);
+	   O303E->noteOn(note+11,velocity,0.0);		   
+	 }
       
   //     NoteFreq & NF = NoteFreq::getInstance(); 
   //     note_on=1;

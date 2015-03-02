@@ -177,7 +177,7 @@ void CursynthMachine::setI(int what,int val)
       note_on=1;
       //CS->noteOn(NF.getINoteFreq(note),1.0);
       //CSE->noteOn(note+11,0.8);
-      CSE->noteOn(note+11,trig_time_duration/32);
+      CSE->noteOn(note+11,velocity/32);
       //CSE->getControls();
       //f_val=trig_time_duration;
       //CSE->getControls().at("velocity track")->set(trig_time_duration);
@@ -218,7 +218,7 @@ void CursynthMachine::setI(int what,int val)
   if (what==LFO2_ENV_AMOUNT)     CSE->getControls().at("mod scale 2")->set(f_val);
 
 
-  //if (what==OSC1_PHASE)          CSE->getControls().at("fil env depth")->set(((f_val*2)-1)*128);
+  if (what==VELOCITY)            velocity=val;
   if (what==OSC12_MIX)           CSE->getControls().at("osc mix")->set(f_val);
   //if (what==OSC12_MIX)           CSE->getControls().at("amp env depth")->set(f_val*12);
 

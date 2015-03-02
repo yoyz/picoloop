@@ -100,6 +100,27 @@ SOURCES=PatternPlayer.cpp			\
 			Machine/Cursynth/smooth_value.cpp	 	\
 			Machine/Cursynth/smooth_filter.cpp	 	\
 			Machine/Cursynth/send_receive.cpp	 	\
+			Machine/Open303/Open303Machine.cpp	 \
+			Machine/Open303/rosic_Open303.cpp		 \
+			Machine/Open303/Open303UserInterface.cpp	 \
+			Machine/Open303/rosic_MidiNoteEvent.cpp	 \
+			Machine/Open303/rosic_AcidSequencer.cpp	 \
+			Machine/Open303/rosic_Complex.cpp		 \
+			Machine/Open303/rosic_AcidPattern.cpp	 \
+			Machine/Open303/rosic_BlendOscillator.cpp	 \
+			Machine/Open303/rosic_OnePoleFilter.cpp	 \
+			Machine/Open303/rosic_NumberManipulations.cpp	\
+			Machine/Open303/rosic_FourierTransformerRadix2.cpp\
+			Machine/Open303/rosic_DecayEnvelope.cpp	\
+			Machine/Open303/rosic_MipMappedWaveTable.cpp	\
+			Machine/Open303/rosic_BiquadFilter.cpp		\
+			Machine/Open303/GlobalFunctions.cpp		\
+			Machine/Open303/rosic_AnalogEnvelope.cpp		\
+			Machine/Open303/rosic_TeeBeeFilter.cpp		\
+			Machine/Open303/rosic_LeakyIntegrator.cpp		\
+			Machine/Open303/rosic_FunctionTemplates.cpp	\
+			Machine/Open303/rosic_EllipticQuarterBandFilter.cpp\
+			Machine/Open303/rosic_RealFunctions.cpp		\
 
 
 

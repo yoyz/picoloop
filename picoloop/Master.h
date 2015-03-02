@@ -115,11 +115,18 @@ enum {
   MENU_FLTR_ALGO_TYPE, 
 };
 
-enum {
+enum { // used by cursynth
+  MENU_VCO_OSCMIX_VELOCITY,
+  MENU_VCO_KEYTRACKENVDEPTH,
+};
+
+enum { // used by picosynth/picodrum/Dbopl
   MENU_VCO_OSCMIX_PHASE,
   MENU_VCO_OSCAMP,
-  MENU_VCO_FMTYPE
+  MENU_VCO_FMTYPE,
 };
+
+
 
 
 enum {

@@ -50,7 +50,7 @@ using namespace std;
 
 #define OSC12_MIX           28  // mix the two oscillator
 #define VCO_MIX             28  // mix the two oscillator
-
+#define VELOCITY            29
 //#define OSC34_MIX           29
 //#define OSC1234_MIX         30
 
