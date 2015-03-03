@@ -16,6 +16,7 @@ void sub_handle_invert_trig();
 int handle_tweakable_knob_key_two_button(int buttonPressed,int buttonKeyRepeat,int repeatInterval,int machineParam,int paramValue,int all);
 void display_board_one_param_text(int machineParam1);
 void display_board_two_param_text(int machineParam1,int machineParam2);
+void display_board_trig();
 
 
 void Open303UserInterface::handle_key(int menu)
@@ -795,7 +796,7 @@ void Open303UserInterface::display_board_text()
       menu_cursor==GLOBALMENU_VCO
       )
     {
-      sprintf(str_submenu,"velocity/accent");
+      sprintf(str_submenu,"Velocity/Accent");
       SG.guiTTFText(right_x_display_offset,
 		    right_y_display_offset_line2,str_submenu);
     }
@@ -804,85 +805,44 @@ void Open303UserInterface::display_board_text()
       menu_cursor==GLOBALMENU_VCO
       )
     {
-      sprintf(str_submenu,"VCOMIX");
+      sprintf(str_submenu,"EnvAmount/VCOMIX");
       SG.guiTTFText(right_x_display_offset,
 		    right_y_display_offset_line2,str_submenu);
     }
 
 
-  if (menu_vco==MENU_VCO_FMTYPE &&
-      menu_cursor==GLOBALMENU_VCO
+  if (menu_cursor==GLOBALMENU_LFO
       )
     {
-      sprintf(str_submenu,"FMType");
+      sprintf(str_submenu,"XXX");
       SG.guiTTFText(right_x_display_offset,
 		    right_y_display_offset_line2,str_submenu);
     }
 
 
-
-  if (menu_lfo==MENU_LFO_LFOPITCH &&
-      menu_cursor==GLOBALMENU_LFO
-      )
+  if (menu_cursor == GLOBALMENU_OSC)
     {
-      sprintf(str_submenu,"LFO1 Amount/Speed");
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
-    }
-
-  if (menu_lfo==MENU_LFO_PITCHBEND &&
-      menu_cursor==GLOBALMENU_LFO
-      )
-    {
-      sprintf(str_submenu,"LFO2 Amount/Speed");
+      sprintf(str_submenu,"XXX ");
       SG.guiTTFText(right_x_display_offset,
 		    right_y_display_offset_line2,str_submenu);
     }
 
 
-  if (menu_lfo==MENU_LFO_TYPE &&
-      menu_cursor==GLOBALMENU_LFO
-      )
-    {
-      sprintf(str_submenu,"LFOType");
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
-    }
-
-  if (menu_osc    == MENU_OSC_OSC1OSC2 &&
-      menu_cursor == GLOBALMENU_OSC)
-    {
-      sprintf(str_submenu,"OSC WAVEFORM");
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
-    }
-
-
-  if (menu_osc    == MENU_OSC_LFO1LFO2 &&
-      menu_cursor == GLOBALMENU_OSC)
-    {
-      sprintf(str_submenu,"LFO WAVEFORM  ");
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
-    }
-
-
-
-  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_AD)    sprintf(str_down,"[A/R] Note  OSC   VCO   LFO   FLTR   ",cty);  
-  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_NOTE)  sprintf(str_down," A/R [Note] OSC   VCO   LFO   FLTR   ",cty);
-  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_OSC)   sprintf(str_down," A/R  Note [OSC]  VCO   LFO   FLTR   ",cty);
-  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_VCO)   sprintf(str_down," A/R  Note  OSC  [VCO]  LFO   FLTR   ",cty);
-  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_LFO)   sprintf(str_down," A/R  Note  OSC   VCO  [LFO]  FLTR   ",cty);
-  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_FLTR)  sprintf(str_down," A/R  Note  OSC   VCO   LFO  [FLTR]  ",cty);
+  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_AD)    sprintf(str_down,"[A/R] Note  XXX   VCO   XXX   FLTR   ",cty);  
+  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_NOTE)  sprintf(str_down," A/R [Note] XXX   VCO   XXX   FLTR   ",cty);
+  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_OSC)   sprintf(str_down," A/R  Note [XXX]  VCO   XXX   FLTR   ",cty);
+  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_VCO)   sprintf(str_down," A/R  Note  XXX  [VCO]  XXX   FLTR   ",cty);
+  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_LFO)   sprintf(str_down," A/R  Note  XXX   VCO  [XXX]  FLTR   ",cty);
+  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_FLTR)  sprintf(str_down," A/R  Note  XXX   VCO   XXX  [FLTR]  ",cty);
 
 
   if (menu==0)                         sprintf(str_down,"                     ",cty);
 
   if (menu_cursor==GLOBALMENU_AD)               sprintf(str_up,"A/R     ");
   if (menu_cursor==GLOBALMENU_NOTE)             sprintf(str_up,"Note    ");
-  if (menu_cursor==GLOBALMENU_OSC)              sprintf(str_up,"OSC     ");
+  if (menu_cursor==GLOBALMENU_OSC)              sprintf(str_up,"XXX     ");
   if (menu_cursor==GLOBALMENU_VCO)              sprintf(str_up,"VCO     ");
-  if (menu_cursor==GLOBALMENU_LFO)              sprintf(str_up,"LFO     ");
+  if (menu_cursor==GLOBALMENU_LFO)              sprintf(str_up,"XXX     ");
   if (menu_cursor==GLOBALMENU_FLTR)             sprintf(str_up,"FLTR    ");
 
   if (menu==MENU_ON_PAGE1)
@@ -1063,17 +1023,10 @@ void Open303UserInterface::display_board_osc()
   int  cty=SEQ.getCurrentTrackY();
   int  step=SEQ.getPatternSequencer(cty).getStep();
 
-  if (menu_cursor == GLOBALMENU_OSC    &&
-      menu_osc    == MENU_OSC_OSC1OSC2)
+  if (menu_cursor == GLOBALMENU_OSC)
     {
-      display_board_two_param_text(OSC1_TYPE,OSC2_TYPE);
+      display_board_trig();
     }
-  if (menu_cursor == GLOBALMENU_OSC    &&
-      menu_osc    == MENU_OSC_LFO1LFO2)
-    {
-      display_board_two_param_text(LFO1_WAVEFORM,LFO2_WAVEFORM);
-    }
-
 }
 
 
@@ -1083,26 +1036,10 @@ void Open303UserInterface::display_board_lfo()
   int  cty=SEQ.getCurrentTrackY();
   int  step=SEQ.getPatternSequencer(cty).getStep();
 
-  // LFOPITCH
 
-  if (menu_cursor == GLOBALMENU_LFO &&
-      menu_lfo    == MENU_LFO_LFOPITCH)
+  if (menu_cursor == GLOBALMENU_LFO)
     {
-      display_board_two_param(LFO1_ENV_AMOUNT,LFO1_FREQ);
-    }
-
-  // PITCHBEND
-
-  if (menu_cursor == GLOBALMENU_LFO &&
-      menu_lfo    == MENU_LFO_PITCHBEND)
-    {
-      display_board_two_param(LFO2_ENV_AMOUNT,LFO2_FREQ);
-    }
-
-  if (menu_cursor == GLOBALMENU_LFO &&
-      menu_lfo    == MENU_LFO_TYPE)
-    {
-      display_board_one_param_text(LFO_TYPE);
+      display_board_trig();
     }
 }
 
