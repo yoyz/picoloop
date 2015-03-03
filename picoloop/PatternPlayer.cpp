@@ -263,6 +263,29 @@ void refresh_bpm()
 
 //char * tmp_str;
 
+void display_board_trig()
+{
+  int  i;
+  int  cty=SEQ.getCurrentTrackY();
+  int  step=SEQ.getPatternSequencer(cty).getStep();
+
+  // Cursor & step postion      
+  SG.drawBoxNumber(cursor,CURSOR_COLOR);
+  SG.drawBoxNumber(step,STEP_COLOR);  
+  for (i=0;i<16;i++)
+    {	  // Draw trigged box trig color   
+      if (P[cty].getPatternElement(i).get(NOTE_ON))
+	{
+	  SG.drawBoxNumber(i,TRIG_COLOR);
+	  if (i==cursor)
+	    SG.drawBoxNumber(cursor,CURSOR_COLOR);
+	  if (i==step)
+	    SG.drawBoxNumber(step,STEP_COLOR);  
+	}
+    }  
+}
+
+
 
 void display_board_two_param(int machineParam1,int machineParam2)
 {
