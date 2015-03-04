@@ -71,6 +71,11 @@ void PatternElement::init()
   machine_type=SYNTH_PICOSYNTH;
 
   velocity=64;
+
+  osc1_amp=32;
+  osc2_amp=32;
+
+  trig_time=5;
 }
 
 void PatternElement::set(int what,int val)
