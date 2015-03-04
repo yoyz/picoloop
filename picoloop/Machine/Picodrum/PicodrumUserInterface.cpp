@@ -16,6 +16,7 @@ void sub_handle_invert_trig();
 int handle_tweakable_knob_key_two_button(int buttonPressed,int buttonKeyRepeat,int repeatInterval,int machineParam,int paramValue,int all);
 void display_board_one_param_text(int machineParam1);
 void display_board_two_param_text(int machineParam1,int machineParam2);
+void display_board_trig();
 
 
 void PicodrumUserInterface::handle_key(int menu)
@@ -799,48 +800,14 @@ void PicodrumUserInterface::display_board_note()
   // Note
   if (menu_cursor==GLOBALMENU_NOTE)
     {
-
-      if (menu_note==DISABLE)
-	{
-
-	  SG.drawBoxNumber(cursor,CURSOR_COLOR);	  
-	  SG.drawBoxNumber(step,STEP_COLOR);  
-    
-	  /*
-	  SG.smallBoxNumber(cursor,
-			    (P[cty].getPatternElement(cursor).getNote()%12)*10,
-			    (P[cty].getPatternElement(cursor).getNote()/12)*10,
-			    SMALLBOX_COLOR);
-	  SG.smallBoxNumber(step,  
-			    (P[cty].getPatternElement(step).getNote()%12)*10,
-			    (P[cty].getPatternElement(step).getNote()/12)*10,
-			    SMALLBOX_COLOR);
-	  */
-	}
+      display_board_trig();
       // Note C3 
       if (menu_note==ENABLE)
 	{	  
-	  SG.drawBoxNumber(step,STEP_COLOR);  
-	  //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
-	  SG.drawBoxNumber(cursor,CURSOR_COLOR);
-
 	  for (i=0;i<16;i++)
 	    {
-	      // Draw trig note color
 	      if (P[cty].getPatternElement(i).get(NOTE_ON))
-		{
-		  SG.drawBoxNumber(i,NOTE_COLOR);
-		  
-		  if (i==cursor)
-		    SG.drawBoxNumber(cursor,CURSOR_COLOR);
-		  if (i==step)
-		    SG.drawBoxNumber(step,STEP_COLOR);  
-		    //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);
-		  //  SG.drawTTFTextNumberFirstLine(i,P[cty].getPatternElement(i).getNoteCharStar());
-		  SG.drawTTFTextNumberFirstLine(i,NF.getNoteCharStar(P[cty].getPatternElement(i).get(NOTE)));
-		}
-	      //      if (P[cty].getPatternElement(i).getTrig())
-		
+		SG.drawTTFTextNumberFirstLine(i,NF.getNoteCharStar(P[cty].getPatternElement(i).get(NOTE)));
 	    }
 	}
       // Note Cursor
@@ -848,29 +815,14 @@ void PicodrumUserInterface::display_board_note()
 	{
 	  for (i=0;i<16;i++)
 	    {
-	      // Draw trig note color
 	      if (P[cty].getPatternElement(i).get(NOTE_ON))
-		  {
-		  SG.drawBoxNumber(i,NOTE_COLOR);	    
-		  if (i==cursor)
-		    SG.drawBoxNumber(cursor,CURSOR_COLOR);
-		  if (i==step)
-		    SG.drawBoxNumber(step,STEP_COLOR);  
-
-		  //		  if (i==SEQ.getPatternSequencer(cty).getStep())
-		  //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
-
-		  SG.smallBoxNumber(i,
-				    (P[cty].getPatternElement(i).get(NOTE)%12-1)*10,
-				    (128-(P[cty].getPatternElement(i).get(NOTE)/12)*10),
-				    SMALLBOX_COLOR);
-
-		  
-		}
+		SG.smallBoxNumber(i,
+				  (P[cty].getPatternElement(i).get(NOTE)%12-1)*10,
+				  (128-(P[cty].getPatternElement(i).get(NOTE)/12)*10),
+				  SMALLBOX_COLOR);
 	    }
 	}
     }
-  
 }
 
 

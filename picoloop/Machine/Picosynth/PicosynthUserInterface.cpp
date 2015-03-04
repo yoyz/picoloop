@@ -16,6 +16,7 @@ void sub_handle_invert_trig();
 int handle_tweakable_knob_key_two_button(int buttonPressed,int buttonKeyRepeat,int repeatInterval,int machineParam,int paramValue,int all);
 void display_board_one_param_text(int machineParam1);
 void display_board_two_param_text(int machineParam1,int machineParam2);
+void display_board_trig();
 
 
 void PicosynthUserInterface::handle_key(int menu)
@@ -115,12 +116,6 @@ void PicosynthUserInterface::handle_key_amp_env()
 
 
 
-
-
-
-
-
-
   if (menu          == MENU_OFF && 
       menu_cursor   == GLOBALMENU_AD     &&
       menu_ad      == MENU_AD_TRIGTIME_AMP)
@@ -163,7 +158,7 @@ void PicosynthUserInterface::handle_key_amp_env()
     {
       menu_ad--;
       if (menu_ad<=-1)
-	menu_ad=4;
+	menu_ad=MENU_PAGE0_SUB2;
       dirty_graphic=1;
       IE.clearLastKeyEvent();
       menu_ad_dirty_keyboard=1;
@@ -176,7 +171,7 @@ void PicosynthUserInterface::handle_key_amp_env()
       menu_cursor ==  GLOBALMENU_AD)
     {
       menu_ad++;
-      if (menu_ad>=4)
+      if (menu_ad>=MENU_PAGE0_SUB2)
 	menu_ad=0;
       dirty_graphic=1;
       IE.clearLastKeyEvent();
@@ -505,6 +500,7 @@ void PicosynthUserInterface::handle_key_lfo()
 	  if      (menu_lfo==MENU_LFO_LFOPITCH)               { menu_lfo=MENU_LFO_PITCHBEND;       }
 	  else if (menu_lfo==MENU_LFO_PITCHBEND)              { menu_lfo=MENU_LFO_TYPE;            } 
 	  else if (menu_lfo==MENU_LFO_TYPE)                   { menu_lfo=MENU_LFO_LFOPITCH;        }  
+	  else                                                { menu_lfo=MENU_LFO_LFOPITCH;        }
 	  dirty_graphic=1;
 	}
       menu_ad_dirty_keyboard=0;
@@ -604,6 +600,7 @@ void PicosynthUserInterface::handle_key_fltr()
 	{
 	  if      (menu_fltr==MENU_FLTR_CUTOFF_RESONANCE)   { menu_fltr=MENU_FLTR_ALGO_TYPE;            }
 	  else if (menu_fltr==MENU_FLTR_ALGO_TYPE)          { menu_fltr=MENU_FLTR_CUTOFF_RESONANCE;     }   
+	  else                                              { menu_fltr=MENU_FLTR_CUTOFF_RESONANCE;     }
 	  dirty_graphic=1;
 	}
       menu_ad_dirty_keyboard=0;
@@ -800,6 +797,12 @@ void PicosynthUserInterface::display_board_amp_env()
   // Attack/Release
   if (menu_cursor==GLOBALMENU_AD)
     {
+      // Fix to set the "menu_ad" on a valid value for picosynth
+      if (menu_ad!=MENU_AD_AMP_ATTACK_RELEASE &&
+	  menu_ad!=MENU_AD_AMP_DECAY_SUSTAIN  &&
+	  menu_ad!=MENU_AD_TRIGTIME_AMP)
+	menu_ad=MENU_AD_AMP_ATTACK_RELEASE;
+
 
       if (menu_ad==MENU_AD_AMP_ATTACK_RELEASE)
 	display_board_two_param(ADSR_AMP_RELEASE,ADSR_AMP_ATTACK);
@@ -825,38 +828,14 @@ void PicosynthUserInterface::display_board_note()
   // Note
   if (menu_cursor==GLOBALMENU_NOTE)
     {
-
-      if (menu_note==DISABLE)
-	{
-
-	  SG.drawBoxNumber(cursor,CURSOR_COLOR);	  
-	  SG.drawBoxNumber(step,STEP_COLOR);  
-    
-	}
+      display_board_trig();
       // Note C3 
       if (menu_note==ENABLE)
 	{	  
-	  SG.drawBoxNumber(step,STEP_COLOR);  
-	  //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
-	  SG.drawBoxNumber(cursor,CURSOR_COLOR);
-
 	  for (i=0;i<16;i++)
 	    {
-	      // Draw trig note color
 	      if (P[cty].getPatternElement(i).get(NOTE_ON))
-		{
-		  SG.drawBoxNumber(i,NOTE_COLOR);
-		  
-		  if (i==cursor)
-		    SG.drawBoxNumber(cursor,CURSOR_COLOR);
-		  if (i==step)
-		    SG.drawBoxNumber(step,STEP_COLOR);  
-		    //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);
-		  //  SG.drawTTFTextNumberFirstLine(i,P[cty].getPatternElement(i).getNoteCharStar());
-		  SG.drawTTFTextNumberFirstLine(i,NF.getNoteCharStar(P[cty].getPatternElement(i).get(NOTE)));
-		}
-	      //      if (P[cty].getPatternElement(i).getTrig())
-		
+		SG.drawTTFTextNumberFirstLine(i,NF.getNoteCharStar(P[cty].getPatternElement(i).get(NOTE)));
 	    }
 	}
       // Note Cursor
@@ -864,25 +843,11 @@ void PicosynthUserInterface::display_board_note()
 	{
 	  for (i=0;i<16;i++)
 	    {
-	      // Draw trig note color
 	      if (P[cty].getPatternElement(i).get(NOTE_ON))
-		  {
-		  SG.drawBoxNumber(i,NOTE_COLOR);	    
-		  if (i==cursor)
-		    SG.drawBoxNumber(cursor,CURSOR_COLOR);
-		  if (i==step)
-		    SG.drawBoxNumber(step,STEP_COLOR);  
-
-		  //		  if (i==SEQ.getPatternSequencer(cty).getStep())
-		  //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
-
-		  SG.smallBoxNumber(i,
-				    (P[cty].getPatternElement(i).get(NOTE)%12-1)*10,
-				    (128-(P[cty].getPatternElement(i).get(NOTE)/12)*10),
-				    SMALLBOX_COLOR);
-
-		  
-		}
+		SG.smallBoxNumber(i,
+				  (P[cty].getPatternElement(i).get(NOTE)%12-1)*10,
+				  (128-(P[cty].getPatternElement(i).get(NOTE)/12)*10),
+				  SMALLBOX_COLOR);
 	    }
 	}
     }
