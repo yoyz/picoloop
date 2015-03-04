@@ -246,20 +246,29 @@ void Open303Machine::setI(int what,int val)
   // if (what==LFO2_WAVEFORM)       { CSE->getControls().at("lfo 2 waveform")->set(f_val*128); }
 
 
-  // if (what==ADSR_ENV0_ATTACK)    CSE->getControls().at("amp attack")->set(f_val*3);
-  if (what==ADSR_ENV0_DECAY)        O303E->setAmpDecay(200+val*14);
-  //if (what==ADSR_ENV0_SUSTAIN)      O303E->setAccent(1-(f_val*128));  
-  //if (what==ADSR_ENV0_SUSTAIN)      O303E->setAccent(f_val*128);  
+  // // if (what==ADSR_ENV0_ATTACK)    CSE->getControls().at("amp attack")->set(f_val*3);
+  // if (what==ADSR_ENV0_ATTACK)       O303E->setNormalAttack(val/4);
+  // if (what==ADSR_ENV0_DECAY)        O303E->setAmpDecay(200+val*14);
+  // //if (what==ADSR_ENV0_SUSTAIN)      O303E->setAccent(1-(f_val*128));  
+  // //if (what==ADSR_ENV0_SUSTAIN)      O303E->setAccent(f_val*128);  
 
-  if (what==ADSR_ENV0_SUSTAIN)      O303E->setAmpSustain(f_val);  
-  //if (what==ADSR_ENV0_SUSTAIN)      O303E->setAmpSustain(f_val*128);  
-  if (what==ADSR_ENV0_RELEASE)      O303E->setAmpRelease(val);  
-  //if (what==ADSR_ENV0_RELEASE)       O303E->filter.setMode(val/8);
+  // if (what==ADSR_ENV0_SUSTAIN)      O303E->setAmpSustain(f_val);  
+  // //if (what==ADSR_ENV0_SUSTAIN)      O303E->setAmpSustain(f_val*128);  
+  // if (what==ADSR_ENV0_RELEASE)      O303E->setAmpRelease(val);    // <= it works
+  // //if (what==ADSR_ENV0_RELEASE)       O303E->filter.setMode(val/8);
 
-  //if (what==ADSR_ENV1_ATTACK)       O303E->setPreFilterHighpass(10+(f_val*128)*50);
-  //if (what==ADSR_ENV1_ATTACK)       O303E->setNormalAttack(val);
-  if (what==ADSR_ENV1_ATTACK)       O303E->setAccentAttack(val);
-  if (what==ADSR_ENV2_DECAY)        O303E->setDecay(16+val*23);
+  // //if (what==ADSR_ENV1_ATTACK)       O303E->setPreFilterHighpass(10+(f_val*128)*50);
+  // //if (what==ADSR_ENV1_ATTACK)       O303E->setNormalAttack(val);
+  // if (what==ADSR_ENV1_ATTACK)       O303E->setAccentAttack(val*32);
+  // if (what==ADSR_ENV1_DECAY)        O303E->setAccentDecay(val*4); // <= it works
+
+
+  if (what==ADSR_ENV0_ATTACK)       O303E->setAccentDecay(val*4); // <= it works
+  if (what==ADSR_ENV0_RELEASE)      O303E->setAmpRelease(val);    // <= it works
+  if (what==ADSR_ENV0_DECAY)        O303E->setSlideTime(val*4);
+  if (what==ADSR_ENV0_DECAY)        O303E->setSquarePhaseShift(val*4);
+
+  //if (what==ADSR_ENV1_DECAY)        O303E->setDecay(16+val*23);
   //if (what==ADSR_ENV1_RELEASE)      O303E->setAccent(val);  
   //if (what==ADSR_ENV1_RELEASE)      O303E->setPostFilterHighpass(10+(f_val*128)*50);
   // if (what==ADSR_ENV1_DECAY)     CSE->getControls().at("fil decay")->set(f_val*3);

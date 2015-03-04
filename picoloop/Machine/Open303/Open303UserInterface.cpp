@@ -735,7 +735,7 @@ void Open303UserInterface::display_board_text()
   if (menu_ad==MENU_AD_AMP_ATTACK_RELEASE &&
       menu_cursor==GLOBALMENU_AD)
     {
-      sprintf(str_submenu,"AMP  A/R");
+      sprintf(str_submenu,"AccentDecay/AmpRelease");
       SG.guiTTFText(right_x_display_offset,
 		    right_y_display_offset_line2,str_submenu);
     }
@@ -752,7 +752,7 @@ void Open303UserInterface::display_board_text()
   if (menu_ad==MENU_AD_FLTR_ATTACK_RELEASE &&
       menu_cursor==GLOBALMENU_AD)
     {
-      sprintf(str_submenu,"FLTR A/R");
+      sprintf(str_submenu,"AccAtk/R");
       SG.guiTTFText(right_x_display_offset,
 		    right_y_display_offset_line2,str_submenu);
     }
@@ -760,7 +760,7 @@ void Open303UserInterface::display_board_text()
   if (menu_ad==MENU_AD_FLTR_DECAY_SUSTAIN &&
       menu_cursor==GLOBALMENU_AD)
     {
-      sprintf(str_submenu,"FLTR S/D");
+      sprintf(str_submenu,"S/AccDcy");
       SG.guiTTFText(right_x_display_offset,
 		    right_y_display_offset_line2,str_submenu);
     }
@@ -919,48 +919,14 @@ void Open303UserInterface::display_board_note()
   // Note
   if (menu_cursor==GLOBALMENU_NOTE)
     {
-
-      if (menu_note==DISABLE)
-	{
-
-	  SG.drawBoxNumber(cursor,CURSOR_COLOR);	  
-	  SG.drawBoxNumber(step,STEP_COLOR);  
-    
-	  /*
-	  SG.smallBoxNumber(cursor,
-			    (P[cty].getPatternElement(cursor).getNote()%12)*10,
-			    (P[cty].getPatternElement(cursor).getNote()/12)*10,
-			    SMALLBOX_COLOR);
-	  SG.smallBoxNumber(step,  
-			    (P[cty].getPatternElement(step).getNote()%12)*10,
-			    (P[cty].getPatternElement(step).getNote()/12)*10,
-			    SMALLBOX_COLOR);
-	  */
-	}
+      display_board_trig();
       // Note C3 
       if (menu_note==ENABLE)
 	{	  
-	  SG.drawBoxNumber(step,STEP_COLOR);  
-	  //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
-	  SG.drawBoxNumber(cursor,CURSOR_COLOR);
-
 	  for (i=0;i<16;i++)
 	    {
-	      // Draw trig note color
 	      if (P[cty].getPatternElement(i).get(NOTE_ON))
-		{
-		  SG.drawBoxNumber(i,NOTE_COLOR);
-		  
-		  if (i==cursor)
-		    SG.drawBoxNumber(cursor,CURSOR_COLOR);
-		  if (i==step)
-		    SG.drawBoxNumber(step,STEP_COLOR);  
-		    //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);
-		  //  SG.drawTTFTextNumberFirstLine(i,P[cty].getPatternElement(i).getNoteCharStar());
-		  SG.drawTTFTextNumberFirstLine(i,NF.getNoteCharStar(P[cty].getPatternElement(i).get(NOTE)));
-		}
-	      //      if (P[cty].getPatternElement(i).getTrig())
-		
+		SG.drawTTFTextNumberFirstLine(i,NF.getNoteCharStar(P[cty].getPatternElement(i).get(NOTE)));
 	    }
 	}
       // Note Cursor
@@ -968,25 +934,11 @@ void Open303UserInterface::display_board_note()
 	{
 	  for (i=0;i<16;i++)
 	    {
-	      // Draw trig note color
 	      if (P[cty].getPatternElement(i).get(NOTE_ON))
-		  {
-		  SG.drawBoxNumber(i,NOTE_COLOR);	    
-		  if (i==cursor)
-		    SG.drawBoxNumber(cursor,CURSOR_COLOR);
-		  if (i==step)
-		    SG.drawBoxNumber(step,STEP_COLOR);  
-
-		  //		  if (i==SEQ.getPatternSequencer(cty).getStep())
-		  //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
-
-		  SG.smallBoxNumber(i,
-				    (P[cty].getPatternElement(i).get(NOTE)%12-1)*10,
-				    (128-(P[cty].getPatternElement(i).get(NOTE)/12)*10),
-				    SMALLBOX_COLOR);
-
-		  
-		}
+		SG.smallBoxNumber(i,
+				  (P[cty].getPatternElement(i).get(NOTE)%12-1)*10,
+				  (128-(P[cty].getPatternElement(i).get(NOTE)/12)*10),
+				  SMALLBOX_COLOR);
 	    }
 	}
     }
