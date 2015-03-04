@@ -33,7 +33,13 @@ void Open303Machine::init()
 
   O303E=new rosic::Open303();
   O303E->setSampleRate(44100);
-  O303E->setAccent(0.0);
+  //  O303E->setAccent(127);
+
+  // O303E->noteOn(1,velocity,0.0);
+  // O303E->getSample();
+  // O303E->noteOn(1,0,0.0);
+  // O303E->getSample();
+
   //O303E->setDecay(0.4);
   //O303E->setEnvMod(0.4);
 
@@ -43,60 +49,6 @@ void Open303Machine::init()
   //O303E->setDecay(300);
   //O303E->setDecay(0.4);
 
-  //O303E->noteOn(30,20,0.0);
-  // if (buffer_i==0 ||
-  //     buffer_f==0)
-  //   {
-  //     CSE=new mopo::CursynthEngine();
-  //     //CS->setBufferSize(SAM);     
-  //     buffer_i = (Sint16*)malloc(sizeof(Sint16)*SAM*8);
-  //     buffer_f = (mopo::mopo_float*)malloc(sizeof(mopo::mopo_float)*SAM*8);
-
-  //     CSE->setBufferSize(SAM);
-  //     CSE->setSampleRate(44100);
-
-  //   }
-  // for (i=0;i<SAM;i++)
-  //   buffer_i[i]=0;
-  // for (i=0;i<SAM;i++)
-  //   buffer_f[i]=0.0;
-
-  // CSE->getControls().at("delay time")->set(0.1);      
-  // CSE->getControls().at("delay dry/wet")->set(0.2);   
-  // CSE->getControls().at("delay feedback")->set(0.4);
-  // CSE->getControls().at("cross modulation")->set(0);  
-
-  // CSE->getControls().at("osc 2 transpose")->set(0); 
-  // CSE->getControls().at("osc 2 tune")->set(0); 
-  // CSE->getControls().at("volume")->set(0.1);
-
-  // CSE->getControls().at("lfo 1 waveform")->set(2); 
-  // CSE->getControls().at("lfo 2 waveform")->set(2); 
-
-
-  // CSE->getControls().at("mod source 1")->set(3);     
-  // CSE->getControls().at("mod source 2")->set(4);     
-  // CSE->getControls().at("mod destination 1")->set(4);     
-  // CSE->getControls().at("mod destination 2")->set(2);     
-  // CSE->getControls().at("mod scale 1")->set(0.9);     
-  // CSE->getControls().at("mod scale 2")->set(0.9);     
-  // CSE->getControls().at("lfo 1 frequency")->set(2.2);     
-  // CSE->getControls().at("lfo 1 frequency")->set(3.2);     
-
-
-  // //bq.reset();
-  // note_on=0;
-
-  // sample_num=0;
-
-
-
-  // note=0;
-  // detune=64;
-
-  // trig_time_mode=0;
-  // trig_time_duration=0;
-  // trig_time_duration_sample=0;
 }
 
 
@@ -168,22 +120,10 @@ int Open303Machine::getI(int what)
 
 void Open303Machine::setF(int what,float val)
 {
-  // float f_val_cutoff;
-  // float f_val_resonance;
-
-  // float f_val=val;
-  // f_val=f_val/128;
-
-  // //if (what==LFO1_FREQ)             CSE->getControls().at("lfo 1 frequency")->set(f_val*10); 
-  // if (what==LFO1_FREQ)             CSE->getControls().at("lfo 1 frequency")->set(f_val*10); 
-  // if (what==LFO2_FREQ)             CSE->getControls().at("lfo 2 frequency")->set(f_val*10); 
 }
 
 void Open303Machine::setI(int what,int val)
 {
-  // float f_val_cutoff;
-  // float f_val_resonance;
-
   float f_val=val;
   f_val=f_val/128;
 
@@ -191,15 +131,12 @@ void Open303Machine::setI(int what,int val)
    if (what==TRIG_TIME_DURATION) 
      { 
        trig_time_duration=val;
-       //trig_time_duration_sample=val*512; 
        trig_time_duration_sample=val*512; 
      }
 
   if (what==NOTE_ON && val==1) 
     { 
        note_on=1;
-       //CSE->noteOff(note);
-       //O303E->releaseNote(note+24);
 
        if (old_note!=note)
 	 {
@@ -212,14 +149,6 @@ void Open303Machine::setI(int what,int val)
 	   O303E->noteOn(note+11,velocity,0.0);		   
 	 }
       
-  //     NoteFreq & NF = NoteFreq::getInstance(); 
-  //     note_on=1;
-  //     //CS->noteOn(NF.getINoteFreq(note),1.0);
-  //     //CSE->noteOn(note+11,0.8);
-  //     CSE->noteOn(note+11,trig_time_duration/32);
-  //     //CSE->getControls();
-  //     //f_val=trig_time_duration;
-  //     //CSE->getControls().at("velocity track")->set(trig_time_duration);
     }
   if (what==NOTE_ON && val==0) 
     { 
@@ -233,34 +162,6 @@ void Open303Machine::setI(int what,int val)
   //if (what==OSC1_NOTE)              { O303E->noteOn(note+11,0,0.0); note=val; }
   if (what==OSC1_NOTE)              {  old_note=note; note=val; }
 
-  // //if (what==ADSR_ENV0_ATTACK)    CSE->getControls().at("amp attack")->set(val);
-  // //delay time"
-  // //if (what==ADSR_ENV0_ATTACK)    CSE->getControls().at("delay time")->set(f_val);
-  // //if (what==ADSR_ENV0_RELEASE)   CSE->getControls().at("delay dry/wet")->set(f_val);
-  // //if (what==ADSR_ENV0_DECAY)     CSE->getControls().at("delay feedback")->set(f_val);
-
-  // if (what==OSC1_TYPE)           { CSE->getControls().at("osc 1 waveform")->set(f_val*128); }
-  // if (what==OSC2_TYPE)           { CSE->getControls().at("osc 2 waveform")->set(f_val*128); }
-
-  // if (what==LFO1_WAVEFORM)       { CSE->getControls().at("lfo 1 waveform")->set(f_val*128); }
-  // if (what==LFO2_WAVEFORM)       { CSE->getControls().at("lfo 2 waveform")->set(f_val*128); }
-
-
-  // // if (what==ADSR_ENV0_ATTACK)    CSE->getControls().at("amp attack")->set(f_val*3);
-  // if (what==ADSR_ENV0_ATTACK)       O303E->setNormalAttack(val/4);
-  // if (what==ADSR_ENV0_DECAY)        O303E->setAmpDecay(200+val*14);
-  // //if (what==ADSR_ENV0_SUSTAIN)      O303E->setAccent(1-(f_val*128));  
-  // //if (what==ADSR_ENV0_SUSTAIN)      O303E->setAccent(f_val*128);  
-
-  // if (what==ADSR_ENV0_SUSTAIN)      O303E->setAmpSustain(f_val);  
-  // //if (what==ADSR_ENV0_SUSTAIN)      O303E->setAmpSustain(f_val*128);  
-  // if (what==ADSR_ENV0_RELEASE)      O303E->setAmpRelease(val);    // <= it works
-  // //if (what==ADSR_ENV0_RELEASE)       O303E->filter.setMode(val/8);
-
-  // //if (what==ADSR_ENV1_ATTACK)       O303E->setPreFilterHighpass(10+(f_val*128)*50);
-  // //if (what==ADSR_ENV1_ATTACK)       O303E->setNormalAttack(val);
-  // if (what==ADSR_ENV1_ATTACK)       O303E->setAccentAttack(val*32);
-  // if (what==ADSR_ENV1_DECAY)        O303E->setAccentDecay(val*4); // <= it works
 
 
   if (what==ADSR_ENV0_ATTACK)       O303E->setAccentDecay(val*4);      // <= it works
@@ -268,35 +169,13 @@ void Open303Machine::setI(int what,int val)
   if (what==ADSR_ENV0_DECAY)        O303E->setSlideTime(val*4);        // <= it works
   if (what==ADSR_ENV0_SUSTAIN)      O303E->setSquarePhaseShift(val*4);
 
-  //if (what==ADSR_ENV1_DECAY)        O303E->setDecay(16+val*23);
-  //if (what==ADSR_ENV1_RELEASE)      O303E->setAccent(val);  
-  //if (what==ADSR_ENV1_RELEASE)      O303E->setPostFilterHighpass(10+(f_val*128)*50);
-  // if (what==ADSR_ENV1_DECAY)     CSE->getControls().at("fil decay")->set(f_val*3);
-  // if (what==ADSR_ENV1_SUSTAIN)   CSE->getControls().at("fil sustain")->set(f_val);
-  // if (what==ADSR_ENV1_RELEASE)   CSE->getControls().at("fil release")->set(f_val*3);
-
-
-  // if (what==LFO1_ENV_AMOUNT)     CSE->getControls().at("mod scale 1")->set(f_val);
-  // if (what==LFO2_ENV_AMOUNT)     CSE->getControls().at("mod scale 2")->set(f_val);
-
-
-  //if (what==OSC1_PHASE)             O303E->setEnvMod(1-(f_val*128));    
   if (what==OSC1_PHASE)             O303E->setEnvMod(1.5-(f_val*192));    
   if (what==OSC12_MIX)              O303E->setWaveform(f_val); 
-  // //if (what==OSC12_MIX)           CSE->getControls().at("amp env depth")->set(f_val*12);
-
-
-  // //if (what==OSC12_MIX)           CSE->getControls().at("osc mix")->set(f_val);
 
   if (what==OSC1_AMP)               velocity=val;
   if (what==OSC2_AMP)               O303E->setAccent(val);
-  // if (what==OSC1_AMP)            CSE->getControls().at("keytrack"     )->set(((f_val*2)-1)*128);
-  // if (what==OSC2_AMP)            CSE->getControls().at("fil env depth")->set(((f_val*2)-1)*128);
-  // //if (what==OSC1_AMP)            CSE->getControls().at("velocity track")->set(f_val);
   
   if (what==FILTER1_TYPE)            O303E->filter.setMode(val);
-  //   //filter.setFilterType(val);
-  // //"filter type"
 
 
   if (what==FILTER1_CUTOFF)      
@@ -309,11 +188,6 @@ void Open303Machine::setI(int what,int val)
      {   
        O303E->setResonance(f_val*128);
      }
-
-  // if (what==FX1_DEPTH)          CSE->getControls().at("delay dry/wet")->set(f_val*128);   
-  // if (what==FX1_SPEED)          CSE->getControls().at("delay time"   )->set(f_val*128);      
-  
-
 }
 
 const char * Open303Machine::getMachineParamCharStar(int machineParam,int paramValue)
@@ -470,68 +344,21 @@ void Open303Machine::reset()
 
 int Open303Machine::tick()
 {
-  // float  f_in;
-  // float  f_out;
-
-  // float  f_Fc;
-  // float  f_Q;
-
-  // Sint16 s_in;
-  // Sint16 s_out;
   double    f_in;
   Sint16 s_out;
-
-  // Sint16 s_test;
-
-  // Sint32 tmp1;
-  // Sint32 tmp2;
-  // Sint32 tmp3;
-  // //Sint16 index;
-
-  // Sint32 cutoff_tmp;
-  // Sint32 resonance_tmp;
-  // int    num=8192;
-  // int    i;
-
-
-  // if (index>=SAM | 
-  //     index<0)
-  //   index=0;
-  
-
    if (trig_time_mode)
      {
        if (trig_time_duration_sample<sample_num)
 	 {
 	   this->setI(NOTE_ON,0);
 	   trig_time_mode=0;
-	   //printf("\t\t\t\t\t\tDONE\n");
 	 }       
      }
       
-   // if (sample_num==0 || 
-   // 	index==0 )
-   //    {
-   //     CSE->process();
-   //   }
+   
+   f_in=O303E->getSample();
+   s_out=f_in*2048;
+   sample_num++;
 
-
-   f_in=O303E->getSample()/4;
-   s_out=f_in*8192;
-
-  // buffer_f[index]=CSE->output()->buffer[index];
-  // buffer_f[index]=buffer_f[index]*8192;
-  // //buffer_f[index]=buffer_f[index]*14336;
-  // //buffer_f[index]=buffer_f[index]*2048;
-  // //buffer_f[index]=buffer_f[index]*1024;
-  // buffer_i[index]=buffer_f[index];
-    
-  // s_out=buffer_i[index];
-
-  // index++;
-  sample_num++;
-  // last_sample=s_out;
-
-  // return s_out;
   return s_out;
 }
