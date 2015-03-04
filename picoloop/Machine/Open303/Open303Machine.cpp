@@ -263,10 +263,10 @@ void Open303Machine::setI(int what,int val)
   // if (what==ADSR_ENV1_DECAY)        O303E->setAccentDecay(val*4); // <= it works
 
 
-  if (what==ADSR_ENV0_ATTACK)       O303E->setAccentDecay(val*4); // <= it works
-  if (what==ADSR_ENV0_RELEASE)      O303E->setAmpRelease(val);    // <= it works
-  if (what==ADSR_ENV0_DECAY)        O303E->setSlideTime(val*4);
-  if (what==ADSR_ENV0_DECAY)        O303E->setSquarePhaseShift(val*4);
+  if (what==ADSR_ENV0_ATTACK)       O303E->setAccentDecay(val*4);      // <= it works
+  if (what==ADSR_ENV0_RELEASE)      O303E->setAmpRelease(val);         // <= it works
+  if (what==ADSR_ENV0_DECAY)        O303E->setSlideTime(val*4);        // <= it works
+  if (what==ADSR_ENV0_SUSTAIN)      O303E->setSquarePhaseShift(val*4);
 
   //if (what==ADSR_ENV1_DECAY)        O303E->setDecay(16+val*23);
   //if (what==ADSR_ENV1_RELEASE)      O303E->setAccent(val);  
