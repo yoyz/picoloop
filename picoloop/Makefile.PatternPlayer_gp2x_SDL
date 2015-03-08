@@ -58,15 +58,20 @@ SOURCES=PatternPlayer.cpp \
 		      NoteFreq.cpp             \
 		      PitchBend.cpp            \
 		      TweakableKnob.cpp	       \
+		      UserInterface.cpp	       \
+		      Machine/Picosynth/PicosynthUserInterface.cpp \
 		      Machine/Picosynth/PicosynthADSR.cpp        \
 		      Machine/Picosynth/PicosynthVCO.cpp         \
 		      Machine/Picosynth/PicosynthMachine.cpp     \
+		      Machine/Picodrum/PicodrumUserInterface.cpp \
 		      Machine/Picodrum/PicodrumVCO.cpp           \
 		      Machine/Picodrum/PicodrumADSR.cpp          \
 		      Machine/Picodrum/PicodrumMachine.cpp       \
+		      Machine/Dbopl/DboplUserInterface.cpp       \
 		      Machine/Dbopl/dbopl.cpp                    \
 		      Machine/Dbopl/hiopl.cpp                    \
 		      Machine/Dbopl/DboplMachine.cpp             \
+		      Machine/PBSynth/PBSynthUserInterface.cpp   \
 		      Machine/PBSynth/synthengine.cpp            \
 		      Machine/PBSynth/osc.cpp                    \
 		      Machine/PBSynth/lfo.cpp                    \
