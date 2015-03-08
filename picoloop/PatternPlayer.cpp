@@ -429,7 +429,7 @@ void display_board_bpm()
 
   if (menu_cursor==GLOBALMENU_BPM)
     {
-      display_board_two_param(LFO1_DEPTH,LFO1_FREQ);
+      display_board_trig();
     }
   
 }
@@ -484,6 +484,13 @@ void display_board_bank()
       sprintf(str_bank,"Bank to load %d ",bank_to_load);
       SG.guiTTFText(30,30, str_bank);
     }
+
+  if (menu         !=  MENU_OFF        && 
+      menu_cursor  == GLOBALMENU_BANK)
+    {
+      display_board_trig();
+    }
+
 }
 
 
@@ -656,47 +663,17 @@ void display_board_load_save()
 	{
 	  for (y=0;y<TRACK_MAX;y++)
 	    SG.drawTTFTextLoadSaveBoxNumberDown(x%16,y,txt_tab[SEQ.getSongSequencer().getPatternNumber(x,y)]);
-	    //printf("%d\n",SEQ.getSongSequencer().getPatternNumber(x,y));
-	    //printf("\n");
 	}
-      
-      //exit(0);
-	  //SG.drawTTFTextLoadSaveBoxNumberDown(x,y,txt_tab[SEQ.getSongSequencer().getPatternNumber(x,y)]);
-      //SG.drawTTFTextLoadSaveBoxNumberDown(x,y,txt_tab[x%16]);
       
     }
 
 
-
-
-
-  // Draw LFO when load/save is not selected
-  // Why ? need to display something, so why not ?
+  // need to display something, so why not ?
   if (menu!=MENU_OFF && 
       menu_cursor==GLOBALMENU_LS
       )
     {
-
-      // Cursor & step postion      
-      SG.drawBoxNumber(cursor,CURSOR_COLOR);
-      SG.drawBoxNumber(step,STEP_COLOR);  
-      for (i=0;i<16;i++)
-	{
-	  // Draw trigged box trig color   
-	  if (P[cty].getPatternElement(i).get(NOTE_ON))
-	    {
-	      SG.drawBoxNumber(i,TRIG_COLOR);
-	      if (i==cursor)
-		SG.drawBoxNumber(cursor,CURSOR_COLOR);
-	      if (i==step)
-		SG.drawBoxNumber(step,STEP_COLOR);  
-		  //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
-	      
-		  // LFO
-	      SG.smallBoxNumber(i,P[cty].getPatternElement(i).get(LFO1_DEPTH),128,SMALLBOX_COLOR);
-	      SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).get(LFO1_DEPTH),SMALLBOX_COLOR);
-	    }
-	}
+      display_board_trig();
     }                  
 }
 
@@ -710,37 +687,12 @@ void display_board_psh()
   int  step=SEQ.getPatternSequencer(cty).getStep();
 
 
-
-
-  //Draw LFO when load/save is not selected
-  // Why ? need to display something, so why not ?
+  // need to display something, so why not ?
   if (menu!=MENU_OFF && 
       menu_cursor==GLOBALMENU_PSH
       )
     {
-
-      // Cursor & step postion      
-      SG.drawBoxNumber(cursor,CURSOR_COLOR);
-      SG.drawBoxNumber(step,STEP_COLOR);  
-
-      display_board_two_param(LFO1_DEPTH,LFO1_FREQ);
-      // for (i=0;i<16;i++)
-      // 	{
-      // 	  // Draw trigged box trig color   
-      // 	  if (P[cty].getPatternElement(i).get(NOTE_ON))
-      // 	    {
-      // 	      SG.drawBoxNumber(i,TRIG_COLOR);
-      // 	      if (i==cursor)
-      // 		SG.drawBoxNumber(cursor,CURSOR_COLOR);
-      // 	      if (i==step)
-      // 		SG.drawBoxNumber(step,STEP_COLOR);  
-      // 		  //SG.drawBoxNumber(SEQ.getPatternSequencer(cty).getStep(),STEP_COLOR);  
-	      
-      // 		  // LFO
-      // 	      SG.smallBoxNumber(i,P[cty].getPatternElement(i).get(LFO1_DEPTH),128,SMALLBOX_COLOR);
-      // 	      SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).get(LFO1_FREQ),SMALLBOX_COLOR);
-      // 	    }
-      // 	}
+      display_board_trig();
     }                  
 }
 
@@ -998,14 +950,15 @@ void handle_key_menu()
       // We exit the LS Menu so we had to 
       // sync SEQ.Y with the cursor in the load save screen
       // save the song to a file
-      if (last_menu        != MENU_OFF &&
-	  menu             == MENU_OFF &&
+      if (last_menu        == MENU_OFF &&
+	  menu             != MENU_OFF &&
 	  menu_cursor      == GLOBALMENU_LS)
 	{
 	  SEQ.setCurrentTrackY(loadsave_cursor.y);
 	  PR.saveSong(SEQ.getSongSequencer());
+	  printf("SAVING SONG TO FILE\n");
 	}
-
+      //printf("HERE IAMn");
       dirty_graphic=1;
       IE.clearLastKeyEvent();
       printf("[gmenu : %d cmenu : %d]\n",menu,menu_cursor);
@@ -2115,8 +2068,23 @@ int seq_update_by_step()
     {
 
       SEQ.getSongSequencer().setStep(song_cursor.x);
-      pattern_song_reload=0;
+      pattern_song_reload=0;      
       SEQ.setSongMode(1);
+
+      for (t=0;t<TRACK_MAX;t++)
+	{
+	  if (PR.PatternDataExist(SEQ.getSongSequencer().getPatternNumber(song_cursor.x,t),t))
+	    {
+	      PR.readPatternData(SEQ.getSongSequencer().getPatternNumber(song_cursor.x,t),t,P[t]);
+	      //SEQ.getPatternSequencer(t).setBPMDivider(P[t].getBPMDivider());
+	    }
+	  else
+	    {
+	      P[t].init();
+	    }
+	}
+	    
+
     }
 
   if (pattern_song_loop!=0)
