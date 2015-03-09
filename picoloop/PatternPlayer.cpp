@@ -1610,22 +1610,41 @@ void handle_key_bank()
 
 
 
+void refresh_pecursor_ui(int i)
+{
+  int  cty=SEQ.getCurrentTrackY();
+  PECursor=P[cty].getPatternElement(i);  
+  if (PECursor.get(MACHINE_TYPE)==SYNTH_PICOSYNTH) UI=&PSUI;
+  if (PECursor.get(MACHINE_TYPE)==SYNTH_PICODRUM)  UI=&PDUI;
+  if (PECursor.get(MACHINE_TYPE)==SYNTH_OPL2    )  UI=&DBUI;
+  if (PECursor.get(MACHINE_TYPE)==SYNTH_PBSYNTH)   UI=&PBUI;
+#ifdef __FPU__
+  if (PECursor.get(MACHINE_TYPE)==SYNTH_CURSYNTH)  UI=&CSUI;
+  if (PECursor.get(MACHINE_TYPE)==SYNTH_OPEN303)   UI=&O303UI;
+#endif
+
+}
+
+
 
 void refresh_pecursor()
 {
   int  cty=SEQ.getCurrentTrackY();
+  int  i;
+  int  cursor_not_on;
   // Refresh the PECursor with the current Element
   if (P[cty].getPatternElement(cursor).get(NOTE_ON))
     {
-      PECursor=P[cty].getPatternElement(cursor);  
-      if (PECursor.get(MACHINE_TYPE)==SYNTH_PICOSYNTH) UI=&PSUI;
-      if (PECursor.get(MACHINE_TYPE)==SYNTH_PICODRUM)  UI=&PDUI;
-      if (PECursor.get(MACHINE_TYPE)==SYNTH_OPL2    )  UI=&DBUI;
-      if (PECursor.get(MACHINE_TYPE)==SYNTH_PBSYNTH)   UI=&PBUI;
-#ifdef __FPU__
-      if (PECursor.get(MACHINE_TYPE)==SYNTH_CURSYNTH)  UI=&CSUI;
-      if (PECursor.get(MACHINE_TYPE)==SYNTH_OPEN303)   UI=&O303UI;
-#endif
+      refresh_pecursor_ui(cursor);
+    }
+  else
+    {
+      for (i=0;i<=cursor;i++)
+	{
+	  if (P[cty].getPatternElement(cursor).get(NOTE_ON))
+	    cursor_not_on=i;
+	}
+      refresh_pecursor_ui(cursor);
     }
 }
 
