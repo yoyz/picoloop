@@ -1644,7 +1644,7 @@ void refresh_pecursor()
 	  if (P[cty].getPatternElement(cursor).get(NOTE_ON))
 	    cursor_not_on=i;
 	}
-      refresh_pecursor_ui(cursor);
+      refresh_pecursor_ui(cursor_not_on);
     }
 }
 
