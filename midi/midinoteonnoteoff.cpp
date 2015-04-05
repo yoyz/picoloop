@@ -28,7 +28,7 @@ bool chooseMidiPort( RtMidiOut *rtmidi );
 int main( void )
 {
   int i;
-
+  int midiChannel=1-1; // channel 1 to 16
   RtMidiOut *midiout = 0;
   std::vector<unsigned char> message;
 
@@ -83,7 +83,7 @@ int main( void )
       //message[0] = 0x90+0;
       //message[1] = i;
       //message[2] = 0x40;
-      message.push_back(0x90+9);
+      message.push_back(0x90+midiChannel);
       message.push_back(i);
       message.push_back(0x7c);
       midiout->sendMessage( &message );
@@ -96,7 +96,7 @@ int main( void )
 
       
       printf("note off : %d\n",i);
-      message.push_back(0x80+9);
+      message.push_back(0x80+midiChannel);
       message.push_back(i);
       message.push_back(0x0);
 
