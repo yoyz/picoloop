@@ -251,34 +251,6 @@ void Open303UserInterface::handle_key_osc()
   lastEvent=IE.lastEvent();
   lastKey=IE.lastKey();
 
-  // GLOBALMENU_OSC
-  // change oscilltor one and two type
-  if (menu        == MENU_OFF       && 
-      menu_cursor == GLOBALMENU_OSC &&
-      menu_osc    == MENU_OSC_OSC1OSC2)
-    {
-      // Insert/Remove Trig
-      sub_handle_invert_trig();
-
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_LONG    , OSC1_TYPE,        -1, 0);
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_LONG    , OSC1_TYPE,         1, 0);
-
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG    , OSC2_TYPE      ,   1, 0);
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG    , OSC2_TYPE      ,  -1, 0);
-    }
-
-  // GLOBALMENU_OSC
-  // change oscilltor one and two type
-  if (menu        != MENU_OFF       && 
-      menu_cursor == GLOBALMENU_OSC &&
-      menu_osc    == MENU_OSC_OSC1OSC2)
-    {
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_LONG    , OSC1_TYPE,        -1, 1);
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_LONG    , OSC1_TYPE,         1, 1);
-
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG    , OSC2_TYPE      ,   1, 1);
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG    , OSC2_TYPE      ,  -1, 1);
-    }
 
 
   // change GLOBALMENU_OSC SUBMENU
@@ -413,92 +385,6 @@ void Open303UserInterface::handle_key_lfo()
   lastEvent=IE.lastEvent();
   lastKey=IE.lastKey();
 
-  // GLOBALMENU_LFO
-  // LFO Menu
-  // Change Value
-  if (menu        == MENU_OFF && 
-      menu_cursor == GLOBALMENU_LFO &&
-      menu_lfo    == MENU_LFO_LFOPITCH
-      )
-    {
-      // Insert/Remove Trig
-      sub_handle_invert_trig();
-
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, LFO1_ENV_AMOUNT,     -1, 0);
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, LFO1_ENV_AMOUNT,      1, 0);
-
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, LFO1_FREQ      ,      1, 0);
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, LFO1_FREQ      ,     -1, 0);
-    }
-
-
-  if (menu        != MENU_OFF && 
-      menu_cursor == GLOBALMENU_LFO &&
-      menu_lfo    == MENU_LFO_LFOPITCH
-      )
-    {
-
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, LFO1_ENV_AMOUNT,     -1, 1);
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, LFO1_ENV_AMOUNT,      1, 1);
-
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, LFO1_FREQ      ,      1, 1);
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, LFO1_FREQ      ,     -1, 1);
-    }
-
-  // GLOBALMENU_LFO
-  // LFO Menu
-  // Change Value
-  if (menu        == MENU_OFF && 
-      menu_cursor == GLOBALMENU_LFO &&
-      menu_lfo    == MENU_LFO_PITCHBEND
-      )
-    {
-      // Insert/Remove Trig
-      sub_handle_invert_trig();
-
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, LFO2_ENV_AMOUNT,     -1, 0);
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, LFO2_ENV_AMOUNT,      1, 0);
-
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, LFO2_FREQ,      1, 0);
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, LFO2_FREQ,     -1, 0);
-    }
-
-
-  if (menu        != MENU_OFF && 
-      menu_cursor == GLOBALMENU_LFO &&
-      menu_lfo    == MENU_LFO_PITCHBEND
-      )
-    {
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, LFO2_ENV_AMOUNT,     -1, 1);
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, LFO2_ENV_AMOUNT,      1, 1);
-
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, LFO2_FREQ      ,      1, 1);
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, LFO2_FREQ      ,     -1, 1);
-    }
-
-
-  if (menu        == MENU_OFF && 
-      menu_cursor == GLOBALMENU_LFO &&
-      menu_lfo    == MENU_LFO_TYPE
-      )
-    {
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG,     LFO_TYPE      ,      1, 0);
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG,     LFO_TYPE      ,     -1, 0);
-    }
-
-
-
-  if (menu        != MENU_OFF && 
-      menu_cursor == GLOBALMENU_LFO &&
-      menu_lfo    == MENU_LFO_TYPE
-      )
-    {
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG,     LFO_TYPE      ,      1, 1);
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG,     LFO_TYPE      ,     -1, 1);
-    }
-
-
-
   // change GLOBALMENU_VCO SUBMENU
   if (lastKey     ==  BUTTON_START  && 
       lastEvent   ==  KEYRELEASED     && 
@@ -509,15 +395,13 @@ void Open303UserInterface::handle_key_lfo()
 	  if      (menu_lfo==MENU_LFO_LFOPITCH)               { menu_lfo=MENU_LFO_PITCHBEND;       }
 	  else if (menu_lfo==MENU_LFO_PITCHBEND)              { menu_lfo=MENU_LFO_TYPE;            } 
 	  else if (menu_lfo==MENU_LFO_TYPE)                   { menu_lfo=MENU_LFO_LFOPITCH;        }  
+	  else                                                { menu_lfo=MENU_LFO_LFOPITCH;        }
 	  dirty_graphic=1;
 	}
       menu_ad_dirty_keyboard=0;
       IE.clearLastKeyEvent();
       printf("[sub menu lfo : %d]\n",menu_lfo);
     }
-
-
-
 }
 
 
@@ -803,11 +687,6 @@ void Open303UserInterface::display_board_amp_env()
       if (menu_ad==MENU_AD_AMP_DECAY_SUSTAIN)
 	display_board_two_param(ADSR_AMP_DECAY,ADSR_AMP_SUSTAIN);
 
-      // if (menu_ad==MENU_AD_FLTR_ATTACK_RELEASE)
-      // 	display_board_two_param(ADSR_FLTR_RELEASE,ADSR_FLTR_ATTACK);
-
-      // if (menu_ad==MENU_AD_FLTR_DECAY_SUSTAIN)
-      // 	display_board_two_param(ADSR_FLTR_DECAY,ADSR_FLTR_SUSTAIN);
 
       if (menu_ad==MENU_AD_TRIGTIME_AMP)
 	display_board_two_param(AMP,TRIG_TIME_DURATION);	
