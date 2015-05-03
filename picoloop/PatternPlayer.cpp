@@ -808,11 +808,11 @@ void display_board_text_global()
   if (menu_cursor==GLOBALMENU_FX)               sprintf(str_up,"FX      ");
 
 
-  if (menu==MENU_ON_PAGE2)
+  //if (menu==MENU_ON_PAGE2)
     SG.guiTTFText(right_x_display_offset,
 		  right_y_display_offset_line4,str_up);
 
-  if (menu==MENU_ON_PAGE2)
+    //if (menu==MENU_ON_PAGE2)
     SG.guiTTFText(menu_x_display_offset,
 		  menu_y_display_offset,str_down);
 
