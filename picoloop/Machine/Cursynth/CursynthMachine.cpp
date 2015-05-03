@@ -46,8 +46,11 @@ void CursynthMachine::init()
   for (i=0;i<SAM;i++)
     buffer_f[i]=0.0;
 
-  CSE->getControls().at("delay time")->set(0.1);      
-  CSE->getControls().at("delay dry/wet")->set(0.2);   
+  //CSE->getControls().at("delay time")->set(0.1);      
+  //CSE->getControls().at("delay dry/wet")->set(0.2);   
+  CSE->getControls().at("delay time")->set(0.0);      
+  CSE->getControls().at("delay dry/wet")->set(0.0);   
+
   CSE->getControls().at("delay feedback")->set(0.4);
   CSE->getControls().at("cross modulation")->set(0);  
 
@@ -165,11 +168,7 @@ void CursynthMachine::setI(int what,int val)
   f_val=f_val/128;
 
   if (what==TRIG_TIME_MODE)       trig_time_mode=val;
-  if (what==TRIG_TIME_DURATION) 
-    { 
-      trig_time_duration=val;
-      trig_time_duration_sample=val*512; 
-    }
+  if (what==TRIG_TIME_DURATION) { trig_time_duration=val; trig_time_duration_sample=val*512; }
 
   if (what==NOTE_ON && val==1) 
     { 
@@ -185,7 +184,7 @@ void CursynthMachine::setI(int what,int val)
   if (what==NOTE_ON && val==0) 
     { 
       note_on=0;
-      CSE->noteOff(note);
+      CSE->noteOff(note+11);
     }
 
   if (what==OSC1_NOTE)           note=val;
@@ -394,6 +393,13 @@ int CursynthMachine::tick()
     index=0;
   
 
+      
+  if (sample_num==0 || 
+      index==0 )
+    {
+      CSE->process();
+    }
+
   if (trig_time_mode)
     {
       if (trig_time_duration_sample<sample_num)
@@ -404,12 +410,7 @@ int CursynthMachine::tick()
 	}
 
     }
-      
-  if (sample_num==0 || 
-      index==0 )
-    {
-      CSE->process();
-    }
+
  
   buffer_f[index]=CSE->output()->buffer[index];
   buffer_f[index]=buffer_f[index]*8192;
