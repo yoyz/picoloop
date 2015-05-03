@@ -1625,13 +1625,19 @@ void refresh_pecursor_ui(int i)
 
 }
 
-
-
+/*
+    refresh_pecursor is used to have a : 
+     Machine User Interface updated to the current track, it is not optimal at all
+  
+   algo: 
+     Fetch a PECursor with noteOn==1 from the current cursor.
+     If there is no noteOn==1 on the current cursor, fetch it from all step and keep the lastest value
+*/
 void refresh_pecursor()
 {
   int  cty=SEQ.getCurrentTrackY();
-  int  i;
-  int  cursor_not_on;
+  int  i=0;
+  int  cursor_not_on=0;
   // Refresh the PECursor with the current Element
   if (P[cty].getPatternElement(cursor).get(NOTE_ON))
     {
@@ -1639,7 +1645,7 @@ void refresh_pecursor()
     }
   else
     {
-      for (i=0;i<=cursor;i++)
+      for (i=0;i<=16;i++)
 	{
 	  if (P[cty].getPatternElement(cursor).get(NOTE_ON))
 	    cursor_not_on=i;
