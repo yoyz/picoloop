@@ -40,6 +40,7 @@ class CursynthMachine : public Machine
   Sint16              * tanh_table;
 
   int                   note;
+  int                   old_note;
   int                   note_on;
   int                   detune;
 
