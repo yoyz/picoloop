@@ -174,9 +174,26 @@ void CursynthMachine::setI(int what,int val)
     { 
       NoteFreq & NF = NoteFreq::getInstance(); 
       note_on=1;
+
+      if (old_note!=note)
+	{
+	  CSE->noteOn(note+11,velocity/32);
+	  CSE->noteOff(old_note+11);
+	}
+      else
+	{
+	  if (note_on==0)
+	    CSE->noteOn(note+11,velocity/32);
+	  else
+	    {
+	      CSE->noteOff(old_note+11);	  
+	      CSE->noteOn(note+11,velocity/32);
+	    }
+	}
+
       //CS->noteOn(NF.getINoteFreq(note),1.0);
       //CSE->noteOn(note+11,0.8);
-      CSE->noteOn(note+11,velocity/32);
+      //CSE->noteOn(note+11,velocity/32);
       //CSE->getControls();
       //f_val=trig_time_duration;
       //CSE->getControls().at("velocity track")->set(trig_time_duration);
@@ -187,7 +204,8 @@ void CursynthMachine::setI(int what,int val)
       CSE->noteOff(note+11);
     }
 
-  if (what==OSC1_NOTE)           { if (note_on) { this->setI(NOTE_ON,0); note=val; } }
+  //if (what==OSC1_NOTE)           { if (note_on) { this->setI(NOTE_ON,0); note=val; } }
+  if (what==OSC1_NOTE)              {  old_note=note; note=val; }
 
   //if (what==ADSR_ENV0_ATTACK)    CSE->getControls().at("amp attack")->set(val);
   //delay time"
