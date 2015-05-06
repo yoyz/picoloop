@@ -187,7 +187,7 @@ void CursynthMachine::setI(int what,int val)
       CSE->noteOff(note+11);
     }
 
-  if (what==OSC1_NOTE)           note=val;
+  if (what==OSC1_NOTE)           { if (note_on) { this->setI(NOTE_ON,0); note=val; } }
 
   //if (what==ADSR_ENV0_ATTACK)    CSE->getControls().at("amp attack")->set(val);
   //delay time"
