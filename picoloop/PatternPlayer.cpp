@@ -731,17 +731,22 @@ void display_board_mac()
 
 void display_board_text_global()
 {
-  int  i;
-  char str_up[64];
-  char str_down[64];
-  char str_divider[64];
-  char str_submenu[64];
+  int  i=0;
+  char str_line1[64]="";
+  char str_line2[64]="";
+  char str_line3[64]="";
+  char str_line4[64]="";
+  char str_line5[64]="";
+  char str_menu[64]="";
+  char str_divider[64]="";
+  char str_submenu[64]="";
 
   int  right_x_display_offset=      200*SCREEN_MULT;
-  int  right_y_display_offset_line1=20*SCREEN_MULT;
-  int  right_y_display_offset_line2=40*SCREEN_MULT;
-  int  right_y_display_offset_line3=60*SCREEN_MULT;
-  int  right_y_display_offset_line4=80*SCREEN_MULT;
+  int  right_y_display_offset_line1= 20*SCREEN_MULT;
+  int  right_y_display_offset_line2= 40*SCREEN_MULT;
+  int  right_y_display_offset_line3= 60*SCREEN_MULT;
+  int  right_y_display_offset_line4= 80*SCREEN_MULT;
+  int  right_y_display_offset_line5=100*SCREEN_MULT;
 
   int  menu_x_display_offset=       10*SCREEN_MULT;
   int  menu_y_display_offset=      200*SCREEN_MULT;
@@ -750,71 +755,64 @@ void display_board_text_global()
   int  stepdiv=SEQ.getPatternSequencer(cty).getBPMDivider();
 
 
-  sprintf(str_up,"Track %d ",cty);
-  SG.guiTTFText(right_x_display_offset,
-		right_y_display_offset_line1,str_up);
+  sprintf(str_line1,"Track %d ",cty);
 
-  sprintf(str_divider,"/%d",stepdiv);
-  SG.guiTTFText(right_x_display_offset,
-		right_y_display_offset_line3,str_divider);
+  sprintf(str_line3,"/%d",stepdiv);
 
-  if (menu_cursor!=GLOBALMENU_AD ||
-      menu_cursor!=GLOBALMENU_NOTE)    
-    {
-      sprintf(str_submenu,"               ");
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
-    }
   if (menu_note==ENABLE &&
       menu_cursor==GLOBALMENU_NOTE)
-    {
-      sprintf(str_submenu,"NOTE");
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
-    }
+      sprintf(str_line2,"NOTE");
+
   if (menu_note==DISABLE &&
       menu_cursor==GLOBALMENU_NOTE)
-    {
-      sprintf(str_submenu,"DOT");
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
-    }
-
-
+      sprintf(str_line2,"DOT");
 
   if (menu_cursor==GLOBALMENU_BPM)
+    sprintf(str_line3,"SWING %d",current_swing);
+
+
+
+  if (menu==MENU_ON_PAGE2 && menu_cursor==GLOBALMENU_LS)    sprintf(str_menu,"[L/S] BANK  PSH   MAC   FX    BPM    ",cty);  
+  if (menu==MENU_ON_PAGE2 && menu_cursor==GLOBALMENU_BANK)  sprintf(str_menu," L/S [BANK] PSH   MAC   FX    BPM    ",cty);
+  if (menu==MENU_ON_PAGE2 && menu_cursor==GLOBALMENU_PSH)   sprintf(str_menu," L/S  BANK [PSH]  MAC   FX    BPM    ",cty);
+  if (menu==MENU_ON_PAGE2 && menu_cursor==GLOBALMENU_MAC)   sprintf(str_menu," L/S  BANK  PSH  [MAC]  FX    BPM    ",cty);
+  if (menu==MENU_ON_PAGE2 && menu_cursor==GLOBALMENU_FX)    sprintf(str_menu," L/S  BANK  PSH   MAC  [FX]   BPM    ",cty);
+  if (menu==MENU_ON_PAGE2 && menu_cursor==GLOBALMENU_BPM)   sprintf(str_menu," L/S  BANK  PSH   MAC   FX   [BPM]   ",cty);
+
+  if (menu==0)                                              sprintf(str_menu,"                                     ",cty);
+
+  if (menu_cursor==GLOBALMENU_LS)               sprintf(str_line4,"L/S     ");
+  if (menu_cursor==GLOBALMENU_BANK)             sprintf(str_line4,"BANK    ");
+  if (menu_cursor==GLOBALMENU_PSH)              sprintf(str_line4,"PSH     ");
+  if (menu_cursor==GLOBALMENU_MAC)              sprintf(str_line4,"MAC     ");
+  if (menu_cursor==GLOBALMENU_BPM)              sprintf(str_line4,"BPM %d",bpm_current);
+  if (menu_cursor==GLOBALMENU_FX)               sprintf(str_line4,"FX      ");
+
+
+  // if (menu==MENU_ON_PAGE2)
+  //   {
+
+  SG.guiTTFText(right_x_display_offset,
+		right_y_display_offset_line1,str_line1);
+
+  SG.guiTTFText(right_x_display_offset,
+		right_y_display_offset_line2,str_line2);
+  
+  SG.guiTTFText(right_x_display_offset,
+		right_y_display_offset_line3,str_line3);
+
+  SG.guiTTFText(right_x_display_offset,
+		right_y_display_offset_line4,str_line4);
+
+
+      //    }
+
+  if (menu==MENU_ON_PAGE2 ||
+      menu==0)
     {
-      //sprintf(str_submenu,"SWING %d",(current_swing*100)/127);
-      sprintf(str_submenu,"SWING %d",current_swing);
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
+      SG.guiTTFText(menu_x_display_offset,
+		    menu_y_display_offset,str_menu);
     }
-
-
-  if (menu==MENU_ON_PAGE2 && menu_cursor==GLOBALMENU_LS)    sprintf(str_down,"[L/S] BANK  PSH   MAC   FX    BPM    ",cty);  
-  if (menu==MENU_ON_PAGE2 && menu_cursor==GLOBALMENU_BANK)  sprintf(str_down," L/S [BANK] PSH   MAC   FX    BPM    ",cty);
-  if (menu==MENU_ON_PAGE2 && menu_cursor==GLOBALMENU_PSH)   sprintf(str_down," L/S  BANK [PSH]  MAC   FX    BPM    ",cty);
-  if (menu==MENU_ON_PAGE2 && menu_cursor==GLOBALMENU_MAC)   sprintf(str_down," L/S  BANK  PSH  [MAC]  FX    BPM    ",cty);
-  if (menu==MENU_ON_PAGE2 && menu_cursor==GLOBALMENU_FX)    sprintf(str_down," L/S  BANK  PSH   MAC  [FX]   BPM    ",cty);
-  if (menu==MENU_ON_PAGE2 && menu_cursor==GLOBALMENU_BPM)   sprintf(str_down," L/S  BANK  PSH   MAC   FX   [BPM]   ",cty);
-
-  if (menu==0)                                              sprintf(str_down,"                                     ",cty);
-
-  if (menu_cursor==GLOBALMENU_LS)               sprintf(str_up,"L/S     ");
-  if (menu_cursor==GLOBALMENU_BANK)             sprintf(str_up,"BANK    ");
-  if (menu_cursor==GLOBALMENU_PSH)              sprintf(str_up,"PSH     ");
-  if (menu_cursor==GLOBALMENU_MAC)              sprintf(str_up,"MAC     ");
-  if (menu_cursor==GLOBALMENU_BPM)              sprintf(str_up,"BPM %d",bpm_current);
-  if (menu_cursor==GLOBALMENU_FX)               sprintf(str_up,"FX      ");
-
-
-  //if (menu==MENU_ON_PAGE2)
-    SG.guiTTFText(right_x_display_offset,
-		  right_y_display_offset_line4,str_up);
-
-    //if (menu==MENU_ON_PAGE2)
-    SG.guiTTFText(menu_x_display_offset,
-		  menu_y_display_offset,str_down);
 
 
 }
