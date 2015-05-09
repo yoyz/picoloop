@@ -616,11 +616,13 @@ void PicosynthUserInterface::handle_key_fltr()
 
 void PicosynthUserInterface::display_board_text()
 {
-  int  i;
-  char str_up[64];
-  char str_down[64];
-  char str_divider[64];
-  char str_submenu[64];
+  int  i=0;
+  char str_line1[64]="";
+  char str_line2[64]="";
+  char str_line3[64]="";
+  char str_line4[64]="";
+  char str_line5[64]="";
+  char str_menu[64]="";
 
   int  right_x_display_offset=      200*SCREEN_MULT;
   int  right_y_display_offset_line1=20*SCREEN_MULT;
@@ -633,134 +635,71 @@ void PicosynthUserInterface::display_board_text()
 
   int  cty=SEQ.getCurrentTrackY();
   int  stepdiv=SEQ.getPatternSequencer(cty).getBPMDivider();
-
-
   
-  if (menu_ad==MENU_AD_AMP_ATTACK_RELEASE &&
-      menu_cursor==GLOBALMENU_AD)
-    {
-      sprintf(str_submenu,"AMP  A/R");
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
-    }
+  if (menu_ad==MENU_AD_AMP_ATTACK_RELEASE   && menu_cursor==GLOBALMENU_AD)
+    sprintf(str_line2,"AMP  A/R");
+
+  if (menu_ad==MENU_AD_AMP_DECAY_SUSTAIN    && menu_cursor==GLOBALMENU_AD)
+    sprintf(str_line2,"AMP  S/D");
+
+  if (menu_ad==MENU_AD_TRIGTIME_AMP         && menu_cursor ==GLOBALMENU_AD)
+    sprintf(str_line2,"T/N AMP");
+
+  if (menu_fltr==MENU_FLTR_CUTOFF_RESONANCE && menu_cursor == GLOBALMENU_FLTR)
+    sprintf(str_line2,"CUTOFF/RES");
+    
+  if (menu_fltr==MENU_FLTR_ALGO_TYPE        && menu_cursor == GLOBALMENU_FLTR)
+    sprintf(str_line2,"ALGO/TYPE");
+
+  if (menu_vco==MENU_VCO_OSCMIX_PHASE       && menu_cursor == GLOBALMENU_VCO)
+    sprintf(str_line2,"DETUNE/VCOMIX");
+
+  if (menu_lfo==MENU_LFO_LFOPITCH           && menu_cursor == GLOBALMENU_LFO)
+    sprintf(str_line2,"LFOPitch Depth/Speed");
+
+  if (menu_lfo==MENU_LFO_PITCHBEND          && menu_cursor == GLOBALMENU_LFO)
+    sprintf(str_line2,"PitchBend Depth/Speed");
+
+  if (menu_lfo==MENU_LFO_TYPE               && menu_cursor == GLOBALMENU_LFO)
+    sprintf(str_line2,"LFOType");
+
+  if (menu_osc    == MENU_OSC_OSC1OSC2      && menu_cursor == GLOBALMENU_OSC)
+    sprintf(str_line2,"OSC WAVEFORM");
+
+  if (menu_osc    == MENU_OSC_LFO1LFO2      && menu_cursor == GLOBALMENU_OSC)
+    sprintf(str_line2,"LFO WAVEFORM  ");
+  
 
 
-
-  if (menu_ad==MENU_AD_AMP_DECAY_SUSTAIN &&
-      menu_cursor==GLOBALMENU_AD)
-    {
-      sprintf(str_submenu,"AMP  S/D");
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
-    }
+  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_AD)    sprintf(str_menu,"[ENV] Note  OSC   VCO   LFO   FLTR   ");
+  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_NOTE)  sprintf(str_menu," ENV [Note] OSC   VCO   LFO   FLTR   ");
+  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_OSC)   sprintf(str_menu," ENV  Note [OSC]  VCO   LFO   FLTR   ");
+  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_VCO)   sprintf(str_menu," ENV  Note  OSC  [VCO]  LFO   FLTR   ");
+  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_LFO)   sprintf(str_menu," ENV  Note  OSC   VCO  [LFO]  FLTR   ");
+  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_FLTR)  sprintf(str_menu," ENV  Note  OSC   VCO   LFO  [FLTR]  ");
 
 
-  if (menu_ad==MENU_AD_TRIGTIME_AMP &&
-      menu_cursor==GLOBALMENU_AD)
-    {
-      sprintf(str_submenu,"T/N AMP");
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
-    }
+  if (menu==0)                                              sprintf(str_menu,"                                     ");
 
-  if (menu_fltr==MENU_FLTR_CUTOFF_RESONANCE &&
-      menu_cursor==GLOBALMENU_FLTR)
-    {
-      sprintf(str_submenu,"CUTOFF/RES");
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
-    }
-
-  if (menu_fltr==MENU_FLTR_ALGO_TYPE &&
-      menu_cursor==GLOBALMENU_FLTR
-      )
-    {
-      sprintf(str_submenu,"ALGO/TYPE");
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
-    }
-
-  if (menu_vco==MENU_VCO_OSCMIX_PHASE &&
-      menu_cursor==GLOBALMENU_VCO
-      )
-    {
-      sprintf(str_submenu,"DETUNE/VCOMIX");
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
-    }
+  if (menu_cursor==GLOBALMENU_AD)               sprintf(str_line4,"ENV     ");
+  if (menu_cursor==GLOBALMENU_NOTE)             sprintf(str_line4,"Note    ");
+  if (menu_cursor==GLOBALMENU_OSC)              sprintf(str_line4,"OSC     ");
+  if (menu_cursor==GLOBALMENU_VCO)              sprintf(str_line4,"VCO     ");
+  if (menu_cursor==GLOBALMENU_LFO)              sprintf(str_line4,"LFO     ");
+  if (menu_cursor==GLOBALMENU_FLTR)             sprintf(str_line4,"FLTR    ");
 
 
-  if (menu_lfo==MENU_LFO_LFOPITCH &&
-      menu_cursor==GLOBALMENU_LFO
-      )
-    {
-      sprintf(str_submenu,"LFOPitch Depth/Speed");
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
-    }
+  SG.guiTTFText(right_x_display_offset,
+		right_y_display_offset_line2,str_line2);
 
-  if (menu_lfo==MENU_LFO_PITCHBEND &&
-      menu_cursor==GLOBALMENU_LFO
-      )
-    {
-      sprintf(str_submenu,"PitchBend Depth/Speed");
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
-    }
-
-
-  if (menu_lfo==MENU_LFO_TYPE &&
-      menu_cursor==GLOBALMENU_LFO
-      )
-    {
-      sprintf(str_submenu,"LFOType");
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
-    }
-
-  if (menu_osc    == MENU_OSC_OSC1OSC2 &&
-      menu_cursor == GLOBALMENU_OSC)
-    {
-      sprintf(str_submenu,"OSC WAVEFORM");
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
-    }
-
-
-  if (menu_osc    == MENU_OSC_LFO1LFO2 &&
-      menu_cursor == GLOBALMENU_OSC)
-    {
-      sprintf(str_submenu,"LFO WAVEFORM  ");
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
-    }
-
-
-
-  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_AD)    sprintf(str_down,"[ENV] Note  OSC   VCO   LFO   FLTR   ",cty);
-  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_NOTE)  sprintf(str_down," ENV [Note] OSC   VCO   LFO   FLTR   ",cty);
-  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_OSC)   sprintf(str_down," ENV  Note [OSC]  VCO   LFO   FLTR   ",cty);
-  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_VCO)   sprintf(str_down," ENV  Note  OSC  [VCO]  LFO   FLTR   ",cty);
-  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_LFO)   sprintf(str_down," ENV  Note  OSC   VCO  [LFO]  FLTR   ",cty);
-  if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_FLTR)  sprintf(str_down," ENV  Note  OSC   VCO   LFO  [FLTR]  ",cty);
-
-
-  if (menu==0)                         sprintf(str_down,"                     ",cty);
-
-  if (menu_cursor==GLOBALMENU_AD)               sprintf(str_up,"ENV     ");
-  if (menu_cursor==GLOBALMENU_NOTE)             sprintf(str_up,"Note    ");
-  if (menu_cursor==GLOBALMENU_OSC)              sprintf(str_up,"OSC     ");
-  if (menu_cursor==GLOBALMENU_VCO)              sprintf(str_up,"VCO     ");
-  if (menu_cursor==GLOBALMENU_LFO)              sprintf(str_up,"LFO     ");
-  if (menu_cursor==GLOBALMENU_FLTR)             sprintf(str_up,"FLTR    ");
 
   if (menu==MENU_ON_PAGE1)
     SG.guiTTFText(right_x_display_offset,
-		  right_y_display_offset_line4,str_up);
+		  right_y_display_offset_line4,str_line4);
 
   if (menu==MENU_ON_PAGE1)
     SG.guiTTFText(menu_x_display_offset,
-		  menu_y_display_offset,str_down);
+		  menu_y_display_offset,str_menu);
 
 
 }

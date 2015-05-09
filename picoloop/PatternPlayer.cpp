@@ -738,8 +738,6 @@ void display_board_text_global()
   char str_line4[64]="";
   char str_line5[64]="";
   char str_menu[64]="";
-  char str_divider[64]="";
-  char str_submenu[64]="";
 
   int  right_x_display_offset=      200*SCREEN_MULT;
   int  right_y_display_offset_line1= 20*SCREEN_MULT;
@@ -772,25 +770,21 @@ void display_board_text_global()
 
 
 
-  if (menu==MENU_ON_PAGE2 && menu_cursor==GLOBALMENU_LS)    sprintf(str_menu,"[L/S] BANK  PSH   MAC   FX    BPM    ",cty);  
-  if (menu==MENU_ON_PAGE2 && menu_cursor==GLOBALMENU_BANK)  sprintf(str_menu," L/S [BANK] PSH   MAC   FX    BPM    ",cty);
-  if (menu==MENU_ON_PAGE2 && menu_cursor==GLOBALMENU_PSH)   sprintf(str_menu," L/S  BANK [PSH]  MAC   FX    BPM    ",cty);
-  if (menu==MENU_ON_PAGE2 && menu_cursor==GLOBALMENU_MAC)   sprintf(str_menu," L/S  BANK  PSH  [MAC]  FX    BPM    ",cty);
-  if (menu==MENU_ON_PAGE2 && menu_cursor==GLOBALMENU_FX)    sprintf(str_menu," L/S  BANK  PSH   MAC  [FX]   BPM    ",cty);
-  if (menu==MENU_ON_PAGE2 && menu_cursor==GLOBALMENU_BPM)   sprintf(str_menu," L/S  BANK  PSH   MAC   FX   [BPM]   ",cty);
+  if (menu_cursor==GLOBALMENU_LS   && menu==MENU_ON_PAGE2 ) sprintf(str_menu,"[L/S] BANK  PSH   MAC   FX    BPM    ");
+  if (menu_cursor==GLOBALMENU_BANK && menu==MENU_ON_PAGE2 ) sprintf(str_menu," L/S [BANK] PSH   MAC   FX    BPM    ");
+  if (menu_cursor==GLOBALMENU_PSH  && menu==MENU_ON_PAGE2 ) sprintf(str_menu," L/S  BANK [PSH]  MAC   FX    BPM    ");
+  if (menu_cursor==GLOBALMENU_MAC  && menu==MENU_ON_PAGE2 ) sprintf(str_menu," L/S  BANK  PSH  [MAC]  FX    BPM    ");
+  if (menu_cursor==GLOBALMENU_FX   && menu==MENU_ON_PAGE2 ) sprintf(str_menu," L/S  BANK  PSH   MAC  [FX]   BPM    ");
+  if (menu_cursor==GLOBALMENU_BPM  && menu==MENU_ON_PAGE2 ) sprintf(str_menu," L/S  BANK  PSH   MAC   FX   [BPM]   ");
 
-  if (menu==0)                                              sprintf(str_menu,"                                     ",cty);
+  if (menu==0)                                              sprintf(str_menu,"                                     ");
 
   if (menu_cursor==GLOBALMENU_LS)               sprintf(str_line4,"L/S     ");
   if (menu_cursor==GLOBALMENU_BANK)             sprintf(str_line4,"BANK    ");
   if (menu_cursor==GLOBALMENU_PSH)              sprintf(str_line4,"PSH     ");
   if (menu_cursor==GLOBALMENU_MAC)              sprintf(str_line4,"MAC     ");
-  if (menu_cursor==GLOBALMENU_BPM)              sprintf(str_line4,"BPM %d",bpm_current);
+  if (menu_cursor==GLOBALMENU_BPM)              sprintf(str_line4,"BPM %d  ",bpm_current);
   if (menu_cursor==GLOBALMENU_FX)               sprintf(str_line4,"FX      ");
-
-
-  // if (menu==MENU_ON_PAGE2)
-  //   {
 
   SG.guiTTFText(right_x_display_offset,
 		right_y_display_offset_line1,str_line1);
@@ -803,9 +797,6 @@ void display_board_text_global()
 
   SG.guiTTFText(right_x_display_offset,
 		right_y_display_offset_line4,str_line4);
-
-
-      //    }
 
   if (menu==MENU_ON_PAGE2 ||
       menu==0)
