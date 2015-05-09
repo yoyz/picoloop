@@ -49,14 +49,15 @@ void MonoMixer::init()
   //FX=&FXDelay;
   FX=&FXDelay;
   FX=&FXDisabled;
+  FX=&FXDelay;
   FX->init();
   FX->setDepth(fx_depth);
   FX->setSpeed(fx_speed);
   
-  //FXDelay.init();
+  FXDelay.init();
 
-  //FXDelay.setDepth(fx_depth);
-  //FXDelay.setSpeed(fx_speed);
+  FXDelay.setDepth(fx_depth);
+  FXDelay.setSpeed(fx_speed);
 
   
 
