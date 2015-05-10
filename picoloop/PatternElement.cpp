@@ -72,6 +72,8 @@ void PatternElement::init()
 
   velocity=64;
 
+  osc1_mod=0;
+
   osc1_amp=32;
   osc2_amp=32;
 
@@ -249,6 +251,12 @@ void PatternElement::set(int what,int val)
     case VELOCITY:
       velocity=checkSevenBitBoundarie(val);
       break;
+
+    case OSC1_MOD:
+      osc1_mod=checkSevenBitBoundarie(val);
+      break;
+
+
       
 
       
@@ -419,6 +427,10 @@ int PatternElement::get(int what)
 
     case VELOCITY:
       return velocity;
+      break;
+
+    case OSC1_MOD:
+      return osc1_mod;
       break;
 
 

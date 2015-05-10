@@ -243,6 +243,10 @@ void CursynthMachine::setI(int what,int val)
   //if (what==OSC12_MIX)           CSE->getControls().at("osc mix")->set(f_val);
 
   //if (what==OSC1_AMP)            CSE->getControls().at("velocity track")->set(f_val);
+  //if (what==OSC1_DETUNE)         CSE->getControls().at("osc 2 tune"   )->set(((f_val*2)-1)*128);
+  if (what==OSC1_DETUNE)         CSE->getControls().at("osc 2 tune"   )->set((f_val*2)-1);
+  if (what==OSC1_MOD)            CSE->getControls().at("cross modulation")->set(f_val);
+
   if (what==OSC1_AMP)            CSE->getControls().at("keytrack"     )->set(((f_val*2)-1)*128);
   if (what==OSC2_AMP)            CSE->getControls().at("fil env depth")->set(((f_val*2)-1)*128);
   //if (what==OSC1_AMP)            CSE->getControls().at("velocity track")->set(f_val);
