@@ -93,6 +93,8 @@ private:
   int osc1_detune;
 
   int velocity;
+
+  int osc1_mod;
 };
 
 #endif

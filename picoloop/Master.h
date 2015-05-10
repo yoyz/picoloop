@@ -118,6 +118,7 @@ enum {
 enum { // used by cursynth
   MENU_VCO_OSCMIX_VELOCITY,
   MENU_VCO_KEYTRACKENVDEPTH,
+  MENU_VCO_OSCDETUNECROSSMOD,
 };
 
 enum { // used by picosynth/picodrum/Dbopl

@@ -1919,6 +1919,10 @@ void seq_update_multiple_time_by_step()
   seq_update_tweakable_knob_one(VELOCITY);
   seq_update_tweakable_knob_all(VELOCITY);
 
+  // change OSC1_MOD
+  seq_update_tweakable_knob_one(OSC1_MOD);
+  seq_update_tweakable_knob_all(OSC1_MOD);
+
 
   // change LFO1 WAVEFORM
   seq_update_tweakable_knob_one(LFO1_ENV_AMOUNT);
@@ -2320,6 +2324,7 @@ void seq_update_track(int t)
 	  M[t]->setI(OSC1_DETUNE,      P[t].getPatternElement(step).get(OSC1_DETUNE));
 
 	  M[t]->setI(VELOCITY,         P[t].getPatternElement(step).get(VELOCITY));
+	  M[t]->setI(OSC1_MOD,         P[t].getPatternElement(step).get(OSC1_MOD));
 
 
 

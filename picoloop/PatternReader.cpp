@@ -574,6 +574,10 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
   fgets(line,512,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
+  machineParam=OSC1_MOD;
+  fgets(line,512,fd);
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
+
 
 
 
@@ -881,6 +885,9 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
   this->writePatternDataLine(PatternNumber,TrackNumber,P,line,VELOCITY);
   data.insert(data.end(),line);
 
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,OSC1_MOD);
+  data.insert(data.end(),line);
+
 
   sprintf(line,"\n");
   data.insert(data.end(),line);
@@ -983,6 +990,8 @@ const char * PatternReader::getParameterCharStar(int param)
 
   static const char * velocity="Velocity";
 
+  static const char * osc1_mod="OSC1Mod";
+
 
   switch (param)
     {
@@ -1048,6 +1057,8 @@ const char * PatternReader::getParameterCharStar(int param)
     case LFO2_ENV_AMOUNT:    return lfo2_env_amount;          break;
 
     case VELOCITY:           return velocity;                 break;
+
+    case OSC1_MOD:           return osc1_mod;                 break;
     
     default:                 printf("PatternReader::getParameterCharStar(%d) not found => exit\n"); exit(1); break;
     }

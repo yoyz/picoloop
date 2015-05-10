@@ -93,7 +93,10 @@ using namespace std;
 
 #define FM_TYPE             60
 
-
+#define OSC1_MOD            61
+#define OSC2_MOD            62
+#define OSC3_MOD            63
+#define OSC4_MOD            64
 
 #define OSC1_NOTE           70
 #define OSC2_NOTE           71
