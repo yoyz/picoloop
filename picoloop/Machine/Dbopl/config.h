@@ -59,7 +59,11 @@
 #define GCC_UNLIKELY(x) (x)
 #define GCC_LIKELY(x) (x)
 
-#define INLINE __forceinline
+#ifndef INLINE
+//#define INLINE __forceinline
+#define INLINE inline
+#endif
+
 #define DB_FASTCALL __fastcall
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1400) 
