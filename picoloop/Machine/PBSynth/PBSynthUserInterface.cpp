@@ -620,39 +620,6 @@ void PBSynthUserInterface::handle_key_fltr()
       handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, FILTER1_CUTOFF,       -1, 1);
     }  
 
-  // GLOBALMENU_FLTR
-  // Move filterAlgo filterType
-  // Insert/Remove Trig
-  if (menu          == MENU_OFF && 
-      menu_cursor   == GLOBALMENU_FLTR   &&
-      menu_fltr     == MENU_FLTR_ALGO_TYPE)
-    {
-      sub_handle_invert_trig();
-
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_LONG    , FILTER1_ALGO,             -1, 0);
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_LONG    , FILTER1_ALGO,              1, 0);
-
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG    , FILTER1_TYPE           ,   1, 0);
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG    , FILTER1_TYPE           ,  -1, 0);
-    }  
-
-
-  // GLOBALMENU_FLTR
-  // Move filterAlgo filterType
-  // Insert/Remove Trig
-  if (menu          != MENU_OFF && 
-      menu_cursor   == GLOBALMENU_FLTR   &&
-      menu_fltr     == MENU_FLTR_ALGO_TYPE)
-    {
-      //sub_handle_invert_trig();
-
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_LONG    , FILTER1_ALGO,             -1, 1);
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_LONG    , FILTER1_ALGO,              1, 1);
-
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG    , FILTER1_TYPE           ,   1, 1);
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG    , FILTER1_TYPE           ,  -1, 1);
-    }  
-
 
   // change GLOBALMENU_FLTR SUBMENU
   if (lastKey     ==  BUTTON_START  && 
@@ -661,8 +628,7 @@ void PBSynthUserInterface::handle_key_fltr()
     {
       if (menu_ad_dirty_keyboard==0)
 	{
-	  if      (menu_fltr==MENU_FLTR_CUTOFF_RESONANCE)   { menu_fltr=MENU_FLTR_ALGO_TYPE;            }
-	  else if (menu_fltr==MENU_FLTR_ALGO_TYPE)          { menu_fltr=MENU_FLTR_CUTOFF_RESONANCE;     }   
+	  if      (menu_fltr!=MENU_FLTR_CUTOFF_RESONANCE)   { menu_fltr=MENU_FLTR_CUTOFF_RESONANCE;     }
 	  dirty_graphic=1;
 	}
       menu_ad_dirty_keyboard=0;
