@@ -662,8 +662,8 @@ void CursynthUserInterface::handle_key_lfo()
       if (menu_ad_dirty_keyboard==0)
 	{
 	  if      (menu_lfo==MENU_LFO_LFOPITCH)               { menu_lfo=MENU_LFO_PITCHBEND;       }
-	  else if (menu_lfo==MENU_LFO_PITCHBEND)              { menu_lfo=MENU_LFO_TYPE;            } 
-	  else if (menu_lfo==MENU_LFO_TYPE)                   { menu_lfo=MENU_LFO_LFOPITCH;        }  
+	  else if (menu_lfo==MENU_LFO_PITCHBEND)              { menu_lfo=MENU_LFO_LFOPITCH;        }
+	  else                                                  menu_lfo=MENU_LFO_LFOPITCH; 
 	  dirty_graphic=1;
 	}
       menu_ad_dirty_keyboard=0;
