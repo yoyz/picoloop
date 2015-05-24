@@ -30,7 +30,7 @@ PSP_HEAP_SIZE_KB(-6144) ;
 #include <string.h>
 
 #include "Master.h"
-#include "Note.h"
+//#include "Note.h"
 #include "PatternReader.h"
 #include "PatternPlayer.h"
 #include "AudioEngine.h"
@@ -2002,7 +2002,7 @@ void seq_update_multiple_time_by_step()
       //save the bpm in the 
       //change the number of time AudioEngine need to be trigged
       //to effectively change pattern step
-      
+      printf("Recalculate BPM\n");
       bpm_current=P[cty].getBPM();
       for(t=0;t<TRACK_MAX;t++)	    
 	P[t].setBPM(bpm_current+TK.get(BPM));
@@ -2018,7 +2018,7 @@ void seq_update_multiple_time_by_step()
       //save the swing in the Pattern
       //change the number of time AudioEngine need to be trigged
       //to effectively change pattern step
-      
+      printf("Recalculate Swing\n");
       current_swing=current_swing+TK.get(SWING);
       TK.set(SWING,0);
       
