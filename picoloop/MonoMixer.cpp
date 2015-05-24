@@ -61,18 +61,18 @@ void MonoMixer::init()
 
   
 
-  if (machine_type==0)
+  if (machine_type==SYNTH_PICOSYNTH)
     M=&PS;
-  if (machine_type==1)
+  if (machine_type==SYNTH_OPL2)
     M=&OPLM;
-  if (machine_type==2)
+  if (machine_type==SYNTH_PICODRUM)
     M=&PD;
-  if (machine_type==3)
+  if (machine_type==SYNTH_PBSYNTH)
     M=&PBS;
   #ifdef __FPU__
-  if (machine_type==4)
+  if (machine_type==SYNTH_CURSYNTH)
     M=&CS;
-  if (machine_type==5)
+  if (machine_type==SYNTH_OPEN303)
     M=&O303;
   #endif
 
