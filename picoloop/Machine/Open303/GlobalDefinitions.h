@@ -9,7 +9,9 @@ rosic namespace to facilitate their global use. */
 #ifdef _MSC_VER
 #define INLINE __forceinline
 #else
+#ifndef INLINE
 #define INLINE inline  // something better to do here ?
+#endif
 #endif
 
 //_SET_FLUSH_ZERO_MODE(_MM_FLUSH_ZERO_ON)
