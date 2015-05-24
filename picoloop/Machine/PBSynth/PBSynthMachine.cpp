@@ -167,19 +167,6 @@ int PBSynthMachine::checkI(int what,int val)
       return val;
       break;
 
-    case FILTER1_TYPE:
-      if (val<0) return 0;
-      if (val>3) return 3;
-      return val;
-      break;
-
-    case FILTER1_ALGO:
-      if (val<0) return 0;
-      if (val>2) return 2;
-      return val;
-      break;
-
-
     default:
       if (val<0)   return 0;
       if (val>127) return 127;
@@ -211,29 +198,6 @@ void PBSynthMachine::setI(int what,int val)
 
   f_val=val;
   f_val=f_val/128;
-  //FreqMultiple freqM[15];
-  //Waveform     w[4];
-  // w[0]=SIN;
-  // w[1]=HALF_SIN;
-  // w[2]=ABS_SIN;
-  // w[3]=QUART_SIN;
-
-  // freqM[0]=xHALF;
-  // freqM[1]=x1;
-  // freqM[2]=x2;
-  // freqM[3]=x3;
-  // freqM[4]=x4;
-  // freqM[5]=x5;
-  // freqM[6]=x6;
-  // freqM[7]=x7;
-  // freqM[8]=x8;
-  // freqM[9]=x9;
-  // freqM[10]=x10;
-  // freqM[11]=x12;
-  // freqM[12]=x15;
-
-  //HO->EnableAdditiveSynthesis(1,true);
-
   if (what==TRIG_TIME_MODE)       trig_time_mode=val;
   if (what==TRIG_TIME_DURATION) { trig_time_duration=val; trig_time_duration_sample=val*512; }
 
@@ -257,25 +221,14 @@ void PBSynthMachine::setI(int what,int val)
     if (what==OSC1_TYPE)           
       { 
 	osc1_type=val;
-	//SE.getPBSynthOscillator(0)->setWave(val%2);
 	SE->getPBSynthOscillator(0)->setWave(val%PICO_PBSYNTH_SIZE);
-	//HO->SetWaveform(1,1,w[val]);
-	//HO->EnableWaveformControl();
       }
     if (what==OSC2_TYPE)           
       {
 	osc2_type=val;
 	//SE.getPBSynthOscillator(1)->setWave(val%2);
 	SE->getPBSynthOscillator(1)->setWave(val%PICO_PBSYNTH_SIZE);
-	// HO->SetWaveform(1,2,w[val]);
-	// HO->EnableWaveformControl();
       }
-
-
-    //if (what==ADSR_ENV0_ATTACK)    SE.getEnvelope(0)->setA(-1.0f/(val+1));
-    // if (what==ADSR_ENV0_DECAY)     SE.getEnvelope(0)->setD(-1.0f/(val+1));
-    // if (what==ADSR_ENV0_SUSTAIN)   SE.getEnvelope(0)->setS( 1.0f/(val+1));
-    // if (what==ADSR_ENV0_RELEASE)   SE.getEnvelope(0)->setR(-1.0f/(val+1));
 
     if (what==ADSR_ENV0_ATTACK)    SE->getEnvelope(0)->setA(-1+f_val);
     if (what==ADSR_ENV0_DECAY)     SE->getEnvelope(0)->setD(-1+f_val);
@@ -309,24 +262,6 @@ void PBSynthMachine::setI(int what,int val)
   if (what==OSC1_AMP)               SE->setParameter(SENGINE_ENV1_TO_OSC1PW,(f_val*2)-1);
   if (what==OSC2_AMP)               SE->setParameter(SENGINE_ENV1_TO_OSC2PW,(f_val*2)-1);
 
-
-    // if (what==FILTER1_CUTOFF)      
-    //   { 
-    // 	cutoff=val;
-    // 	filter.setCutoff(cutoff);
-    //   }
-    
-    // if (what==FILTER1_RESONANCE)         
-    //   { 
-    // 	resonance=val;
-    // 	filter.setResonance(resonance);
-    //   }
-    
-    // if (what==FILTER1_TYPE)     filter.setPBSynthFilterType(val);
-    // if (what==FILTER1_ALGO)     filter.setPBSynthFilterAlgo(val);
-    
-    
-  
 }
 
 int PBSynthMachine::tick()
@@ -368,9 +303,9 @@ int PBSynthMachine::tick()
        	  //buffer[i]=buffer[i]/64;
        	  buffer[i]=buffer[i]*2048;
        	}
-       // for(i=0;i<32;i++)
-       // 	 printf("%d\t",buffer[i]);
-       // printf("\n");
+      // for(i=0;i<32;i++)
+      // 	 printf("%d\t",buffer[i]);
+      // printf("\n");
       
       // for(i=0;i<SAM;i++)
       // 	{
