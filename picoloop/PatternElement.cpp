@@ -66,7 +66,7 @@ void PatternElement::init()
   lfo1_env_amount=64;
   lfo2_env_amount=64;
 
-  osc1_detune=64;
+  osc1_detune=65;
 
   machine_type=SYNTH_PICOSYNTH;
 
