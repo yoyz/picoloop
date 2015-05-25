@@ -339,8 +339,10 @@ Sint16 PicosynthVCO::tick()
   //s1->setNoteDetune((note<<7)+lfo_tick_normdownshift);
   
       pbtick=pb.tickNoteDetune();
-      s1->setNoteDetune(pbtick);
-      s2->setNoteDetune(pbtick);
+      //s1->setNoteDetune(pbtick);
+      //s2->setNoteDetune(pbtick);
+      s1->setFreq(pbtick);
+      s2->setFreq(pbtick);
     }
 
   
