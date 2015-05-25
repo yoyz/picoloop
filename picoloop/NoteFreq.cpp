@@ -78,7 +78,7 @@ float NoteFreq::getFNoteFreq(int note)
   
   float note_hertz[]=
     {
-      0.0       ,       // 0  N/A
+      8.0       ,       // 0  N/A
       16.35     ,	// 1  C-1
       17.32     ,	// 2  C-1+
       18.35     ,	// 3  D-1
@@ -197,6 +197,10 @@ float NoteFreq::getFNoteFreq(int note)
       7902.13   ,	// 108 B7                                   
     };
 
+  if (note<=0) 
+    return note_hertz[0];
+  if (note>=108)
+    return note_hertz[108];
 
   return note_hertz[note];
 }

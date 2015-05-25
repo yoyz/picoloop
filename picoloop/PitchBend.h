@@ -25,6 +25,8 @@ class PitchBend
   Sint16 note;
   Sint16 speed;
   Sint16 depth;
+  Sint16 depth_pos;
+  //Sint16 depth_neg;
   Sint32 formula1; // NoteDetune value
   Sint32 formula2; // is the pitch bend apply to note value
 

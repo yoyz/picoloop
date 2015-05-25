@@ -23,8 +23,11 @@ PitchBend::~PitchBend()
 void PitchBend::setDepth(int d)
 {
   depth=d;
+  depth_pos=depth-64;
+  if (depth_pos<0)
+    depth_pos=-depth_pos;
   this->calc();
-
+  
 }
 
 void PitchBend::setSpeed(int s)
@@ -47,10 +50,30 @@ void PitchBend::reset()
 
 void PitchBend::calc()
 {
-  formula1=((note<<7)+64);
-  formula2=(depth-64)<<9;
+  int   freqOsc1;
+  int   freqOsc2;
+  NoteFreq & NF = NoteFreq::getInstance();
+
+  //freqOsc1=NF.getINoteFreq(note+64);
+  freqOsc1=NF.getINoteFreq(note);
+  //formula1=((note<<7)+64);
+  formula1=freqOsc1;
+
+
+  freqOsc2=NF.getINoteFreq(note+depth_pos);
+
+  if (depth>64)
+    formula2=freqOsc2;
+  else
+    formula2=-freqOsc2;
+
+  // if (depth<64)
+  //      formula2=-formula2;
+  //formula2=(depth-64)<<8;
   div=1;
-  speed_calc=speed*6;
+  //speed_calc=speed*6;
+  speed_calc=speed;
+  printf("###### %d %d %d\n",formula1,formula2,speed);
 }
 
 
@@ -73,7 +96,8 @@ int  PitchBend::tickNoteDetune()
       sample_num=0;
     }
   val=formula1+formula2/div; // <= new one easier to speedup
-
+  //  if (val>16000)
+  //    return 16000;
 
 
   //printf("                                                                   val:%d\n",val);
