@@ -73,7 +73,7 @@ void Oscillator::setFreq(int freq)
 
   if (freq <= 0)          
     {
-      freq=0;
+      freq=1;
       offset_next_index=(table_size)/44100;
     }
   else 
@@ -121,14 +121,18 @@ Sint16 Oscillator::tick()
   const int   wtshift=1<<shift;
 
   index=index+offset_next_index;
-  if (index<0) index=0;
+  //if (index<0) index=0;
   if ((index>>shift)>=table_size)
     {
       index=index-(table_size<<shift);
-      if ((index>>shift)>=table_size)
-	{
-	  index=0;
-	}
+
+      /*
+	Should be useless now
+       */
+      //if ((index>>shift)>=table_size)
+      //{
+      //index=0;
+      //}
 
       //      if ((index>>16)>table_size)
       //index=0;
