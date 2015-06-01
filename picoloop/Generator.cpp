@@ -1,6 +1,9 @@
 #include "Generator.h"
 
-Generator::Generator() : table(new Sint16[WAVETABLE_SIZE])
+#define FBSIZE 256
+
+Generator::Generator() : table(new Sint16[WAVETABLE_SIZE]),
+			 feedback(new Sint16[FBSIZE])
 {
   table_size=WAVETABLE_SIZE;
 }
@@ -9,7 +12,31 @@ Generator::~Generator()
 {
 }
 
+Sint16 Generator::feedFeedBack(Sint16 input)
+{
+  Sint32 output32=0;
+  Sint16 output=0; 
+  int    i;
 
+  
+  feedback[FBSIZE-1]=input;
+  for (i=0;i<FBSIZE;i++)
+    output32=output32+feedback[i];
+
+  output=output32/FBSIZE;
+  
+  for (i=0;i<FBSIZE;i++)
+    feedback[i]=feedback[i+1];
+  
+  return output;
+}
+
+void Generator::initFeedBack()
+{
+  int i;
+  for (i=0;i<FBSIZE;i++)
+    feedback[i]=0;
+}
 
 void Generator::sine()
 {
@@ -35,15 +62,25 @@ void Generator::saw()
   Sint16 dec;
 
   printf("Generator::saw() 0x%08.8X\n",table);
-
+  initFeedBack();
+  
   s=(1<<(bitdepth-2));
   dec=(1<<(bitdepth-2))/(table_size/2);
 
   for (i=0;i<table_size;i++)
     {
+      //table[i]=s;
+      //table[i]=feedFeedBack(s);
       table[i]=s;
       s=s-dec;
     }
+
+  initFeedBack();
+  for (i=0;i<table_size-FBSIZE;i++)
+    table[i]=feedFeedBack(table[i]);
+  for (i=table_size-FBSIZE;i<table_size;i++)
+    table[i]=feedFeedBack(0);
+
 }
 
 
@@ -54,17 +91,26 @@ void Generator::pulse()
   Sint16 s;
   Sint16 bitdepth=16;
   Sint16 dec=(1<<(bitdepth-2))/(table_size/2);
-
+  
   printf("Generator::pulse() 0x%08.8X\n",table);
 
+  //initFeedBack();
   for (i=0;i<table_size/2;i++)
     {
       table[i]=((1<<(bitdepth-2))/2);
+      //table[i]=feedFeedBack(((1<<(bitdepth-2))/2));
     }
   for (i=table_size/2;i<table_size;i++)
     {
       table[i]=((1<<(bitdepth-2))*-1)/2;
+      //table[i]=feedFeedBack(((1<<(bitdepth-2))*-1)/2);
     }
+
+  initFeedBack();
+  for (i=0;i<table_size-FBSIZE;i++)
+    table[i]=feedFeedBack(table[i]);
+  for (i=table_size-FBSIZE;i<table_size;i++)
+    table[i]=feedFeedBack(0);
 }
 
 
@@ -77,7 +123,7 @@ void Generator::triangle()
   Sint16 dec=(1<<(bitdepth-2))/(table_size/4);
       
   printf("Generator::triangle() 0x%08.8X\n",table);
-
+  
   //table=(Sint16*)malloc(sizeof(Sint16)*table_size);      
   for (i=0;i<(table_size*1)/4;i++)
     {
