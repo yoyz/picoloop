@@ -12,6 +12,9 @@ class Generator
 public:
   Generator();
   ~Generator();
+
+  void initFeedBack();
+  Sint16 feedFeedBack(Sint16 input);
   void sine();
   void saw();
   void pulse();
@@ -28,6 +31,7 @@ public:
   int      table_size;
   int      index;
   int      d;
+  Sint16 * feedback;
 
 };
 #endif
