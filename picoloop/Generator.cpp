@@ -52,7 +52,7 @@ void Generator::sine()
       //printf("table[%d]=%d\n",i,s);
     }
 }
-
+/*
 void Generator::saw()
 {
   int i;
@@ -82,8 +82,39 @@ void Generator::saw()
     table[i]=feedFeedBack(0);
 
 }
+*/
 
 
+void Generator::saw()
+{
+  int i;
+  float f;
+  Sint16 s;
+  Sint16 bitdepth=16;
+  Sint16 dec;
+
+  printf("Generator::saw() 0x%08.8X\n",table);
+  initFeedBack();
+  
+  s=(1<<(bitdepth-2));
+  dec=(1<<(bitdepth-2))/(table_size/2);
+
+  for (i=0;i<table_size;i++)
+    {
+      //table[i]=s;
+      //table[i]=feedFeedBack(s);
+      table[i]=s;
+      s=s-dec;
+    }
+
+  initFeedBack();
+  for (i=0;i<table_size-FBSIZE;i++)
+    table[i]=feedFeedBack(table[i]);
+  for (i=table_size-FBSIZE;i<table_size;i++)
+    table[i]=feedFeedBack(0);
+}
+
+  /*
 void Generator::pulse()
 {
   int i;
@@ -112,8 +143,36 @@ void Generator::pulse()
   for (i=table_size-FBSIZE;i<table_size;i++)
     table[i]=feedFeedBack(0);
 }
+  */
 
+void Generator::pulse()
+{
+  int i;
+  float f;
+  Sint16 s;
+  Sint16 s1;
+  Sint16 s2;
+  Sint16 s3;
+  Sint16 s4;
+  Sint16 bitdepth=16;
+  Sint16 dec=(1<<(bitdepth-2))/(table_size/2);
+  
+  printf("Generator::pulse() 0x%08.8X\n",table);
 
+  //initFeedBack();
+  for (i=0;i<table_size;i++)
+    {
+      s1=sin((2*3.14159*i*1)/table_size)*(1<<bitdepth-2);
+      s2=sin((2*3.14159*i*2)/table_size)*(1<<bitdepth-3);
+      s3=sin((2*3.14159*i*3)/table_size)*(1<<bitdepth-4);
+      s4=sin((2*3.14159*i*4)/table_size)*(1<<bitdepth-5);
+      table[i]=s1-s2+s3-s4;
+      //table[i]=feedFeedBack(((1<<(bitdepth-2))/2));
+      //printf("table[%d]=%d\n",i,table[i]);
+    }
+}
+ 
+  
 void Generator::triangle()
 {
   int i;
