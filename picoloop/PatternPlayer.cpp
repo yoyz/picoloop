@@ -2585,42 +2585,76 @@ void wtg()
 
   WT = new WaveTable();
   WT->setSize(WAVETABLE_SIZE);
-  G.noise();
-  memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE*DEFAULTBITRATE/8);
-  WTM.insert(WT,PICO_WAVETABLE_NOISE);
+  G.LFSRNoise();
+  memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE);
+  WTM.insert(WT,PICO_WAVETABLE_LFSRNOISE);
 
-
-  WT = new WaveTable();
-  WT->setSize(WAVETABLE_SIZE);
-  G.noise();
-  memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE*DEFAULTBITRATE/8);
-  WTM.insert(WT,PICO_WAVETABLE_NOISE);
-
+  
 
   WT = new WaveTable();
   WT->setSize(WAVETABLE_SIZE);
   G.sine();
-  memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE*DEFAULTBITRATE/8);
+  memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE);
   WTM.insert(WT,PICO_WAVETABLE_SINE);
 
   WT = new WaveTable();
   WT->setSize(WAVETABLE_SIZE);
   G.saw();
-  memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE*DEFAULTBITRATE/8);
+  memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE);
   WTM.insert(WT,PICO_WAVETABLE_SAW);
 
   WT = new WaveTable();
   WT->setSize(WAVETABLE_SIZE);
   G.pulse();
-  memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE*DEFAULTBITRATE/8);
+  memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE);
   WTM.insert(WT,PICO_WAVETABLE_PULSE);
 
   WT = new WaveTable();
   WT->setSize(WAVETABLE_SIZE);
   G.triangle();
-  memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE*DEFAULTBITRATE/8);
+  memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE);
   WTM.insert(WT,PICO_WAVETABLE_TRGL);
 
+  WT = new WaveTable();
+  WT->setSize(WAVETABLE_SIZE);
+  G.smoothSine();
+  memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE);
+  WTM.insert(WT,PICO_WAVETABLE_SMSINE);
+
+  WT = new WaveTable();
+  WT->setSize(WAVETABLE_SIZE);
+  G.smoothSaw();
+  memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE);
+  WTM.insert(WT,PICO_WAVETABLE_SMSAW);
+
+  WT = new WaveTable();
+  WT->setSize(WAVETABLE_SIZE);
+  G.smoothPulse();
+  memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE);
+  WTM.insert(WT,PICO_WAVETABLE_SMPULSE);
+
+  WT = new WaveTable();
+  WT->setSize(WAVETABLE_SIZE);
+  G.smoothTriangle();
+  memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE);
+  WTM.insert(WT,PICO_WAVETABLE_SMTRGL);
+
+
+  WT = new WaveTable();
+  WT->setSize(WAVETABLE_SIZE);
+  G.noise();
+  //memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE*DEFAULTBITRATE/8);
+  memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE);
+  WTM.insert(WT,PICO_WAVETABLE_NOISE);
+
+
+  
+  // WT = new WaveTable();
+  // WT->setSize(WAVETABLE_SIZE);
+  // G.noise();
+  // memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE);
+  // WTM.insert(WT,PICO_WAVETABLE_NOISE);
+  
   printf("wavetablemanager.getSize : %d\n",WTM.getSize());
 
 }

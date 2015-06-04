@@ -43,7 +43,13 @@ void WaveTableManager::insert(WaveTable * WT,int position)
 
 WaveTable * WaveTableManager::get(int position)
 {
-  return wtvector[position];
+  if (position<wtvector.size())
+    return wtvector[position];
+  else
+    {
+      printf("WaveTable * WaveTableManager::get(%d) fails",position);
+      exit(1);
+    }
 }
 
 

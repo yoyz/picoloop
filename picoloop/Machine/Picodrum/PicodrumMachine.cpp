@@ -51,13 +51,13 @@ int PicodrumMachine::checkI(int what,int val)
     {
     case OSC1_TYPE:
       if (val<0) return 0;
-      if (val>4) return 4;
+      if (val>PICO_WAVETABLE_SIZE-2) return PICO_WAVETABLE_SIZE-1;
       return val;
       break;
 
     case OSC2_TYPE:
       if (val<0) return 0;
-      if (val>4) return 4;
+      if (val>PICO_WAVETABLE_SIZE-2) return PICO_WAVETABLE_SIZE-1;
       return val;
       break;
 
@@ -182,8 +182,14 @@ const char * PicodrumMachine::getMachineParamCharStar(int machineParam,int param
   static const char * str_saw        = "SAW  ";
   static const char * str_pulse      = "PULSE";
   static const char * str_trgl       = "TRGL ";
+
+  static const char * str_smsine     = "SSIN ";
+  static const char * str_smsaw      = "SSAW ";
+  static const char * str_smpulse    = "SPULS";
+  static const char * str_smtrgl     = "STRGL";
+
+  static const char * str_lfsr_noise = "LFSR ";
   static const char * str_noise      = "NOISE";
-  static const char * str_wtbl       = "WTBL ";
 
   const        char * str_osc[PICO_WAVETABLE_SIZE];
 
@@ -205,7 +211,14 @@ const char * PicodrumMachine::getMachineParamCharStar(int machineParam,int param
   str_osc[PICO_WAVETABLE_SAW]         = str_saw;
   str_osc[PICO_WAVETABLE_PULSE]       = str_pulse;
   str_osc[PICO_WAVETABLE_TRGL]        = str_trgl;
+
+  str_osc[PICO_WAVETABLE_SMSINE]      = str_smsine;
+  str_osc[PICO_WAVETABLE_SMSAW]       = str_smsaw;
+  str_osc[PICO_WAVETABLE_SMPULSE]     = str_smpulse;
+  str_osc[PICO_WAVETABLE_SMTRGL]      = str_smtrgl;
+
   str_osc[PICO_WAVETABLE_NOISE]       = str_noise;
+  str_osc[PICO_WAVETABLE_LFSRNOISE]   = str_lfsr_noise;
 
   str_fltr_algo[FILTER_ALGO_NOFILTER] = str_fltr_algo_nofilter;
   str_fltr_algo[FILTER_ALGO_BIQUAD]   = str_fltr_algo_biquad;

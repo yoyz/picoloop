@@ -6,6 +6,7 @@ Generator::Generator() : table(new Sint16[WAVETABLE_SIZE]),
 			 feedback(new Sint16[FBSIZE])
 {
   table_size=WAVETABLE_SIZE;
+  table[0]=0;
 }
 
 Generator::~Generator()
@@ -52,7 +53,28 @@ void Generator::sine()
       //printf("table[%d]=%d\n",i,s);
     }
 }
-/*
+
+
+void Generator::smoothSine()
+{
+  int i;
+  float f;
+  Sint16 s1;
+  Sint16 s2;
+  Sint16 bitdepth=16-1;
+  printf("Generator::sine() 0x%08.8X\n",table);
+  for (i=0;i<table_size;i++)
+    {
+      s1=sin((2*3.14159*i*1)/table_size)*(1<<bitdepth-2);
+      s2=sin((2*3.14159*i*2)/table_size)*(1<<bitdepth-4);
+
+      
+      table[i]=s1-s2;
+      //printf("table[%d]=%d\n",i,s);
+    }
+}
+
+
 void Generator::saw()
 {
   int i;
@@ -69,84 +91,12 @@ void Generator::saw()
 
   for (i=0;i<table_size;i++)
     {
-      //table[i]=s;
-      //table[i]=feedFeedBack(s);
       table[i]=s;
       s=s-dec;
     }
-
-  initFeedBack();
-  for (i=0;i<table_size-FBSIZE;i++)
-    table[i]=feedFeedBack(table[i]);
-  for (i=table_size-FBSIZE;i<table_size;i++)
-    table[i]=feedFeedBack(0);
-
 }
-*/
 
-
-// void Generator::saw()
-// {
-//   int i;
-//   float f;
-//   Sint16 s;
-//   Sint16 bitdepth=16;
-//   Sint16 dec;
-
-//   printf("Generator::saw() 0x%08.8X\n",table);
-//   initFeedBack();
-  
-//   s=(1<<(bitdepth-2));
-//   dec=(1<<(bitdepth-2))/(table_size/2);
-
-//   for (i=0;i<table_size;i++)
-//     {
-//       //table[i]=s;
-//       //table[i]=feedFeedBack(s);
-//       table[i]=s;
-//       s=s-dec;
-//     }
-
-//   initFeedBack();
-//   // for (i=0;i<table_size-FBSIZE;i++)
-//   //   table[i]=feedFeedBack(table[i]);
-//   // for (i=table_size-FBSIZE;i<table_size;i++)
-//   //   table[i]=feedFeedBack(0);
-// }
-
-  /*
-void Generator::pulse()
-{
-  int i;
-  float f;
-  Sint16 s;
-  Sint16 bitdepth=16;
-  Sint16 dec=(1<<(bitdepth-2))/(table_size/2);
-  
-  printf("Generator::pulse() 0x%08.8X\n",table);
-
-  //initFeedBack();
-  for (i=0;i<table_size/2;i++)
-    {
-      table[i]=((1<<(bitdepth-2))/2);
-      //table[i]=feedFeedBack(((1<<(bitdepth-2))/2));
-    }
-  for (i=table_size/2;i<table_size;i++)
-    {
-      table[i]=((1<<(bitdepth-2))*-1)/2;
-      //table[i]=feedFeedBack(((1<<(bitdepth-2))*-1)/2);
-    }
-
-  initFeedBack();
-  for (i=0;i<table_size-FBSIZE;i++)
-    table[i]=feedFeedBack(table[i]);
-  for (i=table_size-FBSIZE;i<table_size;i++)
-    table[i]=feedFeedBack(0);
-}
-  */
-
-
-void Generator::saw()
+void Generator::smoothSaw()
 {
   int i;
   float f;
@@ -186,8 +136,36 @@ void Generator::saw()
       //printf("table[%d]=%d\n",i,table[i]);
     }
 }
- 
+
+
+
 void Generator::pulse()
+{
+  int i;
+  float f;
+  Sint16 s;
+  Sint16 bitdepth=16;
+  Sint16 dec=(1<<(bitdepth-2))/(table_size/2);
+  
+  printf("Generator::pulse() 0x%08.8X\n",table);
+
+  //initFeedBack();
+  for (i=0;i<table_size/2;i++)
+    {
+      table[i]=((1<<(bitdepth-2))/2);
+      //table[i]=feedFeedBack(((1<<(bitdepth-2))/2));
+    }
+  for (i=table_size/2;i<table_size;i++)
+    {
+      table[i]=((1<<(bitdepth-2))*-1)/2;
+      //table[i]=feedFeedBack(((1<<(bitdepth-2))*-1)/2);
+    }
+}
+
+
+
+ 
+void Generator::smoothPulse()
 {
   int i;
   float f;
@@ -232,9 +210,37 @@ void Generator::pulse()
       //printf("table[%d]=%d\n",i,table[i]);
     }
 }
- 
+
 
 void Generator::triangle()
+{
+  int i;
+  float f;
+  Sint16 s=0;
+  Sint16 bitdepth=16;
+  Sint16 dec=(1<<(bitdepth-2))/(table_size/4);
+
+  printf("Generator::triangle() 0x%08.8X\n",table);
+
+  //table=(Sint16*)malloc(sizeof(Sint16)*table_size);
+  for (i=0;i<(table_size*1)/4;i++)
+    {
+      table[i]=s;
+      s=s+dec;
+    }
+  for (i=(table_size*1)/4;i<(table_size*3)/4;i++)
+    {
+      table[i]=s;
+      s=s-dec;
+    }
+  for (i=(table_size*3)/4;i<table_size;i++)
+    {
+      table[i]=s;
+      s=s+dec;
+    }
+}
+
+void Generator::smoothTriangle()
 {
   int i;
   float f;
@@ -262,9 +268,29 @@ void Generator::triangle()
 }
 
 
-
-
 void Generator::noise()
+{
+  int i;
+  float f;
+  Sint16 s;
+  Sint16 bitdepth=16;
+
+  printf("Generator::noise() 0x%08.8X\n",table);
+
+  srand(1<<(bitdepth-2));
+  for (i=0;i<table_size;i++)
+    {
+      if (rand()%2==0)
+	table[i]=rand()%8192;
+      else
+	table[i]=(rand()%8192)*-1;
+    }
+}
+
+
+
+
+void Generator::LFSRNoise()
 {
   int i;
   float f;

@@ -36,7 +36,7 @@ class Oscillator
 
 
   Sint16 last_tick;
-  int    length;
+  //int    length;
   int    amplitude;
   int    frequency;
   int    bit;
