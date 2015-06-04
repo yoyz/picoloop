@@ -170,18 +170,18 @@ void Generator::saw()
   //initFeedBack();
   for (i=0;i<table_size;i++)
     {
-      s1 =sin((2*3.14159*i*1)/table_size)*(1<<bitdepth-2);
-      s2 =sin((2*3.14159*i*2)/table_size)*(1<<bitdepth-3);
-      s3 =sin((2*3.14159*i*3)/table_size)*(1<<bitdepth-4);
-      s4 =sin((2*3.14159*i*4)/table_size)*(1<<bitdepth-5);
-      s5 =sin((2*3.14159*i*5)/table_size)*(1<<bitdepth-5);
-      s6 =sin((2*3.14159*i*6)/table_size)*(1<<bitdepth-6);
-      s7 =sin((2*3.14159*i*7)/table_size)*(1<<bitdepth-7);
-      s8 =sin((2*3.14159*i*8)/table_size)*(1<<bitdepth-8);
-      s9 =sin((2*3.14159*i*9)/table_size)*(1<<bitdepth-9);
+      s1 =sin((2*3.14159*i*1)/table_size) *(1<<bitdepth-2);
+      s2 =sin((2*3.14159*i*2)/table_size) *(1<<bitdepth-3);
+      s3 =sin((2*3.14159*i*3)/table_size) *(1<<bitdepth-4);
+      s4 =sin((2*3.14159*i*4)/table_size) *(1<<bitdepth-5);
+      s5 =sin((2*3.14159*i*5)/table_size) *(1<<bitdepth-5);
+      s6 =sin((2*3.14159*i*6)/table_size) *(1<<bitdepth-6);
+      s7 =sin((2*3.14159*i*7)/table_size) *(1<<bitdepth-7);
+      s8 =sin((2*3.14159*i*8)/table_size) *(1<<bitdepth-8);
+      s9 =sin((2*3.14159*i*9)/table_size) *(1<<bitdepth-9);
       s10=sin((2*3.14159*i*10)/table_size)*(1<<bitdepth-10);
 
-      table[i]=s1-s2+s3-s4+s5-s6+s7-s8+s9-s10;
+      table[i]=(s1-s2+s3-s4+s5-s6+s7-s8+s9-s10)/2;
       //table[i]=feedFeedBack(((1<<(bitdepth-2))/2));
       //printf("table[%d]=%d\n",i,table[i]);
     }
@@ -211,22 +211,22 @@ void Generator::pulse()
   //initFeedBack();
   for (i=0;i<table_size;i++)
     {
-      s1=sin((2*3.14159*i*1)/table_size)*(1<<bitdepth-2);
-      s2=sin((2*3.14159*i*2)/table_size)*(1<<bitdepth-2);
-      s3=sin((2*3.14159*i*3)/table_size)*(1<<bitdepth-2);
-      s4=sin((2*3.14159*i*4)/table_size)*(1<<bitdepth-2);
-      s5=sin((2*3.14159*i*3)/table_size)*(1<<bitdepth-2);
-      s6=sin((2*3.14159*i*4)/table_size)*(1<<bitdepth-2);
-      s7 =sin((2*3.14159*i*7)/table_size)*(1<<bitdepth-2);
-      s8 =sin((2*3.14159*i*8)/table_size)*(1<<bitdepth-2);
-      s9 =sin((2*3.14159*i*9)/table_size)*(1<<bitdepth-2);
-      s10=sin((2*3.14159*i*10)/table_size)*(1<<bitdepth-2);
+      s1 =sin((2*3.14159*i*1 )/table_size) *(1<<bitdepth-2);
+      s2 =sin((2*3.14159*i*2 )/table_size) *(1<<bitdepth-2);
+      s3 =sin((2*3.14159*i*3 )/table_size) *(1<<bitdepth-2);
+      s4 =sin((2*3.14159*i*4 )/table_size) *(1<<bitdepth-2);
+      s5 =sin((2*3.14159*i*3 )/table_size) *(1<<bitdepth-2);
+      s6 =sin((2*3.14159*i*4 )/table_size) *(1<<bitdepth-2);
+      s7 =sin((2*3.14159*i*7 )/table_size) *(1<<bitdepth-2);
+      s8 =sin((2*3.14159*i*8 )/table_size) *(1<<bitdepth-2);
+      s9 =sin((2*3.14159*i*9 )/table_size) *(1<<bitdepth-2);
+      s10=sin((2*3.14159*i*10)/table_size) *(1<<bitdepth-2);
 
       //table[i]=s1-s2/4-s3/2;
       if (s1>=0)
-	table[i]=s1+(abs(s2/2)+abs(s3/3)+abs(s4/4)+abs(s5/5)+abs(s6/6)); //+abs(s7/7)); //+abs(s8/8)+abs(s9/9)+abs(s10/10));
+	table[i]=(s1+(abs(s2/2)+abs(s3/3)+abs(s4/4)+abs(s5/5)+abs(s6/6)))/2; //+abs(s7/7)); //+abs(s8/8)+abs(s9/9)+abs(s10/10));
       else
-	table[i]=s1-(abs(s2/2)+abs(s3/3)+abs(s4/4)+abs(s5/5)+abs(s6/6)); //+abs(s7/7)); //+abs(s8/8)+abs(s9/9)+abs(s10/10));
+	table[i]=(s1-(abs(s2/2)+abs(s3/3)+abs(s4/4)+abs(s5/5)+abs(s6/6)))/2; //+abs(s7/7)); //+abs(s8/8)+abs(s9/9)+abs(s10/10));
       //-4*s4-5*s5-6*s6-7*s7-8*s8-9*s9;
       //table[i]=feedFeedBack(((1<<(bitdepth-2))/2));
       //printf("table[%d]=%d\n",i,table[i]);
@@ -271,15 +271,38 @@ void Generator::noise()
   Sint16 s;
   Sint16 bitdepth=16;
 
+  Sint16 mask[16];
+  
+  mask[0]= 0b0011010101101010;
+  mask[1]= 0b0110101011010100;
+  mask[2]= 0b1101010110101000;
+  mask[3]= 0b1010101101010001;
+  mask[4]= 0b0101011010100011;
+  mask[5]= 0b1010110101000110;
+  mask[6]= 0b0101101010001101;
+  mask[7]= 0b1011010100011010;
+  mask[8]= 0b0110101000110101;
+  mask[9]= 0b1101010001101010;
+  mask[10]=0b1010100011010101;
+  mask[11]=0b0101000110101011;
+  mask[12]=0b1010001101010110;
+  mask[13]=0b0100011010101101;
+  mask[14]=0b1000110101011010;
+  mask[15]=0b0001101010110101;
+  
   printf("Generator::noise() 0x%08.8X\n",table);
 
   srand(1<<(bitdepth-2));
   for (i=0;i<table_size;i++)
     {
       if (rand()%2==0)
-	table[i]=rand()%8192;
-      else
-	table[i]=(rand()%8192)*-1;      
+	table[i]=mask[i%16];
+	//table[i]=rand()%8192;
+	else
+	  table[i]=-mask[i%16];
+	//table[i]=(rand()%8192)*-1;      
+      //table[i]=table[i] & mask[i%16];
+      //table[i]
     }  
 }
 
