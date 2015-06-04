@@ -18,9 +18,17 @@ public:
   void sine();
   void saw();
   void pulse();
-  void one();
   void triangle();
   void noise();
+
+  void smoothSine();
+  void smoothSaw();
+  void smoothPulse();
+  void smoothTriangle();
+  void LFSRNoise();
+
+  
+  void one();
   Sint16 * getBuffer();
 
  private:

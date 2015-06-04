@@ -2,19 +2,27 @@
 
 
 PicodrumVCO::PicodrumVCO() : sineOsc1(), 
-	     sineOsc2(), 
-	     sawOsc1(), 
-	     sawOsc2(), 
-	     pulseOsc1(), 
-	     pulseOsc2(), 
-	     triangleOsc1(), 
-	     triangleOsc2(), 
-	     waveTableSineOsc1(), 
-	     waveTableSineOsc2(), 
-	     noiseOsc1(), 
-	     noiseOsc2(), 
-	     sineLfoOsc1(), 
-	     sawLfoOsc1() //, noiseosc()
+			     sineOsc2(), 
+			     sawOsc1(), 
+			     sawOsc2(), 
+			     pulseOsc1(), 
+			     pulseOsc2(), 
+			     triangleOsc1(), 
+			     triangleOsc2(),
+			     smsineOsc1(), 
+			     smsineOsc2(), 
+			     smsawOsc1(), 
+			     smsawOsc2(), 
+			     smpulseOsc1(), 
+			     smpulseOsc2(), 
+			     smtriangleOsc1(), 
+			     smtriangleOsc2(),
+			     lfsrnoiseOsc1(), 
+			     lfsrnoiseOsc2(), 
+			     noiseOsc1(), 
+			     noiseOsc2(), 
+			     sineLfoOsc1(), 
+			     sawLfoOsc1() //, noiseosc()
 {
   printf("PicodrumVCO::PicodrumVCO()\n");
   s1=NULL;
@@ -44,28 +52,6 @@ void PicodrumVCO::init()
   lfo_speed=0;
 
 
-  /*
-  sineOsc1.init();
-  sineOsc2.init();
-
-  sawOsc1.init();
-  sawOsc2.init();
-
-  pulseOsc1.init();
-  pulseOsc2.init();
-
-  triangleOsc1.init();
-  triangleOsc2.init();
-
-  waveTableSineOsc1.init();
-  waveTableSineOsc2.init();
-
-  noiseOsc1.init();
-  noiseOsc2.init();
-
-  sineLfoOsc1.init();
-  sawLfoOsc1.init();
-  */
 
   sineOsc1.setWaveForm(PICO_WAVETABLE_SINE);
   sineOsc2.setWaveForm(PICO_WAVETABLE_SINE);
@@ -79,14 +65,30 @@ void PicodrumVCO::init()
   triangleOsc1.setWaveForm(PICO_WAVETABLE_TRGL);
   triangleOsc2.setWaveForm(PICO_WAVETABLE_TRGL);
 
-  waveTableSineOsc1.setWaveForm(PICO_WAVETABLE_SINE);
-  waveTableSineOsc2.setWaveForm(PICO_WAVETABLE_SINE);
+  // waveTableSineOsc1.setWaveForm(PICO_WAVETABLE_SINE);
+  // waveTableSineOsc2.setWaveForm(PICO_WAVETABLE_SINE);
 
   noiseOsc1.setWaveForm(PICO_WAVETABLE_NOISE);
   noiseOsc2.setWaveForm(PICO_WAVETABLE_NOISE);
 
   sineLfoOsc1.setWaveForm(PICO_WAVETABLE_SINE);
   sawLfoOsc1.setWaveForm(PICO_WAVETABLE_SAW);
+
+
+    smsineOsc1.setWaveForm(PICO_WAVETABLE_SMSINE);
+  smsineOsc2.setWaveForm(PICO_WAVETABLE_SMSINE);
+
+  smsawOsc1.setWaveForm(PICO_WAVETABLE_SMSAW);
+  smsawOsc2.setWaveForm(PICO_WAVETABLE_SMSAW);
+
+  smpulseOsc1.setWaveForm(PICO_WAVETABLE_SMPULSE);
+  smpulseOsc2.setWaveForm(PICO_WAVETABLE_SMPULSE);
+
+  smtriangleOsc1.setWaveForm(PICO_WAVETABLE_SMTRGL);
+  smtriangleOsc2.setWaveForm(PICO_WAVETABLE_SMTRGL);
+
+  lfsrnoiseOsc1.setWaveForm( PICO_WAVETABLE_LFSRNOISE);
+  lfsrnoiseOsc2.setWaveForm(PICO_WAVETABLE_LFSRNOISE);
 
 
   //lfo1=&sineLfoOsc1;

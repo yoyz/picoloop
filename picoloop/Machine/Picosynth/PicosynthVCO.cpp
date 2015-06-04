@@ -8,9 +8,17 @@ PicosynthVCO::PicosynthVCO() : sineOsc1(),
 			       pulseOsc1(), 
 			       pulseOsc2(), 
 			       triangleOsc1(), 
-			       triangleOsc2(), 
-			       waveTableSineOsc1(), 
-			       waveTableSineOsc2(), 
+			       triangleOsc2(),
+			       smsineOsc1(), 
+			       smsineOsc2(), 
+			       smsawOsc1(), 
+			       smsawOsc2(), 
+			       smpulseOsc1(), 
+			       smpulseOsc2(), 
+			       smtriangleOsc1(), 
+			       smtriangleOsc2(),
+			       lfsrnoiseOsc1(), 
+			       lfsrnoiseOsc2(), 
 			       noiseOsc1(), 
 			       noiseOsc2(), 
 			       sineLfoOsc1(), 
@@ -59,28 +67,6 @@ void PicosynthVCO::init()
   pb_speed=0;
 
 
-  /*
-  sineOsc1.init();
-  sineOsc2.init();
-
-  sawOsc1.init();
-  sawOsc2.init();
-
-  pulseOsc1.init();
-  pulseOsc2.init();
-
-  triangleOsc1.init();
-  triangleOsc2.init();
-
-  waveTableSineOsc1.init();
-  waveTableSineOsc2.init();
-
-  noiseOsc1.init();
-  noiseOsc2.init();
-
-  sineLfoOsc1.init();
-  sawLfoOsc1.init();
-  */
 
   sineOsc1.setWaveForm(PICO_WAVETABLE_SINE);
   sineOsc2.setWaveForm(PICO_WAVETABLE_SINE);
@@ -94,11 +80,30 @@ void PicosynthVCO::init()
   triangleOsc1.setWaveForm(PICO_WAVETABLE_TRGL);
   triangleOsc2.setWaveForm(PICO_WAVETABLE_TRGL);
 
-  waveTableSineOsc1.setWaveForm(PICO_WAVETABLE_SINE);
-  waveTableSineOsc2.setWaveForm(PICO_WAVETABLE_SINE);
-
   noiseOsc1.setWaveForm(PICO_WAVETABLE_NOISE);
   noiseOsc2.setWaveForm(PICO_WAVETABLE_NOISE);
+
+
+  smsineOsc1.setWaveForm(PICO_WAVETABLE_SMSINE);
+  smsineOsc2.setWaveForm(PICO_WAVETABLE_SMSINE);
+
+  smsawOsc1.setWaveForm(PICO_WAVETABLE_SMSAW);
+  smsawOsc2.setWaveForm(PICO_WAVETABLE_SMSAW);
+
+  smpulseOsc1.setWaveForm(PICO_WAVETABLE_SMPULSE);
+  smpulseOsc2.setWaveForm(PICO_WAVETABLE_SMPULSE);
+
+  smtriangleOsc1.setWaveForm(PICO_WAVETABLE_SMTRGL);
+  smtriangleOsc2.setWaveForm(PICO_WAVETABLE_SMTRGL);
+
+  lfsrnoiseOsc1.setWaveForm( PICO_WAVETABLE_LFSRNOISE);
+  lfsrnoiseOsc2.setWaveForm(PICO_WAVETABLE_LFSRNOISE);
+
+
+  
+  //waveTableSineOsc1.setWaveForm(PICO_WAVETABLE_SINE);
+  //waveTableSineOsc2.setWaveForm(PICO_WAVETABLE_SINE);
+
 
   sineLfoOsc1.setWaveForm(PICO_WAVETABLE_SINE);
   sawLfoOsc1.setWaveForm(PICO_WAVETABLE_SAW);
@@ -111,8 +116,11 @@ void PicosynthVCO::init()
   lfo1->setAmplitude(32);
 
   //  s1 = &sineosc;
-  s1 = &pulseOsc1;
-  s2 = &sawOsc2;
+  //s1 = &pulseOsc1;
+  //s2 = &sawOsc2;
+  //s2 = &pulseOsc2;
+  s1 = &sineOsc1;
+  s2 = &sineOsc1;
 
   s1->setFreq(0);
   s1->setAmplitude(32);
@@ -165,20 +173,33 @@ void PicosynthVCO::setOscillator(int oscillator_number,int oscillator_type)
 
   if (oscillator_number %2==0)
     {
-      if (oscillator_type%5==0) s1=&sineOsc1;
-      if (oscillator_type%5==1) s1=&sawOsc1;
-      if (oscillator_type%5==2) s1=&pulseOsc1;
-      if (oscillator_type%5==3) s1=&triangleOsc1;
-      if (oscillator_type%5==4) s1=&noiseOsc1;
+      if (oscillator_type%PICO_WAVETABLE_SIZE==PICO_WAVETABLE_SINE)      s1=&sineOsc1;
+      if (oscillator_type%PICO_WAVETABLE_SIZE==PICO_WAVETABLE_SAW)       s1=&sawOsc1;
+      if (oscillator_type%PICO_WAVETABLE_SIZE==PICO_WAVETABLE_PULSE)     s1=&pulseOsc1;
+      if (oscillator_type%PICO_WAVETABLE_SIZE==PICO_WAVETABLE_TRGL)      s1=&triangleOsc1;
+      if (oscillator_type%PICO_WAVETABLE_SIZE==PICO_WAVETABLE_SMSINE)    s1=&smsineOsc1;
+      if (oscillator_type%PICO_WAVETABLE_SIZE==PICO_WAVETABLE_SMSAW)     s1=&smsawOsc1;
+      if (oscillator_type%PICO_WAVETABLE_SIZE==PICO_WAVETABLE_SMPULSE)   s1=&smpulseOsc1;
+      if (oscillator_type%PICO_WAVETABLE_SIZE==PICO_WAVETABLE_SMTRGL)    s1=&smtriangleOsc1;
+
+      if (oscillator_type%PICO_WAVETABLE_SIZE==PICO_WAVETABLE_NOISE)     s1=&noiseOsc1;
+      if (oscillator_type%PICO_WAVETABLE_SIZE==PICO_WAVETABLE_LFSRNOISE) s1=&lfsrnoiseOsc1;
 
     }
   if (oscillator_number %2==1)
     {
-      if (oscillator_type%5==0) s2=&sineOsc2;
-      if (oscillator_type%5==1) s2=&sawOsc2;
-      if (oscillator_type%5==2) s2=&pulseOsc2;
-      if (oscillator_type%5==3) s2=&triangleOsc2;
-      if (oscillator_type%5==4) s2=&noiseOsc2;
+
+      if (oscillator_type%PICO_WAVETABLE_SIZE==PICO_WAVETABLE_SINE)      s2=&sineOsc2;
+      if (oscillator_type%PICO_WAVETABLE_SIZE==PICO_WAVETABLE_SAW)       s2=&sawOsc2;
+      if (oscillator_type%PICO_WAVETABLE_SIZE==PICO_WAVETABLE_PULSE)     s2=&pulseOsc2;
+      if (oscillator_type%PICO_WAVETABLE_SIZE==PICO_WAVETABLE_TRGL)      s2=&triangleOsc2;
+      if (oscillator_type%PICO_WAVETABLE_SIZE==PICO_WAVETABLE_SMSINE)    s2=&smsineOsc2;
+      if (oscillator_type%PICO_WAVETABLE_SIZE==PICO_WAVETABLE_SMSAW)     s2=&smsawOsc2;
+      if (oscillator_type%PICO_WAVETABLE_SIZE==PICO_WAVETABLE_SMPULSE)   s2=&smpulseOsc2;
+      if (oscillator_type%PICO_WAVETABLE_SIZE==PICO_WAVETABLE_SMTRGL)    s2=&smtriangleOsc2;
+
+      if (oscillator_type%PICO_WAVETABLE_SIZE==PICO_WAVETABLE_NOISE)     s2=&noiseOsc2;
+      if (oscillator_type%PICO_WAVETABLE_SIZE==PICO_WAVETABLE_LFSRNOISE) s2=&lfsrnoiseOsc2;
     }
   s1->setFreq(s1freq);
   s2->setFreq(s2freq);
