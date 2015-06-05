@@ -2583,13 +2583,6 @@ void wtg()
   WaveTableManager & WTM = WaveTableManager::getInstance();
   WaveTable* WT;
 
-  WT = new WaveTable();
-  WT->setSize(WAVETABLE_SIZE);
-  G.LFSRNoise();
-  memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE);
-  WTM.insert(WT,PICO_WAVETABLE_LFSRNOISE);
-
-  
 
   WT = new WaveTable();
   WT->setSize(WAVETABLE_SIZE);
@@ -2640,6 +2633,7 @@ void wtg()
   WTM.insert(WT,PICO_WAVETABLE_SMTRGL);
 
 
+
   WT = new WaveTable();
   WT->setSize(WAVETABLE_SIZE);
   G.noise();
@@ -2647,6 +2641,13 @@ void wtg()
   memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE);
   WTM.insert(WT,PICO_WAVETABLE_NOISE);
 
+  WT = new WaveTable();
+  WT->setSize(WAVETABLE_SIZE);
+  G.LFSRNoise();
+  memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE);
+  WTM.insert(WT,PICO_WAVETABLE_LFSRNOISE);
+
+  
 
   
   // WT = new WaveTable();
