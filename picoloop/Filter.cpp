@@ -121,7 +121,10 @@ int16_t Filter::process_biquad(int16_t in)
     {
       //needCalc=1;
       //bq.setType(filterType);
-      bq.setBiquad(filterType, (f_val_cutoff/256), (f_val_resonance/8)+0.005, 0.0);
+      //bq.setBiquad(filterType, (f_val_cutoff/256), (f_val_resonance/8)+0.005, 0.0;)
+      bq.setBiquad(filterType,
+		   (f_val_cutoff/256)*(f_val_cutoff/256),
+		   (f_val_resonance/8)+0.005, 0.0);
       bq.calcBiquad(); 
       
       needCalc=0;      
@@ -165,10 +168,12 @@ int16_t Filter::process_amsynth(int16_t in)
       //bq.calcBiquad(); 
       
       needCalc=0;      
-      lp.SetSampleRate(4100);
+      //lp.SetSampleRate(4100);
+      lp.SetSampleRate(44100);
       lp.reset();
       //lp.calc(f_val_cutoff*256,f_val_resonance/128);
-      lp.calc(f_val_cutoff*32,f_val_resonance/160);
+      //lp.calc(f_val_cutoff*32,f_val_resonance/160);
+      lp.calc(((f_val_cutoff/128)*(f_val_cutoff/128))*64*128,f_val_resonance/160);
     }
   //return bq.process(in);
   //lp.ProcessSamples(f_in,1,f_val_cutoff/127,f_val_resonance/127);
