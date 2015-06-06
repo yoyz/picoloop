@@ -170,7 +170,7 @@ int PBSynthMachine::checkI(int what,int val)
     default:
       if (val<0)   return 0;
       if (val>127) return 127;
-      printf("WARNING: Dboplmachine::checkI(%d,%d)\n",what,val);
+      printf("WARNING: PBSynthMachine::checkI(%d,%d)\n",what,val);
       return val;
       break;      
     }
@@ -184,8 +184,14 @@ int PBSynthMachine::getI(int what)
 
 void PBSynthMachine::setF(int what,float val)
 {
+  float f_val=val;
+  f_val=f_val/128;
+
   //if (what==OSC1_FREQ)           { freq=val; }
   //  if (what==LFO1_FREQ)           { lfo_speed=val/4.0; sineLfoOsc1.setFreq(lfo_speed); }
+  if (what==LFO1_FREQ)           SE->getLFO(0)->setRate(f_val*100);
+  if (what==LFO2_FREQ)           SE->getLFO(1)->setRate(f_val*100);
+
 }
 
 
@@ -205,6 +211,7 @@ void PBSynthMachine::setI(int what,int val)
     if (what==NOTE_ON && val==1) 
     { 
       keyon=1;
+      SE->releaseNote();
       SE->triggerNote(note);
       // sineLfoOsc1.reset();
       // NoteFreq & NF = NoteFreq::getInstance();
@@ -244,9 +251,15 @@ void PBSynthMachine::setI(int what,int val)
     //if (what==VCO_MIX)             SE.setParameter(SENGINE_OSCMIX,1.0f/val);
     //if (what==VCO_MIX)             SE.setParameter(SENGINE_ENV2_TO_CUTOFF,1.0f/(val+1));
     //if (what==VCO_MIX)             SE.setParameter(SENGINE_ENV2_TO_CUTOFF,(f_val*2)-1);
-    if (what==OSC1_PHASE)          SE->setParameter(SENGINE_ENV2_TO_CUTOFF,(f_val*2)-1);
+    //if (what==OSC1_PHASE)          SE->setParameter(SENGINE_ENV2_TO_CUTOFF,(f_val*2)-1);
+    if (what==OSC1_PHASE)          SE->setParameter(SENGINE_ENV2_TO_CUTOFF,(-f_val*2)+1);
     if (what==VCO_MIX)             SE->setParameter(SENGINE_OSCMIX,(f_val));
 
+    if (what==LFO1_DEPTH)          SE->setParameter(SENGINE_LFO1_TO_AMP,(f_val));
+    //if (what==LFO1_FREQ)           SE->setParameter(SENGINE_LFO1_TO_AMP,(f_val));
+
+
+    if (what==LFO2_DEPTH)          SE->setParameter(SENGINE_LFO2_TO_CUTOFF,(f_val));
 
   if (what==OSC1_NOTE)                note=val;
     //if (what==OSC1_FREQ)           freq=val;
