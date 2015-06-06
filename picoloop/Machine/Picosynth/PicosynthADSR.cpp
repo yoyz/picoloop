@@ -117,6 +117,7 @@ void PicosynthADSR::setAttack(int atk)
 
 void PicosynthADSR::setDecay(int dc)
 {
+  if (dc<1) dc=1;
   decay=dc;
 }
 
