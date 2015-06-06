@@ -592,26 +592,6 @@ void PBSynthUserInterface::handle_key_lfo()
     }
 
 
-  if (menu        == MENU_OFF && 
-      menu_cursor == GLOBALMENU_LFO &&
-      menu_lfo    == MENU_LFO_TYPE
-      )
-    {
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG,     LFO_TYPE      ,      1, 0);
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG,     LFO_TYPE      ,     -1, 0);
-    }
-
-
-
-  if (menu        != MENU_OFF && 
-      menu_cursor == GLOBALMENU_LFO &&
-      menu_lfo    == MENU_LFO_TYPE
-      )
-    {
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG,     LFO_TYPE      ,      1, 1);
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG,     LFO_TYPE      ,     -1, 1);
-    }
-
 
 
   // change GLOBALMENU_VCO SUBMENU
@@ -622,8 +602,8 @@ void PBSynthUserInterface::handle_key_lfo()
       if (menu_ad_dirty_keyboard==0)
 	{
 	  if      (menu_lfo==MENU_LFO_LFOPITCH)               { menu_lfo=MENU_LFO_PITCHBEND;       }
-	  else if (menu_lfo==MENU_LFO_PITCHBEND)              { menu_lfo=MENU_LFO_TYPE;            } 
-	  else if (menu_lfo==MENU_LFO_TYPE)                   { menu_lfo=MENU_LFO_LFOPITCH;        }  
+	  else if (menu_lfo==MENU_LFO_PITCHBEND)              { menu_lfo=MENU_LFO_LFOPITCH;        } 
+	  else                                                { menu_lfo=MENU_LFO_LFOPITCH;        }  
 	  dirty_graphic=1;
 	}
       menu_ad_dirty_keyboard=0;
@@ -788,7 +768,7 @@ void PBSynthUserInterface::display_board_text()
       menu_cursor==GLOBALMENU_VCO
       )
     {
-      sprintf(str_submenu,"OP1AMP/AP2AMP");
+      sprintf(str_submenu,"PWM1/PWM2");
       SG.guiTTFText(right_x_display_offset,
 		    right_y_display_offset_line2,str_submenu);
     }
@@ -797,7 +777,7 @@ void PBSynthUserInterface::display_board_text()
       menu_cursor==GLOBALMENU_VCO
       )
     {
-      sprintf(str_submenu,"Frq1&Frq2|OSCMix&Ph");
+      sprintf(str_submenu,"EnvDepth|VCOMIX");
       SG.guiTTFText(right_x_display_offset,
 		    right_y_display_offset_line2,str_submenu);
     }
@@ -807,7 +787,7 @@ void PBSynthUserInterface::display_board_text()
       menu_cursor==GLOBALMENU_LFO
       )
     {
-      sprintf(str_submenu,"LFOPitch Depth/Speed");
+      sprintf(str_submenu,"LFO AMP AMNT/SPEED");
       SG.guiTTFText(right_x_display_offset,
 		    right_y_display_offset_line2,str_submenu);
     }
@@ -816,17 +796,7 @@ void PBSynthUserInterface::display_board_text()
       menu_cursor==GLOBALMENU_LFO
       )
     {
-      sprintf(str_submenu,"PitchBend Depth/Speed");
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
-    }
-
-
-  if (menu_lfo==MENU_LFO_TYPE &&
-      menu_cursor==GLOBALMENU_LFO
-      )
-    {
-      sprintf(str_submenu,"LFOType");
+      sprintf(str_submenu,"LFO FLTR AMNT/SPEED");
       SG.guiTTFText(right_x_display_offset,
 		    right_y_display_offset_line2,str_submenu);
     }
@@ -1026,10 +996,6 @@ void PBSynthUserInterface::display_board_lfo()
       display_board_two_param(PITCHBEND_DEPTH,PITCHBEND_SPEED);
     }
 
-  if (menu_lfo==MENU_LFO_TYPE)
-    {
-      display_board_one_param_text(LFO_TYPE);
-    }
 }
 
 
