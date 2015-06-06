@@ -192,11 +192,11 @@ int menu_cursor=GLOBALMENU_AD;      // index int the menu
 int menu=MENU_ON_PAGE1;             // menu mode
 int menu_note=ENABLE;
 int menu_ad=MENU_AD_AMP_ATTACK_RELEASE;
-int menu_fltr=MENU_FLTR_CUTOFF_RESONANCE;
-int menu_fx=MENU_FX_DEPTH_SPEED;
 int menu_osc=MENU_OSC_OSC1OSC2;
 int menu_vco=MENU_VCO_OSCMIX_PHASE;
 int menu_lfo=MENU_LFO_LFOPITCH;
+int menu_fltr=MENU_FLTR_CUTOFF_RESONANCE;
+int menu_fx=MENU_FX_DEPTH_SPEED;
 int menu_ls=MENU_LS_PATTERN;
 
 int menu_ad_dirty_keyboard=0;
@@ -894,6 +894,7 @@ void handle_key_menu()
 
   int last_menu=0xffff;
   int last_menu_cursor=0xffff;
+  int menu_switching=0;         // when 1 we will switch from one menu to one another
 
   keyState=IE.keyState();
   keyRepeat=IE.keyRepeat();
@@ -912,22 +913,25 @@ void handle_key_menu()
 	{
 
 	case MENU_OFF:      
+	  menu_switching=1;
 	  if (menu_cursor<6) 
-	    menu=MENU_ON_PAGE1;
+	      menu=MENU_ON_PAGE1;
 	  if (menu_cursor>=6)
-	    menu=MENU_ON_PAGE2;
+	      menu=MENU_ON_PAGE2;
 	  break;
 
 	case MENU_ON_PAGE1: 
 	  menu=MENU_ON_PAGE2;
+	  menu_switching=1;
 	  if (menu_cursor<6)
-	    menu_cursor+=6; 
+	      menu_cursor+=6; 
 	  else
-	    menu_cursor=6;
+	      menu_cursor=6;
 	  break;
 
 	case MENU_ON_PAGE2: 
 	  menu=MENU_ON_PAGE1; 
+	  menu_switching=1;
 	  if (menu_cursor>=6)
 	    menu_cursor-=6; 
 	  else
@@ -961,6 +965,7 @@ void handle_key_menu()
     {
       last_menu        = menu;
       menu=MENU_OFF;
+      menu_switching=1;
       loadsave_cursor.y=SEQ.getCurrentTrackY();
       dirty_graphic=1;
       IE.clearLastKeyEvent();
@@ -984,7 +989,10 @@ void handle_key_menu()
 	{
 	  if (keyRepeat[BUTTON_LEFT]    == 1 || 
 	      keyRepeat[BUTTON_LEFT]%64 == 0)
-	    menu_cursor--;
+	    {
+	      menu_cursor--;
+	      menu_switching=1;
+	    }
 	  //	  if (menu_cursor<GLOBALMENU_AD  && menu==MENU_ON_PAGE1) menu_cursor=GLOBALMENU_VCO;
 	  //	  if (menu_cursor<GLOBALMENU_OSC && menu==MENU_ON_PAGE2) menu_cursor=GLOBALMENU_BPM;
 	  if (menu_cursor<0     && menu==MENU_ON_PAGE1) menu_cursor=5;
@@ -999,11 +1007,14 @@ void handle_key_menu()
 	{
 	  if (keyRepeat[BUTTON_RIGHT]    == 1 || 
 	      keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_LONG == 0)
-	    menu_cursor++;
+	    {
+	      menu_cursor++;
+	      menu_switching=1;
+	    }
 	  //if (menu_cursor>GLOBALMENU_VCO  && menu==MENU_ON_PAGE1) menu_cursor=GLOBALMENU_AD;
 	  //if (menu_cursor>GLOBALMENU_BPM  && menu==MENU_ON_PAGE2) menu_cursor=GLOBALMENU_OSC;
-	  if (menu_cursor>5      && menu==MENU_ON_PAGE1) menu_cursor=0;
-	  if (menu_cursor>11     && menu==MENU_ON_PAGE2) menu_cursor=6;
+	  if (menu_cursor>5      && menu==MENU_ON_PAGE1) { menu_cursor=0; 	      menu_switching=1; }
+	  if (menu_cursor>11     && menu==MENU_ON_PAGE2) { menu_cursor=6;             menu_switching=1; }
 
 	  dirty_graphic=1;
 	  printf("\t\t[menu_cursor:%d]\n",menu_cursor);
@@ -1016,9 +1027,15 @@ void handle_key_menu()
 	      keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONG == 0)
 	    {
 	      if (SEQ.getCurrentTrackY()>0)
-		SEQ.setCurrentTrackY(SEQ.getCurrentTrackY()-1);
+		{
+		  SEQ.setCurrentTrackY(SEQ.getCurrentTrackY()-1);
+		  menu_switching=1;
+		}
 	      else 
-		SEQ.setCurrentTrackY(TRACK_MAX-1);
+		{
+		  SEQ.setCurrentTrackY(TRACK_MAX-1);
+		  menu_switching=1;
+		}
 	    }
 	  printf("[key up : change track : %d] \n",SEQ.getCurrentTrackY());
 	  dirty_graphic=1;
@@ -1029,16 +1046,32 @@ void handle_key_menu()
 	  if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%64==0)
 	    {
 	      if (SEQ.getCurrentTrackY()<TRACK_MAX-1)
-		SEQ.setCurrentTrackY(SEQ.getCurrentTrackY()+1);
+		{
+		  SEQ.setCurrentTrackY(SEQ.getCurrentTrackY()+1);
+		  menu_switching=1;
+		}
 	      else 
-		SEQ.setCurrentTrackY(0);	      
+		{
+		  SEQ.setCurrentTrackY(0);	      
+		  menu_switching=1;
+		}
 	    }
 	  printf("[key down : change track : %d] \n",SEQ.getCurrentTrackY());
 	  dirty_graphic=1;
 	}
     }
 
-
+  if (menu_switching>0)
+    {
+      printf("Switching back to all default menu\n");
+      menu_note=ENABLE;
+      menu_ad=0;
+      menu_osc=0;
+      menu_vco=0;
+      menu_lfo=0;
+      menu_fltr=0;
+      menu_fx=0;
+    }
 
 
 }
