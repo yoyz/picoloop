@@ -7,37 +7,58 @@ PulseSync::PulseSync()
 {
   nb_tick=0;
   nb_tick_before_step_change=0;
-  nb_tick_before_step_change_div_six=0;
-  tick_length_high=4;
+  nb_tick_before_step_change_real=0;
+  tick_length_high=3;
   tick_length_low=tick_length_high*2;
   tick_height_std=0;
-  tick_height_high=20000;
+
   //tick_height_low=-8000;
-  tick_height_low=-20000;
+  // tick_height_high=20000;
+  // tick_height_low=-20000;
+
+  tick_height_high=18000;
+  tick_height_low=-18000;
+
+  step=0;
 }
 
 int PulseSync::setNbTickBeforeStepChange(int val)
 {
   nb_tick_before_step_change=val;
-  nb_tick_before_step_change_div_six=val;
+  nb_tick_before_step_change_real=val*2;
 }
 
 int PulseSync::tick()
 {
   Sint16 out=tick_height_std;
   nb_tick++;
-  if (nb_tick<tick_length_high)
+  if (nb_tick<tick_length_low)
     {
-      if (nb_tick<tick_length_low)
-	out=tick_height_high;
-      // else
-      // 	out=tick_height_low;
+      out=tick_height_high;
     }
-    else
-      out=tick_height_std;
-
-    if (nb_tick>nb_tick_before_step_change_div_six)
-      nb_tick=0;
+    
+    if (nb_tick >= tick_length_low &&
+	nb_tick < tick_length_high)
+      {
+	out=tick_height_low;
+      }
+    
+    if (nb_tick >= tick_length_high)
+      {
+	out=tick_height_std;
+      }
+	  
+    if (nb_tick>nb_tick_before_step_change_real)
+      {
+	printf("STEP CHANGE\n");
+	//nb_tick=0;
+	step++;
+	if (step>=2)
+	  {
+	    step=0;
+	    nb_tick=0;
+	  }
+      }
 
   return out;
 }
@@ -137,8 +158,13 @@ void AudioEngine::processBuffer(int len)
 	  //buffer_out_left[i]=AM.tick();
 	  //buffer_out_right[i]=buffer_out_left[i];
 	  //buffer_out_right[i]=PS.tick();
+	  buffer_out_right[i]=AM.tick();
+	  #ifdef __VOLCASYNC__
 	  buffer_out_left[i]=PS.tick();
-	  buffer_out_right[i]=buffer_out_left[i];
+	  #else
+	  buffer_out_left[i]=buffer_out_right[i];
+	  #endif
+	  //buffer_out_right[i]=buffer_out_left[i];
 
 	}
       else
@@ -148,8 +174,16 @@ void AudioEngine::processBuffer(int len)
 	  if (seqCallback)
 	    (*seqCallback)();
           nb_tick=0;
+
+	  #ifdef __VOLCASYNC__
 	  buffer_out_left[i]=PS.tick();
-	  buffer_out_right[i]=buffer_out_left[i];
+	  #else
+	  buffer_out_left[i]=buffer_out_right[i];
+	  #endif
+
+	  // buffer_out_right[i]=AM.tick();
+	  // buffer_out_left[i]=PS.tick();
+	  //buffer_out_right[i]=buffer_out_left[i];
 	  //buffer_out_left[i]=AM.tick();
 	  //buffer_out_right[i]=buffer_out_left[i];
 	  //buffer_out_right[i]=PS.tick();
