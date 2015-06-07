@@ -1,6 +1,48 @@
 #include "AudioEngine.h"
 
 
+
+
+PulseSync::PulseSync()
+{
+  nb_tick=0;
+  nb_tick_before_step_change=0;
+  nb_tick_before_step_change_div_six=0;
+  tick_length_high=4;
+  tick_length_low=tick_length_high*2;
+  tick_height_std=0;
+  tick_height_high=20000;
+  //tick_height_low=-8000;
+  tick_height_low=-20000;
+}
+
+int PulseSync::setNbTickBeforeStepChange(int val)
+{
+  nb_tick_before_step_change=val;
+  nb_tick_before_step_change_div_six=val;
+}
+
+int PulseSync::tick()
+{
+  Sint16 out=tick_height_std;
+  nb_tick++;
+  if (nb_tick<tick_length_high)
+    {
+      if (nb_tick<tick_length_low)
+	out=tick_height_high;
+      // else
+      // 	out=tick_height_low;
+    }
+    else
+      out=tick_height_std;
+
+    if (nb_tick>nb_tick_before_step_change_div_six)
+      nb_tick=0;
+
+  return out;
+}
+
+
 //#include "SineOscillator.h"
 
 void sdlcallback(void *unused, Uint8 *stream, int len);
@@ -15,14 +57,17 @@ int   rtcallback(
 //AudioEngine::AudioEngine() : inst(), AM()
 AudioEngine::AudioEngine() : AM(),
 			     AD(),
-			     buffer_out( new Sint16[INTERNAL_BUFFER_SIZE])
+			     buffer_out_left(  new Sint16[INTERNAL_BUFFER_SIZE]),
+			     buffer_out_right( new Sint16[INTERNAL_BUFFER_SIZE])
+
 			     //buffer_out( new Sint16[BUFFER_FRAME])
 {
   freq=DEFAULTFREQ;
   samples=DEFAULTSAMPLES;
   channels=DEFAULTCHANNELS;
   polyphony=DEFAULTPOLYPHONY;
-  tick=0;
+  tick_left=0;
+  tick_right=0;
 
   FORMAT=RTAUDIO_SINT16;
   bufferFrames = 512;          // Weird ?
@@ -70,6 +115,7 @@ int AudioEngine::getNbCallback()
 int AudioEngine::setNbTickBeforeStepChange(int val) 
 {
   nb_tick_before_step_change=val;
+  PS.setNbTickBeforeStepChange(val);
 }
 
 
@@ -87,7 +133,14 @@ void AudioEngine::processBuffer(int len)
     {
       nb_tick++;
       if (nb_tick<nb_tick_before_step_change)
-	buffer_out[i]=AM.tick();
+	{
+	  //buffer_out_left[i]=AM.tick();
+	  //buffer_out_right[i]=buffer_out_left[i];
+	  //buffer_out_right[i]=PS.tick();
+	  buffer_out_left[i]=PS.tick();
+	  buffer_out_right[i]=buffer_out_left[i];
+
+	}
       else
         {
           //printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!CALLL\n");                                                                                                                      
@@ -95,7 +148,11 @@ void AudioEngine::processBuffer(int len)
 	  if (seqCallback)
 	    (*seqCallback)();
           nb_tick=0;
-	  buffer_out[i]=AM.tick();
+	  buffer_out_left[i]=PS.tick();
+	  buffer_out_right[i]=buffer_out_left[i];
+	  //buffer_out_left[i]=AM.tick();
+	  //buffer_out_right[i]=buffer_out_left[i];
+	  //buffer_out_right[i]=PS.tick();
         }
     }
   bufferGenerated=0;
@@ -107,9 +164,14 @@ int AudioEngine::bufferIsGenerated()
   return bufferGenerated;
 }
 
-Sint16 * AudioEngine::getBufferOut()
+Sint16 * AudioEngine::getBufferOutLeft()
 {
-  return buffer_out;
+  return buffer_out_left;
+}
+
+Sint16 * AudioEngine::getBufferOutRight()
+{
+  return buffer_out_right;
 }
 
 
@@ -134,16 +196,17 @@ void AudioEngine::setDefault()
   polyphony=DEFAULTPOLYPHONY;
 }
 
-int AudioEngine::getTick()
+int AudioEngine::getTickLeft()
 {
-  return tick;
+  return tick_left;
+}
+
+int AudioEngine::getTickRight()
+{
+  return tick_right;
 }
 
 
-void AudioEngine::setTick(int t)
-{
-  tick=t;
-}
 
 
 
@@ -183,7 +246,7 @@ void AudioEngine::callback(void *unused, Uint8 *stream, int len)
 
   #ifdef DUMP_AUDIO
   if (dump_audio)
-    fwrite(buffer_out,buffer_size,sizeof(Sint16),fd);
+    fwrite(buffer_out_right,buffer_size,sizeof(Sint16),fd);
   #endif
 
     
@@ -193,7 +256,8 @@ void AudioEngine::callback(void *unused, Uint8 *stream, int len)
       //int tick = S.tick();
       //      int tick = AM.tick();
       //Sint16 tick = AM.tick();
-      tick=buffer_out[i];
+      tick_left=buffer_out_left[i];
+      tick_right=buffer_out_right[i];
       //      printf("%d\n",tick);
       /*
       #ifdef LINUX_DESKTOP
@@ -205,8 +269,8 @@ void AudioEngine::callback(void *unused, Uint8 *stream, int len)
 	}
       #endif
       */
-      buffer[(2*i)]=    tick;
-      buffer[(2*i)+1]=  tick;
+      buffer[(2*i)]=    tick_left;
+      buffer[(2*i)+1]=  tick_right;
 
       //buffer[i+1]=tick;
       //buffer[i+1]=0;
