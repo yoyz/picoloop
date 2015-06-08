@@ -175,6 +175,7 @@ void AudioEngine::processBuffer(int len)
 	    (*seqCallback)();
           nb_tick=0;
 
+	  buffer_out_right[i]=AM.tick();
 	  #ifdef __VOLCASYNC__
 	  buffer_out_left[i]=PS.tick();
 	  #else
@@ -308,7 +309,7 @@ void AudioEngine::callback(void *unused, Uint8 *stream, int len)
 
       //buffer[i+1]=tick;
       //buffer[i+1]=0;
-      i++;
+      //i++;
     }
   //if (debug_audio)
   //fwrite(buffer,sizeof(MY_TYPE)*nBufferFrames,sizeof(MY_TYPE),fd);
