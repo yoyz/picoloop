@@ -18,7 +18,7 @@
 
 #include <cmath>
 
-namespace mopo {
+namespace mopocursynth {
 
   Oscillator::Oscillator() : Processor(kNumInputs, 1),
                              offset_(0.0), waveform_(Wave::kSin) { }

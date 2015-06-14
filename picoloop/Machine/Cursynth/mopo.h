@@ -32,7 +32,7 @@
 #define MOPO_ASSERT(x) (void)(x)
 #endif // DEBUG
 
-namespace mopo {
+namespace mopocursynth {
 
   const double PI = 3.1415926535897932384626433832795;
   const int MAX_BUFFER_SIZE = 4096;

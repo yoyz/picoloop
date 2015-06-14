@@ -20,7 +20,7 @@
 
 #include "value.h"
 
-namespace mopo {
+namespace mopocursynth {
 
   class SmoothValue : public Value {
     public:

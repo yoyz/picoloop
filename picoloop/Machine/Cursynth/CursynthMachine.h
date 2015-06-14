@@ -25,13 +25,13 @@ class CursynthMachine : public Machine
 
  protected:
 
-  mopo::CursynthEngine * CSE;
+  mopocursynth::CursynthEngine * CSE;
 
   int                   cutoff;
   int                   resonance;
 
   Sint16              * buffer_i;
-  mopo::mopo_float    * buffer_f;
+  mopocursynth::mopo_float    * buffer_f;
 
   Sint32                sample_num;
   Sint32                index;

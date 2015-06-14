@@ -21,7 +21,7 @@
 #include "processor.h"
 #include "wave.h"
 
-namespace mopo {
+namespace mopocursynth {
 
   // A processor that produces an oscillation stream based on the input
   // frequency, phase, and waveform. You can reset the waveform stream using

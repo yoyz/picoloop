@@ -16,7 +16,7 @@
 
 #include "wave.h"
 
-namespace mopo {
+namespace mopocursynth {
 
   const WaveLookup Wave::lookup_;
 } // namespace mopo

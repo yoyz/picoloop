@@ -24,7 +24,7 @@
 #include <map>
 #include <list>
 
-namespace mopo {
+namespace mopocursynth {
 
   struct VoiceState {
     VoiceEvent event;

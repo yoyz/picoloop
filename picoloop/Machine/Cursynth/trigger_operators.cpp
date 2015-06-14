@@ -16,7 +16,7 @@
 
 #include "trigger_operators.h"
 
-namespace mopo {
+namespace mopocursynth {
 
   TriggerCombiner::TriggerCombiner() : Processor(2, 1) { }
 

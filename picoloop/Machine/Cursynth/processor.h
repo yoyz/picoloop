@@ -23,7 +23,7 @@
 #include <cstring>
 #include <vector>
 
-namespace mopo {
+namespace mopocursynth {
 
   class ProcessorRouter;
 

@@ -21,7 +21,7 @@
 #include "memory.h"
 #include "processor.h"
 
-namespace mopo {
+namespace mopocursynth {
 
   // A signal delay processor with wet/dry, delay time and feedback controls.
   // Handles fractional delay amounts through interpolation.

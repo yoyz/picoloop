@@ -16,7 +16,7 @@
 
 #include "operators.h"
 
-namespace mopo {
+namespace mopocursynth {
 
   void Operator::process() {
     for (int i = 0; i < buffer_size_; ++i)

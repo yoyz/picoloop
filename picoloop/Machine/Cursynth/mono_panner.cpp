@@ -24,7 +24,7 @@
 #define LEFT_ROTATION 100.325
 #define RIGHT_ROTATION 100.125
 
-namespace mopo {
+namespace mopocursynth {
 
   MonoPanner::MonoPanner() :
       Processor(MonoPanner::kNumInputs, MonoPanner::kNumOutputs) { }

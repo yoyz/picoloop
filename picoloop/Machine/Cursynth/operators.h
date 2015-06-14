@@ -21,7 +21,7 @@
 #include "midi_lookup.h"
 #include "processor.h"
 
-namespace mopo {
+namespace mopocursynth {
 
   // A base class for arithmetic operators.
   class Operator : public Processor {

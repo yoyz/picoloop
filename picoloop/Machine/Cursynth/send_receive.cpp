@@ -18,7 +18,7 @@
 
 #include "processor_router.h"
 
-namespace mopo {
+namespace mopocursynth {
 
   Send::Send() : Processor(1, 1) {
     memory_output_ = new MemoryOutput();

@@ -29,7 +29,7 @@
 
 #define MOD_MATRIX_SIZE 5
 
-namespace mopo {
+namespace mopocursynth {
   class Add;
   class Envelope;
   class Filter;

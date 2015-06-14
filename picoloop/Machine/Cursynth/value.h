@@ -20,7 +20,7 @@
 
 #include "processor.h"
 
-namespace mopo {
+namespace mopocursynth {
 
   class Value : public Processor {
     public:

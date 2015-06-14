@@ -27,7 +27,7 @@
 #define CENTS_PER_NOTE 100
 #define MAX_CENTS (MIDI_SIZE * CENTS_PER_NOTE)
 
-namespace mopo {
+namespace mopocursynth {
 
   class MidiLookupSingleton {
     public:

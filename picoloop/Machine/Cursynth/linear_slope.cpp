@@ -20,7 +20,7 @@
 
 #include <cmath>
 
-namespace mopo {
+namespace mopocursynth {
 
   LinearSlope::LinearSlope() : Processor(kNumInputs, 1) {
     last_value_ = 0.0;

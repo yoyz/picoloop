@@ -20,7 +20,7 @@
 
 #include "value.h"
 
-namespace mopo {
+namespace mopocursynth {
 
   // A processor that will slope to the target value over a given amount of
   // time. Useful for portamento or smoothing out values.

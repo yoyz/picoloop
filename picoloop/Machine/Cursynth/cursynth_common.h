@@ -24,7 +24,7 @@
 #include <map>
 #include <string>
 
-namespace mopo {
+namespace mopocursynth {
 
   // A container for a given control its metadata such as maximum and minimum
   // value.

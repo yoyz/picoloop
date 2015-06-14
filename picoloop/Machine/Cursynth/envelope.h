@@ -22,7 +22,7 @@
 
 #define CLOSE_ENOUGH (1.0 / 256.0)
 
-namespace mopo {
+namespace mopocursynth {
 
   // An ADSR (Attack, Decay, Sustain, Release) Envelope.
   // The attack is a linear scale and completes in the exact amount of time.

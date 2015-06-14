@@ -20,7 +20,7 @@
 
 #include "processor.h"
 
-namespace mopo {
+namespace mopocursynth {
 
   // A special processor for the purpose of feedback loops in the signal flow.
   // Feedback can be used for batch buffer feedback processing or sample by

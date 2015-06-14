@@ -16,7 +16,7 @@
 
 #include "cursynth_strings.h"
 
-namespace mopo {
+namespace mopocursynth {
 
   const char* CursynthStrings::filter_strings_[] = {
     "low pass",

@@ -16,7 +16,7 @@
 
 #include "smooth_filter.h"
 
-namespace mopo {
+namespace mopocursynth {
 
   SmoothFilter::SmoothFilter() : Processor(SmoothFilter::kNumInputs, 1) {
     last_value_ = 0.0;

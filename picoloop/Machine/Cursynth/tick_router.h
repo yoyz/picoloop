@@ -20,7 +20,7 @@
 
 #include "processor_router.h"
 
-namespace mopo {
+namespace mopocursynth {
 
   class TickRouter : public ProcessorRouter {
     public:

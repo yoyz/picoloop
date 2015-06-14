@@ -16,7 +16,7 @@
 
 #include "midi_lookup.h"
 
-namespace mopo {
+namespace mopocursynth {
 
   const MidiLookupSingleton MidiLookup::lookup_;
 } // namespace mopo

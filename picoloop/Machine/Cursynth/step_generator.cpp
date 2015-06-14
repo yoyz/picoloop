@@ -18,7 +18,7 @@
 
 #include <cmath>
 
-namespace mopo {
+namespace mopocursynth {
 
   StepGenerator::StepGenerator(int max_steps) :
       Processor(kNumInputs + max_steps, 1), offset_(0.0), current_step_(0) { }

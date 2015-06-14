@@ -22,7 +22,7 @@
 
 #define DEFAULT_MAX_STEPS 128
 
-namespace mopo {
+namespace mopocursynth {
 
   class StepGenerator : public Processor {
     public:
