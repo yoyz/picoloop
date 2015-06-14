@@ -74,6 +74,7 @@ PSP_FW_VERSION = 500
 
 INCDIR		=
 CFLAGS		= -O3  -G0 -Wall  -I${PSPDEV}/psp/include/ -L${PSPDEV}/psp/lib -D__SDL_AUDIO__ -DPSP -DFIXED -g -ggdb
+CFLAGS		= -O3  -G0 -Wall  -I${PSPDEV}/psp/include/ -L${PSPDEV}/psp/lib -D__SDL_AUDIO__ -DPSP  -g -ggdb
 CXXFLAGS	= $(CFLAGS) -fno-exceptions -fno-rtti
 ASFLAGS	        = $(CFLAGS)
 
