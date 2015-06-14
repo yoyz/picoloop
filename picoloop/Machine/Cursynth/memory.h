@@ -28,7 +28,7 @@
 #define MAX_MEMORY 1048576
 #define MEMORY_BITMASK 1048575
 
-namespace mopo {
+namespace mopocursynth {
 
   // A processor utility to store a stream of data for later lookup.
   class Memory {

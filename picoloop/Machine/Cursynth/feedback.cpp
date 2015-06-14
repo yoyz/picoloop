@@ -18,7 +18,7 @@
 
 #include "processor_router.h"
 
-namespace mopo {
+namespace mopocursynth {
 
   void Feedback::process() {
     memcpy(buffer_, inputs_[0]->source->buffer,

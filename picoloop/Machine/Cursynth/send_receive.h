@@ -23,7 +23,7 @@
 
 // TODO(mtytel): This classes don't work with polyphony. Fix that.
 
-namespace mopo {
+namespace mopocursynth {
 
   class Send;
   class Receive;

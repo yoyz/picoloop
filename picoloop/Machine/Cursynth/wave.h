@@ -26,7 +26,7 @@
 #define HIGH_FREQUENCY 20000
 #define MAX_HARMONICS 100
 
-namespace mopo {
+namespace mopocursynth {
 
   class WaveLookup {
     public:

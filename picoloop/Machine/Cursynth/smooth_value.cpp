@@ -20,7 +20,7 @@
 
 #define SMOOTH_CUTOFF 3.0
 
-namespace mopo {
+namespace mopocursynth {
 
   SmoothValue::SmoothValue(mopo_float value) :
       Value(value), target_value_(value) { }

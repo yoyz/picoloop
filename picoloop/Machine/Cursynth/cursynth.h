@@ -25,7 +25,7 @@
 
 #include <pthread.h>
 
-namespace mopo {
+namespace mopocursynth {
 
   class Cursynth {
     public:

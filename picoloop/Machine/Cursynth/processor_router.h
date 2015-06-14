@@ -24,7 +24,7 @@
 #include <set>
 #include <vector>
 
-namespace mopo {
+namespace mopocursynth {
 
   class Feedback;
 

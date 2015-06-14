@@ -32,7 +32,7 @@
 
 #define PITCH_MOD_RANGE 12
 
-namespace mopo {
+namespace mopocursynth {
 
   CursynthOscillators::CursynthOscillators() : TickRouter(0, 0) {
     oscillator1_ = new Oscillator();

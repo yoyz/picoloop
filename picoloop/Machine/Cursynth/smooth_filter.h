@@ -20,7 +20,7 @@
 
 #include "processor.h"
 
-namespace mopo {
+namespace mopocursynth {
 
   class SmoothFilter : public Processor {
     public:

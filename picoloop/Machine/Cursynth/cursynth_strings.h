@@ -18,7 +18,7 @@
 #ifndef CURSYNTH_STRINGS_H
 #define CURSYNTH_STRINGS_H
 
-namespace mopo {
+namespace mopocursynth {
 
   // Container for all the strings we'll use in the UI.
   class CursynthStrings {

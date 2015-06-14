@@ -20,7 +20,7 @@
 
 #include "processor.h"
 
-namespace mopo {
+namespace mopocursynth {
 
   // A processor that will split a single signal into two signals, left and
   // right. The amplitude of the two outputs is set by the pan amount, ranging

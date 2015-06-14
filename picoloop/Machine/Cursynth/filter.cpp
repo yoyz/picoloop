@@ -18,7 +18,7 @@
 
 #include <cmath>
 
-namespace mopo {
+namespace mopocursynth {
 
   Filter::Filter() : Processor(Filter::kNumInputs, 1) {
     current_type_ = kNumTypes;

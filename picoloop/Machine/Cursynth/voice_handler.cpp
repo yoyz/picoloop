@@ -18,7 +18,7 @@
 
 #include "utils.h"
 
-namespace mopo {
+namespace mopocursynth {
 
   Voice::Voice(Processor* processor) : processor_(processor) { }
 

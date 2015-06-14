@@ -20,7 +20,7 @@
 
 #define KILL_TIME 0.02
 
-namespace mopo {
+namespace mopocursynth {
 
   Envelope::Envelope() :
       Processor(kNumInputs, kNumOutputs), state_(kReleasing),

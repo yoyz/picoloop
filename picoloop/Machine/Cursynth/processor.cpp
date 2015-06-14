@@ -18,7 +18,7 @@
 
 #include "processor_router.h"
 
-namespace mopo {
+namespace mopocursynth {
 
   const Processor::Output Processor::null_source_;
 

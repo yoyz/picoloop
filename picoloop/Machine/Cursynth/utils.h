@@ -22,7 +22,7 @@
 
 #define EPSILON 0.000000000001
 
-namespace mopo {
+namespace mopocursynth {
 
   namespace utils {
 

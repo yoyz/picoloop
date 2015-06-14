@@ -22,7 +22,7 @@
 #include <algorithm>
 #include <vector>
 
-namespace mopo {
+namespace mopocursynth {
 
   ProcessorRouter::ProcessorRouter(int num_inputs, int num_outputs) :
       Processor(num_inputs, num_outputs) {

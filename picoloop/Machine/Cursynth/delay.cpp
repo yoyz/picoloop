@@ -16,7 +16,7 @@
 
 #include "delay.h"
 
-namespace mopo {
+namespace mopocursynth {
 
   Delay::Delay() : Processor(Delay::kNumInputs, 1) { }
 
