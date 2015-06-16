@@ -240,9 +240,9 @@ void TwytchsynthMachine::setI(int what,int val)
   // //if (what==OSC12_MIX)           TWE->getControls().at("amp env depth")->set(f_val*12);
 
 
-  // //if (what==OSC12_MIX)           TWE->getControls().at("osc mix")->set(f_val);
+   if (what==OSC12_MIX)           TWE->getControls().at("osc_mix")->set(f_val);
 
-  // //if (what==OSC1_AMP)            TWE->getControls().at("velocity track")->set(f_val);
+   if (what==OSC1_AMP)            TWE->getControls().at("velocity_track")->set(f_val);
   // //if (what==OSC1_DETUNE)         TWE->getControls().at("osc 2 tune"   )->set(((f_val*2)-1)*128);
    if (what==OSC1_DETUNE)         TWE->getControls().at("osc_2_tune"   )->set((f_val*2)-1);
    if (what==OSC1_MOD)            TWE->getControls().at("cross_modulation")->set(f_val);
