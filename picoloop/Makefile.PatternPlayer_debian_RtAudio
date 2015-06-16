@@ -14,7 +14,7 @@ CFLAGS= -c -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINUX_DESKTOP -
 CFLAGS= -c -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINUX_DESKTOP -ggdb  -fpermissive 
 CFLAGS= -c -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINUX_DESKTOP -ggdb   -DDUMP_AUDIO=1
 CFLAGS= -c -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINUX_DESKTOP -ggdb   -DDUMP_AUDIO=1 -DFIXED
-CFLAGS= -c -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINUX_DESKTOP -ggdb   -DDUMP_AUDIO=1 
+CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINUX_DESKTOP -ggdb   -DDUMP_AUDIO=1 
 
 LDFLAGS=-lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread -pg
 LDFLAGS=-lasound -lSDL           -lSDL_ttf -lpthread -pg
@@ -129,6 +129,52 @@ SOURCES=PatternPlayer.cpp \
 		      Machine/Open303/rosic_FunctionTemplates.cpp	\
 		      Machine/Open303/rosic_EllipticQuarterBandFilter.cpp\
 		      Machine/Open303/rosic_RealFunctions.cpp		\
+		      Machine/Twytch/TwytchsynthMachine.cpp		\
+		      Machine/Twytch/TwytchsynthUserInterface.cpp	\
+		      Machine/Twytch/twytch_alias.cpp				\
+		      Machine/Twytch/twytch_arpeggiator.cpp			\
+		      Machine/Twytch/twytch_bypass_router.cpp			\
+		      Machine/Twytch/twytch_bit_crush.cpp			\
+		      Machine/Twytch/twytch_fixed_point_oscillator.cpp		\
+		      Machine/Twytch/twytch_filter.cpp				\
+		      Machine/Twytch/twytch_feedback.cpp			\
+		      Machine/Twytch/twytch_envelope.cpp			\
+		      Machine/Twytch/twytch_distortion.cpp			\
+		      Machine/Twytch/twytch_delay.cpp				\
+		      Machine/Twytch/twytch_helm_lfo.cpp			\
+		      Machine/Twytch/twytch_helm_engine.cpp			\
+		      Machine/Twytch/twytch_helm_common.cpp			\
+		      Machine/Twytch/twytch_formant_manager.cpp		\
+		      Machine/Twytch/twytch_fixed_point_wave.cpp		\
+		      Machine/Twytch/twytch_helm_voice_handler.cpp		\
+		      Machine/Twytch/twytch_helm_oscillators.cpp		\
+		      Machine/Twytch/twytch_helm_module.cpp			\
+		      Machine/Twytch/twytch_operators.cpp			\
+		      Machine/Twytch/twytch_noise_oscillator.cpp		\
+		      Machine/Twytch/twytch_mono_panner.cpp			\
+		      Machine/Twytch/twytch_midi_lookup.cpp			\
+		      Machine/Twytch/twytch_memory.cpp				\
+		      Machine/Twytch/twytch_magnitude_lookup.cpp		\
+		      Machine/Twytch/twytch_linear_slope.cpp			\
+		      Machine/Twytch/twytch_processor_router.cpp		\
+		      Machine/Twytch/twytch_processor.cpp			\
+		      Machine/Twytch/twytch_phaser.cpp				\
+		      Machine/Twytch/twytch_oscillator.cpp			\
+		      Machine/Twytch/twytch_reverb_comb.cpp			\
+		      Machine/Twytch/twytch_reverb_all_pass.cpp		\
+		      Machine/Twytch/twytch_reverb.cpp				\
+		      Machine/Twytch/twytch_resonance_lookup.cpp		\
+		      Machine/Twytch/twytch_resonance_cancel.cpp		\
+		      Machine/Twytch/twytch_value.cpp				\
+		      Machine/Twytch/twytch_trigger_operators.cpp		\
+		      Machine/Twytch/twytch_switch.cpp				\
+		      Machine/Twytch/twytch_stutter.cpp			\
+		      Machine/Twytch/twytch_step_generator.cpp			\
+		      Machine/Twytch/twytch_smooth_value.cpp			\
+		      Machine/Twytch/twytch_smooth_filter.cpp			\
+		      Machine/Twytch/twytch_simple_delay.cpp			\
+		      Machine/Twytch/twytch_wave.cpp				\
+		      Machine/Twytch/twytch_voice_handler.cpp			
 
 
 

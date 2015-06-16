@@ -244,27 +244,29 @@ void TwytchsynthMachine::setI(int what,int val)
 
   // //if (what==OSC1_AMP)            TWE->getControls().at("velocity track")->set(f_val);
   // //if (what==OSC1_DETUNE)         TWE->getControls().at("osc 2 tune"   )->set(((f_val*2)-1)*128);
-  // if (what==OSC1_DETUNE)         TWE->getControls().at("osc 2 tune"   )->set((f_val*2)-1);
-  // if (what==OSC1_MOD)            TWE->getControls().at("cross modulation")->set(f_val);
+   if (what==OSC1_DETUNE)         TWE->getControls().at("osc_2_tune"   )->set((f_val*2)-1);
+   if (what==OSC1_MOD)            TWE->getControls().at("cross_modulation")->set(f_val);
 
-  // if (what==OSC1_AMP)            TWE->getControls().at("keytrack"     )->set(((f_val*2)-1)*128);
+   //if (what==OSC1_AMP)            TWE->getControls().at("keytrack"     )->set(((f_val*2)-1)*128);
+   if (what==OSC1_AMP)            TWE->getControls().at("keytrack"     )->set(((f_val*2)-1));
    if (what==OSC2_AMP)            TWE->getControls().at("fil_env_depth")->set(((f_val*2)-1)*128);
   // //if (what==OSC1_AMP)            TWE->getControls().at("velocity track")->set(f_val);
   
-   //if (what==FILTER1_TYPE)        TWE->getControls().at("filter type")->set(f_val*128);
-  //   //filter.setFilterType(val);
+   //if (what==FILTER1_TYPE)        TWE->getControls().at("filter type")->set(f_val*2);
+    //filter.setFilterType(val);
   // //"filter type"
 
 
    if (what==FILTER1_CUTOFF)      
      { 
-       TWE->getControls().at("cutoff")->set(28+f_val*100);
+       //TWE->getControls().at("cutoff")->set(28+f_val*100);
+       TWE->getControls().at("cutoff")->set(f_val*127);
      }
    
    if (what==FILTER1_RESONANCE)         
      { 
        //TWE->getControls().at("resonance")->set(0.5+(f_val*10));
-       TWE->getControls().at("resonance")->set(0+(f_val*10));
+       TWE->getControls().at("resonance")->set(0+(f_val*1));
      }
 
   // if (what==FX1_DEPTH)          TWE->getControls().at("delay dry/wet")->set(f_val*128);   

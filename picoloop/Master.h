@@ -382,15 +382,16 @@ enum
   };
 
 
-#define SYNTH_PICOSYNTH 0
-#define SYNTH_OPL2      1
-#define SYNTH_PICODRUM  2
-#define SYNTH_PBSYNTH   3
-#define SYNTH_CURSYNTH  4
-#define SYNTH_OPEN303   5
+#define SYNTH_PICOSYNTH    0
+#define SYNTH_OPL2         1
+#define SYNTH_PICODRUM     2
+#define SYNTH_PBSYNTH      3
+#define SYNTH_CURSYNTH     4
+#define SYNTH_OPEN303      5
+#define SYNTH_TWYTCHSYNTH  6
 
 #ifdef __FPU__
-#define SYNTH_SIZE 6
+#define SYNTH_SIZE 7
 #else
 #define SYNTH_SIZE 4
 #endif
