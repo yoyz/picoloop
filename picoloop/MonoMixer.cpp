@@ -6,9 +6,9 @@
 //MonoMixer::MonoMixer()
 #ifdef __FPU__
 //MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(), CS(), FXDelay(), FXDisabled()
-MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(), CS(), O303(), FXDelay(), FXDisabled()
+MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(), CS(), O303(), TW(), FXDelay(), FXDisabled()
 #else
-MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(),               FXDelay(), FXDisabled()
+MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(),                     FXDelay(), FXDisabled()
 #endif
 {
   printf("MonoMixer::MonoMixer()\n");  
@@ -44,6 +44,7 @@ void MonoMixer::init()
   #ifdef __FPU__
   CS.init();
   O303.init();
+  TW.init();
   #endif
 
   //FX=&FXDelay;
@@ -76,6 +77,9 @@ void MonoMixer::init()
     M=&CS;
   if (machine_type==SYNTH_OPEN303)
     M=&O303;
+  if (machine_type==SYNTH_TWYTCHSYNTH)
+    M=&TW;
+
   #endif
 
   //M=&OPLM;
@@ -112,6 +116,10 @@ void MonoMixer::setMachineType(int type)
     case SYNTH_OPEN303:
       M=&O303;
       break;
+    case SYNTH_TWYTCHSYNTH:
+      M=&TW;
+      break;
+
 #endif
 
 

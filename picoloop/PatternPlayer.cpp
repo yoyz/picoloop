@@ -102,6 +102,7 @@ PBSynthUserInterface   PBUI;
 #ifdef __FPU__
 CursynthUserInterface  CSUI;
 Open303UserInterface   O303UI;
+CursynthUserInterface  TWUI;
 #endif
 
 //UI.handle_key(1,1);
@@ -1636,13 +1637,14 @@ void refresh_pecursor_ui(int i)
 {
   int  cty=SEQ.getCurrentTrackY();
   PECursor=P[cty].getPatternElement(i);  
-  if (PECursor.get(MACHINE_TYPE)==SYNTH_PICOSYNTH) UI=&PSUI;
-  if (PECursor.get(MACHINE_TYPE)==SYNTH_PICODRUM)  UI=&PDUI;
-  if (PECursor.get(MACHINE_TYPE)==SYNTH_OPL2    )  UI=&DBUI;
-  if (PECursor.get(MACHINE_TYPE)==SYNTH_PBSYNTH)   UI=&PBUI;
+  if (PECursor.get(MACHINE_TYPE)==SYNTH_PICOSYNTH)    UI=&PSUI;
+  if (PECursor.get(MACHINE_TYPE)==SYNTH_PICODRUM)     UI=&PDUI;
+  if (PECursor.get(MACHINE_TYPE)==SYNTH_OPL2    )     UI=&DBUI;
+  if (PECursor.get(MACHINE_TYPE)==SYNTH_PBSYNTH)      UI=&PBUI;
 #ifdef __FPU__
-  if (PECursor.get(MACHINE_TYPE)==SYNTH_CURSYNTH)  UI=&CSUI;
-  if (PECursor.get(MACHINE_TYPE)==SYNTH_OPEN303)   UI=&O303UI;
+  if (PECursor.get(MACHINE_TYPE)==SYNTH_CURSYNTH)     UI=&CSUI;
+  if (PECursor.get(MACHINE_TYPE)==SYNTH_OPEN303)      UI=&O303UI;
+  if (PECursor.get(MACHINE_TYPE)==SYNTH_TWYTCHSYNTH)  UI=&TWUI;
 #endif
 
 }

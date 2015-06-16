@@ -574,6 +574,7 @@ const char * PatternElement::getMachineTypeCharStar()
   static const char * str_pbsynth     = "PBS    ";
   static const char * str_cursynth    = "CSYNTH ";
   static const char * str_open303     = "O303   ";
+  static const char * str_twytchsynth = "TSYNTH ";
 
   switch (machine_type)
     {
@@ -582,7 +583,8 @@ const char * PatternElement::getMachineTypeCharStar()
     case SYNTH_OPL2:       return str_opl2;        break; 
     case SYNTH_PBSYNTH:    return str_pbsynth;     break; 
     case SYNTH_CURSYNTH:   return str_cursynth;    break; 
-    case SYNTH_OPEN303:    return str_open303;     break; 
+    case SYNTH_OPEN303:    return str_open303;     break;
+    case SYNTH_TWYTCHSYNTH:return str_twytchsynth; break; 
     }
   return str_picosynth;
 }

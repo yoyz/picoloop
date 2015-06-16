@@ -8,6 +8,7 @@ using namespace std;
 #ifdef __FPU__
 #include "Machine/Cursynth/CursynthMachine.h"
 #include "Machine/Open303/Open303Machine.h"
+#include "Machine/Twytch/TwytchsynthMachine.h"
 #endif 
 //#include "Effect.h"
 #include "EffectDelay.h"
@@ -41,6 +42,7 @@ class MonoMixer
 #ifdef __FPU__
   CursynthMachine       CS;
   Open303Machine        O303;
+  TwytchsynthMachine    TW;
 #endif
 
   Effect                *FX;
