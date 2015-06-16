@@ -155,8 +155,11 @@ void TwytchsynthMachine::setF(int what,float val)
   f_val=f_val/128;
 
   //if (what==LFO1_FREQ)             TWE->getControls().at("lfo 1 frequency")->set(f_val*10); 
-  // if (what==LFO1_FREQ)             TWE->getControls().at("lfo 1 frequency")->set(f_val*100); 
-  // if (what==LFO2_FREQ)             TWE->getControls().at("lfo 2 frequency")->set(f_val*100); 
+  // if (what==LFO1_FREQ)             TWE->getControls().at("mono_lfo_1_tempo")->set(f_val*11); 
+  // if (what==LFO2_FREQ)             TWE->getControls().at("mono_lfo_2_tempo")->set(f_val*11); 
+  if (what==LFO1_FREQ)             TWE->getControls().at("mono_lfo_1_frequency")->set(((f_val*2)-1)*6); 
+  if (what==LFO2_FREQ)             TWE->getControls().at("mono_lfo_2_frequency")->set(((f_val*2)-1)*6); 
+
 }
 
 void TwytchsynthMachine::setI(int what,int val)
@@ -216,23 +219,23 @@ void TwytchsynthMachine::setI(int what,int val)
   if (what==OSC1_TYPE)           { TWE->getControls().at("osc_1_waveform")->set(f_val*128); }
   if (what==OSC2_TYPE)           { TWE->getControls().at("osc_2_waveform")->set(f_val*128); }
 
-  // if (what==LFO1_WAVEFORM)       { TWE->getControls().at("lfo 1 waveform")->set(f_val*128); }
-  // if (what==LFO2_WAVEFORM)       { TWE->getControls().at("lfo 2 waveform")->set(f_val*128); }
+  if (what==LFO1_WAVEFORM)       { TWE->getControls().at("mono_lfo_1_waveform")->set(f_val*11); }
+  if (what==LFO2_WAVEFORM)       { TWE->getControls().at("mono_lfo_2_waveform")->set(f_val*11); }
 
 
-   if (what==ADSR_ENV0_ATTACK)    TWE->getControls().at("amp_attack")->set(f_val*3);
-   if (what==ADSR_ENV0_DECAY)     TWE->getControls().at("amp_decay")->set(f_val*3);
+   if (what==ADSR_ENV0_ATTACK)    TWE->getControls().at("amp_attack")->set(f_val*4);
+   if (what==ADSR_ENV0_DECAY)     TWE->getControls().at("amp_decay")->set(f_val*4);
    if (what==ADSR_ENV0_SUSTAIN)   TWE->getControls().at("amp_sustain")->set(f_val);
-   if (what==ADSR_ENV0_RELEASE)   TWE->getControls().at("amp_release")->set(f_val*3);
+   if (what==ADSR_ENV0_RELEASE)   TWE->getControls().at("amp_release")->set(f_val*4);
 
-   if (what==ADSR_ENV1_ATTACK)    TWE->getControls().at("fil_attack")->set(f_val*3);
-   if (what==ADSR_ENV1_DECAY)     TWE->getControls().at("fil_decay")->set(f_val*3);
+   if (what==ADSR_ENV1_ATTACK)    TWE->getControls().at("fil_attack")->set(f_val*4);
+   if (what==ADSR_ENV1_DECAY)     TWE->getControls().at("fil_decay")->set(f_val*4);
    if (what==ADSR_ENV1_SUSTAIN)   TWE->getControls().at("fil_sustain")->set(f_val);
-   if (what==ADSR_ENV1_RELEASE)   TWE->getControls().at("fil_release")->set(f_val*3);
+   if (what==ADSR_ENV1_RELEASE)   TWE->getControls().at("fil_release")->set(f_val*4);
 
 
-  // if (what==LFO1_ENV_AMOUNT)     TWE->getControls().at("mod scale 1")->set(f_val);
-  // if (what==LFO2_ENV_AMOUNT)     TWE->getControls().at("mod scale 2")->set(f_val);
+   if (what==LFO1_ENV_AMOUNT)     TWE->getControls().at("mono_lfo_1_amplitude")->set(((f_val*2)-1));
+   if (what==LFO2_ENV_AMOUNT)     TWE->getControls().at("mono_lfo_2_amplitude")->set(((f_val*2)-1));
 
 
   // if (what==VELOCITY)            velocity=val;
@@ -242,10 +245,34 @@ void TwytchsynthMachine::setI(int what,int val)
 
    if (what==OSC12_MIX)           TWE->getControls().at("osc_mix")->set(f_val);
 
-   if (what==OSC1_AMP)            TWE->getControls().at("velocity_track")->set(f_val);
+   //if (what==OSC1_AMP)            TWE->getControls().at("velocity_track")->set((f_val*2)-1);
+   //if (what==OSC1_AMP)            TWE->getControls().at("")->set(f_val);
+
+   if (what==VELOCITY)            
+     {
+       TWE->clearModulations();
+       if (val<32)
+	 {
+	   printf("µµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµ\n");
+	   mopotwytchsynth::ModulationConnection * connection = new mopotwytchsynth::ModulationConnection("mono_lfo_1", "cutoff");
+	   //connection = new mopo::ModulationConnection(source, destination);
+	   TWE->connectModulation(connection);
+	   connection->amount.set(0.5);
+	   TWE->getControls().at("mono_lfo_1_sync"     )->set(2.1);
+	   TWE->getControls().at("mono_lfo_1_tempo"     )->set(5.1);
+
+	   TWE->getControls().at("mono_lfo_2_sync"     )->set(2.1);
+	   TWE->getControls().at("mono_lfo_2_tempo"     )->set(5.1);
+
+	 }
+	   //connectModulation(connection);
+	   //TWE->connectModulation(TWE->getModulationSource("mono_lfo_1"),
+	   //TWE->getMonoModulationDestination("cutoff"));
+	 //TWE->connectModulation(TWE->getConnection("mono_lfo_1","cutoff"));
+     }
   // //if (what==OSC1_DETUNE)         TWE->getControls().at("osc 2 tune"   )->set(((f_val*2)-1)*128);
    if (what==OSC1_DETUNE)         TWE->getControls().at("osc_2_tune"   )->set((f_val*2)-1);
-   if (what==OSC1_MOD)            TWE->getControls().at("cross_modulation")->set(f_val);
+   if (what==OSC1_MOD)            TWE->getControls().at("cross_modulation")->set(f_val/2);
 
    //if (what==OSC1_AMP)            TWE->getControls().at("keytrack"     )->set(((f_val*2)-1)*128);
    if (what==OSC1_AMP)            TWE->getControls().at("keytrack"     )->set(((f_val*2)-1));
@@ -260,13 +287,13 @@ void TwytchsynthMachine::setI(int what,int val)
    if (what==FILTER1_CUTOFF)      
      { 
        //TWE->getControls().at("cutoff")->set(28+f_val*100);
-       TWE->getControls().at("cutoff")->set(f_val*127);
+       TWE->getControls().at("cutoff")->set(28+f_val*99);
      }
    
    if (what==FILTER1_RESONANCE)         
      { 
        //TWE->getControls().at("resonance")->set(0.5+(f_val*10));
-       TWE->getControls().at("resonance")->set(0+(f_val*1));
+       TWE->getControls().at("resonance")->set(f_val);
      }
 
   // if (what==FX1_DEPTH)          TWE->getControls().at("delay dry/wet")->set(f_val*128);   
