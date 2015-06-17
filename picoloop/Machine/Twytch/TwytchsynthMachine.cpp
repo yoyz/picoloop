@@ -72,6 +72,7 @@ void TwytchsynthMachine::init()
   // TWE->getControls().at("lfo 1 frequency")->set(3.2);     
 
   TWE->getControls().at("filter_type")->set(0);
+  TWE->getControls().at("beats_per_minute")->set(120);
   //bq.reset();
   note_on=0;
 
@@ -106,7 +107,7 @@ int TwytchsynthMachine::checkI(int what,int val)
 
     case FILTER1_TYPE:
       if (val<0) return 0;
-      if (val>CURSYNTH_FILTER_TYPE_SIZE-1) return CURSYNTH_FILTER_TYPE_SIZE-1;
+      if (val>TWYTCHSYNTH_FILTER_TYPE_SIZE-1) return TWYTCHSYNTH_FILTER_TYPE_SIZE-1;
       return val;
       break;
 
@@ -155,11 +156,14 @@ void TwytchsynthMachine::setF(int what,float val)
   f_val=f_val/128;
 
   //if (what==LFO1_FREQ)             TWE->getControls().at("lfo 1 frequency")->set(f_val*10); 
-  // if (what==LFO1_FREQ)             TWE->getControls().at("mono_lfo_1_tempo")->set(f_val*11); 
-  // if (what==LFO2_FREQ)             TWE->getControls().at("mono_lfo_2_tempo")->set(f_val*11); 
+  //if (what==LFO1_FREQ)             TWE->getControls().at("mono_lfo_1_tempo"    )->set(f_val*11);
   if (what==LFO1_FREQ)             TWE->getControls().at("mono_lfo_1_frequency")->set(((f_val*2)-1)*6); 
-  if (what==LFO2_FREQ)             TWE->getControls().at("mono_lfo_2_frequency")->set(((f_val*2)-1)*6); 
+  //if (what==LFO1_FREQ)             TWE->getControls().at("mono_lfo_1_sync"    )->set(2);
 
+  
+  //if (what==LFO2_FREQ)             TWE->getControls().at("mono_lfo_2_tempo"    )->set(f_val*11); 
+  if (what==LFO2_FREQ)             TWE->getControls().at("mono_lfo_2_frequency")->set(((f_val*2)-1)*6); 
+  //if (what==LFO1_FREQ)             TWE->getControls().at("mono_lfo_2_sync"    )->set(2);
 }
 
 void TwytchsynthMachine::setI(int what,int val)
@@ -219,8 +223,8 @@ void TwytchsynthMachine::setI(int what,int val)
   if (what==OSC1_TYPE)           { TWE->getControls().at("osc_1_waveform")->set(f_val*128); }
   if (what==OSC2_TYPE)           { TWE->getControls().at("osc_2_waveform")->set(f_val*128); }
 
-  if (what==LFO1_WAVEFORM)       { TWE->getControls().at("mono_lfo_1_waveform")->set(f_val*11); }
-  if (what==LFO2_WAVEFORM)       { TWE->getControls().at("mono_lfo_2_waveform")->set(f_val*11); }
+  if (what==LFO1_WAVEFORM)       { TWE->getControls().at("mono_lfo_1_waveform")->set(f_val*128); }
+  if (what==LFO2_WAVEFORM)       { TWE->getControls().at("mono_lfo_2_waveform")->set(f_val*128); }
 
 
    if (what==ADSR_ENV0_ATTACK)    TWE->getControls().at("amp_attack")->set(f_val*4);
@@ -234,8 +238,8 @@ void TwytchsynthMachine::setI(int what,int val)
    if (what==ADSR_ENV1_RELEASE)   TWE->getControls().at("fil_release")->set(f_val*4);
 
 
-   if (what==LFO1_ENV_AMOUNT)     TWE->getControls().at("mono_lfo_1_amplitude")->set(((f_val*2)-1));
-   if (what==LFO2_ENV_AMOUNT)     TWE->getControls().at("mono_lfo_2_amplitude")->set(((f_val*2)-1));
+   if (what==LFO1_ENV_AMOUNT)     TWE->getControls().at("mono_lfo_1_amplitude")->set(((f_val*2)-1)*4);
+   if (what==LFO2_ENV_AMOUNT)     TWE->getControls().at("mono_lfo_2_amplitude")->set(((f_val*2)-1)*4);
 
 
   // if (what==VELOCITY)            velocity=val;
@@ -254,15 +258,23 @@ void TwytchsynthMachine::setI(int what,int val)
        if (val<32)
 	 {
 	   printf("µµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµ\n");
-	   mopotwytchsynth::ModulationConnection * connection = new mopotwytchsynth::ModulationConnection("mono_lfo_1", "cutoff");
+	   mopotwytchsynth::ModulationConnection * connection =
+	     //new mopotwytchsynth::ModulationConnection("mono_lfo_1","cutoff");
+	     //new mopotwytchsynth::ModulationConnection("mono_lfo_1","resonance");
+	     //new mopotwytchsynth::ModulationConnection("mono_lfo_1","resonance");
+	     //  new mopotwytchsynth::ModulationConnection("mono_lfo_1","fil_env_depth");
+	   new mopotwytchsynth::ModulationConnection("mono_lfo_1","keytrack");
 	   //connection = new mopo::ModulationConnection(source, destination);
+	   connection->amount.set(1);
 	   TWE->connectModulation(connection);
-	   connection->amount.set(0.5);
-	   TWE->getControls().at("mono_lfo_1_sync"     )->set(2.1);
-	   TWE->getControls().at("mono_lfo_1_tempo"     )->set(5.1);
+	   //if (TWE->getConnection("mono_lfo_1","cutoff")!=nullptr)
+	   //printf("CONNECTED\n");
+	   
+	   // TWE->getControls().at("mono_lfo_1_sync"      )->set(2.1);
+	   // TWE->getControls().at("mono_lfo_1_tempo"     )->set(5.1);
 
-	   TWE->getControls().at("mono_lfo_2_sync"     )->set(2.1);
-	   TWE->getControls().at("mono_lfo_2_tempo"     )->set(5.1);
+	   // TWE->getControls().at("mono_lfo_2_sync"      )->set(2.1);
+	   // TWE->getControls().at("mono_lfo_2_tempo"     )->set(5.1);
 
 	 }
 	   //connectModulation(connection);
@@ -279,8 +291,8 @@ void TwytchsynthMachine::setI(int what,int val)
    if (what==OSC2_AMP)            TWE->getControls().at("fil_env_depth")->set(((f_val*2)-1)*128);
   // //if (what==OSC1_AMP)            TWE->getControls().at("velocity track")->set(f_val);
   
-   //if (what==FILTER1_TYPE)        TWE->getControls().at("filter type")->set(f_val*2);
-    //filter.setFilterType(val);
+   if (what==FILTER1_TYPE)        TWE->getControls().at("filter_type")->set(f_val*6);
+   //filter.setFilterType(val);
   // //"filter type"
 
 
@@ -335,9 +347,15 @@ const char * TwytchsynthMachine::getMachineParamCharStar(int machineParam,int pa
 
   static const char * str_fltr_type_lp   = "LP";
   static const char * str_fltr_type_hp   = "HP";
+  static const char * str_fltr_type_bp   = "BP";
+  static const char * str_fltr_type_ls   = "LS";
+  static const char * str_fltr_type_hs   = "HS";
+  static const char * str_fltr_type_bs   = "BS";
+  static const char * str_fltr_type_ap   = "AP";
+  static const char * str_fltr_type_nt   = "NT";
   //static const char * str_fltr_type_hp   = "HP";
 
-  const        char * str_fltr_type[CURSYNTH_FILTER_TYPE_SIZE];
+  const        char * str_fltr_type[TWYTCHSYNTH_FILTER_TYPE_SIZE];
 
 
   static const char * str_lfo_type_lfo   = "PLFO";
@@ -369,8 +387,14 @@ const char * TwytchsynthMachine::getMachineParamCharStar(int machineParam,int pa
   // str_fltr_algo[FILTER_ALGO_BIQUAD]   = str_fltr_algo_biquad;
   // str_fltr_algo[FILTER_ALGO_AMSYNTH]  = str_fltr_algo_amsynth;
 
-  str_fltr_type[CURSYNTH_FILTER_TYPE_LP]       = str_fltr_type_lp;
-  str_fltr_type[CURSYNTH_FILTER_TYPE_HP]       = str_fltr_type_hp;
+  str_fltr_type[TWYTCHSYNTH_FILTER_TYPE_LP]       = str_fltr_type_lp;
+  str_fltr_type[TWYTCHSYNTH_FILTER_TYPE_HP]       = str_fltr_type_hp;
+  str_fltr_type[TWYTCHSYNTH_FILTER_TYPE_BP]       = str_fltr_type_bp;
+  str_fltr_type[TWYTCHSYNTH_FILTER_TYPE_LS]       = str_fltr_type_ls;
+  str_fltr_type[TWYTCHSYNTH_FILTER_TYPE_HS]       = str_fltr_type_hs;
+  str_fltr_type[TWYTCHSYNTH_FILTER_TYPE_BS]       = str_fltr_type_bs;
+  str_fltr_type[TWYTCHSYNTH_FILTER_TYPE_AP]       = str_fltr_type_ap;
+  str_fltr_type[TWYTCHSYNTH_FILTER_TYPE_NT]       = str_fltr_type_nt;
   //str_fltr_type[FILTER_TYPE_HP]       = str_fltr_type_hp;
 
   str_lfo_type[LFO_TYPE_PITCHLFO]     = str_lfo_type_lfo;
