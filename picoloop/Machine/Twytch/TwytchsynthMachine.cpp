@@ -156,13 +156,13 @@ void TwytchsynthMachine::setF(int what,float val)
   f_val=f_val/128;
 
   //if (what==LFO1_FREQ)             TWE->getControls().at("lfo 1 frequency")->set(f_val*10); 
-  //if (what==LFO1_FREQ)             TWE->getControls().at("mono_lfo_1_tempo"    )->set(f_val*11);
-  if (what==LFO1_FREQ)             TWE->getControls().at("mono_lfo_1_frequency")->set(((f_val*2)-1)*6); 
+  if (what==LFO1_FREQ)             TWE->getControls().at("mono_lfo_1_tempo"    )->set(f_val*11);
+  //if (what==LFO1_FREQ)             TWE->getControls().at("mono_lfo_1_frequency")->set(((f_val*2)-1)*6); 
   //if (what==LFO1_FREQ)             TWE->getControls().at("mono_lfo_1_sync"    )->set(2);
 
   
-  //if (what==LFO2_FREQ)             TWE->getControls().at("mono_lfo_2_tempo"    )->set(f_val*11); 
-  if (what==LFO2_FREQ)             TWE->getControls().at("mono_lfo_2_frequency")->set(((f_val*2)-1)*6); 
+  if (what==LFO2_FREQ)             TWE->getControls().at("mono_lfo_2_tempo"    )->set(f_val*11); 
+  //if (what==LFO2_FREQ)             TWE->getControls().at("mono_lfo_2_frequency")->set(((f_val*2)-1)*6); 
   //if (what==LFO1_FREQ)             TWE->getControls().at("mono_lfo_2_sync"    )->set(2);
 }
 
