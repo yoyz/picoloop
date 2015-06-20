@@ -263,7 +263,11 @@ void TwytchsynthMachine::setI(int what,int val)
        TWE->getControls().at("mono_lfo_1_amplitude")->set(((f_val*2)-1)*4);
      }
 
-   if (what==LFO2_ENV_AMOUNT)     { f_env2_amount=f_val; TWE->getControls().at("mono_lfo_2_amplitude")->set(((f_val*2)-1)*4); }
+   if (what==LFO2_ENV_AMOUNT)     
+     { 
+       f_env2_amount=abs(abs(f_val-0.5)*2); 
+       TWE->getControls().at("mono_lfo_2_amplitude")->set(((f_val*2)-1)*4); 
+     }
 
 
   // if (what==VELOCITY)            velocity=val;
