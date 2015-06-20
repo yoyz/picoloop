@@ -2306,6 +2306,7 @@ void seq_update_track(int t)
 	  // Let the Machine handle NoteOn/NoteOff with a trig time duration
 	  M[t]->setI(TRIG_TIME_MODE,1);
 	  M[t]->setI(TRIG_TIME_DURATION,P[t].getPatternElement(step).get(TRIG_TIME_DURATION));
+	  M[t]->setI(BPM,bpm_current);
 
 	  M[t]->setI(FM_TYPE,P[t].getPatternElement(step).get(FM_TYPE));
 
