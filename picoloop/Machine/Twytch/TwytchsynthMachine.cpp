@@ -267,12 +267,15 @@ void TwytchsynthMachine::setI(int what,int val)
      { 
        f_env2_amount=abs(abs(f_val-0.5)*2); 
        TWE->getControls().at("mono_lfo_2_amplitude")->set(((f_val*2)-1)*4); 
+
+       TWE->clearModulations();
+       mopotwytchsynth::ModulationConnection * connection =
+	 new mopotwytchsynth::ModulationConnection("mono_lfo_1","keytrack");
+       connection->amount.set(f_env1_amount);
+       TWE->connectModulation(connection);
+
      }
 
-
-  // if (what==VELOCITY)            velocity=val;
-  // if (what==OSC12_MIX)           TWE->getControls().at("osc mix")->set(f_val);
-  // //if (what==OSC12_MIX)           TWE->getControls().at("amp env depth")->set(f_val*12);
 
 
    if (what==OSC12_MIX)           TWE->getControls().at("osc_mix")->set(f_val);
@@ -280,38 +283,9 @@ void TwytchsynthMachine::setI(int what,int val)
    //if (what==OSC1_AMP)            TWE->getControls().at("velocity_track")->set((f_val*2)-1);
    //if (what==OSC1_AMP)            TWE->getControls().at("")->set(f_val);
 
-   if (what==VELOCITY)            
-     {
-       TWE->clearModulations();
-       if (val<32)
-	 {
-	   printf("µµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµ f_env1_amount:%f\n",f_env1_amount);
-	   mopotwytchsynth::ModulationConnection * connection =
-	     //new mopotwytchsynth::ModulationConnection("mono_lfo_1","cutoff");
-	     //new mopotwytchsynth::ModulationConnection("mono_lfo_1","resonance");
-	     //new mopotwytchsynth::ModulationConnection("mono_lfo_1","resonance");
-	     //  new mopotwytchsynth::ModulationConnection("mono_lfo_1","fil_env_depth");
-	     //new mopotwytchsynth::ModulationConnection("mono_lfo_1","keytrack");
-	   new mopotwytchsynth::ModulationConnection("mono_lfo_1","keytrack");
-	   //connection = new mopo::ModulationConnection(source, destination);
-	   connection->amount.set(f_env1_amount);
-	   TWE->connectModulation(connection);
-	   //if (TWE->getConnection("mono_lfo_1","cutoff")!=nullptr)
-	   //printf("CONNECTED\n");
-	   
-	   // TWE->getControls().at("mono_lfo_1_sync"      )->set(2.1);
-	   // TWE->getControls().at("mono_lfo_1_tempo"     )->set(5.1);
+   if (what==VELOCITY)            TWE->getControls().at("velocity_track"     )->set(abs(f_val-1));
 
-	   // TWE->getControls().at("mono_lfo_2_sync"      )->set(2.1);
-	   // TWE->getControls().at("mono_lfo_2_tempo"     )->set(5.1);
 
-	 }
-	   //connectModulation(connection);
-	   //TWE->connectModulation(TWE->getModulationSource("mono_lfo_1"),
-	   //TWE->getMonoModulationDestination("cutoff"));
-	 //TWE->connectModulation(TWE->getConnection("mono_lfo_1","cutoff"));
-     }
-  // //if (what==OSC1_DETUNE)         TWE->getControls().at("osc 2 tune"   )->set(((f_val*2)-1)*128);
    if (what==OSC1_DETUNE)         TWE->getControls().at("osc_2_tune"   )->set((f_val*2)-1);
    if (what==OSC1_MOD)            TWE->getControls().at("cross_modulation")->set(f_val/2);
 
