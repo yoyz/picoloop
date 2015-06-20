@@ -53,6 +53,9 @@ class TwytchsynthMachine : public Machine
 
   int                   velocity;
 
+  float                 f_env1_amount;
+  float                 f_env2_amount;
+
 };
 
 #endif

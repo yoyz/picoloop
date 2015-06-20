@@ -86,6 +86,8 @@ void TwytchsynthMachine::init()
   trig_time_mode=0;
   trig_time_duration=0;
   trig_time_duration_sample=0;
+  f_env1_amount=0.5; // 0 < 0.5 < 1
+  f_env2_amount=0.5; // 0 < 0.5 < 1
 }
 
 
@@ -93,6 +95,14 @@ int TwytchsynthMachine::checkI(int what,int val)
 {
   switch (what)
     {
+
+    case BPM:
+      if (val<=0) return 1;
+      if (val>=300) return 300;
+      return val;
+      break;
+
+
 
     case TRIG_TIME_DURATION:
       if (val<=0) return 1;
@@ -227,6 +237,8 @@ void TwytchsynthMachine::setI(int what,int val)
   // //if (what==ADSR_ENV0_RELEASE)   TWE->getControls().at("delay dry/wet")->set(f_val);
   // //if (what==ADSR_ENV0_DECAY)     TWE->getControls().at("delay feedback")->set(f_val);
 
+  if (what==BPM)                 { TWE->getControls().at("beats_per_minute")->set(val);     }
+
   if (what==OSC1_TYPE)           { TWE->getControls().at("osc_1_waveform")->set(f_val*128); }
   if (what==OSC2_TYPE)           { TWE->getControls().at("osc_2_waveform")->set(f_val*128); }
 
@@ -245,8 +257,13 @@ void TwytchsynthMachine::setI(int what,int val)
    if (what==ADSR_ENV1_RELEASE)   TWE->getControls().at("fil_release")->set(f_val*4);
 
 
-   if (what==LFO1_ENV_AMOUNT)     TWE->getControls().at("mono_lfo_1_amplitude")->set(((f_val*2)-1)*4);
-   if (what==LFO2_ENV_AMOUNT)     TWE->getControls().at("mono_lfo_2_amplitude")->set(((f_val*2)-1)*4);
+   if (what==LFO1_ENV_AMOUNT)     
+     { 
+       f_env1_amount=abs(abs(f_val-0.5)*2); 
+       TWE->getControls().at("mono_lfo_1_amplitude")->set(((f_val*2)-1)*4);
+     }
+
+   if (what==LFO2_ENV_AMOUNT)     { f_env2_amount=f_val; TWE->getControls().at("mono_lfo_2_amplitude")->set(((f_val*2)-1)*4); }
 
 
   // if (what==VELOCITY)            velocity=val;
@@ -264,15 +281,16 @@ void TwytchsynthMachine::setI(int what,int val)
        TWE->clearModulations();
        if (val<32)
 	 {
-	   printf("µµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµ\n");
+	   printf("µµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµ f_env1_amount:%f\n",f_env1_amount);
 	   mopotwytchsynth::ModulationConnection * connection =
 	     //new mopotwytchsynth::ModulationConnection("mono_lfo_1","cutoff");
 	     //new mopotwytchsynth::ModulationConnection("mono_lfo_1","resonance");
 	     //new mopotwytchsynth::ModulationConnection("mono_lfo_1","resonance");
 	     //  new mopotwytchsynth::ModulationConnection("mono_lfo_1","fil_env_depth");
+	     //new mopotwytchsynth::ModulationConnection("mono_lfo_1","keytrack");
 	   new mopotwytchsynth::ModulationConnection("mono_lfo_1","keytrack");
 	   //connection = new mopo::ModulationConnection(source, destination);
-	   connection->amount.set(1);
+	   connection->amount.set(f_env1_amount);
 	   TWE->connectModulation(connection);
 	   //if (TWE->getConnection("mono_lfo_1","cutoff")!=nullptr)
 	   //printf("CONNECTED\n");
