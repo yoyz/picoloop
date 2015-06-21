@@ -72,6 +72,7 @@
 
 #ifndef WIN32
 typedef long long __int64;
+//typedef long __int64;
 #endif
 
 typedef         double		Real64;

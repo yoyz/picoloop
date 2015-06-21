@@ -22,6 +22,9 @@
 
 #include <stdint.h>
 #include <stdio.h>
+#ifndef   M_PI
+#define   M_PI      3.1415926535897932384626433832795
+#endif
 #define    DECAL 32768
 //#define    DECAL 16777216
 //#define      DECAL 2147483648

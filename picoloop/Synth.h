@@ -6,9 +6,12 @@
 #ifndef __SYNTH____
 #define __SYNTH____
 
-
+#ifndef   M_PI
+#define   M_PI      3.1415926535897932384626433832795
+#endif
 const int AMPLITUDE = 28000;
 const int FREQUENCY = 44100;
+
 
 struct BeepObject
 {
