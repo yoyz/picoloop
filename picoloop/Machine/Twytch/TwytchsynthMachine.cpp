@@ -112,13 +112,13 @@ int TwytchsynthMachine::checkI(int what,int val)
 
     case OSC1_TYPE:
       if (val<0) return 0;
-      if (val>PICO_CURSYNTH_SIZE-1) return PICO_CURSYNTH_SIZE-1;
+      if (val>PICO_TWYTCHSYNTH_SIZE-1) return PICO_TWYTCHSYNTH_SIZE-1;
       return val;
       break;
 
     case OSC2_TYPE:
       if (val<0) return 0;
-      if (val>PICO_CURSYNTH_SIZE-1) return PICO_CURSYNTH_SIZE-1;
+      if (val>PICO_TWYTCHSYNTH_SIZE-1) return PICO_TWYTCHSYNTH_SIZE-1;
       return val;
       break;
 
@@ -137,14 +137,14 @@ int TwytchsynthMachine::checkI(int what,int val)
 
     case LFO1_WAVEFORM:
       if (val<0) return 0;
-      if (val>PICO_CURSYNTH_SIZE-2) return PICO_CURSYNTH_SIZE-2;
+      if (val>PICO_TWYTCHSYNTH_SIZE-2) return PICO_TWYTCHSYNTH_SIZE-2;
       return val;
       break;
 
 
     case LFO2_WAVEFORM:
       if (val<0) return 0;
-      if (val>PICO_CURSYNTH_SIZE-2) return PICO_CURSYNTH_SIZE-2;
+      if (val>PICO_TWYTCHSYNTH_SIZE-2) return PICO_TWYTCHSYNTH_SIZE-2;
       return val;
       break;
 
@@ -346,7 +346,7 @@ const char * TwytchsynthMachine::getMachineParamCharStar(int machineParam,int pa
 
   //static const char * str_wtbl          = "WTBL ";
 
-  const        char * str_osc[PICO_CURSYNTH_SIZE];
+  const        char * str_osc[PICO_TWYTCHSYNTH_SIZE];
 
 
   static const char * str_fltr_algo_nofilter = "NOFL";
@@ -378,21 +378,21 @@ const char * TwytchsynthMachine::getMachineParamCharStar(int machineParam,int pa
 
 
 
-  str_osc[PICO_CURSYNTH_SIN]              = str_sin;
-  str_osc[PICO_CURSYNTH_TRIANGLE]         = str_triangle;
-  str_osc[PICO_CURSYNTH_SQUARE]           = str_square;
-  str_osc[PICO_CURSYNTH_DOWNSAW]          = str_downsaw;
-  str_osc[PICO_CURSYNTH_UPSAW]            = str_upsaw;
+  str_osc[PICO_TWYTCHSYNTH_SIN]              = str_sin;
+  str_osc[PICO_TWYTCHSYNTH_TRIANGLE]         = str_triangle;
+  str_osc[PICO_TWYTCHSYNTH_SQUARE]           = str_square;
+  str_osc[PICO_TWYTCHSYNTH_DOWNSAW]          = str_downsaw;
+  str_osc[PICO_TWYTCHSYNTH_UPSAW]            = str_upsaw;
 
-  str_osc[PICO_CURSYNTH_THREESTEP]        = str_threestep;
-  str_osc[PICO_CURSYNTH_FOURSTEP]         = str_fourstep;
-  str_osc[PICO_CURSYNTH_HEIGHTSTEP]       = str_heightstep;
+  str_osc[PICO_TWYTCHSYNTH_THREESTEP]        = str_threestep;
+  str_osc[PICO_TWYTCHSYNTH_FOURSTEP]         = str_fourstep;
+  str_osc[PICO_TWYTCHSYNTH_HEIGHTSTEP]       = str_heightstep;
 
-  str_osc[PICO_CURSYNTH_THREEPYRAMID]     = str_threepyramid;
-  str_osc[PICO_CURSYNTH_FIVEPYRAMID]      = str_fivepyramid;
-  str_osc[PICO_CURSYNTH_NINEPYRAMID]      = str_ninepyramid;
+  str_osc[PICO_TWYTCHSYNTH_THREEPYRAMID]     = str_threepyramid;
+  str_osc[PICO_TWYTCHSYNTH_FIVEPYRAMID]      = str_fivepyramid;
+  str_osc[PICO_TWYTCHSYNTH_NINEPYRAMID]      = str_ninepyramid;
 
-  str_osc[PICO_CURSYNTH_WHITENOISE]       = str_whitenoise;
+  //str_osc[PICO_TWYTCHSYNTH_WHITENOISE]       = str_whitenoise;
 
   // str_fltr_algo[FILTER_ALGO_NOFILTER] = str_fltr_algo_nofilter;
   // str_fltr_algo[FILTER_ALGO_BIQUAD]   = str_fltr_algo_biquad;
