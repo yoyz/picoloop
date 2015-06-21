@@ -374,6 +374,34 @@ void TwytchsynthUserInterface::handle_key_osc()
 
 
   // GLOBALMENU_OSC
+  // change oscilltor one and two type
+  if (menu        == MENU_OFF       && 
+      menu_cursor == GLOBALMENU_OSC &&
+      menu_osc    == MENU_OSC_OSC3)
+    {
+      // Insert/Remove Trig
+      sub_handle_invert_trig();
+
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_LONG    , OSC3_TYPE,        -1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_LONG    , OSC3_TYPE,         1, 0);
+    }
+
+  // GLOBALMENU_OSC
+  // change oscilltor one and two type
+  if (menu        != MENU_OFF       && 
+      menu_cursor == GLOBALMENU_OSC &&
+      menu_osc    == MENU_OSC_OSC3)
+    {
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_LONG    , OSC3_TYPE,        -1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_LONG    , OSC3_TYPE,         1, 1);
+
+    }
+
+
+
+
+
+  // GLOBALMENU_OSC
   // change lfo one and two waveform
   if (menu        == MENU_OFF       && 
       menu_cursor == GLOBALMENU_OSC &&
@@ -473,7 +501,8 @@ void TwytchsynthUserInterface::handle_key_osc()
     {
       if (menu_ad_dirty_keyboard==0)
 	{
-	  if      (menu_osc==MENU_OSC_OSC1OSC2)            { menu_osc=MENU_OSC_LFO1LFO2;            }
+	  if      (menu_osc==MENU_OSC_OSC1OSC2)            { menu_osc=MENU_OSC_OSC3;                }
+	  else if (menu_osc==MENU_OSC_OSC3)                { menu_osc=MENU_OSC_LFO1LFO2;            }
 	  else if (menu_osc==MENU_OSC_LFO1LFO2)            { menu_osc=MENU_OSC_UNISON1UNISON2;      }
 	  else if (menu_osc==MENU_OSC_UNISON1UNISON2)      { menu_osc=MENU_OSC_UNISONDT1UNISONDT2;  }
 	  else if (menu_osc==MENU_OSC_UNISONDT1UNISONDT2)  { menu_osc=MENU_OSC_OSC1OSC2;            }
@@ -595,6 +624,38 @@ void TwytchsynthUserInterface::handle_key_vco()
     }
 
 
+  if (menu        == MENU_OFF && 
+      menu_cursor == GLOBALMENU_VCO   &&
+      menu_vco    == MENU_VCO_OSC3AMPOSC4AMP
+      )
+    {
+      // Insert/Remove Trig
+      sub_handle_invert_trig();
+
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, OSC3_AMP        ,     -1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, OSC3_AMP        ,      1, 0);
+
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, OSC4_AMP        ,      1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, OSC4_AMP        ,     -1, 0);
+    }
+
+
+  // VCO Menu
+  // Change Value
+  if (menu        != MENU_OFF && 
+      menu_cursor == GLOBALMENU_VCO    &&
+      menu_vco    == MENU_VCO_OSC3AMPOSC4AMP
+      )
+    {     
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, OSC3_AMP           ,     -1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, OSC3_AMP           ,      1, 1);
+ 
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, OSC4_AMP           ,      1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, OSC4_AMP           ,     -1, 1);
+    }
+
+
+
 
 
 
@@ -608,7 +669,8 @@ void TwytchsynthUserInterface::handle_key_vco()
 	{
 	  if      (menu_vco==MENU_VCO_OSCMIX_VELOCITY)     { menu_vco=MENU_VCO_KEYTRACKENVDEPTH;  }
 	  else if (menu_vco==MENU_VCO_KEYTRACKENVDEPTH)    { menu_vco=MENU_VCO_OSCDETUNECROSSMOD; }
-	  else if (menu_vco==MENU_VCO_OSCDETUNECROSSMOD)   { menu_vco=MENU_VCO_OSCMIX_VELOCITY;   }
+	  else if (menu_vco==MENU_VCO_OSCDETUNECROSSMOD)   { menu_vco=MENU_VCO_OSC3AMPOSC4AMP;   }
+	  else if (menu_vco==MENU_VCO_OSC3AMPOSC4AMP)      { menu_vco=MENU_VCO_OSCMIX_VELOCITY;   }
 	  else                                             { menu_vco=MENU_VCO_OSCMIX_VELOCITY;   }
 	  dirty_graphic=1;
 	}
@@ -862,158 +924,105 @@ void TwytchsynthUserInterface::display_board_text()
 
 
   if (menu_ad==MENU_AD_AMP_ATTACK_RELEASE &&
-      menu_cursor==GLOBALMENU_AD)
-    {
-      sprintf(str_submenu,"AMP  A/R");
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
-    }
+      menu_cursor==GLOBALMENU_AD) 
+    sprintf(str_submenu,"AMP  A/R");
 
   if (menu_ad==MENU_AD_AMP_DECAY_SUSTAIN &&
       menu_cursor==GLOBALMENU_AD)
-    {
-      sprintf(str_submenu,"AMP  S/D");
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
-    }
+    sprintf(str_submenu,"AMP  S/D");
+
 
 
   if (menu_ad==MENU_AD_FLTR_ATTACK_RELEASE &&
       menu_cursor==GLOBALMENU_AD)
-    {
-      sprintf(str_submenu,"FLTR A/R");
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
-    }
+    sprintf(str_submenu,"FLTR A/R");
 
   if (menu_ad==MENU_AD_FLTR_DECAY_SUSTAIN &&
       menu_cursor==GLOBALMENU_AD)
-    {
-      sprintf(str_submenu,"FLTR S/D");
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
-    }
+    sprintf(str_submenu,"FLTR S/D");
+
 
 
   if (menu_ad==MENU_AD_TRIGTIME_AMP &&
-      menu_cursor==GLOBALMENU_AD)
-    {
-      sprintf(str_submenu,"T/N AMP");
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
-    }
+      menu_cursor==GLOBALMENU_AD)    
+    sprintf(str_submenu,"T/N AMP");
+    
 
   if (menu_fltr==MENU_FLTR_CUTOFF_RESONANCE &&
       menu_cursor==GLOBALMENU_FLTR)
-    {
-      sprintf(str_submenu,"CUTOFF/RES");
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
-    }
+    sprintf(str_submenu,"CUTOFF/RES");
 
   if (menu_fltr==MENU_FLTR_ALGO_TYPE &&
       menu_cursor==GLOBALMENU_FLTR
       )
-    {
-      sprintf(str_submenu,"ALGO/TYPE");
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
-    }
+    sprintf(str_submenu,"ALGO/TYPE");
 
 
   if (menu_vco==MENU_VCO_OSCAMP &&
       menu_cursor==GLOBALMENU_VCO
       )
-    {
-      sprintf(str_submenu,"envdepth/keytrack");
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
-    }
+    sprintf(str_submenu,"envdepth/keytrack");
 
   if (menu_vco==MENU_VCO_OSCMIX_PHASE &&
       menu_cursor==GLOBALMENU_VCO
       )
-    {
-      sprintf(str_submenu,"Velocity/VCOMIX");
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
-    }
+    sprintf(str_submenu,"Velocity/VCOMIX");
 
 
   if (menu_vco==MENU_VCO_OSCDETUNECROSSMOD &&
       menu_cursor==GLOBALMENU_VCO
       )
-    {
-      sprintf(str_submenu,"DETUNE/Crossmod");
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
-    }
+    sprintf(str_submenu,"DETUNE/Crossmod");
+
+  if (menu_vco==MENU_VCO_OSC3AMPOSC4AMP &&
+      menu_cursor==GLOBALMENU_VCO
+      )
+    sprintf(str_submenu,"SUB/NOISE");
 
 
 
   if (menu_lfo==MENU_LFO_LFOPITCH &&
       menu_cursor==GLOBALMENU_LFO
       )
-    {
-      sprintf(str_submenu,"LFO1 Amount/Speed");
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
-    }
+    sprintf(str_submenu,"LFO1 Amount/Speed");
 
   if (menu_lfo==MENU_LFO_PITCHBEND &&
       menu_cursor==GLOBALMENU_LFO
       )
-    {
-      sprintf(str_submenu,"LFO2 Amount/Speed");
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
-    }
+    sprintf(str_submenu,"LFO2 Amount/Speed");
 
 
   if (menu_lfo==MENU_LFO_TYPE &&
       menu_cursor==GLOBALMENU_LFO
       )
-    {
-      sprintf(str_submenu,"LFOType");
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
-    }
+    sprintf(str_submenu,"LFOType");
 
   if (menu_osc    == MENU_OSC_OSC1OSC2 &&
       menu_cursor == GLOBALMENU_OSC)
-    {
-      sprintf(str_submenu,"OSC WAVEFORM");
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
-    }
+    sprintf(str_submenu,"OSC1&2 WAVEFORM");
+
+  if (menu_osc    == MENU_OSC_OSC3 &&
+      menu_cursor == GLOBALMENU_OSC)
+    sprintf(str_submenu,"SUBOSC WAVEFORM");
 
 
   if (menu_osc    == MENU_OSC_LFO1LFO2 &&
       menu_cursor == GLOBALMENU_OSC)
-    {
-      sprintf(str_submenu,"LFO WAVEFORM  ");
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
-    }
+    sprintf(str_submenu,"LFO WAVEFORM  ");
 
 
   if (menu_osc    == MENU_OSC_UNISON1UNISON2 &&
       menu_cursor == GLOBALMENU_OSC)
-    {
       sprintf(str_submenu,"UNISON OSC1OSC2  ");
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
-    }
 
   if (menu_osc    == MENU_OSC_UNISONDT1UNISONDT2 &&
       menu_cursor == GLOBALMENU_OSC)
-    {
       sprintf(str_submenu,"UNISONDT OSC1OSC2  ");
-      SG.guiTTFText(right_x_display_offset,
-		    right_y_display_offset_line2,str_submenu);
-    }
 
 
+  SG.guiTTFText(right_x_display_offset,
+		right_y_display_offset_line2,str_submenu);
+  
 
 
   if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_AD)    sprintf(str_down,"[A/R] Note  OSC   VCO   LFO   FLTR   ",cty);  
@@ -1040,7 +1049,6 @@ void TwytchsynthUserInterface::display_board_text()
   if (menu==MENU_ON_PAGE1)
     SG.guiTTFText(menu_x_display_offset,
 		  menu_y_display_offset,str_down);
-
 
 }
 
@@ -1161,6 +1169,13 @@ void TwytchsynthUserInterface::display_board_vco()
        display_board_two_param(OSC1_DETUNE,OSC1_MOD);
     }
 
+  // VCO
+  if (menu_cursor == GLOBALMENU_VCO  && 
+      menu_vco    == MENU_VCO_OSC3AMPOSC4AMP)
+    {
+       display_board_two_param(OSC3_AMP,OSC4_AMP);
+    }
+
   
 }
 
@@ -1173,27 +1188,28 @@ void TwytchsynthUserInterface::display_board_osc()
   if (menu_cursor == GLOBALMENU_OSC    &&
       menu_osc    == MENU_OSC_OSC1OSC2)
     {
-      //printf("AAAAAAAAAAAAAA\n");
       display_board_two_param_text(OSC1_TYPE,OSC2_TYPE);
+    }
+  if (menu_cursor == GLOBALMENU_OSC    &&
+      menu_osc    == MENU_OSC_OSC3)
+    {
+      display_board_one_param_text(OSC3_TYPE);
     }
   if (menu_cursor == GLOBALMENU_OSC    &&
       menu_osc    == MENU_OSC_LFO1LFO2)
     {
-      //printf("BBBBBBBBBBBB\n");
       display_board_two_param_text(LFO1_WAVEFORM,LFO2_WAVEFORM);
     }
 
   if (menu_cursor == GLOBALMENU_OSC    &&
       menu_osc    == MENU_OSC_UNISON1UNISON2)
     {
-      printf("CCCCCCCCCCC\n");
       display_board_two_param(OSC1_UNISON,OSC2_UNISON);
     }
 
   if (menu_cursor == GLOBALMENU_OSC    &&
       menu_osc    == MENU_OSC_UNISONDT1UNISONDT2)
     {
-      printf("DDDDDDDDDD\n");
       display_board_two_param(OSC1_UNISONDT,OSC2_UNISONDT);
     }
 

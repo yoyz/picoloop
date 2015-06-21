@@ -51,6 +51,10 @@ private:
   int osc1_amp;
   int osc2_amp;
 
+  int osc3_amp;
+  int osc4_amp;
+
+
   int osc1_unison;
   int osc2_unison;
 
@@ -74,6 +78,8 @@ private:
 
   int oscOneType;
   int oscTwoType;
+
+  int oscThreeType;
 
   int phaseOsc1;
 

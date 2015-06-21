@@ -116,10 +116,11 @@ enum {
   MENU_FLTR_ALGO_TYPE, 
 };
 
-enum { // used by cursynth
+enum { // used by cursynth and twytch
   MENU_VCO_OSCMIX_VELOCITY,
   MENU_VCO_KEYTRACKENVDEPTH,
   MENU_VCO_OSCDETUNECROSSMOD,
+  MENU_VCO_OSC3AMPOSC4AMP,
 };
 
 enum { // used by picosynth/picodrum/Dbopl
@@ -133,6 +134,7 @@ enum { // used by picosynth/picodrum/Dbopl
 
 enum {
   MENU_OSC_OSC1OSC2,
+  MENU_OSC_OSC3,
   MENU_OSC_LFO1LFO2,
   MENU_OSC_UNISON1UNISON2,
   MENU_OSC_UNISONDT1UNISONDT2,
