@@ -402,6 +402,70 @@ void TwytchsynthUserInterface::handle_key_osc()
       handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG    , LFO2_WAVEFORM  ,  -1, 1);
     }
 
+
+  // GLOBALMENU_OSC
+  // change lfo one and two waveform
+  if (menu        == MENU_OFF       && 
+      menu_cursor == GLOBALMENU_OSC &&
+      menu_osc    == MENU_OSC_UNISON1UNISON2)
+    {
+      // Insert/Remove Trig
+      sub_handle_invert_trig();
+
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST    , OSC1_UNISON,    -1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST    , OSC1_UNISON,     1, 0);
+
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST    , OSC2_UNISON  ,   1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST    , OSC2_UNISON  ,  -1, 0);
+    }
+
+  // GLOBALMENU_OSC
+  // change oscilltor one and two type
+  if (menu        != MENU_OFF       && 
+      menu_cursor == GLOBALMENU_OSC &&
+      menu_osc    == MENU_OSC_UNISON1UNISON2)
+    {
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST    , OSC1_UNISON,    -1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST    , OSC1_UNISON,     1, 1);
+
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST    , OSC2_UNISON  ,   1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST    , OSC2_UNISON  ,  -1, 1);
+    }
+
+
+
+  // GLOBALMENU_OSC
+  // change lfo one and two waveform
+  if (menu        == MENU_OFF       && 
+      menu_cursor == GLOBALMENU_OSC &&
+      menu_osc    == MENU_OSC_UNISONDT1UNISONDT2)
+    {
+      // Insert/Remove Trig
+      sub_handle_invert_trig();
+
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST    , OSC1_UNISONDT,    -1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST    , OSC1_UNISONDT,     1, 0);
+
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST    , OSC2_UNISONDT  ,   1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST    , OSC2_UNISONDT  ,  -1, 0);
+    }
+
+  // GLOBALMENU_OSC
+  // change oscilltor one and two type
+  if (menu        != MENU_OFF       && 
+      menu_cursor == GLOBALMENU_OSC &&
+      menu_osc    == MENU_OSC_UNISONDT1UNISONDT2)
+    {
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST    , OSC1_UNISONDT,    -1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST    , OSC1_UNISONDT,     1, 1);
+
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST    , OSC2_UNISONDT  ,   1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST    , OSC2_UNISONDT  ,  -1, 1);
+    }
+
+
+
+
   // change GLOBALMENU_OSC SUBMENU
   if (lastKey     ==  BUTTON_START  && 
       lastEvent   ==  KEYRELEASED     && 
@@ -410,13 +474,15 @@ void TwytchsynthUserInterface::handle_key_osc()
       if (menu_ad_dirty_keyboard==0)
 	{
 	  if      (menu_osc==MENU_OSC_OSC1OSC2)            { menu_osc=MENU_OSC_LFO1LFO2;            }
-	  else if (menu_osc==MENU_OSC_LFO1LFO2)            { menu_osc=MENU_OSC_OSC1OSC2;            }
+	  else if (menu_osc==MENU_OSC_LFO1LFO2)            { menu_osc=MENU_OSC_UNISON1UNISON2;      }
+	  else if (menu_osc==MENU_OSC_UNISON1UNISON2)      { menu_osc=MENU_OSC_UNISONDT1UNISONDT2;  }
+	  else if (menu_osc==MENU_OSC_UNISONDT1UNISONDT2)  { menu_osc=MENU_OSC_OSC1OSC2;            }
 	  else                                             { menu_osc=MENU_OSC_OSC1OSC2;            }
 	  dirty_graphic=1;
 	}
       menu_ad_dirty_keyboard=0;
       IE.clearLastKeyEvent();
-      printf("[sub menu env : %d]\n",menu_ad);
+      printf("[sub menu env : %d]\n",menu_osc);
     }
 }
 
@@ -548,7 +614,7 @@ void TwytchsynthUserInterface::handle_key_vco()
 	}
       menu_ad_dirty_keyboard=0;
       IE.clearLastKeyEvent();
-      printf("[sub menu env : %d]\n",menu_ad);
+      printf("[sub menu vco : %d]\n",menu_vco);
     }
 
 
@@ -931,6 +997,24 @@ void TwytchsynthUserInterface::display_board_text()
     }
 
 
+  if (menu_osc    == MENU_OSC_UNISON1UNISON2 &&
+      menu_cursor == GLOBALMENU_OSC)
+    {
+      sprintf(str_submenu,"UNISON OSC1OSC2  ");
+      SG.guiTTFText(right_x_display_offset,
+		    right_y_display_offset_line2,str_submenu);
+    }
+
+  if (menu_osc    == MENU_OSC_UNISONDT1UNISONDT2 &&
+      menu_cursor == GLOBALMENU_OSC)
+    {
+      sprintf(str_submenu,"UNISONDT OSC1OSC2  ");
+      SG.guiTTFText(right_x_display_offset,
+		    right_y_display_offset_line2,str_submenu);
+    }
+
+
+
 
   if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_AD)    sprintf(str_down,"[A/R] Note  OSC   VCO   LFO   FLTR   ",cty);  
   if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_NOTE)  sprintf(str_down," A/R [Note] OSC   VCO   LFO   FLTR   ",cty);
@@ -1089,13 +1173,31 @@ void TwytchsynthUserInterface::display_board_osc()
   if (menu_cursor == GLOBALMENU_OSC    &&
       menu_osc    == MENU_OSC_OSC1OSC2)
     {
+      //printf("AAAAAAAAAAAAAA\n");
       display_board_two_param_text(OSC1_TYPE,OSC2_TYPE);
     }
   if (menu_cursor == GLOBALMENU_OSC    &&
       menu_osc    == MENU_OSC_LFO1LFO2)
     {
+      //printf("BBBBBBBBBBBB\n");
       display_board_two_param_text(LFO1_WAVEFORM,LFO2_WAVEFORM);
     }
+
+  if (menu_cursor == GLOBALMENU_OSC    &&
+      menu_osc    == MENU_OSC_UNISON1UNISON2)
+    {
+      printf("CCCCCCCCCCC\n");
+      display_board_two_param(OSC1_UNISON,OSC2_UNISON);
+    }
+
+  if (menu_cursor == GLOBALMENU_OSC    &&
+      menu_osc    == MENU_OSC_UNISONDT1UNISONDT2)
+    {
+      printf("DDDDDDDDDD\n");
+      display_board_two_param(OSC1_UNISONDT,OSC2_UNISONDT);
+    }
+
+
 
 }
 

@@ -78,6 +78,12 @@ void PatternElement::init()
   osc2_amp=32;
 
   trig_time=5;
+  osc1_unison=1;
+  osc2_unison=1;
+
+  osc1_unisondt=0;
+  osc2_unisondt=0;
+
 }
 
 void PatternElement::set(int what,int val)
@@ -202,6 +208,21 @@ void PatternElement::set(int what,int val)
     case OSC2_AMP:
       osc2_amp=checkSevenBitBoundarie(val);
       break;
+
+    case OSC1_UNISON:
+      osc1_unison=checkSevenBitBoundarie(val);
+      break;
+    case OSC2_UNISON:
+      osc2_unison=checkSevenBitBoundarie(val);
+      break;
+
+    case OSC1_UNISONDT:
+      osc1_unisondt=checkSevenBitBoundarie(val);
+      break;
+    case OSC2_UNISONDT:
+      osc2_unisondt=checkSevenBitBoundarie(val);
+      break;
+
 
     case VCO_MIX:
       vcomix=checkSevenBitBoundarie(val);
@@ -378,6 +399,22 @@ int PatternElement::get(int what)
     case OSC2_AMP:
       return osc2_amp;
       break;
+
+   case OSC1_UNISON:
+      return osc1_unison;
+      break;      
+    case OSC2_UNISON:
+      return osc2_unison;
+      break;
+
+   case OSC1_UNISONDT:
+      return osc1_unisondt;
+      break;      
+    case OSC2_UNISONDT:
+      return osc2_unisondt;
+      break;
+
+
 
     case VCO_MIX:
       return vcomix;

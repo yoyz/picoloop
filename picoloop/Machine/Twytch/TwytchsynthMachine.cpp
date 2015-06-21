@@ -292,6 +292,14 @@ void TwytchsynthMachine::setI(int what,int val)
    //if (what==OSC1_AMP)            TWE->getControls().at("keytrack"     )->set(((f_val*2)-1)*128);
    if (what==OSC1_AMP)            TWE->getControls().at("keytrack"     )->set(((f_val*2)-1));
    if (what==OSC2_AMP)            TWE->getControls().at("fil_env_depth")->set(((f_val*2)-1)*128);
+
+   if (what==OSC1_UNISON)         TWE->getControls().at("osc_1_unison_voices")->set(f_val*15);
+   if (what==OSC2_UNISON)         TWE->getControls().at("osc_2_unison_voices")->set(f_val*15);
+
+
+   if (what==OSC1_UNISONDT)       TWE->getControls().at("osc_1_unison_detune")->set(f_val*100);
+   if (what==OSC2_UNISONDT)       TWE->getControls().at("osc_2_unison_detune")->set(f_val*100);
+
   // //if (what==OSC1_AMP)            TWE->getControls().at("velocity track")->set(f_val);
   
    if (what==FILTER1_TYPE)        TWE->getControls().at("filter_type")->set(f_val*128);

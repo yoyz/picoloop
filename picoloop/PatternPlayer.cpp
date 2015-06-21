@@ -57,6 +57,7 @@ PSP_HEAP_SIZE_KB(-6144) ;
 #ifdef __FPU__
 #include "Machine/Cursynth/CursynthUserInterface.h"
 #include "Machine/Open303/Open303UserInterface.h"
+#include "Machine/Twytch/TwytchsynthUserInterface.h"
 #endif
 
 
@@ -94,15 +95,15 @@ public:
 
 
 UserInterface * UI;
-PicosynthUserInterface PSUI;
-PicodrumUserInterface  PDUI;
-DboplUserInterface     DBUI;
-PBSynthUserInterface   PBUI;
+PicosynthUserInterface   PSUI;
+PicodrumUserInterface    PDUI;
+DboplUserInterface       DBUI;
+PBSynthUserInterface     PBUI;
 
 #ifdef __FPU__
-CursynthUserInterface  CSUI;
-Open303UserInterface   O303UI;
-CursynthUserInterface  TWUI;
+CursynthUserInterface    CSUI;
+Open303UserInterface     O303UI;
+TwytchsynthUserInterface TWUI;
 #endif
 
 //UI.handle_key(1,1);
@@ -1870,6 +1871,25 @@ void seq_update_multiple_time_by_step()
   seq_update_tweakable_knob_one(OSC2_AMP);
   seq_update_tweakable_knob_all(OSC2_AMP);
 
+
+  // Change osc1 unison
+  seq_update_tweakable_knob_one(OSC1_UNISON);
+  seq_update_tweakable_knob_all(OSC1_UNISON);
+
+  // Change osc2 unison
+  seq_update_tweakable_knob_one(OSC2_UNISON);
+  seq_update_tweakable_knob_all(OSC2_UNISON);
+
+  // Change osc1 unison detune
+  seq_update_tweakable_knob_one(OSC1_UNISONDT);
+  seq_update_tweakable_knob_all(OSC1_UNISONDT);
+
+  // Change osc1 unison detune
+  seq_update_tweakable_knob_one(OSC2_UNISONDT);
+  seq_update_tweakable_knob_all(OSC2_UNISONDT);
+
+
+
   // Change trig time
   seq_update_tweakable_knob_one(TRIG_TIME_DURATION);
   seq_update_tweakable_knob_all(TRIG_TIME_DURATION);
@@ -2348,6 +2368,12 @@ void seq_update_track(int t)
 
 	  M[t]->setI(OSC1_AMP,P[t].getPatternElement(step).get(OSC1_AMP));
 	  M[t]->setI(OSC2_AMP,P[t].getPatternElement(step).get(OSC2_AMP));
+
+	  M[t]->setI(OSC1_UNISON,P[t].getPatternElement(step).get(OSC1_UNISON));
+	  M[t]->setI(OSC2_UNISON,P[t].getPatternElement(step).get(OSC2_UNISON));
+
+	  M[t]->setI(OSC1_UNISONDT,P[t].getPatternElement(step).get(OSC1_UNISONDT));
+	  M[t]->setI(OSC2_UNISONDT,P[t].getPatternElement(step).get(OSC2_UNISONDT));
 
 
 	  M[t]->setI(FILTER1_TYPE,P[t].getPatternElement(step).get(FILTER1_TYPE));
