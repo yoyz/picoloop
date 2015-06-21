@@ -92,6 +92,9 @@ private:
   int filterType;
   int filterAlgo;
 
+  int filter1_saturation;
+  int filter1_feedback;
+
   int fx_depth;
   int fx_speed;
   

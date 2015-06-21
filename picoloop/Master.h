@@ -114,6 +114,7 @@ enum {
 enum {
   MENU_FLTR_CUTOFF_RESONANCE,
   MENU_FLTR_ALGO_TYPE, 
+  MENU_FLTR_SATURATION_FEEDBACK, 
 };
 
 enum { // used by cursynth and twytch

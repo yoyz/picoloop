@@ -1951,6 +1951,16 @@ void seq_update_multiple_time_by_step()
   // Change filter resonance
   seq_update_tweakable_knob_one(FILTER1_RESONANCE);
   seq_update_tweakable_knob_all(FILTER1_RESONANCE);
+
+
+  // Change filter saturation in twytch
+  seq_update_tweakable_knob_one(FILTER1_SATURATION);
+  seq_update_tweakable_knob_all(FILTER1_SATURATION);
+ 
+  // Change osc feedback filter in twytch
+  seq_update_tweakable_knob_one(FILTER1_FEEDBACK);
+  seq_update_tweakable_knob_all(FILTER1_FEEDBACK);
+
   
   // Change oscillator one
   seq_update_tweakable_knob_one(OSC1_TYPE);
@@ -2402,6 +2412,10 @@ void seq_update_track(int t)
 
 	  M[t]->setI(FILTER1_CUTOFF,   P[t].getPatternElement(step).get(FILTER1_CUTOFF));
 	  M[t]->setI(FILTER1_RESONANCE,P[t].getPatternElement(step).get(FILTER1_RESONANCE));
+
+	  M[t]->setI(FILTER1_SATURATION,   P[t].getPatternElement(step).get(FILTER1_SATURATION));
+	  M[t]->setI(FILTER1_FEEDBACK,     P[t].getPatternElement(step).get(FILTER1_FEEDBACK));
+
 
 	  M[t]->setI(OSC1_DETUNE,      P[t].getPatternElement(step).get(OSC1_DETUNE));
 

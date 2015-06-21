@@ -316,6 +316,9 @@ void TwytchsynthMachine::setI(int what,int val)
   // //if (what==OSC1_AMP)            TWE->getControls().at("velocity track")->set(f_val);
   
    if (what==FILTER1_TYPE)        TWE->getControls().at("filter_type")->set(f_val*128);
+
+   if (what==FILTER1_SATURATION)  TWE->getControls().at("filter_saturation")->set(((f_val*2)-1)*20);
+   if (what==FILTER1_FEEDBACK)    TWE->getControls().at("osc_feedback_amount")->set(((f_val*2)-1)*1);
    //filter.setFilterType(val);
   // //"filter type"
 
