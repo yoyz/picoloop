@@ -93,6 +93,13 @@ int TwytchsynthMachine::checkI(int what,int val)
 {
   switch (what)
     {
+
+    case TRIG_TIME_DURATION:
+      if (val<=0) return 1;
+      if (val>=127) return 127;
+      return val;
+      break;
+
     case OSC1_TYPE:
       if (val<0) return 0;
       if (val>PICO_CURSYNTH_SIZE-1) return PICO_CURSYNTH_SIZE-1;
@@ -184,17 +191,17 @@ void TwytchsynthMachine::setI(int what,int val)
 
       if (old_note!=note)
 	{
-	  TWE->noteOn(note+11,velocity/32);
-	  TWE->noteOff(old_note+11);
+	  TWE->noteOn(note-1,velocity/32);
+	  TWE->noteOff(old_note-1);
 	}
       else
 	{
 	  if (note_on==0)
-	    TWE->noteOn(note+11,velocity/32);
+	    TWE->noteOn(note-1,velocity/32);
 	  else
 	    {
-	      TWE->noteOff(old_note+11);	  
-	      TWE->noteOn(note+11,velocity/32);
+	      TWE->noteOff(old_note-1);	  
+	      TWE->noteOn(note-1,velocity/32);
 	    }
 	}
 
@@ -208,7 +215,7 @@ void TwytchsynthMachine::setI(int what,int val)
   if (what==NOTE_ON && val==0) 
     { 
       note_on=0;
-      TWE->noteOff(note+11);
+      TWE->noteOff(note-1);
     }
 
   //if (what==OSC1_NOTE)           { if (note_on) { this->setI(NOTE_ON,0); note=val; } }
