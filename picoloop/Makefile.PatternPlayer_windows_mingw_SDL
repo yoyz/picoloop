@@ -1,5 +1,6 @@
 CC=g++
-CC=i586-mingw32msvc-g++
+#CC=i586-mingw32msvc-g++
+CC=i686-w64-mingw32-g++-win32
 #CFLAGS=-c -DLINUX -I. -LSDL/lib -ggdb -pg
 #LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf -lpthread  RtAudio.o  -pg
 #LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf -lpthread  RtAudio.o 
@@ -10,7 +11,7 @@ CFLAGS=-c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb -ffast-math
 CFLAGS=-c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb  -pg
 CFLAGS=-Wall -c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb  
 #CFLAGS= -c -O1 -D__WIN32__ -I/c/MinGW/include/  -DLINUX -I. -LSDL/lib -D__SDL_AUDIO__ -DLINUX_DESKTOP -ggdb  -fpermissive
-CFLAGS= -c -O1 -D__WIN32__ -I/c/MinGW/include/  -DLINUX -I. -ISDL_windows -D__SDL_AUDIO__ -DLINUX_DESKTOP -ggdb  -fpermissive
+CFLAGS=  -c -std=c++11 -O3 -DWIN32 -D__WIN32__ -I/c/MinGW/include/  -DLINUX -I. -ISDL_windows -D__SDL_AUDIO__ -DLINUX_DESKTOP -ggdb  -fpermissive
 
 
 LDFLAGS=-lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread -pg
@@ -18,7 +19,7 @@ LDFLAGS=-lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread -pg
 LDFLAGS=-L. -lSDL -lSDL_ttf 
 LDFLAGS=-L. -lmingw32 -lSDLmain -lSDL -lSDL_ttf
 #LDFLAGS=-D__WIN32__ -L. -LSDL-1.2.15/lib/ -lmingw32 -lSDLmain -lSDL -lSDL_ttf -static-libgcc -static-libstdc++ -ggdb
-LDFLAGS=-D__WIN32__ -L. -LSDL_windows/lib -L/home/yoyz/.wine/drive_c/users/yoyz/Temp/DXF/DXSDK/lib/ -lmingw32 -lSDLmain -static-libgcc  -lSDL -lSDL_ttf -ldsound -lole32 -lwinmm  -ggdb
+LDFLAGS=-D__WIN32__ -L. -LSDL_windows/lib -L/home/yoyz/.wine/drive_c/users/yoyz/Temp/DXF/DXSDK/lib/ -lmingw32 -lSDLmain -static-libgcc  -static-libstdc++  -lSDL -lSDL_ttf -ldsound -lole32 -lwinmm  -ggdb
 
 
 
@@ -124,6 +125,55 @@ SOURCES=PatternPlayer.cpp			\
 			Machine/Open303/rosic_FunctionTemplates.cpp	\
 			Machine/Open303/rosic_EllipticQuarterBandFilter.cpp\
 			Machine/Open303/rosic_RealFunctions.cpp		\
+			Machine/Twytch/TwytchsynthMachine.cpp		\
+			Machine/Twytch/TwytchsynthUserInterface.cpp	\
+			Machine/Twytch/twytch_alias.cpp				\
+			Machine/Twytch/twytch_arpeggiator.cpp			\
+			Machine/Twytch/twytch_bypass_router.cpp			\
+			Machine/Twytch/twytch_bit_crush.cpp			\
+			Machine/Twytch/twytch_fixed_point_oscillator.cpp		\
+			Machine/Twytch/twytch_filter.cpp				\
+			Machine/Twytch/twytch_feedback.cpp			\
+			Machine/Twytch/twytch_envelope.cpp			\
+			Machine/Twytch/twytch_distortion.cpp			\
+			Machine/Twytch/twytch_delay.cpp				\
+			Machine/Twytch/twytch_helm_lfo.cpp			\
+			Machine/Twytch/twytch_helm_engine.cpp			\
+			Machine/Twytch/twytch_helm_common.cpp			\
+			Machine/Twytch/twytch_formant_manager.cpp		\
+			Machine/Twytch/twytch_fixed_point_wave.cpp		\
+			Machine/Twytch/twytch_helm_voice_handler.cpp		\
+			Machine/Twytch/twytch_helm_oscillators.cpp		\
+			Machine/Twytch/twytch_helm_module.cpp			\
+			Machine/Twytch/twytch_operators.cpp			\
+			Machine/Twytch/twytch_noise_oscillator.cpp		\
+			Machine/Twytch/twytch_mono_panner.cpp			\
+			Machine/Twytch/twytch_midi_lookup.cpp			\
+			Machine/Twytch/twytch_memory.cpp				\
+			Machine/Twytch/twytch_magnitude_lookup.cpp		\
+			Machine/Twytch/twytch_linear_slope.cpp			\
+			Machine/Twytch/twytch_processor_router.cpp		\
+			Machine/Twytch/twytch_processor.cpp			\
+			Machine/Twytch/twytch_phaser.cpp				\
+			Machine/Twytch/twytch_oscillator.cpp			\
+			Machine/Twytch/twytch_reverb_comb.cpp			\
+			Machine/Twytch/twytch_reverb_all_pass.cpp		\
+			Machine/Twytch/twytch_reverb.cpp				\
+			Machine/Twytch/twytch_resonance_lookup.cpp		\
+			Machine/Twytch/twytch_resonance_cancel.cpp		\
+			Machine/Twytch/twytch_value.cpp				\
+			Machine/Twytch/twytch_trigger_operators.cpp		\
+			Machine/Twytch/twytch_switch.cpp				\
+			Machine/Twytch/twytch_stutter.cpp			\
+			Machine/Twytch/twytch_step_generator.cpp			\
+			Machine/Twytch/twytch_smooth_value.cpp			\
+			Machine/Twytch/twytch_smooth_filter.cpp			\
+			Machine/Twytch/twytch_simple_delay.cpp			\
+			Machine/Twytch/twytch_wave.cpp				\
+			Machine/Twytch/twytch_voice_handler.cpp			
+
+
+
 
 
 
