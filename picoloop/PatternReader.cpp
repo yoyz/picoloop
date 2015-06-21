@@ -578,6 +578,22 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
   fgets(line,512,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
+  machineParam=OSC1_UNISON;
+  fgets(line,512,fd);
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
+
+  machineParam=OSC2_UNISON;
+  fgets(line,512,fd);
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
+
+  machineParam=OSC1_UNISONDT;
+  fgets(line,512,fd);
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
+
+  machineParam=OSC2_UNISONDT;
+  fgets(line,512,fd);
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
+
 
 
 
@@ -888,6 +904,18 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
   this->writePatternDataLine(PatternNumber,TrackNumber,P,line,OSC1_MOD);
   data.insert(data.end(),line);
 
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,OSC1_UNISON);
+  data.insert(data.end(),line);
+
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,OSC2_UNISON);
+  data.insert(data.end(),line);
+
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,OSC1_UNISONDT);
+  data.insert(data.end(),line);
+
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,OSC2_UNISONDT);
+  data.insert(data.end(),line);
+
 
   sprintf(line,"\n");
   data.insert(data.end(),line);
@@ -992,6 +1020,12 @@ const char * PatternReader::getParameterCharStar(int param)
 
   static const char * osc1_mod="OSC1Mod";
 
+  static const char * osc1_unison="Osc1Unison";        
+  static const char * osc2_unison="Osc2Unison";        
+
+  static const char * osc1_unisondt="Osc1UnisonDetune";        
+  static const char * osc2_unisondt="Osc2UnisonDetune";        
+
 
   switch (param)
     {
@@ -1021,6 +1055,13 @@ const char * PatternReader::getParameterCharStar(int param)
 
     case OSC1_AMP:           return osc1_amp;                 break;
     case OSC2_AMP:           return osc2_amp;                 break;
+
+    case OSC1_UNISON:        return osc1_unison;              break;
+    case OSC2_UNISON:        return osc2_unison;              break;
+
+    case OSC1_UNISONDT:      return osc1_unisondt;            break;
+    case OSC2_UNISONDT:      return osc2_unisondt;            break;
+
 
     case FX1_DEPTH:          return fx1_depth;                break;
     case FX1_SPEED:          return fx1_speed;                break;
