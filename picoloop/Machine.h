@@ -91,6 +91,9 @@ using namespace std;
 #define FILTER2_CUTOFF      56
 #define FILTER2_RESONANCE   57
 
+#define FILTER1_SATURATION  58
+#define FILTER1_FEEDBACK    59
+
 #define FM_TYPE             60
 
 #define OSC1_MOD            61

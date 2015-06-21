@@ -850,7 +850,6 @@ void TwytchsynthUserInterface::handle_key_fltr()
 
   // GLOBALMENU_FLTR
   // Move filterAlgo filterType
-  // Insert/Remove Trig
   if (menu          == MENU_OFF && 
       menu_cursor   == GLOBALMENU_FLTR   &&
       menu_fltr     == MENU_FLTR_ALGO_TYPE)
@@ -867,7 +866,6 @@ void TwytchsynthUserInterface::handle_key_fltr()
 
   // GLOBALMENU_FLTR
   // Move filterAlgo filterType
-  // Insert/Remove Trig
   if (menu          != MENU_OFF && 
       menu_cursor   == GLOBALMENU_FLTR   &&
       menu_fltr     == MENU_FLTR_ALGO_TYPE)
@@ -882,6 +880,47 @@ void TwytchsynthUserInterface::handle_key_fltr()
     }  
 
 
+
+
+  // GLOBALMENU_FLTR
+  // Move filterAlgo filterType
+  if (menu          == MENU_OFF && 
+      menu_cursor   == GLOBALMENU_FLTR   &&
+      menu_fltr     == MENU_FLTR_SATURATION_FEEDBACK)
+    {
+      sub_handle_invert_trig();
+
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST    , FILTER1_SATURATION,       -1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST    , FILTER1_SATURATION,        1, 0);
+
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST    , FILTER1_FEEDBACK       ,   1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST    , FILTER1_FEEDBACK       ,  -1, 0);
+    }  
+
+
+  // GLOBALMENU_FLTR
+  // Move filterAlgo filterType
+  if (menu          != MENU_OFF && 
+      menu_cursor   == GLOBALMENU_FLTR   &&
+      menu_fltr     == MENU_FLTR_SATURATION_FEEDBACK)
+    {
+      //sub_handle_invert_trig();
+
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST    , FILTER1_SATURATION,       -1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST    , FILTER1_SATURATION,        1, 1);
+
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST    , FILTER1_FEEDBACK       ,   1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST    , FILTER1_FEEDBACK       ,  -1, 1);
+    }  
+
+
+
+
+
+
+
+
+
   // change GLOBALMENU_FLTR SUBMENU
   if (lastKey     ==  BUTTON_START  && 
       lastEvent   ==  KEYRELEASED     && 
@@ -890,7 +929,9 @@ void TwytchsynthUserInterface::handle_key_fltr()
       if (menu_ad_dirty_keyboard==0)
 	{
 	  if      (menu_fltr==MENU_FLTR_CUTOFF_RESONANCE)   { menu_fltr=MENU_FLTR_ALGO_TYPE;            }
-	  else if (menu_fltr==MENU_FLTR_ALGO_TYPE)          { menu_fltr=MENU_FLTR_CUTOFF_RESONANCE;     }   
+	  else if (menu_fltr==MENU_FLTR_ALGO_TYPE)          { menu_fltr=MENU_FLTR_SATURATION_FEEDBACK;  }   
+	  else if (menu_fltr==MENU_FLTR_SATURATION_FEEDBACK){ menu_fltr=MENU_FLTR_CUTOFF_RESONANCE;     }   
+	  else                                              { menu_fltr=MENU_FLTR_CUTOFF_RESONANCE;     }   
 	  dirty_graphic=1;
 	}
       menu_ad_dirty_keyboard=0;
@@ -951,6 +992,12 @@ void TwytchsynthUserInterface::display_board_text()
   if (menu_fltr==MENU_FLTR_CUTOFF_RESONANCE &&
       menu_cursor==GLOBALMENU_FLTR)
     sprintf(str_submenu,"CUTOFF/RES");
+
+  if (menu_fltr==MENU_FLTR_SATURATION_FEEDBACK &&
+      menu_cursor==GLOBALMENU_FLTR)
+    sprintf(str_submenu,"FLTR SATURATION/FEEDBACK");
+
+
 
   if (menu_fltr==MENU_FLTR_ALGO_TYPE &&
       menu_cursor==GLOBALMENU_FLTR
@@ -1263,9 +1310,13 @@ void TwytchsynthUserInterface::display_board_fltr()
 	}
       if (menu_fltr==MENU_FLTR_ALGO_TYPE)
 	{
-	  //display_board_two_param_text(FILTER1_ALGO,FILTER1_TYPE);
 	  display_board_one_param_text(FILTER1_TYPE);
 	}
+      if (menu_fltr==MENU_FLTR_SATURATION_FEEDBACK)
+	{
+	  display_board_two_param(FILTER1_SATURATION,FILTER1_FEEDBACK);
+	}
+
     }
 }
 

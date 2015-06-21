@@ -63,6 +63,10 @@ void PatternElement::init()
   filterType=FILTER_TYPE_LP;
   filterAlgo=FILTER_ALGO_AMSYNTH;
 
+  filter1_saturation=64;
+  filter1_feedback=64;
+
+
   lfo1_env_amount=64;
   lfo2_env_amount=64;
 
@@ -191,12 +195,18 @@ void PatternElement::set(int what,int val)
 
 
     case FILTER1_TYPE:
-      //filterType=checkSevenBitBoundarie(val)%3; //HACKISH
-      filterType=checkSevenBitBoundarie(val); //HACKISH
+      filterType=checkSevenBitBoundarie(val);
       break;
     case FILTER1_ALGO:
-      //filterAlgo=checkSevenBitBoundarie(val)%3; //HACKISH
-      filterAlgo=checkSevenBitBoundarie(val); //HACKISH
+      filterAlgo=checkSevenBitBoundarie(val);
+      break;      
+
+
+    case FILTER1_SATURATION:
+      filter1_saturation=checkSevenBitBoundarie(val); 
+      break;
+    case FILTER1_FEEDBACK:
+      filter1_feedback=checkSevenBitBoundarie(val); 
       break;      
 
 
@@ -401,6 +411,13 @@ int PatternElement::get(int what)
       break;      
     case FILTER1_ALGO:
       return filterAlgo;
+      break;
+
+    case FILTER1_SATURATION:
+      return filter1_saturation;
+      break;      
+    case FILTER1_FEEDBACK:
+      return filter1_feedback;
       break;
 
 

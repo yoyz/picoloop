@@ -595,6 +595,26 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
+  machineParam=FILTER1_SATURATION;
+  fgets(line,512,fd);
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
+
+  machineParam=FILTER1_FEEDBACK;
+  fgets(line,512,fd);
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
+
+
+  machineParam=OSC3_AMP;
+  fgets(line,512,fd);
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
+
+  machineParam=OSC4_AMP;
+  fgets(line,512,fd);
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
+
+  machineParam=OSC3_TYPE;
+  fgets(line,512,fd);
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
   if (retcode==true)
@@ -916,6 +936,22 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
   this->writePatternDataLine(PatternNumber,TrackNumber,P,line,OSC2_UNISONDT);
   data.insert(data.end(),line);
 
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,FILTER1_SATURATION);
+  data.insert(data.end(),line);
+
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,FILTER1_FEEDBACK);
+  data.insert(data.end(),line);
+
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,OSC3_AMP);
+  data.insert(data.end(),line);
+
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,OSC4_AMP);
+  data.insert(data.end(),line);
+
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,OSC3_TYPE);
+  data.insert(data.end(),line);
+
+
 
   sprintf(line,"\n");
   data.insert(data.end(),line);
@@ -961,9 +997,15 @@ const char * PatternReader::getParameterCharStar(int param)
   
   static const char * osc1_type="OscOneType";     
   static const char * osc2_type="OscTwoType";     
+
+  static const char * osc3_type="OscThreeType";     
   
   static const char * filter1_cutoff="Cutoff";         
   static const char * filter1_resonance="Resonance";      
+
+  static const char * filter1_saturation="Filter1Saturation";         
+  static const char * filter1_feedback="Filter1Feedback";      
+
   
   static const char * osc1_phase="PhaseOsc1";      
   
@@ -980,6 +1022,9 @@ const char * PatternReader::getParameterCharStar(int param)
   
   static const char * osc1_amp="Osc1Amp";        
   static const char * osc2_amp="Osc2Amp";        
+
+  static const char * osc3_amp="Osc3Amp";        
+  static const char * osc4_amp="Osc4Amp";        
   
   static const char * fx1_depth="FxDepth";        
   static const char * fx1_speed="FxSpeed";        
@@ -1036,9 +1081,14 @@ const char * PatternReader::getParameterCharStar(int param)
 
     case OSC1_TYPE:          return osc1_type;                break;
     case OSC2_TYPE:          return osc2_type;                break;
+
+    case OSC3_TYPE:          return osc3_type;                break;
       
     case FILTER1_CUTOFF:     return filter1_cutoff;           break;
     case FILTER1_RESONANCE:  return filter1_resonance;        break;
+
+    case FILTER1_SATURATION: return filter1_saturation;       break;
+    case FILTER1_FEEDBACK:   return filter1_feedback;        break;
     
     case OSC1_PHASE:         return osc1_phase;               break;
     
@@ -1055,6 +1105,10 @@ const char * PatternReader::getParameterCharStar(int param)
 
     case OSC1_AMP:           return osc1_amp;                 break;
     case OSC2_AMP:           return osc2_amp;                 break;
+
+    case OSC3_AMP:           return osc3_amp;                 break;
+    case OSC4_AMP:           return osc4_amp;                 break;
+
 
     case OSC1_UNISON:        return osc1_unison;              break;
     case OSC2_UNISON:        return osc2_unison;              break;
