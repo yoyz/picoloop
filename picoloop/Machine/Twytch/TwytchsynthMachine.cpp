@@ -122,6 +122,12 @@ int TwytchsynthMachine::checkI(int what,int val)
       return val;
       break;
 
+    case OSC3_TYPE:
+      if (val<0) return 0;
+      if (val>PICO_TWYTCHSYNTH_SIZE-1) return PICO_TWYTCHSYNTH_SIZE-1;
+      return val;
+      break;
+
     case FILTER1_TYPE:
       if (val<0) return 0;
       if (val>TWYTCHSYNTH_FILTER_TYPE_SIZE-1) return TWYTCHSYNTH_FILTER_TYPE_SIZE-1;
@@ -242,6 +248,8 @@ void TwytchsynthMachine::setI(int what,int val)
   if (what==OSC1_TYPE)           { TWE->getControls().at("osc_1_waveform")->set(f_val*128); }
   if (what==OSC2_TYPE)           { TWE->getControls().at("osc_2_waveform")->set(f_val*128); }
 
+  if (what==OSC3_TYPE)           { TWE->getControls().at("sub_waveform"  )->set(f_val*128); }
+
   if (what==LFO1_WAVEFORM)       { TWE->getControls().at("mono_lfo_1_waveform")->set(f_val*128); }
   if (what==LFO2_WAVEFORM)       { TWE->getControls().at("mono_lfo_2_waveform")->set(f_val*128); }
 
@@ -292,6 +300,11 @@ void TwytchsynthMachine::setI(int what,int val)
    //if (what==OSC1_AMP)            TWE->getControls().at("keytrack"     )->set(((f_val*2)-1)*128);
    if (what==OSC1_AMP)            TWE->getControls().at("keytrack"     )->set(((f_val*2)-1));
    if (what==OSC2_AMP)            TWE->getControls().at("fil_env_depth")->set(((f_val*2)-1)*128);
+
+
+   if (what==OSC3_AMP)            TWE->getControls().at("sub_volume"     )->set(f_val);
+   if (what==OSC4_AMP)            TWE->getControls().at("noise_volume"   )->set(f_val);
+
 
    if (what==OSC1_UNISON)         TWE->getControls().at("osc_1_unison_voices")->set(f_val*15);
    if (what==OSC2_UNISON)         TWE->getControls().at("osc_2_unison_voices")->set(f_val*15);
@@ -416,6 +429,9 @@ const char * TwytchsynthMachine::getMachineParamCharStar(int machineParam,int pa
     case OSC1_TYPE:
       return str_osc[paramValue];
     case OSC2_TYPE:
+      return str_osc[paramValue];
+
+    case OSC3_TYPE:
       return str_osc[paramValue];
      
     // case FILTER1_ALGO:

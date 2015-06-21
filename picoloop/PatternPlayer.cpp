@@ -1871,6 +1871,14 @@ void seq_update_multiple_time_by_step()
   seq_update_tweakable_knob_one(OSC2_AMP);
   seq_update_tweakable_knob_all(OSC2_AMP);
 
+  // Change osc3 amp
+  seq_update_tweakable_knob_one(OSC3_AMP);
+  seq_update_tweakable_knob_all(OSC3_AMP);
+
+  // Change osc4 amp
+  seq_update_tweakable_knob_one(OSC4_AMP);
+  seq_update_tweakable_knob_all(OSC4_AMP);
+
 
   // Change osc1 unison
   seq_update_tweakable_knob_one(OSC1_UNISON);
@@ -1887,6 +1895,8 @@ void seq_update_multiple_time_by_step()
   // Change osc1 unison detune
   seq_update_tweakable_knob_one(OSC2_UNISONDT);
   seq_update_tweakable_knob_all(OSC2_UNISONDT);
+
+
 
 
 
@@ -1949,6 +1959,11 @@ void seq_update_multiple_time_by_step()
   // Change oscillator two
   seq_update_tweakable_knob_one(OSC2_TYPE);
   seq_update_tweakable_knob_all(OSC2_TYPE);
+
+  // Change oscillator three ( alias sub  in Twytch )
+  seq_update_tweakable_knob_one(OSC3_TYPE);
+  seq_update_tweakable_knob_all(OSC3_TYPE);
+
  
   // Change oscillator one
   seq_update_tweakable_knob_one(MACHINE_TYPE);
@@ -2362,12 +2377,17 @@ void seq_update_track(int t)
 	  M[t]->setI(OSC1_TYPE,P[t].getPatternElement(step).get(OSC1_TYPE));
 	  M[t]->setI(OSC2_TYPE,P[t].getPatternElement(step).get(OSC2_TYPE));
 
+	  M[t]->setI(OSC3_TYPE,P[t].getPatternElement(step).get(OSC3_TYPE));
+
 	  M[t]->setI(LFO1_WAVEFORM,P[t].getPatternElement(step).get(LFO1_WAVEFORM));
 	  M[t]->setI(LFO2_WAVEFORM,P[t].getPatternElement(step).get(LFO2_WAVEFORM));
 
 
 	  M[t]->setI(OSC1_AMP,P[t].getPatternElement(step).get(OSC1_AMP));
 	  M[t]->setI(OSC2_AMP,P[t].getPatternElement(step).get(OSC2_AMP));
+
+	  M[t]->setI(OSC3_AMP,P[t].getPatternElement(step).get(OSC3_AMP));
+	  M[t]->setI(OSC4_AMP,P[t].getPatternElement(step).get(OSC4_AMP));
 
 	  M[t]->setI(OSC1_UNISON,P[t].getPatternElement(step).get(OSC1_UNISON));
 	  M[t]->setI(OSC2_UNISON,P[t].getPatternElement(step).get(OSC2_UNISON));

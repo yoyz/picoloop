@@ -77,6 +77,9 @@ void PatternElement::init()
   osc1_amp=32;
   osc2_amp=32;
 
+  osc3_amp=0;
+  osc4_amp=0;
+
   trig_time=5;
   osc1_unison=1;
   osc2_unison=1;
@@ -178,6 +181,10 @@ void PatternElement::set(int what,int val)
       oscTwoType=checkSevenBitBoundarie(val);
       break;      
 
+    case OSC3_TYPE:
+      oscThreeType=checkSevenBitBoundarie(val);
+      break;      
+
     case NOTE:
       note=checkSevenBitBoundarie(val);
       break;      
@@ -208,6 +215,14 @@ void PatternElement::set(int what,int val)
     case OSC2_AMP:
       osc2_amp=checkSevenBitBoundarie(val);
       break;
+
+    case OSC3_AMP:
+      osc3_amp=checkSevenBitBoundarie(val);
+      break;
+    case OSC4_AMP:
+      osc4_amp=checkSevenBitBoundarie(val);
+      break;
+
 
     case OSC1_UNISON:
       osc1_unison=checkSevenBitBoundarie(val);
@@ -373,6 +388,10 @@ int PatternElement::get(int what)
       return oscTwoType;
       break;
 
+    case OSC3_TYPE:
+      return oscThreeType;
+      break;
+
     case NOTE:
       return note;
       break;
@@ -399,6 +418,14 @@ int PatternElement::get(int what)
     case OSC2_AMP:
       return osc2_amp;
       break;
+
+   case OSC3_AMP:
+      return osc3_amp;
+      break;      
+    case OSC4_AMP:
+      return osc4_amp;
+      break;
+
 
    case OSC1_UNISON:
       return osc1_unison;
