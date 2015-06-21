@@ -134,6 +134,8 @@ enum { // used by picosynth/picodrum/Dbopl
 enum {
   MENU_OSC_OSC1OSC2,
   MENU_OSC_LFO1LFO2,
+  MENU_OSC_UNISON1UNISON2,
+  MENU_OSC_UNISONDT1UNISONDT2,
 };
 
 

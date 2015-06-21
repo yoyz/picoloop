@@ -51,6 +51,13 @@ private:
   int osc1_amp;
   int osc2_amp;
 
+  int osc1_unison;
+  int osc2_unison;
+
+  int osc1_unisondt;
+  int osc2_unisondt;
+
+
   int fltr_cutoff;
   int fltr_resonance;
 

@@ -108,6 +108,7 @@ using namespace std;
 #define OSC3_DETUNE         76
 #define OSC4_DETUNE         77
 
+
 #define FX1_TYPE            80
 #define FX1_DEPTH           81
 #define FX1_SPEED           82
@@ -119,6 +120,12 @@ using namespace std;
 #define FX2_SPEED           87
 #define FX2_PARAM1          88
 #define FX2_PARAM2          89
+
+#define OSC1_UNISON         90
+#define OSC2_UNISON         91
+
+#define OSC1_UNISONDT       92 // unison detune
+#define OSC2_UNISONDT       93 // unison detune
 
 
 /*   HERE IS THE NOT RELATED TO MACHINE STUFF     */
