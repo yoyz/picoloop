@@ -136,14 +136,20 @@ int TwytchsynthMachine::checkI(int what,int val)
 
 
     case ADSR_ENV0_ATTACK:
-      if (val<=3) return 3;
+      if (val<=1) return 1;
+      if (val>=127) return 127;
+      return val;
+      break;
+
+    case ADSR_ENV0_RELEASE:
+      if (val<=1) return 1;
       if (val>=127) return 127;
       return val;
       break;
 
 
     case TRIG_TIME_DURATION:
-      if (val<=2) return 2;
+      if (val<=1) return 1;
       if (val>=127) return 127;
       return val;
       break;
@@ -216,8 +222,8 @@ void TwytchsynthMachine::setF(int what,float val)
   float f_val=val;
   f_val=f_val/128;
 
-  // if (what==LFO1_FREQ && lfo1_freq!=val)  { lfo1_freq=val; TWE->getControls().at("mono_lfo_1_tempo"    )->set(f_val*11); }
-  // if (what==LFO2_FREQ && lfo2_freq!=val)  { lfo2_freq=val; TWE->getControls().at("mono_lfo_2_tempo"    )->set(f_val*11); }
+  if (what==LFO1_FREQ && lfo1_freq!=val)  { lfo1_freq=val; TWE->getControls().at("mono_lfo_1_tempo"    )->set(f_val*11); }
+  if (what==LFO2_FREQ && lfo2_freq!=val)  { lfo2_freq=val; TWE->getControls().at("mono_lfo_2_tempo"    )->set(f_val*11); }
 }
 
 void TwytchsynthMachine::setI(int what,int val)
@@ -228,7 +234,7 @@ void TwytchsynthMachine::setI(int what,int val)
   float f_val=val;
   f_val=f_val/128;
 
-  if (what==TRIG_TIME_MODE)       trig_time_mode=val;
+  if (what==TRIG_TIME_MODE)     {  trig_time_mode=val; }
   if (what==TRIG_TIME_DURATION) { trig_time_duration=val; trig_time_duration_sample=val*512; }
 
   if (what==NOTE_ON && val==1) 
@@ -239,7 +245,7 @@ void TwytchsynthMachine::setI(int what,int val)
 	{
 	  TWE->noteOn(note-1);
 	  TWE->noteOff(old_note-1);
-	  need_note_on=1;
+	  //need_note_on=1;
 	}
       else
 	{
@@ -259,7 +265,7 @@ void TwytchsynthMachine::setI(int what,int val)
       TWE->noteOff(note-1);
     }
 
-  if (what==OSC1_NOTE)              {  old_note=note; note=val; }
+  if (what==OSC1_NOTE)                                    {  old_note=note; note=val; }
 
   if (what==BPM && bpm!=val)                              { bpm=val; TWE->getControls().at("beats_per_minute")->set(val);     }
 
@@ -271,9 +277,8 @@ void TwytchsynthMachine::setI(int what,int val)
   if (what==LFO1_WAVEFORM && lfo1_waveform!=val)          { lfo1_waveform=val; TWE->getControls().at("mono_lfo_1_waveform")->set(f_val*128); }
   if (what==LFO2_WAVEFORM && lfo2_waveform!=val)          { lfo2_waveform=val; TWE->getControls().at("mono_lfo_2_waveform")->set(f_val*128); }
 
-
-  if (what==ADSR_ENV0_ATTACK && adsr_env0_attack!=val)    { adsr_env0_attack=val;  TWE->getControls().at("amp_attack")->set(f_val*4);  }
-  if (what==ADSR_ENV0_DECAY  && adsr_env0_decay!=val)     { adsr_env0_decay=val;   TWE->getControls().at("amp_decay")->set(f_val*4);   }
+  if (what==ADSR_ENV0_ATTACK  && adsr_env0_attack!=val)   { adsr_env0_attack=val;  TWE->getControls().at("amp_attack")->set(f_val*4);  }
+  if (what==ADSR_ENV0_DECAY   && adsr_env0_decay!=val)    { adsr_env0_decay=val;   TWE->getControls().at("amp_decay")->set(f_val*4);   }
   if (what==ADSR_ENV0_SUSTAIN && adsr_env0_sustain!=val)  { adsr_env0_sustain=val; TWE->getControls().at("amp_sustain")->set(f_val);   }
   if (what==ADSR_ENV0_RELEASE && adsr_env0_release!=val)  { adsr_env0_release=val; TWE->getControls().at("amp_release")->set(f_val*4); }
 
@@ -283,26 +288,18 @@ void TwytchsynthMachine::setI(int what,int val)
   if (what==ADSR_ENV1_RELEASE && adsr_env1_release!=val)  { adsr_env1_release=val; TWE->getControls().at("fil_release")->set(f_val*4); }
 
 
-   if (what==LFO1_ENV_AMOUNT && lfo1_env_amount!=val)     
+
+   if (what==FILTER1_CUTOFF && filter1_cutoff!=val)      
      { 
-       lfo1_env_amount=val;
-       f_env1_amount=abs(abs(f_val-0.5)*2); 
-       TWE->getControls().at("mono_lfo_1_amplitude")->set(((f_val*2)-1)*4);
+       filter1_cutoff=val;
+       TWE->getControls().at("cutoff")->set(28+f_val*99);
      }
-
-   if (what==LFO2_ENV_AMOUNT && lfo2_env_amount!=val)     
+   
+   if (what==FILTER1_RESONANCE && filter1_resonance!=val)         
      { 
-       lfo2_env_amount=val;
-       f_env2_amount=abs(abs(f_val-0.5)*2); 
-       TWE->getControls().at("mono_lfo_2_amplitude")->set(((f_val*2)-1)*4); 
-        TWE->clearModulations();
-        mopotwytchsynth::ModulationConnection * connection =
-        	 new mopotwytchsynth::ModulationConnection("mono_lfo_1","keytrack");
-        connection->amount.set(f_env1_amount);
-        TWE->connectModulation(connection);
-
-     }
-
+       filter1_resonance=val;
+       TWE->getControls().at("resonance")->set(f_val);
+     }  
 
 
    if (what==OSC12_MIX && osc12_mix!=val)             { osc12_mix=val;  TWE->getControls().at("osc_mix")->set(f_val); }
@@ -328,24 +325,35 @@ void TwytchsynthMachine::setI(int what,int val)
    if (what==OSC1_UNISONDT && osc1_unisondt!=val)     { osc1_unisondt=val; TWE->getControls().at("osc_1_unison_detune")->set(f_val*100); }
    if (what==OSC2_UNISONDT &&osc2_unisondt!=val)      { osc2_unisondt=val; TWE->getControls().at("osc_2_unison_detune")->set(f_val*100); }
 
-  
+
    if (what==FILTER1_TYPE && filter1_type!=val)             { filter1_type=val; TWE->getControls().at("filter_type")->set(f_val*128); }
 
    if (what==FILTER1_SATURATION && filter1_saturation!=val) { filter1_saturation=val; TWE->getControls().at("filter_saturation")->set(((f_val*2)-1)*20); }
    if (what==FILTER1_FEEDBACK   && filter1_feedback!=val)   { filter1_feedback=val; TWE->getControls().at("osc_feedback_amount")->set(((f_val*2)-1)*1); }
 
 
-   if (what==FILTER1_CUTOFF && filter1_cutoff!=val)      
-     { 
+   if (what==LFO1_ENV_AMOUNT && lfo1_env_amount!=val)
+     {
+       lfo1_env_amount=val;
+       f_env1_amount=abs(abs(f_val-0.5)*2);
+       TWE->getControls().at("mono_lfo_1_amplitude")->set(((f_val*2)-1)*4);
+     }
+
+   if (what==LFO2_ENV_AMOUNT && lfo2_env_amount!=val)
+     {
+       lfo2_env_amount=val;
+       f_env2_amount=abs(abs(f_val-0.5)*2);
+       TWE->getControls().at("mono_lfo_2_amplitude")->set(((f_val*2)-1)*4);
+       TWE->clearModulations();
+       mopotwytchsynth::ModulationConnection * connection =
+	 new mopotwytchsynth::ModulationConnection("mono_lfo_1","keytrack");
+       connection->amount.set(f_env1_amount);
+       TWE->connectModulation(connection);
+       
        filter1_cutoff=val;
        TWE->getControls().at("cutoff")->set(28+f_val*99);
      }
-   
-   if (what==FILTER1_RESONANCE && filter1_resonance!=val)         
-     { 
-       filter1_resonance=val;
-       TWE->getControls().at("resonance")->set(f_val);
-     }  
+
 
 }
 
@@ -501,8 +509,7 @@ int TwytchsynthMachine::tick()
   
 
       
-  if (sample_num==0 || 
-      index==0 )
+  if (index==0 )
     {
       TWE->process();
       for (i=0;i<SAM;i++)

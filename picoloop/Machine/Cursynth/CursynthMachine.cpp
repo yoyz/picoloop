@@ -12,7 +12,7 @@ CursynthMachine::CursynthMachine()
   note_on=0;
   buffer_i=0;
   buffer_f=0;
-
+  index=0;
 }
 
 
@@ -76,7 +76,7 @@ void CursynthMachine::init()
   note_on=0;
 
   sample_num=0;
-
+  index=0;
 
 
   note=0;
@@ -416,7 +416,7 @@ int CursynthMachine::tick()
   
 
       
-  if (sample_num==0 || 
+  if (//sample_num==0 || 
       index==0 )
     {
       CSE->process();
