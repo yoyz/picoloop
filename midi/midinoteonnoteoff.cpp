@@ -25,6 +25,13 @@
 // It returns false if there are no ports available.
 bool chooseMidiPort( RtMidiOut *rtmidi );
 
+class MidiMsg
+{
+  MidiMsg();
+  
+};
+
+
 int main( void )
 {
   int i;
@@ -177,9 +184,9 @@ bool chooseMidiPort( RtMidiOut *rtmidi )
     }
 
     do {
-      //std::cout << "\nChoose a port number: ";
-      //std::cin >> i;
-      i=1;
+      std::cout << "\nChoose a port number: ";
+      std::cin >> i;
+      //i=1;
     } while ( i >= nPorts );
   }
 
