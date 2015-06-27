@@ -32,8 +32,8 @@ MidiOutMachine::MidiOutMachine()
   delay_to_noteOn=MIDI_DELAY_IN_SAMPLE;
   //delay_to_noteOn=512;
   //delay_to_noteOn=0;
-  //midi_machine_type=0; // korg volca key
-  midi_machine_type=1; // korg volca bass
+  midi_machine_type=0; // korg volca key
+  //midi_machine_type=1; // korg volca bass
 }
 
 
@@ -168,6 +168,7 @@ void MidiOutMachine::setI(int what,int val)
     { 
       if (need_to_noteOn)
 	{
+	  printf("                                                   NOTEOFF %d sample_num %d\n",old_note,sample_num);
 	  MOS.noteOff(0,old_note-1+12);
 	  MOS.flushMsg();
 	}
