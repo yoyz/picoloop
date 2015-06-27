@@ -6,7 +6,7 @@ LDFLAGS=-lasound -lpthread
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=midi2
 
-SOURCES=midi2.cpp RtMidi.cpp
+SOURCES=midi2.cpp RtMidi.cpp MidiOutSystem.cpp
 
 all: $(SOURCES) $(EXECUTABLE)
 
