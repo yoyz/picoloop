@@ -2240,6 +2240,7 @@ int seq_update_by_step()
 	  //nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
 	  //nb_tick_before_step_change=(60*DEFAULT_FREQ)/(bpm_current*4);
 	  //AE.setNbTickBeforeStepChange(nb_tick_before_step_change);
+	  P[cty].setBPMDivider(SEQ.getPatternSequencer(cty).getBPMDivider());
 	  refresh_bpm();
 
 
