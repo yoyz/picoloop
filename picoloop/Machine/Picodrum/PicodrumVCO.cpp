@@ -345,10 +345,14 @@ Sint16 PicodrumVCO::tick()
   
   //sc=sa+sb;
   //sc=(sa+sb)/128;
-  sc=(sa+sb)>>7;
-  if (sc>=32000>>7) sc=32000>>7;
-  if (sc<-32000>>7) sc=-32000>>7;
-  //s=s1->tick();
+  sc=(sa+sb)>>8;
+  // if (sc>=32000>>7) sc=32000>>7;
+  // if (sc<-32000>>7) sc=-32000>>7;
+  if (sc> 32000) sc= 32000;
+  if (sc<-32000) sc=-32000;
+
+
+
   s=sc;
 
   //  sb=(s2->tick())
