@@ -155,8 +155,8 @@ void CursynthMachine::setF(int what,float val)
   f_val=f_val/128;
 
   //if (what==LFO1_FREQ)             CSE->getControls().at("lfo 1 frequency")->set(f_val*10); 
-  if (what==LFO1_FREQ)             CSE->getControls().at("lfo 1 frequency")->set(f_val*100); 
-  if (what==LFO2_FREQ)             CSE->getControls().at("lfo 2 frequency")->set(f_val*100); 
+  if (what==LFO1_FREQ)             CSE->getControls().at("lfo 1 frequency")->set(f_val*10); 
+  if (what==LFO2_FREQ)             CSE->getControls().at("lfo 2 frequency")->set(f_val*10); 
 }
 
 void CursynthMachine::setI(int what,int val)
