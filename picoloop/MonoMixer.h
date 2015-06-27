@@ -10,6 +10,10 @@ using namespace std;
 #include "Machine/Open303/Open303Machine.h"
 #include "Machine/Twytch/TwytchsynthMachine.h"
 #endif 
+
+#ifdef __RTMIDI__
+#include "Machine/MidiOutSystem/MidiOutMachine.h"
+#endif
 //#include "Effect.h"
 #include "EffectDelay.h"
 #include "EffectDisabled.h"
@@ -43,6 +47,10 @@ class MonoMixer
   CursynthMachine       CS;
   Open303Machine        O303;
   TwytchsynthMachine    TW;
+#endif
+
+#ifdef __RTMIDI__
+  MidiOutMachine        MIDIOUTM;
 #endif
 
   Effect                *FX;

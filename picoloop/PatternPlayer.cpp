@@ -61,6 +61,11 @@ PSP_HEAP_SIZE_KB(-6144) ;
 #endif
 
 
+#ifdef __RTMIDI__
+#include "MidiOutSystem.h"
+#include "Machine/MidiOutSystem/MidiOutUserInterface.h"
+#endif
+
 class Cursor
 {
 public:
@@ -104,6 +109,10 @@ PBSynthUserInterface     PBUI;
 CursynthUserInterface    CSUI;
 Open303UserInterface     O303UI;
 TwytchsynthUserInterface TWUI;
+#endif
+
+#ifdef __RTMIDI__
+MidiOutUserInterface MIDIUI;
 #endif
 
 //UI.handle_key(1,1);
@@ -1647,6 +1656,9 @@ void refresh_pecursor_ui(int i)
   if (PECursor.get(MACHINE_TYPE)==SYNTH_OPEN303)      UI=&O303UI;
   if (PECursor.get(MACHINE_TYPE)==SYNTH_TWYTCHSYNTH)  UI=&TWUI;
 #endif
+#ifdef __RTMIDI__
+  if (PECursor.get(MACHINE_TYPE)==SYNTH_MIDIOUT)  UI=&MIDIUI;
+#endif
 
 }
 
@@ -2426,6 +2438,12 @@ void seq_update_track(int t)
 
 
 	  M[t]->setI(NOTE_ON,1);
+#ifdef __RTMIDI__
+	  //SDL_LockAudio();
+	  MidiOutSystem & MOS=MidiOutSystem::getInstance();
+	  //MOS.flushMsg();
+	  //SDL_UnlockAudio();
+#endif 
 
 	}
       /*
@@ -2585,6 +2603,12 @@ int seq()
       
 #ifdef PSP
       running = isRunning();
+#endif
+
+#if defined(__RTMIDI__)
+      MidiOutSystem & MOS=MidiOutSystem::getInstance();
+      if (MOS.msgSize())
+       	MOS.flushMsg();
 #endif
       // if user want to quit via handle_key
       if (quit ||
@@ -2767,6 +2791,16 @@ int main(int argc,char **argv)
 
   UI=&PSUI;
   //UI->handle_key(1,2);
+
+#ifdef __RTMIDI__
+  MidiOutSystem & MOS=MidiOutSystem::getInstance();
+  MOS.init();
+  //MOS.chooseMidiPort("TiMidity 128:0");
+  MOS.chooseMidiPort("UM-1SX 24:0");
+  
+#endif
+
+
 
 #ifdef PSP
   running = isRunning();

@@ -4,7 +4,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <stdio.h>
-
+//#include <mutex>
 
 class MidiOutSystem
 {
@@ -15,16 +15,20 @@ class MidiOutSystem
   bool checkChannel(int midiChan);
   void noteOn(int midiChan,int note,int velocity);
   void noteOff(int midiChan,int note);
+  void cc(int midiChan,int cc,int value);
+  int  msgSize();
   void flushMsg();
   //bool chooseMidiPort( RtMidiOut *rtmidi );
   bool chooseMidiPort(std::string portName);
 
   private:
   MidiOutSystem();
-  //~MidiOutSystem();
+  ~MidiOutSystem();
   RtMidiOut *rtmidiout;
   std::vector<unsigned char> message;
   int midiChannel;
+  //std::mutex lock_a;
+  pthread_mutex_t lock_a;
 };
 
 
