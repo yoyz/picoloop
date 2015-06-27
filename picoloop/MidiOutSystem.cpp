@@ -1,8 +1,19 @@
 #include "MidiOutSystem.h"
 MidiOutSystem::MidiOutSystem()
 {
+  lock_a=PTHREAD_MUTEX_INITIALIZER;
+}
+
+
+MidiOutSystem::~MidiOutSystem()
+{
+  int note;
+  int i;
+  for (i=0;i<88;i++)
+    this->noteOff(0,i);
 
 }
+
 
 MidiOutSystem & MidiOutSystem::getInstance()
 {
@@ -38,9 +49,19 @@ void MidiOutSystem::noteOn( int midiChan,int note,int velocity )
 {
   if (this->checkChannel(midiChan))
     {
+      //printf("MIDI_NOTEON %d \n",note);
+      //std::lock(lock_a);
+      pthread_mutex_lock( &lock_a );
+
       message.push_back(0x90+midiChan);
       message.push_back(note);
       message.push_back(0x7c);
+      // pthread_mutex_lock( &lock_a );
+      // pthread_mutex_unlock( &lock_a );
+      pthread_mutex_unlock( &lock_a );
+      //std::unlock(lock_a);
+      // rtmidiout->sendMessage(&message);
+      // message.clear();
     }
 }
 
@@ -48,16 +69,45 @@ void MidiOutSystem::noteOff( int midiChan,int note)
 {
   if (this->checkChannel(midiChan))
     {
+      //printf("MIDI_NOTEOFF %d \n",note);
+      pthread_mutex_lock( &lock_a );
+
       message.push_back(0x80+midiChan);
       message.push_back(note);
       message.push_back(0x0);
+      pthread_mutex_unlock( &lock_a );
     }
+}
+
+
+void MidiOutSystem::cc( int midiChan,int cc,int value )
+{
+  if (this->checkChannel(midiChan))
+    {
+      //printf("MIDI_NOTEON %d \n",note);
+      pthread_mutex_lock( &lock_a );
+      message.push_back(0xB0+midiChan);
+      message.push_back(cc);
+      message.push_back(value);
+      pthread_mutex_unlock( &lock_a );
+      // rtmidiout->sendMessage(&message);
+      // message.clear();
+    }
+}
+
+
+int MidiOutSystem::msgSize()
+{
+  return message.size(); 
 }
 
 void MidiOutSystem::flushMsg()
 {
+  printf("*****************FLUSH:%d\n",message.size());
+  pthread_mutex_lock( &lock_a );
   rtmidiout->sendMessage(&message);
   message.clear();
+  pthread_mutex_unlock( &lock_a );
 }
 
 

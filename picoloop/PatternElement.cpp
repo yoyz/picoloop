@@ -28,20 +28,20 @@ void PatternElement::init()
 
   amp=127;
 
-  amp_attack=0;
-  amp_decay=64;
-  amp_sustain=64;
-  amp_release=64;
+  amp_attack=1;
+  amp_decay=112;
+  amp_sustain=8;
+  amp_release=24;
 
-  fltr_attack=64;
+  fltr_attack=8;
   fltr_decay=64;
-  fltr_sustain=64;
-  fltr_release=64;
+  fltr_sustain=32;
+  fltr_release=32;
 
 
 
   fltr_cutoff=64;
-  fltr_resonance=80;
+  fltr_resonance=32;
 
   lfo1_depth=0;
   lfo1_speed=0;
@@ -74,7 +74,7 @@ void PatternElement::init()
 
   machine_type=SYNTH_PICOSYNTH;
 
-  velocity=64;
+  velocity=96;
 
   osc1_mod=0;
 
@@ -84,9 +84,9 @@ void PatternElement::init()
   osc3_amp=0;
   osc4_amp=0;
 
-  trig_time=5;
-  osc1_unison=1;
-  osc2_unison=1;
+  trig_time=1;
+  osc1_unison=0;
+  osc2_unison=0;
 
   osc1_unisondt=0;
   osc2_unisondt=0;
@@ -528,9 +528,9 @@ int PatternElement::get(int what)
 
 int PatternElement::checkSevenBitBoundarie(int val)
 {
-  if (val < 0)
+  if (val <= 0)
     return 0;
-  if (val > 127)
+  if (val >= 127)
     return 127;
   return val;
 }

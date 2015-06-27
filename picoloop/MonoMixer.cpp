@@ -1,14 +1,16 @@
 #include "MonoMixer.h"
 
 
+#if   defined(__FPU__) && defined(__RTMIDI__)
+MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(), CS(), O303(), TW(), MIDIOUTM(), FXDelay(), FXDisabled()
+#endif
 
-			//MonoMixer::MonoMixer(): M()
-//MonoMixer::MonoMixer()
-#ifdef __FPU__
-//MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(), CS(), FXDelay(), FXDisabled()
-MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(), CS(), O303(), TW(), FXDelay(), FXDisabled()
-#else
-MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(),                     FXDelay(), FXDisabled()
+#if   defined(__FPU__) && !defined(__RTMIDI__)
+MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(), CS(), O303(), TW(),             FXDelay(), FXDisabled()
+#endif
+
+#if  !defined(__FPU__) && !defined(__RTMIDI__)
+MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(),                                 FXDelay(), FXDisabled()
 #endif
 {
   printf("MonoMixer::MonoMixer()\n");  
@@ -41,11 +43,11 @@ void MonoMixer::init()
   OPLM.init();
   PBS.init();
 
-  #ifdef __FPU__
+#if defined(__FPU__)
   CS.init();
   O303.init();
   TW.init();
-  #endif
+#endif
 
   //FX=&FXDelay;
   FX=&FXDelay;
@@ -72,18 +74,18 @@ void MonoMixer::init()
     M=&PD;
   if (machine_type==SYNTH_PBSYNTH)
     M=&PBS;
-  #ifdef __FPU__
+#if defined(__FPU__)
   if (machine_type==SYNTH_CURSYNTH)
     M=&CS;
   if (machine_type==SYNTH_OPEN303)
     M=&O303;
   if (machine_type==SYNTH_TWYTCHSYNTH)
     M=&TW;
-
-  #endif
-
-  //M=&OPLM;
-  //M=&PM;
+#endif
+#if defined(__RTMIDI__)
+  if (machine_type==SYNTH_MIDIOUT)
+    M=&MIDIOUTM;
+#endif
 }
 
 
@@ -109,7 +111,7 @@ void MonoMixer::setMachineType(int type)
     case SYNTH_PBSYNTH:
       M=&PBS;
       break;
-#ifdef __FPU__
+#if defined(__FPU__)
     case SYNTH_CURSYNTH:
       M=&CS;
       break;
@@ -119,12 +121,17 @@ void MonoMixer::setMachineType(int type)
     case SYNTH_TWYTCHSYNTH:
       M=&TW;
       break;
-
 #endif
 
+#if defined(__RTMIDI__)
+    case SYNTH_MIDIOUT:
+      M=&MIDIOUTM;
+      break;      
+#endif
 
     default:
       printf("void MonoMixer::setMachineType(%d)\n",type);
+      printf("ERROR : This machine does not exist : %d\n",type);
       exit(1);
       break;
     }

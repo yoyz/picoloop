@@ -242,7 +242,15 @@ enum {
 #define SCREEN_MULT     2
 // BEGIN DINGOO A320 SDL use by linux too
 
-#define DEFAULTSAMPLES   2048
+//#define DEFAULTSAMPLES   2048
+
+// Fine tuning 2048 for MIDI_DELAY_IN_SAMPLE and 512 for DEFAULTSAMPLES
+#define MIDI_DELAY_IN_SAMPLE 2048
+#define DEFAULTSAMPLES   512
+
+/* #define MIDI_DELAY_IN_SAMPLE 8192 */
+/* #define DEFAULTSAMPLES   2048 */
+
 
 #define KEY_REPEAT_INTERVAL_SMALLEST  4
 #define KEY_REPEAT_INTERVAL_SMALL     8
@@ -394,12 +402,21 @@ enum
 #define SYNTH_CURSYNTH     4
 #define SYNTH_OPEN303      5
 #define SYNTH_TWYTCHSYNTH  6
+#define SYNTH_MIDIOUT      7
 
-#ifdef __FPU__
+#if    defined(__FPU__) && defined(__RTMIDI__)
+#define SYNTH_SIZE 8
+#endif
+
+#if    defined(__FPU__) && !defined(__RTMIDI__)
 #define SYNTH_SIZE 7
-#else
+#endif
+
+#if   !defined(__FPU__) && !defined(__RTMIDI__)
 #define SYNTH_SIZE 4
 #endif
+
+
 
 /* enum  */
 /*   { */

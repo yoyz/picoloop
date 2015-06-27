@@ -14,7 +14,7 @@ CFLAGS= -c -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINUX_DESKTOP -
 CFLAGS= -c -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINUX_DESKTOP -ggdb  -fpermissive 
 CFLAGS= -c -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINUX_DESKTOP -ggdb   -DDUMP_AUDIO=1
 CFLAGS= -c -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINUX_DESKTOP -ggdb   -DDUMP_AUDIO=1 -DFIXED
-CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINUX_DESKTOP -ggdb   -DDUMP_AUDIO=1 
+CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -D __RTMIDI__ -DLINUX_DESKTOP -ggdb   -DDUMP_AUDIO=1 
 
 LDFLAGS=-lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread -pg
 LDFLAGS=-lasound -lSDL           -lSDL_ttf -lpthread -pg
@@ -22,6 +22,7 @@ LDFLAGS=-lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread
 
 
 OBJTOLINK=RtAudio.o
+OBJTOLINK=RtAudio.o RtMidi.o
 
 SOURCES=Machine.cpp Track.cpp AudioMixer.cpp AudioEngine.cpp PatternElement.cpp Pattern.cpp PatternPlayer.cpp PatternReader.cpp Oscillator.cpp OneOscillator.cpp MonoMixer.cpp ADSR.cpp SDL_GUI.cpp VCO.cpp Sequencer.cpp InputManager.cpp Biquad.cpp PatternSequencer.cpp AudioDriverRTAudio.cpp PicosynthMachine.cpp  PicodrumMachine.cpp dbopl/dbopl.cpp dbopl/hiopl.cpp DboplMachine.cpp Filter.cpp AMSynthLowPassFilter.cpp Effect.cpp EffectDelay.cpp SongSequencer.cpp WaveTableManager.cpp WaveTable.cpp Generator.cpp 
 
@@ -61,6 +62,7 @@ SOURCES=PatternPlayer.cpp \
 		      PitchBend.cpp            \
 		      TweakableKnob.cpp	       \
 		      UserInterface.cpp	       \
+		      MidiOutSystem.cpp	       \
 		      Machine/Picosynth/PicosynthUserInterface.cpp \
 		      Machine/Picosynth/PicosynthADSR.cpp        \
 		      Machine/Picosynth/PicosynthVCO.cpp         \
@@ -174,7 +176,10 @@ SOURCES=PatternPlayer.cpp \
 		      Machine/Twytch/twytch_smooth_filter.cpp			\
 		      Machine/Twytch/twytch_simple_delay.cpp			\
 		      Machine/Twytch/twytch_wave.cpp				\
-		      Machine/Twytch/twytch_voice_handler.cpp			
+		      Machine/Twytch/twytch_voice_handler.cpp			\
+		      Machine/MidiOutSystem/MidiOutUserInterface.cpp            \
+		      Machine/MidiOutSystem/MidiOutMachine.cpp                  \
+
 
 
 
@@ -208,7 +213,7 @@ SYSTEMLINUX.d:SYSTEMLINUX.cpp
 
 # systemlinux.d does have a .h which is system.h
 PatternPlayer.d:PatternPlayer.cpp
-	$(CC) -I. -MM $< -o $@ 
+	$(CC) -std=c++11 -I. -MM $< -o $@ 
 
 
 clean:

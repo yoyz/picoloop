@@ -89,6 +89,13 @@ int PicosynthMachine::checkI(int what,int val)
 {
   switch (what)
     {
+
+    // case ADSR_ENV0_ATTACK:
+    //   if (val<=1) return 1;
+    //   if (val>=127) return 127;
+    //   return val;
+    //   break;
+
     case OSC1_TYPE:
       if (val<0) return 0;
       if (val>PICO_WAVETABLE_SIZE-2) return PICO_WAVETABLE_SIZE-1;
