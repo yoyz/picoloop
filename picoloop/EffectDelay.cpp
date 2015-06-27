@@ -94,9 +94,15 @@ void EffectDelay::setSpeed(int val)
   //if (offset>FX_SIZE)
   //offset=FX_SIZE-offset;
 
-  indexOffset=index-offset;
-  if (indexOffset<0)
-    indexOffset=FX_SIZE-offset;
+
+  // indexOffset=index-offset;
+  // if (indexOffset<0)
+  //   indexOffset=FX_SIZE-offset;
+
+  if (index-offset>=0)
+    indexOffset=index-offset;
+  else
+    indexOffset=index-offset+FX_SIZE;
 }
 
 /*
