@@ -79,6 +79,7 @@ void dboplMachine::init()
   HO->SetEnvelopeDecay(1,2,2);
   HO->SetEnvelopeSustain(1,2,12);
   HO->SetEnvelopeRelease(1,2,15);
+  //HO->EnableOpl3Mode();
   //HO->EnableAdditiveSynthesis(1,true);
   //HO->SetModulatorFeedback(1,3);
   //HO->EnableKsr(1,1,true);
@@ -405,22 +406,8 @@ int dboplMachine::tick()
       index<0)
     index=0;
 
-  if (trig_time_mode)
-    {
-      if (trig_time_duration_sample<sample_num)
-	{
-	  this->setI(NOTE_ON,0);
-	  trig_time_mode=0;
-	  //printf("\t\t\t\t\t\tDONE\n");
-	}
 
-    }
-
-
-
-
-  if (sample_num==0 || 
-      index==0 )
+  if (index==0 )
     {
       //modulated_freq=(sineLfoOsc1.tick()>>lfo_depth_shift);
       modulated_freq=((sineLfoOsc1.tick()>>5)/(128-lfo_depth));
@@ -438,6 +425,23 @@ int dboplMachine::tick()
 	}
       HO->Generate(SAM,buffer);
     }
+
+
+
+  if (trig_time_mode)
+    {
+      if (trig_time_duration_sample<sample_num)
+	{
+	  this->setI(NOTE_ON,0);
+	  trig_time_mode=0;
+	  //printf("\t\t\t\t\t\tDONE\n");
+	}
+
+    }
+
+
+
+
 
 
 
