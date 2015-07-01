@@ -1,27 +1,12 @@
 #include "PBSynthMachine.h"
 //#define SAM 512
-#define SAM 128
+#define SAM 64
 
-//enum {
-//  FMTYPE_2_OP_AM,
-//  FMTYPE_2_OP_FM
-//};
-
-
-// int arpMode = 0;
-// int arpSpeed = 200;
-// int arpOctaveMax = 4;
-// int arpInc = 1;
-// int oscBase[2];
-// int note[2];
-
-
-//PBSynthMachine::PBSynthMachine() : SE(SAM,100)
-//PBSynthMachine::PBSynthMachine() : 
 PBSynthMachine::PBSynthMachine()
 {
   printf("PBSynthMachine::PBSynthMachine()\n");  
-  buffer=0;
+  buffer_f=0;
+  buffer_i=0;
   cutoff=125;
   resonance=10;
   index=0;
@@ -34,15 +19,17 @@ PBSynthMachine::PBSynthMachine()
   trig_time_duration=0;
   trig_time_duration_sample=0;
 
-
 }
 
 
 PBSynthMachine::~PBSynthMachine()
 {
   printf("PBSynthMachine::~PBSynthMachine()\n");  
-  if (buffer)
-    free(buffer);
+  if (buffer_f)
+    free(buffer_f);
+  if (buffer_i)
+    free(buffer_i);
+
 }
 
 
@@ -52,16 +39,23 @@ void PBSynthMachine::init()
   int i;
 
   //HO(44100);
-  if (buffer==0)
+  if (buffer_f==0)
     {
       SE=new SynthEngine(SAM,100);
-      buffer = (mfloat*)malloc(sizeof(mfloat)*SAM*8);
+      buffer_f = (mfloat*)malloc(sizeof(mfloat)*SAM);
+    }
+  if (buffer_i==0)
+    {
+      buffer_i = (Sint16*)malloc(sizeof(Sint16)*SAM);
     }
 
-  printf("buffer:0x%08.8X\n",buffer);
+  printf("buffer_f:0x%08.8X\n",buffer_f);
+  printf("buffer_i:0x%08.8X\n",buffer_i);
   for (i=0;i<SAM;i++)
-    buffer[i]=0;
-
+    {
+      buffer_f[i]=0;
+      buffer_i[i]=0;
+    }
   sample_num=0;
   index=0;
   freq=110.0;
@@ -284,10 +278,23 @@ int PBSynthMachine::tick()
   Sint16 s_out;
   int    modulated_freq;
   int i;
+  float buf_f;
 
   if (index>=SAM | 
       index<0)
     index=0;
+
+
+  if ( index==0 )
+    {
+      SE->process(buffer_f,SAM);
+      for(i=0;i<SAM;i++)
+       	{
+       	  //buffer[i]=buffer[i]*2048;
+	  buffer_i[i]=buffer_f[i]*2048;
+       	}
+    }
+
 
   if (trig_time_mode)
     {
@@ -299,40 +306,7 @@ int PBSynthMachine::tick()
 	}
 
     }
-
-
-
-
-  if (sample_num==0 || 
-      index==0 )
-    {
-      //modulated_freq=(sineLfoOsc1.tick()>>lfo_depth_shift);
-      //modulated_freq=((sineLfoOsc1.tick()>>5)/(128-lfo_depth));
-      
-      //HO->Generate(SAM,buffer);
-      SE->process(buffer,SAM);
-      for(i=0;i<SAM;i++)
-       	{
-       	  //buffer[i]=buffer[i]/64;
-       	  buffer[i]=buffer[i]*2048;
-       	}
-      // for(i=0;i<32;i++)
-      // 	 printf("%d\t",buffer[i]);
-      // printf("\n");
-      
-      // for(i=0;i<SAM;i++)
-      // 	{
-      // 	  printf("%d\t",buffer[i]);
-      // 	}
-
-    }
-
-
-
-  //s_in=(mfloat)buffer[index];
-  s_in32=buffer[index];
-  //printf("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ %d %d %d %d\n",index,s_in32,buffer[index],sizeof(mfloat));
-  //s_out=filter.process(s_in);
+  s_in32=buffer_i[index];
   if (s_in32>32000)  s_in32=32000;
   if (s_in32<-32000) s_in32=-32000;
   s_out=s_in32;
