@@ -46,7 +46,8 @@ class PBSynthMachine : public Machine
   Sint32                last_sample;
 
   Sint16              * tanh_table;
-  mfloat              * buffer;
+  mfloat              * buffer_f;
+  Sint16              * buffer_i;
   int                   index;
 
   //int                   freq;
