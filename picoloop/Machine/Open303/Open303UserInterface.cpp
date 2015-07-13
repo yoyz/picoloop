@@ -21,7 +21,7 @@ void display_board_trig();
 
 void Open303UserInterface::handle_key(int menu)
 {
-  //printf("Open303UserInterface::handle_key(%d,%d)\n",menu);
+  //DPRINTF("Open303UserInterface::handle_key(%d,%d)\n",menu);
   if (menu==GLOBALMENU_AD) 
     this->handle_key_amp_env();
   if (menu==GLOBALMENU_NOTE) 
@@ -129,7 +129,7 @@ void Open303UserInterface::handle_key_amp_env()
 	{
 	  sub_handle_invert_trig();
 	  // TK.invert_trig=1;
-	  // printf("key lalt\n");      
+	  // DPRINTF("key lalt\n");      
 	  // dirty_graphic=1;
 	  // IE.clearLastKeyEvent();
 	}
@@ -171,7 +171,7 @@ void Open303UserInterface::handle_key_amp_env()
 	}
       menu_ad_dirty_keyboard=0;
       IE.clearLastKeyEvent();
-      printf("[sub menu env : %d]\n",menu_ad);
+      DPRINTF("[sub menu env : %d]\n",menu_ad);
     }
 
 
@@ -233,7 +233,7 @@ void Open303UserInterface::handle_key_note()
       else if (menu_note==1)        { menu_note=0;  }   
       dirty_graphic=1;
       IE.clearLastKeyEvent();
-      printf("[sub menu note : %d]\n",menu_note);
+      DPRINTF("[sub menu note : %d]\n",menu_note);
     }
 
 
@@ -266,7 +266,7 @@ void Open303UserInterface::handle_key_osc()
 	}
       menu_ad_dirty_keyboard=0;
       IE.clearLastKeyEvent();
-      printf("[sub menu env : %d]\n",menu_ad);
+      DPRINTF("[sub menu env : %d]\n",menu_ad);
     }
 }
 
@@ -365,7 +365,7 @@ void Open303UserInterface::handle_key_vco()
 	}
       menu_ad_dirty_keyboard=0;
       IE.clearLastKeyEvent();
-      printf("[sub menu env : %d]\n",menu_ad);
+      DPRINTF("[sub menu env : %d]\n",menu_ad);
     }
 
 
@@ -400,7 +400,7 @@ void Open303UserInterface::handle_key_lfo()
 	}
       menu_ad_dirty_keyboard=0;
       IE.clearLastKeyEvent();
-      printf("[sub menu lfo : %d]\n",menu_lfo);
+      DPRINTF("[sub menu lfo : %d]\n",menu_lfo);
     }
 }
 
@@ -496,7 +496,7 @@ void Open303UserInterface::handle_key_fltr()
 	}
       menu_ad_dirty_keyboard=0;
       IE.clearLastKeyEvent();
-      printf("[sub menu_fltr : %d]\n",menu_fltr);
+      DPRINTF("[sub menu_fltr : %d]\n",menu_fltr);
     }
 
 
@@ -654,7 +654,7 @@ void Open303UserInterface::display_board_text()
 
 void Open303UserInterface::display_board(int menu)
 {
-  printf("UserInterface::display_board(%d,)\n",menu);
+  DPRINTF("UserInterface::display_board(%d,)\n",menu);
   if (menu==GLOBALMENU_AD) 
     this->display_board_amp_env();
   if (menu==GLOBALMENU_NOTE) 
@@ -673,7 +673,7 @@ void Open303UserInterface::display_board(int menu)
 
 void Open303UserInterface::display_board_amp_env()
 {
-  printf("UserInterface::display_board_amp_env()\n");
+  DPRINTF("UserInterface::display_board_amp_env()\n");
   int  i;
   int  cty=SEQ.getCurrentTrackY();
   int  step=SEQ.getPatternSequencer(cty).getStep();

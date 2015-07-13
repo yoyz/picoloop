@@ -5,7 +5,7 @@
 Machine::Machine() 
 {
 
-  printf("Machine::Machine()\n");  
+  DPRINTF("Machine::Machine()\n");  
 
 }
 
@@ -13,7 +13,7 @@ Machine::Machine()
 
 Machine::~Machine()
 {
-  printf("Machine::~Machine()\n");
+  DPRINTF("Machine::~Machine()\n");
 }
 
 
@@ -36,33 +36,33 @@ int Machine::getI(int what)
 
 void Machine::init()
 {
-  printf("Machine::init()\n");
+  DPRINTF("Machine::init()\n");
 }
 
 
 
 void Machine::reset()
 {
-  printf("Machine::reset()\n");
+  DPRINTF("Machine::reset()\n");
 }
 
 
 int Machine::tick()
 {
-  printf("Machine::tick()\n");
+  DPRINTF("Machine::tick()\n");
 }
 
 
 int Machine::checkI(int what,int val)
 {
-  printf("WARNING : Machine::checkI()\n");
+  DPRINTF("WARNING : Machine::checkI()\n");
   return val;
 }
 
 const char * Machine::getMachineParamCharStar(int machineParam,int paramValue)
 {
   const char * str_null="NULL";
-  printf("Machine::getMachineParamCharStar\n");
+  DPRINTF("Machine::getMachineParamCharStar\n");
   return str_null;
 }
 

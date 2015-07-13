@@ -2,7 +2,7 @@ using namespace std;
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-
+#include "Master.h"
 #ifndef __EFFECT____
 #define __EFFECT____
 

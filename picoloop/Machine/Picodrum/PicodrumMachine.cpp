@@ -7,7 +7,7 @@ PicodrumMachine::PicodrumMachine() : adsr_amp(), vco(), filter()
   float fi;
   int   i;
 
-  printf("PicodrumMachine::PicodrumMachine()\n");  
+  DPRINTF("PicodrumMachine::PicodrumMachine()\n");  
   cutoff=125;
   resonance=10;
   note=0;
@@ -18,7 +18,7 @@ PicodrumMachine::PicodrumMachine() : adsr_amp(), vco(), filter()
 
 PicodrumMachine::~PicodrumMachine()
 {
-  printf("PicodrumMachine::~PicodrumMachine()\n");
+  DPRINTF("PicodrumMachine::~PicodrumMachine()\n");
 }
 
 
@@ -78,7 +78,7 @@ int PicodrumMachine::checkI(int what,int val)
     default:
       if (val<0)   return 0;
       if (val>127) return 127;
-      printf("WARNING: PicodrumMachine::checkI(%d,%d)\n",what,val);
+      DPRINTF("WARNING: PicodrumMachine::checkI(%d,%d)\n",what,val);
       return val;
       break;      
     }
@@ -164,7 +164,7 @@ PicodrumADSR & PicodrumMachine::getADSRAmp()
 
 PicodrumVCO & PicodrumMachine::getPicodrumVCO()
 {
-  //  printf("PicodrumMachine::getPicodrumVCO() this=0x%08.8X\n",this);
+  //  DPRINTF("PicodrumMachine::getPicodrumVCO() this=0x%08.8X\n",this);
   //  return vco_pointer;
   return vco;
 }

@@ -2,7 +2,7 @@
 
 SDL_GUI::SDL_GUI()
 {
-  printf("construction SDL_GUI::SDL_GUI()\n");
+  DPRINTF("construction SDL_GUI::SDL_GUI()\n");
   screen=NULL;
   bmp_font=NULL;
   ttf_font=NULL;
@@ -14,7 +14,7 @@ SDL_GUI::SDL_GUI()
 
 SDL_GUI::~SDL_GUI()
 {
-  printf("SDL_GUI::~SDL_GUI()\n");
+  DPRINTF("SDL_GUI::~SDL_GUI()\n");
   
   if (ttf_font!=NULL)
     TTF_CloseFont(ttf_font);
@@ -47,7 +47,7 @@ int SDL_GUI::initVideo()
        //) < 0 )
        <0)
     {
-      fprintf(stderr, "Couldn't initialize SDL: %s\n", SDL_GetError());
+      DPRINTF("Couldn't initialize SDL: %s\n", SDL_GetError());
       return 0;
     }
 #endif   
@@ -55,7 +55,7 @@ int SDL_GUI::initVideo()
 #ifdef __RTAUDIO__
   if ( SDL_Init(SDL_INIT_VIDEO)<0)
     {
-      fprintf(stderr, "Couldn't initialize SDL: %s\n", SDL_GetError());
+      DPRINTF("Couldn't initialize SDL: %s\n", SDL_GetError());
       return 0;
     }
 #endif   
@@ -63,7 +63,7 @@ int SDL_GUI::initVideo()
 
 
   
-  printf("SDL initialized.\n");
+  DPRINTF("SDL initialized.\n");
   #ifdef OPENDINGUX
   screen = SDL_SetVideoMode(SCREEN_WIDTH, 
 			    SCREEN_HEIGHT, 
@@ -101,7 +101,7 @@ int SDL_GUI::initVideo()
 
   if (screen == NULL)
     {
-      fprintf(stderr, "Couldn't set video mode: %s\n", SDL_GetError());
+      DPRINTF("Couldn't set video mode: %s\n", SDL_GetError());
       SDL_Quit();
       return 0;
     }  
@@ -118,7 +118,7 @@ void SDL_GUI::refresh()
 
 void SDL_GUI::clearScreen()
 {
-  printf("SDL_GUI::clearScreen()\n");
+  DPRINTF("SDL_GUI::clearScreen()\n");
   SDL_FillRect(screen,NULL, 0x000000);
 }
 
@@ -268,14 +268,14 @@ void SDL_GUI::fullBox(int x, int y, int w, int h, Uint32 c)
 /*
 void SDL_GUI::drawText(int x, int y, string txt)
 {
-  printf("SDL_GUI::drawText\n");
+  DPRINTF("SDL_GUI::drawText\n");
 }
 */
 
 /*
 void SDL_GUI::drawBox(int x, int y, int color)
 {
-    printf("SDL_GUI::drawBox\n");
+    DPRINTF("SDL_GUI::drawBox\n");
 }
 */
 
@@ -292,11 +292,11 @@ int SDL_GUI::openTTFFont()
   ttf_font = TTF_OpenFont("font.ttf", 8*SCREEN_MULT );
   
   //If there was an error in loading the font
-  //  printf("%d\n",ttf_font);
+  //  DPRINTF("%d\n",ttf_font);
   // exit(0);
   if( ttf_font == NULL || ttf_font==0 )
     {      
-      printf("font not found or is not a font file ttf_font:%d\n",ttf_font);
+      DPRINTF("font not found or is not a font file ttf_font:%d\n",ttf_font);
       return false;      
     }
   return true;  
@@ -525,7 +525,7 @@ int SDL_GUI::openBMPFont()
   bmp_font = this->loadBMP("font.bmp");
   if(!bmp_font)
     {
-      fprintf(stderr, "Couldn't load font!\n");
+      DPRINTF("Couldn't load font!\n");
       return -1;
     } 
   return 0;

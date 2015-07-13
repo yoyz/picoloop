@@ -18,7 +18,7 @@ Oscillator::Oscillator()
 
 Oscillator::~Oscillator()
 {
-  printf("Oscillator::~Oscillator()\n");
+  DPRINTF("Oscillator::~Oscillator()\n");
 }
 
 void Oscillator::reset()
@@ -48,7 +48,7 @@ void Oscillator::setNoteDetune(int note,int detune)
 {
   NoteFreq & NF = NoteFreq::getInstance();
   offset_next_index=NF.getWTJumpDetune(note,detune);
-  //printf("note:%d detune:%d offset_next_index:%d\n",note,detune,offset_next_index);
+  //DPRINTF("note:%d detune:%d offset_next_index:%d\n",note,detune,offset_next_index);
 }
 
 
@@ -56,7 +56,7 @@ void Oscillator::setNoteDetune(int notedetune)
 {
   NoteFreq & NF = NoteFreq::getInstance();
   offset_next_index=NF.getWTJumpDetune(notedetune);
-  //printf("note:%d detune:%d offset_next_index:%d\n",note,detune,offset_next_index);
+  //DPRINTF("note:%d detune:%d offset_next_index:%d\n",note,detune,offset_next_index);
 }
 
 
@@ -88,10 +88,10 @@ void Oscillator::setFreq(int freq)
       //tmp=tmp/44100;
       //offset_next_index=(freq*table_size*65535)/44100;
       offset_next_index=tmp;
-      //printf("freq:%d table_size:%d offset_next_index:%d tmp:%d\n",freq,table_size,offset_next_index,tmp);
+      //DPRINTF("freq:%d table_size:%d offset_next_index:%d tmp:%d\n",freq,table_size,offset_next_index,tmp);
     }
 
-  //printf("offset_next_index:%d\n",offset_next_index);
+  //DPRINTF("offset_next_index:%d\n",offset_next_index);
 }
 
 
@@ -102,7 +102,7 @@ void Oscillator::setAmplitude(int amp)
   if (amp>=127          ){ amplitude=127; }
   if (amp<=0            ){ amplitude=0;   }
   if (amp>0   && amp<127){ amplitude=amp; }
-  printf("Oscillator::setAmplitude(amplitude=%d)\n",amplitude);
+  DPRINTF("Oscillator::setAmplitude(amplitude=%d)\n",amplitude);
 }
 
 
@@ -136,7 +136,7 @@ Sint16 Oscillator::tick()
 
       //      if ((index>>16)>table_size)
       //index=0;
-      //printf("offset_next_index.tick.offset_next_index:%d\n",offset_next_index);
+      //DPRINTF("offset_next_index.tick.offset_next_index:%d\n",offset_next_index);
     }
   return table[index>>shift];
 }

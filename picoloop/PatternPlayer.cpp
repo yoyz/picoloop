@@ -19,9 +19,14 @@ PSP_MAIN_THREAD_ATTR(PSP_THREAD_ATTR_USER);
 //PSP_HEAP_SIZE_KB(20480) ;
 //PSP_HEAP_SIZE_KB(-1024) ;
 //PSP_HEAP_SIZE_KB(-4096) ;
-PSP_HEAP_SIZE_KB(-6144) ;
+//PSP_HEAP_SIZE_KB(-6144) ;
 //PSP_HEAP_SIZE_KB(-8192) ;
 //PSP_HEAP_SIZE_KB(-12288) ;
+
+//PSP_HEAP_SIZE_KB(-6144) ;
+//PSP_HEAP_SIZE_KB(-8192) ;
+//PSP_HEAP_SIZE_KB(-1024) ;
+PSP_HEAP_SIZE_KB(-12288) ;
 #endif
 
 #include <stdio.h>
@@ -485,7 +490,7 @@ void display_board_bank()
       menu_cursor  ==  GLOBALMENU_BANK 
       )
     {
-      printf("HIT\n");
+     DPRINTF("HIT\n");
       SG.clearScreen();
       
       sprintf(str_bank,"Current Bank %d ",bank);
@@ -579,7 +584,7 @@ void display_board_load_save()
       menu_ls      ==  MENU_LS_PATTERN
       )
     {
-      printf("HIT\n");
+     DPRINTF("HIT\n");
       SG.clearScreen();
       
       sprintf(str_bank,"Bank %d ",bank);
@@ -890,7 +895,7 @@ void sub_handle_invert_trig()
       TK.set(INVERT_TRIG,1);
       //invert_trig=1;
       //TK.set(NOTE_ON,(TK.get(NOTE_ON)+1)%2);
-      printf("key lalt\n");      
+     DPRINTF("key lalt\n");      
       dirty_graphic=1;
       IE.clearLastKeyEvent();
     }  
@@ -960,12 +965,12 @@ void handle_key_menu()
 	{
 	  SEQ.setCurrentTrackY(loadsave_cursor.y);
 	  PR.saveSong(SEQ.getSongSequencer());
-	  printf("SAVING SONG TO FILE\n");
+	 DPRINTF("SAVING SONG TO FILE\n");
 	}
       //printf("HERE IAMn");
       dirty_graphic=1;
       IE.clearLastKeyEvent();
-      printf("[gmenu : %d cmenu : %d]\n",menu,menu_cursor);
+     DPRINTF("[gmenu : %d cmenu : %d]\n",menu,menu_cursor);
     }
 
   //We enter the LS Menu so we had to sync the cursor with SEQ 
@@ -980,7 +985,7 @@ void handle_key_menu()
       loadsave_cursor.y=SEQ.getCurrentTrackY();
       dirty_graphic=1;
       IE.clearLastKeyEvent();
-      printf("[gmenu : %d cmenu : %d]\n",menu,menu_cursor);
+     DPRINTF("[gmenu : %d cmenu : %d]\n",menu,menu_cursor);
     }
 
 
@@ -1010,8 +1015,8 @@ void handle_key_menu()
 	  if (menu_cursor<6     && menu==MENU_ON_PAGE2) menu_cursor=11;
 
 	  dirty_graphic=1;
-	  printf("\t\t[menu_cursor:%d]\n",menu_cursor);
-	  printf("key left\n");            
+	 DPRINTF("\t\t[menu_cursor:%d]\n",menu_cursor);
+	 DPRINTF("key left\n");            
 	}      
       
       if(keyState[BUTTON_RIGHT])
@@ -1028,8 +1033,8 @@ void handle_key_menu()
 	  if (menu_cursor>11     && menu==MENU_ON_PAGE2) { menu_cursor=6;             menu_switching=1; }
 
 	  dirty_graphic=1;
-	  printf("\t\t[menu_cursor:%d]\n",menu_cursor);
-	  printf("key right\n");            
+	 DPRINTF("\t\t[menu_cursor:%d]\n",menu_cursor);
+	 DPRINTF("key right\n");            
 	}
       
       if(keyState[BUTTON_UP])
@@ -1048,7 +1053,7 @@ void handle_key_menu()
 		  menu_switching=1;
 		}
 	    }
-	  printf("[key up : change track : %d] \n",SEQ.getCurrentTrackY());
+	 DPRINTF("[key up : change track : %d] \n",SEQ.getCurrentTrackY());
 	  dirty_graphic=1;
 	}
 
@@ -1067,14 +1072,14 @@ void handle_key_menu()
 		  menu_switching=1;
 		}
 	    }
-	  printf("[key down : change track : %d] \n",SEQ.getCurrentTrackY());
+	 DPRINTF("[key down : change track : %d] \n",SEQ.getCurrentTrackY());
 	  dirty_graphic=1;
 	}
     }
 
   if (menu_switching>0)
     {
-      printf("Switching back to all default menu\n");
+     DPRINTF("Switching back to all default menu\n");
       menu_note=ENABLE;
       menu_ad=0;
       menu_osc=0;
@@ -1126,7 +1131,7 @@ void handle_key_sixteenbox()
 	      keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONG==0)	    
 	    cursor=cursor-4;
 	  if (cursor < 0) cursor=cursor +16;
-	  printf("key down : up \n");
+	 DPRINTF("key down : up \n");
 	  dirty_graphic=1;
 	}
       
@@ -1135,7 +1140,7 @@ void handle_key_sixteenbox()
 	{
 	  if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONG==0)
 	    cursor=( cursor+4 ) %16;
-	  printf("key down : down\n");
+	 DPRINTF("key down : down\n");
 	  dirty_graphic=1;
 	}
       
@@ -1147,7 +1152,7 @@ void handle_key_sixteenbox()
 	    cursor--;
 	  
 	  if (cursor<0) cursor=15;
-	  printf("key left\n");            
+	 DPRINTF("key left\n");            
 	  dirty_graphic=1;
 	}
       
@@ -1158,7 +1163,7 @@ void handle_key_sixteenbox()
 	      keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_LONG==0)
 	    cursor++;
 	  if (cursor>15) cursor=0;
-	  printf("key right\n");      
+	 DPRINTF("key right\n");      
 	  dirty_graphic=1;
 	}
     }
@@ -1738,7 +1743,7 @@ void handle_key()
   
   //if (start_key==2) 
   //printf("%d %d %d\n",lastKey,lastEvent,lastKey==&& BUTTON_START && lastEvent==KEYRELEASED);
-  //  printf("lastevent=%d\n",lastEvent);
+  // DPRINTF("lastevent=%d\n",lastEvent);
 
 
   handle_key_menu();
@@ -2074,7 +2079,7 @@ void seq_update_multiple_time_by_step()
 
       TK.setAll(PATTERN_SHIFT,0);
       dirty_graphic=1;
-      printf("[pshift_all:left]\n");	  
+     DPRINTF("[pshift_all:left]\n");	  
     }
 
 
@@ -2094,7 +2099,7 @@ void seq_update_multiple_time_by_step()
       //save the bpm in the 
       //change the number of time AudioEngine need to be trigged
       //to effectively change pattern step
-      printf("Recalculate BPM\n");
+     DPRINTF("Recalculate BPM\n");
       bpm_current=P[cty].getBPM();
       for(t=0;t<TRACK_MAX;t++)	    
 	P[t].setBPM(bpm_current+TK.get(BPM));
@@ -2110,7 +2115,7 @@ void seq_update_multiple_time_by_step()
       //save the swing in the Pattern
       //change the number of time AudioEngine need to be trigged
       //to effectively change pattern step
-      printf("Recalculate Swing\n");
+     DPRINTF("Recalculate Swing\n");
       current_swing=current_swing+TK.get(SWING);
       TK.set(SWING,0);
       
@@ -2217,7 +2222,7 @@ int seq_update_by_step()
   // Load save only on pattern change
   if (save)
     {
-      printf("<==[SAVE]==>\n");
+     DPRINTF("<==[SAVE]==>\n");
       //PR.writePattern(1,ct+1,P[ct]);
       PR.writePattern(loadsave_cursor.x,loadsave_cursor.y,P[cty]);
       dirty_graphic=1;
@@ -2227,7 +2232,7 @@ int seq_update_by_step()
   // Load save only on pattern change
   if (load)
     {
-      printf("<==[LOAD]==>\n");
+     DPRINTF("<==[LOAD]==>\n");
       if (PR.PatternDataExist(loadsave_cursor.x,loadsave_cursor.y)==true)
 	{
 	  PR.readPatternData(loadsave_cursor.x,loadsave_cursor.y,P[cty]);
@@ -2255,7 +2260,7 @@ int seq_update_by_step()
   // Load save only on pattern change
   if (loadall)
     {
-      printf("<==[LOAD_ALL]==>\n");
+     DPRINTF("<==[LOAD_ALL]==>\n");
       for (t=0;t<TRACK_MAX;t++)
 	{
 	  if (PR.PatternDataExist(loadsave_cursor.x,t)==true)
@@ -2282,7 +2287,7 @@ int seq_update_by_step()
   // Load save only on pattern change
   if (saveall)
     {
-      printf("<==[SAVE_ALL]==>\n");
+     DPRINTF("<==[SAVE_ALL]==>\n");
       //PR.writePattern(1,ct+1,P[ct]);
       for (t=0;t<TRACK_MAX;t++)
 	PR.writePattern(loadsave_cursor.x,t,P[t]);
@@ -2295,19 +2300,19 @@ int seq_update_by_step()
   // Load save only on pattern change
   if (patternRemove)
     {
-      printf("<==[REMOVE]==>\n");
+     DPRINTF("<==[REMOVE]==>\n");
       if (PR.PatternDataExist(loadsave_cursor.x,loadsave_cursor.y)==true)
 	{
 	  if (PR.PatternRemove(loadsave_cursor.x,loadsave_cursor.y))
 	    {
-	      printf("<==[REMOVE==Success]==>\n");
+	     DPRINTF("<==[REMOVE==Success]==>\n");
 	      dirty_graphic=1;
 	    }
 	}
       else
 	{
 	  P[cty].init();
-	  printf("<==[Remove==Failed]==>\n");
+	 DPRINTF("<==[Remove==Failed]==>\n");
 	}
       patternRemove=false;
     }
@@ -2317,7 +2322,7 @@ int seq_update_by_step()
   //    step=0; 
 
   if (debug)
-    printf("STEP:%d\n",step);	  
+   DPRINTF("STEP:%d",step);	  
   
 }
 
@@ -2452,7 +2457,7 @@ void seq_update_track(int t)
 	{
 	  if (noteOffTrigger[t]<0)
 	    {
-	      printf("$$$NOTEOFF\n");
+	     DPRINTF("$$$NOTEOFF\n");
 	      //M[t]->getADSRAmp().setNoteOff();
 	      //M[t]->getADSRFltr().setNoteOff();
 	      //M[t]->reset();
@@ -2462,7 +2467,7 @@ void seq_update_track(int t)
 	  else
 	    {
 	      noteOffTrigger[t]=noteOffTrigger[t]-1;
-	      printf("noteOffTrigger[%d]=%d\n",noteOffTrigger[t],t);
+	     DPRINTF("noteOffTrigger[%d]=%d\n",noteOffTrigger[t],t);
 	    }
 	}
       */
@@ -2548,7 +2553,7 @@ int seq()
 
   dirty_graphic=1;
 
-  printf("Now in PatternPlayer::seq()\n");
+ DPRINTF("Now in PatternPlayer::seq()\n");
 
   // Initialize 
   for (t=0;t<TRACK_MAX;t++)
@@ -2570,7 +2575,7 @@ int seq()
 
   refresh_pecursor();
 
-  printf("openAudio start streaming\n");
+ DPRINTF("openAudio start streaming\n");
   AE.startAudio();
   //AE.startAudioSdl();
 
@@ -2615,7 +2620,7 @@ int seq()
       if (quit ||
 	  running<=0)
 	{
-	  printf("user want to quit\n");
+	 DPRINTF("user want to quit\n");
 	  return(0);
 	}
       
@@ -2777,7 +2782,7 @@ void wtg()
   // memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE);
   // WTM.insert(WT,PICO_WAVETABLE_NOISE);
   
-  printf("wavetablemanager.getSize : %d\n",WTM.getSize());
+ DPRINTF("wavetablemanager.getSize : %d\n",WTM.getSize());
 
 }
 
@@ -2807,7 +2812,7 @@ int main(int argc,char **argv)
   running = isRunning();
   setupExitCallback();
   cpu_speed=scePowerGetCpuClockFrequencyInt();
-  printf("CURRENT PSP CPU SPEED:%d\n",cpu_speed);
+ DPRINTF("CURRENT PSP CPU SPEED:%d\n",cpu_speed);
   //cpu_speed=333;
   //scePowerSetCpuClockFrequency(cpu_speed);
   //scePowerSetClockFrequency(333, 333, 166);
@@ -2815,7 +2820,7 @@ int main(int argc,char **argv)
   //scePowerSetClockFrequency(300, 300, 150);
   scePowerSetClockFrequency(266, 266, 133);
   cpu_speed=scePowerGetCpuClockFrequencyInt();
-  printf("NEW PSP CPU SPEED:%d\n",cpu_speed);
+ DPRINTF("NEW PSP CPU SPEED:%d\n",cpu_speed);
 #else
   running=1; // if we are not on psp, running should be 1  
 #endif
@@ -2842,13 +2847,13 @@ int main(int argc,char **argv)
   PR.setBank(bank);  // The current  storage bank will be 0 PWD/bank/bank%d/
 
   load_pattern();
-  printf("[openVideo output]\n");
+  DPRINTF("[openVideo output]\n");
   SG.initVideo();
   //SDL_InitSubSystem(SDL_INIT_AUDIO);
   //handle_key(); 
  //  SDL_EnableKeyRepeat(500,500);
   SG.openBMPFont();
-  if (SG.openTTFFont()==false) { printf("ttf font error\n"); exit(1); }
+  if (SG.openTTFFont()==false) {DPRINTF("ttf font error\n"); exit(1); }
   SG.loadingScreen();
 
   //sleep(10);
@@ -2859,25 +2864,25 @@ int main(int argc,char **argv)
 
   //display_board();
 
-  printf("[openAudio output]\n");
+  DPRINTF("[openAudio output]\n");
   //exit(0);
 
   //AE.openAudioSdl();
   
   seq();
 
-  printf("[closeAudio output]\n");
+  DPRINTF("[closeAudio output]");
   //AE.stopAudioSdl();
   AE.stopAudio();
   AE.closeAudio();
   
   //AE.closeAudioSdl();
 
-  printf("[closeVideo output]\n");
+  DPRINTF("[closeVideo output]");
   SG.closeVideo();
   //sleep(10);
   //PE.print();
-  printf("Exiting PatternPlayer\n");
+ DPRINTF("Exiting PatternPlayer");
 
 #ifdef PSP
   sceKernelExitGame();	

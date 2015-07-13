@@ -39,14 +39,14 @@ int AudioDriver::openAudio()
   //SDL_InitSubSystem(SDL_INIT_AUDIO);
   if ( SDL_OpenAudio(sdlAudioSpecWanted, sdlAudioSpecObtained) < 0 ) 
     {
-      fprintf(stderr, "Couldn't open audio: %s\n", SDL_GetError());
+      DPRINTF("Couldn't open audio: %s\n", SDL_GetError());
       return(-1);
     }
   
-  printf("SDL freq     : %d\n",sdlAudioSpecObtained->freq);
-  printf("SDL format   : %d\n",sdlAudioSpecObtained->format);
-  printf("SDL channels : %d\n",sdlAudioSpecObtained->channels);
-  printf("SDL samples  : %d\n",sdlAudioSpecObtained->samples);
+  DPRINTF("SDL freq     : %d\n",sdlAudioSpecObtained->freq);
+  DPRINTF("SDL format   : %d\n",sdlAudioSpecObtained->format);
+  DPRINTF("SDL channels : %d\n",sdlAudioSpecObtained->channels);
+  DPRINTF("SDL samples  : %d\n",sdlAudioSpecObtained->samples);
 }
 
 

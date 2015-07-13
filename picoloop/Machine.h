@@ -1,6 +1,6 @@
 using namespace std;
 #include <stdio.h>
-
+#include "Master.h"
 #define ADSR_ENV0_ATTACK    0 
 #define ADSR_ENV0_DECAY     1  
 #define ADSR_ENV0_SUSTAIN   2  

@@ -25,13 +25,13 @@ int WaveTable::allocMemory()
       buffer=(Sint16*)malloc(sizeof(Sint16)*size);
       if (buffer==0)
 	{
-	  printf("Error allocating memory\n");
+	  DPRINTF("Error allocating memory\n");
 	  exit(1);
 	  //return 0;
 	}
       else
 	{
-	  printf("WaveTable::allocMemory(), buffer:0x%08.8X\n",buffer);
+	  DPRINTF("WaveTable::allocMemory(), buffer:0x%08.8X\n",buffer);
 	}
     }
   return size;
@@ -57,7 +57,7 @@ int WaveTable::setSize(int bufferSize)
   
   if (buffer!=0)
     {
-      printf("WARNING: Erasing previous memory\n");
+      DPRINTF("WARNING: Erasing previous memory\n");
       this->freeMemory();
 
     }
@@ -66,7 +66,7 @@ int WaveTable::setSize(int bufferSize)
 
 Sint16 * WaveTable::getBuffer()
 {
-  printf("WaveTable::getBuffer(), buffer:0x%08.8X\n",buffer);
+  DPRINTF("WaveTable::getBuffer(), buffer:0x%08.8X\n",buffer);
   return buffer;
 }
 

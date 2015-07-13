@@ -5,7 +5,7 @@ using namespace std;
 
 OneOscillator::OneOscillator() : table(new Sint16[WAVETABLE_SIZE])
 {
-  printf("OneOscillator::OneOscillator()");
+  DPRINTF("OneOscillator::OneOscillator()");
   table_size=WAVETABLE_SIZE;
   //table=NULL;
   //table=(Sint16*)malloc(sizeof(Sint16)*table_size);
@@ -16,7 +16,7 @@ OneOscillator::OneOscillator() : table(new Sint16[WAVETABLE_SIZE])
 
 OneOscillator::~OneOscillator()
 {
-  printf("OneOscillator::~OneOscillator() 0x%08.8X\n",table);
+  DPRINTF("OneOscillator::~OneOscillator() 0x%08.8X\n",table);
   //if (table!=NULL)
     //&& index!=0)
     //free(table);
@@ -33,11 +33,11 @@ void OneOscillator::init()
   //if (table==NULL)
   //{
   //  table=(Sint16*)malloc(sizeof(Sint16)*table_size);
-      printf("OneOscillator::init() 0x%08.8X\n",table);
+      DPRINTF("OneOscillator::init() 0x%08.8X\n",table);
       //table=new Sint16[table_size];
       //      if (table==NULL)
       //{
-      //	  printf("ERROR\n");
+      //	  DPRINTF("ERROR\n");
       //	  exit(1);
       //	}
       //    }
@@ -48,8 +48,8 @@ void OneOscillator::init()
 	  s=1<<bitdepth-1;
 	  table[i]=s;
 
-	  //printf("fvalue = %f ",f);
-	  //printf("OneOscillator::init() table[%d]=%d\n",i,table[i]);
+	  //DPRINTF("fvalue = %f ",f);
+	  //DPRINTF("OneOscillator::init() table[%d]=%d\n",i,table[i]);
 	}
       //}
   
@@ -63,7 +63,7 @@ Sint16 OneOscillator::tick()
     index=index-table_size;
     //index=0;
 
-  //printf("freq=%d index=%d table[index]=%d\n",this->getFreq(),index,table[index]);
+  //DPRINTF("freq=%d index=%d table[index]=%d\n",this->getFreq(),index,table[index]);
   return table[index];
 }
 

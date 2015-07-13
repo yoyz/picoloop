@@ -4,7 +4,7 @@
 
 PBSynthMachine::PBSynthMachine()
 {
-  printf("PBSynthMachine::PBSynthMachine()\n");  
+  DPRINTF("PBSynthMachine::PBSynthMachine()\n");  
   buffer_f=0;
   buffer_i=0;
   cutoff=125;
@@ -24,7 +24,7 @@ PBSynthMachine::PBSynthMachine()
 
 PBSynthMachine::~PBSynthMachine()
 {
-  printf("PBSynthMachine::~PBSynthMachine()\n");  
+  DPRINTF("PBSynthMachine::~PBSynthMachine()\n");  
   if (buffer_f)
     free(buffer_f);
   if (buffer_i)
@@ -35,7 +35,7 @@ PBSynthMachine::~PBSynthMachine()
 
 void PBSynthMachine::init()
 {
-  printf("PBSynthMachine::init()\n");  
+  DPRINTF("PBSynthMachine::init()\n");  
   int i;
 
   //HO(44100);
@@ -49,8 +49,8 @@ void PBSynthMachine::init()
       buffer_i = (Sint16*)malloc(sizeof(Sint16)*SAM);
     }
 
-  printf("buffer_f:0x%08.8X\n",buffer_f);
-  printf("buffer_i:0x%08.8X\n",buffer_i);
+  DPRINTF("buffer_f:0x%08.8X\n",buffer_f);
+  DPRINTF("buffer_i:0x%08.8X\n",buffer_i);
   for (i=0;i<SAM;i++)
     {
       buffer_f[i]=0;
@@ -164,7 +164,7 @@ int PBSynthMachine::checkI(int what,int val)
     default:
       if (val<0)   return 0;
       if (val>127) return 127;
-      printf("WARNING: PBSynthMachine::checkI(%d,%d)\n",what,val);
+      DPRINTF("WARNING: PBSynthMachine::checkI(%d,%d)\n",what,val);
       return val;
       break;      
     }
@@ -302,7 +302,7 @@ int PBSynthMachine::tick()
 	{
 	  this->setI(NOTE_ON,0);
 	  trig_time_mode=0;
-	  //[5~printf("\t\t\t\t\t\tDONE\n");
+	  //DPRINTF("\t\t\t\t\t\tDONE\n");
 	}
 
     }

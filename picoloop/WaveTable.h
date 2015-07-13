@@ -1,4 +1,5 @@
 #include <SDL/SDL_types.h>
+#include "Master.h"
 #ifndef __WAVETABLE__
 #define __WAVETABLE__
 

@@ -21,7 +21,7 @@ void display_board_trig();
 
 void PicosynthUserInterface::handle_key(int menu)
 {
-  //printf("PicosynthUserInterface::handle_key(%d,%d)\n",menu);
+  //DPRINTF("PicosynthUserInterface::handle_key(%d,%d)\n",menu);
   if (menu==GLOBALMENU_AD) 
     this->handle_key_amp_env();
   if (menu==GLOBALMENU_NOTE) 
@@ -125,7 +125,7 @@ void PicosynthUserInterface::handle_key_amp_env()
 	{
 	  sub_handle_invert_trig();
 	  // TK.invert_trig=1;
-	  // printf("key lalt\n");      
+	  // DPRINTF("key lalt\n");      
 	  // dirty_graphic=1;
 	  // IE.clearLastKeyEvent();
 	}
@@ -162,7 +162,7 @@ void PicosynthUserInterface::handle_key_amp_env()
       dirty_graphic=1;
       IE.clearLastKeyEvent();
       menu_ad_dirty_keyboard=1;
-      printf("[sub menu env : %d]\n",menu_ad);
+      DPRINTF("[sub menu env : %d]\n",menu_ad);
     }
 
   // change GLOBALMENU_AD SUBMENU
@@ -176,7 +176,7 @@ void PicosynthUserInterface::handle_key_amp_env()
       dirty_graphic=1;
       IE.clearLastKeyEvent();
       menu_ad_dirty_keyboard=1;
-      printf("[sub menu env : %d]\n",menu_ad);
+      DPRINTF("[sub menu env : %d]\n",menu_ad);
     }
 
   // change GLOBALMENU_AD SUBMENU
@@ -194,7 +194,7 @@ void PicosynthUserInterface::handle_key_amp_env()
 	}
       menu_ad_dirty_keyboard=0;
       IE.clearLastKeyEvent();
-      printf("[sub menu env : %d]\n",menu_ad);
+      DPRINTF("[sub menu env : %d]\n",menu_ad);
     }
 
 
@@ -256,7 +256,7 @@ void PicosynthUserInterface::handle_key_note()
       else if (menu_note==1)        { menu_note=0;  }   
       dirty_graphic=1;
       IE.clearLastKeyEvent();
-      printf("[sub menu note : %d]\n",menu_note);
+      DPRINTF("[sub menu note : %d]\n",menu_note);
     }
 
 
@@ -317,7 +317,7 @@ void PicosynthUserInterface::handle_key_osc()
 	}
       menu_ad_dirty_keyboard=0;
       IE.clearLastKeyEvent();
-      printf("[sub menu env : %d]\n",menu_ad);
+      DPRINTF("[sub menu env : %d]\n",menu_ad);
     }
 }
 
@@ -384,7 +384,7 @@ void PicosynthUserInterface::handle_key_vco()
 	}
       menu_ad_dirty_keyboard=0;
       IE.clearLastKeyEvent();
-      printf("[sub menu env : %d]\n",menu_ad);
+      DPRINTF("[sub menu env : %d]\n",menu_ad);
     }
 
 
@@ -505,7 +505,7 @@ void PicosynthUserInterface::handle_key_lfo()
 	}
       menu_ad_dirty_keyboard=0;
       IE.clearLastKeyEvent();
-      printf("[sub menu lfo : %d]\n",menu_lfo);
+      DPRINTF("[sub menu lfo : %d]\n",menu_lfo);
     }
 
 
@@ -605,7 +605,7 @@ void PicosynthUserInterface::handle_key_fltr()
 	}
       menu_ad_dirty_keyboard=0;
       IE.clearLastKeyEvent();
-      printf("[sub menu_fltr : %d]\n",menu_fltr);
+      DPRINTF("[sub menu_fltr : %d]\n",menu_fltr);
     }
 
 
@@ -710,7 +710,7 @@ void PicosynthUserInterface::display_board_text()
 
 void PicosynthUserInterface::display_board(int menu)
 {
-  printf("UserInterface::display_board(%d,)\n",menu);
+  DPRINTF("PicosynthUserInterface::display_board(%d,)\n",menu);
   if (menu==GLOBALMENU_AD) 
     this->display_board_amp_env();
   if (menu==GLOBALMENU_NOTE) 
@@ -729,7 +729,7 @@ void PicosynthUserInterface::display_board(int menu)
 
 void PicosynthUserInterface::display_board_amp_env()
 {
-  printf("UserInterface::display_board_amp_env()\n");
+  DPRINTF("PicosynthUserInterface::display_board_amp_env()\n");
   int  i;
   int  cty=SEQ.getCurrentTrackY();
   int  step=SEQ.getPatternSequencer(cty).getStep();

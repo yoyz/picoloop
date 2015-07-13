@@ -38,6 +38,7 @@ int AudioDriver::openAudio()
       }
     else
       {
+	std::cout << "\Opening audio devices\n";
 	dac.openStream( &rtAudioOutputParams, 
 			NULL, 
 			FORMAT, 
@@ -49,6 +50,7 @@ int AudioDriver::openAudio()
 			&rtAudioStreamOptions );
 	
 	//dac.startStream();  
+
 	
       }
     return 0;

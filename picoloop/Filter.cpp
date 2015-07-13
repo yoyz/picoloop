@@ -2,7 +2,7 @@
 
 Filter::Filter() : bq(), lp()
 {
-  printf("Filter::Filter()\n");  
+  DPRINTF("Filter::Filter()\n");  
   cutoff=120;
   resonance=10;
   needCalc=1;
@@ -14,7 +14,7 @@ Filter::Filter() : bq(), lp()
 
 Filter::~Filter()
 {
-  printf("Filter::~Filter()\n");  
+  DPRINTF("Filter::~Filter()\n");  
 }
 
 void Filter::init()
@@ -180,7 +180,7 @@ int16_t Filter::process_amsynth(int16_t in)
 
   //f_out=lp.ProcessSample(f_in);
   i_out=lp.ProcessSample(i_in);
-  //printf("f_in:%.8f f_out:%.8f\n",f_in,f_out);
+  //DPRINTF("f_in:%.8f f_out:%.8f\n",f_in,f_out);
   //lp.ProcessSamples(f_in,1);
   //f_out=f_in[0];
   out=f_out;

@@ -47,7 +47,7 @@ WaveTable * WaveTableManager::get(int position)
     return wtvector[position];
   else
     {
-      printf("WaveTable * WaveTableManager::get(%d) fails",position);
+      DPRINTF("WaveTable * WaveTableManager::get(%d) fails",position);
       exit(1);
     }
 }

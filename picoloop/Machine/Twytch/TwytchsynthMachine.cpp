@@ -9,7 +9,7 @@ TwytchsynthMachine::TwytchsynthMachine()
 {
   float fi;
   int   i;
-  printf("TwytchsynthMachine::TwytchsynthMachine()\n");  
+  DPRINTF("TwytchsynthMachine::TwytchsynthMachine()\n");  
   note_on=0;
   buffer_i=0;
   buffer_f=0;
@@ -64,7 +64,7 @@ TwytchsynthMachine::TwytchsynthMachine()
 
 TwytchsynthMachine::~TwytchsynthMachine()
 {
-  printf("TwytchsynthMachine::~TwytchsynthMachine()\n");
+  DPRINTF("TwytchsynthMachine::~TwytchsynthMachine()\n");
 }
 
 
@@ -202,7 +202,7 @@ int TwytchsynthMachine::checkI(int what,int val)
     default:
       if (val<0)   return 0;
       if (val>127) return 127;
-      printf("WARNING: TwytchsynthMachine::checkI(%d,%d)\n",what,val);
+      DPRINTF("WARNING: TwytchsynthMachine::checkI(%d,%d)\n",what,val);
       return val;
       break;      
     }

@@ -45,12 +45,12 @@ void Generator::sine()
   float f;
   Sint16 s;
   Sint16 bitdepth=16-1;
-  printf("Generator::sine() 0x%08.8X\n",table);
+  DPRINTF("Generator::sine() 0x%08.8X\n",table);
   for (i=0;i<table_size;i++)
     {
       s=sin((2*3.14159*i*1)/table_size)*(1<<bitdepth-2);
       table[i]=s;
-      //printf("table[%d]=%d\n",i,s);
+      //DPRINTF("table[%d]=%d\n",i,s);
     }
 }
 
@@ -62,7 +62,7 @@ void Generator::smoothSine()
   Sint16 s1;
   Sint16 s2;
   Sint16 bitdepth=16-1;
-  printf("Generator::sine() 0x%08.8X\n",table);
+  DPRINTF("Generator::sine() 0x%08.8X\n",table);
   for (i=0;i<table_size;i++)
     {
       s1=sin((2*3.14159*i*1)/table_size)*(1<<bitdepth-2);
@@ -70,7 +70,7 @@ void Generator::smoothSine()
 
       
       table[i]=s1-s2;
-      //printf("table[%d]=%d\n",i,s);
+      //DPRINTF("table[%d]=%d\n",i,s);
     }
 }
 
@@ -83,7 +83,7 @@ void Generator::saw()
   Sint16 bitdepth=16;
   Sint16 dec;
 
-  printf("Generator::saw() 0x%08.8X\n",table);
+  DPRINTF("Generator::saw() 0x%08.8X\n",table);
   initFeedBack();
   
   s=(1<<(bitdepth-2));
@@ -115,7 +115,7 @@ void Generator::smoothSaw()
   Sint16 bitdepth=16;
   Sint16 dec=(1<<(bitdepth-2))/(table_size/2);
   
-  printf("Generator::pulse() 0x%08.8X\n",table);
+  DPRINTF("Generator::pulse() 0x%08.8X\n",table);
 
   //initFeedBack();
   for (i=0;i<table_size;i++)
@@ -133,7 +133,7 @@ void Generator::smoothSaw()
 
       table[i]=(s1-s2+s3-s4+s5-s6+s7-s8+s9-s10)/2;
       //table[i]=feedFeedBack(((1<<(bitdepth-2))/2));
-      //printf("table[%d]=%d\n",i,table[i]);
+      //DPRINTF("table[%d]=%d\n",i,table[i]);
     }
 }
 
@@ -147,7 +147,7 @@ void Generator::pulse()
   Sint16 bitdepth=16;
   Sint16 dec=(1<<(bitdepth-2))/(table_size/2);
   
-  printf("Generator::pulse() 0x%08.8X\n",table);
+  DPRINTF("Generator::pulse() 0x%08.8X\n",table);
 
   //initFeedBack();
   for (i=0;i<table_size/2;i++)
@@ -184,7 +184,7 @@ void Generator::smoothPulse()
   Sint16 bitdepth=16;
   Sint16 dec=(1<<(bitdepth-2))/(table_size/2);
   
-  printf("Generator::pulse() 0x%08.8X\n",table);
+  DPRINTF("Generator::pulse() 0x%08.8X\n",table);
 
   //initFeedBack();
   for (i=0;i<table_size;i++)
@@ -207,7 +207,7 @@ void Generator::smoothPulse()
 	table[i]=(s1-(abs(s2/2)+abs(s3/3)+abs(s4/4)+abs(s5/5)+abs(s6/6)))/2; //+abs(s7/7)); //+abs(s8/8)+abs(s9/9)+abs(s10/10));
       //-4*s4-5*s5-6*s6-7*s7-8*s8-9*s9;
       //table[i]=feedFeedBack(((1<<(bitdepth-2))/2));
-      //printf("table[%d]=%d\n",i,table[i]);
+      //DPRINTF("table[%d]=%d\n",i,table[i]);
     }
 }
 
@@ -220,7 +220,7 @@ void Generator::triangle()
   Sint16 bitdepth=16;
   Sint16 dec=(1<<(bitdepth-2))/(table_size/4);
 
-  printf("Generator::triangle() 0x%08.8X\n",table);
+  DPRINTF("Generator::triangle() 0x%08.8X\n",table);
 
   //table=(Sint16*)malloc(sizeof(Sint16)*table_size);
   for (i=0;i<(table_size*1)/4;i++)
@@ -252,7 +252,7 @@ void Generator::smoothTriangle()
   Sint16 bitdepth=16;
   Sint16 dec=(1<<(bitdepth-2))/(table_size/2);
   
-  printf("Generator::pulse() 0x%08.8X\n",table);
+  DPRINTF("Generator::pulse() 0x%08.8X\n",table);
 
   //initFeedBack();
   for (i=0;i<table_size;i++)
@@ -263,7 +263,7 @@ void Generator::smoothTriangle()
       s4=sin((2*3.14159*i*4)/table_size)*(1<<bitdepth-5);
       table[i]=s1-s2-s3-s4;
       //table[i]=feedFeedBack(((1<<(bitdepth-2))/2));
-      //printf("table[%d]=%d\n",i,table[i]);
+      //DPRINTF("table[%d]=%d\n",i,table[i]);
     }
 }
 
@@ -275,7 +275,7 @@ void Generator::noise()
   Sint16 s;
   Sint16 bitdepth=16;
 
-  printf("Generator::noise() 0x%08.8X\n",table);
+  DPRINTF("Generator::noise() 0x%08.8X\n",table);
 
   srand(1<<(bitdepth-2));
   for (i=0;i<table_size;i++)
@@ -321,7 +321,7 @@ void Generator::LFSRNoise()
   // mask[14]=0b1000110101011010;
   // mask[15]=0b0001101010110101;
   
-  printf("Generator::noise() 0x%08.8X\n",table);
+  DPRINTF("Generator::noise() 0x%08.8X\n",table);
 
   srand(1<<(bitdepth-2));
   for (i=0;i<table_size;i++)
@@ -344,7 +344,7 @@ void Generator::one()
   Sint16 s;
   Sint16 bitdepth=16;
 
-  printf("Generator::one() 0x%08.8X\n",table);
+  DPRINTF("Generator::one() 0x%08.8X\n",table);
 
   for (i=0;i<table_size;i++)
     {

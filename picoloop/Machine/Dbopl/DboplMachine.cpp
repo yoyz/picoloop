@@ -11,7 +11,7 @@
 
 dboplMachine::dboplMachine() : filter(), 	     sineLfoOsc1()
 {
-  printf("dboplMachine::dboplMachine()\n");  
+  DPRINTF("dboplMachine::dboplMachine()\n");  
   buffer=0;
   cutoff=125;
   resonance=10;
@@ -31,13 +31,13 @@ dboplMachine::dboplMachine() : filter(), 	     sineLfoOsc1()
 
 dboplMachine::~dboplMachine()
 {
-  printf("dboplMachine::~dboplMachine()\n");  
+  DPRINTF("dboplMachine::~dboplMachine()\n");  
 }
 
 
 void dboplMachine::init()
 {
-  printf("dboplMachine::init()\n");  
+  DPRINTF("dboplMachine::init()\n");  
   int i;
 
   //HO(44100);
@@ -48,7 +48,7 @@ void dboplMachine::init()
       buffer = (Sint16*)malloc(sizeof(Sint16)*SAM*8);
     }
 
-  printf("buffer:0x%08.8X\n",buffer);
+  DPRINTF("buffer:0x%08.8X\n",buffer);
   for (i=0;i<SAM;i++)
     buffer[i]=0;
 
@@ -226,7 +226,7 @@ int dboplMachine::checkI(int what,int val)
     default:
       if (val<0)   return 0;
       if (val>127) return 127;
-      printf("WARNING: Dboplmachine::checkI(%d,%d)\n",what,val);
+      DPRINTF("WARNING: Dboplmachine::checkI(%d,%d)\n",what,val);
       return val;
       break;      
     }
@@ -434,7 +434,7 @@ int dboplMachine::tick()
 	{
 	  this->setI(NOTE_ON,0);
 	  trig_time_mode=0;
-	  //printf("\t\t\t\t\t\tDONE\n");
+	  //DPRINTF("\t\t\t\t\t\tDONE\n");
 	}
 
     }
