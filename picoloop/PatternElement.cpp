@@ -649,6 +649,7 @@ int PatternElement::checkSevenBitBoundarie(int val)
 
 const char * PatternElement::getMachineTypeCharStar()
 {
+  static const char * str_null        = "NULL   ";
   static const char * str_picosynth   = "PSYNTH ";
   static const char * str_picodrum    = "PDRUM  ";
   static const char * str_opl2        = "OPL2   ";
@@ -656,6 +657,7 @@ const char * PatternElement::getMachineTypeCharStar()
   static const char * str_cursynth    = "CSYNTH ";
   static const char * str_open303     = "O303   ";
   static const char * str_twytchsynth = "TSYNTH ";
+  static const char * str_midiout     = "MIDIOUT";
 
   switch (machine_type)
     {
@@ -666,8 +668,9 @@ const char * PatternElement::getMachineTypeCharStar()
     case SYNTH_CURSYNTH:   return str_cursynth;    break; 
     case SYNTH_OPEN303:    return str_open303;     break;
     case SYNTH_TWYTCHSYNTH:return str_twytchsynth; break; 
+    case SYNTH_MIDIOUT:    return str_midiout;     break; 
     }
-  return str_picosynth;
+  return str_null;
 }
 
 
