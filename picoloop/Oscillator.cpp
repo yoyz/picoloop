@@ -84,11 +84,15 @@ void Oscillator::setFreq(int freq)
     {
       //tmp=freq*table_size*65535;
       //tmp=((freq*(wtshift))/44100)*(16384);
-      tmp=(freq*((wtshift))*WAVETABLE_SIZE)/(44100);
+      //tmp=(freq*((wtshift))*WAVETABLE_SIZE)/(44100);
+      //tmp=(freq*((wtshift))*WAVETABLE_SIZE)/(44100);
+      //tmp=((freq*WAVETABLE_SIZE)/44100)*wtshift;
+      tmp=(WAVETABLE_SIZE*wtshift/44100)*freq;
       //tmp=tmp/44100;
       //offset_next_index=(freq*table_size*65535)/44100;
       offset_next_index=tmp;
       //DPRINTF("freq:%d table_size:%d offset_next_index:%d tmp:%d\n",freq,table_size,offset_next_index,tmp);
+      //printf("freq:%d table_size:%d offset_next_index:%d tmp:%d\n",freq,table_size,offset_next_index,tmp);
     }
 
   //DPRINTF("offset_next_index:%d\n",offset_next_index);
