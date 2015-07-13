@@ -44,7 +44,7 @@ int current_machine=1;
 int waveform_op1=0;
 int waveform_op2=0;
 
-int attack_amp=96;
+int attack_amp=16;
 int decay_amp=96;
 int sustain_amp=96;
 int release_amp=96;
@@ -87,9 +87,10 @@ void openaudio()
   AE.openAudio();
   for (t=0;t<TRACK_MAX;t++)
     {
+      AE.getAudioMixer().setAudioVolume(128);
       MM[t]=AE.getAudioMixer().getTrack(t).getMonoMixer();      
       MM[t]->init();
-      MM[t]->setAmplitude(0);
+      MM[t]->setAmplitude(128);
       //MM[t]->setMachineType(0);
       M[t]=MM[t]->getInput();
       M[t]->init();
@@ -767,7 +768,7 @@ void prepare_vector_buffer()
   Sint64 average=0;
   Sint64 counter=0;
 
-  file_buffer=AE.getBufferOut();
+  file_buffer=AE.getBufferOutLeft();
 
   for (int i = 0; i < SCREEN_WIDTH-1 ; i++)
     {
