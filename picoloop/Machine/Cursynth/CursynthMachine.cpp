@@ -8,7 +8,7 @@ CursynthMachine::CursynthMachine()
 {
   float fi;
   int   i;
-  printf("CursynthMachine::CursynthMachine()\n");  
+  DPRINTF("CursynthMachine::CursynthMachine()\n");  
   note_on=0;
   buffer_i=0;
   buffer_f=0;
@@ -19,7 +19,7 @@ CursynthMachine::CursynthMachine()
 
 CursynthMachine::~CursynthMachine()
 {
-  printf("CursynthMachine::~CursynthMachine()\n");
+  DPRINTF("CursynthMachine::~CursynthMachine()\n");
 }
 
 
@@ -134,7 +134,7 @@ int CursynthMachine::checkI(int what,int val)
     default:
       if (val<0)   return 0;
       if (val>127) return 127;
-      printf("WARNING: CursynthMachine::checkI(%d,%d)\n",what,val);
+      DPRINTF("WARNING: CursynthMachine::checkI(%d,%d)\n",what,val);
       return val;
       break;      
     }
@@ -428,7 +428,7 @@ int CursynthMachine::tick()
 	{
 	  this->setI(NOTE_ON,0);
 	  trig_time_mode=0;
-	  //printf("\t\t\t\t\t\tDONE\n");
+	  //DPRINTF("\t\t\t\t\t\tDONE\n");
 	}
 
     }

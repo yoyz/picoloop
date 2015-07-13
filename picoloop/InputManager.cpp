@@ -31,7 +31,7 @@ void InputManager::init()
 {
   int i;
 
-  printf("InputManager::init()\n");
+  DPRINTF("InputManager::init()\n");
 
   //key_state=NULL;
   //  key_repeat=NULL;
@@ -58,13 +58,13 @@ void InputManager::printState()
 {
   int symbol;
   
-  symbol=SDLK_ESCAPE;  printf("%d[%d %d]\n",symbol,key_state[symbol],key_repeat[symbol]);
-  symbol=SDLK_RETURN;  printf("%d[%d %d]\n",symbol,key_state[symbol],key_repeat[symbol]);
-  symbol=SDLK_LEFT;    printf("%d[%d %d]\n",symbol,key_state[symbol],key_repeat[symbol]);
-  symbol=SDLK_RIGHT;   printf("%d[%d %d]\n",symbol,key_state[symbol],key_repeat[symbol]);
-  symbol=SDLK_UP;      printf("%d[%d %d]\n",symbol,key_state[symbol],key_repeat[symbol]);
-  symbol=SDLK_DOWN;    printf("%d[%d %d]\n",symbol,key_state[symbol],key_repeat[symbol]);
-  printf("\n");
+  symbol=SDLK_ESCAPE;  DPRINTF("%d[%d %d]\n",symbol,key_state[symbol],key_repeat[symbol]);
+  symbol=SDLK_RETURN;  DPRINTF("%d[%d %d]\n",symbol,key_state[symbol],key_repeat[symbol]);
+  symbol=SDLK_LEFT;    DPRINTF("%d[%d %d]\n",symbol,key_state[symbol],key_repeat[symbol]);
+  symbol=SDLK_RIGHT;   DPRINTF("%d[%d %d]\n",symbol,key_state[symbol],key_repeat[symbol]);
+  symbol=SDLK_UP;      DPRINTF("%d[%d %d]\n",symbol,key_state[symbol],key_repeat[symbol]);
+  symbol=SDLK_DOWN;    DPRINTF("%d[%d %d]\n",symbol,key_state[symbol],key_repeat[symbol]);
+  DPRINTF("\n");
 }
 
 
@@ -88,7 +88,7 @@ int InputManager::shouldExit()
   if (key_state[BUTTON_SELECT] && key_state[BUTTON_START])
     {
       this->printState();
-      printf("[SELECT] + [START] => END \n");      
+      DPRINTF("[SELECT] + [START] => END \n");      
       quit=1;
       return(1);
     }
@@ -140,12 +140,12 @@ int InputManager::handleKey()
   SDL_Event event;
   if (SDL_PollEvent(&event))
     {     
-      //printf("[%d %d %d %d]\n",SDL_KEYUP,SDL_KEYDOWN,event.type,event.key.keysym.sym);
+      //DPRINTF("[%d %d %d %d]\n",SDL_KEYUP,SDL_KEYDOWN,event.type,event.key.keysym.sym);
       switch (event.type)
 	{
 	  case SDL_QUIT:
 	    quit=true;
-	    //printf("Exiting...\n");
+	    //DPRINTF("Exiting...\n");
 	    //exit(0);
 	    break; 	  
 	  
@@ -194,7 +194,7 @@ int InputManager::handleKey()
 	      /*
 	    case SDLK_ESCAPE:
 	      escape=true;
-	      printf("Exiting...\n");
+	      DPRINTF("Exiting...\n");
 	      exit(0);
  	      break;
 	      */
@@ -205,9 +205,9 @@ int InputManager::handleKey()
 	  
 	}
       if (key)
-	printf("key new event:%d %d %s\n",event.type,event.key.keysym.sym,SDL_GetKeyName(event.key.keysym.sym));
+	DPRINTF("key new event:%d %d %s\n",event.type,event.key.keysym.sym,SDL_GetKeyName(event.key.keysym.sym));
       if (joy)
-	printf("joy new event:%d %d   \n",event.type,event.jbutton.button);
+	DPRINTF("joy new event:%d %d   \n",event.type,event.jbutton.button);
 
     }
   if (keypressrelease==0) //need to update the state to increment keypress

@@ -73,7 +73,7 @@ void PitchBend::calc()
   div=1;
   //speed_calc=speed*6;
   speed_calc=speed;
-  printf("###### %d %d %d\n",formula1,formula2,speed);
+  DPRINTF("###### %d %d %d\n",formula1,formula2,speed);
 }
 
 
@@ -100,7 +100,7 @@ int  PitchBend::tickNoteDetune()
   //    return 16000;
 
 
-  //printf("                                                                   val:%d\n",val);
+  //DPRINTF("                                                                   val:%d\n",val);
   return val;
 }
 

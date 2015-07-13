@@ -6,7 +6,7 @@
 //Effect::Effect() : buffer(new int16_t[1024*256])
 Effect::Effect() //: FXDelay()
 {
-  printf("Effect::Effect()\n");
+  DPRINTF("Effect::Effect()\n");
 }
 
 Effect::~Effect()
@@ -15,8 +15,8 @@ Effect::~Effect()
 
 void Effect::init()
 {
-  //printf("Effect::init() buffer=%x.8\n",buffer);
-  printf("Effect::init()\n");
+  //DPRINTF("Effect::init() buffer=%x.8\n",buffer);
+  DPRINTF("Effect::init()\n");
   //FX=&FXDelay;
   //FXDelay.init();
 }

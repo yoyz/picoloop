@@ -586,5 +586,17 @@ enum
 
 
 
+#ifndef DEBUGPRINTF
+#define DEBUGPRINTF 0
+#endif
+
+
+#define DPRINTF(FMT, ARGS...) do { \
+  if (DEBUGPRINTF) \
+    fprintf(stderr, "%.40s:%.8d [" FMT "]\n", __FUNCTION__, __LINE__, ## ARGS); \
+  } while (0)
+
+
+
 
 #endif

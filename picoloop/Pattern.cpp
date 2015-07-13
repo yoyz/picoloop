@@ -14,7 +14,7 @@ Pattern::Pattern() : pevector(16,PatternElement())
 
 Pattern::~Pattern()
 {
-  //printf("Pattern::~Pattern()\n");
+  //DPRINTF("Pattern::~Pattern()\n");
 }
 
 void Pattern::init()
@@ -26,7 +26,7 @@ void Pattern::init()
   bpm=120;
   swing=50;
 
-  printf("====Pattern::init()====\n");
+  DPRINTF("====Pattern::init()====\n");
   for (i=0;i<16;i++)
     {
       pevector[i].init();

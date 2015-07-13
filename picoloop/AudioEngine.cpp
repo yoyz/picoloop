@@ -50,7 +50,7 @@ int PulseSync::tick()
 	  
     if (nb_tick>nb_tick_before_step_change_real)
       {
-	printf("STEP CHANGE\n");
+	DPRINTF("STEP CHANGE\n");
 	//nb_tick=0;
 	step++;
 	if (step>=2)

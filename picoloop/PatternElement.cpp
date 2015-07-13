@@ -9,7 +9,7 @@ using namespace std;
 
 PatternElement::PatternElement()
 {
-  printf("PatternElement::PatternElement()\n");
+  DPRINTF("PatternElement::PatternElement()\n");
   this->init();
 }
 
@@ -307,10 +307,10 @@ void PatternElement::set(int what,int val)
 
       
     default:
-	printf("PatternElement::set(%d,%d)\n",what,val);
-	printf("case default => exit\n");
-	exit(1);
-	break;
+      DPRINTF("PatternElement::set(%d,%d)\n",what,val);
+      printf("case default => exit\n");
+      exit(1);
+      break;
     }
 }
 
@@ -516,8 +516,8 @@ int PatternElement::get(int what)
 
 
     default:
-      printf("PatternElement::get(%d,%d)\n",what);
-      printf("case default : exit");
+      DPRINTF("PatternElement::get(%d,%d)\n",what);
+      DPRINTF("case default : exit");
       exit(1);
 
     }
@@ -538,7 +538,7 @@ int PatternElement::checkSevenBitBoundarie(int val)
 // void PatternElement::setVCOMix(int mix)
 // {
 //   vcomix=this->checkSevenBitBoundarie(mix);  
-//   printf("[vcomix:%d]\n",vcomix);
+//   DDPRINTF("[vcomix:%d]\n",vcomix);
 // }
 
 // int PatternElement::getVCOMix()

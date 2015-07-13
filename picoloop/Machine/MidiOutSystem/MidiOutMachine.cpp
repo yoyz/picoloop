@@ -10,7 +10,7 @@ MidiOutMachine::MidiOutMachine()
   float fi;
   int   i;
 
-  printf("MidiOutMachine::MidiOutMachine()\n");  
+  DPRINTF("MidiOutMachine::MidiOutMachine()\n");  
   // for (i=0;i<256;i++)
   //   {
   //     fi=i;
@@ -40,7 +40,7 @@ MidiOutMachine::MidiOutMachine()
 
 MidiOutMachine::~MidiOutMachine()
 {
-  printf("MidiOutMachine::~MidiOutMachine()\n");
+  DPRINTF("MidiOutMachine::~MidiOutMachine()\n");
 }
 
 
@@ -49,7 +49,7 @@ int MidiOutMachine::getCC(int midiMachineType,int cc)
   int return_cc=0;
   if (midiMachineType==0) // korg volca key
     {
-      printf("VOLCA KEY\n");
+      DPRINTF("VOLCA KEY\n");
       if (cc==OSC1_DETUNE)      cc=42;
       if (cc==FILTER1_CUTOFF)   cc=44;
       if (cc==OSC2_AMP)         cc=43;  // VCO_EG_INT on volca keys, but OSC1_AMP is used for EG in twytch and other
@@ -62,7 +62,7 @@ int MidiOutMachine::getCC(int midiMachineType,int cc)
 
   if (midiMachineType==1) // korg volca BASS
     {
-      printf("VOLCA BASS\n");
+      DPRINTF("VOLCA BASS\n");
       // if (cc==OSC1_DETUNE)      cc=42;
 
       // if (cc==OSC2_AMP)         cc=43;  // VCO_EG_INT on volca keys, but OSC1_AMP is used for EG in twytch and other
@@ -129,7 +129,7 @@ int MidiOutMachine::checkI(int what,int val)
     default:
       if (val<0)   return 0;
       if (val>127) return 127;
-      printf("WARNING: MidiOutMachine::checkI(%d,%d)\n",what,val);
+      DPRINTF("WARNING: MidiOutMachine::checkI(%d,%d)\n",what,val);
       return val;
       break;      
     }
@@ -161,14 +161,14 @@ void MidiOutMachine::setI(int what,int val)
     { 
       trig_time_duration=val; 
       trig_time_duration_sample=val*512; 
-      printf("                                                SETTRIG TIME : %d\n",trig_time_duration_sample);
+      DPRINTF("                                                SETTRIG TIME : %d\n",trig_time_duration_sample);
   }
   
   if (what==NOTE_ON && val==1) 
     { 
       if (need_to_noteOn)
 	{
-	  printf("                                                   NOTEOFF %d sample_num %d\n",old_note,sample_num);
+	  DPRINTF("                                                   NOTEOFF %d sample_num %d\n",old_note,sample_num);
 	  MOS.noteOff(0,old_note-1+12);
 	  MOS.flushMsg();
 	}
@@ -301,7 +301,7 @@ void MidiOutMachine::reset()
 {
   // sample_num=0;
   // last_sample=0;
-  printf("                                                                 RESET\n");
+  DPRINTF("                                                                 RESET\n");
   // trig_time_mode=0;
   sample_num=0;
   trig_time_duration=0;
@@ -342,7 +342,7 @@ int MidiOutMachine::tick()
   if (sample_num>delay_to_noteOn &&
       need_to_noteOn)
     {
-      printf("                                                       NOTEON  %d sample_num:%d\n",note,sample_num);
+      DPRINTF("                                                       NOTEON  %d sample_num:%d\n",note,sample_num);
       MOS.noteOn(0,note-1+12,50);
       MOS.flushMsg();
       //this->setI(NOTE_ON,1);
@@ -359,7 +359,7 @@ int MidiOutMachine::tick()
       if (sample_num>trig_time_duration_sample+delay_to_noteOn &&
 	  need_to_noteOff)
 	{
-	  printf("                                                   NOTEOFF %d sample_num %d\n",note,sample_num);
+	  DPRINTF("                                                   NOTEOFF %d sample_num %d\n",note,sample_num);
 	  MOS.noteOff(0,note-1+12);
 	  MOS.flushMsg();
 	  //trig_time_mode=0;

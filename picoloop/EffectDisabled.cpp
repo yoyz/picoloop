@@ -6,7 +6,7 @@
 
 EffectDisabled::EffectDisabled()
 {
-  printf("EffectDisabled::EffectDisabled()\n");
+  DPRINTF("EffectDisabled::EffectDisabled()\n");
 }
 
 EffectDisabled::~EffectDisabled()
@@ -15,7 +15,7 @@ EffectDisabled::~EffectDisabled()
 
 void EffectDisabled::init()
 {
-  printf("EffectDisabled::init()\n");
+  DPRINTF("EffectDisabled::init()\n");
 }
 
 void EffectDisabled::reset()

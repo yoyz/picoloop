@@ -8,7 +8,7 @@ Track::Track() : MM()
 
 Track::~Track()
 {
-  printf("Track::~Track()\n");  
+  DPRINTF("Track::~Track()\n");  
 }
 
 
@@ -21,7 +21,7 @@ Machine & Track::getMachine()
 
 MonoMixer * Track::getMonoMixer()
 {
-  printf("MonoMixer * Track::getMonoMixer() this=0x%08.8X\n",this);
+  DPRINTF("MonoMixer * Track::getMonoMixer() this=0x%08.8X\n",this);
   return &MM;
 }
 

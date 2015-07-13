@@ -7,7 +7,7 @@ PicosynthMachine::PicosynthMachine() : adsr_amp(), adsr_fltr(), vco(), filter(),
   float fi;
   int   i;
 
-  printf("PicosynthMachine::PicosynthMachine()\n");  
+  DPRINTF("PicosynthMachine::PicosynthMachine()\n");  
   for (i=0;i<256;i++)
     {
       fi=i;
@@ -27,7 +27,7 @@ PicosynthMachine::PicosynthMachine() : adsr_amp(), adsr_fltr(), vco(), filter(),
 
 PicosynthMachine::~PicosynthMachine()
 {
-  printf("PicosynthMachine::~PicosynthMachine()\n");
+  DPRINTF("PicosynthMachine::~PicosynthMachine()\n");
 }
 
 PicosynthADSR & PicosynthMachine::getADSRAmp()
@@ -124,7 +124,7 @@ int PicosynthMachine::checkI(int what,int val)
     default:
       if (val<0)   return 0;
       if (val>127) return 127;
-      printf("WARNING: PicosynthMachine::checkI(%d,%d)\n",what,val);
+      DPRINTF("WARNING: PicosynthMachine::checkI(%d,%d)\n",what,val);
       return val;
       break;      
     }
@@ -352,7 +352,7 @@ int PicosynthMachine::tick()
 	{
 	  this->setI(NOTE_ON,0);
 	  trig_time_mode=0;
-	  //printf("\t\t\t\t\t\tDONE\n");
+	  //DPRINTF("\t\t\t\t\t\tDONE\n");
 	}
 
     }

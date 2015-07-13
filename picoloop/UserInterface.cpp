@@ -11,15 +11,15 @@ UserInterface::~UserInterface()
 
 void UserInterface::handle_key(int menu)
 {
-  printf("UserInterface::handle_key(%d,)\n",menu);
+  DPRINTF("UserInterface::handle_key(%d,)\n",menu);
 }
 
 void UserInterface::display_board(int menu)
 {
-  printf("UserInterface::display_board(%d)\n",menu);
+  DPRINTF("UserInterface::display_board(%d)\n",menu);
 }
 
 void UserInterface::display_board_text()
 {
-  printf("UserInterface::display_board_text()\n");
+  DPRINTF("UserInterface::display_board_text()\n");
 }

@@ -2,6 +2,7 @@ using namespace std;
 
 #include <vector>
 #include "WaveTable.h"
+#include "Master.h"
 
 #ifndef __WAVETABLEMANAGER__
 #define __WAVETABLEMANAGER__

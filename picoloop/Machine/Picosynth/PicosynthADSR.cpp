@@ -20,7 +20,7 @@ PicosynthADSR::PicosynthADSR() : tanh_table(new Sint16[1024])
   int   ii;
   int   i;
 
-  printf("PicosynthADSR::PicosynthADSR()\n");
+  DPRINTF("PicosynthADSR::PicosynthADSR()\n");
 
   adsr_note=0;
 
@@ -58,7 +58,7 @@ PicosynthADSR::PicosynthADSR() : tanh_table(new Sint16[1024])
       fi=fi*1024;
       ii=fi;
       tanh_table[i]=ii;
-      printf("tanh[%d]=%d\n",i,tanh_table[i]);
+      DPRINTF("tanh[%d]=%d\n",i,tanh_table[i]);
     }
 }
 
@@ -69,7 +69,7 @@ PicosynthADSR::~PicosynthADSR()
 
 void PicosynthADSR::init()
 {
-  printf("PicosynthADSR::init()\n");
+  DPRINTF("PicosynthADSR::init()\n");
 
   adsr_note=0;
 
@@ -167,7 +167,7 @@ int PicosynthADSR::setSegment(int segment)
 
 void PicosynthADSR::setInput(Oscillator * vcoosc)
 {
-  printf("PicosynthADSR::setVCO(0x%08.8X\n",vcoosc);
+  DPRINTF("PicosynthADSR::setVCO(0x%08.8X\n",vcoosc);
   vco=(PicosynthVCO*)vcoosc;
 }
 
@@ -195,7 +195,7 @@ int PicosynthADSR::getNoteOn()
 void PicosynthADSR::reset()
 { 
   int numsample_shift;
-  printf("PicosynthADSR::reset() this=0x%08.8X\n",this);  
+  DPRINTF("PicosynthADSR::reset() this=0x%08.8X\n",this);  
 
   numsample_shift=SHIFT_NOTE;
 
@@ -264,7 +264,7 @@ Sint16 PicosynthADSR::tick_note()
 
   if (current_segment==PicosynthADSR_FINISH)
     {
-      if (0) printf("PicosynthADSR_FINISH\n");
+      if (0) DPRINTF("PicosynthADSR_FINISH\n");
       s_out=0;
     }
 
@@ -272,7 +272,7 @@ Sint16 PicosynthADSR::tick_note()
       noteOn_value==0                    
       )
     {
-      if (0) printf("PicosynthADSR_INIT\n");
+      if (0) DPRINTF("PicosynthADSR_INIT\n");
       current_segment=PicosynthADSR_RELEASE;
     }
 
@@ -285,7 +285,7 @@ Sint16 PicosynthADSR::tick_note()
       ca_div=1;
       ca_div_woalias=1;
       current_segment=PicosynthADSR_ATTACK;
-      //printf("ADSR: ca_div:%d ca_div_woalias:%d\n",ca_div,ca_div_woalias);
+      //DPRINTF("ADSR: ca_div:%d ca_div_woalias:%d\n",ca_div,ca_div_woalias);
     }
   
       
@@ -298,22 +298,22 @@ Sint16 PicosynthADSR::tick_note()
     {
       sample_num_debug=0;
       if(current_segment==PicosynthADSR_INIT)
-	  printf("***************************** INIT     noteOn:%d\n",noteOn_value);
+	  DPRINTF("***************************** INIT     noteOn:%d\n",noteOn_value);
 
       if(current_segment==PicosynthADSR_ATTACK)
-	  printf("***************************** ATTACK   noteOn:%d\n",noteOn_value);
+	  DPRINTF("***************************** ATTACK   noteOn:%d\n",noteOn_value);
 
       if(current_segment==PicosynthADSR_DECAY)
-	  printf("***************************** DECAY    noteOn:%d\n",noteOn_value);
+	  DPRINTF("***************************** DECAY    noteOn:%d\n",noteOn_value);
 
       if(current_segment==PicosynthADSR_SUSTAIN)
-	  printf("***************************** SUSTAIN  noteOn:%d\n",noteOn_value);
+	  DPRINTF("***************************** SUSTAIN  noteOn:%d\n",noteOn_value);
 
       if(current_segment==PicosynthADSR_RELEASE)
-	  printf("***************************** RELEASE  noteOn:%d\n",noteOn_value);
+	  DPRINTF("***************************** RELEASE  noteOn:%d\n",noteOn_value);
 
       if(current_segment==PicosynthADSR_FINISH)
-	  printf("***************************** FINISH  noteOn:%d\n",noteOn_value);
+	  DPRINTF("***************************** FINISH  noteOn:%d\n",noteOn_value);
 
     }
   */
@@ -321,20 +321,20 @@ Sint16 PicosynthADSR::tick_note()
   if (current_segment==PicosynthADSR_ATTACK &&
       sample_num > ca)
     {
-      //printf("***************************** DECAY noteOn:%d\n",noteOn_value);
+      //DPRINTF("***************************** DECAY noteOn:%d\n",noteOn_value);
       current_segment=PicosynthADSR_DECAY;
       cd_next_segment=sample_num+cd_segment;
       cd_div=ca_div;
       cd_div_woalias=ca_div_woalias;
-      //printf("ADSR ATTACK=>DECAY: ca_div:%d ca_div_woalias:%d\n",ca_div,ca_div_woalias);
+      //DPRINTF("ADSR ATTACK=>DECAY: ca_div:%d ca_div_woalias:%d\n",ca_div,ca_div_woalias);
     }
 
   if (current_segment==PicosynthADSR_DECAY &&      
       sample_num >= ca+cd)
     {
       current_segment=PicosynthADSR_SUSTAIN;
-      //printf("***************************** SUSTAIN  noteOn:%d\n",noteOn_value);
-      //printf("ADSR DECAY=SUSTAIN: cd_div:%d cd_div_woalias:%d\n",cd_div,cd_div_woalias);      
+      //DPRINTF("***************************** SUSTAIN  noteOn:%d\n",noteOn_value);
+      //DPRINTF("ADSR DECAY=SUSTAIN: cd_div:%d cd_div_woalias:%d\n",cd_div,cd_div_woalias);      
     }
 
   
@@ -346,8 +346,8 @@ Sint16 PicosynthADSR::tick_note()
       //cr_div=1023-cd_div;
       cr_div=cd_div;      
       cr_div_woalias=cd_div_woalias;
-      //printf("***************************** RELEASE  noteOn:%d\n",noteOn_value);
-      //printf("ADSR SUSTAIN=>RELEASE: cr_div:%d cr_div_woalias:%d\n",cr_div,cr_div_woalias);
+      //DPRINTF("***************************** RELEASE  noteOn:%d\n",noteOn_value);
+      //DPRINTF("ADSR SUSTAIN=>RELEASE: cr_div:%d cr_div_woalias:%d\n",cr_div,cr_div_woalias);
     }
 
 
@@ -377,7 +377,7 @@ Sint16 PicosynthADSR::tick_note()
 	  
 	  if(ca_div>1023)
 	    ca_div=1023;
-	  //printf("ADSR ATTACK: ca_div:%d ca_div_woalias:%d sample_num\n",ca_div,ca_div_woalias,sample_num);
+	  //DPRINTF("ADSR ATTACK: ca_div:%d ca_div_woalias:%d sample_num\n",ca_div,ca_div_woalias,sample_num);
 	}
       s_out=(s_in*tanh_table[ca_div_woalias])/1024;
 
@@ -396,8 +396,8 @@ Sint16 PicosynthADSR::tick_note()
 	    {
 	      cd_div=sustain*8;	      
 	    }
-	  //printf("DECAY, cd_div:%d cd_next_segment:%d\n",cd_div,);
-	  //printf("ADSR DECAY: cd_div:%d cd_div_woalias:%d sample_num:%d\n",cd_div,cd_div_woalias,sample_num);
+	  //DPRINTF("DECAY, cd_div:%d cd_next_segment:%d\n",cd_div,);
+	  //DPRINTF("ADSR DECAY: cd_div:%d cd_div_woalias:%d sample_num:%d\n",cd_div,cd_div_woalias,sample_num);
 	}
 
       s_out=(s_in*tanh_table[cd_div_woalias])/1024;
@@ -419,7 +419,7 @@ Sint16 PicosynthADSR::tick_note()
     {
       if (sample_num>cr_next_segment)
 	{
-	  //printf("ADSR RELEASE: cr_div:%d cr_div_woalias:%d sample_num:%d\n",cr_div,cr_div_woalias,sample_num);
+	  //DPRINTF("ADSR RELEASE: cr_div:%d cr_div_woalias:%d sample_num:%d\n",cr_div,cr_div_woalias,sample_num);
 	  cr_next_segment=cr_next_segment+cr_segment;
 	  cr_div=cr_div-1;
 	  if (cr_div<1)
@@ -437,7 +437,7 @@ Sint16 PicosynthADSR::tick_note()
     {
       noteOn_value=0;
     }
-  //printf("OUT:%.8d\t",s_out);
+  //DPRINTF("OUT:%.8d\t",s_out);
   
   return s_out;
 }

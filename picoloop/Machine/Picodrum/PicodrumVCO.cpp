@@ -24,7 +24,7 @@ PicodrumVCO::PicodrumVCO() : sineOsc1(),
 			     sineLfoOsc1(), 
 			     sawLfoOsc1() //, noiseosc()
 {
-  printf("PicodrumVCO::PicodrumVCO()\n");
+  DPRINTF("PicodrumVCO::PicodrumVCO()\n");
   s1=NULL;
   s2=NULL;
   vcomix=64;
@@ -43,7 +43,7 @@ PicodrumVCO::PicodrumVCO() : sineOsc1(),
 
 void PicodrumVCO::init()
 {
-  printf("PicodrumVCO::init() begin s1:=0x%08.8X s2:=0x%08.8X\n",s1,s2);
+  DPRINTF("PicodrumVCO::init() begin s1:=0x%08.8X s2:=0x%08.8X\n",s1,s2);
 
 
   lfo_depth=0;
@@ -108,13 +108,13 @@ void PicodrumVCO::init()
   s2->setAmplitude(32);
 
 
-  printf("PicodrumVCO::init() end s1:=0x%08.8X s2:=0x%08.8X\n",s1,s2);
+  DPRINTF("PicodrumVCO::init() end s1:=0x%08.8X s2:=0x%08.8X\n",s1,s2);
 }
 
 
 PicodrumVCO::~PicodrumVCO()
 {
-  printf("PicodrumVCO::~PicodrumVCO()\n");
+  DPRINTF("PicodrumVCO::~PicodrumVCO()\n");
 }
 
 int PicodrumVCO::checkSevenBitBoundarie(int val)
@@ -228,7 +228,7 @@ void PicodrumVCO::setLfoSpeed(float val)
 
 void PicodrumVCO::reset()
 {
-  printf("PicodrumVCO::reset() this=0x%08.8X\n",this); // <==== FAILS allways the same this pointers
+  DPRINTF("PicodrumVCO::reset() this=0x%08.8X\n",this); // <==== FAILS allways the same this pointers
   s1->reset();
   s2->reset();
   //s2->setPhase(72);
@@ -242,7 +242,7 @@ void PicodrumVCO::reset()
 
 Oscillator * PicodrumVCO::getOscillatorOne()
 {
-  printf("Oscillator * PicodrumVCO::getOscillatorOne() Oscillator=0x%08.8X\n",s1);
+  DPRINTF("Oscillator * PicodrumVCO::getOscillatorOne() Oscillator=0x%08.8X\n",s1);
   return s1;
 }
 
@@ -260,7 +260,7 @@ void PicodrumVCO::setNoteDetune(int note,int dt)
   s1->setFreq(freqOsc1);
   s2->setFreq(freqOsc2);
 
-  printf("freqOsc1:%d\n",freqOsc1);
+  DPRINTF("freqOsc1:%d\n",freqOsc1);
   /*
   s1->setSynthFreq(sfreq);
   s2->setSynthFreq(sfreq);
@@ -288,7 +288,7 @@ void PicodrumVCO::setSynthFreq(float sfreq)
 
 Sint16 PicodrumVCO::tick()
 {
-  //  printf("PicodrumVCO::tick() this=0x%08.8X\n",this); 
+  //  DPRINTF("PicodrumVCO::tick() this=0x%08.8X\n",this); 
   // return s1->tick()+s2->tick();
   Sint32 sa;
   Sint32 sb;
@@ -300,7 +300,7 @@ Sint16 PicodrumVCO::tick()
   if (vcomix==0) vcomix=1;
   if (s1==NULL)
     { 
-      printf("[s1 is NULL]\n"); 
+      DPRINTF("[s1 is NULL]\n"); 
       //  exit(1); 
     } 
 
@@ -330,7 +330,7 @@ Sint16 PicodrumVCO::tick()
 	  //	}
 	//tmp=lfo1->tick() * (lfo_depth_shift*127)/;
 
-  //printf("freqOsc1:%d freqOsc2:%d tmp:%d\n",freqOsc1,freqOsc2,tmp);
+  //DPRINTF("freqOsc1:%d freqOsc2:%d tmp:%d\n",freqOsc1,freqOsc2,tmp);
       //    }
 
   sinput1=s1->tick();
@@ -358,7 +358,7 @@ Sint16 PicodrumVCO::tick()
   //  sb=(s2->tick())
 
   //return s1->tick()/(128-vcomix)+s2->tick()/(vcomix);  
-  //if (1) printf("sa:%d sb:%d sc:%d\n",sa,sb,sc);    
+  //if (1) DPRINTF("sa:%d sb:%d sc:%d\n",sa,sb,sc);    
   
   //return s1->tick()+s2->tick();
   return s;

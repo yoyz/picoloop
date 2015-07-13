@@ -23,13 +23,13 @@ PatternReader::PatternReader() : twoDPVector(MAX_PATTERN_BY_PROJECT,vector <Patt
 				 //, 
 				 //				 savedData(16,vector       <int>(TRACK_MAX))
 {
-  printf("PatternReader::PatternReader()\n");
+  DPRINTF("PatternReader::PatternReader()\n");
   bank=0;
 }
 
 PatternReader::~PatternReader()
 {
-  printf("PatternReader::~PatternReader()\n");
+  DPRINTF("PatternReader::~PatternReader()\n");
 }
 
 void PatternReader::init()
@@ -279,7 +279,7 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
   fd=fopen(filename,"r+");
   if (fd==0)
     {
-      printf("[data file %s not found]\n",fn.c_str());
+      DPRINTF("[data file %s not found]\n",fn.c_str());
       loadedData[PatternNumber][TrackNumber]=DATA_DOES_NOT_EXIST_ON_STORAGE;
       //twoDPVector[PatternNumber][TrackNumber].init();
       P.init();
@@ -676,7 +676,7 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
   fd=fopen(filename,"r+");
   if (fd==0)
     {
-      printf("[data file %s not found]\n",fn.c_str());
+      DPRINTF("[data file %s not found]\n",fn.c_str());
       retcode=false;
       //exit(213);
     }

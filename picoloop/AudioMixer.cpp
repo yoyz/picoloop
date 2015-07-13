@@ -3,13 +3,13 @@
 //AudioMixer::AudioMixer() : T0(), T1()
 AudioMixer::AudioMixer() : T(TRACK_MAX)
 {
-  printf("AudioMixer::AudioMixer()\n");  
+  DPRINTF("AudioMixer::AudioMixer()\n");  
   volume=64;
 }
 
 AudioMixer::~AudioMixer()
 {
-  printf("AudioMixer::~AudioMixer()\n");  
+  DPRINTF("AudioMixer::~AudioMixer()\n");  
 }
 
 
@@ -32,14 +32,14 @@ Sint16 AudioMixer::twoChannel(Sint16 a,Sint16 b)
   if (a > 0 && b > 0)
     {
       res=(((a+b))-((a*b)/32768));
-      printf("a:%d\tb:%d\tres:%d\n",a,b,res);
+      DPRINTF("a:%d\tb:%d\tres:%d\n",a,b,res);
       return res;
     }
   if (a < 0 && b < 0)
     {
       //return 2*(a+b)-((a*b)/-32768)+65535;
       res=(((a+b))-((a*b)/-32768));
-      printf("a:%d\tb:%d\tres:%d\n",a,b,res);
+      DPRINTF("a:%d\tb:%d\tres:%d\n",a,b,res);
       return res;
     }
   */
@@ -53,7 +53,7 @@ void AudioMixer::setAudioVolume(int v)
   if (v>=0 &&
       v<=127)
     volume=v;
-  printf("AudioVolume:%d\n",volume);
+  DPRINTF("AudioVolume:%d\n",volume);
 }
 
 int AudioMixer::getAudioVolume()
@@ -83,7 +83,7 @@ Sint16 AudioMixer::tick()
   //if (val>32000)  val=32000;
   //if (val<-32000) val=-32000;
   sint16tick=val;
-  //  printf("%d\n",inttick);
+  //  DPRINTF("%d\n",inttick);
   //  return S.tick();
   //return inttick;
   return sint16tick;

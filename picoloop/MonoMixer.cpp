@@ -13,12 +13,12 @@ MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(), CS(), O303(), TW(),          
 MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(),                                 FXDelay(), FXDisabled()
 #endif
 {
-  printf("MonoMixer::MonoMixer()\n");  
+  DPRINTF("MonoMixer::MonoMixer()\n");  
   amplitude=127;
   //  M=NULL;
   //M=&PM;
-  //printf("MonoMixer::MonoMixer()  PM=0x%08.8X\n",PM);
-  //printf("MonoMixer::MonoMixer()  M=0x%08.8X\n",M);
+  //DPRINTF("MonoMixer::MonoMixer()  PM=0x%08.8X\n",PM);
+  //DPRINTF("MonoMixer::MonoMixer()  M=0x%08.8X\n",M);
   //M=&OPLM;
   machine_type=0;
   M=&PS;
@@ -32,7 +32,7 @@ MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(),                              
 
 MonoMixer::~MonoMixer()
 {
-  printf("MonoMixer::~MonoMixer()\n");  
+  DPRINTF("MonoMixer::~MonoMixer()\n");  
 }
 
 
@@ -91,7 +91,7 @@ void MonoMixer::init()
 
 void MonoMixer::setMachineType(int type)
 {
-  printf("MonoMixer::setMachineType :%d\n",type);  
+  DPRINTF("MonoMixer::setMachineType :%d\n",type);  
   machine_type=type;
 
   switch (type)
@@ -130,8 +130,8 @@ void MonoMixer::setMachineType(int type)
 #endif
 
     default:
-      printf("void MonoMixer::setMachineType(%d)\n",type);
-      printf("ERROR : This machine does not exist : %d\n",type);
+      DPRINTF("void MonoMixer::setMachineType(%d)\n",type);
+      DPRINTF("ERROR : This machine does not exist : %d\n",type);
       exit(1);
       break;
     }
@@ -143,7 +143,7 @@ void MonoMixer::setAmplitude(int amp)
   if (amp>=127)           { amplitude=127; }
   if (amp<=0)             { amplitude=0;   }
   if (amp>0   && amp<127) { amplitude=amp; }
-  printf("MonoMixer::setAmplitude(amplitude=%d)\n",amplitude);
+  DPRINTF("MonoMixer::setAmplitude(amplitude=%d)\n",amplitude);
 
   //M->setAmplitude(amp);
   amplitude=amp;
@@ -198,7 +198,7 @@ Sint16 MonoMixer::tick()
 
   //  return M->tick();
   res16=res32;
-  //if (0) printf("amplitude:%d tick:%d res32:%d res16:%d\n",amplitude,tick,res32,res16);
+  //if (0) DPRINTF("amplitude:%d tick:%d res32:%d res16:%d\n",amplitude,tick,res32,res16);
   return res16;
   //*/
   //return M->tick();
