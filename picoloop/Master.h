@@ -502,7 +502,19 @@ enum
     PICO_TWYTCHSYNTH_SIZE,
   };
 
+enum
+  {
+    PBSYNTH_FILTER_ALGO_PBLP,
+    PBSYNTH_FILTER_ALGO_SIZE
+  };
 
+
+enum
+  {
+    PBSYNTH_FILTER_TYPE_LP12,
+    PBSYNTH_FILTER_TYPE_LP24,
+    PBSYNTH_FILTER_TYPE_SIZE
+  };
 
 enum
   {

@@ -94,39 +94,32 @@ int CursynthMachine::checkI(int what,int val)
     {
     case OSC1_TYPE:
       if (val<0) return 0;
-      if (val>PICO_CURSYNTH_SIZE-1) return PICO_CURSYNTH_SIZE-1;
+      if (val>=PICO_CURSYNTH_SIZE-1) return PICO_CURSYNTH_SIZE-1;
       return val;
       break;
 
     case OSC2_TYPE:
       if (val<0) return 0;
-      if (val>PICO_CURSYNTH_SIZE-1) return PICO_CURSYNTH_SIZE-1;
+      if (val>=PICO_CURSYNTH_SIZE-1) return PICO_CURSYNTH_SIZE-1;
       return val;
       break;
 
     case FILTER1_TYPE:
       if (val<0) return 0;
-      if (val>CURSYNTH_FILTER_TYPE_SIZE-1) return CURSYNTH_FILTER_TYPE_SIZE-1;
+      if (val>=CURSYNTH_FILTER_TYPE_SIZE-1) return CURSYNTH_FILTER_TYPE_SIZE-1;
       return val;
       break;
-
-    case FILTER1_ALGO:
-      if (val<0) return 0;
-      if (val>FILTER_ALGO_SIZE-1) return FILTER_ALGO_SIZE-1;
-      return val;
-      break;
-
 
     case LFO1_WAVEFORM:
       if (val<0) return 0;
-      if (val>PICO_CURSYNTH_SIZE-2) return PICO_CURSYNTH_SIZE-2;
+      if (val>=PICO_CURSYNTH_SIZE-2) return PICO_CURSYNTH_SIZE-2;
       return val;
       break;
 
 
     case LFO2_WAVEFORM:
       if (val<0) return 0;
-      if (val>PICO_CURSYNTH_SIZE-2) return PICO_CURSYNTH_SIZE-2;
+      if (val>=PICO_CURSYNTH_SIZE-2) return PICO_CURSYNTH_SIZE-2;
       return val;
       break;
 
@@ -350,23 +343,23 @@ const char * CursynthMachine::getMachineParamCharStar(int machineParam,int param
   switch (machineParam)
     {
     case OSC1_TYPE:
-      return str_osc[paramValue];
+      return str_osc[this->checkI(OSC1_TYPE,paramValue)];
     case OSC2_TYPE:
-      return str_osc[paramValue];
+      return str_osc[this->checkI(OSC2_TYPE,paramValue)];
      
     // case FILTER1_ALGO:
     //   return str_fltr_algo[paramValue];
 
     case FILTER1_TYPE:
-      return str_fltr_type[paramValue];
+      return str_fltr_type[this->checkI(FILTER1_TYPE,paramValue)];
 
     case LFO_TYPE:
-      return str_lfo_type[paramValue];
+      return str_lfo_type[this->checkI(LFO_TYPE,paramValue)];
 
     case LFO1_WAVEFORM:
-      return str_osc[paramValue];
+      return str_osc[this->checkI(LFO1_WAVEFORM,paramValue)];
     case LFO2_WAVEFORM:
-      return str_osc[paramValue];
+      return str_osc[this->checkI(LFO2_WAVEFORM,paramValue)];
 
 
     }

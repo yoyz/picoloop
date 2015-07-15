@@ -98,25 +98,31 @@ int PicosynthMachine::checkI(int what,int val)
 
     case OSC1_TYPE:
       if (val<0) return 0;
-      if (val>PICO_WAVETABLE_SIZE-2) return PICO_WAVETABLE_SIZE-1;
+      if (val>=PICO_WAVETABLE_SIZE-1) return PICO_WAVETABLE_SIZE-1;
       return val;
       break;
 
     case OSC2_TYPE:
       if (val<0) return 0;
-      if (val>PICO_WAVETABLE_SIZE-2) return PICO_WAVETABLE_SIZE-1;
+      if (val>=PICO_WAVETABLE_SIZE-1) return PICO_WAVETABLE_SIZE-1;
       return val;
       break;
 
     case FILTER1_TYPE:
       if (val<0) return 0;
-      if (val>FILTER_TYPE_SIZE-1) return FILTER_TYPE_SIZE-1;
+      if (val>=FILTER_TYPE_SIZE-1) return FILTER_TYPE_SIZE-1;
       return val;
       break;
 
     case FILTER1_ALGO:
       if (val<0) return 0;
-      if (val>FILTER_ALGO_SIZE-1) return FILTER_ALGO_SIZE-1;
+      if (val>=FILTER_ALGO_SIZE-1) return FILTER_ALGO_SIZE-1;
+      return val;
+      break;
+
+    case LFO_TYPE:
+      if (val<0) return 0;
+      if (val>=LFO_TYPE_SIZE-1) return LFO_TYPE_SIZE-1;
       return val;
       break;
 
@@ -291,18 +297,18 @@ const char * PicosynthMachine::getMachineParamCharStar(int machineParam,int para
   switch (machineParam)
     {
     case OSC1_TYPE:
-      return str_osc[paramValue];
+      return str_osc[this->checkI(OSC1_TYPE,paramValue)];
     case OSC2_TYPE:
-      return str_osc[paramValue];
+      return str_osc[this->checkI(OSC1_TYPE,paramValue)];
      
     case FILTER1_ALGO:
-      return str_fltr_algo[paramValue];
+      return str_fltr_algo[this->checkI(FILTER1_ALGO,paramValue)];
 
     case FILTER1_TYPE:
-      return str_fltr_type[paramValue];
+      return str_fltr_type[this->checkI(FILTER1_TYPE,paramValue)];
 
     case LFO_TYPE:
-      return str_lfo_type[paramValue];
+      return str_lfo_type[this->checkI(LFO_TYPE,paramValue)];
 
     }
   return str_null;

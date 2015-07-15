@@ -77,16 +77,13 @@ const char * PBSynthMachine::getMachineParamCharStar(int machineParam,int paramV
 
   const char * str_osc[PICO_PBSYNTH_SIZE];
 
-  static const char * str_fltr_algo_nofilter = "NOFL";
-  static const char * str_fltr_algo_biquad   = "BIQU";
-  static const char * str_fltr_algo_amsynth  = "AMST";
+  static const char * str_fltr_algo_pblp = "PBLP";
   
-  const        char * str_fltr_algo[FILTER_ALGO_SIZE];
+  const        char * str_fltr_algo[PBSYNTH_FILTER_ALGO_SIZE];
 
 
-  static const char * str_fltr_type_lp   = "LP";
-  static const char * str_fltr_type_bp   = "BP";
-  static const char * str_fltr_type_hp   = "HP";
+  static const char * str_fltr_type_lp12   = "LP12";
+  static const char * str_fltr_type_lp24   = "LP24";
 
   const        char * str_fltr_type[FILTER_TYPE_SIZE];
 
@@ -100,13 +97,12 @@ const char * PBSynthMachine::getMachineParamCharStar(int machineParam,int paramV
   str_osc[PICO_PBSYNTH_SAW]           = str_pbsynth_saw;
   str_osc[PICO_PBSYNTH_TRIANGLE]      = str_pbsynth_trgl;
 
-  str_fltr_algo[FILTER_ALGO_NOFILTER] = str_fltr_algo_nofilter;
-  str_fltr_algo[FILTER_ALGO_BIQUAD]   = str_fltr_algo_biquad;
-  str_fltr_algo[FILTER_ALGO_AMSYNTH]  = str_fltr_algo_amsynth;
+  str_fltr_algo[PBSYNTH_FILTER_ALGO_PBLP]       = str_fltr_algo_pblp;
 
-  str_fltr_type[FILTER_TYPE_LP]       = str_fltr_type_lp;
-  str_fltr_type[FILTER_TYPE_BP]       = str_fltr_type_bp;
-  str_fltr_type[FILTER_TYPE_HP]       = str_fltr_type_hp;
+  str_fltr_type[PBSYNTH_FILTER_TYPE_LP12]       = str_fltr_type_lp12;
+
+  str_fltr_type[PBSYNTH_FILTER_TYPE_LP12]       = str_fltr_type_lp12;
+  str_fltr_type[PBSYNTH_FILTER_TYPE_LP24]       = str_fltr_type_lp24;
 
   str_fm_type[FM_TYPE_AM]             = str_fm_type_am;
   str_fm_type[FM_TYPE_FM]             = str_fm_type_fm;
@@ -116,15 +112,15 @@ const char * PBSynthMachine::getMachineParamCharStar(int machineParam,int paramV
   switch (machineParam)
     {
     case OSC1_TYPE:
-      return str_osc[paramValue];
+      return str_osc[this->checkI(OSC1_TYPE,paramValue)];
     case OSC2_TYPE:
-      return str_osc[paramValue];
+      return str_osc[this->checkI(OSC2_TYPE,paramValue)];
 
     case FILTER1_ALGO:
-      return str_fltr_algo[paramValue];
+      return str_fltr_algo[this->checkI(FILTER1_ALGO,paramValue)];
 
     case FILTER1_TYPE:
-      return str_fltr_type[paramValue];
+      return str_fltr_type[this->checkI(FILTER1_TYPE,paramValue)];
 
     case FM_TYPE:
       return str_fm_type[paramValue];
@@ -160,6 +156,21 @@ int PBSynthMachine::checkI(int what,int val)
       if (val>=PICO_PBSYNTH_SIZE) return PICO_PBSYNTH_SIZE-1;
       return val;
       break;
+
+
+    case FILTER1_TYPE:
+      if (val<0)                  return 0;
+      if (val>=PBSYNTH_FILTER_TYPE_SIZE) return PBSYNTH_FILTER_TYPE_SIZE-1;
+      return val;
+      break;
+
+
+    case FILTER1_ALGO:
+      if (val<0)                  return 0;
+      if (val>=PBSYNTH_FILTER_ALGO_SIZE) return PBSYNTH_FILTER_ALGO_SIZE-1;
+      return val;
+      break;
+
 
     default:
       if (val<0)   return 0;
