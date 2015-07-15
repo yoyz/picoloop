@@ -194,6 +194,9 @@ all: $(SOURCES) $(DEPENDENCY) $(EXECUTABLE)
 $(EXECUTABLE): $(OBJECTS)
 	$(CC) $(OBJTOLINK)  $(OBJECTS) -o $@ $(LDFLAGS)
 
+# the .d file contain the dependency
+%.d : %.cpp %.h
+	$(CC) -I. -MM $< -o $@
 
 %.o : %.cpp 
 	$(CC) $(CFLAGS) $< -o $@
@@ -203,15 +206,12 @@ $(EXECUTABLE): $(OBJECTS)
 # it allow to match change in .h file
 include ${DEPENDENCY}
 
-# the .d file contain the dependency
-%.d : %.cpp %.h
-	$(CC) -I. -MM $< -o $@
 
 # SYSTEMLINUX.d does have a .h which is SYSTEM.h, so it need a tweaks
 SYSTEMLINUX.d:SYSTEMLINUX.cpp 
 	$(CC) -I. -MM $< -o $@ 
 
-# systemlinux.d does have a .h which is system.h
+# PatternPlayer.d does have a .h which is system.h
 PatternPlayer.d:PatternPlayer.cpp
 	$(CC) -std=c++11 -I. -MM $< -o $@ 
 
@@ -220,3 +220,6 @@ clean:
 	-rm -f $(OBJECTS) 
 	-rm -f $(EXECUTABLE)
 	-rm -f $(DEPENDENCY)
+
+
+
