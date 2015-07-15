@@ -150,14 +150,14 @@ int PBSynthMachine::checkI(int what,int val)
   switch (what)
     {
     case OSC1_TYPE:
-      if (val<0) return 0;
-      if (val>2) return PICO_PBSYNTH_SIZE-1;
+      if (val<0)                  return 0;
+      if (val>=PICO_PBSYNTH_SIZE) return PICO_PBSYNTH_SIZE-1;
       return val;
       break;
 
     case OSC2_TYPE:
-      if (val<0) return 0;
-      if (val>2) return PICO_PBSYNTH_SIZE-1;
+      if (val<0)                  return 0;
+      if (val>=PICO_PBSYNTH_SIZE) return PICO_PBSYNTH_SIZE-1;
       return val;
       break;
 
@@ -222,13 +222,13 @@ void PBSynthMachine::setI(int what,int val)
     if (what==OSC1_TYPE)           
       { 
 	osc1_type=val;
-	SE->getPBSynthOscillator(0)->setWave(val%PICO_PBSYNTH_SIZE);
+	SE->getPBSynthOscillator(0)->setWave(this->checkI(OSC1_TYPE,val));
       }
     if (what==OSC2_TYPE)           
       {
 	osc2_type=val;
 	//SE.getPBSynthOscillator(1)->setWave(val%2);
-	SE->getPBSynthOscillator(1)->setWave(val%PICO_PBSYNTH_SIZE);
+	SE->getPBSynthOscillator(1)->setWave(this->checkI(OSC2_TYPE,val));
       }
 
     if (what==ADSR_ENV0_ATTACK)    SE->getEnvelope(0)->setA(-1+f_val);
