@@ -56,21 +56,10 @@ int Open303Machine::checkI(int what,int val)
 {
   switch (what)
     {
-    case OSC1_TYPE:
-      if (val<0) return 0;
-      if (val>PICO_CURSYNTH_SIZE-1) return PICO_CURSYNTH_SIZE-1;
-      return val;
-      break;
-
-    case OSC2_TYPE:
-      if (val<0) return 0;
-      if (val>PICO_CURSYNTH_SIZE-1) return PICO_CURSYNTH_SIZE-1;
-      return val;
-      break;
 
     case FILTER1_TYPE:
       if (val<0) return 0;
-      if (val>OPEN303_FILTER_TYPE_SIZE-1) return OPEN303_FILTER_TYPE_SIZE-1;
+      if (val>=OPEN303_FILTER_TYPE_SIZE-1) return OPEN303_FILTER_TYPE_SIZE-1;
       return val;
       break;
 
@@ -304,16 +293,12 @@ const char * Open303Machine::getMachineParamCharStar(int machineParam,int paramV
 
   switch (machineParam)
     {
-    case OSC1_TYPE:
-      return str_osc[paramValue];
-    case OSC2_TYPE:
-      return str_osc[paramValue];
      
     // case FILTER1_ALGO:
     //   return str_fltr_algo[paramValue];
 
     case FILTER1_TYPE:
-      return str_fltr_type[paramValue];
+      return str_fltr_type[this->checkI(FILTER1_TYPE,paramValue)];
 
     case LFO_TYPE:
       return str_lfo_type[paramValue];

@@ -231,15 +231,15 @@ const char * PicodrumMachine::getMachineParamCharStar(int machineParam,int param
   switch (machineParam)
     {
     case OSC1_TYPE:
-      return str_osc[paramValue];
+      return str_osc[this->checkI(OSC1_TYPE,paramValue)];
     case OSC2_TYPE:
-      return str_osc[paramValue];
+      return str_osc[this->checkI(OSC2_TYPE,paramValue)];;
      
     case FILTER1_ALGO:
-      return str_fltr_algo[paramValue];
+      return str_fltr_algo[this->checkI(FILTER1_ALGO,paramValue)];
 
     case FILTER1_TYPE:
-      return str_fltr_type[paramValue];
+      return str_fltr_type[this->checkI(FILTER1_TYPE,paramValue)];
 
     }
   return str_null;

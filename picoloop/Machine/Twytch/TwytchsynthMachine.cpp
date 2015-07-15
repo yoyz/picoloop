@@ -440,24 +440,24 @@ const char * TwytchsynthMachine::getMachineParamCharStar(int machineParam,int pa
   switch (machineParam)
     {
     case OSC1_TYPE:
-      return str_osc[paramValue];
+      return str_osc[this->checkI(OSC1_TYPE,paramValue)];
     case OSC2_TYPE:
-      return str_osc[paramValue];
+      return str_osc[this->checkI(OSC2_TYPE,paramValue)];
 
     case OSC3_TYPE:
-      return str_osc[paramValue];
+      return str_osc[this->checkI(OSC3_TYPE,paramValue)];
      
 
     case FILTER1_TYPE:
-      return str_fltr_type[paramValue];
+      return str_fltr_type[this->checkI(FILTER1_TYPE,paramValue)];
 
     case LFO_TYPE:
-      return str_lfo_type[paramValue];
+      return str_lfo_type[this->checkI(LFO_TYPE,paramValue)];
 
     case LFO1_WAVEFORM:
-      return str_osc[paramValue];
+      return str_osc[this->checkI(LFO1_WAVEFORM,paramValue)];
     case LFO2_WAVEFORM:
-      return str_osc[paramValue];
+      return str_osc[this->checkI(LFO2_WAVEFORM,paramValue)];
 
 
     }
