@@ -1,0 +1,20 @@
+CC=g++
+CC=/opt/opendingux-toolchain/usr/bin/mipsel-linux-g++
+CC=/opt/gcw0-toolchain/usr/bin/mipsel-gcw0-linux-uclibc-g++
+CFLAGS=-c -DLINUX -I. -LSDL/lib -g
+CFLAGS=-O2 -Wall -I.. -DHAVE_GETTIMEOFDAY -D__LINUX_ALSA__
+CFLAGS=-c -O3 -DLINUX -I. -I/opt/opendingux-toolchain/usr/include/ -L/opt/opendingux-toolchain/usr/lib/ -L/opt/opendingux-toolchain/usr/lib/ao/plugins-4/ -L/opt/opendingux-toolchain/usr/lib/ -lalsa -lSDL -lSDL_ttf  -D__LINUX_ALSA__ 
+CFLAGS=-c -O3 -DLINUX -I. -I/opt/gcw0-toolchain/usr/include/ -L/opt/gcw0-toolchain/usr/lib -lalsa -lSDL -lSDL_ttf  -D__LINUX_ALSA__ 
+LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf -lalsa -lasound
+SOURCES=RtAudio.cpp 
+OBJECTS=$(SOURCES:.cpp=.o)
+#EXECUTABLE=Picoloop
+
+all: $(OBJECTS)
+
+
+.cpp.o:
+	$(CC) $(CFLAGS) -c $< -o $@
+
+clean:
+	-rm -f $(OBJECTS) $(EXECUTABLE)
