@@ -221,7 +221,7 @@ void PicodrumVCO::setLfoDepth(int val)
 
 void PicodrumVCO::setLfoSpeed(float val)
 {
-  //lfo_speed=val/24.0;
+  lfo_speed=val;
   lfo1->setFreq(val);
   //lfo1->setAmplitude(0);
 }
@@ -304,50 +304,26 @@ Sint16 PicodrumVCO::tick()
       //  exit(1); 
     } 
 
-  //lfo_counter++;
-  //if (lfo_counter>lfo_refresh)
-  //lfo_counter=0;
-
-  
-  //if (lfo_counter==0)
-  //{
-      //tmp=lfo1->tick() >> ( lfo_depth >> 4 ) ;
-      //tmp=lfo1->tick() >> (lfo_depth /32 ) ;
-  //if (lfo_depth==0)
-  //	tmp=0;
-  //      else
-  //{
-	  //tmp=lfo1->tick() >> lfo_depth_shift;
-	  //tmp=(lfo1->tick()*lfo_depth)/128;
-  if (lfo_depth>0)
+  if (lfo_speed && lfo_depth)
     {
-      tmp=((lfo1->tick()>>6)*lfo_depth)>>7;
-      s1->setFreq(freqOsc1+tmp);
-      s2->setFreq(freqOsc2+tmp);
+      s1->setFreq(lfo_speed);
+      sinput1=s1->tick();
+      s2->setFreq(freqOsc1+abs(sinput1/((128-lfo_depth)*2)));
+      sinput2=s2->tick();
+      //sc=sinput2;
+      sc=sinput2>>1;
     }
-  
-	  //tmp=lfo1->tick()>>8)*lfo_depth)>>7;
-	  //	}
-	//tmp=lfo1->tick() * (lfo_depth_shift*127)/;
-
-  //DPRINTF("freqOsc1:%d freqOsc2:%d tmp:%d\n",freqOsc1,freqOsc2,tmp);
-      //    }
-
-  sinput1=s1->tick();
-  sa=(sinput1*((128-vcomix)));
-
-  //sb=(s2->tick()*((vcomix))/(128));
-  //sb=(s2->tick()*((vcomix)));
-  sinput2=s2->tick();
-  sb=(sinput2*((vcomix)));
+  else
+    {
+      sinput1=s1->tick();
+      sa=(sinput1*((128-vcomix)));
+      sinput2=s2->tick();
+      sb=(sinput2*((vcomix)));
+      //sc=(sa+sb)>>8;
+      sc=(sa+sb)>>9;
+    }
 
 
-  
-  //sc=sa+sb;
-  //sc=(sa+sb)/128;
-  sc=(sa+sb)>>8;
-  // if (sc>=32000>>7) sc=32000>>7;
-  // if (sc<-32000>>7) sc=-32000>>7;
   if (sc> 32000) sc= 32000;
   if (sc<-32000) sc=-32000;
 
