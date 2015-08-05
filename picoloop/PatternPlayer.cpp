@@ -795,7 +795,7 @@ void display_board_text_global()
   if (menu_cursor==GLOBALMENU_FX   && menu==MENU_ON_PAGE2 ) sprintf(str_menu," L/S  BANK  PSH   MAC  [FX]   BPM    ");
   if (menu_cursor==GLOBALMENU_BPM  && menu==MENU_ON_PAGE2 ) sprintf(str_menu," L/S  BANK  PSH   MAC   FX   [BPM]   ");
 
-  if (menu==0)                                              sprintf(str_menu,"                                     ");
+  //if (menu==0)                                              sprintf(str_menu,"                                     ");
 
   if (menu_cursor==GLOBALMENU_LS)               sprintf(str_line4,"L/S     ");
   if (menu_cursor==GLOBALMENU_BANK)             sprintf(str_line4,"BANK    ");
@@ -816,11 +816,16 @@ void display_board_text_global()
   SG.guiTTFText(right_x_display_offset,
 		right_y_display_offset_line4,str_line4);
 
-  if (menu==MENU_ON_PAGE2 ||
-      menu==0)
+
+  // Display menu at the back of the screen
+  // menu==0 don't need to display the menu
+  // menu==1 is a menu for the "Machine" and is handled by the machine
+  // menu==2 is a global menu
+  if (menu==MENU_ON_PAGE2)
     {
       SG.guiTTFText(menu_x_display_offset,
-		    menu_y_display_offset,str_menu);
+		    menu_y_display_offset,
+		    str_menu);
     }
 
 
