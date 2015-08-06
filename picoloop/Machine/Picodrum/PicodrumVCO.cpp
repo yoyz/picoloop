@@ -306,9 +306,9 @@ Sint16 PicodrumVCO::tick()
 
   if (lfo_speed && lfo_depth)
     {
-      s1->setFreq(lfo_speed);
+      s1->setFreq(lfo_speed>>1);
       sinput1=s1->tick();
-      s2->setFreq(freqOsc1+abs(sinput1/((128-lfo_depth)*2)));
+      s2->setFreq(freqOsc1+abs(sinput1/((128-lfo_depth))));
       sinput2=s2->tick();
       //sc=sinput2;
       sc=sinput2>>1;
