@@ -344,11 +344,24 @@ void TwytchsynthMachine::setI(int what,int val)
        lfo2_env_amount=val;
        f_env2_amount=abs(abs(f_val-0.5)*2);
        TWE->getControls().at("mono_lfo_2_amplitude")->set(((f_val*2)-1)*4);
+
        TWE->clearModulations();
-       mopotwytchsynth::ModulationConnection * connection =
+       mopotwytchsynth::ModulationConnection * connection1;
+       mopotwytchsynth::ModulationConnection * connection2;
+
+       connection1 =
 	 new mopotwytchsynth::ModulationConnection("mono_lfo_1","keytrack");
-       connection->amount.set(f_env1_amount);
-       TWE->connectModulation(connection);
+
+       connection1->amount.set(f_env1_amount);
+       TWE->connectModulation(connection1);
+
+       //mopotwytchsynth::ModulationConnection * connection; 
+       connection2 =
+	 new mopotwytchsynth::ModulationConnection("mono_lfo_2","osc_1_waveform");
+
+       connection2->amount.set(f_env2_amount);
+       TWE->connectModulation(connection2);
+
        
        filter1_cutoff=val;
        TWE->getControls().at("cutoff")->set(28+f_val*99);
