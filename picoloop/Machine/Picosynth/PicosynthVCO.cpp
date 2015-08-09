@@ -300,7 +300,7 @@ void PicosynthVCO::setNoteDetune(int nt,int dt)
   freqOsc2=NF.getINoteFreq(nt);
   note=nt;
 
-  pb.setNote(note);
+  pb.setNote(note); 
 }
 
 
