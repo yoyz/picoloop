@@ -1635,6 +1635,7 @@ void handle_key_bank()
 	  PR.init();
 	  PR.setBank(bank);
 	  load_pattern();
+	  PR.loadSong(SEQ.getSongSequencer());
 	  dirty_graphic=1;
 	  IE.clearLastKeyEvent();
 	  return;
