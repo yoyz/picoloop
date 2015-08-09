@@ -354,7 +354,7 @@ Sint16 PicodrumVCO::tick()
 	}
       sinput2=s2->tick();
       //sc=sinput2;
-      sc=sinput2>>1;
+      sc=sinput2>>2;
     }
   else
     {
