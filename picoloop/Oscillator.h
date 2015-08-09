@@ -50,8 +50,10 @@ class Oscillator
   Uint16 u;
   Uint16 last_u;
   Sint16 s;
+  Sint16 ph;
 
   Sint32 index;
+
 
   Sint16 * table;
   //NoteFreq NF;
