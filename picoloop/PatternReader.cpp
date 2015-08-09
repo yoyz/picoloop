@@ -85,13 +85,18 @@ int PatternReader::saveSong(SongSequencer & SS)
 int PatternReader::loadSong(SongSequencer & SS)
 {
   char  filename[1024];
-  unsigned char line[MAX_PATTERN_BY_PROJECT];
+  unsigned char line[MAX_PATTERN_BY_PROJECT]={0};
   int i;
   int j;
   sprintf(filename,"bank/bank%d/song.pic",bank);
   fd=fopen(filename,"r");
   if (fd==0)
     {
+      for (j=0;j<TRACK_MAX;j++)
+	for (i=0;i<MAX_PATTERN_BY_PROJECT;i++)
+	  {
+	    SS.songVector[i][j]=line[i];
+	  }
       return 0;
     }
   for (j=0;j<TRACK_MAX;j++)
