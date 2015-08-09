@@ -14,6 +14,7 @@ Oscillator::Oscillator()
   offset_next_index=0;
   table_size=WAVETABLE_SIZE;
   index=0;
+  ph=0;
 }
 
 Oscillator::~Oscillator()
@@ -33,8 +34,10 @@ void Oscillator::reset()
 // phase is from 0 to 127
 void Oscillator::setPhase(int phase)
 {
+  int shift=8;
   int coeff=table_size/128;
-  index=coeff*phase;
+  index=(coeff*phase)<<shift;
+  ph=phase;
 }
 
 
@@ -91,6 +94,11 @@ void Oscillator::setFreq(int freq)
       //tmp=tmp/44100;
       //offset_next_index=(freq*table_size*65535)/44100;
       offset_next_index=tmp;
+      // offset_next_index=tmp+ph*wtshift;
+      // if ((offset_next_index>>shift)>=table_size)
+      // 	offset_next_index=offset_next_index-(table_size<<shift);
+
+
       //DPRINTF("freq:%d table_size:%d offset_next_index:%d tmp:%d\n",freq,table_size,offset_next_index,tmp);
       //printf("freq:%d table_size:%d offset_next_index:%d tmp:%d\n",freq,table_size,offset_next_index,tmp);
     }

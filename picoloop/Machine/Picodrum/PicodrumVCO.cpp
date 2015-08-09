@@ -46,6 +46,7 @@ PicodrumVCO::PicodrumVCO() : sineOsc1(),
   freqOsc2=0;
 
   lfo_type=0;
+  phase=0;
 }
 
 void PicodrumVCO::init()
@@ -144,6 +145,9 @@ void PicodrumVCO::setPicodrumVCOPhase(int ph)
 {
 
   phase=this->checkSevenBitBoundarie(ph);
+  s1->setPhase(phase);
+  //s2->setPhase(phase);
+  //fgfgfgs2->setPhase(phase);
 }
 
 void PicodrumVCO::setLfoType(int val)
@@ -234,7 +238,8 @@ void PicodrumVCO::setLfoDepth(int val)
 void PicodrumVCO::setLfoSpeed(float val)
 {
   lfo_speed=val;
-  lfo1->setFreq(val);
+  //lfo1->setFreq(val);
+  lfo1->setFreq(val/2);
   //lfo1->setAmplitude(0);
 }
 
@@ -259,7 +264,8 @@ void PicodrumVCO::reset()
   s2->reset();
   pb.reset();
   //s2->setPhase(72);
-  s2->setPhase(phase);
+  s1->setPhase(0);
+  s2->setPhase(0);
   lfo1->reset();
   
   //this->setLfoDepth(0);
