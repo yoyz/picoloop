@@ -112,7 +112,7 @@ void PicodrumMachine::setI(int what,int val)
   if (what==NOTE_ON && val==1) 
     { 
       this->getPicodrumVCO().setNoteDetune(note,detune);
-      //this->getADSRAmp().reset();
+      this->getADSRAmp().reset();
       //this->getPicodrumVCO().reset();
       this->getADSRAmp().setNoteOn(); 
     }
@@ -271,7 +271,9 @@ void PicodrumMachine::reset()
 {
   sample_num=0;
   last_sample=0;
+  this->getADSRAmp().reset();
   this->getPicodrumVCO().reset();
+  //adsr_amp.reset();
 }
 
 
