@@ -21,6 +21,12 @@ PicodrumMachine::~PicodrumMachine()
   DPRINTF("PicodrumMachine::~PicodrumMachine()\n");
 }
 
+// PicodrumVCO & PicodrumMachine::getPicodrumVCO()
+// {
+//   return vco;
+// }
+
+
 
 void PicodrumMachine::init()
 {
@@ -122,9 +128,16 @@ void PicodrumMachine::setI(int what,int val)
   if (what==OSC2_TYPE)           { this->getPicodrumVCO().setOscillator(1,val); osc2_type=val; }
 
   if (what==OSC12_MIX)           this->getPicodrumVCO().setPicodrumVCOMix(val);
-  if (what==OSC1_PHASE)          this->getPicodrumVCO().setPicodrumVCOPhase(val);
 
   if (what==LFO1_DEPTH)          this->getPicodrumVCO().setLfoDepth(val);
+  if (what==LFO_TYPE)            this->getPicodrumVCO().setLfoType(val);
+
+  if (what==PITCHBEND_DEPTH)     this->getPicodrumVCO().setPitchBendDepth(val);
+  if (what==PITCHBEND_SPEED)     this->getPicodrumVCO().setPitchBendSpeed(val);
+
+  if (what==OSC1_PHASE)          this->getPicodrumVCO().setPicodrumVCOPhase(val);
+
+
   //if (what==LFO1_FREQ)           this->getPicodrumVCO().setLfoSpeed(val);
 
 
@@ -206,6 +219,12 @@ const char * PicodrumMachine::getMachineParamCharStar(int machineParam,int param
   static const char * str_fltr_type_hp   = "HP";
 
   const        char * str_fltr_type[FILTER_TYPE_SIZE];
+
+  static const char * str_lfo_type_lfo   = "PLFO";
+  static const char * str_lfo_type_pb    = "PB";
+
+  const        char * str_lfo_type[LFO_TYPE_SIZE];
+
 
   str_osc[PICO_WAVETABLE_SINE]        = str_sine;
   str_osc[PICO_WAVETABLE_SAW]         = str_saw;

@@ -500,6 +500,39 @@ void PicodrumUserInterface::handle_key_lfo()
       handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, LFO1_FREQ      ,     -1, 1);
     }
 
+  // GLOBALMENU_LFO
+  // LFO Menu
+  // Change Value
+  if (menu        == MENU_OFF && 
+      menu_cursor == GLOBALMENU_LFO &&
+      menu_lfo    == MENU_LFO_PITCHBEND
+      )
+    {
+      // Insert/Remove Trig
+      sub_handle_invert_trig();
+
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, PITCHBEND_DEPTH,     -1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, PITCHBEND_DEPTH,      1, 0);
+
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, PITCHBEND_SPEED,      1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, PITCHBEND_SPEED,     -1, 0);
+    }
+
+
+  if (menu        != MENU_OFF && 
+      menu_cursor == GLOBALMENU_LFO &&
+      menu_lfo    == MENU_LFO_PITCHBEND
+      )
+    {
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, PITCHBEND_DEPTH,     -1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, PITCHBEND_DEPTH,      1, 1);
+
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, PITCHBEND_SPEED,      1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, PITCHBEND_SPEED,     -1, 1);
+    }
+
+
+
 
 
   // change GLOBALMENU_VCO SUBMENU
@@ -509,11 +542,9 @@ void PicodrumUserInterface::handle_key_lfo()
     {
       if (menu_ad_dirty_keyboard==0)
 	{
-	  // if      (menu_lfo==MENU_LFO_LFOPITCH)               { menu_lfo=MENU_LFO_PITCHBEND;       }
-	  // else if (menu_lfo==MENU_LFO_PITCHBEND)              { menu_lfo=MENU_LFO_TYPE;            } 
-	  // else if (menu_lfo==MENU_LFO_TYPE)                   { menu_lfo=MENU_LFO_LFOPITCH;        }  
-	  // else                                                { menu_lfo=MENU_LFO_LFOPITCH;        }
-	  menu_lfo=MENU_LFO_LFOPITCH;
+	  if      (menu_lfo==MENU_LFO_LFOPITCH)               { menu_lfo=MENU_LFO_PITCHBEND;       }
+	  else if (menu_lfo==MENU_LFO_PITCHBEND)              { menu_lfo=MENU_LFO_LFOPITCH;        }  
+	  else                                                { menu_lfo=MENU_LFO_LFOPITCH;        }
 	  dirty_graphic=1;
 	}
       menu_ad_dirty_keyboard=0;
@@ -693,6 +724,15 @@ void PicodrumUserInterface::display_board_text()
       )
     {
       sprintf(str_submenu,"LFOPitch Depth/Speed");
+      SG.guiTTFText(right_x_display_offset,
+		    right_y_display_offset_line2,str_submenu);
+    }
+
+  if (menu_lfo==MENU_LFO_PITCHBEND &&
+      menu_cursor==GLOBALMENU_LFO
+      )
+    {
+      sprintf(str_submenu,"PitchBend Depth/Speed");
       SG.guiTTFText(right_x_display_offset,
 		    right_y_display_offset_line2,str_submenu);
     }
@@ -881,10 +921,6 @@ void PicodrumUserInterface::display_board_lfo()
       display_board_two_param(PITCHBEND_DEPTH,PITCHBEND_SPEED);
     }
 
-  if (menu_lfo==MENU_LFO_TYPE)
-    {
-      display_board_one_param_text(LFO_TYPE);
-    }
 }
 
 

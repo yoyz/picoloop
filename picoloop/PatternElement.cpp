@@ -91,6 +91,9 @@ void PatternElement::init()
   osc1_unisondt=0;
   osc2_unisondt=0;
 
+  pb_depth=64;
+  pb_speed=0;
+  
 }
 
 void PatternElement::set(int what,int val)

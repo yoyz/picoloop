@@ -22,7 +22,9 @@ PicodrumVCO::PicodrumVCO() : sineOsc1(),
 			     noiseOsc1(), 
 			     noiseOsc2(), 
 			     sineLfoOsc1(), 
-			     sawLfoOsc1() //, noiseosc()
+			     sawLfoOsc1(),
+			     pb()
+			     //, noiseosc()
 {
   DPRINTF("PicodrumVCO::PicodrumVCO()\n");
   s1=NULL;
@@ -37,8 +39,13 @@ PicodrumVCO::PicodrumVCO() : sineOsc1(),
 
   lfo_speed=0;
 
+  pb_depth=0;
+  pb_speed=0;
+
   freqOsc1=0;
   freqOsc2=0;
+
+  lfo_type=0;
 }
 
 void PicodrumVCO::init()
@@ -139,6 +146,11 @@ void PicodrumVCO::setPicodrumVCOPhase(int ph)
   phase=this->checkSevenBitBoundarie(ph);
 }
 
+void PicodrumVCO::setLfoType(int val)
+{
+  lfo_type=val;
+}
+
 
 void PicodrumVCO::setOscillator(int oscillator_number,int oscillator_type)
 {
@@ -226,11 +238,26 @@ void PicodrumVCO::setLfoSpeed(float val)
   //lfo1->setAmplitude(0);
 }
 
+void PicodrumVCO::setPitchBendDepth(int val)
+{
+  pb_depth=val;
+  pb.setDepth(val);  
+}
+
+void PicodrumVCO::setPitchBendSpeed(int val)
+{
+  //pb.setDepth(lfo_depth);  
+  pb_speed=val;
+  pb.setSpeed(pb_speed);
+}
+
+
 void PicodrumVCO::reset()
 {
   DPRINTF("PicodrumVCO::reset() this=0x%08.8X\n",this); // <==== FAILS allways the same this pointers
   s1->reset();
   s2->reset();
+  pb.reset();
   //s2->setPhase(72);
   s2->setPhase(phase);
   lfo1->reset();
@@ -259,6 +286,7 @@ void PicodrumVCO::setNoteDetune(int note,int dt)
   //s2->setNoteDetune(note,dt);
   s1->setFreq(freqOsc1);
   s2->setFreq(freqOsc2);
+  pb.setNote(note);
 
   DPRINTF("freqOsc1:%d\n",freqOsc1);
   /*
@@ -288,8 +316,6 @@ void PicodrumVCO::setSynthFreq(float sfreq)
 
 Sint16 PicodrumVCO::tick()
 {
-  //  DPRINTF("PicodrumVCO::tick() this=0x%08.8X\n",this); 
-  // return s1->tick()+s2->tick();
   Sint32 sa;
   Sint32 sb;
   Sint32 sc;
@@ -297,6 +323,8 @@ Sint16 PicodrumVCO::tick()
   Sint32 sinput2;
   Sint16 s;
   int    tmp=0;
+  Sint32 pbtick;
+
   if (vcomix==0) vcomix=1;
   if (s1==NULL)
     { 
@@ -308,13 +336,29 @@ Sint16 PicodrumVCO::tick()
     {
       s1->setFreq(lfo_speed);
       sinput1=s1->tick();
-      s2->setFreq(freqOsc1+abs(sinput1/((128-lfo_depth)*2)));
+      //s2->setFreq(freqOsc1+abs(sinput1/((128-lfo_depth)*2)));
+      if (pb_speed>0)
+	{
+	  pbtick=pb.tickNoteDetune();
+	  s2->setFreq(pbtick+abs(sinput1/((128-lfo_depth)*2)));
+	}
+      else
+	{
+	  s2->setFreq(freqOsc1+abs(sinput1/((128-lfo_depth)*2)));
+	}
       sinput2=s2->tick();
       //sc=sinput2;
       sc=sinput2>>1;
     }
   else
     {
+      if (pb_speed>0)
+	{
+	  pbtick=pb.tickNoteDetune();
+	  s1->setFreq(pbtick);
+	  s2->setFreq(pbtick);
+	}
+
       sinput1=s1->tick();
       sa=(sinput1*((128-vcomix)));
       sinput2=s2->tick();
@@ -331,11 +375,51 @@ Sint16 PicodrumVCO::tick()
 
   s=sc;
 
-  //  sb=(s2->tick())
-
-  //return s1->tick()/(128-vcomix)+s2->tick()/(vcomix);  
-  //if (1) DPRINTF("sa:%d sb:%d sc:%d\n",sa,sb,sc);    
-  
-  //return s1->tick()+s2->tick();
   return s;
 }
+
+// Sint16 PicodrumVCO::tick()
+// {
+//   Sint32 sa;
+//   Sint32 sb;
+//   Sint32 sc;
+//   Sint32 sinput1;
+//   Sint32 sinput2;
+//   Sint16 s;
+//   int    tmp=0;
+//   if (vcomix==0) vcomix=1;
+//   if (s1==NULL)
+//     { 
+//       DPRINTF("[s1 is NULL]\n"); 
+//       //  exit(1); 
+//     } 
+
+//   if (lfo_speed && lfo_depth)
+//     {
+//       s1->setFreq(lfo_speed);
+//       sinput1=s1->tick();
+//       s2->setFreq(freqOsc1+abs(sinput1/((128-lfo_depth)*2)));
+//       sinput2=s2->tick();
+//       //sc=sinput2;
+//       sc=sinput2>>1;
+//     }
+//   else
+//     {
+//       sinput1=s1->tick();
+//       sa=(sinput1*((128-vcomix)));
+//       sinput2=s2->tick();
+//       sb=(sinput2*((vcomix)));
+//       //sc=(sa+sb)>>8;
+//       sc=(sa+sb)>>9;
+//     }
+
+
+//   if (sc> 32000) sc= 32000;
+//   if (sc<-32000) sc=-32000;
+
+
+
+//   s=sc;
+
+//   return s;
+// }

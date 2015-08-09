@@ -2,6 +2,7 @@
 #define __PicodrumVCO____
 
 #include "Oscillator.h"
+#include "PitchBend.h"
 
 class PicodrumVCO : public Oscillator
 {
@@ -28,6 +29,12 @@ public:
   void                  setPicodrumVCOPhase(int ph);
   void                  setLfoDepth(int val);
   void                  setLfoSpeed(float val);
+
+  void                  setLfoType(int val);
+
+  void                  setPitchBendDepth(int val);
+  void                  setPitchBendSpeed(int val);
+
   Oscillator          * getOscillatorOne();
 
   /*
@@ -98,6 +105,7 @@ public:
   Oscillator            * s2;
 
   Oscillator            * lfo1;
+  PitchBend               pb;
 
   float freq;
 
@@ -119,6 +127,11 @@ public:
 
   int lfo_refresh;
   int lfo_counter;
+
+  int pb_depth;
+  int pb_speed;
+
+  int lfo_type;
     
   int tmp_i;
 };
