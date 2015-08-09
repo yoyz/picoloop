@@ -775,9 +775,9 @@ void display_board_text_global()
   int  stepdiv=SEQ.getPatternSequencer(cty).getBPMDivider();
 
 
-  sprintf(str_line1,"Track %d ",cty);
+  sprintf(str_line1,    "Track/%d ",cty);
 
-  sprintf(str_line3,"/%d",stepdiv);
+  sprintf(str_line3,    "Div  /%d",stepdiv);
 
   if (menu_note==ENABLE &&
       menu_cursor==GLOBALMENU_NOTE)
@@ -788,7 +788,7 @@ void display_board_text_global()
       sprintf(str_line2,"DOT");
 
   if (menu_cursor==GLOBALMENU_BPM)
-    sprintf(str_line3,"SWING %d",current_swing);
+    sprintf(str_line2,  "BPM %d SWING %d",bpm_current,current_swing);
 
 
 
@@ -805,7 +805,7 @@ void display_board_text_global()
   if (menu_cursor==GLOBALMENU_BANK)             sprintf(str_line4,"BANK    ");
   if (menu_cursor==GLOBALMENU_PSH)              sprintf(str_line4,"PSH     ");
   if (menu_cursor==GLOBALMENU_MAC)              sprintf(str_line4,"MAC     ");
-  if (menu_cursor==GLOBALMENU_BPM)              sprintf(str_line4,"BPM %d  ",bpm_current);
+  if (menu_cursor==GLOBALMENU_BPM)              sprintf(str_line4,"BPM     ");
   if (menu_cursor==GLOBALMENU_FX)               sprintf(str_line4,"FX      ");
 
   SG.guiTTFText(right_x_display_offset,
@@ -1385,8 +1385,8 @@ void handle_key_bpm()
   if (menu        == MENU_OFF && 
       menu_cursor == GLOBALMENU_BPM )
     {
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_LONG    , SWING    ,   1, 0);
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_LONG    , SWING    ,  -1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_LONG    , SWING    ,  -1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_LONG    , SWING    ,   1, 0);
     }  
 
 
