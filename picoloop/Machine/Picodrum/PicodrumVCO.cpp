@@ -143,7 +143,6 @@ void PicodrumVCO::setPicodrumVCOMix(int mix)
 
 void PicodrumVCO::setPicodrumVCOPhase(int ph)
 {
-
   phase=this->checkSevenBitBoundarie(ph);
   s1->setPhase(phase);
   //s2->setPhase(phase);

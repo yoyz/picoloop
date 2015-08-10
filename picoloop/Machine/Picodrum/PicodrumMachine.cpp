@@ -113,7 +113,8 @@ void PicodrumMachine::setI(int what,int val)
     { 
       this->getPicodrumVCO().setNoteDetune(note,detune);
       this->getADSRAmp().reset();
-      //this->getPicodrumVCO().reset();
+      this->getPicodrumVCO().reset();
+      this->getPicodrumVCO().setPicodrumVCOPhase(phase);
       this->getADSRAmp().setNoteOn(); 
     }
   if (what==NOTE_ON && val==0) 
@@ -135,7 +136,7 @@ void PicodrumMachine::setI(int what,int val)
   if (what==PITCHBEND_DEPTH)     this->getPicodrumVCO().setPitchBendDepth(val);
   if (what==PITCHBEND_SPEED)     this->getPicodrumVCO().setPitchBendSpeed(val);
 
-  if (what==OSC1_PHASE)          this->getPicodrumVCO().setPicodrumVCOPhase(val);
+  if (what==OSC1_PHASE)          { phase=val; this->getPicodrumVCO().setPicodrumVCOPhase(val); }
 
 
   //if (what==LFO1_FREQ)           this->getPicodrumVCO().setLfoSpeed(val);
