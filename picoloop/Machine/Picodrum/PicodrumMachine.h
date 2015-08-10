@@ -48,6 +48,8 @@ class PicodrumMachine : public Machine
   int                   osc1_type;
   int                   osc2_type;
 
+  int                   phase; 
+
 };
 
 #endif
