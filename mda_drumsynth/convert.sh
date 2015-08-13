@@ -9,4 +9,4 @@ cd bin
 unzip library.zip
 cd ..
 mkdir wav
-for i in $(find bin/|grep ds$) ; do name=$( echo $i| sed -e 's@ @_@g' -e 's@/@_@g' -e 's@.ds@.wav@g' ) ; ./a.out $i wav/$name ; done
+IFS=$'\n' ; for i in $(find bin/|grep ds$) ; do name=$( echo $i| sed -e 's@ @_@g' -e 's@/@_@g' -e 's@.ds@.wav@g' ) ;  echo "Generating $name" ; ./a.out $i wav/$name ; done ; unset IFS;
