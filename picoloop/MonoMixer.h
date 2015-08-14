@@ -9,6 +9,7 @@ using namespace std;
 #include "Machine/Cursynth/CursynthMachine.h"
 #include "Machine/Open303/Open303Machine.h"
 #include "Machine/Twytch/TwytchsynthMachine.h"
+#include "Machine/MDADrum/MDADrumMachine.h"
 #endif 
 
 #ifdef __RTMIDI__
@@ -47,6 +48,7 @@ class MonoMixer
   CursynthMachine       CS;
   Open303Machine        O303;
   TwytchsynthMachine    TW;
+  MDADrumMachine        MD;
 #endif
 
 #ifdef __RTMIDI__
