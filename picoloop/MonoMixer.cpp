@@ -2,15 +2,15 @@
 
 
 #if   defined(__FPU__) && defined(__RTMIDI__)
-MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(), CS(), O303(), TW(), MIDIOUTM(), FXDelay(), FXDisabled()
+MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(), CS(), O303(), TW(), MD(), MIDIOUTM(), FXDelay(), FXDisabled()
 #endif
 
 #if   defined(__FPU__) && !defined(__RTMIDI__)
-MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(), CS(), O303(), TW(),             FXDelay(), FXDisabled()
+MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(), CS(), O303(), TW(),                 FXDelay(), FXDisabled()
 #endif
 
 #if  !defined(__FPU__) && !defined(__RTMIDI__)
-MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(),                                 FXDelay(), FXDisabled()
+MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(),                                     FXDelay(), FXDisabled()
 #endif
 {
   DPRINTF("MonoMixer::MonoMixer()\n");  
@@ -120,6 +120,9 @@ void MonoMixer::setMachineType(int type)
       break;
     case SYNTH_TWYTCHSYNTH:
       M=&TW;
+      break;
+    case SYNTH_MDADRUM:
+      M=&MD;
       break;
 #endif
 

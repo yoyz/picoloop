@@ -661,6 +661,7 @@ const char * PatternElement::getMachineTypeCharStar()
   static const char * str_open303     = "O303   ";
   static const char * str_twytchsynth = "TSYNTH ";
   static const char * str_midiout     = "MIDIOUT";
+  static const char * str_mdadrum     = "MDADRUM";
 
   switch (machine_type)
     {
@@ -672,6 +673,7 @@ const char * PatternElement::getMachineTypeCharStar()
     case SYNTH_OPEN303:    return str_open303;     break;
     case SYNTH_TWYTCHSYNTH:return str_twytchsynth; break; 
     case SYNTH_MIDIOUT:    return str_midiout;     break; 
+    case SYNTH_MDADRUM:    return str_mdadrum;     break; 
     }
   return str_null;
 }

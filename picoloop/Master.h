@@ -404,9 +404,10 @@ enum
 #define SYNTH_OPEN303      5
 #define SYNTH_TWYTCHSYNTH  6
 #define SYNTH_MIDIOUT      7
+#define SYNTH_MDADRUM      8
 
 #if    defined(__FPU__) && defined(__RTMIDI__)
-#define SYNTH_SIZE 8
+#define SYNTH_SIZE 9
 #endif
 
 #if    defined(__FPU__) && !defined(__RTMIDI__)
