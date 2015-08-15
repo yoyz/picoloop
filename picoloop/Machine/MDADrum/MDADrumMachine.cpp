@@ -62,7 +62,7 @@
 #define MDA_BANK_TR909_SIZE         13
 
 
-MDADrumMachine::MDADrumMachine() 
+MDADrumMachine::MDADrumMachine() : filter()
 {
   DPRINTF("MDADrumMachine::MDADrumMachine()\n");  
   buffer=0;
@@ -94,6 +94,8 @@ void MDADrumMachine::init()
 {
   DPRINTF("MDADrumMachine::init()\n");  
   int i;
+
+  filter.init();
 
   //HO(44100);
   // if (buffer==0)
@@ -2078,12 +2080,12 @@ int MDADrumMachine::checkITwoVal(int what,int val1,int val2)
       return val2;
       break;
 
-      default:
-	if (val2<0)   return 0;
-	if (val2>127) return 127;
-	DPRINTF("WARNING: MDADrumMachine::checkITwoVal(%d,%d,%d)\n",what,val1,val2);
-	return val2;
-	break;      
+    default:
+      if (val2<0)   return 0;
+      if (val2>127) return 127;
+      DPRINTF("WARNING: MDADrumMachine::checkITwoVal(%d,%d,%d)\n",what,val1,val2);
+      return val2;
+      break;      
     }  
   return val2;
 }
@@ -2146,11 +2148,27 @@ void MDADrumMachine::setI(int what,int val)
     }
   if (what==OSC1_TYPE)           { osc1_type=this->checkI(OSC1_TYPE,val); }
   if (what==OSC2_TYPE)           { osc2_type=this->checkI(OSC2_TYPE,val); }
+
+  if (what==FILTER1_CUTOFF)      
+    { 
+      cutoff=val;
+      filter.setCutoff(cutoff);
+
+  }
+  if (what==FILTER1_RESONANCE)         
+    { 
+      resonance=val;
+      filter.setResonance(resonance);
+    }
 }
 
 
 int MDADrumMachine::tick()
 {
+
+  Sint16 s_in=0;
+  Sint16 s_out=0;
+
   if (need_note_on==1)
     {
       std::string  prefix="patch/MDADrum";
@@ -2175,11 +2193,15 @@ int MDADrumMachine::tick()
   if (note_on)
     {
       if (index<buffer_size)
-       	return buffer[++index]/4;
+	{
+	  s_in=buffer[++index]/4;
+	  s_out=filter.process(s_in);
+	}
+       	//return buffer[++index]/4;
       else
        	note_on=0;
     }
-  return 0;
+  return s_out;
 }
 
 // int MDADrumMachine::tick()
