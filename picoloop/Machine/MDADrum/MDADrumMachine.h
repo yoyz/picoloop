@@ -57,6 +57,14 @@ class MDADrumMachine : public Machine
   Sint16              * tanh_table;
   Sint16              * buffer;
   int                   index;
+  
+  float                 param_t;
+  float                 param_o;
+  float                 param_n;
+  float                 param_b;
+
+  float                 param_tune;
+  float                 param_time;
 
   //int                   freq;
   float                 freq;
