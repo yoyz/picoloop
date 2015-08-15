@@ -69,6 +69,7 @@ PSP_HEAP_SIZE_KB(-2048) ;
 #include "Machine/Cursynth/CursynthUserInterface.h"
 #include "Machine/Open303/Open303UserInterface.h"
 #include "Machine/Twytch/TwytchsynthUserInterface.h"
+#include "Machine/MDADrum/MDADrumUserInterface.h"
 #endif
 
 
@@ -120,6 +121,7 @@ PBSynthUserInterface     PBUI;
 CursynthUserInterface    CSUI;
 Open303UserInterface     O303UI;
 TwytchsynthUserInterface TWUI;
+MDADrumUserInterface     MDUI;
 #endif
 
 #ifdef __RTMIDI__
@@ -367,6 +369,10 @@ void display_board_two_param_text(int machineParam1,int machineParam2)
   int  cty=SEQ.getCurrentTrackY();
   int  step=SEQ.getPatternSequencer(cty).getStep();
 
+  int  size_of_zero=7;
+  char line1[size_of_zero];
+  char line2[size_of_zero];
+
   // Cursor & step postion      
   SG.drawBoxNumber(cursor,CURSOR_COLOR);
   SG.drawBoxNumber(step,STEP_COLOR);  
@@ -381,8 +387,66 @@ void display_board_two_param_text(int machineParam1,int machineParam2)
 	    SG.drawBoxNumber(step,STEP_COLOR);  
 
 	  update_SAMM(cty,i);
-	  SG.drawTTFTextNumberFirstLine( i,SAM->getMachineParamCharStar(machineParam1,P[cty].getPatternElement(i).get(machineParam1)));	  
-	  SG.drawTTFTextNumberSecondLine(i,SAM->getMachineParamCharStar(machineParam2,P[cty].getPatternElement(i).get(machineParam2)));	  
+
+	  strncpy(line1,SAM->getMachineParamCharStar(machineParam1,P[cty].getPatternElement(i).get(machineParam1)),5);
+	  strncpy(line2,SAM->getMachineParamCharStar(machineParam2,P[cty].getPatternElement(i).get(machineParam2)),5);
+
+	  line1[6]='\0';
+	  line2[6]='\0';
+
+	  SG.drawTTFTextNumberFirstLine( i,line1);	  
+	  SG.drawTTFTextNumberSecondLine(i,line2);
+
+	  //SG.drawTTFTextNumberFirstLine( i,SAM->getMachineParamCharStar(machineParam1,P[cty].getPatternElement(i).get(machineParam1)));	  
+	  //SG.drawTTFTextNumberSecondLine(i,SAM->getMachineParamCharStar(machineParam2,P[cty].getPatternElement(i).get(machineParam2)));	  
+	}
+    }  
+}
+
+void display_board_one_and_two_param_text(int machineParam1,int machineParam2)
+{
+  int  i;
+  int  cty=SEQ.getCurrentTrackY();
+  int  step=SEQ.getPatternSequencer(cty).getStep();
+
+  int  size_of_zero=7;
+  char line1[size_of_zero];
+  char line2[size_of_zero];
+
+
+
+  // Cursor & step postion      
+  SG.drawBoxNumber(cursor,CURSOR_COLOR);
+  SG.drawBoxNumber(step,STEP_COLOR);  
+  for (i=0;i<16;i++)
+    {	  // Draw trigged box trig color   
+      if (P[cty].getPatternElement(i).get(NOTE_ON))
+	{
+	  SG.drawBoxNumber(i,TRIG_COLOR);
+	  if (i==cursor)
+	    SG.drawBoxNumber(cursor,CURSOR_COLOR);
+	  if (i==step)
+	    SG.drawBoxNumber(step,STEP_COLOR);  
+
+	  update_SAMM(cty,i);
+
+	  strncpy(line1,SAM->getMachineParamCharStar(machineParam1,
+						     P[cty].getPatternElement(i).get(machineParam1)),5);
+	  strncpy(line2,SAM->getMachineTwoParamCharStar(machineParam2,							
+							P[cty].getPatternElement(i).get(machineParam1),
+							P[cty].getPatternElement(i).get(machineParam2)),5);
+
+		  line1[6]='\0';
+		  line2[6]='\0';
+		  
+		  SG.drawTTFTextNumberFirstLine( i,line1);	  
+		  SG.drawTTFTextNumberSecondLine(i,line2);
+
+	  // SG.drawTTFTextNumberFirstLine( i,SAM->getMachineParamCharStar(machineParam1,
+	  // 								P[cty].getPatternElement(i).get(machineParam1)));	  
+	  // SG.drawTTFTextNumberSecondLine(i,SAM->getMachineTwoParamCharStar(machineParam2,
+	  // 								   P[cty].getPatternElement(i).get(machineParam1),
+	  // 								   P[cty].getPatternElement(i).get(machineParam2)));
 	}
     }  
 }
@@ -1664,19 +1728,22 @@ void refresh_pecursor_ui(int i)
 {
   int  cty=SEQ.getCurrentTrackY();
   PECursor=P[cty].getPatternElement(i);  
-  if (PECursor.get(MACHINE_TYPE)==SYNTH_PICOSYNTH)    UI=&PSUI;
-  if (PECursor.get(MACHINE_TYPE)==SYNTH_PICODRUM)     UI=&PDUI;
-  if (PECursor.get(MACHINE_TYPE)==SYNTH_OPL2    )     UI=&DBUI;
-  if (PECursor.get(MACHINE_TYPE)==SYNTH_PBSYNTH)      UI=&PBUI;
+  if (PECursor.get(MACHINE_TYPE)==SYNTH_PICOSYNTH)    { UI=&PSUI; return ;   }
+  if (PECursor.get(MACHINE_TYPE)==SYNTH_PICODRUM)     { UI=&PDUI; return ;   }
+  if (PECursor.get(MACHINE_TYPE)==SYNTH_OPL2    )     { UI=&DBUI; return ;   }
+  if (PECursor.get(MACHINE_TYPE)==SYNTH_PBSYNTH)      { UI=&PBUI; return ;   }
 #ifdef __FPU__
-  if (PECursor.get(MACHINE_TYPE)==SYNTH_CURSYNTH)     UI=&CSUI;
-  if (PECursor.get(MACHINE_TYPE)==SYNTH_OPEN303)      UI=&O303UI;
-  if (PECursor.get(MACHINE_TYPE)==SYNTH_TWYTCHSYNTH)  UI=&TWUI;
+  if (PECursor.get(MACHINE_TYPE)==SYNTH_CURSYNTH)     { UI=&CSUI;   return ; }
+  if (PECursor.get(MACHINE_TYPE)==SYNTH_OPEN303)      { UI=&O303UI; return ; }
+  if (PECursor.get(MACHINE_TYPE)==SYNTH_TWYTCHSYNTH)  { UI=&TWUI;   return ; }
+  if (PECursor.get(MACHINE_TYPE)==SYNTH_MDADRUM)      { UI=&MDUI;   return ; }
 #endif
 #ifdef __RTMIDI__
-  if (PECursor.get(MACHINE_TYPE)==SYNTH_MIDIOUT)  UI=&MIDIUI;
+  if (PECursor.get(MACHINE_TYPE)==SYNTH_MIDIOUT)      { UI=&MIDIUI; return ; }
 #endif
-
+  
+  printf("NO UI found\n");
+  exit(8);
 }
 
 /*
@@ -1693,19 +1760,19 @@ void refresh_pecursor()
   int  i=0;
   int  cursor_not_on=0;
   // Refresh the PECursor with the current Element
-  if (P[cty].getPatternElement(cursor).get(NOTE_ON))
+  // if (P[cty].getPatternElement(cursor).get(NOTE_ON))
+  //   {
+  //     refresh_pecursor_ui(cursor);
+  //   }
+  // else
+  //   {
+  for (i=0;i<=16;i++)
     {
-      refresh_pecursor_ui(cursor);
+      if (P[cty].getPatternElement(i).get(NOTE_ON))
+	cursor_not_on=i;
     }
-  else
-    {
-      for (i=0;i<=16;i++)
-	{
-	  if (P[cty].getPatternElement(cursor).get(NOTE_ON))
-	    cursor_not_on=i;
-	}
-      refresh_pecursor_ui(cursor_not_on);
-    }
+  refresh_pecursor_ui(cursor_not_on);
+  //}
 }
 
 

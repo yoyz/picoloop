@@ -16,11 +16,12 @@ void sub_handle_invert_trig();
 int handle_tweakable_knob_key_two_button(int buttonPressed,int buttonKeyRepeat,int repeatInterval,int machineParam,int paramValue,int all);
 void display_board_one_param_text(int machineParam1);
 void display_board_two_param_text(int machineParam1,int machineParam2);
+void display_board_one_and_two_param_text(int machineParam1,int machineParam2);
 void display_board_trig();
 
 void MDADrumUserInterface::handle_key(int menu)
 {
-  DPRINTF("MDADrumUserInterface::handle_key(%d,%d)\n",menu);
+  //DPRINTF("MDADrumUserInterface::handle_key(%d,%d)\n",menu);
   if (menu==GLOBALMENU_AD) 
     this->handle_key_amp_env();
   if (menu==GLOBALMENU_NOTE) 
@@ -1067,7 +1068,7 @@ void MDADrumUserInterface::display_board_osc()
 
   if (menu_cursor==GLOBALMENU_OSC)
     {
-      display_board_two_param_text(OSC1_TYPE,OSC2_TYPE);
+      display_board_one_and_two_param_text(OSC1_TYPE,OSC2_TYPE);
     }
 }
 
