@@ -166,7 +166,9 @@ class Machine
   virtual int  tick();
 
   virtual int  checkI(int what,int val);
+  virtual int  checkITwoVal(int what,int val1,int val2);
   virtual const char * getMachineParamCharStar(int machineParam,int paramValue);
+  virtual const char * getMachineTwoParamCharStar(int machineParam,int paramValue1,int paramValue2);
 
 };
 

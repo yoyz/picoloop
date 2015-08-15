@@ -110,168 +110,24 @@ void MDADrumMachine::init()
 
 }
 
-const char * MDADrumMachine::getMachineParamCharStar(int machineParam,int paramValue)
+const char * MDADrumMachine::getMachineTwoParamCharStar(int machineParam,int paramValue1,int paramValue2)
 {
 
-
-
-  static const char * str_null       = "NULL ";
-
-  static const char * str_opl2_sine  = "  SIN";
-  static const char * str_opl2_hsin  = " HSIN";
-  static const char * str_opl2_absin = "ABSIN";
-  static const char * str_opl2_qsin  = " PSIN";
-
-  static const char * str_opl2_epsin = "EPSIN";
-  static const char * str_opl2_asin  = " ASIN";
-  static const char * str_opl2_sqr   = "  SQR";
-  static const char * str_opl2_dsqr  = " DSQR";
-
-  const char * str_osc[PICO_DBOPL_SIZE];
-
-  static const char * str_fltr_algo_nofilter = "NOFL";
-  static const char * str_fltr_algo_biquad   = "BIQU";
-  static const char * str_fltr_algo_amsynth  = "AMST";
-  
-  const        char * str_fltr_algo[FILTER_ALGO_SIZE];
-
-
-  static const char * str_fltr_type_lp   = "LP";
-  static const char * str_fltr_type_bp   = "BP";
-  static const char * str_fltr_type_hp   = "HP";
-
-  const        char * str_fltr_type[FILTER_TYPE_SIZE];
-
-  static const char * str_fm_type_am      = "2OP_AM ";
-  static const char * str_fm_type_fm      = "2OP_FM ";
-
-  const        char * str_fm_type[FM_TYPE_SIZE];
-
-
-  const        char * bank_array[MDA_BANK_SIZE];
-
-static const char * bank_Effects                                  = "Effects";                     
-static const char * bank_cr8000                                   = "cr8000";                      
-static const char * bank_cr78                                     = "cr78";                        
-static const char * bank_Linn                                     = "Linn";                        
-static const char * bank_Latin                                    = "Latin";                       
-static const char * bank_JergenSohn                               = "JergenSohn";                  
-static const char * bank_Electro                                  = "Electro";                     
-static const char * bank_tr808                                    = "tr808";                       
-static const char * bank_Acoustic                                 = "Acoustic";                    
-static const char * bank_Ferraro                                  = "Ferraro";                     
-static const char * bank_Farfisa                                  = "Farfisa";                     
-static const char * bank_instrmnt                                 = "instrmnt";                    
-static const char * bank_magnetboy                                = "magnetboy";                   
-static const char * bank_misc_claps                               = "misc_claps";                  
-static const char * bank_misc_bass                                = "misc_bass";                   
-static const char * bank_misc                                     = "misc";                        
-static const char * bank_misc_electro                             = "misc_electro";                
-static const char * bank_misc_fx                                  = "misc_fx";                     
-static const char * bank_misc_perc                                = "misc_perc";                   
-static const char * bank_misc_hats                                = "misc_hats";                   
-static const char * bank_tr77                                     = "tr77";                        
-static const char * bank_tr606                                    = "tr606";                       
-static const char * bank_R_B                                      = "R_B";                         
-static const char * bank_misc_synth                               = "misc_synth";                  
-static const char * bank_tr909                                    = "tr909";                       
-
- bank_array[MDA_BANK_TR808] = bank_tr808;                    
- bank_array[MDA_BANK_TR909] = bank_tr909;                    
- bank_array[MDA_BANK_TR606] = bank_tr606;                    
- bank_array[MDA_BANK_TR77] = bank_tr77;                     
- bank_array[MDA_BANK_CR8000] = bank_cr8000;                   
- bank_array[MDA_BANK_CR78] = bank_cr78;                     
- bank_array[MDA_BANK_LINN] = bank_Linn;                     
- bank_array[MDA_BANK_LATIN] = bank_Latin;                    
- bank_array[MDA_BANK_ELECTRO] = bank_Electro;                  
- bank_array[MDA_BANK_ACOUSTIC] = bank_Acoustic;                 
- bank_array[MDA_BANK_FERRARO] = bank_Ferraro;                  
- bank_array[MDA_BANK_FARFISA] = bank_Farfisa;                  
- bank_array[MDA_BANK_INSTRMNT] = bank_instrmnt;                 
- bank_array[MDA_BANK_MAGNETBOY] = bank_magnetboy;                
- bank_array[MDA_BANK_EFFECTS] = bank_Effects;                  
- bank_array[MDA_BANK_JERGENSOHN] = bank_JergenSohn;               
- bank_array[MDA_BANK_R_B] = bank_R_B;                      
- bank_array[MDA_BANK_MISC] = bank_misc;                     
- bank_array[MDA_BANK_MISC_CLAPS] = bank_misc_claps;               
- bank_array[MDA_BANK_MISC_BASS] = bank_misc_bass;                
- bank_array[MDA_BANK_MISC_ELECTRO] = bank_misc_electro;             
- bank_array[MDA_BANK_MISC_FX] = bank_misc_fx;                  
- bank_array[MDA_BANK_MISC_PERC] = bank_misc_perc;                
- bank_array[MDA_BANK_MISC_HATS] = bank_misc_hats;                
- bank_array[MDA_BANK_MISC_SYNTH] = bank_misc_synth;               
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- static const char * bank_Effects_array[MDA_BANK_EFFECTS];
-
-static const char * bank_Effects_Bubble                           = "Bubble";                      
-static const char * bank_Effects_Cicada                           = "Cicada";                      
-static const char * bank_Effects_dialing                          = "dialing";                     
-static const char * bank_Effects_Glass                            = "Glass";                       
-static const char * bank_Effects_Glass_rn                         = "Glass_rn";                    
-static const char * bank_Effects_Gunshot                          = "Gunshot";                     
-static const char * bank_Effects_hammer2                          = "hammer2";                     
-static const char * bank_Effects_Hammer                           = "Hammer";                      
-static const char * bank_Effects_impulses                         = "impulses";                    
-static const char * bank_Effects_Laser                            = "Laser";                       
-static const char * bank_Effects_loop                             = "loop";                        
-static const char * bank_Effects_Reverse                          = "Reverse";                     
-static const char * bank_Effects_Ringing                          = "Ringing";                     
-static const char * bank_Effects_Scissors                         = "Scissors";                    
-static const char * bank_Effects_Sonar                            = "Sonar";                       
-static const char * bank_Effects_thunder                          = "thunder";                     
-
-
- bank_Effects_array[0]  = bank_Effects_Bubble;     
- bank_Effects_array[1]  = bank_Effects_Cicada;     
- bank_Effects_array[2]  = bank_Effects_dialing;    
- bank_Effects_array[3]  = bank_Effects_Glass;      
- bank_Effects_array[4]  = bank_Effects_Glass_rn;   
- bank_Effects_array[5]  = bank_Effects_Gunshot;    
- bank_Effects_array[6]  = bank_Effects_hammer2;    
- bank_Effects_array[7]  = bank_Effects_Hammer;     
- bank_Effects_array[8]  = bank_Effects_impulses;   
- bank_Effects_array[9]  = bank_Effects_Laser;      
- bank_Effects_array[10] = bank_Effects_loop;       
- bank_Effects_array[11] = bank_Effects_Reverse;    
- bank_Effects_array[12] = bank_Effects_Ringing;    
- bank_Effects_array[13] = bank_Effects_Scissors;   
- bank_Effects_array[14] = bank_Effects_Sonar;      
- bank_Effects_array[15] = bank_Effects_thunder;    
-
-
+  static const char * str_null       = "NELL ";
 
  static const char * bank_cr8000_array[MDA_BANK_CR8000_SIZE];
 
-static const char * bank_cr8000_Clap                              = "Clap";                        
-static const char * bank_cr8000_Clave                             = "Clave";                       
-static const char * bank_cr8000_Conga_l                           = "Conga_l";                     
-static const char * bank_cr8000_Conga_m                           = "Conga_m";                     
-static const char * bank_cr8000_Cowbell                           = "Cowbell";                     
-static const char * bank_cr8000_Cymbal                            = "Cymbal";                      
-static const char * bank_cr8000_Hat_c                             = "Hat_c";                       
-static const char * bank_cr8000_Hat_o                             = "Hat_o";                       
-static const char * bank_cr8000_Kick                              = "Kick";                        
-static const char * bank_cr8000_Rim                               = "Rim";                         
-static const char * bank_cr8000_Snare                             = "Snare";                       
+ static const char * bank_cr8000_Clap                              = "Clap";                        
+ static const char * bank_cr8000_Clave                             = "Clave";                       
+ static const char * bank_cr8000_Conga_l                           = "Conga_l";                     
+ static const char * bank_cr8000_Conga_m                           = "Conga_m";                     
+ static const char * bank_cr8000_Cowbell                           = "Cowbell";                     
+ static const char * bank_cr8000_Cymbal                            = "Cymbal";                      
+ static const char * bank_cr8000_Hat_c                             = "Hat_c";                       
+ static const char * bank_cr8000_Hat_o                             = "Hat_o";                       
+ static const char * bank_cr8000_Kick                              = "Kick";                        
+ static const char * bank_cr8000_Rim                               = "Rim";                         
+ static const char * bank_cr8000_Snare                             = "Snare";                       
 
  bank_cr8000_array[0]  = bank_cr8000_Clap;               
  bank_cr8000_array[1]  = bank_cr8000_Clave;              
@@ -1866,6 +1722,203 @@ static const char * bank_R_B_x_backwd                             = "x_backwd";
  bank_tr909_array[12] = bank_tr909_TR909_Kick;         
 
 
+  static const char * bank_Effects_array[MDA_BANK_EFFECTS];
+
+  static const char * bank_Effects_Bubble                           = "Bubble";                      
+  static const char * bank_Effects_Cicada                           = "Cicada";                      
+  static const char * bank_Effects_dialing                          = "dialing";                     
+  static const char * bank_Effects_Glass                            = "Glass";                       
+  static const char * bank_Effects_Glass_rn                         = "Glass_rn";                    
+  static const char * bank_Effects_Gunshot                          = "Gunshot";                     
+  static const char * bank_Effects_hammer2                          = "hammer2";                     
+  static const char * bank_Effects_Hammer                           = "Hammer";                      
+  static const char * bank_Effects_impulses                         = "impulses";                    
+  static const char * bank_Effects_Laser                            = "Laser";                       
+  static const char * bank_Effects_loop                             = "loop";                        
+  static const char * bank_Effects_Reverse                          = "Reverse";                     
+  static const char * bank_Effects_Ringing                          = "Ringing";                     
+  static const char * bank_Effects_Scissors                         = "Scissors";                    
+  static const char * bank_Effects_Sonar                            = "Sonar";                       
+  static const char * bank_Effects_thunder                          = "thunder";                     
+  
+  
+  bank_Effects_array[0]  = bank_Effects_Bubble;     
+  bank_Effects_array[1]  = bank_Effects_Cicada;     
+  bank_Effects_array[2]  = bank_Effects_dialing;    
+  bank_Effects_array[3]  = bank_Effects_Glass;      
+  bank_Effects_array[4]  = bank_Effects_Glass_rn;   
+  bank_Effects_array[5]  = bank_Effects_Gunshot;    
+  bank_Effects_array[6]  = bank_Effects_hammer2;    
+  bank_Effects_array[7]  = bank_Effects_Hammer;     
+  bank_Effects_array[8]  = bank_Effects_impulses;   
+  bank_Effects_array[9]  = bank_Effects_Laser;      
+  bank_Effects_array[10] = bank_Effects_loop;       
+  bank_Effects_array[11] = bank_Effects_Reverse;    
+  bank_Effects_array[12] = bank_Effects_Ringing;    
+  bank_Effects_array[13] = bank_Effects_Scissors;   
+  bank_Effects_array[14] = bank_Effects_Sonar;      
+  bank_Effects_array[15] = bank_Effects_thunder;    
+  
+
+  printf("MDACHECK %d %d %d\n",machineParam,paramValue1,paramValue2);
+
+  switch (machineParam)
+    {
+    case OSC2_TYPE:
+      if (paramValue1==MDA_BANK_TR808)
+	return bank_tr808_array[this->checkITwoVal(OSC2_TYPE,paramValue1,paramValue2)];
+      if (paramValue1==MDA_BANK_TR909)
+	return bank_tr909_array[this->checkITwoVal(OSC2_TYPE,paramValue1,paramValue2)];
+      if (paramValue1==MDA_BANK_TR606)
+	return bank_tr606_array[this->checkITwoVal(OSC2_TYPE,paramValue1,paramValue2)];
+      if (paramValue1==MDA_BANK_TR77)
+	return bank_tr77_array[this->checkITwoVal(OSC2_TYPE,paramValue1,paramValue2)];
+      if (paramValue1==MDA_BANK_CR8000)
+	return bank_cr8000_array[this->checkITwoVal(OSC2_TYPE,paramValue1,paramValue2)];
+      if (paramValue1==MDA_BANK_CR78)
+	return bank_cr78_array[this->checkITwoVal(OSC2_TYPE,paramValue1,paramValue2)];
+      if (paramValue1==MDA_BANK_LINN)
+	return bank_Linn_array[this->checkITwoVal(OSC2_TYPE,paramValue1,paramValue2)];
+      if (paramValue1==MDA_BANK_LATIN)
+	return bank_Latin_array[this->checkITwoVal(OSC2_TYPE,paramValue1,paramValue2)];
+      if (paramValue1==MDA_BANK_ELECTRO)
+	return bank_Electro_array[this->checkITwoVal(OSC2_TYPE,paramValue1,paramValue2)];
+      if (paramValue1==MDA_BANK_ACOUSTIC)
+	return bank_Acoustic_array[this->checkITwoVal(OSC2_TYPE,paramValue1,paramValue2)];
+      if (paramValue1==MDA_BANK_FERRARO)
+	return bank_Ferraro_array[this->checkITwoVal(OSC2_TYPE,paramValue1,paramValue2)];
+      if (paramValue1==MDA_BANK_FARFISA)
+	return bank_Farfisa_array[this->checkITwoVal(OSC2_TYPE,paramValue1,paramValue2)];
+      if (paramValue1==MDA_BANK_INSTRMNT)
+	return bank_instrmnt_array[this->checkITwoVal(OSC2_TYPE,paramValue1,paramValue2)];
+      if (paramValue1==MDA_BANK_MAGNETBOY)
+	return bank_magnetboy_array[this->checkITwoVal(OSC2_TYPE,paramValue1,paramValue2)];
+      if (paramValue1==MDA_BANK_EFFECTS)
+	return bank_Effects_array[this->checkITwoVal(OSC2_TYPE,paramValue1,paramValue2)];
+      if (paramValue1==MDA_BANK_JERGENSOHN)
+	return bank_JergenSohn_array[this->checkITwoVal(OSC2_TYPE,paramValue1,paramValue2)];
+      if (paramValue1==MDA_BANK_R_B)
+	return bank_R_B_array[this->checkITwoVal(OSC2_TYPE,paramValue1,paramValue2)];
+      if (paramValue1==MDA_BANK_MISC)
+	return bank_misc_array[this->checkITwoVal(OSC2_TYPE,paramValue1,paramValue2)];
+      if (paramValue1==MDA_BANK_MISC_CLAPS)
+	return bank_misc_claps_array[this->checkITwoVal(OSC2_TYPE,paramValue1,paramValue2)];
+      if (paramValue1==MDA_BANK_MISC_BASS)
+	return bank_misc_bass_array[this->checkITwoVal(OSC2_TYPE,paramValue1,paramValue2)];
+      if (paramValue1==MDA_BANK_MISC_ELECTRO)
+	return bank_misc_electro_array[this->checkITwoVal(OSC2_TYPE,paramValue1,paramValue2)];
+      if (paramValue1==MDA_BANK_MISC_FX)
+	return bank_misc_fx_array[this->checkITwoVal(OSC2_TYPE,paramValue1,paramValue2)];
+      if (paramValue1==MDA_BANK_MISC_PERC)
+	return bank_misc_perc_array[this->checkITwoVal(OSC2_TYPE,paramValue1,paramValue2)];
+      if (paramValue1==MDA_BANK_MISC_HATS)
+	return bank_misc_hats_array[this->checkITwoVal(OSC2_TYPE,paramValue1,paramValue2)];
+      if (paramValue1==MDA_BANK_MISC_SYNTH)
+	return bank_misc_synth_array[this->checkITwoVal(OSC2_TYPE,paramValue1,paramValue2)];
+    // default:
+    //   return str_null;
+    }
+  return str_null;
+}
+
+const char * MDADrumMachine::getMachineParamCharStar(int machineParam,int paramValue)
+{
+
+  static const char * str_null       = "NILL ";
+
+  static const char * str_opl2_sine  = "  SIN";
+  static const char * str_opl2_hsin  = " HSIN";
+  static const char * str_opl2_absin = "ABSIN";
+  static const char * str_opl2_qsin  = " PSIN";
+
+  static const char * str_opl2_epsin = "EPSIN";
+  static const char * str_opl2_asin  = " ASIN";
+  static const char * str_opl2_sqr   = "  SQR";
+  static const char * str_opl2_dsqr  = " DSQR";
+
+  const char * str_osc[PICO_DBOPL_SIZE];
+
+  static const char * str_fltr_algo_nofilter = "NOFL";
+  static const char * str_fltr_algo_biquad   = "BIQU";
+  static const char * str_fltr_algo_amsynth  = "AMST";
+  
+  const        char * str_fltr_algo[FILTER_ALGO_SIZE];
+
+
+  static const char * str_fltr_type_lp   = "LP";
+  static const char * str_fltr_type_bp   = "BP";
+  static const char * str_fltr_type_hp   = "HP";
+
+  const        char * str_fltr_type[FILTER_TYPE_SIZE];
+
+  static const char * str_fm_type_am      = "2OP_AM ";
+  static const char * str_fm_type_fm      = "2OP_FM ";
+
+  const        char * str_fm_type[FM_TYPE_SIZE];
+
+
+  const        char * bank_array[MDA_BANK_SIZE];
+
+  static const char * bank_Effects                                  = "Effects";                     
+  static const char * bank_cr8000                                   = "cr8000";                      
+  static const char * bank_cr78                                     = "cr78";                        
+  static const char * bank_Linn                                     = "Linn";                        
+  static const char * bank_Latin                                    = "Latin";                       
+  static const char * bank_JergenSohn                               = "JergenSohn";                  
+  static const char * bank_Electro                                  = "Electro";                     
+  static const char * bank_tr808                                    = "tr808";                       
+  static const char * bank_Acoustic                                 = "Acoustic";                    
+  static const char * bank_Ferraro                                  = "Ferraro";                     
+  static const char * bank_Farfisa                                  = "Farfisa";                     
+  static const char * bank_instrmnt                                 = "instrmnt";                    
+  static const char * bank_magnetboy                                = "magnetboy";                   
+  static const char * bank_misc_claps                               = "misc_claps";                  
+  static const char * bank_misc_bass                                = "misc_bass";                   
+  static const char * bank_misc                                     = "misc";                        
+  static const char * bank_misc_electro                             = "misc_electro";                
+  static const char * bank_misc_fx                                  = "misc_fx";                     
+  static const char * bank_misc_perc                                = "misc_perc";                   
+  static const char * bank_misc_hats                                = "misc_hats";                   
+  static const char * bank_tr77                                     = "tr77";                        
+  static const char * bank_tr606                                    = "tr606";                       
+  static const char * bank_R_B                                      = "R_B";                         
+  static const char * bank_misc_synth                               = "misc_synth";                  
+  static const char * bank_tr909                                    = "tr909";                       
+  
+  bank_array[MDA_BANK_TR808]            = bank_tr808;                    
+  bank_array[MDA_BANK_TR909]            = bank_tr909;                    
+  bank_array[MDA_BANK_TR606]            = bank_tr606;                    
+  bank_array[MDA_BANK_TR77]             = bank_tr77;                     
+  bank_array[MDA_BANK_CR8000]           = bank_cr8000;                   
+  bank_array[MDA_BANK_CR78]             = bank_cr78;                     
+  bank_array[MDA_BANK_LINN]             = bank_Linn;                     
+  bank_array[MDA_BANK_LATIN]            = bank_Latin;                    
+  bank_array[MDA_BANK_ELECTRO]          = bank_Electro;                  
+  bank_array[MDA_BANK_ACOUSTIC]         = bank_Acoustic;                 
+  bank_array[MDA_BANK_FERRARO]          = bank_Ferraro;                  
+  bank_array[MDA_BANK_FARFISA]          = bank_Farfisa;                  
+  bank_array[MDA_BANK_INSTRMNT]         = bank_instrmnt;                 
+  bank_array[MDA_BANK_MAGNETBOY]        = bank_magnetboy;                
+  bank_array[MDA_BANK_EFFECTS]          = bank_Effects;                  
+  bank_array[MDA_BANK_JERGENSOHN]       = bank_JergenSohn;               
+  bank_array[MDA_BANK_R_B]              = bank_R_B;                      
+  bank_array[MDA_BANK_MISC]             = bank_misc;                     
+  bank_array[MDA_BANK_MISC_CLAPS]       = bank_misc_claps;               
+  bank_array[MDA_BANK_MISC_BASS]        = bank_misc_bass;                
+  bank_array[MDA_BANK_MISC_ELECTRO]     = bank_misc_electro;             
+  bank_array[MDA_BANK_MISC_FX]          = bank_misc_fx;                  
+  bank_array[MDA_BANK_MISC_PERC]        = bank_misc_perc;                
+  bank_array[MDA_BANK_MISC_HATS]        = bank_misc_hats;                
+  bank_array[MDA_BANK_MISC_SYNTH]       = bank_misc_synth;               
+  
+  
+
+
+
+
+
+
+
 
   static const char * str_drm_1       =   "patch/MDADrum/tr808/Kick.ds";
   static const char * str_drm_2       =   "patch/MDADrum/tr808/Snare.ds";
@@ -1917,59 +1970,7 @@ static const char * bank_R_B_x_backwd                             = "x_backwd";
   switch (machineParam)
     {
     case OSC1_TYPE:
-      return bank_array[this->checkI(OSC1_TYPE,paramValue)];
-    case OSC2_TYPE:
-      if (osc1_type==MDA_BANK_TR808)
-	return bank_tr808_array[this->checkI(OSC2_TYPE,paramValue)];
-      if (osc1_type==MDA_BANK_TR909)
-	return bank_tr909_array[this->checkI(OSC2_TYPE,paramValue)];
-      if (osc1_type==MDA_BANK_TR606)
-	return bank_tr606_array[this->checkI(OSC2_TYPE,paramValue)];
-      if (osc1_type==MDA_BANK_TR77)
-	return bank_tr77_array[this->checkI(OSC2_TYPE,paramValue)];
-      if (osc1_type==MDA_BANK_CR8000)
-	return bank_cr8000_array[this->checkI(OSC2_TYPE,paramValue)];
-      if (osc1_type==MDA_BANK_CR78)
-	return bank_cr78_array[this->checkI(OSC2_TYPE,paramValue)];
-      if (osc1_type==MDA_BANK_LINN)
-	return bank_Linn_array[this->checkI(OSC2_TYPE,paramValue)];
-      if (osc1_type==MDA_BANK_LATIN)
-	return bank_Latin_array[this->checkI(OSC2_TYPE,paramValue)];
-      if (osc1_type==MDA_BANK_ELECTRO)
-	return bank_Electro_array[this->checkI(OSC2_TYPE,paramValue)];
-      if (osc1_type==MDA_BANK_ACOUSTIC)
-	return bank_Acoustic_array[this->checkI(OSC2_TYPE,paramValue)];
-      if (osc1_type==MDA_BANK_FERRARO)
-	return bank_Ferraro_array[this->checkI(OSC2_TYPE,paramValue)];
-      if (osc1_type==MDA_BANK_FARFISA)
-	return bank_Farfisa_array[this->checkI(OSC2_TYPE,paramValue)];
-      if (osc1_type==MDA_BANK_INSTRMNT)
-	return bank_instrmnt_array[this->checkI(OSC2_TYPE,paramValue)];
-      if (osc1_type==MDA_BANK_MAGNETBOY)
-	return bank_magnetboy_array[this->checkI(OSC2_TYPE,paramValue)];
-      if (osc1_type==MDA_BANK_EFFECTS)
-	return bank_Effects_array[this->checkI(OSC2_TYPE,paramValue)];
-      if (osc1_type==MDA_BANK_JERGENSOHN)
-	return bank_JergenSohn_array[this->checkI(OSC2_TYPE,paramValue)];
-      if (osc1_type==MDA_BANK_R_B)
-	return bank_R_B_array[this->checkI(OSC2_TYPE,paramValue)];
-      if (osc1_type==MDA_BANK_MISC)
-	return bank_misc_array[this->checkI(OSC2_TYPE,paramValue)];
-      if (osc1_type==MDA_BANK_MISC_CLAPS)
-	return bank_misc_claps_array[this->checkI(OSC2_TYPE,paramValue)];
-      if (osc1_type==MDA_BANK_MISC_BASS)
-	return bank_misc_bass_array[this->checkI(OSC2_TYPE,paramValue)];
-      if (osc1_type==MDA_BANK_MISC_ELECTRO)
-	return bank_misc_electro_array[this->checkI(OSC2_TYPE,paramValue)];
-      if (osc1_type==MDA_BANK_MISC_FX)
-	return bank_misc_fx_array[this->checkI(OSC2_TYPE,paramValue)];
-      if (osc1_type==MDA_BANK_MISC_PERC)
-	return bank_misc_perc_array[this->checkI(OSC2_TYPE,paramValue)];
-      if (osc1_type==MDA_BANK_MISC_HATS)
-	return bank_misc_hats_array[this->checkI(OSC2_TYPE,paramValue)];
-      if (osc1_type==MDA_BANK_MISC_SYNTH)
-	return bank_misc_synth_array[this->checkI(OSC2_TYPE,paramValue)];
-			
+      return bank_array[this->checkI(OSC1_TYPE,paramValue)];			
 
     case FILTER1_ALGO:
       return str_fltr_algo[this->checkI(FILTER1_ALGO,paramValue)];
@@ -1980,8 +1981,6 @@ static const char * bank_R_B_x_backwd                             = "x_backwd";
     case FM_TYPE:
       return str_fm_type[this->checkI(FM_TYPE,paramValue)];
 
-    case 255:
-      return str_drm[paramValue];
     }
   return str_null;
 }
@@ -1991,6 +1990,102 @@ static const char * bank_R_B_x_backwd                             = "x_backwd";
 void MDADrumMachine::reset()
 {
  sample_num=0;
+}
+
+int MDADrumMachine::checkITwoVal(int what,int val1,int val2)
+{
+  switch (what)
+    {
+    case OSC2_TYPE:
+      if (val2<0) return 0;
+      if (val2>127) return 127;
+
+      if (val1==MDA_BANK_TR808) 
+	if (val2>=MDA_BANK_TR808_SIZE) return MDA_BANK_TR808_SIZE-1;
+
+      if (val1==MDA_BANK_TR909) 
+	if (val2>=MDA_BANK_TR909_SIZE) return MDA_BANK_TR909_SIZE-1;
+
+      if (val1==MDA_BANK_TR606) 
+	if (val2>=MDA_BANK_TR606_SIZE) return MDA_BANK_TR606_SIZE-1;
+
+      if (val1==MDA_BANK_TR77) 
+	if (val2>=MDA_BANK_TR77_SIZE) return MDA_BANK_TR77_SIZE-1;
+
+      if (val1==MDA_BANK_CR8000) 
+	if (val2>=MDA_BANK_CR8000_SIZE) return MDA_BANK_CR8000_SIZE-1;
+
+      if (val1==MDA_BANK_CR78) 
+	if (val2>=MDA_BANK_CR78_SIZE) return MDA_BANK_CR78_SIZE-1;
+
+      if (val1==MDA_BANK_LINN) 
+	if (val2>=MDA_BANK_LINN_SIZE) return MDA_BANK_LINN_SIZE-1;
+
+      if (val1==MDA_BANK_LATIN) 
+	if (val2>=MDA_BANK_LATIN_SIZE) return MDA_BANK_LATIN_SIZE-1;
+
+      if (val1==MDA_BANK_ELECTRO) 
+	if (val2>=MDA_BANK_ELECTRO_SIZE) return MDA_BANK_ELECTRO_SIZE-1;
+
+      if (val1==MDA_BANK_ACOUSTIC) 
+	if (val2>=MDA_BANK_ACOUSTIC_SIZE) return MDA_BANK_ACOUSTIC_SIZE-1;
+
+      if (val1==MDA_BANK_FERRARO) 
+	if (val2>=MDA_BANK_FERRARO_SIZE) return MDA_BANK_FERRARO_SIZE-1;
+
+      if (val1==MDA_BANK_FARFISA) 
+	if (val2>=MDA_BANK_FARFISA_SIZE) return MDA_BANK_FARFISA_SIZE-1;
+
+      if (val1==MDA_BANK_INSTRMNT) 
+	if (val2>=MDA_BANK_INSTRMNT_SIZE) return MDA_BANK_INSTRMNT_SIZE-1;
+
+      if (val1==MDA_BANK_MAGNETBOY) 
+	if (val2>=MDA_BANK_MAGNETBOY_SIZE) return MDA_BANK_MAGNETBOY_SIZE-1;
+
+      if (val1==MDA_BANK_EFFECTS) 
+	if (val2>=MDA_BANK_EFFECTS_SIZE) return MDA_BANK_EFFECTS_SIZE-1;
+
+      if (val1==MDA_BANK_JERGENSOHN) 
+	if (val2>=MDA_BANK_JERGENSOHN_SIZE) return MDA_BANK_JERGENSOHN_SIZE-1;
+
+      if (val1==MDA_BANK_R_B) 
+	if (val2>=MDA_BANK_R_B_SIZE) return MDA_BANK_R_B_SIZE-1;
+
+      if (val1==MDA_BANK_MISC) 
+	if (val2>=MDA_BANK_MISC_SIZE) return MDA_BANK_MISC_SIZE-1;
+
+      if (val1==MDA_BANK_MISC_CLAPS) 
+	if (val2>=MDA_BANK_MISC_CLAPS_SIZE) return MDA_BANK_MISC_CLAPS_SIZE-1;
+
+      if (val1==MDA_BANK_MISC_BASS) 
+	if (val2>=MDA_BANK_MISC_BASS_SIZE) return MDA_BANK_MISC_BASS_SIZE-1;
+
+      if (val1==MDA_BANK_MISC_ELECTRO) 
+	if (val2>=MDA_BANK_MISC_ELECTRO_SIZE) return MDA_BANK_MISC_ELECTRO_SIZE-1;
+
+      if (val1==MDA_BANK_MISC_FX) 
+	if (val2>=MDA_BANK_MISC_FX_SIZE) return MDA_BANK_MISC_FX_SIZE-1;
+
+      if (val1==MDA_BANK_MISC_PERC) 
+	if (val2>=MDA_BANK_MISC_PERC_SIZE) return MDA_BANK_MISC_PERC_SIZE-1;
+
+      if (val1==MDA_BANK_MISC_HATS) 
+	if (val2>=MDA_BANK_MISC_HATS_SIZE) return MDA_BANK_MISC_HATS_SIZE-1;
+
+      if (val1==MDA_BANK_MISC_SYNTH) 
+	if (val2>=MDA_BANK_MISC_SYNTH_SIZE) return MDA_BANK_MISC_SYNTH_SIZE-1;
+
+      return val2;
+      break;
+
+      default:
+	if (val2<0)   return 0;
+	if (val2>127) return 127;
+	DPRINTF("WARNING: MDADrumMachine::checkITwoVal(%d,%d,%d)\n",what,val1,val2);
+	return val2;
+	break;      
+    }  
+  return val2;
 }
 
 int MDADrumMachine::checkI(int what,int val)
@@ -2003,87 +2098,6 @@ int MDADrumMachine::checkI(int what,int val)
       return val;
       break;
 
-    case OSC2_TYPE:
-      if (val<0) return 0;
-      if (val>127) return 127;
-
-      if (osc1_type==MDA_BANK_TR808) 
-	if (val>=MDA_BANK_TR808_SIZE) return MDA_BANK_TR808_SIZE-1;
-
-      if (osc1_type==MDA_BANK_TR909) 
-	if (val>=MDA_BANK_TR909_SIZE) return MDA_BANK_TR909_SIZE-1;
-
-      if (osc1_type==MDA_BANK_TR606) 
-	if (val>=MDA_BANK_TR606_SIZE) return MDA_BANK_TR606_SIZE-1;
-
-      if (osc1_type==MDA_BANK_TR77) 
-	if (val>=MDA_BANK_TR77_SIZE) return MDA_BANK_TR77_SIZE-1;
-
-      if (osc1_type==MDA_BANK_CR8000) 
-	if (val>=MDA_BANK_CR8000_SIZE) return MDA_BANK_CR8000_SIZE-1;
-
-      if (osc1_type==MDA_BANK_CR78) 
-	if (val>=MDA_BANK_CR78_SIZE) return MDA_BANK_CR78_SIZE-1;
-
-      if (osc1_type==MDA_BANK_LINN) 
-	if (val>=MDA_BANK_LINN_SIZE) return MDA_BANK_LINN_SIZE-1;
-
-      if (osc1_type==MDA_BANK_LATIN) 
-	if (val>=MDA_BANK_LATIN_SIZE) return MDA_BANK_LATIN_SIZE-1;
-
-      if (osc1_type==MDA_BANK_ELECTRO) 
-	if (val>=MDA_BANK_ELECTRO_SIZE) return MDA_BANK_ELECTRO_SIZE-1;
-
-      if (osc1_type==MDA_BANK_ACOUSTIC) 
-	if (val>=MDA_BANK_ACOUSTIC_SIZE) return MDA_BANK_ACOUSTIC_SIZE-1;
-
-      if (osc1_type==MDA_BANK_FERRARO) 
-	if (val>=MDA_BANK_FERRARO_SIZE) return MDA_BANK_FERRARO_SIZE-1;
-
-      if (osc1_type==MDA_BANK_FARFISA) 
-	if (val>=MDA_BANK_FARFISA_SIZE) return MDA_BANK_FARFISA_SIZE-1;
-
-      if (osc1_type==MDA_BANK_INSTRMNT) 
-	if (val>=MDA_BANK_INSTRMNT_SIZE) return MDA_BANK_INSTRMNT_SIZE-1;
-
-      if (osc1_type==MDA_BANK_MAGNETBOY) 
-	if (val>=MDA_BANK_MAGNETBOY_SIZE) return MDA_BANK_MAGNETBOY_SIZE-1;
-
-      if (osc1_type==MDA_BANK_EFFECTS) 
-	if (val>=MDA_BANK_EFFECTS_SIZE) return MDA_BANK_EFFECTS_SIZE-1;
-
-      if (osc1_type==MDA_BANK_JERGENSOHN) 
-	if (val>=MDA_BANK_JERGENSOHN_SIZE) return MDA_BANK_JERGENSOHN_SIZE-1;
-
-      if (osc1_type==MDA_BANK_R_B) 
-	if (val>=MDA_BANK_R_B_SIZE) return MDA_BANK_R_B_SIZE-1;
-
-      if (osc1_type==MDA_BANK_MISC) 
-	if (val>=MDA_BANK_MISC_SIZE) return MDA_BANK_MISC_SIZE-1;
-
-      if (osc1_type==MDA_BANK_MISC_CLAPS) 
-	if (val>=MDA_BANK_MISC_CLAPS_SIZE) return MDA_BANK_MISC_CLAPS_SIZE-1;
-
-      if (osc1_type==MDA_BANK_MISC_BASS) 
-	if (val>=MDA_BANK_MISC_BASS_SIZE) return MDA_BANK_MISC_BASS_SIZE-1;
-
-      if (osc1_type==MDA_BANK_MISC_ELECTRO) 
-	if (val>=MDA_BANK_MISC_ELECTRO_SIZE) return MDA_BANK_MISC_ELECTRO_SIZE-1;
-
-      if (osc1_type==MDA_BANK_MISC_FX) 
-	if (val>=MDA_BANK_MISC_FX_SIZE) return MDA_BANK_MISC_FX_SIZE-1;
-
-      if (osc1_type==MDA_BANK_MISC_PERC) 
-	if (val>=MDA_BANK_MISC_PERC_SIZE) return MDA_BANK_MISC_PERC_SIZE-1;
-
-      if (osc1_type==MDA_BANK_MISC_HATS) 
-	if (val>=MDA_BANK_MISC_HATS_SIZE) return MDA_BANK_MISC_HATS_SIZE-1;
-
-      if (osc1_type==MDA_BANK_MISC_SYNTH) 
-	if (val>=MDA_BANK_MISC_SYNTH_SIZE) return MDA_BANK_MISC_SYNTH_SIZE-1;
-
-      return val;
-      break;
 
     case FILTER1_TYPE:
       if (val<0) return 0;
@@ -2101,7 +2115,7 @@ int MDADrumMachine::checkI(int what,int val)
     default:
       if (val<0)   return 0;
       if (val>127) return 127;
-      DPRINTF("WARNING: Dboplmachine::checkI(%d,%d)\n",what,val);
+      DPRINTF("WARNING: MDADrumMachine::checkI(%d,%d)\n",what,val);
       return val;
       break;      
     }
@@ -2141,7 +2155,7 @@ int MDADrumMachine::tick()
     {
       std::string  prefix="patch/MDADrum";
       std::string  bank=this->getMachineParamCharStar(OSC1_TYPE,osc1_type);
-      std::string  sound=this->getMachineParamCharStar(OSC2_TYPE,osc2_type);
+      std::string  sound=this->getMachineTwoParamCharStar(OSC2_TYPE,osc1_type,osc2_type);
       std::string  path=prefix+"/"+bank+"/"+sound+".ds";
       if (buffer!=0)
 	{

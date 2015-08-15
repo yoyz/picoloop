@@ -59,10 +59,24 @@ int Machine::checkI(int what,int val)
   return val;
 }
 
+int Machine::checkITwoVal(int what,int val,int val2)
+{
+  DPRINTF("WARNING : Machine::checkITwoVal()\n");
+  return val;
+}
+
+
 const char * Machine::getMachineParamCharStar(int machineParam,int paramValue)
 {
-  const char * str_null="NULL";
+  const char * str_null="NOLL";
   DPRINTF("Machine::getMachineParamCharStar\n");
+  return str_null;
+}
+
+const char * Machine::getMachineTwoParamCharStar(int machineParam,int paramValue1, int paramValue2)
+{
+  const char * str_null="NULL";
+  DPRINTF("Machine::getMachineTwoParamCharStar\n");
   return str_null;
 }
 

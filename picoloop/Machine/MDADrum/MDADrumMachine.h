@@ -35,9 +35,11 @@ class MDADrumMachine : public Machine
   int  getI(int what);
 
   int checkI(int what,int   val);
+  int checkITwoVal(int what,int   val1, int val2);
   //Biquad & getBiquad();
 
   const char * getMachineParamCharStar(int machineParam,int paramValue);
+  const char * getMachineTwoParamCharStar(int machineParam,int paramValue1,int paramValue2);
 
  protected:
 

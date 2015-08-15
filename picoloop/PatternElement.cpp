@@ -660,8 +660,8 @@ const char * PatternElement::getMachineTypeCharStar()
   static const char * str_cursynth    = "CSYNTH ";
   static const char * str_open303     = "O303   ";
   static const char * str_twytchsynth = "TSYNTH ";
-  static const char * str_midiout     = "MIDIOUT";
-  static const char * str_mdadrum     = "MDADRUM";
+  static const char * str_midiout     = "MDIOUT";
+  static const char * str_mdadrum     = "MDRUM";
 
   switch (machine_type)
     {
