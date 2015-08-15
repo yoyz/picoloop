@@ -241,13 +241,14 @@ int seq_update_by_step_next=0; // 0 : the UI audio and seq are sync
 int current_swing=50;  
 //int current_swing=64;
 
-
+void refresh_pecursor_ui(int i);
 //int noteOffTrigger[TRACK_MAX];
 
 // SAMM is an AudioMixer which give access to a "Machine" pointer
 void update_SAMM(int trackNumber,int stepNumber)
 {
   SAMM.setMachineType(P[trackNumber].getPatternElement(stepNumber).get(MACHINE_TYPE));	  
+  refresh_pecursor_ui(stepNumber);
   SAM=SAMM.getInput();
 }
 
@@ -342,6 +343,15 @@ void display_board_one_param_text(int machineParam1)
   int  cty=SEQ.getCurrentTrackY();
   int  step=SEQ.getPatternSequencer(cty).getStep();
 
+  char * space="    ";
+
+  int  size_of_zero=5;
+  char line1[size_of_zero+1];
+
+  char * line1_to_process;
+  int    line1_size;
+
+
   // Cursor & step postion      
   SG.drawBoxNumber(cursor,CURSOR_COLOR);
   SG.drawBoxNumber(step,STEP_COLOR);  
@@ -356,7 +366,20 @@ void display_board_one_param_text(int machineParam1)
 	    SG.drawBoxNumber(step,STEP_COLOR);  
 
 	  update_SAMM(cty,i);
-	  SG.drawTTFTextNumberFirstLine(i,SAM->getMachineParamCharStar(machineParam1,P[cty].getPatternElement(i).get(machineParam1)));	  
+	  strcpy(line1,space);
+	  line1_to_process=SAM->getMachineParamCharStar(machineParam1,P[cty].getPatternElement(i).get(machineParam1));
+
+	  line1_size=strlen(line1_to_process);
+
+	  if (line1_size>size_of_zero)
+	    strncpy(line1,line1_to_process,size_of_zero);
+	  else
+	    strncpy(line1,line1_to_process,line1_size);
+	  line1[size_of_zero]='\0';
+
+	  SG.drawTTFTextNumberFirstLine(i,line1);	  
+
+	  //	  SG.drawTTFTextNumberFirstLine(i,SAM->getMachineParamCharStar(machineParam1,P[cty].getPatternElement(i).get(machineParam1)));	  
 
 	}
     }  
@@ -369,9 +392,16 @@ void display_board_two_param_text(int machineParam1,int machineParam2)
   int  cty=SEQ.getCurrentTrackY();
   int  step=SEQ.getPatternSequencer(cty).getStep();
 
-  int  size_of_zero=7;
-  char line1[size_of_zero];
-  char line2[size_of_zero];
+  char * space="    ";
+
+  int  size_of_zero=5;
+  char line1[size_of_zero+1];
+  char line2[size_of_zero+1];
+
+  char * line1_to_process;
+  char * line2_to_process;
+  int    line1_size;
+  int    line2_size;
 
   // Cursor & step postion      
   SG.drawBoxNumber(cursor,CURSOR_COLOR);
@@ -387,18 +417,29 @@ void display_board_two_param_text(int machineParam1,int machineParam2)
 	    SG.drawBoxNumber(step,STEP_COLOR);  
 
 	  update_SAMM(cty,i);
+	  strcpy(line1,space);
+	  line1_to_process=SAM->getMachineParamCharStar(machineParam1,P[cty].getPatternElement(i).get(machineParam1));
+	  line2_to_process=SAM->getMachineParamCharStar(machineParam2,P[cty].getPatternElement(i).get(machineParam2));
 
-	  strncpy(line1,SAM->getMachineParamCharStar(machineParam1,P[cty].getPatternElement(i).get(machineParam1)),5);
-	  strncpy(line2,SAM->getMachineParamCharStar(machineParam2,P[cty].getPatternElement(i).get(machineParam2)),5);
+	  line1_size=strlen(line1_to_process);
+	  line2_size=strlen(line2_to_process);
 
-	  line1[6]='\0';
-	  line2[6]='\0';
+	  if (line1_size>size_of_zero)
+	    strncpy(line1,line1_to_process,size_of_zero);
+	  else
+	    strcpy(line1,line1_to_process);
+
+	  if (line2_size>size_of_zero)
+	    strncpy(line2,line2_to_process,size_of_zero);
+	  else
+	    strcpy(line2,line2_to_process);
+
+	  // line1[size_of_zero]='\0';
+	  // line2[size_of_zero]='\0';
 
 	  SG.drawTTFTextNumberFirstLine( i,line1);	  
 	  SG.drawTTFTextNumberSecondLine(i,line2);
 
-	  //SG.drawTTFTextNumberFirstLine( i,SAM->getMachineParamCharStar(machineParam1,P[cty].getPatternElement(i).get(machineParam1)));	  
-	  //SG.drawTTFTextNumberSecondLine(i,SAM->getMachineParamCharStar(machineParam2,P[cty].getPatternElement(i).get(machineParam2)));	  
 	}
     }  
 }
@@ -409,11 +450,14 @@ void display_board_one_and_two_param_text(int machineParam1,int machineParam2)
   int  cty=SEQ.getCurrentTrackY();
   int  step=SEQ.getPatternSequencer(cty).getStep();
 
-  int  size_of_zero=7;
-  char line1[size_of_zero];
-  char line2[size_of_zero];
+  int    size_of_zero=5;
+  char   line1[size_of_zero];
+  char   line2[size_of_zero];
 
-
+  char * line1_to_process;
+  char * line2_to_process;
+  int    line1_size;
+  int    line2_size;
 
   // Cursor & step postion      
   SG.drawBoxNumber(cursor,CURSOR_COLOR);
@@ -430,23 +474,38 @@ void display_board_one_and_two_param_text(int machineParam1,int machineParam2)
 
 	  update_SAMM(cty,i);
 
-	  strncpy(line1,SAM->getMachineParamCharStar(machineParam1,
-						     P[cty].getPatternElement(i).get(machineParam1)),5);
-	  strncpy(line2,SAM->getMachineTwoParamCharStar(machineParam2,							
-							P[cty].getPatternElement(i).get(machineParam1),
-							P[cty].getPatternElement(i).get(machineParam2)),5);
+	  line1_to_process=SAM->getMachineParamCharStar(machineParam1,
+							P[cty].getPatternElement(i).get(machineParam1));
 
-		  line1[6]='\0';
-		  line2[6]='\0';
+	  line2_to_process=SAM->getMachineTwoParamCharStar(machineParam2,
+							   P[cty].getPatternElement(i).get(machineParam1),
+							   P[cty].getPatternElement(i).get(machineParam2));
+
+	  line1_size=strlen(line1_to_process);
+	  line2_size=strlen(line2_to_process);
+
+	  if (line1_size>size_of_zero)
+	    {
+	      strncpy(line1,line1_to_process,line1_size);
+	      line1[size_of_zero]='\0';
+	    }
+	  else
+	    strcpy(line1,line1_to_process);
+
+	  if (line2_size>size_of_zero)
+	    {
+	      strncpy(line2,line2_to_process,line2_size);
+	      line2[size_of_zero]='\0';
+	    }
+	  else
+	    strcpy(line2,line2_to_process);
+
+
+
 		  
-		  SG.drawTTFTextNumberFirstLine( i,line1);	  
-		  SG.drawTTFTextNumberSecondLine(i,line2);
+	  SG.drawTTFTextNumberFirstLine( i,line1);	  
+	  SG.drawTTFTextNumberSecondLine(i,line2);
 
-	  // SG.drawTTFTextNumberFirstLine( i,SAM->getMachineParamCharStar(machineParam1,
-	  // 								P[cty].getPatternElement(i).get(machineParam1)));	  
-	  // SG.drawTTFTextNumberSecondLine(i,SAM->getMachineTwoParamCharStar(machineParam2,
-	  // 								   P[cty].getPatternElement(i).get(machineParam1),
-	  // 								   P[cty].getPatternElement(i).get(machineParam2)));
 	}
     }  
 }
@@ -1828,7 +1887,8 @@ void handle_key()
   handle_key_menu();
   handle_key_sixteenbox();
 
-  refresh_pecursor();
+
+  //refresh_pecursor();
 
 
   if (menu_cursor==GLOBALMENU_AD)   
@@ -2652,7 +2712,7 @@ int seq()
 
   refresh_pecursor();
 
- DPRINTF("openAudio start streaming\n");
+  DPRINTF("openAudio start streaming\n");
   AE.startAudio();
   //AE.startAudioSdl();
 
@@ -2717,6 +2777,7 @@ int seq()
 	{
 	  //SDL_LockAudio();
 	  //sceKernelDcacheWritebackAll(); 
+	  refresh_pecursor();
 	  display_board();
 	  
 	  SDL_LockAudio();

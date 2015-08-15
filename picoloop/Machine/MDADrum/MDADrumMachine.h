@@ -3,7 +3,7 @@ using namespace std;
 #include "Machine.h"
 //#include "Machine/MDADrum/hiopl.h"
 
-//#include "Filter.h"
+#include "Filter.h"
 #include <SDL/SDL.h>
 #include "NoteFreq.h"
 #include "drumsynth.h"
@@ -45,7 +45,7 @@ class MDADrumMachine : public Machine
 
 
   //Biquad                bq;
-  //Filter                filter;
+  Filter                filter;
 
   int                   cutoff;
   int                   resonance;
