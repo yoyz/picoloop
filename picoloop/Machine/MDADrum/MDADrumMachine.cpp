@@ -2096,7 +2096,7 @@ int MDADrumMachine::checkI(int what,int val)
     {
     case OSC1_TYPE:
       if (val<0) return 0;
-      if (val>MDA_BANK_SIZE) return MDA_BANK_SIZE;
+      if (val>MDA_BANK_SIZE-1) return MDA_BANK_SIZE-1;
       return val;
       break;
 
@@ -2160,6 +2160,16 @@ void MDADrumMachine::setI(int what,int val)
       resonance=val;
       filter.setResonance(resonance);
     }
+
+  // if (what==ADSR_ENV0_ATTACK)    {  param_t=val;       param_t=param_t/64; }
+  // if (what==ADSR_ENV0_DECAY )    {  param_o=val;       param_o=param_o/64; }
+  // if (what==ADSR_ENV0_SUSTAIN)   {  param_n=val;       param_n=param_n/64; }
+  // if (what==ADSR_ENV0_RELEASE)   {  param_b=val;       param_b=param_b/64; }
+
+  // if (what==ADSR_ENV1_ATTACK)    {  param_tune=val;    param_tune=param_tune/128; }
+  // if (what==ADSR_ENV1_DECAY )    {  param_time=val;    param_time=param_time/16; }
+
+
 }
 
 
@@ -2184,6 +2194,13 @@ int MDADrumMachine::tick()
       //buffer_size=ds2mem(this->getMachineParamCharStar(255,osc1_type),&buffer,1.0,1.0,1.0,1.0,0.0,1.0);
       
       buffer_size=ds2mem(path.c_str(),&buffer,1.0,1.0,1.0,1.0,0.0,1.0);
+      // buffer_size=ds2mem(path.c_str(),&buffer,
+      // 			 param_t,
+      // 			 param_o,
+      // 			 param_n,
+      // 			 param_b,
+      // 			 param_tune,
+      // 			 param_time);
       DPRINTF("MDA buffer_size: %d buffer:0x%08.8X\n",buffer_size,buffer);
       DPRINTF("MDA path: %s \n",path.c_str());
       index=0;
@@ -2203,62 +2220,4 @@ int MDADrumMachine::tick()
     }
   return s_out;
 }
-
-// int MDADrumMachine::tick()
-// {
-//   Sint16 s_in;
-//   Sint16 s_out;
-//   int    modulated_freq;
-
-//   if (index>=SAM | 
-//       index<0)
-//     index=0;
-
-
-//   if (index==0 )
-//     {
-//       //modulated_freq=(sineLfoOsc1.tick()>>lfo_depth_shift);
-//       modulated_freq=((sineLfoOsc1.tick()>>5)/(128-lfo_depth));
-      
-//       if (keyon)
-// 	{
-// 	  //HO->KeyOn(1,freq+modulated_freq);
-// 	  HO->SetFrequency(1,freq+modulated_freq,true);
-// 	  //HO->KeyOn(1,freq);
-// 	}
-//       else
-// 	{
-// 	  HO->SetFrequency(1,freq+modulated_freq,false);
-// 	  //HO->SetFrequency(1,freq,false);
-// 	}
-//       HO->Generate(SAM,buffer);
-//     }
-
-
-
-//   if (trig_time_mode)
-//     {
-//       if (trig_time_duration_sample<sample_num)
-// 	{
-// 	  this->setI(NOTE_ON,0);
-// 	  trig_time_mode=0;
-// 	  //DPRINTF("\t\t\t\t\t\tDONE\n");
-// 	}
-
-//     }
-
-
-
-
-
-
-
-//   s_in=buffer[index];
-//   s_out=filter.process(s_in);
-
-//   index++;
-//   sample_num++;
-
-//   return s_out;
-// }
 
