@@ -40,8 +40,8 @@ void PatternElement::init()
 
 
 
-  fltr_cutoff=64;
-  fltr_resonance=32;
+  fltr_cutoff=112;
+  fltr_resonance=16;
 
   lfo1_depth=0;
   lfo1_speed=0;
