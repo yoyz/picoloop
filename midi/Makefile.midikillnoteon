@@ -1,0 +1,20 @@
+CC=g++
+# -D__LINUX_ALSA__ midinoteonnoteoff.cpp RtMidi.cpp -lasound -lpthread
+CFLAGS=-c -D__LINUX_ALSA__ -I. -LSDL/lib -g
+LDFLAGS=-lasound -lpthread
+#SOURCES=WaveView.cpp
+OBJECTS=$(SOURCES:.cpp=.o)
+EXECUTABLE=midikillnoteon
+
+SOURCES=midikillnoteon.cpp RtMidi.cpp
+
+all: $(SOURCES) $(EXECUTABLE)
+
+$(EXECUTABLE): $(OBJECTS)
+	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
+
+.cpp.o:
+	$(CC) $(CFLAGS) $< -o $@
+
+clean:
+	-rm -f $(OBJECTS) $(EXECUTABLE)
