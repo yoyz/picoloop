@@ -91,16 +91,23 @@ void Pattern::print()
 }
 
 
-int Pattern::getBPM()
+float Pattern::getBPM()
 {
   return bpm;
 }
 
-void Pattern::setBPM(int val)
+// void Pattern::setBPM(int val)
+// {
+//   if (val>=20 && val <= 300)
+//     bpm=val;   
+// }
+
+void Pattern::setBPM(float val)
 {
   if (val>=20 && val <= 300)
     bpm=val;   
 }
+
 
 int Pattern::getBPMDivider()
 {

@@ -170,7 +170,8 @@ int loadall=false;
 
 int patternRemove=false;
 
-int bpm_current=120;    // current value for the four ( TRACK_MAX ) tracks
+//int bpm_current=120;    // current value for the four ( TRACK_MAX ) tracks
+float bpm_current=120.0;    // current value for the four ( TRACK_MAX ) tracks
 
 
 //int nbcb=0;             // current nb audio callback 
@@ -280,9 +281,11 @@ void refresh_swing()
 
 void refresh_bpm()
 {
-
+  float nb_tick_before_step_change_f;
   //nb_cb_ch_step=(60*DEFAULTFREQ)/(BUFFER_FRAME*4*bpm_current);
-  nb_tick_before_step_change=(60*DEFAULTFREQ)/(bpm_current*4);
+  nb_tick_before_step_change_f=(60*DEFAULTFREQ)/(bpm_current*4);
+  //nb_tick_before_step_change=(60*DEFAULTFREQ)/(bpm_current*4);
+  nb_tick_before_step_change=nb_tick_before_step_change_f;
   refresh_swing();
 }
 
@@ -343,7 +346,7 @@ void display_board_one_param_text(int machineParam1)
   int  cty=SEQ.getCurrentTrackY();
   int  step=SEQ.getPatternSequencer(cty).getStep();
 
-  char * space="    ";
+  const char * space="    ";
 
   int  size_of_zero=5;
   char line1[size_of_zero+1];
@@ -392,7 +395,7 @@ void display_board_two_param_text(int machineParam1,int machineParam2)
   int  cty=SEQ.getCurrentTrackY();
   int  step=SEQ.getPatternSequencer(cty).getStep();
 
-  char * space="    ";
+  const char * space="    ";
 
   int  size_of_zero=5;
   char line1[size_of_zero+1];
@@ -911,7 +914,7 @@ void display_board_text_global()
       sprintf(str_line2,"DOT");
 
   if (menu_cursor==GLOBALMENU_BPM)
-    sprintf(str_line2,  "BPM %d SWING %d",bpm_current,current_swing);
+    sprintf(str_line2,  "BPM %.1f SWING %d",bpm_current,current_swing);
 
 
 
@@ -2235,15 +2238,18 @@ void seq_update_multiple_time_by_step()
 
   if (TK.get(BPM)!=0)
     {
+      float bpm_diff=TK.get(BPM);
+      bpm_diff=bpm_diff/10;
       //save the bpm in the 
       //change the number of time AudioEngine need to be trigged
       //to effectively change pattern step
      DPRINTF("Recalculate BPM\n");
-      bpm_current=P[cty].getBPM();
+     bpm_current=P[cty].getBPM();
       for(t=0;t<TRACK_MAX;t++)	    
-	P[t].setBPM(bpm_current+TK.get(BPM));
+	P[t].setBPM(bpm_current+bpm_diff);
       
-      bpm_current=bpm_current+TK.get(BPM);
+      //bpm_current=bpm_current+TK.get(BPM);
+      bpm_current=bpm_current+bpm_diff;
       TK.set(BPM,0);
       refresh_bpm();
       
