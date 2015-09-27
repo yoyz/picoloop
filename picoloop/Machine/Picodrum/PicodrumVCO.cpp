@@ -23,10 +23,15 @@ PicodrumVCO::PicodrumVCO() : sineOsc1(),
 			     noiseOsc2(), 
 			     sineLfoOsc1(), 
 			     sawLfoOsc1(),
-			     pb()
+			     pb(),
+			     tanh_table(new Sint16[1024])   
 			     //, noiseosc()
 {
   DPRINTF("PicodrumVCO::PicodrumVCO()\n");
+  float fi;
+  int   ii;
+  int   i;
+
   s1=NULL;
   s2=NULL;
   vcomix=64;
@@ -47,6 +52,16 @@ PicodrumVCO::PicodrumVCO() : sineOsc1(),
 
   lfo_type=0;
   phase=0;
+
+  for (i=0;i<1024;i++)
+    {
+      fi=i;
+      fi=tanh(fi/1024);
+      fi=fi*1024;
+      ii=fi;
+      tanh_table[i]=ii;
+      DPRINTF("tanh[%d]=%d\n",i,tanh_table[i]);
+    }
 }
 
 void PicodrumVCO::init()
@@ -278,10 +293,11 @@ Oscillator * PicodrumVCO::getOscillatorOne()
   return s1;
 }
 
-void PicodrumVCO::setNoteDetune(int note,int dt)
+void PicodrumVCO::setNoteDetune(int nt,int dt)
 {
   NoteFreq & NF = NoteFreq::getInstance();
   detune=dt;
+  note=nt;
 
   freqOsc1=NF.getINoteFreq(note);
   freqOsc2=NF.getINoteFreq(note);
@@ -346,10 +362,13 @@ Sint16 PicodrumVCO::tick()
 	{
 	  pbtick=pb.tickNoteDetune();
 	  s2->setFreq(pbtick+abs(sinput1/((128-lfo_depth)*2)));
+	  //s2->setNoteDetune(note*128+detune+abs(sinput1/((128-lfo_depth)*1)));
 	}
       else
 	{
-	  s2->setFreq(freqOsc1+abs(sinput1/((128-lfo_depth)*2)));
+	  //s2->setFreq(freqOsc1+abs(sinput1/((128-lfo_depth)*2)));
+	  s2->setNoteDetune(note*128+detune+abs(sinput1/((128-lfo_depth)*1)));
+	  //s2->setNoteDetune(note*128+detune+abs((sinput1*tanh_table[lfo_depth*8])/1024));
 	}
       sinput2=s2->tick();
       //sc=sinput2;
