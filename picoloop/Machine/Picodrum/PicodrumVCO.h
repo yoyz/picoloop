@@ -134,6 +134,8 @@ public:
   int lfo_type;
     
   int tmp_i;
+
+  Sint16 * tanh_table;
 };
 
 #endif
