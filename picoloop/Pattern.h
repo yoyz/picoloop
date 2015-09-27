@@ -30,8 +30,9 @@ class Pattern
   int getLeftVolume();
   int getRightVolume();
 
-  int  getBPM();
-  void setBPM(int val);
+  float  getBPM();
+  //void setBPM(int val);
+  void setBPM(float val);
 
   int  getBPMDivider();
   void setBPMDivider(int val);
@@ -46,7 +47,8 @@ class Pattern
   int leftVolume;
   int rightVolume;
   int bpmDivider;
-  int bpm;
+  //int bpm;
+  float bpm;
   int swing;
 
   

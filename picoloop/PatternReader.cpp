@@ -326,7 +326,7 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
       if (PatNum    ==PatternNumber &&
 	  TrackNum  ==TrackNumber)
 	{
-	  P.setBPM(PatBPM);
+	  P.setBPM((float)PatBPM);
 	}
     }
 
