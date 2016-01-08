@@ -187,7 +187,8 @@ bool PatternReader::PatternDataExist(int PatternNumber,int TrackNumber)
 
 bool PatternReader::writePatternDataLine(int PatternNumber,int TrackNumber, Pattern & P, char * line, int machineParam)
 {
-  for (int i=0; i< P.getSize();i++)
+  //for (int i=0; i< P.getSize();i++)
+  for (int i=0; i< 128;i++)
     {
       if (i==0)
 	sprintf(line,"Pattern %d Track %d Param %s ",PatternNumber,TrackNumber,this->getParameterCharStar(machineParam));
@@ -201,7 +202,7 @@ bool PatternReader::readPatternDataLine(int PatternNumber,int TrackNumber, Patte
 {
   PatternElement Pe;
   bool retcode=true;
-  int n[16];
+  int n[128];
   char strParam[64];
   int PatNum;
   int TrackNum;
@@ -211,25 +212,42 @@ bool PatternReader::readPatternDataLine(int PatternNumber,int TrackNumber, Patte
 
   //match('Pattern 1 Track 1 Param Note 41 0 52 0 22 0 12 0 21 11 14 12 43 12 54')
   sscanf(line,
-	 "Pattern %d Track %d Param %s %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
+	 "Pattern %d Track %d Param %s %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
 	 &PatNum,&TrackNum,strParam,
-	 &n[0], &n[1], &n[2], &n[3],
-	 &n[4], &n[5], &n[6], &n[7],
-	 &n[8], &n[9], &n[10],&n[11],
-	 &n[12],&n[13],&n[14],&n[15]);
+	 &n[0],   &n[1],   &n[2],   &n[3],
+	 &n[4],   &n[5],   &n[6],   &n[7],
+	 &n[8],   &n[9],   &n[10],  &n[11],
+	 &n[12],  &n[13],  &n[14],  &n[15],
+	 &n[16],  &n[17],  &n[18],  &n[19],
+	 &n[20],  &n[21],  &n[22],  &n[23],
+	 &n[24],  &n[25],  &n[26],  &n[27],
+	 &n[28],  &n[29],  &n[30],  &n[31],
+	 &n[32],  &n[33],  &n[34],  &n[35],
+	 &n[36],  &n[37],  &n[38],  &n[39],
+	 &n[40],  &n[41],  &n[42],  &n[43],
+	 &n[44],  &n[45],  &n[46],  &n[47],
+	 &n[48],  &n[49],  &n[50],  &n[51],
+	 &n[52],  &n[53],  &n[54],  &n[55],
+	 &n[56],  &n[57],  &n[58],  &n[59],
+	 &n[60],  &n[61],  &n[62],  &n[63],
+	 &n[64],  &n[65],  &n[66],  &n[67],
+	 &n[68],  &n[69],  &n[70],  &n[71],
+	 &n[72],  &n[73],  &n[74],  &n[75],
+	 &n[76],  &n[77],  &n[78],  &n[79],
+	 &n[80],  &n[81],  &n[82],  &n[83],
+	 &n[84],  &n[85],  &n[86],  &n[87],
+	 &n[88],  &n[89],  &n[90],  &n[91],
+	 &n[92],  &n[93],  &n[94],  &n[95],
+	 &n[96],  &n[97],  &n[98],  &n[99],
+	 &n[100], &n[101], &n[102], &n[103],
+	 &n[104], &n[105], &n[106], &n[107],
+	 &n[108], &n[109], &n[110], &n[111],
+	 &n[112], &n[113], &n[114], &n[115],
+	 &n[116], &n[117], &n[118], &n[119],
+	 &n[120], &n[121], &n[122], &n[123],
+	 &n[124], &n[125], &n[126], &n[127]
+	 );
   
-  // printf("READ    : %s\n",line);
-  // printf("COMPARE : Pattern %d Track %d Param %s %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n",	PatNum,TrackNum,strParam,
-  // 	 n[0], n[1], n[2], n[3],
-  // 	 n[4], n[5], n[6], n[7],
-  // 	 n[8], n[9], n[10],n[11],
-  // 	 n[12],n[13],n[14],n[15]);
-
-  // printf("[%s] [%s] [%d]\n",
-  // 	 strParam,
-  // 	 this->getParameterCharStar(machineParam),
-  // 	 strcmp(strParam,this->getParameterCharStar(machineParam))
-  // 	 );
 
   if (PatNum    ==PatternNumber &&
       TrackNum  ==TrackNumber   &&
@@ -269,6 +287,7 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
   char strParam[64];
   int  machineParam;
 
+  int sizeoflinemax=1024;
 
   if (loadedData[PatternNumber][TrackNumber]==DATA_LOADED_FROM_STORAGE)
     {
@@ -295,7 +314,7 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
   while (match==0 && retcode==true)
     {
       char * catcheof;
-      catcheof=fgets(line,512,fd);
+      catcheof=fgets(line,sizeoflinemax,fd);
       //printf("[%s]\n",st);
       //sleep(1);
       
@@ -318,7 +337,7 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
   
   P.setPatternSize(PatSize);
   
-  if (fgets(line,512,fd))
+  if (fgets(line,sizeoflinemax,fd))
     {
       //match('Pattern 1 Track 1 Param PatternBPM 80')
       sscanf(line,"Pattern %d Track %d Param PatternBPM %d",
@@ -330,7 +349,7 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
 	}
     }
 
-  if (fgets(line,512,fd))
+  if (fgets(line,sizeoflinemax,fd))
     {
       //match('Pattern 1 Track 1 Param PatternBPMDivider 4')
       sscanf(line,"Pattern %d Track %d Param PatternBPMDivider %d",
@@ -343,7 +362,7 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
     }
 
 
-  if (fgets(line,512,fd))
+  if (fgets(line,sizeoflinemax,fd))
     {
       //match('Pattern 1 Track 1 Param PatternBPMDivider 4')
       sscanf(line,"Pattern %d Track %d Param PatternSwing %d",
@@ -356,269 +375,258 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
     }
 
   machineParam=LFO1_DEPTH;
-  fgets(line,512,fd);
+  fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
   machineParam=LFO1_FREQ;
-  fgets(line,512,fd);
+  fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
   machineParam=AMP;
-  fgets(line,512,fd);
+  fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
-
-
   machineParam=NOTE;
-  fgets(line,512,fd);
+  fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
   machineParam=NOTE_ON;
-  fgets(line,512,fd);
+  fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
-
-  
-
 
   machineParam=VCO_MIX;
-  fgets(line,512,fd);
-  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
-
-  
-
-
-
-
+  fgets(line,sizeoflinemax,fd);
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam); 
 
 
   machineParam=ADSR_AMP_ATTACK;
-  fgets(line,512,fd);
+  fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
 
   machineParam=ADSR_AMP_DECAY;
-  fgets(line,512,fd);
+  fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
 
 
   machineParam=ADSR_AMP_SUSTAIN;
-  fgets(line,512,fd);
+  fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
 
   machineParam=ADSR_AMP_RELEASE;
-  fgets(line,512,fd);
+  fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
   machineParam=OSC1_TYPE;
-  fgets(line,512,fd);
+  fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
   machineParam=OSC2_TYPE;
-  fgets(line,512,fd);
+  fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
 
   machineParam=FILTER1_CUTOFF;
-  fgets(line,512,fd);
+  fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
 
   machineParam=FILTER1_RESONANCE;
-  fgets(line,512,fd);
+  fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
 
   machineParam=OSC1_PHASE;
-  fgets(line,512,fd);
+  fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
 
   machineParam=ADSR_FLTR_ATTACK;
-  fgets(line,512,fd);
+  fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
 
   machineParam=ADSR_FLTR_DECAY;
-  fgets(line,512,fd);
+  fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
 
 
   machineParam=ADSR_FLTR_SUSTAIN;
-  fgets(line,512,fd);
+  fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
 
   machineParam=ADSR_FLTR_RELEASE;
-  fgets(line,512,fd);
+  fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
 
 
   machineParam=NOTE_ADSR;
-  fgets(line,512,fd);
+  fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
 
 
   machineParam=MACHINE_TYPE;
-  fgets(line,512,fd);
+  fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
 
   machineParam=FILTER1_ALGO;
-  fgets(line,512,fd);
+  fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
   machineParam=FILTER1_TYPE;
-  fgets(line,512,fd);
+  fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
   machineParam=OSC1_AMP;
-  fgets(line,512,fd);
+  fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
 
 
   machineParam=OSC2_AMP;
-  fgets(line,512,fd);
+  fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
   machineParam=FX1_DEPTH;
-  fgets(line,512,fd);
+  fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
   machineParam=FX1_SPEED;
-  fgets(line,512,fd);
+  fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
 
   machineParam=FM_TYPE;
-  fgets(line,512,fd);
+  fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
 
   machineParam=TRIG_TIME_DURATION;
-  fgets(line,512,fd);
+  fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
   machineParam=PITCHBEND_DEPTH;
-  fgets(line,512,fd);
+  fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
   machineParam=PITCHBEND_SPEED;
-  fgets(line,512,fd);
+  fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
 
   machineParam=LFO_TYPE;
-  fgets(line,512,fd);
+  fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
   machineParam=OSC1_DETUNE;
-  fgets(line,512,fd);
+  fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
   machineParam=LFO1_WAVEFORM;
-  fgets(line,512,fd);
+  fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
   machineParam=LFO2_WAVEFORM;
-  fgets(line,512,fd);
+  fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
   machineParam=LFO1_ENV_AMOUNT;
-  fgets(line,512,fd);
+  fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
   machineParam=LFO2_ENV_AMOUNT;
-  fgets(line,512,fd);
+  fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
   machineParam=LFO2_DEPTH;
-  fgets(line,512,fd);
+  fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
   machineParam=LFO2_FREQ;
-  fgets(line,512,fd);
+  fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
   machineParam=VELOCITY;
-  fgets(line,512,fd);
+  fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
   machineParam=OSC1_MOD;
-  fgets(line,512,fd);
+  fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
   machineParam=OSC1_UNISON;
-  fgets(line,512,fd);
+  fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
   machineParam=OSC2_UNISON;
-  fgets(line,512,fd);
+  fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
   machineParam=OSC1_UNISONDT;
-  fgets(line,512,fd);
+  fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
   machineParam=OSC2_UNISONDT;
-  fgets(line,512,fd);
+  fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
   machineParam=FILTER1_SATURATION;
-  fgets(line,512,fd);
+  fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
   machineParam=FILTER1_FEEDBACK;
-  fgets(line,512,fd);
+  fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
   machineParam=OSC3_AMP;
-  fgets(line,512,fd);
+  fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
   machineParam=OSC4_AMP;
-  fgets(line,512,fd);
+  fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
   machineParam=OSC3_TYPE;
-  fgets(line,512,fd);
+  fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
@@ -655,6 +663,7 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
   char path[1024];
   mode_t mode;
 
+  int sizeoflinemax=1024;
   //mode=0666;
   //mode=S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP|S_IWGRP|S_IWGRP|S_IROTH|S_IWOTH;
 
