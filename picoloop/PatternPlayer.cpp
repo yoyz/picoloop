@@ -133,11 +133,17 @@ MidiOutUserInterface MIDIUI;
 //UI=PUI;
 //PUI.a=1;
 
+// highlight the loaded and saved active track 
+// load_save_highligth_current[0..t-1]=-1 by default
+// load_save_highligth_current[0..t-1]>=0 active played track 
+int load_save_highligth_current[TRACK_MAX];
+
 
 vector <Pattern>            P(TRACK_MAX);  
 vector <Machine   *>        M(TRACK_MAX);
 vector <MonoMixer *>        MM(TRACK_MAX);
 vector <Effect    *>        FX(TRACK_MAX);
+
 
 MonoMixer                   SAMM; // Standalone MonoMixer 
                                   //  used to get   a standalone Machine SAM
@@ -241,6 +247,14 @@ int seq_update_by_step_next=0; // 0 : the UI audio and seq are sync
 
 int current_swing=50;  
 //int current_swing=64;
+
+void disable_load_save_highlight()
+{
+  int t;
+  for (t=0;t<TRACK_MAX;t++)
+    load_save_highligth_current[t]=-1;    
+}
+
 
 void refresh_pecursor_ui(int i);
 //int noteOffTrigger[TRACK_MAX];
@@ -742,11 +756,18 @@ void display_board_load_save()
       for (x=loadsave_cursor_x_divmul_sixteen;
 	   x<(loadsave_cursor_x_divmul_sixteen)+16;
 	   x++)
+
+	
 	for (y=0;y<TRACK_MAX;y++)
 	  {
-	    //printf("!!!!!!!!!!!!!!!!!!!!!!!x:%d y:%d\n",x,y);
 	    if (PR.PatternDataExist(x,y))
-	      SG.middleBoxNumberUp(x%16,y,NOTE_COLOR);
+	      {
+		// Display if it is a loaded pattern
+		if (load_save_highligth_current[y]==x)
+		  SG.middleBoxNumberUp(x%16,y,BOX_COLOR);
+		else
+		  SG.middleBoxNumberUp(x%16,y,NOTE_COLOR);
+	      }
 	    else
 	      SG.middleBoxNumberUp(x%16,y,STEP_COLOR);
 	  }
@@ -2370,6 +2391,7 @@ int seq_update_by_step()
      DPRINTF("<==[SAVE]==>\n");
       //PR.writePattern(1,ct+1,P[ct]);
       PR.writePattern(loadsave_cursor.x,loadsave_cursor.y,P[cty]);
+      load_save_highligth_current[loadsave_cursor.y]=loadsave_cursor.x;
       dirty_graphic=1;
       save=false;
     }
@@ -2381,16 +2403,11 @@ int seq_update_by_step()
       if (PR.PatternDataExist(loadsave_cursor.x,loadsave_cursor.y)==true)
 	{
 	  PR.readPatternData(loadsave_cursor.x,loadsave_cursor.y,P[cty]);
+	  load_save_highligth_current[loadsave_cursor.y]=loadsave_cursor.x;
 
 	  // Don't update BPM and Swing on single pattern load
 	  // Do it only on "loadall"
 
-	  //bpm_current=P[cty].getBPM();
-	  //current_swing=P[t].getSwing();
-	  //nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
-	  //nb_tick_before_step_change=(60*DEFAULT_FREQ)/(bpm_current*4);
-	  //AE.setNbTickBeforeStepChange(nb_tick_before_step_change);
-	  //P[cty].setBPMDivider(SEQ.getPatternSequencer(cty).getBPMDivider());
 
 	  SEQ.getPatternSequencer(cty).setBPMDivider(P[cty].getBPMDivider());
 	  refresh_bpm();
@@ -2411,6 +2428,7 @@ int seq_update_by_step()
 	  if (PR.PatternDataExist(loadsave_cursor.x,t)==true)
 	    {
 	      PR.readPatternData(loadsave_cursor.x,t,P[t]);
+	      load_save_highligth_current[t]=loadsave_cursor.x;
 	      bpm_current=P[t].getBPM();
 	      current_swing=P[t].getSwing();
 	      //nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
@@ -2421,7 +2439,10 @@ int seq_update_by_step()
 	      refresh_bpm();
 	    }
 	  else
-	    P[t].init();
+	    {
+	      P[t].init();
+	      load_save_highligth_current[t]=-10;
+	    }
 	}
       loadall=false;
     }
@@ -2433,7 +2454,10 @@ int seq_update_by_step()
      DPRINTF("<==[SAVE_ALL]==>\n");
       //PR.writePattern(1,ct+1,P[ct]);
       for (t=0;t<TRACK_MAX;t++)
-	PR.writePattern(loadsave_cursor.x,t,P[t]);
+	{
+	  PR.writePattern(loadsave_cursor.x,t,P[t]);
+	  load_save_highligth_current[t]=loadsave_cursor.x;
+	}
       dirty_graphic=1;
       saveall=false;      
     }
@@ -2810,6 +2834,8 @@ void load_pattern()
 
   string fileName="data.pic";
 
+  // Disable highlight
+  disable_load_save_highlight();
   vector <Pattern>            TMPP(TRACK_MAX);  
 
   //PR.setFileName("data.pic");
@@ -2823,27 +2849,6 @@ void load_pattern()
       {
 	PR.readPatternData(p,t,TMPP[t]);
       }
-
-  /*
-  for (t=0;t<TRACK_MAX;t++)
-    for (p=0;p<MAX_PATTERN_BY_PROJECT;p++)
-	PR.readPatternData(p,t,P[t]);
-  */
-  /*
-  for (t=0;t<TRACK_MAX;t++)
-    {
-      PR.readPatternData(0,t,P[t]);
-      
-      // Ugly hack for BPM management
-      bpm_current=P[t].getBPM();
-      current_swing=P[t].getSwing();
-      refresh_bpm();
-
-      SEQ.getPatternSequencer(t).setBPMDivider(P[t].getBPMDivider());
-    }
-  */
-    //PR.readPatternData(1,i+1,P[i]);
-
 }
 
 
