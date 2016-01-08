@@ -4,7 +4,7 @@ using namespace std;
 #include "Pattern.h"
 
 
-Pattern::Pattern() : pevector(16,PatternElement())
+Pattern::Pattern() : pevector(128,PatternElement())
 {
   size=16;
   bpmDivider=1;
