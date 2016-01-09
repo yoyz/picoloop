@@ -2160,8 +2160,8 @@ void seq_update_multiple_time_by_step()
   seq_update_tweakable_knob_all(MACHINE_TYPE);
    
   // Change Note
-  seq_update_tweakable_knob_one(NOTE);
-  seq_update_tweakable_knob_all(NOTE);
+  seq_update_tweakable_knob_one(NOTE1);
+  seq_update_tweakable_knob_all(NOTE1);
 
   // Change FM
   seq_update_tweakable_knob_one(FM_TYPE);
@@ -2310,12 +2310,12 @@ void seq_update_multiple_time_by_step()
 	{
 	  P[cty].setPatternElement(cursor,PE);
 	  P[cty].getPatternElement(cursor).set(NOTE_ON,1);
-	  if (P[cty].getPatternElement(cursor).get(NOTE)==0)
+	  if (P[cty].getPatternElement(cursor).get(NOTE1)==0)
 	    {
 	      //P[cty].getPatternElement(cursor).setAttack_amp(0);
 	      //P[cty].getPatternElement(cursor).setRelease_amp(64);
 	      //P[cty].getPatternElement(cursor).setNote(37);
-	      P[cty].getPatternElement(cursor).set(NOTE,25);
+	      P[cty].getPatternElement(cursor).set(NOTE1,25);
 	    }
 	}
       TK.set(INVERT_TRIG,0);
@@ -2523,7 +2523,7 @@ void seq_update_track(int t)
 	  //M[t]->set(OSC1_FREQ,i);
 	  M[t]->reset();
 	  //M[t]->setF(OSC1_FREQ,f);
-	  M[t]->setI(OSC1_NOTE,P[t].getPatternElement(step).get(NOTE));
+	  M[t]->setI(NOTE1,P[t].getPatternElement(step).get(NOTE1));
 
 	  /*
 	  noteOffTrigger[t]=

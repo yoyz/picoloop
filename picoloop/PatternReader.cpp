@@ -134,6 +134,7 @@ bool PatternReader::PatternDataExist(int PatternNumber,int TrackNumber)
   bool found=false;
   char line[1024];
   char filename[1024];
+  int sizeoflinemax=1024;
 
   //printf("?EXIST (%d %d)\n");
 
@@ -156,7 +157,7 @@ bool PatternReader::PatternDataExist(int PatternNumber,int TrackNumber)
   while (match==0 && retcode==true)
     {
       char * catcheof;
-      catcheof=fgets(line,512,fd);
+      catcheof=fgets(line,sizeoflinemax,fd);
       //printf("[%s]\n",st);
       //sleep(1);
 
@@ -387,7 +388,7 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
   fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
-  machineParam=NOTE;
+  machineParam=NOTE1;
   fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
@@ -657,10 +658,10 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
   char         * catcheof=NULL;
   //line=(char*)malloc(1024);
   //line2=(char*)malloc(1024);
-  char line[1024];
-  char line2[1024];
-  char filename[1024];
-  char path[1024];
+  char line[4096];
+  char line2[4096];
+  char filename[4096];
+  char path[4096];
   mode_t mode;
 
   int sizeoflinemax=1024;
@@ -699,7 +700,7 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
 
       while (retcode==true)
 	{
-	  catcheof=fgets(line,512,fd);
+	  catcheof=fgets(line,sizeoflinemax,fd);
 	  sscanf(line,"Pattern %d Track %d ",
 		 &PatNum,&TrackNum);
 	  if (PatNum    ==  PatternNumber &&
@@ -745,7 +746,7 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
 
 
   //line=""; //Weird ?
-
+  DPRINTF("[First step write]\n",fn.c_str());
 
   this->writePatternDataLine(PatternNumber,TrackNumber,P,line,LFO1_DEPTH);
   data.insert(data.end(),line);
@@ -758,7 +759,7 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
   data.insert(data.end(),line);
 
 
-  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,NOTE);
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,NOTE1);
   data.insert(data.end(),line);
 
 
@@ -973,13 +974,25 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
   sprintf(line,"\n");
   data.insert(data.end(),line);
 
+  DPRINTF("[second step write]\n",fn.c_str());
+
+
   //fd=fopen(fn.c_str(),"w");
   fd=fopen(filename,"w");
+  if (fd==0)
+    {
+      DPRINTF("[data file %s can not be open write]\n",fn.c_str());
+      printf("[data file %s can not be open write]\n",filename);
+      exit(1);
+    }
   for (int i=0; i< data.size();i++)
     {
+      //DPRINTF("%s\n",data[i].c_str());
       fprintf(fd,"%s",data[i].c_str());
     }
   fclose(fd);
+
+  DPRINTF("[third and last step write]\n",fn.c_str());
 
   //loadedData[PatternNumber][TrackNumber]=DATA_EXIST_ON_STORAGE;
   //twoDPVector[PatternNumber][TrackNumber]=P;
@@ -1061,7 +1074,10 @@ const char * PatternReader::getParameterCharStar(int param)
 
   static const char * amp="Amp";
 
-  static const char * note="Note";
+  static const char * note1="Note";
+  static const char * note2="Note2";
+  static const char * note3="Note3";
+  static const char * note4="Note4";
     
   static const char * trig="Trig";
 
@@ -1151,7 +1167,7 @@ const char * PatternReader::getParameterCharStar(int param)
 
     case AMP:                return amp;                      break;
 
-    case NOTE:               return note;                     break;
+    case NOTE1:              return note1;                    break;
 
     case NOTE_ON:            return trig;                     break;
 

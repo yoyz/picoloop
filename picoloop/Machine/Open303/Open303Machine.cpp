@@ -149,7 +149,7 @@ void Open303Machine::setI(int what,int val)
     }
 
   //if (what==OSC1_NOTE)              { O303E->noteOn(note+11,0,0.0); note=val; }
-  if (what==OSC1_NOTE)              {  old_note=note; note=val; }
+  if (what==NOTE1)              {  old_note=note; note=val; }
 
 
 

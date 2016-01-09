@@ -122,7 +122,7 @@ void PicodrumMachine::setI(int what,int val)
       this->getADSRAmp().setNoteOff(); 
     }
 
-  if (what==OSC1_NOTE)           note=val;
+  if (what==NOTE1)           note=val;
 
   //if (what==OSC1_FREQ)           this->getPicodrumVCO().setSynthFreq(val);
   if (what==OSC1_TYPE)           { this->getPicodrumVCO().setOscillator(0,val); osc1_type=val; }

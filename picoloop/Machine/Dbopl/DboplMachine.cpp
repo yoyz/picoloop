@@ -374,7 +374,7 @@ void dboplMachine::setI(int what,int val)
       }
 
 
-  if (what==OSC1_NOTE)           note=val;
+  if (what==NOTE1)           note=val;
     //if (what==OSC1_FREQ)           freq=val;
 
     if (what==FILTER1_CUTOFF)      

@@ -21,7 +21,10 @@ PatternElement::~PatternElement()
 
 void PatternElement::init()
 {
-  note=0;
+  note1=0;
+  note2=0;
+  note3=0;
+  note4=0;
   note_on=0;
   Channel=0;
   vcomix=64;
@@ -93,7 +96,8 @@ void PatternElement::init()
 
   pb_depth=64;
   pb_speed=0;
-  
+
+  polyphony=1;
 }
 
 void PatternElement::set(int what,int val)
@@ -192,8 +196,8 @@ void PatternElement::set(int what,int val)
       oscThreeType=checkSevenBitBoundarie(val);
       break;      
 
-    case NOTE:
-      note=checkSevenBitBoundarie(val);
+    case NOTE1:
+      note1=checkSevenBitBoundarie(val);
       break;      
 
 
@@ -405,8 +409,8 @@ int PatternElement::get(int what)
       return oscThreeType;
       break;
 
-    case NOTE:
-      return note;
+    case NOTE1:
+      return note1;
       break;
 
     case FILTER1_TYPE:
@@ -760,7 +764,7 @@ string PatternElement::getStr()
 {
   stringstream ss;
   string s;
-  ss << "note:" << note << "\ttrig:" << note_on ;
+  ss << "note1:" << note1 << "\ttrig:" << note_on ;
   s=ss.str();
   return s;
 }

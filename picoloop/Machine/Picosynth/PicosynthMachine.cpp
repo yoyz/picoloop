@@ -172,7 +172,7 @@ void PicosynthMachine::setI(int what,int val)
     }
 
   //if (what==OSC1_NOTE)           this->getVCO().setSynthFreq(val);
-  if (what==OSC1_NOTE)           note=val;
+  if (what==NOTE1)                 note=val;
 
   //if (what==OSC1_FREQ)           this->getVCO().setSynthFreq(val);
   if (what==OSC1_TYPE)           { this->getVCO().setOscillator(0,val); osc1_type=val; }

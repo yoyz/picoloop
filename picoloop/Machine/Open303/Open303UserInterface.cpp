@@ -201,11 +201,11 @@ void Open303UserInterface::handle_key_note()
       // copy/paste/insert/delete trig 
       sub_handle_invert_trig();
 
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_LONG    , NOTE,             -1, 0);
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_LONG    , NOTE,              1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_LONG    , NOTE1,             -1, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_LONG    , NOTE1,              1, 0);
 
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG    , NOTE           ,  12, 0);
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG    , NOTE           , -12, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG    , NOTE1           ,  12, 0);
+      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG    , NOTE1           , -12, 0);
 
     }  
 
@@ -215,11 +215,11 @@ void Open303UserInterface::handle_key_note()
       menu_cursor == GLOBALMENU_NOTE)
     {
 
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_LONG    , NOTE,             -1, 1);
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_LONG    , NOTE,              1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_LONG    , NOTE1,             -1, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_LONG    , NOTE1,              1, 1);
 
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG    , NOTE           ,  12, 1);
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG    , NOTE           , -12, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG    , NOTE1           ,  12, 1);
+      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG    , NOTE1           , -12, 1);
 
     }  
 
@@ -713,7 +713,7 @@ void Open303UserInterface::display_board_note()
 	  for (i=0;i<16;i++)
 	    {
 	      if (P[cty].getPatternElement(i).get(NOTE_ON))
-		SG.drawTTFTextNumberFirstLine(i,NF.getNoteCharStar(P[cty].getPatternElement(i).get(NOTE)));
+		SG.drawTTFTextNumberFirstLine(i,NF.getNoteCharStar(P[cty].getPatternElement(i).get(NOTE1)));
 	    }
 	}
       // Note Cursor
@@ -723,8 +723,8 @@ void Open303UserInterface::display_board_note()
 	    {
 	      if (P[cty].getPatternElement(i).get(NOTE_ON))
 		SG.smallBoxNumber(i,
-				  (P[cty].getPatternElement(i).get(NOTE)%12-1)*10,
-				  (128-(P[cty].getPatternElement(i).get(NOTE)/12)*10),
+				  (P[cty].getPatternElement(i).get(NOTE1)%12-1)*10,
+				  (128-(P[cty].getPatternElement(i).get(NOTE1)/12)*10),
 				  SMALLBOX_COLOR);
 	    }
 	}

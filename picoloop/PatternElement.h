@@ -30,7 +30,10 @@ public:
   void   print(); 
 private:
   int  checkSevenBitBoundarie(int val);
-  int  note;
+  int  note1;
+  int  note2;
+  int  note3;
+  int  note4;
   int  note_on;
   int  Channel;
 
@@ -111,6 +114,8 @@ private:
   int velocity;
 
   int osc1_mod;
+
+  int polyphony;
 };
 
 #endif

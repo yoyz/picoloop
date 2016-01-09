@@ -266,7 +266,7 @@ void PBSynthMachine::setI(int what,int val)
 
     if (what==LFO2_DEPTH)          SE->setParameter(SENGINE_LFO2_TO_CUTOFF,(f_val));
 
-  if (what==OSC1_NOTE)                note=val;
+  if (what==NOTE1)                note=val;
     //if (what==OSC1_FREQ)           freq=val;
 
   // if (what==FILTER1_CUTOFF)         SE.setParameter(SENGINE_FILTFREQ,(2.0f/(val)-1));
