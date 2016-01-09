@@ -101,10 +101,10 @@ using namespace std;
 #define OSC3_MOD            63
 #define OSC4_MOD            64
 
-#define OSC1_NOTE           70
-#define OSC2_NOTE           71
-#define OSC3_NOTE           72
-#define OSC4_NOTE           73
+#define NOTE1           70
+#define NOTE2           71
+#define NOTE3           72
+#define NOTE4           73
 
 #define OSC1_DETUNE         74
 #define OSC2_DETUNE         75
@@ -144,7 +144,7 @@ using namespace std;
 #define TRIG_TIME_MODE      101  // Used by PatternPlayer to predefined the time of NOTE_ON
 #define TRIG_TIME_DURATION  102  // Used by PatternPlayer to predefined the time of NOTE_ON
 
-#define NOTE                200   // Store note value
+//#define NOTE1               200   // Store note1 value
 #define MACHINE_TYPE        210   // Store the machine type dbOpl, Picosynth...
 #define NOTE_ADSR           211   // Note used but still here...       //NOT USED ANYMORE NEED TO BE REMOVED
 

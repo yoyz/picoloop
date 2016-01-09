@@ -265,7 +265,7 @@ void TwytchsynthMachine::setI(int what,int val)
       TWE->noteOff(note-1);
     }
 
-  if (what==OSC1_NOTE)                                    {  old_note=note; note=val; }
+  if (what==NOTE1)                                    {  old_note=note; note=val; }
 
   if (what==BPM && bpm!=val)                              { bpm=val; TWE->getControls().at("beats_per_minute")->set(val);     }
 

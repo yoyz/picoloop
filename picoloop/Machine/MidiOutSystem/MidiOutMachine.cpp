@@ -202,7 +202,7 @@ void MidiOutMachine::setI(int what,int val)
 
 
   
-  if (what==OSC1_NOTE)    {old_note=note;       note=val; }
+  if (what==NOTE1)    {old_note=note;       note=val; }
 
 
 #endif
