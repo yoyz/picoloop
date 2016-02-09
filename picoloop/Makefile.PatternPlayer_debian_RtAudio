@@ -6,6 +6,8 @@ CC=g++
 
 #CFLAGS=-c -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP
 
+
+
 CFLAGS=-c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb -ffast-math
 CFLAGS=-c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb  -pg
 CFLAGS=-Wall -c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb 
@@ -189,21 +191,37 @@ SOURCES=PatternPlayer.cpp \
 
 
 
+OBJDIR             =     debian
+OBJECTS            =   $(SOURCES:.cpp=.o)
+DEPENDENCY         =   $(SOURCES:.cpp=.d)
 
-OBJECTS=$(SOURCES:.cpp=.o)
-DEPENDENCY=$(SOURCES:.cpp=.d)
+OBJECTSINOBJDIR    = $(addprefix $(OBJDIR)/,$(OBJECTS))
+OBJTOLINKINOBJDIR  = $(addprefix $(OBJDIR)/,$(OBJTOLINK))
+
 EXECUTABLE=PatternPlayer_debian_Rtaudio
 
-all: $(SOURCES) $(DEPENDENCY) $(EXECUTABLE)
+all: DIRTOCREATE $(SOURCES) $(DEPENDENCY) $(EXECUTABLE) 
 
-$(EXECUTABLE): $(OBJECTS)
-	$(CC) $(OBJTOLINK)  $(OBJECTS) -o $@ $(LDFLAGS)
+DIRTOCREATE:
+	-mkdir -p debian/Machine
+	-mkdir -p debian/Machine/Picosynth
+	-mkdir -p debian/Machine/Picodrum
+	-mkdir -p debian/Machine/Dbopl	
+	-mkdir -p debian/Machine/PBSynth
+	-mkdir -p debian/Machine/Cursynth
+	-mkdir -p debian/Machine/Open303
+	-mkdir -p debian/Machine/Twytch
+	-mkdir -p debian/Machine/MidiOutSystem
+	-mkdir -p debian/Machine/MDADrum
+
+$(EXECUTABLE): $(OBJECTSINOBJDIR)
+	$(CC) $(OBJTOLINKINOBJDIR)  $(OBJECTSINOBJDIR) -o $@ $(LDFLAGS)
 
 # the .d file contain the dependency
 %.d : %.cpp %.h
 	$(CC) -I. -MM $< -o $@
 
-%.o : %.cpp 
+$(OBJDIR)/%.o : %.cpp 
 	$(CC) $(CFLAGS) $< -o $@
 
 

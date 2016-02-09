@@ -2,15 +2,16 @@ CC=g++
 CFLAGS=-c -DLINUX -I. -LSDL/lib -g
 CFLAGS=-O3 -Wall -I.. -DHAVE_GETTIMEOFDAY -D__LINUX_ALSA__
 LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf
-SOURCES=RtAudio.cpp 
+SOURCES=RtAudio.cpp
+OBJDIR=debian
 OBJECTS=$(SOURCES:.cpp=.o)
-#EXECUTABLE=Picoloop
-
-all: $(OBJECTS)
+OBJECTSINOBJDIR    = $(addprefix $(OBJDIR)/,$(OBJECTS))
 
 
-.cpp.o:
+all: $(OBJECTSINOBJDIR)
+
+$(OBJDIR)/%.o : %.cpp
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	-rm -f $(OBJECTS) $(EXECUTABLE)
+	-rm -f $(OBJECTSINOBJDIR) $(EXECUTABLE)
