@@ -14,4 +14,4 @@ $(OBJDIR)/%.o : %.cpp
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	-rm -f $(OBJECTSINOBJDIR) $(EXECUTABLE)
+	-rm -f $(OBJECTSINOBJDIR)

@@ -195,12 +195,15 @@ OBJDIR             =     debian
 OBJECTS            =   $(SOURCES:.cpp=.o)
 DEPENDENCY         =   $(SOURCES:.cpp=.d)
 
+DEPENDENCYINOBJDIR = $(addprefix $(OBJDIR)/,$(DEPENDENCY))
 OBJECTSINOBJDIR    = $(addprefix $(OBJDIR)/,$(OBJECTS))
 OBJTOLINKINOBJDIR  = $(addprefix $(OBJDIR)/,$(OBJTOLINK))
 
 EXECUTABLE=PatternPlayer_debian_Rtaudio
 
-all: DIRTOCREATE $(SOURCES) $(DEPENDENCY) $(EXECUTABLE) 
+#all: DIRTOCREATE $(DEPENDENCY) $(SOURCES) $(EXECUTABLE)
+
+all: DIRTOCREATE $(DEPENDENCYINOBJDIR) $(SOURCES) $(EXECUTABLE) 
 
 DIRTOCREATE:
 	-mkdir -p debian/Machine
@@ -214,11 +217,11 @@ DIRTOCREATE:
 	-mkdir -p debian/Machine/MidiOutSystem
 	-mkdir -p debian/Machine/MDADrum
 
-$(EXECUTABLE): $(OBJECTSINOBJDIR)
+$(EXECUTABLE): $(DEPENDENCYINOBJDIR) $(OBJECTSINOBJDIR)
 	$(CC) $(OBJTOLINKINOBJDIR)  $(OBJECTSINOBJDIR) -o $@ $(LDFLAGS)
 
 # the .d file contain the dependency
-%.d : %.cpp %.h
+$(OBJDIR)/%.d : %.cpp %.h
 	$(CC) -I. -MM $< -o $@
 
 $(OBJDIR)/%.o : %.cpp 
@@ -227,11 +230,11 @@ $(OBJDIR)/%.o : %.cpp
 
 # include all the dependency .d file into the makefile 
 # it allow to match change in .h file
-include ${DEPENDENCY}
+#include $(OBJDIR)/${DEPENDENCY}
 
 
 # SYSTEMLINUX.d does have a .h which is SYSTEM.h, so it need a tweaks
-SYSTEMLINUX.d:SYSTEMLINUX.cpp 
+$(OBJDIR)/SYSTEMLINUX.d:SYSTEMLINUX.cpp 
 	$(CC) -I. -MM $< -o $@ 
 
 # PatternPlayer.d does have a .h which is system.h
@@ -240,7 +243,8 @@ PatternPlayer.d:PatternPlayer.cpp
 
 
 clean:
-	-rm -f $(OBJECTS) 
+	-rm -f $(OBJECTSINOBJDIR)
+	-rm -f $(DEPENDENCYINOBJDIR)
 	-rm -f $(EXECUTABLE)
 	-rm -f $(DEPENDENCY)
 
