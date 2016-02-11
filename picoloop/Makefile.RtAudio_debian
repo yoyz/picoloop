@@ -3,15 +3,20 @@ CFLAGS=-c -DLINUX -I. -LSDL/lib -g
 CFLAGS=-O3 -Wall -I.. -DHAVE_GETTIMEOFDAY -D__LINUX_ALSA__
 LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf
 SOURCES=RtAudio.cpp
-OBJDIR=debian
+OBJDIR=debianrtaudio
 OBJECTS=$(SOURCES:.cpp=.o)
 OBJECTSINOBJDIR    = $(addprefix $(OBJDIR)/,$(OBJECTS))
 
 
-all: $(OBJECTSINOBJDIR)
+all: DIRTOCREATE $(OBJECTSINOBJDIR)
 
 $(OBJDIR)/%.o : %.cpp
 	$(CC) $(CFLAGS) -c $< -o $@
+
+DIRTOCREATE:
+	-mkdir -p $(OBJDIR)
+
+
 
 clean:
 	-rm -f $(OBJECTSINOBJDIR)

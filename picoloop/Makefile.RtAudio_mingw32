@@ -6,13 +6,18 @@ CFLAGS=-D__WINDOWS_DS__ -Idx/include/ -Ldx/lib  -static-libgcc
 LDFLAGS=-Idx/include/ -Ldx/lib
 SOURCES=RtAudio.cpp 
 OBJECTS=$(SOURCES:.cpp=.o)
-#EXECUTABLE=Picoloop
+OBJDIR=     windowsrtaudio
+OBJECTSINOBJDIR    = $(addprefix $(OBJDIR)/,$(OBJECTS))
 
-all: $(OBJECTS)
+
+all: DIRTOCREATE $(OBJECTSINOBJDIR)
 
 
-.cpp.o:
+$(OBJDIR)/%.o : %.cpp
 	$(CC) $(CFLAGS) -c $< -o $@
 
+DIRTOCREATE:
+	-mkdir -p $(OBJDIR)
+
 clean:
-	-rm -f $(OBJECTS) $(EXECUTABLE)
+	-rm -f $(OBJECTSINOBJDIR) 
