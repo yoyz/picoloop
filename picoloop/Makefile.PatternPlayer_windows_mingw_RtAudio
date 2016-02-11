@@ -12,7 +12,7 @@ CFLAGS=-c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb -ffast-math
 CFLAGS=-c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb  -pg
 CFLAGS=-Wall -c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb  
 CFLAGS= -O3 -D__WIN32__ -I/c/MinGW/include/  -DLINUX -I. -ISDL_windows -D__RTAUDIO__ -DLINUX_DESKTOP -ggdb 
-CFLAGS= -std=c++11 -O3 -DWIN32 -D__WIN32__ -I/c/MinGW/include/  -DLINUX -I. -ISDL_windows -D__RTAUDIO__ -DLINUX_DESKTOP -ggdb 
+CFLAGS= -std=c++11 -O3 -DWIN32 -D__WIN32__ -I/c/MinGW/include/  -DLINUX -I. -ISDL_windows -D__RTAUDIO__ -DLINUX_DESKTOP -ggdb -fpermissive
 
 
 LDFLAGS=-lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread -pg
@@ -21,7 +21,7 @@ LDFLAGS=-L. -lSDL -lSDL_ttf
 LDFLAGS=-L. -lmingw32 -lSDLmain -lSDL -lSDL_ttf
 LDFLAGS=-D__WIN32__ -L. -LSDL-1.2.15/lib/ -lmingw32 -lSDLmain -lSDL -lSDL_ttf -static-libgcc -ggdb
 LDFLAGS=-D__WIN32__ -L. -LSDL_windows/lib -L/home/yoyz/.wine/drive_c/users/yoyz/Temp/DXF/DXSDK/lib/ -lmingw32 -lSDLmain -static-libgcc  -static-libstdc++ -lSDL -lSDL_ttf -ldsound -lole32 -lwinmm  -ggdb
-LDFLAGS=-D__WIN32__ -L. -LSDL_windows/lib -L/home/yoyz/.wine/drive_c/users/yoyz/Temp/DXF/DXSDK/lib/ -lmingw32 -lSDLmain -static-libgcc  -static-libstdc++ -lSDL -lSDL_ttf -ldsound -lole32 -lwinmm  -ggdb
+LDFLAGS=-D__WIN32__ -L. -LSDL_windows/lib -L/home/yoyz/.wine/drive_c/users/yoyz/Temp/DXF/DXSDK/lib/ -lmingw32 -lSDLmain -static-libgcc  -static-libstdc++ -lSDL -lSDL_ttf -ldsound -lole32 -lwinmm  -L/usr/i686-w64-mingw32/lib/ -lkernel32 -ggdb 
 
 OBJTOLINK=RtAudio.o
 SOURCES=PatternPlayer.cpp			\
@@ -170,7 +170,11 @@ SOURCES=PatternPlayer.cpp			\
 			Machine/Twytch/twytch_smooth_filter.cpp			\
 			Machine/Twytch/twytch_simple_delay.cpp			\
 			Machine/Twytch/twytch_wave.cpp				\
-			Machine/Twytch/twytch_voice_handler.cpp			
+			Machine/Twytch/twytch_voice_handler.cpp			\
+			Machine/MDADrum/MDADrumMachine.cpp			\
+			Machine/MDADrum/MDADrumUserInterface.cpp			\
+			Machine/MDADrum/drumsynth.cpp				\
+			Machine/MDADrum/profport.cpp				
 
 
 
@@ -178,34 +182,58 @@ SOURCES=PatternPlayer.cpp			\
 
 
 
-OBJECTS=$(SOURCES:.cpp=.o)
-DEPENDENCY=$(SOURCES:.cpp=.d)
-EXECUTABLE=PatternPlayer_Rtaudio.exe
+OBJDIR             =     windowsrtaudio
+OBJECTS            =   $(SOURCES:.cpp=.o)
+DEPENDENCY         =   $(SOURCES:.cpp=.d)
 
-all: $(SOURCES) $(DEPENDENCY) $(EXECUTABLE)
+DEPENDENCYINOBJDIR = $(addprefix $(OBJDIR)/,$(DEPENDENCY))
+OBJECTSINOBJDIR    = $(addprefix $(OBJDIR)/,$(OBJECTS))
+OBJTOLINKINOBJDIR  = $(addprefix $(OBJDIR)/,$(OBJTOLINK))
 
-$(EXECUTABLE): $(OBJECTS)
-	$(CC) $(OBJTOLINK)  $(OBJECTS) -o $@ $(LDFLAGS)
 
 
-%.o : %.cpp 
+#DEPENDENCY=$(SOURCES:.cpp=.d)
+
+EXECUTABLE=PatternPlayer_windows_Rtaudio.exe
+
+#all: $(SOURCES) $(DEPENDENCY) $(EXECUTABLE)
+all: DIRTOCREATE $(DEPENDENCYINOBJDIR) $(SOURCES) $(EXECUTABLE)
+
+DIRTOCREATE:
+	-mkdir -p $(OBJDIR)/Machine
+	-mkdir -p $(OBJDIR)/Machine/Picosynth
+	-mkdir -p $(OBJDIR)/Machine/Picodrum
+	-mkdir -p $(OBJDIR)/Machine/Dbopl	
+	-mkdir -p $(OBJDIR)/Machine/PBSynth
+	-mkdir -p $(OBJDIR)/Machine/Cursynth
+	-mkdir -p $(OBJDIR)/Machine/Open303
+	-mkdir -p $(OBJDIR)/Machine/Twytch
+	-mkdir -p $(OBJDIR)/Machine/MidiOutSystem
+	-mkdir -p $(OBJDIR)/Machine/MDADrum
+
+
+$(EXECUTABLE): $(DEPENDENCYINOBJDIR) $(OBJECTSINOBJDIR)
+	$(CC) $(OBJTOLINKINOBJDIR)  $(OBJECTSINOBJDIR) -o $@ $(LDFLAGS)
+
+# the .d file contain the dependency
+$(OBJDIR)/%.d : %.cpp %.h
+	$(CC) -I. -ISDL_windows -MM $< -o $@
+
+$(OBJDIR)/%.o : %.cpp 
 	$(CC) -c $(CFLAGS) $< -o $@
 
 
 # include all the dependency .d file into the makefile 
 # it allow to match change in .h file
-include ${DEPENDENCY}
+-include ${DEPENDENCYINOBJDIR}
 
-# the .d file contain the dependency
-%.d : %.cpp %.h
-	$(CC) -I. -ISDL_windows -MM $< -o $@
 
 # SYSTEMWINDOWS.d does have a .h which is SYSTEM.h, so it need a tweaks
-SYSTEMWINDOWS.d:SYSTEMWINDOWS.cpp 
+$(OBJDIR)/SYSTEMWINDOWS.d:SYSTEMWINDOWS.cpp 
 	$(CC) -I. -ISDL_windows -MM $< -o $@ 
 
 # systemlinux.d does have a .h which is system.h
-PatternPlayer.d:PatternPlayer.cpp
+$(OBJDIR)/PatternPlayer.d:PatternPlayer.cpp
 	$(CC) -I. -ISDL_windows -MM $< -o $@ 
 
 

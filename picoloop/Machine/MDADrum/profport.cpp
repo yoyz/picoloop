@@ -23,7 +23,7 @@ History :
 #include <ctype.h> 
 #include "profport.h"   /* function prototypes in here */
 
-#ifndef WIN32
+//#ifndef WIN32
 
 static int read_line (FILE *fp, char *bp, int size);
 static int read_section(FILE *fp, char *section);
@@ -286,7 +286,7 @@ int write_private_profile_int(char *section,
     return write_private_profile_string (section,entry, buffer, file_name);
 }
 
-#endif // #ifndef WIN32
+//#endif // #ifndef WIN32
 
 
 /**************************************************************************

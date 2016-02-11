@@ -6,6 +6,8 @@ CC=g++
 
 #CFLAGS=-c -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP
 
+
+
 CFLAGS=-c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb -ffast-math
 CFLAGS=-c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb  -pg
 CFLAGS=-Wall -c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb 
@@ -189,31 +191,50 @@ SOURCES=PatternPlayer.cpp \
 
 
 
+OBJDIR             =     debianrtaudio
+OBJECTS            =   $(SOURCES:.cpp=.o)
+DEPENDENCY         =   $(SOURCES:.cpp=.d)
 
-OBJECTS=$(SOURCES:.cpp=.o)
-DEPENDENCY=$(SOURCES:.cpp=.d)
+DEPENDENCYINOBJDIR = $(addprefix $(OBJDIR)/,$(DEPENDENCY))
+OBJECTSINOBJDIR    = $(addprefix $(OBJDIR)/,$(OBJECTS))
+OBJTOLINKINOBJDIR  = $(addprefix $(OBJDIR)/,$(OBJTOLINK))
+
 EXECUTABLE=PatternPlayer_debian_Rtaudio
 
-all: $(SOURCES) $(DEPENDENCY) $(EXECUTABLE)
+#all: DIRTOCREATE $(DEPENDENCY) $(SOURCES) $(EXECUTABLE)
 
-$(EXECUTABLE): $(OBJECTS)
-	$(CC) $(OBJTOLINK)  $(OBJECTS) -o $@ $(LDFLAGS)
+all: DIRTOCREATE $(DEPENDENCYINOBJDIR) $(SOURCES) $(EXECUTABLE) 
+
+DIRTOCREATE:
+	-mkdir -p $(OBJDIR)/Machine
+	-mkdir -p $(OBJDIR)/Machine/Picosynth
+	-mkdir -p $(OBJDIR)/Machine/Picodrum
+	-mkdir -p $(OBJDIR)/Machine/Dbopl	
+	-mkdir -p $(OBJDIR)/Machine/PBSynth
+	-mkdir -p $(OBJDIR)/Machine/Cursynth
+	-mkdir -p $(OBJDIR)/Machine/Open303
+	-mkdir -p $(OBJDIR)/Machine/Twytch
+	-mkdir -p $(OBJDIR)/Machine/MidiOutSystem
+	-mkdir -p $(OBJDIR)/Machine/MDADrum
+
+$(EXECUTABLE): $(DEPENDENCYINOBJDIR) $(OBJECTSINOBJDIR)
+	$(CC) $(OBJTOLINKINOBJDIR)  $(OBJECTSINOBJDIR) -o $@ $(LDFLAGS)
 
 # the .d file contain the dependency
-%.d : %.cpp %.h
+$(OBJDIR)/%.d : %.cpp %.h
 	$(CC) -I. -MM $< -o $@
 
-%.o : %.cpp 
+$(OBJDIR)/%.o : %.cpp 
 	$(CC) $(CFLAGS) $< -o $@
 
 
 # include all the dependency .d file into the makefile 
 # it allow to match change in .h file
-include ${DEPENDENCY}
+include $(DEPENDENCYINOBJDIR)
 
 
 # SYSTEMLINUX.d does have a .h which is SYSTEM.h, so it need a tweaks
-SYSTEMLINUX.d:SYSTEMLINUX.cpp 
+$(OBJDIR)/SYSTEMLINUX.d:SYSTEMLINUX.cpp 
 	$(CC) -I. -MM $< -o $@ 
 
 # PatternPlayer.d does have a .h which is system.h
@@ -222,7 +243,8 @@ PatternPlayer.d:PatternPlayer.cpp
 
 
 clean:
-	-rm -f $(OBJECTS) 
+	-rm -f $(OBJECTSINOBJDIR)
+	-rm -f $(DEPENDENCYINOBJDIR)
 	-rm -f $(EXECUTABLE)
 	-rm -f $(DEPENDENCY)
 
