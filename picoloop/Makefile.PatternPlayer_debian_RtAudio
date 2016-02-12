@@ -230,7 +230,7 @@ $(OBJDIR)/%.o : %.cpp
 
 # include all the dependency .d file into the makefile 
 # it allow to match change in .h file
-include $(DEPENDENCYINOBJDIR)
+-include $(DEPENDENCYINOBJDIR)
 
 
 # SYSTEMLINUX.d does have a .h which is SYSTEM.h, so it need a tweaks
