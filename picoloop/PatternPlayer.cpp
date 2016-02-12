@@ -1328,7 +1328,7 @@ void handle_key_sixteenbox()
 }
 
 
-int handle_tweakable_knob_key_two_button(int buttonPressed,int buttonKeyRepeat,int repeatInterval,int machineParam,int paramValue,int all)
+int handle_key_two_button(int buttonPressed,int buttonKeyRepeat,int repeatInterval,int machineParam,int paramValue,int all)
 {
   bool * keyState;
   int  * keyRepeat;
@@ -1388,11 +1388,11 @@ void handle_key_fx()
       // Insert/Remove Trig
       sub_handle_invert_trig();
 
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, FX1_DEPTH      ,     -1, 0);
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, FX1_DEPTH      ,      1, 0);
+      handle_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, FX1_DEPTH      ,     -1, 0);
+      handle_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, FX1_DEPTH      ,      1, 0);
 
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, FX1_SPEED         ,   1, 0);
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, FX1_SPEED         ,  -1, 0);
+      handle_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, FX1_SPEED         ,   1, 0);
+      handle_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, FX1_SPEED         ,  -1, 0);
     }
 
   // GLOBALMENU_FX
@@ -1403,11 +1403,11 @@ void handle_key_fx()
       // Insert/Remove Trig
       //sub_handle_invert_trig();
 
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, FX1_DEPTH      ,     -1, 1);
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, FX1_DEPTH      ,      1, 1);
+      handle_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, FX1_DEPTH      ,     -1, 1);
+      handle_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, FX1_DEPTH      ,      1, 1);
 
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, FX1_SPEED         ,   1, 1);
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, FX1_SPEED         ,  -1, 1);
+      handle_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, FX1_SPEED         ,   1, 1);
+      handle_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, FX1_SPEED         ,  -1, 1);
 
     }
 
@@ -1439,8 +1439,8 @@ void handle_key_mac()
       // Insert/Remove Trig
       sub_handle_invert_trig();
 
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG,     MACHINE_TYPE        ,      1, 0);
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG,     MACHINE_TYPE        ,     -1, 0);      
+      handle_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG,     MACHINE_TYPE        ,      1, 0);
+      handle_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG,     MACHINE_TYPE        ,     -1, 0);      
     }
 
   // GLOBALMENU_MAC
@@ -1449,8 +1449,8 @@ void handle_key_mac()
       menu_cursor == GLOBALMENU_MAC )
     {
 
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG,     MACHINE_TYPE        ,      1, 1);
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG,     MACHINE_TYPE        ,     -1, 1);
+      handle_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG,     MACHINE_TYPE        ,      1, 1);
+      handle_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG,     MACHINE_TYPE        ,     -1, 1);
     }
 
 }
@@ -1480,11 +1480,11 @@ void handle_key_psh()
       menu_cursor == GLOBALMENU_PSH
       )
     {
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_LONG    , PATTERN_SHIFT,    -1, 1);
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_LONG    , PATTERN_SHIFT,     1, 1);
+      handle_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_LONG    , PATTERN_SHIFT,    -1, 1);
+      handle_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_LONG    , PATTERN_SHIFT,     1, 1);
 
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG    , PATTERN_LENGTH ,   1, 1);
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG    , PATTERN_LENGTH ,  -1, 1);
+      handle_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG    , PATTERN_LENGTH ,   1, 1);
+      handle_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG    , PATTERN_LENGTH ,  -1, 1);
     }
 
 }
@@ -1514,26 +1514,26 @@ void handle_key_bpm()
   if (menu        == MENU_OFF && 
       menu_cursor == GLOBALMENU_BPM )
     {
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_LONG    , BPM ,             -1, 0);
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_LONG    , BPM ,              1, 0);
+      handle_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_LONG    , BPM ,             -1, 0);
+      handle_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_LONG    , BPM ,              1, 0);
 
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG    , BPM            ,  10, 0);
-      handle_tweakable_knob_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG    , BPM            , -10, 0);
+      handle_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG    , BPM            ,  10, 0);
+      handle_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG    , BPM            , -10, 0);
     }  
 
   if (menu        == MENU_OFF && 
       menu_cursor == GLOBALMENU_BPM )
     {
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG    , BPM_DIVIDER    ,   1, 0);
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG    , BPM_DIVIDER    ,  -1, 0);
+      handle_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG    , BPM_DIVIDER    ,   1, 0);
+      handle_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG    , BPM_DIVIDER    ,  -1, 0);
     }  
 
 
   if (menu        == MENU_OFF && 
       menu_cursor == GLOBALMENU_BPM )
     {
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_LONG    , SWING    ,  -1, 0);
-      handle_tweakable_knob_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_LONG    , SWING    ,   1, 0);
+      handle_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_LONG    , SWING    ,  -1, 0);
+      handle_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_LONG    , SWING    ,   1, 0);
     }  
 
 
