@@ -2,7 +2,7 @@
 
 Filter::Filter() : bq(), lp()
 {
-  DPRINTF("Filter::Filter()\n");  
+  DPRINTF("Filter::Filter()");  
   cutoff=120;
   resonance=10;
   needCalc=1;
@@ -14,7 +14,7 @@ Filter::Filter() : bq(), lp()
 
 Filter::~Filter()
 {
-  DPRINTF("Filter::~Filter()\n");  
+  DPRINTF("Filter::~Filter()");  
 }
 
 void Filter::init()

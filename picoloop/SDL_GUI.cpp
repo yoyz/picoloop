@@ -2,7 +2,7 @@
 
 SDL_GUI::SDL_GUI()
 {
-  DPRINTF("construction SDL_GUI::SDL_GUI()\n");
+  DPRINTF("construction SDL_GUI::SDL_GUI()");
   screen=NULL;
   bmp_font=NULL;
   ttf_font=NULL;
@@ -14,7 +14,7 @@ SDL_GUI::SDL_GUI()
 
 SDL_GUI::~SDL_GUI()
 {
-  DPRINTF("SDL_GUI::~SDL_GUI()\n");
+  DPRINTF("SDL_GUI::~SDL_GUI()");
   
   if (ttf_font!=NULL)
     TTF_CloseFont(ttf_font);
@@ -47,7 +47,7 @@ int SDL_GUI::initVideo()
        //) < 0 )
        <0)
     {
-      DPRINTF("Couldn't initialize SDL: %s\n", SDL_GetError());
+      DPRINTF("Couldn't initialize SDL: %s", SDL_GetError());
       return 0;
     }
 #endif   
@@ -55,7 +55,7 @@ int SDL_GUI::initVideo()
 #ifdef __RTAUDIO__
   if ( SDL_Init(SDL_INIT_VIDEO)<0)
     {
-      DPRINTF("Couldn't initialize SDL: %s\n", SDL_GetError());
+      DPRINTF("Couldn't initialize SDL: %s", SDL_GetError());
       return 0;
     }
 #endif   
@@ -63,7 +63,7 @@ int SDL_GUI::initVideo()
 
 
   
-  DPRINTF("SDL initialized.\n");
+  DPRINTF("SDL initialized.");
   #ifdef OPENDINGUX
   screen = SDL_SetVideoMode(SCREEN_WIDTH, 
 			    SCREEN_HEIGHT, 
@@ -101,7 +101,7 @@ int SDL_GUI::initVideo()
 
   if (screen == NULL)
     {
-      DPRINTF("Couldn't set video mode: %s\n", SDL_GetError());
+      DPRINTF("Couldn't set video mode: %s", SDL_GetError());
       SDL_Quit();
       return 0;
     }  
@@ -118,7 +118,7 @@ void SDL_GUI::refresh()
 
 void SDL_GUI::clearScreen()
 {
-  DPRINTF("SDL_GUI::clearScreen()\n");
+  DPRINTF("SDL_GUI::clearScreen()");
   SDL_FillRect(screen,NULL, 0x000000);
 }
 
@@ -296,7 +296,7 @@ int SDL_GUI::openTTFFont()
   // exit(0);
   if( ttf_font == NULL || ttf_font==0 )
     {      
-      DPRINTF("font not found or is not a font file ttf_font:%d\n",ttf_font);
+      DPRINTF("font not found or is not a font file ttf_font:%d",ttf_font);
       return false;      
     }
   return true;  
@@ -525,7 +525,7 @@ int SDL_GUI::openBMPFont()
   bmp_font = this->loadBMP("font.bmp");
   if(!bmp_font)
     {
-      DPRINTF("Couldn't load font!\n");
+      DPRINTF("Couldn't load font!");
       return -1;
     } 
   return 0;

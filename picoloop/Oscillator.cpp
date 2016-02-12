@@ -19,7 +19,7 @@ Oscillator::Oscillator()
 
 Oscillator::~Oscillator()
 {
-  DPRINTF("Oscillator::~Oscillator()\n");
+  DPRINTF("Oscillator::~Oscillator()");
 }
 
 void Oscillator::reset()
@@ -114,7 +114,7 @@ void Oscillator::setAmplitude(int amp)
   if (amp>=127          ){ amplitude=127; }
   if (amp<=0            ){ amplitude=0;   }
   if (amp>0   && amp<127){ amplitude=amp; }
-  DPRINTF("Oscillator::setAmplitude(amplitude=%d)\n",amplitude);
+  DPRINTF("Oscillator::setAmplitude(amplitude=%d)",amplitude);
 }
 
 

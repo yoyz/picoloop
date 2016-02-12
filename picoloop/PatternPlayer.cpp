@@ -636,7 +636,7 @@ void display_board_bank()
       menu_cursor  ==  GLOBALMENU_BANK 
       )
     {
-     DPRINTF("HIT\n");
+     DPRINTF("HIT");
       SG.clearScreen();
       
       sprintf(str_bank,"Current Bank %d ",bank);
@@ -730,7 +730,7 @@ void display_board_load_save()
       menu_ls      ==  MENU_LS_PATTERN
       )
     {
-     DPRINTF("HIT\n");
+     DPRINTF("HIT");
       SG.clearScreen();
       
       sprintf(str_bank,"Bank %d ",bank);
@@ -1053,7 +1053,7 @@ void sub_handle_invert_trig()
       TK.set(INVERT_TRIG,1);
       //invert_trig=1;
       //TK.set(NOTE_ON,(TK.get(NOTE_ON)+1)%2);
-     DPRINTF("key lalt\n");      
+     DPRINTF("key lalt");      
       dirty_graphic=1;
       IE.clearLastKeyEvent();
     }  
@@ -1123,12 +1123,12 @@ void handle_key_menu()
 	{
 	  SEQ.setCurrentTrackY(loadsave_cursor.y);
 	  PR.saveSong(SEQ.getSongSequencer());
-	 DPRINTF("SAVING SONG TO FILE\n");
+	 DPRINTF("SAVING SONG TO FILE");
 	}
       //printf("HERE IAMn");
       dirty_graphic=1;
       IE.clearLastKeyEvent();
-     DPRINTF("[gmenu : %d cmenu : %d]\n",menu,menu_cursor);
+     DPRINTF("[gmenu : %d cmenu : %d]",menu,menu_cursor);
     }
 
   //We enter the LS Menu so we had to sync the cursor with SEQ 
@@ -1143,7 +1143,7 @@ void handle_key_menu()
       loadsave_cursor.y=SEQ.getCurrentTrackY();
       dirty_graphic=1;
       IE.clearLastKeyEvent();
-     DPRINTF("[gmenu : %d cmenu : %d]\n",menu,menu_cursor);
+     DPRINTF("[gmenu : %d cmenu : %d]",menu,menu_cursor);
     }
 
 
@@ -1173,8 +1173,8 @@ void handle_key_menu()
 	  if (menu_cursor<6     && menu==MENU_ON_PAGE2) menu_cursor=11;
 
 	  dirty_graphic=1;
-	 DPRINTF("\t\t[menu_cursor:%d]\n",menu_cursor);
-	 DPRINTF("key left\n");            
+	 DPRINTF("\t\t[menu_cursor:%d]",menu_cursor);
+	 DPRINTF("key left");            
 	}      
       
       if(keyState[BUTTON_RIGHT])
@@ -1191,8 +1191,8 @@ void handle_key_menu()
 	  if (menu_cursor>11     && menu==MENU_ON_PAGE2) { menu_cursor=6;             menu_switching=1; }
 
 	  dirty_graphic=1;
-	 DPRINTF("\t\t[menu_cursor:%d]\n",menu_cursor);
-	 DPRINTF("key right\n");            
+	 DPRINTF("\t\t[menu_cursor:%d]",menu_cursor);
+	 DPRINTF("key right");            
 	}
       
       if(keyState[BUTTON_UP])
@@ -1211,7 +1211,7 @@ void handle_key_menu()
 		  menu_switching=1;
 		}
 	    }
-	 DPRINTF("[key up : change track : %d] \n",SEQ.getCurrentTrackY());
+	 DPRINTF("[key up : change track : %d]",SEQ.getCurrentTrackY());
 	  dirty_graphic=1;
 	}
 
@@ -1230,14 +1230,14 @@ void handle_key_menu()
 		  menu_switching=1;
 		}
 	    }
-	 DPRINTF("[key down : change track : %d] \n",SEQ.getCurrentTrackY());
+	 DPRINTF("[key down : change track : %d]",SEQ.getCurrentTrackY());
 	  dirty_graphic=1;
 	}
     }
 
   if (menu_switching>0)
     {
-     DPRINTF("Switching back to all default menu\n");
+     DPRINTF("Switching back to all default menu");
       menu_note=ENABLE;
       menu_ad=0;
       menu_osc=0;
@@ -1289,7 +1289,7 @@ void handle_key_sixteenbox()
 	      keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONG==0)	    
 	    cursor=cursor-4;
 	  if (cursor < 0) cursor=cursor +16;
-	 DPRINTF("key down : up \n");
+	 DPRINTF("key down : up");
 	  dirty_graphic=1;
 	}
       
@@ -1298,7 +1298,7 @@ void handle_key_sixteenbox()
 	{
 	  if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONG==0)
 	    cursor=( cursor+4 ) %16;
-	 DPRINTF("key down : down\n");
+	 DPRINTF("key down : down");
 	  dirty_graphic=1;
 	}
       
@@ -1310,7 +1310,7 @@ void handle_key_sixteenbox()
 	    cursor--;
 	  
 	  if (cursor<0) cursor=15;
-	 DPRINTF("key left\n");            
+	 DPRINTF("key left");            
 	  dirty_graphic=1;
 	}
       
@@ -1321,7 +1321,7 @@ void handle_key_sixteenbox()
 	      keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_LONG==0)
 	    cursor++;
 	  if (cursor>15) cursor=0;
-	 DPRINTF("key right\n");      
+	 DPRINTF("key right");      
 	  dirty_graphic=1;
 	}
     }
@@ -2253,7 +2253,7 @@ void seq_update_multiple_time_by_step()
 
       TK.setAll(PATTERN_SHIFT,0);
       dirty_graphic=1;
-     DPRINTF("[pshift_all:left]\n");	  
+     DPRINTF("[pshift_all:left]");	  
     }
 
 
@@ -2275,7 +2275,7 @@ void seq_update_multiple_time_by_step()
       //save the bpm in the 
       //change the number of time AudioEngine need to be trigged
       //to effectively change pattern step
-     DPRINTF("Recalculate BPM\n");
+     DPRINTF("Recalculate BPM");
      bpm_current=P[cty].getBPM();
       for(t=0;t<TRACK_MAX;t++)	    
 	P[t].setBPM(bpm_current+bpm_diff);
@@ -2292,7 +2292,7 @@ void seq_update_multiple_time_by_step()
       //save the swing in the Pattern
       //change the number of time AudioEngine need to be trigged
       //to effectively change pattern step
-     DPRINTF("Recalculate Swing\n");
+     DPRINTF("Recalculate Swing");
       current_swing=current_swing+TK.get(SWING);
       TK.set(SWING,0);
       
@@ -2399,7 +2399,7 @@ int seq_update_by_step()
   // Load save only on pattern change
   if (save)
     {
-     DPRINTF("<==[SAVE]==>\n");
+     DPRINTF("<==[SAVE]==>");
       //PR.writePattern(1,ct+1,P[ct]);
       PR.writePattern(loadsave_cursor.x,loadsave_cursor.y,P[cty]);
       load_save_highligth_current[loadsave_cursor.y]=loadsave_cursor.x;
@@ -2410,7 +2410,7 @@ int seq_update_by_step()
   // Load save only on pattern change
   if (load)
     {
-     DPRINTF("<==[LOAD]==>\n");
+     DPRINTF("<==[LOAD]==>");
       if (PR.PatternDataExist(loadsave_cursor.x,loadsave_cursor.y)==true)
 	{
 	  PR.readPatternData(loadsave_cursor.x,loadsave_cursor.y,P[cty]);
@@ -2435,7 +2435,7 @@ int seq_update_by_step()
   // Load save only on pattern change
   if (loadall)
     {
-     DPRINTF("<==[LOAD_ALL]==>\n");
+     DPRINTF("<==[LOAD_ALL]==>");
       for (t=0;t<TRACK_MAX;t++)
 	{
 	  if (PR.PatternDataExist(loadsave_cursor.x,t)==true)
@@ -2464,7 +2464,7 @@ int seq_update_by_step()
   // Load save only on pattern change
   if (saveall)
     {
-     DPRINTF("<==[SAVE_ALL]==>\n");
+     DPRINTF("<==[SAVE_ALL]==>");
       //PR.writePattern(1,ct+1,P[ct]);
       for (t=0;t<TRACK_MAX;t++)
 	{
@@ -2480,19 +2480,19 @@ int seq_update_by_step()
   // Load save only on pattern change
   if (patternRemove)
     {
-     DPRINTF("<==[REMOVE]==>\n");
+     DPRINTF("<==[REMOVE]==>");
       if (PR.PatternDataExist(loadsave_cursor.x,loadsave_cursor.y)==true)
 	{
 	  if (PR.PatternRemove(loadsave_cursor.x,loadsave_cursor.y))
 	    {
-	     DPRINTF("<==[REMOVE==Success]==>\n");
+	     DPRINTF("<==[REMOVE==Success]==>");
 	      dirty_graphic=1;
 	    }
 	}
       else
 	{
 	  P[cty].init();
-	 DPRINTF("<==[Remove==Failed]==>\n");
+	 DPRINTF("<==[Remove==Failed]==>");
 	}
       patternRemove=false;
     }
@@ -2733,7 +2733,7 @@ int seq()
 
   dirty_graphic=1;
 
- DPRINTF("Now in PatternPlayer::seq()\n");
+ DPRINTF("Now in PatternPlayer::seq()");
 
   // Initialize 
   for (t=0;t<TRACK_MAX;t++)
@@ -2755,7 +2755,7 @@ int seq()
 
   refresh_pecursor();
 
-  DPRINTF("openAudio start streaming\n");
+  DPRINTF("openAudio start streaming");
   AE.startAudio();
   //AE.startAudioSdl();
 
@@ -2800,7 +2800,7 @@ int seq()
       if (quit ||
 	  running<=0)
 	{
-	 DPRINTF("user want to quit\n");
+	 DPRINTF("user want to quit");
 	  return(0);
 	}
       
@@ -2944,7 +2944,7 @@ void wtg()
   // memcpy(WT->getBuffer(),G.getBuffer(),WAVETABLE_SIZE);
   // WTM.insert(WT,PICO_WAVETABLE_NOISE);
   
- DPRINTF("wavetablemanager.getSize : %d\n",WTM.getSize());
+ DPRINTF("wavetablemanager.getSize : %d",WTM.getSize());
 
 }
 
@@ -2974,7 +2974,7 @@ int main(int argc,char **argv)
   running = isRunning();
   setupExitCallback();
   cpu_speed=scePowerGetCpuClockFrequencyInt();
- DPRINTF("CURRENT PSP CPU SPEED:%d\n",cpu_speed);
+ DPRINTF("CURRENT PSP CPU SPEED:%d",cpu_speed);
   //cpu_speed=333;
   //scePowerSetCpuClockFrequency(cpu_speed);
   //scePowerSetClockFrequency(333, 333, 166);
@@ -2982,7 +2982,7 @@ int main(int argc,char **argv)
   //scePowerSetClockFrequency(300, 300, 150);
   scePowerSetClockFrequency(266, 266, 133);
   cpu_speed=scePowerGetCpuClockFrequencyInt();
- DPRINTF("NEW PSP CPU SPEED:%d\n",cpu_speed);
+ DPRINTF("NEW PSP CPU SPEED:%d",cpu_speed);
 #else
   running=1; // if we are not on psp, running should be 1  
 #endif
@@ -3009,13 +3009,13 @@ int main(int argc,char **argv)
   PR.setBank(bank);  // The current  storage bank will be 0 PWD/bank/bank%d/
 
   load_pattern();
-  DPRINTF("[openVideo output]\n");
+  DPRINTF("[openVideo output]");
   SG.initVideo();
   //SDL_InitSubSystem(SDL_INIT_AUDIO);
   //handle_key(); 
  //  SDL_EnableKeyRepeat(500,500);
   SG.openBMPFont();
-  if (SG.openTTFFont()==false) {DPRINTF("ttf font error\n"); exit(1); }
+  if (SG.openTTFFont()==false) {DPRINTF("ttf font error"); exit(1); }
   SG.loadingScreen();
 
   //sleep(10);
@@ -3026,7 +3026,7 @@ int main(int argc,char **argv)
 
   //display_board();
 
-  DPRINTF("[openAudio output]\n");
+  DPRINTF("[openAudio output]");
   //exit(0);
 
   //AE.openAudioSdl();

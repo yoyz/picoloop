@@ -20,7 +20,7 @@ PicosynthADSR::PicosynthADSR() : tanh_table(new Sint16[1024])
   int   ii;
   int   i;
 
-  DPRINTF("PicosynthADSR::PicosynthADSR()\n");
+  DPRINTF("PicosynthADSR::PicosynthADSR()");
 
   adsr_note=0;
 
@@ -58,7 +58,7 @@ PicosynthADSR::PicosynthADSR() : tanh_table(new Sint16[1024])
       fi=fi*1024;
       ii=fi;
       tanh_table[i]=ii;
-      DPRINTF("tanh[%d]=%d\n",i,tanh_table[i]);
+      //DPRINTF("tanh[%d]=%d",i,tanh_table[i]);
     }
 }
 
@@ -69,7 +69,7 @@ PicosynthADSR::~PicosynthADSR()
 
 void PicosynthADSR::init()
 {
-  DPRINTF("PicosynthADSR::init()\n");
+  DPRINTF("PicosynthADSR::init()");
 
   adsr_note=0;
 
@@ -167,7 +167,7 @@ int PicosynthADSR::setSegment(int segment)
 
 void PicosynthADSR::setInput(Oscillator * vcoosc)
 {
-  DPRINTF("PicosynthADSR::setVCO(0x%08.8X\n",vcoosc);
+  DPRINTF("PicosynthADSR::setVCO(0x%08.8X",vcoosc);
   vco=(PicosynthVCO*)vcoosc;
 }
 
@@ -195,7 +195,7 @@ int PicosynthADSR::getNoteOn()
 void PicosynthADSR::reset()
 { 
   int numsample_shift;
-  DPRINTF("PicosynthADSR::reset() this=0x%08.8X\n",this);  
+  DPRINTF("PicosynthADSR::reset() this=0x%08.8X",this);  
 
   numsample_shift=SHIFT_NOTE;
 
@@ -264,7 +264,7 @@ Sint16 PicosynthADSR::tick_note()
 
   if (current_segment==PicosynthADSR_FINISH)
     {
-      if (0) DPRINTF("PicosynthADSR_FINISH\n");
+      if (0) DPRINTF("PicosynthADSR_FINISH");
       s_out=0;
     }
 
@@ -272,7 +272,7 @@ Sint16 PicosynthADSR::tick_note()
       noteOn_value==0                    
       )
     {
-      if (0) DPRINTF("PicosynthADSR_INIT\n");
+      if (0) DPRINTF("PicosynthADSR_INIT");
       current_segment=PicosynthADSR_RELEASE;
     }
 
