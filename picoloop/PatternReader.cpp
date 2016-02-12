@@ -203,7 +203,7 @@ bool PatternReader::readPatternDataLine(int PatternNumber,int TrackNumber, Patte
 {
   PatternElement Pe;
   bool retcode=true;
-  int n[128];
+  int n[MAX_STEP_PER_TRACK];
   char strParam[64];
   int PatNum;
   int TrackNum;
@@ -276,8 +276,8 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
   int PatBPM;
   int PatBPMDivider;
   int PatSwing;
-  int n[16];
-  int t[16];
+  //int n[16];
+  //int t[16];
   int i;
   bool retcode=true;
   int match=0;
@@ -332,11 +332,11 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
 
   if (retcode==false)
     {
-      P.setPatternSize(16);
+      P.setSize(16);
       return false;
     }
   
-  P.setPatternSize(PatSize);
+  P.setSize(PatSize);
   
   if (fgets(line,sizeoflinemax,fd))
     {

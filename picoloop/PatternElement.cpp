@@ -57,6 +57,7 @@ void PatternElement::init()
 
   oscOneType=PICO_WAVETABLE_SAW;
   oscTwoType=PICO_WAVETABLE_PULSE;
+  oscThreeType=PICO_WAVETABLE_SINE;
 
   lfo1Waveform=PICO_CURSYNTH_SIN;   // used by lfo1 cursynth
   lfo2Waveform=PICO_CURSYNTH_SIN;   // used by lfo2 cursynth
@@ -98,6 +99,9 @@ void PatternElement::init()
   pb_speed=0;
 
   polyphony=1;
+  fx_depth=0;
+  fx_speed=0;
+  fm_type=0;
 }
 
 void PatternElement::set(int what,int val)
