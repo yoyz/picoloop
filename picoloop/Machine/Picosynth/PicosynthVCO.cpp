@@ -26,7 +26,7 @@ PicosynthVCO::PicosynthVCO() : sineOsc1(),
 			       pb()
 			       //, noiseosc()
 {
-  DPRINTF("PicosynthVCO::PicosynthVCO()\n");
+  DPRINTF("PicosynthVCO::PicosynthVCO()");
   s1=NULL;
   s2=NULL;
   vcomix=64;
@@ -55,7 +55,7 @@ PicosynthVCO::PicosynthVCO() : sineOsc1(),
 
 void PicosynthVCO::init()
 {
-  DPRINTF("PicosynthVCO::init() begin s1:=0x%08.8X s2:=0x%08.8X\n",s1,s2);
+  DPRINTF("PicosynthVCO::init() begin s1:=0x%08.8X s2:=0x%08.8X",s1,s2);
 
 
   lfo_depth=0;
@@ -129,13 +129,13 @@ void PicosynthVCO::init()
   s2->setAmplitude(32);
 
 
-  DPRINTF("PicosynthVCO::init() end s1:=0x%08.8X s2:=0x%08.8X\n",s1,s2);
+  DPRINTF("PicosynthVCO::init() end s1:=0x%08.8X s2:=0x%08.8X",s1,s2);
 }
 
 
 PicosynthVCO::~PicosynthVCO()
 {
-  DPRINTF("PicosynthVCO::~PicosynthVCO()\n");
+  DPRINTF("PicosynthVCO::~PicosynthVCO()");
 }
 
 int PicosynthVCO::checkSevenBitBoundarie(int val)
@@ -269,7 +269,7 @@ void PicosynthVCO::setPitchBendSpeed(int val)
 
 void PicosynthVCO::reset()
 {
-  DPRINTF("PicosynthVCO::reset() this=0x%08.8X\n",this); // <==== FAILS allways the same this pointers
+  DPRINTF("PicosynthVCO::reset() this=0x%08.8X",this); // <==== FAILS allways the same this pointers
   s1->reset();
   s2->reset();
   s2->setPhase(phase);
@@ -283,7 +283,7 @@ void PicosynthVCO::reset()
 
 Oscillator * PicosynthVCO::getOscillatorOne()
 {
-  DPRINTF("Oscillator * PicosynthVCO::getOscillatorOne() Oscillator=0x%08.8X\n",s1);
+  DPRINTF("Oscillator * PicosynthVCO::getOscillatorOne() Oscillator=0x%08.8X",s1);
   return s1;
 }
 
@@ -320,7 +320,7 @@ Sint16 PicosynthVCO::tick()
   if (vcomix==0) vcomix=1;
   if (s1==NULL)
     { 
-      DPRINTF("[s1 is NULL]\n"); 
+      DPRINTF("[s1 is NULL]"); 
       //  exit(1); 
     } 
   

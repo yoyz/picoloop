@@ -16,7 +16,7 @@ OneOscillator::OneOscillator() : table(new Sint16[WAVETABLE_SIZE])
 
 OneOscillator::~OneOscillator()
 {
-  DPRINTF("OneOscillator::~OneOscillator() 0x%08.8X\n",table);
+  DPRINTF("OneOscillator::~OneOscillator() 0x%08.8X",table);
   //if (table!=NULL)
     //&& index!=0)
     //free(table);
@@ -33,7 +33,7 @@ void OneOscillator::init()
   //if (table==NULL)
   //{
   //  table=(Sint16*)malloc(sizeof(Sint16)*table_size);
-      DPRINTF("OneOscillator::init() 0x%08.8X\n",table);
+      DPRINTF("OneOscillator::init() 0x%08.8X",table);
       //table=new Sint16[table_size];
       //      if (table==NULL)
       //{

@@ -13,7 +13,7 @@ MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(), CS(), O303(), TW(),          
 MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(),                                     FXDelay(), FXDisabled()
 #endif
 {
-  DPRINTF("MonoMixer::MonoMixer()\n");  
+  DPRINTF("MonoMixer::MonoMixer()");  
   amplitude=127;
   //  M=NULL;
   //M=&PM;
@@ -32,7 +32,7 @@ MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(),                              
 
 MonoMixer::~MonoMixer()
 {
-  DPRINTF("MonoMixer::~MonoMixer()\n");  
+  DPRINTF("MonoMixer::~MonoMixer()");  
 }
 
 
@@ -91,7 +91,7 @@ void MonoMixer::init()
 
 void MonoMixer::setMachineType(int type)
 {
-  DPRINTF("MonoMixer::setMachineType :%d\n",type);  
+  DPRINTF("MonoMixer::setMachineType :%d",type);  
   machine_type=type;
 
   switch (type)
@@ -133,8 +133,8 @@ void MonoMixer::setMachineType(int type)
 #endif
 
     default:
-      DPRINTF("void MonoMixer::setMachineType(%d)\n",type);
-      DPRINTF("ERROR : This machine does not exist : %d\n",type);
+      DPRINTF("void MonoMixer::setMachineType(%d)",type);
+      DPRINTF("ERROR : This machine does not exist : %d",type);
       exit(1);
       break;
     }
@@ -146,7 +146,7 @@ void MonoMixer::setAmplitude(int amp)
   if (amp>=127)           { amplitude=127; }
   if (amp<=0)             { amplitude=0;   }
   if (amp>0   && amp<127) { amplitude=amp; }
-  DPRINTF("MonoMixer::setAmplitude(amplitude=%d)\n",amplitude);
+  DPRINTF("MonoMixer::setAmplitude(amplitude=%d)",amplitude);
 
   //M->setAmplitude(amp);
   amplitude=amp;

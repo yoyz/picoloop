@@ -20,7 +20,7 @@ PicodrumADSR::PicodrumADSR() : tanh_table(new Sint16[128])
   int   ii;
   int   i;
 
-  DPRINTF("PicodrumADSR::PicodrumADSR()\n");
+  DPRINTF("PicodrumADSR::PicodrumADSR()");
 
   adsr_note=0;
 
@@ -58,7 +58,7 @@ PicodrumADSR::PicodrumADSR() : tanh_table(new Sint16[128])
       fi=fi*1024;
       ii=fi;
       tanh_table[i/2]=ii;
-      DPRINTF("tanh[%d]=%d\n",i,tanh_table[i/2]);
+      //DPRINTF("tanh[%d]=%d",i,tanh_table[i/2]);
     }
 }
 
@@ -69,7 +69,7 @@ PicodrumADSR::~PicodrumADSR()
 
 void PicodrumADSR::init()
 {
-  DPRINTF("PicodrumADSR::init()\n");
+  DPRINTF("PicodrumADSR::init()");
 
   adsr_note=0;
 
@@ -155,7 +155,7 @@ int PicodrumADSR::setSegment(int segment)
 
 void PicodrumADSR::setInput(Oscillator * vcoosc)
 {
-  DPRINTF("PicodrumADSR::setVCO(0x%08.8X\n",vcoosc);
+  DPRINTF("PicodrumADSR::setVCO(0x%08.8X",vcoosc);
   vco=(PicodrumVCO*)vcoosc;
 }
 
@@ -183,7 +183,7 @@ int PicodrumADSR::getNoteOn()
 void PicodrumADSR::reset()
 { 
   int numsample_shift;
-  DPRINTF("PicodrumADSR::reset() this=0x%08.8X\n",this);  
+  DPRINTF("PicodrumADSR::reset() this=0x%08.8X",this);  
   
   numsample_shift=SHIFT_TRIG;
 

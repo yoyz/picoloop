@@ -14,7 +14,7 @@ Pattern::Pattern() : pevector(MAX_STEP_PER_TRACK,PatternElement())
 
 Pattern::~Pattern()
 {
-  //DPRINTF("Pattern::~Pattern()\n");
+  DPRINTF("Pattern::~Pattern()");
 }
 
 void Pattern::init()
@@ -26,7 +26,7 @@ void Pattern::init()
   bpm=120;
   swing=50;
 
-  DPRINTF("====Pattern::init()====\n");
+  DPRINTF("====Pattern::init()====");
   for (i=0;i<MAX_STEP_PER_TRACK;i++)
     {
       pevector[i].init();

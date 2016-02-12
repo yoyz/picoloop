@@ -27,7 +27,7 @@ PicodrumVCO::PicodrumVCO() : sineOsc1(),
 			     tanh_table(new Sint16[1024])   
 			     //, noiseosc()
 {
-  DPRINTF("PicodrumVCO::PicodrumVCO()\n");
+  DPRINTF("PicodrumVCO::PicodrumVCO()");
   float fi;
   int   ii;
   int   i;
@@ -60,13 +60,13 @@ PicodrumVCO::PicodrumVCO() : sineOsc1(),
       fi=fi*1024;
       ii=fi;
       tanh_table[i]=ii;
-      DPRINTF("tanh[%d]=%d\n",i,tanh_table[i]);
+      //DPRINTF("tanh[%d]=%d\n",i,tanh_table[i]);
     }
 }
 
 void PicodrumVCO::init()
 {
-  DPRINTF("PicodrumVCO::init() begin s1:=0x%08.8X s2:=0x%08.8X\n",s1,s2);
+  DPRINTF("PicodrumVCO::init() begin s1:=0x%08.8X s2:=0x%08.8X",s1,s2);
 
 
   lfo_depth=0;
@@ -131,13 +131,13 @@ void PicodrumVCO::init()
   s2->setAmplitude(32);
 
 
-  DPRINTF("PicodrumVCO::init() end s1:=0x%08.8X s2:=0x%08.8X\n",s1,s2);
+  DPRINTF("PicodrumVCO::init() end s1:=0x%08.8X s2:=0x%08.8X",s1,s2);
 }
 
 
 PicodrumVCO::~PicodrumVCO()
 {
-  DPRINTF("PicodrumVCO::~PicodrumVCO()\n");
+  DPRINTF("PicodrumVCO::~PicodrumVCO()");
 }
 
 int PicodrumVCO::checkSevenBitBoundarie(int val)
@@ -273,7 +273,7 @@ void PicodrumVCO::setPitchBendSpeed(int val)
 
 void PicodrumVCO::reset()
 {
-  DPRINTF("PicodrumVCO::reset() this=0x%08.8X\n",this); // <==== FAILS allways the same this pointers
+  DPRINTF("PicodrumVCO::reset() this=0x%08.8X",this); // <==== FAILS allways the same this pointers
   s1->reset();
   s2->reset();
   pb.reset();
@@ -289,7 +289,7 @@ void PicodrumVCO::reset()
 
 Oscillator * PicodrumVCO::getOscillatorOne()
 {
-  DPRINTF("Oscillator * PicodrumVCO::getOscillatorOne() Oscillator=0x%08.8X\n",s1);
+  DPRINTF("Oscillator * PicodrumVCO::getOscillatorOne() Oscillator=0x%08.8X",s1);
   return s1;
 }
 
@@ -309,7 +309,7 @@ void PicodrumVCO::setNoteDetune(int nt,int dt)
   s2->setFreq(freqOsc2);
   pb.setNote(note);
 
-  DPRINTF("freqOsc1:%d\n",freqOsc1);
+  DPRINTF("freqOsc1:%d",freqOsc1);
   /*
   s1->setSynthFreq(sfreq);
   s2->setSynthFreq(sfreq);
@@ -349,7 +349,7 @@ Sint16 PicodrumVCO::tick()
   if (vcomix==0) vcomix=1;
   if (s1==NULL)
     { 
-      DPRINTF("[s1 is NULL]\n"); 
+      DPRINTF("[s1 is NULL]"); 
       //  exit(1); 
     } 
 

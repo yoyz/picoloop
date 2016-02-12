@@ -9,7 +9,7 @@ using namespace std;
 
 PatternElement::PatternElement()
 {
-  DPRINTF("PatternElement::PatternElement()\n");
+  DPRINTF("PatternElement::PatternElement()");
   this->init();
 }
 
@@ -318,8 +318,8 @@ void PatternElement::set(int what,int val)
 
       
     default:
-      DPRINTF("PatternElement::set(%d,%d)\n",what,val);
-      printf("case default => exit\n");
+      DPRINTF("PatternElement::set(%d,%d)",what,val);
+      printf("==============================>case default => exit\n");
       exit(1);
       break;
     }
@@ -527,8 +527,8 @@ int PatternElement::get(int what)
 
 
     default:
-      DPRINTF("PatternElement::get(%d,%d)\n",what);
-      DPRINTF("case default : exit");
+      DPRINTF("PatternElement::get(%d,%d)",what);
+      DPRINTF("==============================>case default : exit\n");
       exit(1);
 
     }

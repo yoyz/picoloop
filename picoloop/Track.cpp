@@ -8,7 +8,7 @@ Track::Track() : MM()
 
 Track::~Track()
 {
-  DPRINTF("Track::~Track()\n");  
+  DPRINTF("Track::~Track()");  
 }
 
 
@@ -21,7 +21,7 @@ Machine & Track::getMachine()
 
 MonoMixer * Track::getMonoMixer()
 {
-  DPRINTF("MonoMixer * Track::getMonoMixer() this=0x%08.8X\n",this);
+  DPRINTF("MonoMixer * Track::getMonoMixer() this=0x%08.8X",this);
   return &MM;
 }
 

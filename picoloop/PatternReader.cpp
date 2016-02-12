@@ -23,13 +23,13 @@ PatternReader::PatternReader() : twoDPVector(MAX_PATTERN_BY_PROJECT,vector <Patt
 				 //, 
 				 //				 savedData(16,vector       <int>(TRACK_MAX))
 {
-  DPRINTF("PatternReader::PatternReader()\n");
+  DPRINTF("PatternReader::PatternReader()");
   bank=0;
 }
 
 PatternReader::~PatternReader()
 {
-  DPRINTF("PatternReader::~PatternReader()\n");
+  DPRINTF("PatternReader::~PatternReader()");
 }
 
 void PatternReader::init()
@@ -304,7 +304,7 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
   fd=fopen(filename,"r+");
   if (fd==0)
     {
-      DPRINTF("[data file %s not found]\n",fn.c_str());
+      DPRINTF("[data file %s not found]",fn.c_str());
       loadedData[PatternNumber][TrackNumber]=DATA_DOES_NOT_EXIST_ON_STORAGE;
       //twoDPVector[PatternNumber][TrackNumber].init();
       P.init();
@@ -691,7 +691,7 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
   fd=fopen(filename,"r+");
   if (fd==0)
     {
-      DPRINTF("[data file %s not found]\n",fn.c_str());
+      DPRINTF("[data file %s not found]",fn.c_str());
       retcode=false;
       //exit(213);
     }
@@ -746,7 +746,7 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
 
 
   //line=""; //Weird ?
-  DPRINTF("[First step write]\n",fn.c_str());
+  DPRINTF("[First step write]",fn.c_str());
 
   this->writePatternDataLine(PatternNumber,TrackNumber,P,line,LFO1_DEPTH);
   data.insert(data.end(),line);
@@ -974,14 +974,14 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
   sprintf(line,"\n");
   data.insert(data.end(),line);
 
-  DPRINTF("[second step write]\n",fn.c_str());
+  DPRINTF("[second step write]",fn.c_str());
 
 
   //fd=fopen(fn.c_str(),"w");
   fd=fopen(filename,"w");
   if (fd==0)
     {
-      DPRINTF("[data file %s can not be open write]\n",fn.c_str());
+      DPRINTF("[data file %s can not be open write]",fn.c_str());
       printf("[data file %s can not be open write]\n",filename);
       exit(1);
     }
@@ -992,7 +992,7 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
     }
   fclose(fd);
 
-  DPRINTF("[third and last step write]\n",fn.c_str());
+  DPRINTF("[third and last step write]",fn.c_str());
 
   //loadedData[PatternNumber][TrackNumber]=DATA_EXIST_ON_STORAGE;
   //twoDPVector[PatternNumber][TrackNumber]=P;
