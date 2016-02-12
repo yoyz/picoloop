@@ -4,7 +4,7 @@ using namespace std;
 #include "Pattern.h"
 
 
-Pattern::Pattern() : pevector(128,PatternElement())
+Pattern::Pattern() : pevector(MAX_STEP_PER_TRACK,PatternElement())
 {
   size=16;
   bpmDivider=1;
@@ -27,7 +27,7 @@ void Pattern::init()
   swing=50;
 
   DPRINTF("====Pattern::init()====\n");
-  for (i=0;i<16;i++)
+  for (i=0;i<MAX_STEP_PER_TRACK;i++)
     {
       pevector[i].init();
     }
@@ -36,7 +36,13 @@ void Pattern::init()
 
 PatternElement & Pattern::getPatternElement(int patternElementNumber)
 {
-  return pevector[patternElementNumber];
+  if (patternElementNumber<MAX_STEP_PER_TRACK)
+    return pevector[patternElementNumber];
+  else
+    {
+      printf("PatternElement & Pattern::getPatternElement(int patternElementNumber)\n");
+      exit(1);
+    }
 }
 
 bool Pattern::setPatternElement(int PatternElementNumber,PatternElement PEin)
@@ -44,9 +50,9 @@ bool Pattern::setPatternElement(int PatternElementNumber,PatternElement PEin)
   pevector[PatternElementNumber]=PEin;
 }
 
-void Pattern::setPatternSize(int patternSize)
+void Pattern::setSize(int s)
 {
-  size=patternSize;
+  size=s;
 }
 
 int Pattern::getSize()

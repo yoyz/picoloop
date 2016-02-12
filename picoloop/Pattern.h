@@ -17,12 +17,12 @@ class Pattern
 
   Pattern();
   ~Pattern();
-  void init();
-  void setPatternSize(int patternSize);
+  void init();  
   PatternElement & getPatternElement(int patternElementNumber);
   bool setPatternElement(int PatternElementNumber,PatternElement PEin);
   void print();
-  int getSize();
+  int  getSize();
+  void setSize(int s);
 
   void setLeftVolume(int left);
   void setRightVolume(int right);
