@@ -1987,6 +1987,8 @@ void seq_update_multiple_time_by_step()
   int          i=0;
   int          t=0;
 
+
+
   // Change amp Amplification
   seq_update_tweakable_knob_one(AMP);
   seq_update_tweakable_knob_all(AMP);
@@ -2204,11 +2206,20 @@ void seq_update_multiple_time_by_step()
     }
 
 
-  // Change Note
+  // Change PatternLength
   if (TK.getAll(PATTERN_LENGTH)!=0)
     { 
       SEQ.getPatternSequencer(cty).setPatternLenght(SEQ.getPatternSequencer(cty).getPatternLenght()+TK.getAll(PATTERN_LENGTH));
       TK.setAll(PATTERN_LENGTH,0);
+      P[cty].setSize(SEQ.getPatternSequencer(cty).getPatternLenght());
+    }
+
+  // Change PatternLength
+  if (TK.get(PATTERN_LENGTH)!=0)
+    { 
+      SEQ.getPatternSequencer(cty).setPatternLenght(SEQ.getPatternSequencer(cty).getPatternLenght()+TK.get(PATTERN_LENGTH));
+      TK.set(PATTERN_LENGTH,0);
+      P[cty].setSize(SEQ.getPatternSequencer(cty).getPatternLenght());
     }
 
 
@@ -2408,8 +2419,10 @@ int seq_update_by_step()
 	  // Don't update BPM and Swing on single pattern load
 	  // Do it only on "loadall"
 
-
+	  SEQ.getPatternSequencer(cty).setPatternLenght(P[cty].getSize());
 	  SEQ.getPatternSequencer(cty).setBPMDivider(P[cty].getBPMDivider());
+	  P[cty].setSize(SEQ.getPatternSequencer(cty).getPatternLenght());
+
 	  refresh_bpm();
 
 	}
@@ -2431,11 +2444,11 @@ int seq_update_by_step()
 	      load_save_highligth_current[t]=loadsave_cursor.x;
 	      bpm_current=P[t].getBPM();
 	      current_swing=P[t].getSwing();
-	      //nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
-	      //nb_tick_before_step_change=(60*DEFAULT_FREQ)/(bpm_current*4);
-	      //AE.setNbTickBeforeStepChange(nb_tick_before_step_change);	     
-	      
+
+	      SEQ.getPatternSequencer(t).setPatternLenght(P[t].getSize());
 	      SEQ.getPatternSequencer(t).setBPMDivider(P[t].getBPMDivider());
+	      P[t].setSize(SEQ.getPatternSequencer(t).getPatternLenght());
+
 	      refresh_bpm();
 	    }
 	  else
