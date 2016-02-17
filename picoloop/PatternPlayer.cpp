@@ -1987,213 +1987,8 @@ void seq_update_multiple_time_by_step()
   int          i=0;
   int          t=0;
 
-
-
-  // Change amp Amplification
-  seq_update_tweakable_knob_one(AMP);
-  seq_update_tweakable_knob_all(AMP);
-
-  // Change amp env Attack
-  seq_update_tweakable_knob_one(ADSR_AMP_ATTACK);
-  seq_update_tweakable_knob_all(ADSR_AMP_ATTACK);
-
-  // Change amp env Decay
-  seq_update_tweakable_knob_one(ADSR_AMP_DECAY);
-  seq_update_tweakable_knob_all(ADSR_AMP_DECAY);
-
-  // Change amp env Sustain
-  seq_update_tweakable_knob_one(ADSR_AMP_SUSTAIN);
-  seq_update_tweakable_knob_all(ADSR_AMP_SUSTAIN);  
-  
-  // Change amp env Release
-  seq_update_tweakable_knob_one(ADSR_AMP_RELEASE);
-  seq_update_tweakable_knob_all(ADSR_AMP_RELEASE);
-
-  // Change fltr env Attack
-  seq_update_tweakable_knob_one(ADSR_FLTR_ATTACK);
-  seq_update_tweakable_knob_all(ADSR_FLTR_ATTACK);
-
-  // Change fltr env Decay
-  seq_update_tweakable_knob_one(ADSR_FLTR_DECAY);
-  seq_update_tweakable_knob_all(ADSR_FLTR_DECAY);
-
-  // Change fltr env Sustain
-  seq_update_tweakable_knob_one(ADSR_FLTR_SUSTAIN);
-  seq_update_tweakable_knob_all(ADSR_FLTR_SUSTAIN);
-
-  // Change fltr env Release
-  seq_update_tweakable_knob_one(ADSR_FLTR_RELEASE);
-  seq_update_tweakable_knob_all(ADSR_FLTR_RELEASE);
-  
-  // Change fltr type
-  seq_update_tweakable_knob_one(FILTER1_TYPE);
-  seq_update_tweakable_knob_all(FILTER1_TYPE);
-
-  // Change fltr env Attack
-  seq_update_tweakable_knob_one(FILTER1_ALGO);
-  seq_update_tweakable_knob_all(FILTER1_ALGO);
-
-  // Change VCOMix
-  seq_update_tweakable_knob_one(VCO_MIX);
-  seq_update_tweakable_knob_all(VCO_MIX);
-
-  // Change Fx Depth
-  seq_update_tweakable_knob_one(FX1_DEPTH);
-  seq_update_tweakable_knob_all(FX1_DEPTH);
-
-  // Change Fx Speed
-  seq_update_tweakable_knob_one(FX1_SPEED);
-  seq_update_tweakable_knob_all(FX1_SPEED);
-
-  // Change osc1 amp
-  seq_update_tweakable_knob_one(OSC1_AMP);
-  seq_update_tweakable_knob_all(OSC1_AMP);
-
-  // Change osc2 amp
-  seq_update_tweakable_knob_one(OSC2_AMP);
-  seq_update_tweakable_knob_all(OSC2_AMP);
-
-  // Change osc3 amp
-  seq_update_tweakable_knob_one(OSC3_AMP);
-  seq_update_tweakable_knob_all(OSC3_AMP);
-
-  // Change osc4 amp
-  seq_update_tweakable_knob_one(OSC4_AMP);
-  seq_update_tweakable_knob_all(OSC4_AMP);
-
-
-  // Change osc1 unison
-  seq_update_tweakable_knob_one(OSC1_UNISON);
-  seq_update_tweakable_knob_all(OSC1_UNISON);
-
-  // Change osc2 unison
-  seq_update_tweakable_knob_one(OSC2_UNISON);
-  seq_update_tweakable_knob_all(OSC2_UNISON);
-
-  // Change osc1 unison detune
-  seq_update_tweakable_knob_one(OSC1_UNISONDT);
-  seq_update_tweakable_knob_all(OSC1_UNISONDT);
-
-  // Change osc1 unison detune
-  seq_update_tweakable_knob_one(OSC2_UNISONDT);
-  seq_update_tweakable_knob_all(OSC2_UNISONDT);
-
-
-
-
-
-  // Change trig time
-  seq_update_tweakable_knob_one(TRIG_TIME_DURATION);
-  seq_update_tweakable_knob_all(TRIG_TIME_DURATION);
-
-  // // Change phase osc1
-  seq_update_tweakable_knob_one(OSC1_PHASE);
-  seq_update_tweakable_knob_all(OSC1_PHASE);
-
-  // Change osc1 detune
-  seq_update_tweakable_knob_one(OSC1_DETUNE);
-  seq_update_tweakable_knob_all(OSC1_DETUNE);
-
-
-
-  // Change lfo depth
-  seq_update_tweakable_knob_one(LFO1_DEPTH);
-  seq_update_tweakable_knob_all(LFO1_DEPTH);
-
-  // Change lfo depth
-  seq_update_tweakable_knob_one(LFO2_DEPTH);
-  seq_update_tweakable_knob_all(LFO2_DEPTH);
-
-
-  // Change lfo1 freq
-  seq_update_tweakable_knob_one(LFO1_FREQ);
-  seq_update_tweakable_knob_all(LFO1_FREQ);
-
-  // Change lfo1 freq
-  seq_update_tweakable_knob_one(LFO2_FREQ);
-  seq_update_tweakable_knob_all(LFO2_FREQ);
-
-
-  // Change pitchbend depth
-  seq_update_tweakable_knob_one(PITCHBEND_DEPTH);
-  seq_update_tweakable_knob_all(PITCHBEND_DEPTH);
-
-  // Change pb speed
-  seq_update_tweakable_knob_one(PITCHBEND_SPEED);
-  seq_update_tweakable_knob_all(PITCHBEND_SPEED);
-
-  // Change lfo type
-  seq_update_tweakable_knob_one(LFO_TYPE);
-  seq_update_tweakable_knob_all(LFO_TYPE);
-  
-  // Change filter cutoff
-  seq_update_tweakable_knob_one(FILTER1_CUTOFF);
-  seq_update_tweakable_knob_all(FILTER1_CUTOFF);
- 
-  // Change filter resonance
-  seq_update_tweakable_knob_one(FILTER1_RESONANCE);
-  seq_update_tweakable_knob_all(FILTER1_RESONANCE);
-
-
-  // Change filter saturation in twytch
-  seq_update_tweakable_knob_one(FILTER1_SATURATION);
-  seq_update_tweakable_knob_all(FILTER1_SATURATION);
- 
-  // Change osc feedback filter in twytch
-  seq_update_tweakable_knob_one(FILTER1_FEEDBACK);
-  seq_update_tweakable_knob_all(FILTER1_FEEDBACK);
-
-  
-  // Change oscillator one
-  seq_update_tweakable_knob_one(OSC1_TYPE);
-  seq_update_tweakable_knob_all(OSC1_TYPE);
-  
-  // Change oscillator two
-  seq_update_tweakable_knob_one(OSC2_TYPE);
-  seq_update_tweakable_knob_all(OSC2_TYPE);
-
-  // Change oscillator three ( alias sub  in Twytch )
-  seq_update_tweakable_knob_one(OSC3_TYPE);
-  seq_update_tweakable_knob_all(OSC3_TYPE);
-
- 
-  // Change oscillator one
-  seq_update_tweakable_knob_one(MACHINE_TYPE);
-  seq_update_tweakable_knob_all(MACHINE_TYPE);
-   
-  // Change Note
-  seq_update_tweakable_knob_one(NOTE1);
-  seq_update_tweakable_knob_all(NOTE1);
-
-  // Change FM
-  seq_update_tweakable_knob_one(FM_TYPE);
-  seq_update_tweakable_knob_all(FM_TYPE);
-
-  // change LFO1 WAVEFORM
-  seq_update_tweakable_knob_one(LFO1_WAVEFORM);
-  seq_update_tweakable_knob_all(LFO1_WAVEFORM);
-
-  // change LFO2 WAVEFORM
-  seq_update_tweakable_knob_one(LFO2_WAVEFORM);
-  seq_update_tweakable_knob_all(LFO2_WAVEFORM);
-
-  // change VELOCITY
-  seq_update_tweakable_knob_one(VELOCITY);
-  seq_update_tweakable_knob_all(VELOCITY);
-
-  // change OSC1_MOD
-  seq_update_tweakable_knob_one(OSC1_MOD);
-  seq_update_tweakable_knob_all(OSC1_MOD);
-
-
-  // change LFO1 WAVEFORM
-  seq_update_tweakable_knob_one(LFO1_ENV_AMOUNT);
-  seq_update_tweakable_knob_all(LFO1_ENV_AMOUNT);
-
-  // change LFO2 WAVEFORM
-  seq_update_tweakable_knob_one(LFO2_ENV_AMOUNT);
-  seq_update_tweakable_knob_all(LFO2_ENV_AMOUNT);
-
+  // Read all valued contained in the Tweakable Knob
+  // Apply the Value to the sequencer, then to the Machine
 
   if (TK.get(BPM_DIVIDER)!=0)
     {	  
@@ -2331,6 +2126,25 @@ void seq_update_multiple_time_by_step()
 	}
       TK.set(INVERT_TRIG,0);
     }
+
+
+  // Process all button and knob change ADSR, OSC... see Machine.h for the list
+  // Must be done at the end because
+  //     - they are not related to the Sequencer BPM, SWING, Number of Step ( done before on this function )
+  //     - they are     related to     Synth parameter Cutoff, ADSR, etc...
+  // Each call seq_update_tweakable_knob_XXX reset the knob to 0
+  
+  while (TK.getNonZero()!=-1)
+    {
+      seq_update_tweakable_knob_one(TK.getNonZero());
+    }
+
+  while (TK.getAllNonZero()!=-1)
+    {
+      seq_update_tweakable_knob_all(TK.getAllNonZero());
+    }
+
+
   
 }
 

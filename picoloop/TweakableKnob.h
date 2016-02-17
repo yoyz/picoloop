@@ -17,6 +17,8 @@ public:
   void init();
   void reset();
 
+
+
   void set(int machineParam,int value);
   void setAll(int machineParam,int value);
 
@@ -24,6 +26,8 @@ public:
   int get(int machineParam);
   int getAll(int machineParam);
 
+  int getNonZero();
+  int getAllNonZero();
 
  private:
   int * machineParamArray;
