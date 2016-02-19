@@ -26,11 +26,16 @@ class EffectDelay : public Effect
   int16_t * buffer;
   int   index;       // Position in buffer for the next Write
   int   indexOffset; // Index for Read
+  int   indexCurrent;
   int   offset;
   int   depth;
   //  int   depth;
   int   speed;
   int   sample_num;
-  
+  int   pole;
+  int   old_pole;
+  int   last_index_poleon;
+  int   slowit;  
 };
+
 #endif

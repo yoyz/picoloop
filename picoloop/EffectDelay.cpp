@@ -8,6 +8,7 @@
 
 //EffectDelay::EffectDelay() : buffer(new int16_t[FX_SIZE])
 //EffectDelay::EffectDelay() : buffer(new int16_t[1024*256])
+#define SLOWIT 128
 EffectDelay::EffectDelay()
 {
   DPRINTF("EffectDelay::EffectDelay()\n");
@@ -20,7 +21,11 @@ EffectDelay::EffectDelay()
   buffer=NULL;
   //for (i=0;i<FX_SIZE;i++)
   //buffer[i]=0;
-
+  pole=0;
+  old_pole=0;
+  last_index_poleon=0;
+  indexCurrent=0;
+  slowit=0;
 }
 
 EffectDelay::~EffectDelay()
@@ -151,15 +156,35 @@ int16_t EffectDelay::process(int16_t in)
   //out=(buffer[indexOffset]/(depth+1))+in;
   //out=(buffer[indexOffset]/(depth+1))+in;
   
-  buffer[index]=out;
+  buffer[indexCurrent]=out;
+
+  old_pole=pole;
+
+  if (out>0)
+    pole=1;
+  else
+    pole=0;
+
+  if (pole>old_pole)
+    {
+      if (indexCurrent<index)
+	  indexCurrent=indexCurrent+last_index_poleon;
+      if (indexCurrent>index)
+	  indexCurrent=indexCurrent-last_index_poleon;
+      last_index_poleon=index;
+    }
 
   index++;
+  indexCurrent++;
   indexOffset++;
+
 
   if (index>FX_SIZE)
     index=0;
   if (indexOffset>FX_SIZE)
     indexOffset=0;
+  if (indexCurrent>FX_SIZE)
+    indexCurrent=0;
 
   return out;
 }
