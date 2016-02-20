@@ -44,12 +44,12 @@ int current_machine=1;
 int waveform_op1=0;
 int waveform_op2=0;
 
-int attack_amp=16;
+int attack_amp=0;
 int decay_amp=96;
 int sustain_amp=96;
 int release_amp=96;
 
-int attack_fltr=96;
+int attack_fltr=0;
 int decay_fltr=96;
 int sustain_fltr=96;
 int release_fltr=96;
@@ -58,8 +58,8 @@ int release_fltr=96;
 int vcomix=63;
 int phase=63;
 
-int cutoff=16;
-int resonance=96;
+int cutoff=112;
+int resonance=16;
 
 char * filename;
 
@@ -703,7 +703,7 @@ void handle_key()
 	  //M[t]->setF(OSC1_FREQ,f);
 
 	  M[t]->reset();
-	  M[t]->setI(OSC1_NOTE,noteValue);
+	  M[t]->setI(NOTE1,noteValue);
 
 	  M[t]->setI(OSC1_TYPE,2);
 	  M[t]->setI(OSC2_TYPE,2);
