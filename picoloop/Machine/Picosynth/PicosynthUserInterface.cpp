@@ -774,7 +774,7 @@ void PicosynthUserInterface::display_board_note()
 	{	  
 	  for (i=0;i<16;i++)
 	    {
-	      if (P[cty].getPatternElement(i).get(NOTE_ON))
+	      if (P[cty].getPatternElement(i+pattern_display_offset[cty]).get(NOTE_ON))
 		SG.drawTTFTextNumberFirstLine(i,NF.getNoteCharStar(P[cty].getPatternElement(i).get(NOTE1)));
 	    }
 	}
@@ -783,7 +783,7 @@ void PicosynthUserInterface::display_board_note()
 	{
 	  for (i=0;i<16;i++)
 	    {
-	      if (P[cty].getPatternElement(i).get(NOTE_ON))
+	      if (P[cty].getPatternElement(i+pattern_display_offset[cty]).get(NOTE_ON))
 		SG.smallBoxNumber(i,
 				  (P[cty].getPatternElement(i).get(NOTE1)%12-1)*10,
 				  (128-(P[cty].getPatternElement(i).get(NOTE1)/12)*10),

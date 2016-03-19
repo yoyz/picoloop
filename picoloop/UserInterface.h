@@ -43,7 +43,7 @@ extern int menu_cursor;
 extern int menu_ad;
 
 extern int cursor;
-
+extern int pattern_display_offset[TRACK_MAX];
 
 
 class UserInterface

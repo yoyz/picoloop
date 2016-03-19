@@ -43,14 +43,14 @@ int PatternSequencer::getStep()
     return (step/8)%PatternLength;
 }
 
-void PatternSequencer::setPatternLenght(int pl)
+void PatternSequencer::setPatternLength(int pl)
 {
   if (pl>0 && pl<=128)
     PatternLength=pl;
 }
 
 
-int PatternSequencer::getPatternLenght()
+int PatternSequencer::getPatternLength()
 {
   return PatternLength;
 }
