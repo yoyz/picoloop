@@ -45,7 +45,7 @@ int PatternSequencer::getStep()
 
 void PatternSequencer::setPatternLenght(int pl)
 {
-  if (pl>0 && pl<=16)
+  if (pl>0 && pl<=128)
     PatternLength=pl;
 }
 
@@ -67,7 +67,8 @@ void PatternSequencer::incStep()
 {
   step++;
   if (step>=128)
-    step=0;
+    step=step%PatternLength;
+    //step=0;
   
 }
 
