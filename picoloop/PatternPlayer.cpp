@@ -215,6 +215,7 @@ int pattern_song_loop=0;    // if > 1 loop from current song position to loop po
 int bank=0;
 int bank_inc=0;
 int bank_to_load=0;
+int pattern_display_offset[TRACK_MAX]={0}; // 0,16,32,48.. the offset to display the sequencer
 
 //int start_key=0;        // start key pressed ?
 //int step=0;             // current step in the sequencer
@@ -313,18 +314,28 @@ void display_board_trig()
 
   // Cursor & step postion      
   SG.drawBoxNumber(cursor,CURSOR_COLOR);
-  SG.drawBoxNumber(step,STEP_COLOR);  
+  //printf("step %d %d | %d %d \n",step,pattern_display_offset[cty],step/16,pattern_display_offset[cty]/16);
+  if (step/16==pattern_display_offset[cty]/16)
+    SG.drawBoxNumber(step-pattern_display_offset[cty],STEP_COLOR);  
+  
   for (i=0;i<16;i++)
     {	  // Draw trigged box trig color   
-      if (P[cty].getPatternElement(i).get(NOTE_ON))
+      if (P[cty].getPatternElement(i+pattern_display_offset[cty]).get(NOTE_ON))
 	{
+
+	  // Display note which are trigged
 	  SG.drawBoxNumber(i,TRIG_COLOR);
-	  if (i==cursor)
+
+	  // Display the user cursor
+	  if (i==cursor+pattern_display_offset[cty])
 	    SG.drawBoxNumber(cursor,CURSOR_COLOR);
-	  if (i==step)
+	  
+	  // Display the sequencer current step
+	  if (i+pattern_display_offset[cty]==step)
 	    SG.drawBoxNumber(step,STEP_COLOR);  
 	}
     }  
+  
 }
 
 
@@ -340,7 +351,7 @@ void display_board_two_param(int machineParam1,int machineParam2)
   SG.drawBoxNumber(step,STEP_COLOR);  
   for (i=0;i<16;i++)
     {	  // Draw trigged box trig color   
-      if (P[cty].getPatternElement(i).get(NOTE_ON))
+      if (P[cty].getPatternElement(i+pattern_display_offset[cty]).get(NOTE_ON))
 	{
 	  SG.drawBoxNumber(i,TRIG_COLOR);
 	  if (i==cursor)
@@ -374,7 +385,7 @@ void display_board_one_param_text(int machineParam1)
   SG.drawBoxNumber(step,STEP_COLOR);  
   for (i=0;i<16;i++)
     {	  // Draw trigged box trig color   
-      if (P[cty].getPatternElement(i).get(NOTE_ON))
+      if (P[cty].getPatternElement(i+pattern_display_offset[cty]).get(NOTE_ON))
 	{
 	  SG.drawBoxNumber(i,TRIG_COLOR);
 	  if (i==cursor)
@@ -425,7 +436,7 @@ void display_board_two_param_text(int machineParam1,int machineParam2)
   SG.drawBoxNumber(step,STEP_COLOR);  
   for (i=0;i<16;i++)
     {	  // Draw trigged box trig color   
-      if (P[cty].getPatternElement(i).get(NOTE_ON))
+      if (P[cty].getPatternElement(i+pattern_display_offset[cty]).get(NOTE_ON))
 	{
 	  SG.drawBoxNumber(i,TRIG_COLOR);
 	  if (i==cursor)
@@ -481,7 +492,7 @@ void display_board_one_and_two_param_text(int machineParam1,int machineParam2)
   SG.drawBoxNumber(step,STEP_COLOR);  
   for (i=0;i<16;i++)
     {	  // Draw trigged box trig color   
-      if (P[cty].getPatternElement(i).get(NOTE_ON))
+      if (P[cty].getPatternElement(i+pattern_display_offset[cty]).get(NOTE_ON))
 	{
 	  SG.drawBoxNumber(i,TRIG_COLOR);
 	  if (i==cursor)
@@ -855,14 +866,22 @@ void display_board_psh()
   int  cty=SEQ.getCurrentTrackY();
   int  step=SEQ.getPatternSequencer(cty).getStep();
 
-
+  
   // need to display something, so why not ?
+  
   if (menu!=MENU_OFF && 
       menu_cursor==GLOBALMENU_PSH
       )
     {
       display_board_trig();
     }                  
+  if (menu==MENU_OFF && 
+      menu_cursor==GLOBALMENU_PSH
+      )
+    {
+      display_board_trig();
+    }                  
+  
 }
 
 
@@ -879,7 +898,7 @@ void display_board_mac()
     {
       for (i=0;i<16;i++)
 	{
-	  if (P[cty].getPatternElement(i).get(NOTE_ON))
+	  if (P[cty].getPatternElement(i+pattern_display_offset[cty]).get(NOTE_ON))
 	    {
 	      SG.drawBoxNumber(i,TRIG_COLOR);
 	      if (i==cursor)       SG.drawBoxNumber(cursor,CURSOR_COLOR);
@@ -924,6 +943,8 @@ void display_board_text_global()
 
   sprintf(str_line1,    "Track/%d ",cty);
 
+  sprintf(str_line5,    "Length %d/%d",SEQ.getPatternSequencer(cty).getStep(),SEQ.getPatternSequencer(cty).getPatternLength());
+
   sprintf(str_line3,    "Div  /%d",stepdiv);
 
   if (menu_note==ENABLE &&
@@ -966,6 +987,9 @@ void display_board_text_global()
 
   SG.guiTTFText(right_x_display_offset,
 		right_y_display_offset_line4,str_line4);
+
+  SG.guiTTFText(right_x_display_offset,
+		right_y_display_offset_line5,str_line5);
 
 
   // Display menu at the back of the screen
@@ -1010,10 +1034,11 @@ void display_board()
   display_board_text_global();
   UI->display_board_text();
 
-  for (i=0;i<SEQ.getPatternSequencer(cty).getPatternLenght();i++)
-    { SG.drawBoxNumber(i,BOX_COLOR); }
-  for (i=i;i<16;i++)
-    { SG.drawBoxNumber(i,DISABLEDBOX_COLOR); }
+  for (i=pattern_display_offset[cty];i<SEQ.getPatternSequencer(cty).getPatternLength();i++)
+    { SG.drawBoxNumber(i-pattern_display_offset[cty],BOX_COLOR); }
+
+  for (i=i;i<pattern_display_offset[cty]+16;i++)
+    { SG.drawBoxNumber(i-pattern_display_offset[cty],DISABLEDBOX_COLOR); }
      
 
   if (menu_cursor==GLOBALMENU_AD)   display_board_amp_env();
@@ -1058,6 +1083,57 @@ void sub_handle_invert_trig()
       IE.clearLastKeyEvent();
     }  
 }
+
+void handle_key_patternlenght()
+{
+ bool * keyState;
+  int  * keyRepeat;
+  int    lastEvent;
+  int    lastKey;
+  int    cty=SEQ.getCurrentTrackY();
+  int    step=SEQ.getPatternSequencer(cty).getStep();
+  int    plen=SEQ.getPatternSequencer(cty).getPatternLength();
+
+
+  keyState=IE.keyState();
+  keyRepeat=IE.keyRepeat();
+  lastEvent=IE.lastEvent();
+  lastKey=IE.lastKey();
+
+
+  if (lastKey   == BUTTON_R && 
+      lastEvent == KEYPRESSED)
+    {
+
+      pattern_display_offset[cty]=pattern_display_offset[cty]+16;
+      if (pattern_display_offset[cty]>plen)
+	{
+	  pattern_display_offset[cty]=0;
+	}
+      //pattern_display_offset=
+
+      DPRINTF("key BUTTON_R");      
+      dirty_graphic=1;
+      IE.clearLastKeyEvent();
+    }  
+
+
+  if (lastKey   == BUTTON_L && 
+      lastEvent == KEYPRESSED)
+    {
+
+      pattern_display_offset[cty]=pattern_display_offset[cty]-16;
+      if (pattern_display_offset[cty]<0)
+	pattern_display_offset[cty]=(plen/16)*16;
+
+      DPRINTF("key BUTTON_L");      
+      dirty_graphic=1;
+      IE.clearLastKeyEvent();
+    }  
+
+
+}
+
 
 void handle_key_menu()
 {
@@ -1476,7 +1552,7 @@ void handle_key_psh()
 
 
 
-  if (menu        != MENU_OFF && 
+  if (menu        == MENU_OFF && 
       menu_cursor == GLOBALMENU_PSH
       )
     {
@@ -1907,7 +1983,8 @@ void handle_key()
   //printf("%d %d %d\n",lastKey,lastEvent,lastKey==&& BUTTON_START && lastEvent==KEYRELEASED);
   // DPRINTF("lastevent=%d\n",lastEvent);
 
-
+  
+  handle_key_patternlenght();
   handle_key_menu();
   handle_key_sixteenbox();
 
@@ -1960,7 +2037,7 @@ void seq_update_tweakable_knob_all(int machineParam)
   
   if (TK.getAll(machineParam)!=0)
     {
-      for (i=0;i<16;i++)
+      for (i=pattern_display_offset[cty];i<pattern_display_offset[cty]+16;i++)
 	{
 	  update_SAMM(cty,i);
 	  P[cty].getPatternElement(i).set(machineParam,
@@ -2004,17 +2081,17 @@ void seq_update_multiple_time_by_step()
   // Change PatternLength
   if (TK.getAll(PATTERN_LENGTH)!=0)
     { 
-      SEQ.getPatternSequencer(cty).setPatternLenght(SEQ.getPatternSequencer(cty).getPatternLenght()+TK.getAll(PATTERN_LENGTH));
+      SEQ.getPatternSequencer(cty).setPatternLength(SEQ.getPatternSequencer(cty).getPatternLength()+TK.getAll(PATTERN_LENGTH));
       TK.setAll(PATTERN_LENGTH,0);
-      P[cty].setSize(SEQ.getPatternSequencer(cty).getPatternLenght());
+      P[cty].setSize(SEQ.getPatternSequencer(cty).getPatternLength());
     }
 
   // Change PatternLength
   if (TK.get(PATTERN_LENGTH)!=0)
     { 
-      SEQ.getPatternSequencer(cty).setPatternLenght(SEQ.getPatternSequencer(cty).getPatternLenght()+TK.get(PATTERN_LENGTH));
+      SEQ.getPatternSequencer(cty).setPatternLength(SEQ.getPatternSequencer(cty).getPatternLength()+TK.get(PATTERN_LENGTH));
       TK.set(PATTERN_LENGTH,0);
-      P[cty].setSize(SEQ.getPatternSequencer(cty).getPatternLenght());
+      P[cty].setSize(SEQ.getPatternSequencer(cty).getPatternLength());
     }
 
 
@@ -2107,21 +2184,21 @@ void seq_update_multiple_time_by_step()
       // invert trig => insert/remove/copy note 
   if (TK.get(INVERT_TRIG)!=0)
     {
-      if (P[cty].getPatternElement(cursor).get(NOTE_ON))
+      if (P[cty].getPatternElement(cursor+pattern_display_offset[cty]).get(NOTE_ON))
 	{
-	  P[cty].getPatternElement(cursor).set(NOTE_ON,(P[cty].getPatternElement(cursor).get(NOTE_ON)+1)%2);
-	  PE=P[cty].getPatternElement(cursor);
+	  P[cty].getPatternElement(cursor+pattern_display_offset[cty]).set(NOTE_ON,(P[cty].getPatternElement(cursor+pattern_display_offset[cty]).get(NOTE_ON)+1)%2);
+	  PE=P[cty].getPatternElement(cursor+pattern_display_offset[cty]);
 	}
       else
 	{
-	  P[cty].setPatternElement(cursor,PE);
-	  P[cty].getPatternElement(cursor).set(NOTE_ON,1);
-	  if (P[cty].getPatternElement(cursor).get(NOTE1)==0)
+	  P[cty].setPatternElement(cursor+pattern_display_offset[cty],PE);
+	  P[cty].getPatternElement(cursor+pattern_display_offset[cty]).set(NOTE_ON,1);
+	  if (P[cty].getPatternElement(cursor+pattern_display_offset[cty]).get(NOTE1)==0)
 	    {
 	      //P[cty].getPatternElement(cursor).setAttack_amp(0);
 	      //P[cty].getPatternElement(cursor).setRelease_amp(64);
 	      //P[cty].getPatternElement(cursor).setNote(37);
-	      P[cty].getPatternElement(cursor).set(NOTE1,25);
+	      P[cty].getPatternElement(cursor+pattern_display_offset[cty]).set(NOTE1,25);
 	    }
 	}
       TK.set(INVERT_TRIG,0);
@@ -2233,9 +2310,9 @@ int seq_update_by_step()
 	  // Don't update BPM and Swing on single pattern load
 	  // Do it only on "loadall"
 
-	  SEQ.getPatternSequencer(cty).setPatternLenght(P[cty].getSize());
+	  SEQ.getPatternSequencer(cty).setPatternLength(P[cty].getSize());
 	  SEQ.getPatternSequencer(cty).setBPMDivider(P[cty].getBPMDivider());
-	  P[cty].setSize(SEQ.getPatternSequencer(cty).getPatternLenght());
+	  P[cty].setSize(SEQ.getPatternSequencer(cty).getPatternLength());
 
 	  refresh_bpm();
 
@@ -2259,9 +2336,9 @@ int seq_update_by_step()
 	      bpm_current=P[t].getBPM();
 	      current_swing=P[t].getSwing();
 
-	      SEQ.getPatternSequencer(t).setPatternLenght(P[t].getSize());
+	      SEQ.getPatternSequencer(t).setPatternLength(P[t].getSize());
 	      SEQ.getPatternSequencer(t).setBPMDivider(P[t].getBPMDivider());
-	      P[t].setSize(SEQ.getPatternSequencer(t).getPatternLenght());
+	      P[t].setSize(SEQ.getPatternSequencer(t).getPatternLength());
 
 	      refresh_bpm();
 	    }

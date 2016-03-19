@@ -225,6 +225,9 @@ enum {
 #define BUTTON_SELECT       SDLK_ESCAPE
 #define BUTTON_START        SDLK_RETURN
 
+#define BUTTON_L            SDLK_TAB
+#define BUTTON_R            SDLK_BACKSPACE
+
 #define BUTTON_POWER        SDLK_POWER
 #define BUTTON_PAUSE        SDLK_PAUSE
 
@@ -275,7 +278,8 @@ enum {
 #define BUTTON_SELECT       SDLK_ESCAPE
 #define BUTTON_START        SDLK_RETURN
 
-
+#define BUTTON_L            SDLK_TAB
+#define BUTTON_R            SDLK_BACKSPACE
 
 #define KEYPRESSED          SDL_KEYDOWN
 #define KEYRELEASED         SDL_KEYUP
@@ -325,6 +329,9 @@ enum {
 
 #define BUTTON_SELECT       PSP_BUTTON_SELEC
 #define BUTTON_START        PSP_BUTTON_START
+
+#define BUTTON_L            PSP_BUTTON_L
+#define BUTTON_R            PSP_BUTTON_R
 
 #define KEYPRESSED          SDL_JOYBUTTONDOWN
 #define KEYRELEASED         SDL_JOYBUTTONUP
@@ -379,6 +386,10 @@ enum {
 
 #define BUTTON_SELECT       GP2X_BUTTON_SELECT
 #define BUTTON_START        GP2X_BUTTON_START
+
+#define BUTTON_L            GP2X_BUTTON_L
+#define BUTTON_R            GP2X_BUTTON_R
+
 // BEGIN GP2X SDL
 
 #define KEYPRESSED          SDL_JOYBUTTONDOWN
