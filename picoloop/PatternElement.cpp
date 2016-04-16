@@ -102,6 +102,11 @@ void PatternElement::init()
   fx_depth=0;
   fx_speed=0;
   fm_type=0;
+  
+  osc1_scale=0;
+  osc2_scale=0;
+  osc3_scale=0;
+  osc4_scale=0;
 }
 
 void PatternElement::set(int what,int val)
@@ -311,6 +316,23 @@ void PatternElement::set(int what,int val)
 
     case OSC1_MOD:
       osc1_mod=checkSevenBitBoundarie(val);
+      break;
+
+
+    case OSC1_SCALE:
+      osc1_scale=checkThreeOctaveScale(val);
+      break;
+
+    case OSC2_SCALE:
+      osc2_scale=checkThreeOctaveScale(val);
+      break;
+
+    case OSC3_SCALE:
+      osc3_scale=checkThreeOctaveScale(val);
+      break;
+
+    case OSC4_SCALE:
+      osc4_scale=checkThreeOctaveScale(val);
       break;
 
 
@@ -526,6 +548,24 @@ int PatternElement::get(int what)
       break;
 
 
+    case OSC1_SCALE:
+      return osc1_scale;
+      break;
+
+    case OSC2_SCALE:
+      return osc2_scale;
+      break;
+
+    case OSC3_SCALE:
+      return osc3_scale;
+      break;
+
+    case OSC4_SCALE:
+      return osc4_scale;
+      break;
+
+
+
     default:
       DPRINTF("PatternElement::get(%d,%d)",what);
       DPRINTF("==============================>case default : exit\n");
@@ -545,6 +585,16 @@ int PatternElement::checkSevenBitBoundarie(int val)
     return 127;
   return val;
 }
+
+int PatternElement::checkThreeOctaveScale(int val)
+{
+  if (val <= 0)
+    return 0;
+  if (val >= 12*3)
+    return 12*3;
+  return val;
+}
+
 
 // void PatternElement::setVCOMix(int mix)
 // {

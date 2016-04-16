@@ -101,6 +101,12 @@ using namespace std;
 #define OSC3_MOD            63
 #define OSC4_MOD            64
 
+#define OSC1_SCALE          65
+#define OSC2_SCALE          66
+#define OSC3_SCALE          67
+#define OSC4_SCALE          68
+
+
 #define NOTE1           70
 #define NOTE2           71
 #define NOTE3           72
