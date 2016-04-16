@@ -30,6 +30,7 @@ public:
   void   print(); 
 private:
   int  checkSevenBitBoundarie(int val);
+  int  checkThreeOctaveScale(int val);
   int  note1;
   int  note2;
   int  note3;
@@ -116,6 +117,11 @@ private:
   int osc1_mod;
 
   int polyphony;
+
+  int osc1_scale;
+  int osc2_scale;
+  int osc3_scale;
+  int osc4_scale;
 };
 
 #endif

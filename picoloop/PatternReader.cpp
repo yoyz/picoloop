@@ -630,6 +630,22 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
   fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
+  machineParam=OSC1_SCALE;
+  fgets(line,sizeoflinemax,fd);
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
+
+  machineParam=OSC2_SCALE;
+  fgets(line,sizeoflinemax,fd);
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
+
+  machineParam=OSC3_SCALE;
+  fgets(line,sizeoflinemax,fd);
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
+
+  machineParam=OSC4_SCALE;
+  fgets(line,sizeoflinemax,fd);
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
+
 
   if (retcode==true)
     {
@@ -966,6 +982,18 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
   this->writePatternDataLine(PatternNumber,TrackNumber,P,line,OSC3_TYPE);
   data.insert(data.end(),line);
 
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,OSC1_SCALE);
+  data.insert(data.end(),line);
+
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,OSC2_SCALE);
+  data.insert(data.end(),line);
+
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,OSC3_SCALE);
+  data.insert(data.end(),line);
+
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,OSC4_SCALE);
+  data.insert(data.end(),line);
+
 
 
   sprintf(line,"\n");
@@ -1095,6 +1123,11 @@ const char * PatternReader::getParameterCharStar(int param)
 
   static const char * osc1_mod="OSC1Mod";
 
+  static const char * osc1_scale="OSC1Scale";
+  static const char * osc2_scale="OSC2Scale";
+  static const char * osc3_scale="OSC3Scale";
+  static const char * osc4_scale="OSC4Scale";
+
   static const char * osc1_unison="Osc1Unison";        
   static const char * osc2_unison="Osc2Unison";        
 
@@ -1184,6 +1217,11 @@ const char * PatternReader::getParameterCharStar(int param)
     case VELOCITY:           return velocity;                 break;
 
     case OSC1_MOD:           return osc1_mod;                 break;
+
+    case OSC1_SCALE:         return osc1_scale;                 break;
+    case OSC2_SCALE:         return osc2_scale;                 break;
+    case OSC3_SCALE:         return osc3_scale;                 break;
+    case OSC4_SCALE:         return osc4_scale;                 break;
     
     default:                 printf("PatternReader::getParameterCharStar(%d) not found => exit\n"); exit(1); break;
     }
