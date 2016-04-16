@@ -1536,11 +1536,15 @@ void handle_key_psh()
       menu_cursor == GLOBALMENU_PSH
       )
     {
-      handle_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_LONG    , PATTERN_SHIFT,    -1, 1);
-      handle_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_LONG    , PATTERN_SHIFT,     1, 1);
+      handle_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_LONG    , PATTERN_SHIFT,    -1, 1);
+      handle_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_LONG    , PATTERN_SHIFT,     1, 1);
 
-      handle_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG    , PATTERN_LENGTH ,   1, 1);
-      handle_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG    , PATTERN_LENGTH ,  -1, 1);
+      handle_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONGEST , PATTERN_LENGTH ,  16, 1);
+      handle_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONGEST , PATTERN_LENGTH , -16, 1);
+
+      handle_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_LONG    , PATTERN_LENGTH ,  -1, 1);
+      handle_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_LONG    , PATTERN_LENGTH ,   1, 1);
+
     }
 
 }
@@ -2023,13 +2027,13 @@ void seq_update_tweakable_knob_all(int machineParam)
       //for (i=pattern_display_offset[cty];i<pattern_display_offset[cty]+16;i++)
       for (i=0;i<plen;i++)
 	{
-	  update_SAMM(cty,i);
-	  P[cty].getPatternElement(i).set(machineParam,
-					  SAM->checkI(machineParam,P[cty].getPatternElement(i).get(machineParam)+TK.getAll(machineParam)));
-					  //P[cty].getPatternElement(i).get(machineParam)+TK.getAll(machineParam));
-					  //SAM->checkI(machineParam,P[cty].getPatternElement(i).get(AMP)+TK.getAll(machineParam)));
+	  if (P[cty].getPatternElement(i).get(NOTE_ON))
+	    {
+	      update_SAMM(cty,i);
+	      P[cty].getPatternElement(i).set(machineParam,
+					      SAM->checkI(machineParam,P[cty].getPatternElement(i).get(machineParam)+TK.getAll(machineParam)));
+	    }
 	}
-      
       TK.setAll(machineParam,0);
       if (debug)
 	printf("[paramAll:%d:%d]\n",machineParam,P[cty].getPatternElement(cursor).get(machineParam));
@@ -2065,19 +2069,42 @@ void seq_update_multiple_time_by_step()
   // Change PatternLength
   if (TK.getAll(PATTERN_LENGTH)!=0)
     { 
+      int cur_plen=SEQ.getPatternSequencer(cty).getPatternLength();
+      int dest_plen=SEQ.getPatternSequencer(cty).getPatternLength()+TK.getAll(PATTERN_LENGTH);
+      int i;
+      int j;
+
+      // duplicate the 16 first step into : 
+      // 16-31
+      // 32-47
+      // 48-63 etc
+      if (cur_plen<=16 &&
+	  dest_plen==cur_plen+16)
+	{
+	  for (i=0;i<16;i++)
+	    {
+	      for (j=1;j<MAX_STEP_PER_TRACK/16;j++)
+		P[cty].getPatternElement(j*16+i)=P[cty].getPatternElement(i);
+	    }
+	}
+
       SEQ.getPatternSequencer(cty).setPatternLength(SEQ.getPatternSequencer(cty).getPatternLength()+TK.getAll(PATTERN_LENGTH));
       TK.setAll(PATTERN_LENGTH,0);
-      P[cty].setSize(SEQ.getPatternSequencer(cty).getPatternLength());
-    }
-
-  // Change PatternLength
-  if (TK.get(PATTERN_LENGTH)!=0)
-    { 
-      SEQ.getPatternSequencer(cty).setPatternLength(SEQ.getPatternSequencer(cty).getPatternLength()+TK.get(PATTERN_LENGTH));
       TK.set(PATTERN_LENGTH,0);
       P[cty].setSize(SEQ.getPatternSequencer(cty).getPatternLength());
     }
 
+  /*
+  if (TK.getAll(PATTERN_LENGTH)!=0 ||
+      TK.get(PATTERN_LENGTH)!=0
+      )
+    { 
+      SEQ.getPatternSequencer(cty).setPatternLength(SEQ.getPatternSequencer(cty).getPatternLength()+TK.getAll(PATTERN_LENGTH));
+      TK.setAll(PATTERN_LENGTH,0);
+      TK.set(PATTERN_LENGTH,0);
+      P[cty].setSize(SEQ.getPatternSequencer(cty).getPatternLength());
+    }
+  */
 
 
   // shift PatternEntry
@@ -2302,7 +2329,10 @@ int seq_update_by_step()
 
 	}
       else
-	P[cty].init();
+	{
+	  P[cty].init();
+	  load_save_highligth_current[loadsave_cursor.y]=-1;
+	}
       load=false;
     }
 
