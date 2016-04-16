@@ -766,9 +766,11 @@ void PicosynthUserInterface::display_board_note()
 
   NoteFreq & NF = NoteFreq::getInstance();
   // Note
+
+  display_board_trig();
+
   if (menu_cursor==GLOBALMENU_NOTE)
     {
-      display_board_trig();
       // Note C3 
       if (menu_note==ENABLE)
 	{	  

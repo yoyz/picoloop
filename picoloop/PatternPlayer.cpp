@@ -358,8 +358,8 @@ void display_board_two_param(int machineParam1,int machineParam2)
     {	  // Draw trigged box trig color   
       if (P[cty].getPatternElement(i+pattern_display_offset[cty]).get(NOTE_ON))
 	{
-	  SG.smallBoxNumber(i,P[cty].getPatternElement(i).get(machineParam1),128,SMALLBOX_COLOR);
-	  SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).get(machineParam2),SMALLBOX_COLOR);
+	  SG.smallBoxNumber(i,P[cty].getPatternElement(i+pattern_display_offset[cty]).get(machineParam1),128,SMALLBOX_COLOR);
+	  SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i+pattern_display_offset[cty]).get(machineParam2),SMALLBOX_COLOR);
 	}
     }  
 }
@@ -429,10 +429,10 @@ void display_board_two_param_text(int machineParam1,int machineParam2)
     {	  // Draw text on Trigged step
       if (P[cty].getPatternElement(i+pattern_display_offset[cty]).get(NOTE_ON))
 	{
-	  update_SAMM(cty,i);
+	  update_SAMM(cty,i+pattern_display_offset[cty]);
 	  strcpy(line1,space);
-	  line1_to_process=SAM->getMachineParamCharStar(machineParam1,P[cty].getPatternElement(i).get(machineParam1));
-	  line2_to_process=SAM->getMachineParamCharStar(machineParam2,P[cty].getPatternElement(i).get(machineParam2));
+	  line1_to_process=SAM->getMachineParamCharStar(machineParam1,P[cty].getPatternElement(i+pattern_display_offset[cty]).get(machineParam1));
+	  line2_to_process=SAM->getMachineParamCharStar(machineParam2,P[cty].getPatternElement(i+pattern_display_offset[cty]).get(machineParam2));
 
 	  line1_size=strlen(line1_to_process);
 	  line2_size=strlen(line2_to_process);
@@ -454,7 +454,8 @@ void display_board_two_param_text(int machineParam1,int machineParam2)
     }  
 }
 
-
+// Used by MDA to display 
+// the bank name and the waveform name in the bank
 void display_board_one_and_two_param_text(int machineParam1,int machineParam2)
 {
   int  i;
@@ -510,77 +511,6 @@ void display_board_one_and_two_param_text(int machineParam1,int machineParam2)
 	}
     }  
 }
-
-
-
-/*
-void display_board_one_and_two_param_text(int machineParam1,int machineParam2)
-{
-  int  i;
-  int  cty=SEQ.getCurrentTrackY();
-  int  step=SEQ.getPatternSequencer(cty).getStep();
-
-  int    size_of_zero=5;
-  char   line1[size_of_zero];
-  char   line2[size_of_zero];
-
-  char * line1_to_process;
-  char * line2_to_process;
-  int    line1_size;
-  int    line2_size;
-
-  // Cursor & step postion      
-  SG.drawBoxNumber(cursor,CURSOR_COLOR);
-  SG.drawBoxNumber(step,STEP_COLOR);  
-  for (i=0;i<16;i++)
-    {	  // Draw trigged box trig color   
-      if (P[cty].getPatternElement(i+pattern_display_offset[cty]).get(NOTE_ON))
-	{
-	  SG.drawBoxNumber(i,TRIG_COLOR);
-	  if (i==cursor)
-	    SG.drawBoxNumber(cursor,CURSOR_COLOR);
-	  if (i==step)
-	    SG.drawBoxNumber(step,STEP_COLOR);  
-
-	  update_SAMM(cty,i);
-
-	  line1_to_process=SAM->getMachineParamCharStar(machineParam1,
-							P[cty].getPatternElement(i).get(machineParam1));
-
-	  line2_to_process=SAM->getMachineTwoParamCharStar(machineParam2,
-							   P[cty].getPatternElement(i).get(machineParam1),
-							   P[cty].getPatternElement(i).get(machineParam2));
-
-	  line1_size=strlen(line1_to_process);
-	  line2_size=strlen(line2_to_process);
-
-	  if (line1_size>size_of_zero)
-	    {
-	      strncpy(line1,line1_to_process,line1_size);
-	      line1[size_of_zero]='\0';
-	    }
-	  else
-	    strcpy(line1,line1_to_process);
-
-	  if (line2_size>size_of_zero)
-	    {
-	      strncpy(line2,line2_to_process,line2_size);
-	      line2[size_of_zero]='\0';
-	    }
-	  else
-	    strcpy(line2,line2_to_process);
-
-
-
-		  
-	  SG.drawTTFTextNumberFirstLine( i,line1);	  
-	  SG.drawTTFTextNumberSecondLine(i,line2);
-
-	}
-    }  
-}
-*/
-
 
 void display_board_amp_env()
 {
@@ -2067,13 +1997,15 @@ void handle_key()
 
 void seq_update_tweakable_knob_one(int machineParam)
 {
-  int          cty=SEQ.getCurrentTrackY();
+  int            cty=SEQ.getCurrentTrackY();
   if (TK.get(machineParam)!=0)
     {
-      update_SAMM(cty,cursor);
-      P[cty].getPatternElement(cursor).set(machineParam,
-					   SAM->checkI(machineParam,P[cty].getPatternElement(cursor).get(machineParam)+TK.get(machineParam)));
-      //SAM->checkI(machineParam,P[cty].getPatternElement(cursor).get(AMP)+TK.get(machineParam)));
+      update_SAMM(cty,cursor+pattern_display_offset[cty]);
+      P[cty].getPatternElement(cursor+pattern_display_offset[cty]).set(machineParam,
+					   SAM->checkI(machineParam,P[cty].getPatternElement(cursor+pattern_display_offset[cty]).get(machineParam)+TK.get(machineParam)));
+
+
+	//SAM->checkI(machineParam,P[cty].getPatternElement(cursor).get(AMP)+TK.get(machineParam)));
       TK.set(machineParam,0);
       if (debug)
 	printf("[param:%d:%d]\n",machineParam,P[cty].getPatternElement(cursor).get(machineParam));
