@@ -699,21 +699,25 @@ void Open303UserInterface::display_board_amp_env()
 void Open303UserInterface::display_board_note()
 {
   int  i;
+  int  j;
   int  cty=SEQ.getCurrentTrackY();
   int  step=SEQ.getPatternSequencer(cty).getStep();
 
   NoteFreq & NF = NoteFreq::getInstance();
-  // Note
+
+  display_board_trig();
+
   if (menu_cursor==GLOBALMENU_NOTE)
     {
-      display_board_trig();
       // Note C3 
       if (menu_note==ENABLE)
 	{	  
 	  for (i=0;i<16;i++)
 	    {
-	      if (P[cty].getPatternElement(i).get(NOTE_ON))
-		SG.drawTTFTextNumberFirstLine(i,NF.getNoteCharStar(P[cty].getPatternElement(i).get(NOTE1)));
+	      j=i+pattern_display_offset[cty];
+
+	      if (P[cty].getPatternElement(j).get(NOTE_ON))
+		SG.drawTTFTextNumberFirstLine(i,NF.getNoteCharStar(P[cty].getPatternElement(j).get(NOTE1)));
 	    }
 	}
       // Note Cursor
@@ -721,15 +725,17 @@ void Open303UserInterface::display_board_note()
 	{
 	  for (i=0;i<16;i++)
 	    {
-	      if (P[cty].getPatternElement(i).get(NOTE_ON))
+	      j=i+pattern_display_offset[cty];
+
+	      if (P[cty].getPatternElement(j).get(NOTE_ON))
 		SG.smallBoxNumber(i,
-				  (P[cty].getPatternElement(i).get(NOTE1)%12-1)*10,
-				  (128-(P[cty].getPatternElement(i).get(NOTE1)/12)*10),
+				  (P[cty].getPatternElement(j).get(NOTE1)%12-1)*10,
+				  (128-(P[cty].getPatternElement(j).get(NOTE1)/12)*10),
 				  SMALLBOX_COLOR);
 	    }
 	}
-    }
-  
+    }  
+
 }
 
 

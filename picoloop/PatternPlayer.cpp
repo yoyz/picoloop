@@ -386,7 +386,7 @@ void display_board_one_param_text(int machineParam1)
     {	  
       // Draw trigged box trig color   
       PE=P[cty].getPatternElement(i+pattern_display_offset[cty]);
-
+      
       if (PE.get(NOTE_ON))
 	{
 	  update_SAMM(cty,i+pattern_display_offset[cty]);
@@ -2016,10 +2016,12 @@ void seq_update_tweakable_knob_all(int machineParam)
 {
   int          cty=SEQ.getCurrentTrackY();
   int          i;
+  int    plen=SEQ.getPatternSequencer(cty).getPatternLength();
   
   if (TK.getAll(machineParam)!=0)
     {
-      for (i=pattern_display_offset[cty];i<pattern_display_offset[cty]+16;i++)
+      //for (i=pattern_display_offset[cty];i<pattern_display_offset[cty]+16;i++)
+      for (i=0;i<plen;i++)
 	{
 	  update_SAMM(cty,i);
 	  P[cty].getPatternElement(i).set(machineParam,
