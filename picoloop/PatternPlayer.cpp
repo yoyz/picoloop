@@ -943,7 +943,7 @@ void display_board_text_global()
 
   sprintf(str_line1,    "Track/%d ",cty);
 
-  sprintf(str_line5,    "Length %d/%d",SEQ.getPatternSequencer(cty).getStep(),SEQ.getPatternSequencer(cty).getPatternLength());
+  sprintf(str_line5,    "Length %.3d/%.3d/%.3d",SEQ.getPatternSequencer(cty).getStep(),SEQ.getPatternSequencer(cty).getPatternLength(),pattern_display_offset[cty]);
 
   sprintf(str_line3,    "Div  /%d",stepdiv);
 
@@ -1101,30 +1101,38 @@ void handle_key_patternlenght()
   lastKey=IE.lastKey();
 
 
+
+  // +16
   if (lastKey   == BUTTON_R && 
       lastEvent == KEYPRESSED)
     {
+      if (pattern_display_offset[cty]<plen-16)
+	pattern_display_offset[cty]+=16;
+      else
+	pattern_display_offset[cty]=0;
 
-      pattern_display_offset[cty]=pattern_display_offset[cty]+16;
-      if (pattern_display_offset[cty]>plen)
-	{
-	  pattern_display_offset[cty]=0;
-	}
-      //pattern_display_offset=
+
 
       DPRINTF("key BUTTON_R");      
       dirty_graphic=1;
       IE.clearLastKeyEvent();
     }  
 
-
+  // -16
   if (lastKey   == BUTTON_L && 
       lastEvent == KEYPRESSED)
     {
+      if (pattern_display_offset[cty]>0)
+	pattern_display_offset[cty]-=16;
+      else
+	{
+	  pattern_display_offset[cty]=((plen/16)*16)-16;
+	  if (plen%16!=0)
+	    pattern_display_offset[cty]+=16;
+	}
 
-      pattern_display_offset[cty]=pattern_display_offset[cty]-16;
-      if (pattern_display_offset[cty]<0)
-	pattern_display_offset[cty]=(plen/16)*16;
+	//pattern_display_offset[cty]=((plen/16)-1)*16;
+
 
       DPRINTF("key BUTTON_L");      
       dirty_graphic=1;
