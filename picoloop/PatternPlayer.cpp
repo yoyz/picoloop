@@ -195,7 +195,15 @@ int debug=1;
 
 int repeat=0;
 int quit=0;             // do we need to quit ?
-int cursor=0;           // cursor position in a sequencer track
+
+int cursor=0;           // user cursor position in the display
+                        // from 0 to 15
+                        // handled by handle_key_sixteenbox
+
+int pattern_display_offset[TRACK_MAX]={0}; // 0,16,32,48.. 
+                                           // offset to display the sequencer
+                                           // cursor+pattern_display_offset[cty] is used to
+                                           // know where data had to be read/write
 
 
 
@@ -215,7 +223,7 @@ int pattern_song_loop=0;    // if > 1 loop from current song position to loop po
 int bank=0;
 int bank_inc=0;
 int bank_to_load=0;
-int pattern_display_offset[TRACK_MAX]={0}; // 0,16,32,48.. the offset to display the sequencer
+
 
 //int start_key=0;        // start key pressed ?
 //int step=0;             // current step in the sequencer
@@ -312,33 +320,31 @@ void display_board_trig()
   int  cty=SEQ.getCurrentTrackY();
   int  step=SEQ.getPatternSequencer(cty).getStep();
 
-  // Cursor & step postion      
+  // User Cursor postion      
   SG.drawBoxNumber(cursor,CURSOR_COLOR);
-  //printf("step %d %d | %d %d \n",step,pattern_display_offset[cty],step/16,pattern_display_offset[cty]/16);
+
+  // Draw the sequencer position
   if (step/16==pattern_display_offset[cty]/16)
     SG.drawBoxNumber(step-pattern_display_offset[cty],STEP_COLOR);  
-  
+
   for (i=0;i<16;i++)
-    {	  // Draw trigged box trig color   
+    {	  
+      // Draw trigged box trig color   
       if (P[cty].getPatternElement(i+pattern_display_offset[cty]).get(NOTE_ON))
 	{
-
-	  // Display note which are trigged
+	  // Display note which will be trigged
 	  SG.drawBoxNumber(i,TRIG_COLOR);
 
-	  // Display the user cursor
-	  if (i==cursor+pattern_display_offset[cty])
+	  // Display the user cursor position on top of the trig
+	  if (cursor==i)
 	    SG.drawBoxNumber(cursor,CURSOR_COLOR);
 	  
-	  // Display the sequencer current step
+	  // Display the sequencer position on top of the trig
 	  if (i+pattern_display_offset[cty]==step)
 	    SG.drawBoxNumber(step,STEP_COLOR);  
 	}
     }  
-  
 }
-
-
 
 void display_board_two_param(int machineParam1,int machineParam2)
 {
@@ -346,18 +352,12 @@ void display_board_two_param(int machineParam1,int machineParam2)
   int  cty=SEQ.getCurrentTrackY();
   int  step=SEQ.getPatternSequencer(cty).getStep();
 
-  // Cursor & step postion      
-  SG.drawBoxNumber(cursor,CURSOR_COLOR);
-  SG.drawBoxNumber(step,STEP_COLOR);  
+  display_board_trig();
+
   for (i=0;i<16;i++)
     {	  // Draw trigged box trig color   
       if (P[cty].getPatternElement(i+pattern_display_offset[cty]).get(NOTE_ON))
 	{
-	  SG.drawBoxNumber(i,TRIG_COLOR);
-	  if (i==cursor)
-	    SG.drawBoxNumber(cursor,CURSOR_COLOR);
-	  if (i==step)
-	    SG.drawBoxNumber(step,STEP_COLOR);  
 	  SG.smallBoxNumber(i,P[cty].getPatternElement(i).get(machineParam1),128,SMALLBOX_COLOR);
 	  SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i).get(machineParam2),SMALLBOX_COLOR);
 	}
@@ -370,6 +370,7 @@ void display_board_one_param_text(int machineParam1)
   int  i;
   int  cty=SEQ.getCurrentTrackY();
   int  step=SEQ.getPatternSequencer(cty).getStep();
+  PatternElement PE;
 
   const char * space="    ";
 
@@ -379,24 +380,18 @@ void display_board_one_param_text(int machineParam1)
   char * line1_to_process;
   int    line1_size;
 
+  display_board_trig();
 
-  // Cursor & step postion      
-  SG.drawBoxNumber(cursor,CURSOR_COLOR);
-  SG.drawBoxNumber(step,STEP_COLOR);  
   for (i=0;i<16;i++)
-    {	  // Draw trigged box trig color   
-      if (P[cty].getPatternElement(i+pattern_display_offset[cty]).get(NOTE_ON))
+    {	  
+      // Draw trigged box trig color   
+      PE=P[cty].getPatternElement(i+pattern_display_offset[cty]);
+
+      if (PE.get(NOTE_ON))
 	{
-	  SG.drawBoxNumber(i,TRIG_COLOR);
-	  if (i==cursor)
-	    SG.drawBoxNumber(cursor,CURSOR_COLOR);
-	  if (i==step)
-	    SG.drawBoxNumber(step,STEP_COLOR);  
-
-	  update_SAMM(cty,i);
+	  update_SAMM(cty,i+pattern_display_offset[cty]);
 	  strcpy(line1,space);
-	  line1_to_process=SAM->getMachineParamCharStar(machineParam1,P[cty].getPatternElement(i).get(machineParam1));
-
+	  line1_to_process=SAM->getMachineParamCharStar(machineParam1,PE.get(machineParam1));
 	  line1_size=strlen(line1_to_process);
 
 	  if (line1_size>size_of_zero)
@@ -406,9 +401,6 @@ void display_board_one_param_text(int machineParam1)
 	  line1[size_of_zero]='\0';
 
 	  SG.drawTTFTextNumberFirstLine(i,line1);	  
-
-	  //	  SG.drawTTFTextNumberFirstLine(i,SAM->getMachineParamCharStar(machineParam1,P[cty].getPatternElement(i).get(machineParam1)));	  
-
 	}
     }  
 }
@@ -431,19 +423,12 @@ void display_board_two_param_text(int machineParam1,int machineParam2)
   int    line1_size;
   int    line2_size;
 
-  // Cursor & step postion      
-  SG.drawBoxNumber(cursor,CURSOR_COLOR);
-  SG.drawBoxNumber(step,STEP_COLOR);  
+  display_board_trig();
+
   for (i=0;i<16;i++)
-    {	  // Draw trigged box trig color   
+    {	  // Draw text on Trigged step
       if (P[cty].getPatternElement(i+pattern_display_offset[cty]).get(NOTE_ON))
 	{
-	  SG.drawBoxNumber(i,TRIG_COLOR);
-	  if (i==cursor)
-	    SG.drawBoxNumber(cursor,CURSOR_COLOR);
-	  if (i==step)
-	    SG.drawBoxNumber(step,STEP_COLOR);  
-
 	  update_SAMM(cty,i);
 	  strcpy(line1,space);
 	  line1_to_process=SAM->getMachineParamCharStar(machineParam1,P[cty].getPatternElement(i).get(machineParam1));
@@ -462,9 +447,6 @@ void display_board_two_param_text(int machineParam1,int machineParam2)
 	  else
 	    strcpy(line2,line2_to_process);
 
-	  // line1[size_of_zero]='\0';
-	  // line2[size_of_zero]='\0';
-
 	  SG.drawTTFTextNumberFirstLine( i,line1);	  
 	  SG.drawTTFTextNumberSecondLine(i,line2);
 
@@ -472,6 +454,66 @@ void display_board_two_param_text(int machineParam1,int machineParam2)
     }  
 }
 
+
+void display_board_one_and_two_param_text(int machineParam1,int machineParam2)
+{
+  int  i;
+  int  cty=SEQ.getCurrentTrackY();
+  int  step=SEQ.getPatternSequencer(cty).getStep();
+
+  int    size_of_zero=5;
+  char   line1[size_of_zero];
+  char   line2[size_of_zero];
+
+  char * line1_to_process;
+  char * line2_to_process;
+  int    line1_size;
+  int    line2_size;
+
+  display_board_trig();
+
+  for (i=0;i<16;i++)
+    {	  // Draw trigged box trig color   
+      if (P[cty].getPatternElement(i+pattern_display_offset[cty]).get(NOTE_ON))
+	{
+	  update_SAMM(cty,i);
+
+	  line1_to_process=SAM->getMachineParamCharStar(machineParam1,
+							P[cty].getPatternElement(i).get(machineParam1));
+
+	  line2_to_process=SAM->getMachineTwoParamCharStar(machineParam2,
+							   P[cty].getPatternElement(i).get(machineParam1),
+							   P[cty].getPatternElement(i).get(machineParam2));
+
+	  line1_size=strlen(line1_to_process);
+	  line2_size=strlen(line2_to_process);
+
+	  if (line1_size>size_of_zero)
+	    {
+	      strncpy(line1,line1_to_process,line1_size);
+	      line1[size_of_zero]='\0';
+	    }
+	  else
+	    strcpy(line1,line1_to_process);
+
+	  if (line2_size>size_of_zero)
+	    {
+	      strncpy(line2,line2_to_process,line2_size);
+	      line2[size_of_zero]='\0';
+	    }
+	  else
+	    strcpy(line2,line2_to_process);
+       	  
+	  SG.drawTTFTextNumberFirstLine( i,line1);	  
+	  SG.drawTTFTextNumberSecondLine(i,line2);
+
+	}
+    }  
+}
+
+
+
+/*
 void display_board_one_and_two_param_text(int machineParam1,int machineParam2)
 {
   int  i;
@@ -537,7 +579,7 @@ void display_board_one_and_two_param_text(int machineParam1,int machineParam2)
 	}
     }  
 }
-
+*/
 
 
 void display_board_amp_env()
