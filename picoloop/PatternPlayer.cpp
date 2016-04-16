@@ -370,7 +370,7 @@ void display_board_one_param_text(int machineParam1)
   int  i;
   int  cty=SEQ.getCurrentTrackY();
   int  step=SEQ.getPatternSequencer(cty).getStep();
-  PatternElement PE;
+  PatternElement PET;
 
   const char * space="    ";
 
@@ -385,13 +385,13 @@ void display_board_one_param_text(int machineParam1)
   for (i=0;i<16;i++)
     {	  
       // Draw trigged box trig color   
-      PE=P[cty].getPatternElement(i+pattern_display_offset[cty]);
+      PET=P[cty].getPatternElement(i+pattern_display_offset[cty]);
       
-      if (PE.get(NOTE_ON))
+      if (PET.get(NOTE_ON))
 	{
 	  update_SAMM(cty,i+pattern_display_offset[cty]);
 	  strcpy(line1,space);
-	  line1_to_process=SAM->getMachineParamCharStar(machineParam1,PE.get(machineParam1));
+	  line1_to_process=SAM->getMachineParamCharStar(machineParam1,PET.get(machineParam1));
 	  line1_size=strlen(line1_to_process);
 
 	  if (line1_size>size_of_zero)
@@ -459,6 +459,7 @@ void display_board_two_param_text(int machineParam1,int machineParam2)
 void display_board_one_and_two_param_text(int machineParam1,int machineParam2)
 {
   int  i;
+  int  j;
   int  cty=SEQ.getCurrentTrackY();
   int  step=SEQ.getPatternSequencer(cty).getStep();
 
@@ -475,16 +476,17 @@ void display_board_one_and_two_param_text(int machineParam1,int machineParam2)
 
   for (i=0;i<16;i++)
     {	  // Draw trigged box trig color   
-      if (P[cty].getPatternElement(i+pattern_display_offset[cty]).get(NOTE_ON))
+      j=i+pattern_display_offset[cty];
+      if (P[cty].getPatternElement(j).get(NOTE_ON))
 	{
-	  update_SAMM(cty,i);
+	  update_SAMM(cty,j);
 
 	  line1_to_process=SAM->getMachineParamCharStar(machineParam1,
-							P[cty].getPatternElement(i).get(machineParam1));
+							P[cty].getPatternElement(j).get(machineParam1));
 
 	  line2_to_process=SAM->getMachineTwoParamCharStar(machineParam2,
-							   P[cty].getPatternElement(i).get(machineParam1),
-							   P[cty].getPatternElement(i).get(machineParam2));
+							   P[cty].getPatternElement(j).get(machineParam1),
+							   P[cty].getPatternElement(j).get(machineParam2));
 
 	  line1_size=strlen(line1_to_process);
 	  line2_size=strlen(line2_to_process);
@@ -863,26 +865,22 @@ void display_board_psh()
 void display_board_mac()
 {
   int  i;
+  int  j;
   int  cty=SEQ.getCurrentTrackY();
   int  step=SEQ.getPatternSequencer(cty).getStep();
+
+  display_board_trig();
+
 
     if (menu_cursor==GLOBALMENU_MAC)
     {
       for (i=0;i<16;i++)
 	{
-	  if (P[cty].getPatternElement(i+pattern_display_offset[cty]).get(NOTE_ON))
+	  j=i+pattern_display_offset[cty];
+	  if (P[cty].getPatternElement(j).get(NOTE_ON))
 	    {
-	      SG.drawBoxNumber(i,TRIG_COLOR);
-	      if (i==cursor)       SG.drawBoxNumber(cursor,CURSOR_COLOR);
-	      if (i==step)         SG.drawBoxNumber(step,STEP_COLOR);  
-	      SG.drawTTFTextNumberFirstLine(i, P[cty].getPatternElement(i).getMachineTypeCharStar());
+	      SG.drawTTFTextNumberFirstLine(i, P[cty].getPatternElement(j).getMachineTypeCharStar());
 	    }
-	  else
-	    {
-	      if (i==cursor)SG.drawBoxNumber(cursor,CURSOR_COLOR);
-	      if (i==step)  SG.drawBoxNumber(step,STEP_COLOR);  
-	    }
-
 	}
     }
 }
