@@ -26,13 +26,27 @@ and another cursor which display the current selected step.
 There is a text menu, which allow you to select channel and edit parameter.
 All notes in the sequencer can be edited simultaneously.
 
-</>             select menu1 entry
-^/v             select channel 
-B               return to sequencer  
-A + </>/^/v,    edit all notes at once
+The menu mode
+
+</>             move backward/forward in the menu
+^/v             select the track from 0 to track 3
+B               do nothing
+A + </>/^/v,    edit all step at once
+A               enter the edit mode
 SELECT          call menu2 or menu1 ( it cycle between the two menu )
         
-        
+
+The edit mode
+
+
+</>             select next step
+^/v             select step+4, step-4
+B               enter a note in a step, it works as a cut/paste
+A + </>/^/v,    edit the current step
+A               do nothing
+SELECT          call menu2 or menu1 ( it cycle between the two menu )
+START           cycle between the different parameter
+
 menu1 : 
 - A/R : 
     - Amp Enveloppe 
