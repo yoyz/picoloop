@@ -120,8 +120,10 @@ menu 2 :
 
      # cd      picoloop
      # make -f Makefile.RtAudio_debian               clean
+     # make -f Makefile.RtMidi_debian                clean
      # make -f Makefile.PatternPlayer_debian_RtAudio clean
      # make -f Makefile.RtAudio_debian
+     # make -f Makefile.RtMidi_debian
      # make -f Makefile.PatternPlayer_debian_RtAudio
 
 # COMPILATION FOR OPENDINGUX
