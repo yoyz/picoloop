@@ -895,7 +895,31 @@ void display_board_text_global()
   char str_line3[64]="";
   char str_line4[64]="";
   char str_line5[64]="";
+  char str_line6[64]="";
   char str_menu[64]="";
+
+  //   Position of the sequencer in 
+  //   the 8 bar of 128 step
+  char str_step_bar1[16]="[X.......]";
+  char str_step_bar2[16]="[.X......]";
+  char str_step_bar3[16]="[..X.....]";
+  char str_step_bar4[16]="[...X....]";
+  char str_step_bar5[16]="[....X...]";
+  char str_step_bar6[16]="[.....X..]";
+  char str_step_bar7[16]="[......X.]";
+  char str_step_bar8[16]="[.......X]";
+
+  //   Position of the cursor in 
+  //   the 8 bar of 128 step
+  char str_curs_bar1[16]="[0.......]";
+  char str_curs_bar2[16]="[.0......]";
+  char str_curs_bar3[16]="[..0.....]";
+  char str_curs_bar4[16]="[...0....]";
+  char str_curs_bar5[16]="[....0...]";
+  char str_curs_bar6[16]="[.....0..]";
+  char str_curs_bar7[16]="[......0.]";
+  char str_curs_bar8[16]="[.......0]";
+
 
   int  right_x_display_offset=      200*SCREEN_MULT;
   int  right_y_display_offset_line1= 20*SCREEN_MULT;
@@ -903,17 +927,58 @@ void display_board_text_global()
   int  right_y_display_offset_line3= 60*SCREEN_MULT;
   int  right_y_display_offset_line4= 80*SCREEN_MULT;
   int  right_y_display_offset_line5=100*SCREEN_MULT;
+  int  right_y_display_offset_line6=120*SCREEN_MULT;
 
   int  menu_x_display_offset=       10*SCREEN_MULT;
   int  menu_y_display_offset=      200*SCREEN_MULT;
 
   int  cty=SEQ.getCurrentTrackY();
   int  stepdiv=SEQ.getPatternSequencer(cty).getBPMDivider();
-
+  int  current_step=SEQ.getPatternSequencer(cty).getStep();
+  int  current_offset=pattern_display_offset[cty];
 
   sprintf(str_line1,    "Track/%d ",cty);
 
-  sprintf(str_line5,    "Length %.3d/%.3d/%.3d",SEQ.getPatternSequencer(cty).getStep(),SEQ.getPatternSequencer(cty).getPatternLength(),pattern_display_offset[cty]);
+  //sprintf(str_line5,    "Length %.3d/%.3d/%.3d",SEQ.getPatternSequencer(cty).getStep(),SEQ.getPatternSequencer(cty).getPatternLength(),pattern_display_offset[cty]);
+
+
+  //   Display the cursor position in  the 8 bar of 128 step
+  if (current_offset>=0  && current_offset<16)
+    strcpy(str_line5,str_step_bar1);
+  if (current_offset>=16 && current_offset<32)
+    strcpy(str_line5,str_step_bar2);
+  if (current_offset>=32 && current_offset<48)
+    strcpy(str_line5,str_step_bar3);
+  if (current_offset>=48 && current_offset<64)
+    strcpy(str_line5,str_step_bar4);
+  if (current_offset>=64 && current_offset<80)
+    strcpy(str_line5,str_step_bar5);
+  if (current_offset>=80 && current_offset<96)
+    strcpy(str_line5,str_step_bar6);
+  if (current_offset>=96 && current_offset<112)
+    strcpy(str_line5,str_step_bar7);
+  if (current_offset>=112 && current_offset<128)
+    strcpy(str_line5,str_step_bar8);
+
+  //   Display the sequencer position in the 8 bar of 128 step
+  if (current_step>=0  && current_step<16)
+    strcpy(str_line6,str_curs_bar1);
+  if (current_step>=16 && current_step<32)
+    strcpy(str_line6,str_curs_bar2);
+  if (current_step>=32 && current_step<48)
+    strcpy(str_line6,str_curs_bar3);
+  if (current_step>=48 && current_step<64)
+    strcpy(str_line6,str_curs_bar4);
+  if (current_step>=64 && current_step<80)
+    strcpy(str_line6,str_curs_bar5);
+  if (current_step>=80 && current_step<96)
+    strcpy(str_line6,str_curs_bar6);
+  if (current_step>=96 && current_step<112)
+    strcpy(str_line6,str_curs_bar7);
+  if (current_step>=112 && current_step<128)
+    strcpy(str_line6,str_curs_bar8);
+
+
 
   sprintf(str_line3,    "Div  /%d",stepdiv);
 
@@ -960,6 +1025,9 @@ void display_board_text_global()
 
   SG.guiTTFText(right_x_display_offset,
 		right_y_display_offset_line5,str_line5);
+
+  SG.guiTTFText(right_x_display_offset,
+		right_y_display_offset_line6,str_line6);
 
 
   // Display menu at the back of the screen
