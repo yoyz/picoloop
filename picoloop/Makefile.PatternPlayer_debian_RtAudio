@@ -67,6 +67,7 @@ SOURCES=PatternPlayer.cpp \
 		      TweakableKnob.cpp	       \
 		      UserInterface.cpp	       \
 		      MidiOutSystem.cpp	       \
+		      MidiInSystem.cpp	       \
 		      Machine/Picosynth/PicosynthUserInterface.cpp \
 		      Machine/Picosynth/PicosynthADSR.cpp        \
 		      Machine/Picosynth/PicosynthVCO.cpp         \
