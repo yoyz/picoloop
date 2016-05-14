@@ -75,6 +75,7 @@ PSP_HEAP_SIZE_KB(-2048) ;
 
 #ifdef __RTMIDI__
 #include "MidiOutSystem.h"
+#include "MidiInSystem.h"
 #include "Machine/MidiOutSystem/MidiOutUserInterface.h"
 #endif
 
@@ -2933,9 +2934,12 @@ int main(int argc,char **argv)
 
 #ifdef __RTMIDI__
   MidiOutSystem & MOS=MidiOutSystem::getInstance();
+  MidiInSystem  & MIS=MidiInSystem::getInstance();
   MOS.init();
+  MIS.init();
   //MOS.chooseMidiPort("TiMidity 128:0");
-  MOS.chooseMidiPort("UM-1SX 24:0");
+  MOS.chooseMidiPort("UM-1SX 28:0");
+  MIS.chooseMidiPort("UC-16 USB MIDI Controller 24:0");
   
 #endif
 
