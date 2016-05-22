@@ -76,6 +76,15 @@ int SDL_GUI::initVideo()
 			    SCREEN_DEPTH,			
 			    SDL_HWSURFACE|SDL_DOUBLEBUF);
   #endif
+
+  #ifdef LINUX_RASPI1
+  screen = SDL_SetVideoMode(SCREEN_WIDTH*SCREEN_MULT, 
+			    SCREEN_HEIGHT*SCREEN_MULT, 
+			    SCREEN_DEPTH,			
+			    SDL_HWSURFACE|SDL_DOUBLEBUF);
+  #endif
+
+
   #ifdef GP2X
   screen = SDL_SetVideoMode(SCREEN_WIDTH, 
 			    SCREEN_HEIGHT, 
