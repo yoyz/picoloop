@@ -82,7 +82,7 @@ DEPENDENCYINOBJDIR = $(addprefix $(OBJDIR)/,$(DEPENDENCY))
 OBJECTSINOBJDIR    = $(addprefix $(OBJDIR)/,$(OBJECTS))
 OBJTOLINKINOBJDIR  = $(addprefix $(OBJDIR)/,$(OBJTOLINK))
 
-EXECUTABLE=PatternPlayer_debian_Rtaudio
+EXECUTABLE=PatternPlayer_raspi1_Rtaudio
 
 #all: DIRTOCREATE $(DEPENDENCY) $(SOURCES) $(EXECUTABLE)
 
