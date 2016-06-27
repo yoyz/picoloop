@@ -176,6 +176,7 @@ int saveall=false;
 int loadall=false;
 
 int patternRemove=false;
+int config_loaded=0;
 
 //int bpm_current=120;    // current value for the four ( TRACK_MAX ) tracks
 float bpm_current=120.0;    // current value for the four ( TRACK_MAX ) tracks
@@ -257,6 +258,13 @@ int seq_update_by_step_next=0; // 0 : the UI audio and seq are sync
 
 int current_swing=50;  
 //int current_swing=64;
+
+
+void display_refresh()
+{
+  SG.refresh();
+}
+
 
 void disable_load_save_highlight()
 {
@@ -580,6 +588,41 @@ void display_board_bpm()
       display_board_trig();
     }
   
+}
+
+
+void display_config()
+{
+  char str_bank[16];
+  sprintf(str_bank,"Current Bank %d ",bank);
+  
+  SG.guiTTFText(30,10, str_bank);
+  display_refresh();
+}
+
+void handle_key_config()
+{
+  bool * keyState;
+  int  * keyRepeat;
+  int    lastEvent;
+  int    lastKey;
+
+
+  IE.handleKey();
+
+  keyState=IE.keyState();
+  keyRepeat=IE.keyRepeat();
+  lastEvent=IE.lastEvent();
+  lastKey=IE.lastKey();
+
+
+
+  if (lastKey   == BUTTON_A && 
+      lastEvent == KEYPRESSED)
+    {
+      config_loaded=1;
+    }
+  IE.clearLastKeyEvent();
 }
 
 void display_board_bank()
@@ -1097,10 +1140,6 @@ void display_board()
 
 }
 
-void display_refresh()
-{
-  SG.refresh();
-}
 
 
 void sub_handle_invert_trig()
@@ -2980,10 +3019,6 @@ int main(int argc,char **argv)
   //for (i=0;i<TRACK_MAX;i++)
   //noteOffTrigger[i]=0;
 
-  PR.init();         // Init the     storage bank
-  PR.setBank(bank);  // The current  storage bank will be 0 PWD/bank/bank%d/
-
-  load_pattern();
   DPRINTF("[openVideo output]");
   SG.initVideo();
   //SDL_InitSubSystem(SDL_INIT_AUDIO);
@@ -2992,6 +3027,22 @@ int main(int argc,char **argv)
   SG.openBMPFont();
   if (SG.openTTFFont()==false) {DPRINTF("ttf font error"); exit(1); }
   SG.loadingScreen();
+
+  config_loaded=0;
+  while (config_loaded!=1)
+    {
+      display_config();
+      handle_key_config();
+      SDL_Delay(1);  
+    }
+
+
+  PR.init();         // Init the     storage bank
+  PR.setBank(bank);  // The current  storage bank will be 0 PWD/bank/bank%d/
+
+  load_pattern();
+
+
 
   //sleep(10);
   //AE.setupSequencerCallback(printme);
