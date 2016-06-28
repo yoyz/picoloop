@@ -14,11 +14,13 @@ class AudioDriver
  public:
   AudioDriver();
   
-  int  closeAudio();
-  int  openAudio();
-  int  stopAudio();
-  int  startAudio();
-
+  int     closeAudio();
+  int     openAudio();
+  int     stopAudio();
+  int     startAudio();
+  int     getNumberOfAudioOutputDevice();
+  char *  getAudioOutputName(int deviceNumber);
+  void    setAudioOutput(int deviceNumber);
 
  public:
   RtAudio::StreamParameters rtAudioOutputParams;

@@ -125,7 +125,20 @@ AudioEngine::AudioEngine() : AM(),
   #endif
 }
 
+int AudioEngine::getNumberOfAudioOutputDevice()
+{
+  return AD.getNumberOfAudioOutputDevice();
+}
 
+void AudioEngine::setAudioOutput(int deviceNumber)
+{
+  AD.setAudioOutput(deviceNumber);
+}
+
+char * AudioEngine::getAudioOutputName(int deviceNumber)
+{
+  return AD.getAudioOutputName(deviceNumber);
+}
 
 int AudioEngine::getNbCallback()
 {

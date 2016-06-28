@@ -5,6 +5,8 @@
 AudioDriver::AudioDriver()
 {
   bufferFrames = BUFFER_FRAME;
+
+  // this could be override because now it is chooseable  by
   rtAudioOutputParams.deviceId=dac.getDefaultOutputDevice();
   rtAudioOutputParams.firstChannel=0;
   rtAudioOutputParams.nChannels=2;
@@ -13,6 +15,14 @@ AudioDriver::AudioDriver()
   //rtAudioStreamOptions.flags |= RTAUDIO_SCHEDULE_REALTIME;
 }
 
+void AudioDriver::setAudioOutput(int deviceNumber)
+{
+  if (deviceNumber >= 0 &&
+      deviceNumber <= this->getNumberOfAudioOutputDevice())
+    rtAudioOutputParams.deviceId=deviceNumber;
+  else   
+    rtAudioOutputParams.deviceId=dac.getDefaultOutputDevice();
+}
 
 int AudioDriver::startAudio()
 {
@@ -22,6 +32,22 @@ int AudioDriver::startAudio()
 int AudioDriver::stopAudio()
 {
   dac.stopStream();
+}
+
+char * AudioDriver::getAudioOutputName(int deviceNumber)
+{
+  static char audioOutputName[128];
+  RtAudio::DeviceInfo rtdi;
+  rtdi=dac.getDeviceInfo(deviceNumber);
+  strcpy(audioOutputName,rtdi.name.c_str());
+  //printf("****%s*****\n",rtdi.name.c_str());
+  return audioOutputName;
+}
+
+int AudioDriver::getNumberOfAudioOutputDevice()
+{
+  // dac.getDeviceCount() return count+1
+  return dac.getDeviceCount() - 1;
 }
 
 int AudioDriver::openAudio()
