@@ -72,6 +72,9 @@ class AudioEngine
   int  openAudioSdl();
   int  closeAudio();
   int  closeAudioSdl();
+  int  getNumberOfAudioOutputDevice();
+  void setAudioOutput(int deviceNumber);
+  char *  getAudioOutputName(int deviceNumber);
   //void setTick(int t);
   int  getTickLeft();
   int  getTickRight();

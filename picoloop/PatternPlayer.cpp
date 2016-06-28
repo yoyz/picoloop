@@ -230,6 +230,10 @@ int bank_to_load=0;
 //int start_key=0;        // start key pressed ?
 //int step=0;             // current step in the sequencer
 
+int   menu_config_audioOutput=0; // audioOutputNumber define in the config menu
+int   menu_config_y=0;           // current selected item in menu_config
+
+
 int menu_cursor=GLOBALMENU_AD;      // index int the menu
 int menu=MENU_ON_PAGE1;             // menu mode
 int menu_note=ENABLE;
@@ -594,9 +598,23 @@ void display_board_bpm()
 void display_config()
 {
   char str_bank[16];
+  char str_audiooutput[128];
+  char str_audiooutput_name[128];
+  char str_menuconfig[128];
+
+  char * audioOutputDeviceName=AE.getAudioOutputName(menu_config_audioOutput);
+  int    audioOutputDevice=AE.getNumberOfAudioOutputDevice();
+
+
+  sprintf(str_menuconfig,"menuconfig : %d",menu_config_y);
   sprintf(str_bank,"Current Bank %d ",bank);
-  
-  SG.guiTTFText(30,10, str_bank);
+  sprintf(str_audiooutput,"%d/%d : %s",menu_config_audioOutput,audioOutputDevice,audioOutputDeviceName); 
+
+  SG.clearScreen();  
+  SG.guiTTFText(30,0,  str_menuconfig);
+  SG.guiTTFText(30,20, str_bank);
+  SG.guiTTFText(30,40, str_audiooutput);
+
   display_refresh();
 }
 
@@ -622,7 +640,42 @@ void handle_key_config()
     {
       config_loaded=1;
     }
+
+  if (lastKey   == BUTTON_DOWN && 
+      lastEvent == KEYRELEASED)
+    {
+      menu_config_y++;
+    }
+
+  if (lastKey   == BUTTON_RIGHT && 
+      lastEvent == KEYRELEASED)
+    {
+      if (menu_config_y==1)
+	{
+	  menu_config_audioOutput++;
+	  if (menu_config_audioOutput > AE.getNumberOfAudioOutputDevice())
+	    menu_config_audioOutput=0;
+	}
+    }
+
+  if (lastKey   == BUTTON_LEFT && 
+      lastEvent == KEYRELEASED)
+    {
+      if (menu_config_y==1)
+	{
+	  menu_config_audioOutput--;
+	  if (menu_config_audioOutput < 0) 
+	    menu_config_audioOutput=AE.getNumberOfAudioOutputDevice();
+	}
+    }
+      
+
+  if (menu_config_y>1) menu_config_y=0;
+  if (menu_config_y<0) menu_config_y=1;
+
+  if (IE.shouldExit()) { exit(0); }
   IE.clearLastKeyEvent();
+  AE.setAudioOutput(menu_config_audioOutput);
 }
 
 void display_board_bank()
