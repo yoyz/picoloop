@@ -145,6 +145,9 @@ vector <Machine   *>        M(TRACK_MAX);
 vector <MonoMixer *>        MM(TRACK_MAX);
 vector <Effect    *>        FX(TRACK_MAX);
 
+int debugcounter=0;               // general purpose debug counter
+int config_key_pressed=0;           // > 1, a key was pressed,
+int config_first_time=1;           // > 1, if the config was not launched
 
 MonoMixer                   SAMM; // Standalone MonoMixer 
                                   //  used to get   a standalone Machine SAM
@@ -602,11 +605,19 @@ void display_config()
   char str_audiooutput_name[128];
   char str_menuconfig[128];
 
-  char * audioOutputDeviceName=AE.getAudioOutputName(menu_config_audioOutput);
-  int    audioOutputDevice=AE.getNumberOfAudioOutputDevice();
+  static char * audioOutputDeviceName;
+  static int    audioOutputDevice;
+
+  if (config_key_pressed>=1 ||
+      config_first_time)
+    {
+      audioOutputDeviceName=AE.getAudioOutputName(menu_config_audioOutput);
+      audioOutputDevice=AE.getNumberOfAudioOutputDevice();
+      config_key_pressed=0;
+    }
 
 
-  sprintf(str_menuconfig,"menuconfig : %d",menu_config_y);
+  sprintf(str_menuconfig,"menuconfig : %d %d",menu_config_y,debugcounter++);
   sprintf(str_bank,"Current Bank %d ",bank);
   sprintf(str_audiooutput,"%d/%d : %s",menu_config_audioOutput,audioOutputDevice,audioOutputDeviceName); 
 
@@ -647,25 +658,36 @@ void handle_key_config()
       menu_config_y++;
     }
 
+  if (lastKey   == BUTTON_UP && 
+      lastEvent == KEYRELEASED)
+    {
+      menu_config_y--;
+    }
+
+  
   if (lastKey   == BUTTON_RIGHT && 
       lastEvent == KEYRELEASED)
     {
+      // audio output
       if (menu_config_y==1)
 	{
 	  menu_config_audioOutput++;
 	  if (menu_config_audioOutput > AE.getNumberOfAudioOutputDevice())
 	    menu_config_audioOutput=0;
+	  config_key_pressed++;
 	}
     }
 
   if (lastKey   == BUTTON_LEFT && 
       lastEvent == KEYRELEASED)
     {
+      // audio output
       if (menu_config_y==1)
 	{
 	  menu_config_audioOutput--;
 	  if (menu_config_audioOutput < 0) 
 	    menu_config_audioOutput=AE.getNumberOfAudioOutputDevice();
+	  config_key_pressed++;
 	}
     }
       
@@ -675,7 +697,17 @@ void handle_key_config()
 
   if (IE.shouldExit()) { exit(0); }
   IE.clearLastKeyEvent();
-  AE.setAudioOutput(menu_config_audioOutput);
+
+}
+
+void handle_config()
+{
+  // Handler at bottom should move
+  if (config_first_time || config_key_pressed)
+    {
+      AE.setAudioOutput(menu_config_audioOutput);
+      config_first_time=0;
+    }
 }
 
 void display_board_bank()
@@ -3082,10 +3114,13 @@ int main(int argc,char **argv)
   SG.loadingScreen();
 
   config_loaded=0;
+  config_key_pressed=0;
+  config_first_time=1;
   while (config_loaded!=1)
     {
       display_config();
       handle_key_config();
+      handle_config();
       SDL_Delay(1);  
     }
 
