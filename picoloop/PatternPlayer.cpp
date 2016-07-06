@@ -7,6 +7,14 @@ using namespace std;
 #include <pspctrl.h>
 #include <psppower.h>
 #include "psp_callback.h"
+
+#ifdef __WIN32__
+#include <windows.h>
+#include <winnt.h>
+#include <ntdef.h>
+#include <profileapi.h>
+#endif
+
 #define VERS    1 //Talk about this
 #define REVS    0
 
@@ -39,6 +47,9 @@ PSP_HEAP_SIZE_KB(-2048) ;
 #include <unistd.h>
 #include <iostream>
 #include <string.h>
+#include <time.h>
+#include <sys/time.h>
+
 
 #include "Master.h"
 //#include "Note.h"
@@ -191,6 +202,11 @@ float bpm_current=120.0;    // current value for the four ( TRACK_MAX ) tracks
 //int nb_cb_ch_step;              //=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
 
 int nb_tick_before_step_change; //=(60*DEFAULT_FREQ)/(bpm_current*4);
+long long clock_interval;       // interval in ns before two midiclock
+                                // clock_interval = 60000000000/(initialBpm*24);
+                                // midicloro.cpp:185
+
+long long clock_delta;         // time remaining between two midi clock pulse
 
 //int last_nbcb_ch_step=0;// nb audio callback from last step
 int debug=1;
@@ -265,6 +281,56 @@ int seq_update_by_step_next=0; // 0 : the UI audio and seq are sync
 
 int current_swing=50;  
 //int current_swing=64;
+int first_clock=1;
+struct timeval timev_now,timev_prev,timev_lastclock;
+time_t difft=0;
+
+long difftime(struct timeval & a0, struct timeval & a1)
+{
+  
+  gettimeofday(&a0, NULL);
+  return ((a0.tv_sec * 1000000 + a0.tv_usec) -
+	  (a1.tv_sec * 1000000 + a1.tv_usec));
+
+}
+
+
+void seq_send_midiclock()
+{
+
+  // clock_interval                    = 20 833 334 for 120 BPM
+  // clock delta    should be maxed at       21 000
+  
+  if (first_clock)
+    {
+      gettimeofday(&timev_prev, NULL);
+      gettimeofday(&timev_lastclock, NULL);
+      first_clock=0;
+      clock_delta=0;
+    }
+  gettimeofday(&timev_now,NULL);
+
+
+  //  printf("********** %.15lld %.15lld %.15lld\n", 	 difftime(timev_now,timev_lastclock), 	 clock_interval, 	 clock_delta);
+
+  if ((difftime(timev_now,timev_lastclock)+clock_delta)*1000>clock_interval)
+    {
+      printf("*****MIDICLOCK   *****\n");
+
+      clock_delta=clock_delta+difftime(timev_now,timev_lastclock);
+      
+      MidiOutSystem & MOS=MidiOutSystem::getInstance();
+      MOS.clock();
+
+      if (clock_delta*1000>clock_interval) { printf("*****MIDICLOCK 2X*****\n"); MOS.clock(); clock_delta=clock_delta-clock_interval/1000; } 
+      if (clock_delta*1000>clock_interval) { printf("*****MIDICLOCK 3X*****\n"); MOS.clock(); clock_delta=clock_delta-clock_interval/1000; } 
+      if (clock_delta*1000>clock_interval) { printf("*****MIDICLOCK 4X*****\n"); MOS.clock(); clock_delta=clock_delta-clock_interval/1000; } 
+
+	    
+      timev_lastclock=timev_now;
+    }
+  
+}
 
 
 void display_refresh()
@@ -323,6 +389,7 @@ void refresh_bpm()
   float nb_tick_before_step_change_f;
   //nb_cb_ch_step=(60*DEFAULTFREQ)/(BUFFER_FRAME*4*bpm_current);
   nb_tick_before_step_change_f=(60*DEFAULTFREQ)/(bpm_current*4);
+  clock_interval=60000000000/(bpm_current*24);
   //nb_tick_before_step_change=(60*DEFAULTFREQ)/(bpm_current*4);
   nb_tick_before_step_change=nb_tick_before_step_change_f;
   refresh_swing();
@@ -702,7 +769,7 @@ void handle_key_config()
 
 void handle_config()
 {
-  // Handler at bottom should move
+  // Handler which make change to the configuration
   if (config_first_time || config_key_pressed)
     {
       AE.setAudioOutput(menu_config_audioOutput);
@@ -2880,6 +2947,7 @@ int seq()
 
       // A/D, Note, VCO, BPM, more handling...
       // apply the modification done by the user on the gui
+      seq_send_midiclock();
       seq_update_multiple_time_by_step();
 
       
@@ -3062,7 +3130,8 @@ int main(int argc,char **argv)
   MOS.init();
   MIS.init();
   //MOS.chooseMidiPort("TiMidity 128:0");
-  MOS.chooseMidiPort("UM-1SX 28:0");
+  //MOS.chooseMidiPort("UM-1SX 28:0");
+  MOS.chooseMidiPort("Midi Through 14:0");
   MIS.chooseMidiPort("UC-16 USB MIDI Controller 24:0");
   
 #endif
