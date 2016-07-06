@@ -311,21 +311,22 @@ void seq_send_midiclock()
   gettimeofday(&timev_now,NULL);
 
 
-  //  printf("********** %.15lld %.15lld %.15lld\n", 	 difftime(timev_now,timev_lastclock), 	 clock_interval, 	 clock_delta);
+  //printf("********** %.15lld %.15lld %.15lld\n", 	 difftime(timev_now,timev_lastclock), 	 clock_interval, 	 clock_delta);
 
   if ((difftime(timev_now,timev_lastclock)+clock_delta)*1000>clock_interval)
     {
       printf("*****MIDICLOCK   *****\n");
 
-      clock_delta=clock_delta+difftime(timev_now,timev_lastclock);
-      
       MidiOutSystem & MOS=MidiOutSystem::getInstance();
       MOS.clock();
 
+      
+      clock_delta=clock_delta+(difftime(timev_now,timev_lastclock))-clock_interval/1000;
+      /*
       if (clock_delta*1000>clock_interval) { printf("*****MIDICLOCK 2X*****\n"); MOS.clock(); clock_delta=clock_delta-clock_interval/1000; } 
       if (clock_delta*1000>clock_interval) { printf("*****MIDICLOCK 3X*****\n"); MOS.clock(); clock_delta=clock_delta-clock_interval/1000; } 
       if (clock_delta*1000>clock_interval) { printf("*****MIDICLOCK 4X*****\n"); MOS.clock(); clock_delta=clock_delta-clock_interval/1000; } 
-
+      */
 	    
       timev_lastclock=timev_now;
     }
