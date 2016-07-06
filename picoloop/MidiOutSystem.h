@@ -16,6 +16,7 @@ class MidiOutSystem
   //MidiOutSystem();
   bool init();
   bool checkChannel(int midiChan);
+  void clock();
   void noteOn(int midiChan,int note,int velocity);
   void noteOff(int midiChan,int note);
   void cc(int midiChan,int cc,int value);

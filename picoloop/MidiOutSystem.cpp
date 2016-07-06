@@ -48,6 +48,17 @@ bool MidiOutSystem::checkChannel(int channel)
   return true;
 }
 
+void MidiOutSystem::clock()
+{
+  mtx.Lock();
+
+  message.push_back(0xF8);
+  rtmidiout->sendMessage(&message);
+  message.clear();  
+  mtx.Unlock();
+}
+
+
 void MidiOutSystem::noteOn( int midiChan,int note,int velocity )
 {
   if (this->checkChannel(midiChan))
@@ -62,6 +73,7 @@ void MidiOutSystem::noteOn( int midiChan,int note,int velocity )
       
     }
 }
+
 
 void MidiOutSystem::noteOff( int midiChan,int note)
 {
