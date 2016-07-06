@@ -5,6 +5,9 @@
 #include <cstdlib>
 #include <stdio.h>
 //#include <mutex>
+#include "SysMutex.h" // nostromo lgpt class for mutex
+
+
 
 class MidiOutSystem
 {
@@ -29,11 +32,8 @@ class MidiOutSystem
   int midiChannel;
   //std::mutex lock_a;
 
-  #if defined(__WIN32__)
-  CRITICAL_SECTION * lock_a;
-  #elif defined(__LINUX__)
-  pthread_mutex_t * lock_a;
-  #endif
+  SysMutex mtx;
+  
 };
 
 
