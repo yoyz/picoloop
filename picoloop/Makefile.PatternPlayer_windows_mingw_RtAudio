@@ -12,7 +12,7 @@ CFLAGS=-c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb -ffast-math
 CFLAGS=-c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb  -pg
 CFLAGS=-Wall -c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb  
 CFLAGS= -O3 -D__WIN32__ -I/c/MinGW/include/  -DLINUX -I. -ISDL_windows -D__RTAUDIO__ -DLINUX_DESKTOP -ggdb 
-CFLAGS= -std=c++11 -O3 -DWIN32 -D__WIN32__ -I/c/MinGW/include/  -DLINUX -I. -ISDL_windows -D__RTAUDIO__ -DLINUX_DESKTOP -ggdb -fpermissive
+CFLAGS= -std=c++11 -O3 -DWIN32 -D__WIN32__ -I/c/MinGW/include/  -DLINUX -I. -ISDL_windows -D__RTAUDIO__ -D__RTMIDI__ -DLINUX_DESKTOP -ggdb -fpermissive
 
 
 LDFLAGS=-lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread -pg
@@ -23,7 +23,7 @@ LDFLAGS=-D__WIN32__ -L. -LSDL-1.2.15/lib/ -lmingw32 -lSDLmain -lSDL -lSDL_ttf -s
 LDFLAGS=-D__WIN32__ -L. -LSDL_windows/lib -L/home/yoyz/.wine/drive_c/users/yoyz/Temp/DXF/DXSDK/lib/ -lmingw32 -lSDLmain -static-libgcc  -static-libstdc++ -lSDL -lSDL_ttf -ldsound -lole32 -lwinmm  -ggdb
 LDFLAGS=-D__WIN32__ -L. -LSDL_windows/lib -L/home/yoyz/.wine/drive_c/users/yoyz/Temp/DXF/DXSDK/lib/ -lmingw32 -lSDLmain -static-libgcc  -static-libstdc++ -lSDL -lSDL_ttf -ldsound -lole32 -lwinmm  -L/usr/i686-w64-mingw32/lib/ -lkernel32 -ggdb 
 
-OBJTOLINK=RtAudio.o
+OBJTOLINK=RtAudio.o RtMidi.o
 SOURCES=PatternPlayer.cpp			\
 			SDL_GUI.cpp		\
 			SYSTEMWINDOWS.cpp	\
@@ -57,6 +57,9 @@ SOURCES=PatternPlayer.cpp			\
 			PitchBend.cpp           \
 			TweakableKnob.cpp       \
 			UserInterface.cpp	\
+			SysMutex.cpp	       \
+			MidiOutSystem.cpp	       \
+		        MidiInSystem.cpp	       \
 			Machine/Picosynth/PicosynthMachine.cpp		\
 			Machine/Picosynth/PicosynthUserInterface.cpp	\
 			Machine/Picosynth/PicosynthADSR.cpp		\
@@ -171,6 +174,8 @@ SOURCES=PatternPlayer.cpp			\
 			Machine/Twytch/twytch_simple_delay.cpp			\
 			Machine/Twytch/twytch_wave.cpp				\
 			Machine/Twytch/twytch_voice_handler.cpp			\
+			Machine/MidiOutSystem/MidiOutUserInterface.cpp            \
+			Machine/MidiOutSystem/MidiOutMachine.cpp                  \
 			Machine/MDADrum/MDADrumMachine.cpp			\
 			Machine/MDADrum/MDADrumUserInterface.cpp			\
 			Machine/MDADrum/drumsynth.cpp				\
@@ -239,6 +244,7 @@ $(OBJDIR)/PatternPlayer.d:PatternPlayer.cpp
 
 
 clean:
-	-rm -f $(OBJECTS) 
+	-rm -f $(OBJECTSINOBJDIR)
+	-rm -f $(DEPENDENCYINOBJDIR)
 	-rm -f $(EXECUTABLE)
 	-rm -f $(DEPENDENCY)

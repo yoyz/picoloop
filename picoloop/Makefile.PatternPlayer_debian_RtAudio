@@ -67,6 +67,7 @@ SOURCES=PatternPlayer.cpp \
 		      PitchBend.cpp            \
 		      TweakableKnob.cpp	       \
 		      UserInterface.cpp	       \
+		      SysMutex.cpp	       \
 		      MidiOutSystem.cpp	       \
 		      MidiInSystem.cpp	       \
 		      Machine/Picosynth/PicosynthUserInterface.cpp \
