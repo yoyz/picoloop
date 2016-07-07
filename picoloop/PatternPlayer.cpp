@@ -205,8 +205,8 @@ int nb_tick_before_step_change; //=(60*DEFAULT_FREQ)/(bpm_current*4);
 long long clock_interval;       // interval in ns before two midiclock
                                 // clock_interval = 60000000000/(initialBpm*24);
                                 // midicloro.cpp:185
-
-long long clock_delta;         // time remaining between two midi clock pulse
+int counter_send_midi_clock=0;  // send n clock and decrement the counter each time 
+long long clock_delta;          // time remaining between two midi clock pulse
 
 //int last_nbcb_ch_step=0;// nb audio callback from last step
 int debug=1;
@@ -296,6 +296,17 @@ long difftime(struct timeval & a0, struct timeval & a1)
 
 
 void seq_send_midiclock()
+{
+  if (counter_send_midi_clock)
+    {
+      MidiOutSystem & MOS=MidiOutSystem::getInstance();
+      MOS.clock();
+      counter_send_midi_clock--;
+      printf("*****MIDICLOCK   *****\n");
+    }
+}
+
+void seq_send_midiclock_old()
 {
 
   // clock_interval                    = 20 833 334 for 120 BPM
