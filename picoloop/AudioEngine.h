@@ -24,6 +24,11 @@ using namespace std;
 #endif
 
 
+
+extern int counter_send_midi_clock; // send n clock and decrement the counter each time
+extern float bpm_current;
+                                    // define in PatternPlayer.cpp
+
 /*
   Purpose : 
   mix all channel
@@ -123,6 +128,11 @@ class AudioEngine
   int          tick_right;
   int          nb_tick;
   int          nb_tick_before_step_change;
+  int          nb_tick_before_midi_send_clock;     // number of audio sample between each midi sync clock
+  int          nb_tick_before_six_midi_send_clock; // number of audio sample between six  midi sync clock
+  int          nb_tick_midi_send_clock;            // counter between each     clock increment by audio sample
+  int          nb_tick_midi_send_clock_mulsix;     // counter between each six clock increment by audio sample
+  int          midi_tick_number;
   //Instrument   inst;
   //  SineOscillator S;
   AudioMixer   AM;
