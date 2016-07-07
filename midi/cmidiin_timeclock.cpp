@@ -5,11 +5,17 @@
 #include <time.h>
 #include <sys/time.h>
 
+#define   BPM_TO_SMOOTH      32
+
 struct timeval a0,a1;
 double   accumul=0;
 double   bpm=0;
-int    inc_diff=0;
-time_t difft=0;
+
+double   smoothed_bpm_v[BPM_TO_SMOOTH];
+double   smoothed_bpm;
+int      number_of_bpm=0;
+int      inc_diff=0;
+time_t   difft=0;
 
 void mycallback( double deltatime, std::vector< unsigned char > *message, void *userData )
 {
@@ -39,9 +45,16 @@ void mycallback( double deltatime, std::vector< unsigned char > *message, void *
       accumul=accumul+difft;
       if (inc_diff>=24)
 	{
+	  number_of_bpm++;
+	  if (number_of_bpm>BPM_TO_SMOOTH) number_of_bpm=0;
 	  bpm=((1/(accumul/1000000))*44100)/735;
+	  smoothed_bpm_v[number_of_bpm]=bpm;
+	  smoothed_bpm=0;
+	  for (int i=0;i<BPM_TO_SMOOTH;i++)
+	    smoothed_bpm+=smoothed_bpm_v[i];
+	 
 	  //printf(" <%f> <%f>",accumul,(1.0/accumul)*44100*(2400/2));
-	  printf(" <%f> <%f>",accumul,bpm);
+	  printf(" <%f> <%f> <%f>",accumul,bpm,smoothed_bpm/BPM_TO_SMOOTH);
 	  accumul=0;
 	  inc_diff=0;
 	}
@@ -67,7 +80,7 @@ int main()
     std::cout << "No ports available!\n";
     goto cleanup;
   }
-  midiin->openPort( 2 );
+  midiin->openPort( 0 );
   // Set our callback function. This should be done immediately after
   // opening the port to avoid having incoming messages written to the
   // queue.
