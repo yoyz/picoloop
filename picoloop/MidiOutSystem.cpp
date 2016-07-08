@@ -118,6 +118,28 @@ void MidiOutSystem::flushMsg()
   mtx.Unlock();
 }
 
+int MidiOutSystem::getNumberOfMidiOutputDevice()
+{
+ int nPorts = rtmidiout->getPortCount();
+ return nPorts;
+}
+
+char * MidiOutSystem::getMidiOutputName(int deviceNumber)
+{
+  static char midiOutputName[128];
+  std::string tmpPortName;
+
+  tmpPortName = rtmidiout->getPortName(deviceNumber);
+  strcpy(midiOutputName,tmpPortName.c_str());
+  return midiOutputName;
+
+}
+
+bool MidiOutSystem::chooseMidiPortDeviceNumber(int deviceNumber)
+{
+  std::string tmpPortName;
+  rtmidiout->openPort( deviceNumber );
+}
 
 bool MidiOutSystem::chooseMidiPort( std::string portName )
 {
