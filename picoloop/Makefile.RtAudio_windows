@@ -1,4 +1,7 @@
 CC=g++
+CC=i686-w64-mingw32-g++-win32
+CC=x86_64-w64-mingw32-g++
+CC=i686-w64-mingw32-g++-win32
 CFLAGS=-c -DLINUX -I. -LSDL/lib -g
 CFLAGS=-O3 -Wall -I.. -I. -DHAVE_GETTIMEOFDAY -D__WINDOWS_DS__
 LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf
