@@ -9,11 +9,13 @@ CFLAGS=-c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb -ffast-math
 CFLAGS=-c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb  -pg
 CFLAGS=-Wall -c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb  
 CFLAGS= -c -O3 -DLINUX -I. -LSDL/lib -D__SDL_AUDIO__  -DLINUX_DESKTOP -ggdb  -fpermissive
-CFLAGS= -c -O3 -DLINUX -I. -LSDL/lib -D__SDL_AUDIO__  -DLINUX_DESKTOP -ggdb  -fpermissive -DFIXED
+CFLAGS= -c -std=c++11 -O3 -DLINUX -I. -LSDL/lib -D__SDL_AUDIO__  -DLINUX_DESKTOP -ggdb  -fpermissive 
 
 LDFLAGS=-lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread -pg
 LDFLAGS=-lasound -lSDL           -lSDL_ttf -lpthread -pg
 LDFLAGS=-lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread
+
+OBJTOLINK=RtMidi.o
 
 SOURCES=PatternPlayer.cpp \
 		      SDL_GUI.cpp              \
@@ -48,6 +50,9 @@ SOURCES=PatternPlayer.cpp \
 		      PitchBend.cpp            \
 		      TweakableKnob.cpp	       \
 		      UserInterface.cpp	       \
+		      SysMutex.cpp	       \
+		      MidiOutSystem.cpp	       \
+		      MidiInSystem.cpp	       \
 		      Machine/Picosynth/PicosynthUserInterface.cpp \
 		      Machine/Picosynth/PicosynthADSR.cpp        \
 		      Machine/Picosynth/PicosynthVCO.cpp         \
@@ -116,43 +121,117 @@ SOURCES=PatternPlayer.cpp \
 		      Machine/Open303/rosic_FunctionTemplates.cpp	\
 		      Machine/Open303/rosic_EllipticQuarterBandFilter.cpp\
 		      Machine/Open303/rosic_RealFunctions.cpp		\
+		      Machine/Twytch/TwytchsynthMachine.cpp		\
+		      Machine/Twytch/TwytchsynthUserInterface.cpp	\
+		      Machine/Twytch/twytch_alias.cpp				\
+		      Machine/Twytch/twytch_arpeggiator.cpp			\
+		      Machine/Twytch/twytch_bypass_router.cpp			\
+		      Machine/Twytch/twytch_bit_crush.cpp			\
+		      Machine/Twytch/twytch_fixed_point_oscillator.cpp		\
+		      Machine/Twytch/twytch_filter.cpp				\
+		      Machine/Twytch/twytch_feedback.cpp			\
+		      Machine/Twytch/twytch_envelope.cpp			\
+		      Machine/Twytch/twytch_distortion.cpp			\
+		      Machine/Twytch/twytch_delay.cpp				\
+		      Machine/Twytch/twytch_helm_lfo.cpp			\
+		      Machine/Twytch/twytch_helm_engine.cpp			\
+		      Machine/Twytch/twytch_helm_common.cpp			\
+		      Machine/Twytch/twytch_formant_manager.cpp		\
+		      Machine/Twytch/twytch_fixed_point_wave.cpp		\
+		      Machine/Twytch/twytch_helm_voice_handler.cpp		\
+		      Machine/Twytch/twytch_helm_oscillators.cpp		\
+		      Machine/Twytch/twytch_helm_module.cpp			\
+		      Machine/Twytch/twytch_operators.cpp			\
+		      Machine/Twytch/twytch_noise_oscillator.cpp		\
+		      Machine/Twytch/twytch_mono_panner.cpp			\
+		      Machine/Twytch/twytch_midi_lookup.cpp			\
+		      Machine/Twytch/twytch_memory.cpp				\
+		      Machine/Twytch/twytch_magnitude_lookup.cpp		\
+		      Machine/Twytch/twytch_linear_slope.cpp			\
+		      Machine/Twytch/twytch_processor_router.cpp		\
+		      Machine/Twytch/twytch_processor.cpp			\
+		      Machine/Twytch/twytch_phaser.cpp				\
+		      Machine/Twytch/twytch_oscillator.cpp			\
+		      Machine/Twytch/twytch_reverb_comb.cpp			\
+		      Machine/Twytch/twytch_reverb_all_pass.cpp		\
+		      Machine/Twytch/twytch_reverb.cpp				\
+		      Machine/Twytch/twytch_resonance_lookup.cpp		\
+		      Machine/Twytch/twytch_resonance_cancel.cpp		\
+		      Machine/Twytch/twytch_value.cpp				\
+		      Machine/Twytch/twytch_trigger_operators.cpp		\
+		      Machine/Twytch/twytch_switch.cpp				\
+		      Machine/Twytch/twytch_stutter.cpp			\
+		      Machine/Twytch/twytch_step_generator.cpp			\
+		      Machine/Twytch/twytch_smooth_value.cpp			\
+		      Machine/Twytch/twytch_smooth_filter.cpp			\
+		      Machine/Twytch/twytch_simple_delay.cpp			\
+		      Machine/Twytch/twytch_wave.cpp				\
+		      Machine/Twytch/twytch_voice_handler.cpp			\
+		      Machine/MidiOutSystem/MidiOutUserInterface.cpp            \
+		      Machine/MidiOutSystem/MidiOutMachine.cpp                  \
+		      Machine/MDADrum/MDADrumMachine.cpp			\
+		      Machine/MDADrum/MDADrumUserInterface.cpp			\
+		      Machine/MDADrum/drumsynth.cpp				\
+		      Machine/MDADrum/profport.cpp				
 
 
 
 
+OBJDIR             =     debiansdl
+OBJECTS            =   $(SOURCES:.cpp=.o)
+DEPENDENCY         =   $(SOURCES:.cpp=.d)
 
-OBJECTS=$(SOURCES:.cpp=.o)
-DEPENDENCY=$(SOURCES:.cpp=.d)
+DEPENDENCYINOBJDIR = $(addprefix $(OBJDIR)/,$(DEPENDENCY))
+OBJECTSINOBJDIR    = $(addprefix $(OBJDIR)/,$(OBJECTS))
+OBJTOLINKINOBJDIR  = $(addprefix $(OBJDIR)/,$(OBJTOLINK))
+
 EXECUTABLE=PatternPlayer_debian_SDL
 
-all: $(SOURCES) $(DEPENDENCY) $(EXECUTABLE)
 
-$(EXECUTABLE): $(OBJECTS)
-	$(CC) $(OBJTOLINK)  $(OBJECTS) -o $@ $(LDFLAGS)
+all: DIRTOCREATE $(DEPENDENCYINOBJDIR) $(SOURCES) $(EXECUTABLE) 
 
+DIRTOCREATE:
+	-mkdir -p $(OBJDIR)/Machine
+	-mkdir -p $(OBJDIR)/Machine/Picosynth
+	-mkdir -p $(OBJDIR)/Machine/Picodrum
+	-mkdir -p $(OBJDIR)/Machine/Dbopl	
+	-mkdir -p $(OBJDIR)/Machine/PBSynth
+	-mkdir -p $(OBJDIR)/Machine/Cursynth
+	-mkdir -p $(OBJDIR)/Machine/Open303
+	-mkdir -p $(OBJDIR)/Machine/Twytch
+	-mkdir -p $(OBJDIR)/Machine/MidiOutSystem
+	-mkdir -p $(OBJDIR)/Machine/MDADrum
 
-%.o : %.cpp 
+$(EXECUTABLE): $(DEPENDENCYINOBJDIR) $(OBJECTSINOBJDIR)
+	$(CC) $(OBJTOLINKINOBJDIR)  $(OBJECTSINOBJDIR) -o $@ $(LDFLAGS)
+
+# the .d file contain the dependency
+$(OBJDIR)/%.d : %.cpp %.h
+	$(CC) -I. -MM $< -o $@
+
+$(OBJDIR)/%.o : %.cpp 
 	$(CC) $(CFLAGS) $< -o $@
 
 
 # include all the dependency .d file into the makefile 
 # it allow to match change in .h file
-include ${DEPENDENCY}
+-include $(DEPENDENCYINOBJDIR)
 
-# the .d file contain the dependency
-%.d : %.cpp %.h
-	$(CC) -I. -MM $< -o $@
 
 # SYSTEMLINUX.d does have a .h which is SYSTEM.h, so it need a tweaks
-SYSTEMLINUX.d:SYSTEMLINUX.cpp 
+$(OBJDIR)/SYSTEMLINUX.d:SYSTEMLINUX.cpp 
 	$(CC) -I. -MM $< -o $@ 
 
-# systemlinux.d does have a .h which is system.h
+# PatternPlayer.d does have a .h which is system.h
 PatternPlayer.d:PatternPlayer.cpp
-	$(CC) -I. -MM $< -o $@ 
+	$(CC) -std=c++11 -I. -MM $< -o $@ 
 
 
 clean:
-	-rm -f $(OBJECTS) 
+	-rm -f $(OBJECTSINOBJDIR)
+	-rm -f $(DEPENDENCYINOBJDIR)
 	-rm -f $(EXECUTABLE)
 	-rm -f $(DEPENDENCY)
+
+
+

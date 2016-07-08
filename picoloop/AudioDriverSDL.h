@@ -14,6 +14,11 @@ class AudioDriver
   int  openAudio();
   int  stopAudio();
   int  startAudio();
+
+  int     getNumberOfAudioOutputDevice();
+  char *  getAudioOutputName(int deviceNumber);
+  void    setAudioOutput(int deviceNumber);
+
   
   int  getBufferFrame();
 

@@ -5,14 +5,19 @@ CFLAGS=-O2 -Wall -I.. -DHAVE_GETTIMEOFDAY -D__LINUX_ALSA__
 CFLAGS=-c -O3 -DLINUX -I. -I/opt/opendingux-toolchain/usr/include/ -L/opt/opendingux-toolchain/usr/lib/ -L/opt/opendingux-toolchain/usr/lib/ao/plugins-4/ -L/opt/opendingux-toolchain/usr/lib/ -lalsa -lSDL -lSDL_ttf  -D__LINUX_ALSA__ 
 LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf -lalsa -lasound
 SOURCES=RtAudio.cpp 
+OBJDIR=opendinguxrtaudio
 OBJECTS=$(SOURCES:.cpp=.o)
-#EXECUTABLE=Picoloop
+OBJECTSINOBJDIR    = $(addprefix $(OBJDIR)/,$(OBJECTS))
 
-all: $(OBJECTS)
+all: DIRTOCREATE $(OBJECTSINOBJDIR)
 
-
-.cpp.o:
+$(OBJDIR)/%.o : %.cpp
 	$(CC) $(CFLAGS) -c $< -o $@
 
+DIRTOCREATE:
+	-mkdir -p $(OBJDIR)
+
+
+
 clean:
-	-rm -f $(OBJECTS) $(EXECUTABLE)
+	-rm -f $(OBJECTSINOBJDIR)
