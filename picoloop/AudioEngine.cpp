@@ -181,7 +181,7 @@ void AudioEngine::processBuffer(int len)
       // there is a / 6 and it prevent midi clock skew
       if (nb_tick_midi_send_clock_mulsix>nb_tick_before_six_midi_send_clock)
 	{
-	  counter_send_midi_clock++;
+	  counter_send_midi_clock_six++;
 	  nb_tick_midi_send_clock=0;
 	  nb_tick_midi_send_clock_mulsix=0;
 	  midi_tick_number=0;
