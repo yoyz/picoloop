@@ -5,7 +5,8 @@
 
 MidiOutSystem::MidiOutSystem()
 {
-
+  iamOpen=0;
+  lastOpenPortNumber=0;
 }
 
 
@@ -138,13 +139,24 @@ char * MidiOutSystem::getMidiOutputName(int deviceNumber)
 bool MidiOutSystem::chooseMidiPortDeviceNumber(int deviceNumber)
 {
   std::string tmpPortName;
+  int portNumber=-1;
+  unsigned int i = 0, nPorts = rtmidiout->getPortCount();
+  tmpPortName = rtmidiout->getPortName(deviceNumber);
+
+
+  std::cout << "  Will try to open midi out port #" << deviceNumber << " [" << tmpPortName << "]\n";
+  if (iamOpen)
+    rtmidiout->closePort();
+
   rtmidiout->openPort( deviceNumber );
+  iamOpen=1;
+  return true;
 }
 
 bool MidiOutSystem::chooseMidiPort( std::string portName )
 {
-  std::string tmpPortName;
   int portNumber=-1;
+  std::string tmpPortName;
 
   std::cout << "MidiOutSystem::chooseMidiPort(\""<< portName <<"\")\n";
 
@@ -173,7 +185,11 @@ bool MidiOutSystem::chooseMidiPort( std::string portName )
     if (portNumber!=-1)
       {
 	std::cout << "Opening port : " << portNumber << " [" << portName << "]\n";
+	if (iamOpen)
+	  rtmidiout->closePort();
 	rtmidiout->openPort( portNumber );
+	lastOpenPortNumber=portNumber;
+	iamOpen=1;
       }
 
   return true;
