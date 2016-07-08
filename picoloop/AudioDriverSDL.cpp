@@ -17,6 +17,25 @@ AudioDriver::AudioDriver()
   //sdlAudioSpecWanted->userdata = this;
 }
 
+// Do nothing today
+void AudioDriver::setAudioOutput(int deviceNumber)
+{
+  
+}
+
+char * AudioDriver::getAudioOutputName(int deviceNumber)
+{
+  static const char * audioOutputName="SDL";
+  return audioOutputName;
+}
+
+int AudioDriver::getNumberOfAudioOutputDevice()
+{
+  // dac.getDeviceCount() return count+1
+  return 0;
+}
+
+
 int AudioDriver::getBufferFrame()
 {
   //return sdlAudioSpecWanted->samples;
