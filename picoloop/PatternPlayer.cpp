@@ -201,12 +201,13 @@ float bpm_current=120.0;    // current value for the four ( TRACK_MAX ) tracks
 //int nb_cb_ch_step=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm); // Weird ?
 //int nb_cb_ch_step;              //=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
 
-int nb_tick_before_step_change; //=(60*DEFAULT_FREQ)/(bpm_current*4);
-long long clock_interval;       // interval in ns before two midiclock
-                                // clock_interval = 60000000000/(initialBpm*24);
-                                // midicloro.cpp:185
-int counter_send_midi_clock=0;  // send n clock and decrement the counter each time 
-long long clock_delta;          // time remaining between two midi clock pulse
+int nb_tick_before_step_change;     //=(60*DEFAULT_FREQ)/(bpm_current*4);
+long long clock_interval;           // interval in ns before two midiclock
+                                    // clock_interval = 60000000000/(initialBpm*24);
+                                    // midicloro.cpp:185
+int counter_send_midi_clock=0;      // send n clock and decrement the counter each time 
+int counter_send_midi_clock_six=0;  // send n clock and decrement the counter each time 
+long long clock_delta;              // time remaining between two midi clock pulse
 
 //int last_nbcb_ch_step=0;// nb audio callback from last step
 int debug=1;
@@ -297,14 +298,26 @@ long difftime(struct timeval & a0, struct timeval & a1)
 
 void seq_send_midiclock()
 {
+  MidiOutSystem & MOS=MidiOutSystem::getInstance();
   if (counter_send_midi_clock)
     {
-      MidiOutSystem & MOS=MidiOutSystem::getInstance();
       MOS.clock();
       counter_send_midi_clock--;
       printf("*****MIDICLOCK   *****\n");
     }
 }
+
+void seq_send_midiclock_six()
+{
+  MidiOutSystem & MOS=MidiOutSystem::getInstance();
+  if (counter_send_midi_clock_six)
+    {
+      MOS.clock();
+      counter_send_midi_clock_six--;
+      printf("*****MIDICLOCK_6 *****\n");
+    }
+}
+
 
 void seq_send_midiclock_old()
 {
@@ -3011,6 +3024,7 @@ int seq()
 	{	 
 	  //last_nbcb_ch_step=nbcb;
 	  seq_update_by_step();
+	  seq_send_midiclock_six();
 	  seq_update_by_step_next=0;
 	}
     }
@@ -3142,8 +3156,9 @@ int main(int argc,char **argv)
   MOS.init();
   MIS.init();
   //MOS.chooseMidiPort("TiMidity 128:0");
-  //MOS.chooseMidiPort("UM-1SX 28:0");
-  MOS.chooseMidiPort("Midi Through 14:0");
+  MOS.chooseMidiPort("UM-1SX 24:0");
+  //MOS.chooseMidiPort("Midi Through 14:0");
+  //MOS.chooseMidiPort("Midi Through 24:0");
   MIS.chooseMidiPort("UC-16 USB MIDI Controller 24:0");
   
 #endif

@@ -25,7 +25,8 @@ using namespace std;
 
 
 
-extern int counter_send_midi_clock; // send n clock and decrement the counter each time
+extern int counter_send_midi_clock;     // send n clock and decrement the counter each time
+extern int counter_send_midi_clock_six; // send n clock and decrement the counter each time
 extern float bpm_current;
                                     // define in PatternPlayer.cpp
 
