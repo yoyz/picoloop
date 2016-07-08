@@ -37,6 +37,9 @@ class MidiOutSystem
   //std::mutex lock_a;
 
   SysMutex mtx;
+
+  int lastOpenPortNumber;
+  int iamOpen;
   
 };
 
