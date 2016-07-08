@@ -121,7 +121,7 @@ void MidiOutSystem::flushMsg()
 
 int MidiOutSystem::getNumberOfMidiOutputDevice()
 {
- int nPorts = rtmidiout->getPortCount();
+ int nPorts = rtmidiout->getPortCount()-1;
  return nPorts;
 }
 
