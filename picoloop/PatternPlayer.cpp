@@ -150,6 +150,9 @@ MidiOutUserInterface MIDIUI;
 // load_save_highligth_current[0..t-1]>=0 active played track 
 int load_save_highligth_current[TRACK_MAX];
 
+//SDL_Thread *SDL_CreateThread(int (*fn)(void *), void *data);
+
+SDL_Thread *thread_midiclock = NULL;
 
 vector <Pattern>            P(TRACK_MAX);  
 vector <Machine   *>        M(TRACK_MAX);
@@ -321,6 +324,19 @@ void seq_send_midiclock_six()
       printf("*****MIDICLOCK_6 *****\n");
     }
 }
+
+int thread_seq_send_midiclock( void * data)
+{
+  while(IE.shouldExit()!=1)
+    {
+      seq_send_midiclock();
+      seq_send_midiclock_six();
+
+      SDL_Delay(1);  
+    }
+}
+
+
 
 
 void seq_send_midiclock_old()
@@ -2996,6 +3012,9 @@ int seq()
 
   refresh_pecursor();
 
+  // init the thread midi
+  thread_midiclock = SDL_CreateThread( thread_seq_send_midiclock, NULL );
+  
   DPRINTF("openAudio start streaming");
   AE.startAudio();
   //AE.startAudioSdl();
@@ -3025,7 +3044,9 @@ int seq()
 
       // A/D, Note, VCO, BPM, more handling...
       // apply the modification done by the user on the gui
-      seq_send_midiclock();
+
+      //deactivate midi on 
+      //seq_send_midiclock();
       seq_update_multiple_time_by_step();
 
       
@@ -3077,7 +3098,8 @@ int seq()
 	{	 
 	  //last_nbcb_ch_step=nbcb;
 	  seq_update_by_step();
-	  seq_send_midiclock_six();
+	  // deactivate midi clock on main thread
+	  //seq_send_midiclock_six();
 	  seq_update_by_step_next=0;
 	}
     }

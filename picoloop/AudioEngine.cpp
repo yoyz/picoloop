@@ -152,9 +152,10 @@ int AudioEngine::getNbCallback()
 // related to  sequencer callbackw
 int AudioEngine::setNbTickBeforeStepChange(int val) 
 {
+
   nb_tick_before_step_change=val;
   PS.setNbTickBeforeStepChange(val);
-  nb_tick_before_midi_send_clock=val/6;
+  nb_tick_before_midi_send_clock=(val/6);
   nb_tick_before_six_midi_send_clock=val;
 }
 
@@ -179,7 +180,7 @@ void AudioEngine::processBuffer(int len)
 
       // arm a counter to send the six midi sync signal
       // there is a / 6 and it prevent midi clock skew
-      if (nb_tick_midi_send_clock_mulsix>nb_tick_before_six_midi_send_clock)
+      if (nb_tick_midi_send_clock_mulsix>nb_tick_before_six_midi_send_clock-1)
 	{
 	  counter_send_midi_clock_six++;
 	  nb_tick_midi_send_clock=0;
@@ -189,7 +190,7 @@ void AudioEngine::processBuffer(int len)
       
       // arm a counter to send a midi sync signal
       if (midi_tick_number<5 &&
-	  nb_tick_midi_send_clock>nb_tick_before_midi_send_clock)
+	  nb_tick_midi_send_clock>nb_tick_before_midi_send_clock-1)
 	{
 	  counter_send_midi_clock++;
 	  nb_tick_midi_send_clock=0;
