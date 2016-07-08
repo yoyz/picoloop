@@ -48,6 +48,7 @@ class MidiInSystem
  public:
   static MidiInSystem & getInstance();
   bool init();
+  int getNumberOfMidiInputDevice();
   bool checkChannel(int midiChan);
   bool chooseMidiPort(std::string portName);
 

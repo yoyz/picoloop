@@ -15,6 +15,8 @@ class MidiOutSystem
   static MidiOutSystem & getInstance();
   //MidiOutSystem();
   bool init();
+  int getNumberOfMidiOutputDevice();
+  char * getMidiOutputName(int deviceNumber);
   bool checkChannel(int midiChan);
   void clock();
   void noteOn(int midiChan,int note,int velocity);
@@ -24,6 +26,7 @@ class MidiOutSystem
   void flushMsg();
   //bool chooseMidiPort( RtMidiOut *rtmidi );
   bool chooseMidiPort(std::string portName);
+  bool chooseMidiPortDeviceNumber(int deviceNumber);
 
   private:
   MidiOutSystem();

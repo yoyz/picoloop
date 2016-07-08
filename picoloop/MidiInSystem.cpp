@@ -42,6 +42,12 @@ bool MidiInSystem::checkChannel(int channel)
 }
 
 
+int MidiInSystem::getNumberOfMidiInputDevice()
+{
+ int nPorts = rtmidiin->getPortCount();
+ return nPorts;
+}
+
 bool MidiInSystem::chooseMidiPort( std::string portName )
 {
   std::string tmpPortName;
