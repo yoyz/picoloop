@@ -251,6 +251,7 @@ int bank_to_load=0;
 //int step=0;             // current step in the sequencer
 
 int   menu_config_audioOutput=0; // audioOutputNumber define in the config menu
+int   menu_config_midiOutput=0;  //  midiOutputNumber define in the config menu
 int   menu_config_y=0;           // current selected item in menu_config
 
 
@@ -298,13 +299,16 @@ long difftime(struct timeval & a0, struct timeval & a1)
 
 void seq_send_midiclock()
 {
+
   MidiOutSystem & MOS=MidiOutSystem::getInstance();
+  #ifdef __RTMIDI__
   if (counter_send_midi_clock)
     {
       MOS.clock();
       counter_send_midi_clock--;
       printf("*****MIDICLOCK   *****\n");
     }
+  #endif
 }
 
 void seq_send_midiclock_six()
@@ -339,11 +343,12 @@ void seq_send_midiclock_old()
 
   if ((difftime(timev_now,timev_lastclock)+clock_delta)*1000>clock_interval)
     {
+      #ifdef __RTMIDI__
       printf("*****MIDICLOCK   *****\n");
 
       MidiOutSystem & MOS=MidiOutSystem::getInstance();
       MOS.clock();
-
+      #endif
       
       clock_delta=clock_delta+(difftime(timev_now,timev_lastclock))-clock_interval/1000;
       /*
@@ -694,29 +699,42 @@ void display_config()
 {
   char str_bank[16];
   char str_audiooutput[128];
+  char str_midioutput[128];
   char str_audiooutput_name[128];
+  char str_midioutput_name[128];
   char str_menuconfig[128];
 
   static char * audioOutputDeviceName;
+  static char * midiOutputDeviceName;
   static int    audioOutputDevice;
+  static int     midiOutputDevice;
 
+
+  MidiOutSystem & MOS=MidiOutSystem::getInstance();
+  
   if (config_key_pressed>=1 ||
       config_first_time)
     {
       audioOutputDeviceName=AE.getAudioOutputName(menu_config_audioOutput);
       audioOutputDevice=AE.getNumberOfAudioOutputDevice();
+
+      midiOutputDeviceName=MOS.getMidiOutputName(menu_config_midiOutput);
+      midiOutputDevice=MOS.getNumberOfMidiOutputDevice();      
+      
       config_key_pressed=0;
     }
 
 
   sprintf(str_menuconfig,"menuconfig : %d %d",menu_config_y,debugcounter++);
   sprintf(str_bank,"Current Bank %d ",bank);
-  sprintf(str_audiooutput,"%d/%d : %s",menu_config_audioOutput,audioOutputDevice,audioOutputDeviceName); 
+  sprintf(str_audiooutput,"%d/%d : %s",menu_config_audioOutput,audioOutputDevice,audioOutputDeviceName);
+  sprintf(str_midioutput,"%d/%d : %s",menu_config_midiOutput,midiOutputDevice,midiOutputDeviceName); 
 
   SG.clearScreen();  
   SG.guiTTFText(30,0,  str_menuconfig);
   SG.guiTTFText(30,20, str_bank);
   SG.guiTTFText(30,40, str_audiooutput);
+  SG.guiTTFText(30,60, str_midioutput);
 
   display_refresh();
 }
@@ -736,6 +754,11 @@ void handle_key_config()
   lastEvent=IE.lastEvent();
   lastKey=IE.lastKey();
 
+#ifdef __RTMIDI__
+  MidiOutSystem & MOS=MidiOutSystem::getInstance();
+#endif 
+
+  
 
 
   if (lastKey   == BUTTON_A && 
@@ -768,6 +791,15 @@ void handle_key_config()
 	    menu_config_audioOutput=0;
 	  config_key_pressed++;
 	}
+
+      // midi output
+      if (menu_config_y==2)
+	{
+	  menu_config_midiOutput++;
+	  if (menu_config_midiOutput > MOS.getNumberOfMidiOutputDevice())
+	    menu_config_midiOutput=0;
+	  config_key_pressed++;
+	}
     }
 
   if (lastKey   == BUTTON_LEFT && 
@@ -781,11 +813,20 @@ void handle_key_config()
 	    menu_config_audioOutput=AE.getNumberOfAudioOutputDevice();
 	  config_key_pressed++;
 	}
+      // midi output
+      if (menu_config_y==2)
+	{
+	  menu_config_midiOutput--;
+	  if (menu_config_midiOutput < 0) 
+	    menu_config_midiOutput=MOS.getNumberOfMidiOutputDevice();
+	  config_key_pressed++;
+	}
+
     }
       
 
-  if (menu_config_y>1) menu_config_y=0;
-  if (menu_config_y<0) menu_config_y=1;
+  if (menu_config_y>2) menu_config_y=0;
+  if (menu_config_y<0) menu_config_y=2;
 
   if (IE.shouldExit()) { exit(0); }
   IE.clearLastKeyEvent();
@@ -797,7 +838,14 @@ void handle_config()
   // Handler which make change to the configuration
   if (config_first_time || config_key_pressed)
     {
+#ifdef __RTMIDI__
+      MidiOutSystem & MOS=MidiOutSystem::getInstance();
+      MOS.chooseMidiPortDeviceNumber(menu_config_midiOutput);
+      //MOS.chooseMidiPort("UM-1SX 24:0");
+#endif 
+
       AE.setAudioOutput(menu_config_audioOutput);
+      //AE.setAudioOutput(menu_config_audioOutput);
       config_first_time=0;
     }
 }
@@ -3156,10 +3204,14 @@ int main(int argc,char **argv)
   MOS.init();
   MIS.init();
   //MOS.chooseMidiPort("TiMidity 128:0");
-  MOS.chooseMidiPort("UM-1SX 24:0");
+  //MOS.chooseMidiPort("UM-1SX 24:0");
   //MOS.chooseMidiPort("Midi Through 14:0");
   //MOS.chooseMidiPort("Midi Through 24:0");
-  MIS.chooseMidiPort("UC-16 USB MIDI Controller 24:0");
+  //MIS.chooseMidiPort("UC-16 USB MIDI Controller 24:0");
+
+  //MOS.chooseMidiPort("UM-1SX 28:0");
+  //MOS.chooseMidiPort("Midi Through 14:0");
+  //MIS.chooseMidiPort("UC-16 USB MIDI Controller 24:0");
   
 #endif
 
