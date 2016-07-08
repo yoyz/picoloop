@@ -828,7 +828,12 @@ void handle_key_config()
   if (menu_config_y>2) menu_config_y=0;
   if (menu_config_y<0) menu_config_y=2;
 
-  if (IE.shouldExit()) { exit(0); }
+  if (IE.shouldExit())
+    {
+      MidiOutSystem & MOS=MidiOutSystem::getInstance();
+      MOS.closePort();
+      exit(0);
+    }
   IE.clearLastKeyEvent();
 
 }
