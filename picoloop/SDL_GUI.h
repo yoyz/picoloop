@@ -18,6 +18,13 @@
 #define   OFFSET_Y_MIDDLEBOX_DOWN 160
 
 
+#define   OFFSET_X_PATTERN_CURSOR 70
+#define   OFFSET_Y_PATTERN_CURSOR 220
+
+#define   OFFSET_X_PATTERN_STEP   70
+#define   OFFSET_Y_PATTERN_STEP   230
+
+
 using namespace std;
 
 class SDL_GUI

@@ -253,6 +253,7 @@ int bank_to_load=0;
 //int start_key=0;        // start key pressed ?
 //int step=0;             // current step in the sequencer
 
+int   menu_config_bank=0;        // will choose the bank to load at startup
 int   menu_config_audioOutput=0; // audioOutputNumber define in the config menu
 int   menu_config_midiOutput=0;  //  midiOutputNumber define in the config menu
 int   menu_config_y=0;           // current selected item in menu_config
@@ -714,7 +715,7 @@ void display_board_bpm()
 
 void display_config()
 {
-  char str_bank[16];
+  char str_bank[128];
   char str_audiooutput[128];
   char str_midioutput[128];
   char str_audiooutput_name[128];
@@ -742,8 +743,8 @@ void display_config()
     }
 
 
-  sprintf(str_menuconfig,"menuconfig : %d %d",menu_config_y,debugcounter++);
-  sprintf(str_bank,"Current Bank %d ",bank);
+  sprintf(str_menuconfig ,"menuconfig : %d %d",menu_config_y,debugcounter++);
+  sprintf(str_bank       ,"Current Bank %d "  ,menu_config_bank);
   sprintf(str_audiooutput,"%d/%d : %s",menu_config_audioOutput,audioOutputDevice,audioOutputDeviceName);
 #ifdef __RTMIDI__
   sprintf(str_midioutput,"%d/%d : %s",menu_config_midiOutput,midiOutputDevice,midiOutputDeviceName); 
@@ -777,9 +778,6 @@ void handle_key_config()
   MidiOutSystem & MOS=MidiOutSystem::getInstance();
 #endif 
 
-  
-
-
   if (lastKey   == BUTTON_A && 
       lastEvent == KEYPRESSED)
     {
@@ -802,13 +800,20 @@ void handle_key_config()
   if (lastKey   == BUTTON_RIGHT && 
       lastEvent == KEYRELEASED)
     {
+      // bank loading
+      if (menu_config_y==0)
+	{
+	  menu_config_bank++;
+	  if (menu_config_bank>MAX_BANK-1)
+	      menu_config_bank=0;
+	}
+
       // audio output
       if (menu_config_y==1)
 	{
 	  menu_config_audioOutput++;
 	  if (menu_config_audioOutput > AE.getNumberOfAudioOutputDevice())
 	    menu_config_audioOutput=0;
-	  config_key_pressed++;
 	}
 #ifdef __RTMIDI__
       // midi output
@@ -817,21 +822,29 @@ void handle_key_config()
 	  menu_config_midiOutput++;
 	  if (menu_config_midiOutput > MOS.getNumberOfMidiOutputDevice())
 	    menu_config_midiOutput=0;
-	  config_key_pressed++;
 	}
 #endif
+      config_key_pressed++;
     }
 
   if (lastKey   == BUTTON_LEFT && 
       lastEvent == KEYRELEASED)
     {
+
+      // bank loading
+      if (menu_config_y==0)
+	{
+	  menu_config_bank--;
+	  if (menu_config_bank<0)
+	      menu_config_bank=MAX_BANK-1;
+	}
+
       // audio output
       if (menu_config_y==1)
 	{
 	  menu_config_audioOutput--;
 	  if (menu_config_audioOutput < 0) 
 	    menu_config_audioOutput=AE.getNumberOfAudioOutputDevice();
-	  config_key_pressed++;
 	}
 #ifdef __RTMIDI__
       // midi output
@@ -839,9 +852,10 @@ void handle_key_config()
 	{
 	  menu_config_midiOutput--;
 	  if (menu_config_midiOutput < 0) 
+
 	    menu_config_midiOutput=MOS.getNumberOfMidiOutputDevice();
-	  config_key_pressed++;
 	}
+      config_key_pressed++;
 #endif
     }
       
@@ -872,11 +886,9 @@ void handle_config()
 #ifdef __RTMIDI__
       MidiOutSystem & MOS=MidiOutSystem::getInstance();
       MOS.chooseMidiPortDeviceNumber(menu_config_midiOutput);
-      //MOS.chooseMidiPort("UM-1SX 24:0");
 #endif 
-
+      bank=menu_config_bank;
       AE.setAudioOutput(menu_config_audioOutput);
-      //AE.setAudioOutput(menu_config_audioOutput);
       config_first_time=0;
     }
 }
@@ -1198,27 +1210,6 @@ void display_board_text_global()
   char str_line6[64]="";
   char str_menu[64]="";
 
-  //   Position of the sequencer in 
-  //   the 8 bar of 128 step
-  char str_step_bar1[16]="[X.......]";
-  char str_step_bar2[16]="[.X......]";
-  char str_step_bar3[16]="[..X.....]";
-  char str_step_bar4[16]="[...X....]";
-  char str_step_bar5[16]="[....X...]";
-  char str_step_bar6[16]="[.....X..]";
-  char str_step_bar7[16]="[......X.]";
-  char str_step_bar8[16]="[.......X]";
-
-  //   Position of the cursor in 
-  //   the 8 bar of 128 step
-  char str_curs_bar1[16]="[0.......]";
-  char str_curs_bar2[16]="[.0......]";
-  char str_curs_bar3[16]="[..0.....]";
-  char str_curs_bar4[16]="[...0....]";
-  char str_curs_bar5[16]="[....0...]";
-  char str_curs_bar6[16]="[.....0..]";
-  char str_curs_bar7[16]="[......0.]";
-  char str_curs_bar8[16]="[.......0]";
 
 
   int  right_x_display_offset=      200*SCREEN_MULT;
@@ -1236,49 +1227,38 @@ void display_board_text_global()
   int  stepdiv=SEQ.getPatternSequencer(cty).getBPMDivider();
   int  current_step=SEQ.getPatternSequencer(cty).getStep();
   int  current_offset=pattern_display_offset[cty];
+  int  pattern_length=SEQ.getPatternSequencer(cty).getPatternLength();
 
   sprintf(str_line1,    "Track/%d ",cty);
 
   //sprintf(str_line5,    "Length %.3d/%.3d/%.3d",SEQ.getPatternSequencer(cty).getStep(),SEQ.getPatternSequencer(cty).getPatternLength(),pattern_display_offset[cty]);
 
 
-  //   Display the cursor position in  the 8 bar of 128 step
-  if (current_offset>=0  && current_offset<16)
-    strcpy(str_line5,str_step_bar1);
-  if (current_offset>=16 && current_offset<32)
-    strcpy(str_line5,str_step_bar2);
-  if (current_offset>=32 && current_offset<48)
-    strcpy(str_line5,str_step_bar3);
-  if (current_offset>=48 && current_offset<64)
-    strcpy(str_line5,str_step_bar4);
-  if (current_offset>=64 && current_offset<80)
-    strcpy(str_line5,str_step_bar5);
-  if (current_offset>=80 && current_offset<96)
-    strcpy(str_line5,str_step_bar6);
-  if (current_offset>=96 && current_offset<112)
-    strcpy(str_line5,str_step_bar7);
-  if (current_offset>=112 && current_offset<128)
-    strcpy(str_line5,str_step_bar8);
 
-  //   Display the sequencer position in the 8 bar of 128 step
-  if (current_step>=0  && current_step<16)
-    strcpy(str_line6,str_curs_bar1);
-  if (current_step>=16 && current_step<32)
-    strcpy(str_line6,str_curs_bar2);
-  if (current_step>=32 && current_step<48)
-    strcpy(str_line6,str_curs_bar3);
-  if (current_step>=48 && current_step<64)
-    strcpy(str_line6,str_curs_bar4);
-  if (current_step>=64 && current_step<80)
-    strcpy(str_line6,str_curs_bar5);
-  if (current_step>=80 && current_step<96)
-    strcpy(str_line6,str_curs_bar6);
-  if (current_step>=96 && current_step<112)
-    strcpy(str_line6,str_curs_bar7);
-  if (current_step>=112 && current_step<128)
-    strcpy(str_line6,str_curs_bar8);
+    // Left  bracket
+    SG.smallBox((OFFSET_X_PATTERN_CURSOR-10),
+		(OFFSET_Y_PATTERN_CURSOR),
+		TRIG_COLOR);
+    SG.smallBox((OFFSET_X_PATTERN_STEP-10),
+		(OFFSET_Y_PATTERN_STEP),
+		TRIG_COLOR);
 
+    // Rigth bracket
+    SG.smallBox((OFFSET_X_PATTERN_CURSOR+(pattern_length>>4)*8),
+		(OFFSET_Y_PATTERN_CURSOR),
+		TRIG_COLOR);
+    SG.smallBox((OFFSET_X_PATTERN_STEP  +(pattern_length>>4)*8),
+		(OFFSET_Y_PATTERN_STEP),
+		TRIG_COLOR);
 
+    // cursor/step
+    SG.smallBox((OFFSET_X_PATTERN_CURSOR+(current_step>>4)*8),
+		(OFFSET_Y_PATTERN_CURSOR),
+		CURSOR_COLOR);    
+    SG.smallBox((OFFSET_X_PATTERN_STEP+  (current_offset>>4)*8),
+		(OFFSET_Y_PATTERN_STEP),
+		STEP_COLOR);
+    
 
   sprintf(str_line3,    "Div  /%d",stepdiv);
 
@@ -3311,7 +3291,8 @@ int main(int argc,char **argv)
 
 
   PR.init();         // Init the     storage bank
-  PR.setBank(bank);  // The current  storage bank will be 0 PWD/bank/bank%d/
+  PR.setBank(bank);  // The current  storage bank will be the value of bank the directory/file are here PWD/bank/bank%d/
+                     // menu_config_bank allow to choose it at startup
 
   load_pattern();
 

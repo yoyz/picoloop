@@ -202,7 +202,11 @@ void SDL_GUI::drawTTFTextLoadSaveBoxNumberDown(int x,int y,const char *txt)
 
 void SDL_GUI::smallBox(int x,int y,Uint32 c)
 {
-  this->fullBox(x,y,(boxSize/4),(boxSize/4),c);
+  this->fullBox(x*SCREEN_MULT,
+		y*SCREEN_MULT,
+		(boxSize>>2)*SCREEN_MULT,
+		(boxSize>>2)*SCREEN_MULT,
+		c);
 }
 
 
