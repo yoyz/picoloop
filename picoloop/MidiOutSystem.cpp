@@ -194,3 +194,14 @@ bool MidiOutSystem::chooseMidiPort( std::string portName )
 
   return true;
 }
+
+
+bool MidiOutSystem::closePort()
+{
+  if (iamOpen)
+    {
+      rtmidiout->closePort();
+      return true;
+    }
+  return false;
+}

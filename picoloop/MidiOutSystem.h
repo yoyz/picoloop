@@ -27,6 +27,7 @@ class MidiOutSystem
   //bool chooseMidiPort( RtMidiOut *rtmidi );
   bool chooseMidiPort(std::string portName);
   bool chooseMidiPortDeviceNumber(int deviceNumber);
+  bool closePort();
 
   private:
   MidiOutSystem();
