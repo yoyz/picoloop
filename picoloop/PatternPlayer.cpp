@@ -1,48 +1,5 @@
 using namespace std;
 
-#ifdef PSP
-#include <pspkernel.h>
-#include <pspdebug.h>
-#include <pspdisplay.h>
-#include <pspctrl.h>
-#include <psppower.h>
-#include "psp_callback.h"
-
-#ifdef __WIN32__
-#include <windows.h>
-#include <winnt.h>
-#include <ntdef.h>
-#include <profileapi.h>
-#endif
-
-#define VERS    1 //Talk about this
-#define REVS    0
-
-PSP_MODULE_INFO("PatternPlayer", PSP_MODULE_USER, VERS, REVS);
-//PSP_MODULE_INFO("PatternPlayer", PSP_MODULE_USER, VERS, REVS);
-//PSP_MODULE_INFO("TESTPRX", 0x1000, 1, 1);
-//PSP_MAIN_THREAD_ATTR(PSP_THREAD_ATTR_USER);
-PSP_MAIN_THREAD_ATTR(PSP_THREAD_ATTR_USER|THREAD_ATTR_VFPU);
-//PSP_HEAP_SIZE_MAX();
-//PSP_HEAP_SIZE_KB(16384);
-//PSP_HEAP_SIZE_KB(-1024);
-//PSP_HEAP_SIZE_KB(20480) ;
-//PSP_HEAP_SIZE_KB(-1024) ;
-//PSP_HEAP_SIZE_KB(-4096) ;
-//PSP_HEAP_SIZE_KB(-6144) ;
-//PSP_HEAP_SIZE_KB(-8192) ;
-//PSP_HEAP_SIZE_KB(-12288) ;
-
-//PSP_HEAP_SIZE_KB(-6144) ;
-//PSP_HEAP_SIZE_KB(-8192) ;
-//PSP_HEAP_SIZE_KB(-1024) ;
-//PSP_HEAP_SIZE_KB(-12288) ;
-//PSP_HEAP_SIZE_KB(-8192) ;
-//PSP_HEAP_SIZE_KB(-4096) ;
-//PSP_HEAP_SIZE_KB(-8192) ;
-PSP_HEAP_SIZE_KB(-2048) ;
-#endif
-
 #include <stdio.h>
 #include <unistd.h>
 #include <iostream>
@@ -89,6 +46,37 @@ PSP_HEAP_SIZE_KB(-2048) ;
 #include "MidiInSystem.h"
 #include "Machine/MidiOutSystem/MidiOutUserInterface.h"
 #endif
+
+
+#ifdef PSP
+#include <pspkernel.h>
+#include <pspdebug.h>
+#include <pspdisplay.h>
+#include <pspctrl.h>
+#include <psppower.h>
+#include "psp_callback.h"
+
+#define VERS    1 //Talk about this
+#define REVS    0
+
+PSP_MODULE_INFO("PatternPlayer", PSP_MODULE_USER, VERS, REVS);
+PSP_MAIN_THREAD_ATTR(PSP_THREAD_ATTR_USER|THREAD_ATTR_VFPU);
+PSP_HEAP_SIZE_KB(-2048) ;
+#endif // PSP
+
+#define MENU_CONFIG_Y_BANK          0 
+#define MENU_CONFIG_Y_AUDIOOUTPUT   1
+#define MENU_CONFIG_Y_MIDIOUTPUT    2
+#define MENU_CONFIG_Y_MIDIINPUT     3
+#define MENU_CONFIG_Y_MIDISYNCINOUT 4
+
+#ifdef __RTMIDI__
+#define MENU_CONFIG_Y_MAX           2
+#else
+#define MENU_CONFIG_Y_MAX           1
+#endif
+
+
 
 class Cursor
 {
@@ -300,10 +288,10 @@ long difftime(struct timeval & a0, struct timeval & a1)
 
 }
 
-
+#ifdef __RTMIDI__
 void seq_send_midiclock()
 {
-#ifdef __RTMIDI__
+
   MidiOutSystem & MOS=MidiOutSystem::getInstance();
   if (counter_send_midi_clock)
     {
@@ -311,12 +299,11 @@ void seq_send_midiclock()
       counter_send_midi_clock--;
       printf("*****MIDICLOCK   *****\n");
     }
-#endif
+
 }
 
 void seq_send_midiclock_six()
 {
-#ifdef __RTMIDI__
   MidiOutSystem & MOS=MidiOutSystem::getInstance();
   if (counter_send_midi_clock_six)
     {
@@ -324,7 +311,6 @@ void seq_send_midiclock_six()
       counter_send_midi_clock_six--;
       printf("*****MIDICLOCK_6 *****\n");
     }
-#endif
 }
 
 int thread_seq_send_midiclock( void * data)
@@ -337,7 +323,7 @@ int thread_seq_send_midiclock( void * data)
       SDL_Delay(1);  
     }
 }
-
+#endif
 
 
 
@@ -801,7 +787,7 @@ void handle_key_config()
       lastEvent == KEYRELEASED)
     {
       // bank loading
-      if (menu_config_y==0)
+      if (menu_config_y == MENU_CONFIG_Y_BANK)
 	{
 	  menu_config_bank++;
 	  if (menu_config_bank>MAX_BANK-1)
@@ -809,7 +795,7 @@ void handle_key_config()
 	}
 
       // audio output
-      if (menu_config_y==1)
+      if (menu_config_y==MENU_CONFIG_Y_AUDIOOUTPUT)
 	{
 	  menu_config_audioOutput++;
 	  if (menu_config_audioOutput > AE.getNumberOfAudioOutputDevice())
@@ -817,7 +803,7 @@ void handle_key_config()
 	}
 #ifdef __RTMIDI__
       // midi output
-      if (menu_config_y==2)
+      if (menu_config_y==MENU_CONFIG_Y_MIDIOUTPUT)
 	{
 	  menu_config_midiOutput++;
 	  if (menu_config_midiOutput > MOS.getNumberOfMidiOutputDevice())
@@ -832,7 +818,7 @@ void handle_key_config()
     {
 
       // bank loading
-      if (menu_config_y==0)
+      if (menu_config_y==MENU_CONFIG_Y_BANK)
 	{
 	  menu_config_bank--;
 	  if (menu_config_bank<0)
@@ -840,7 +826,7 @@ void handle_key_config()
 	}
 
       // audio output
-      if (menu_config_y==1)
+      if (menu_config_y==MENU_CONFIG_Y_AUDIOOUTPUT)
 	{
 	  menu_config_audioOutput--;
 	  if (menu_config_audioOutput < 0) 
@@ -848,7 +834,7 @@ void handle_key_config()
 	}
 #ifdef __RTMIDI__
       // midi output
-      if (menu_config_y==2)
+      if (menu_config_y==MENU_CONFIG_Y_MIDIOUTPUT)
 	{
 	  menu_config_midiOutput--;
 	  if (menu_config_midiOutput < 0) 
@@ -3002,8 +2988,10 @@ int seq()
 
   refresh_pecursor();
 
-  // init the thread midi
+#ifdef __RTMIDI__
+  // init the thread midi used only with RTMIDI
   thread_midiclock = SDL_CreateThread( thread_seq_send_midiclock, NULL );
+#endif
   
   DPRINTF("openAudio start streaming");
   AE.startAudio();
