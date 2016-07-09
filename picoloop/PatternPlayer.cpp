@@ -71,12 +71,15 @@ PSP_HEAP_SIZE_KB(-2048) ;
 #define MENU_CONFIG_Y_MIDISYNCINOUT 4
 
 #ifdef __RTMIDI__
-#define MENU_CONFIG_Y_MAX           2
+#define MENU_CONFIG_Y_MAX           4
 #else
 #define MENU_CONFIG_Y_MAX           1
 #endif
 
-
+#define MENU_CONFIG_Y_MIDICLOCK_SYNCINTERNAL 0
+#define MENU_CONFIG_Y_MIDICLOCK_SYNCOUT      1
+#define MENU_CONFIG_Y_MIDICLOCK_SYNCIN       2
+#define MENU_CONFIG_Y_MIDICLOCK_SYNCMAX      2
 
 class Cursor
 {
@@ -193,11 +196,15 @@ float bpm_current=120.0;    // current value for the four ( TRACK_MAX ) tracks
 //int nb_cb_ch_step;              //=60*DEFAULT_FREQ/(BUFFER_FRAME*4*bpm_current);
 
 int nb_tick_before_step_change;     //=(60*DEFAULT_FREQ)/(bpm_current*4);
+
+const char * str_midi_clock_mode[]={"Internal","SyncOut","SyncIn"};
+
+
+int counter_send_midi_clock=0;      // send n clock and decrement the counter each time 
+int counter_send_midi_clock_six=0;  // send n clock and decrement the counter each time
 long long clock_interval;           // interval in ns before two midiclock
                                     // clock_interval = 60000000000/(initialBpm*24);
                                     // midicloro.cpp:185
-int counter_send_midi_clock=0;      // send n clock and decrement the counter each time 
-int counter_send_midi_clock_six=0;  // send n clock and decrement the counter each time 
 long long clock_delta;              // time remaining between two midi clock pulse
 
 //int last_nbcb_ch_step=0;// nb audio callback from last step
@@ -241,10 +248,13 @@ int bank_to_load=0;
 //int start_key=0;        // start key pressed ?
 //int step=0;             // current step in the sequencer
 
-int   menu_config_bank=0;        // will choose the bank to load at startup
-int   menu_config_audioOutput=0; // audioOutputNumber define in the config menu
-int   menu_config_midiOutput=0;  //  midiOutputNumber define in the config menu
-int   menu_config_y=0;           // current selected item in menu_config
+int   menu_config_bank=0;           // will choose the bank to load at startup
+int   menu_config_audioOutput=0;    // audioOutputNumber define in the config menu
+int   menu_config_midiOutput=0;     //  midiOutputNumber define in the config menu
+int   menu_config_midiInput=0;      //  midiInputNumber  define in the config menu
+int   menu_config_midiClockMode=0;  // 0 internal, 1 midi sync out, 2 midi sync in 
+int   menu_config_y=0;              // current selected item in menu_config
+
 
 
 int menu_cursor=GLOBALMENU_AD;      // index int the menu
@@ -704,14 +714,20 @@ void display_config()
   char str_bank[128];
   char str_audiooutput[128];
   char str_midioutput[128];
+  char str_midiinput[128];
+  char str_midiclockmode[128];
   char str_audiooutput_name[128];
   char str_midioutput_name[128];
+  char str_midiinput_name[128];
+
   char str_menuconfig[128];
 
   static char * audioOutputDeviceName;
   static char * midiOutputDeviceName;
+  static char * midiInputDeviceName;
   static int    audioOutputDevice;
   static int     midiOutputDevice;
+  static int     midiInputDevice;
 
 #ifdef __RTMIDI__
   MidiOutSystem & MOS=MidiOutSystem::getInstance();
@@ -729,18 +745,22 @@ void display_config()
     }
 
 
-  sprintf(str_menuconfig ,"menuconfig   : %d %d",menu_config_y,debugcounter++);
-  sprintf(str_bank       ,"Current Bank : %d "  ,menu_config_bank);
-  sprintf(str_audiooutput,"AudioOutput  : %d/%d : %s",menu_config_audioOutput,audioOutputDevice,audioOutputDeviceName);
+  sprintf(str_menuconfig    ,"menuconfig    : %d %d",menu_config_y,debugcounter++);
+  sprintf(str_bank          ,"Current Bank  : %d "  ,menu_config_bank);
+  sprintf(str_audiooutput   ,"AudioOutput   : %d/%d : %s",menu_config_audioOutput,audioOutputDevice,audioOutputDeviceName);
 #ifdef __RTMIDI__
-  sprintf(str_midioutput ,"MidiOutput   : %d/%d : %s",menu_config_midiOutput,midiOutputDevice,midiOutputDeviceName); 
+  sprintf(str_midioutput    ,"MidiOutput    : %d/%d : %s",menu_config_midiOutput,midiOutputDevice,midiOutputDeviceName);
+  sprintf(str_midiinput     ,"MidiInput     : %d/%d : %s",menu_config_midiInput,midiInputDevice,midiInputDeviceName);
+  sprintf(str_midiclockmode ,"MidiClockMode : %s",str_midi_clock_mode[menu_config_midiClockMode]); 
 #endif
   SG.clearScreen();  
-  SG.guiTTFText(30,0,  str_menuconfig);
-  SG.guiTTFText(30,20, str_bank);
-  SG.guiTTFText(30,40, str_audiooutput);
+  SG.guiTTFText(30,0,   str_menuconfig);
+  SG.guiTTFText(30,20,  str_bank);
+  SG.guiTTFText(30,40,  str_audiooutput);
 #ifdef __RTMIDI__
-  SG.guiTTFText(30,60, str_midioutput);
+  SG.guiTTFText(30,60,  str_midioutput);
+  SG.guiTTFText(30,80,  str_midiinput);
+  SG.guiTTFText(30,100, str_midiclockmode);
 #endif
   display_refresh();
 }
@@ -809,6 +829,22 @@ void handle_key_config()
 	  if (menu_config_midiOutput > MOS.getNumberOfMidiOutputDevice())
 	    menu_config_midiOutput=0;
 	}
+      // midi input
+      if (menu_config_y==MENU_CONFIG_Y_MIDIINPUT)
+	{
+	  menu_config_midiInput++;
+	  if (menu_config_midiInput > MOS.getNumberOfMidiOutputDevice())
+	    menu_config_midiInput=0;
+	}
+      // midi sync
+      if (menu_config_y==MENU_CONFIG_Y_MIDISYNCINOUT)
+	{
+	  menu_config_midiClockMode++;
+	  if (menu_config_midiClockMode > MENU_CONFIG_Y_MIDICLOCK_SYNCMAX)
+	    menu_config_midiClockMode=0;
+	}
+
+      
 #endif
       config_key_pressed++;
     }
@@ -841,13 +877,34 @@ void handle_key_config()
 
 	    menu_config_midiOutput=MOS.getNumberOfMidiOutputDevice();
 	}
+      
+      // midi input
+      if (menu_config_y==MENU_CONFIG_Y_MIDIOUTPUT)
+	{
+	  menu_config_midiInput--;
+	  if (menu_config_midiInput < 0) 
+
+	    menu_config_midiOutput=MOS.getNumberOfMidiOutputDevice();
+	}
+
+      // midi sync
+      if (menu_config_y==MENU_CONFIG_Y_MIDISYNCINOUT)
+	{
+	  menu_config_midiClockMode--;
+	  if (menu_config_midiClockMode < 0) 
+	    menu_config_midiClockMode=MENU_CONFIG_Y_MIDICLOCK_SYNCMAX;	    
+	}
+      
+      
+      
       config_key_pressed++;
+      
 #endif
     }
       
 #ifdef __RTMIDI__
-  if (menu_config_y>2)                 menu_config_y=0;
-  if (menu_config_y<0)                 menu_config_y=2;
+  if (menu_config_y>MENU_CONFIG_Y_MAX) menu_config_y=0;
+  if (menu_config_y<0)                 menu_config_y=MENU_CONFIG_Y_MAX;
 #else
   if (menu_config_y>1)                 menu_config_y=0;
   if (menu_config_y<0)                 menu_config_y=1;
@@ -2989,8 +3046,11 @@ int seq()
   refresh_pecursor();
 
 #ifdef __RTMIDI__
-  // init the thread midi used only with RTMIDI
-  thread_midiclock = SDL_CreateThread( thread_seq_send_midiclock, NULL );
+  // init the thread midi used only with RTMIDI and if sync out is enabled
+  if (menu_config_midiClockMode==MENU_CONFIG_Y_MIDICLOCK_SYNCOUT)
+    {
+      thread_midiclock = SDL_CreateThread( thread_seq_send_midiclock, NULL );
+    }
 #endif
   
   DPRINTF("openAudio start streaming");
