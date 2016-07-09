@@ -729,11 +729,11 @@ void display_config()
     }
 
 
-  sprintf(str_menuconfig ,"menuconfig : %d %d",menu_config_y,debugcounter++);
-  sprintf(str_bank       ,"Current Bank %d "  ,menu_config_bank);
-  sprintf(str_audiooutput,"%d/%d : %s",menu_config_audioOutput,audioOutputDevice,audioOutputDeviceName);
+  sprintf(str_menuconfig ,"menuconfig   : %d %d",menu_config_y,debugcounter++);
+  sprintf(str_bank       ,"Current Bank : %d "  ,menu_config_bank);
+  sprintf(str_audiooutput,"AudioOutput  : %d/%d : %s",menu_config_audioOutput,audioOutputDevice,audioOutputDeviceName);
 #ifdef __RTMIDI__
-  sprintf(str_midioutput,"%d/%d : %s",menu_config_midiOutput,midiOutputDevice,midiOutputDeviceName); 
+  sprintf(str_midioutput ,"MidiOutput   : %d/%d : %s",menu_config_midiOutput,midiOutputDevice,midiOutputDeviceName); 
 #endif
   SG.clearScreen();  
   SG.guiTTFText(30,0,  str_menuconfig);
@@ -846,11 +846,11 @@ void handle_key_config()
     }
       
 #ifdef __RTMIDI__
-  if (menu_config_y>2) menu_config_y=0;
-  if (menu_config_y<0) menu_config_y=2;
+  if (menu_config_y>2)                 menu_config_y=0;
+  if (menu_config_y<0)                 menu_config_y=2;
 #else
-  if (menu_config_y>1) menu_config_y=0;
-  if (menu_config_y<0) menu_config_y=1;
+  if (menu_config_y>1)                 menu_config_y=0;
+  if (menu_config_y<0)                 menu_config_y=1;
 #endif
   if (IE.shouldExit())
     {
@@ -3207,17 +3207,7 @@ int main(int argc,char **argv)
   MidiOutSystem & MOS=MidiOutSystem::getInstance();
   MidiInSystem  & MIS=MidiInSystem::getInstance();
   MOS.init();
-  MIS.init();
-  //MOS.chooseMidiPort("TiMidity 128:0");
-  //MOS.chooseMidiPort("UM-1SX 24:0");
-  //MOS.chooseMidiPort("Midi Through 14:0");
-  //MOS.chooseMidiPort("Midi Through 24:0");
-  //MIS.chooseMidiPort("UC-16 USB MIDI Controller 24:0");
-
-  //MOS.chooseMidiPort("UM-1SX 28:0");
-  //MOS.chooseMidiPort("Midi Through 14:0");
-  //MIS.chooseMidiPort("UC-16 USB MIDI Controller 24:0");
-  
+  MIS.init();  
 #endif
 
 
