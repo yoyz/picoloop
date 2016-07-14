@@ -70,17 +70,37 @@ void mycallback( double deltatime, std::vector< unsigned char > *message, void *
 int main()
 {
   RtMidiIn *midiin = new RtMidiIn();
+  unsigned int i = 0, nPorts = midiin->getPortCount();
+  std::string portName;
+
   // Check available ports.
   // precision of cout for "double" 
   std::cout.setf(std::ios::fixed,std::ios::floatfield);
   std::cout.precision(3);
 
-  unsigned int nPorts = midiin->getPortCount();
   if ( nPorts == 0 ) {
     std::cout << "No ports available!\n";
     goto cleanup;
   }
-  midiin->openPort( 0 );
+
+  if ( nPorts == 1 ) {
+    std::cout << "\nOpening " << midiin->getPortName() << std::endl;
+  }
+  else {
+    for ( i=0; i<nPorts; i++ ) {
+      portName = midiin->getPortName(i);
+      std::cout << "  Input port #" << i << ": " << portName << '\n';
+    }
+
+    do {
+      std::cout << "\nChoose a port number: ";
+      std::cin >> i;
+      //i=1;
+    } while ( i >= nPorts );
+  }
+
+
+  midiin->openPort( i );
   // Set our callback function. This should be done immediately after
   // opening the port to avoid having incoming messages written to the
   // queue.
@@ -89,6 +109,7 @@ int main()
   midiin->ignoreTypes( false, false, false );
   std::cout << "\nReading MIDI input ... press <enter> to quit.\n";
   char input;
+  std::cin.get(input);
   std::cin.get(input);
   // Clean up
  cleanup:
