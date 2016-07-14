@@ -41,7 +41,6 @@
 #define KEY_REPEAT_INTERVAL 400
 
 
-
 #define DISABLEDBOX_COLOR   0x0AF0FE
 #define BOX_COLOR           0xAECD15
 #define TRIG_COLOR          0x0E4C15
@@ -57,6 +56,13 @@
 #define MENU_OFF      0
 #define MENU_ON_PAGE1 1
 #define MENU_ON_PAGE2 2
+
+
+#define MENU_CONFIG_Y_MIDICLOCK_SYNCINTERNAL 0
+#define MENU_CONFIG_Y_MIDICLOCK_SYNCOUT      1
+#define MENU_CONFIG_Y_MIDICLOCK_SYNCIN       2
+#define MENU_CONFIG_Y_MIDICLOCK_SYNCMAX      2
+
 
 //menu
 /* enum { */

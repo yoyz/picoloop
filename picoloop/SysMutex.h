@@ -1,3 +1,7 @@
+#ifndef __PICOSYSMUTEX__
+#define __PICOSYSMUTEX__
+
+
 /*
  *  SysMutex.h
  *  lgpt
@@ -26,3 +30,5 @@ public:
 private:
 	SysMutex *mutex_ ;
 } ;
+
+#endif
