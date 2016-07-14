@@ -307,7 +307,7 @@ void seq_send_midiclock()
     {
       MOS.clock();
       counter_send_midi_clock--;
-      printf("*****MIDICLOCK   *****\n");
+      DPRINTF("*****MIDICLOCK   *****");
     }
 
 }
@@ -319,7 +319,7 @@ void seq_send_midiclock_six()
     {
       MOS.clock();
       counter_send_midi_clock_six--;
-      printf("*****MIDICLOCK_6 *****\n");
+      DPRINTF("*****MIDICLOCK_6 *****");
     }
 }
 
@@ -358,19 +358,13 @@ void seq_send_midiclock_old()
   if ((difftime(timev_now,timev_lastclock)+clock_delta)*1000>clock_interval)
     {
 #ifdef __RTMIDI__
-      printf("*****MIDICLOCK   *****\n");
+      DPRINTF("*****MIDICLOCK   *****");
 
       MidiOutSystem & MOS=MidiOutSystem::getInstance();
       MOS.clock();
 #endif
       
       clock_delta=clock_delta+(difftime(timev_now,timev_lastclock))-clock_interval/1000;
-      /*
-      if (clock_delta*1000>clock_interval) { printf("*****MIDICLOCK 2X*****\n"); MOS.clock(); clock_delta=clock_delta-clock_interval/1000; } 
-      if (clock_delta*1000>clock_interval) { printf("*****MIDICLOCK 3X*****\n"); MOS.clock(); clock_delta=clock_delta-clock_interval/1000; } 
-      if (clock_delta*1000>clock_interval) { printf("*****MIDICLOCK 4X*****\n"); MOS.clock(); clock_delta=clock_delta-clock_interval/1000; } 
-      */
-	    
       timev_lastclock=timev_now;
     }
   
