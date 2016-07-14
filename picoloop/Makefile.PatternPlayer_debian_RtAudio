@@ -23,7 +23,7 @@ CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -D __R
 LDFLAGS=-lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread -pg
 LDFLAGS=-lasound -lSDL           -lSDL_ttf -lpthread -pg
 LDFLAGS=-lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread
-LDFLAGS=-lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread -lpulse -lpulse-simple
+LDFLAGS=-lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread -lpulse -lpulse-simple -ljack
 
 
 OBJTOLINK=RtAudio.o
