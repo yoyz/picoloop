@@ -35,7 +35,7 @@ bool MidiOutSystem::init()
     error.printMessage();
     exit( EXIT_FAILURE );
   }
-
+  iamOpen=0;
 }
 
 bool MidiOutSystem::checkChannel(int channel)

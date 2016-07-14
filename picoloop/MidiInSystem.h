@@ -4,6 +4,8 @@
 #include <iostream>
 #include <cstdlib>
 #include <stdio.h>
+#include "Master.h"
+#include "SysMutex.h" // nostromo lgpt class for mutex
 
 /*
   Purpose : 
@@ -42,6 +44,10 @@
   
   implement the main callback which produce the stream 
  */
+extern int counter_recv_midi_clock;     // send n clock and decrement the counter each time
+extern int counter_recv_midi_clock_six; // send n clock and decrement the counter each tim
+extern int mmc_stop;                    // reset the step sequencer to step 0
+
 
 class MidiInSystem
 {
@@ -49,14 +55,25 @@ class MidiInSystem
   static MidiInSystem & getInstance();
   bool init();
   int getNumberOfMidiInputDevice();
+  char * getMidiInputName(int deviceNumber);
   bool checkChannel(int midiChan);
   bool chooseMidiPort(std::string portName);
+  bool chooseMidiPortDeviceNumber(int deviceNumber);
+  bool closePort();
+
+  bool setupcallback();
 
   private:
   MidiInSystem();
   ~MidiInSystem();
   RtMidiIn *rtmidiin;
   std::vector<unsigned char> message;
+
+  SysMutex mtx;
+
+  int lastOpenPortNumber;
+  int iamOpen;
+
 
 };
 

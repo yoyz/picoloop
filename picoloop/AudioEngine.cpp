@@ -172,60 +172,78 @@ void AudioEngine::processBuffer(int len)
   //for (int i=0;i<BUFFER_FRAME;i++)
   for (int i=0;i<len;i++)
     {
-
-
-      nb_tick_midi_send_clock++;
-      nb_tick_midi_send_clock_mulsix++;
       nb_tick++;
+      if (menu_config_midiClockMode==MENU_CONFIG_Y_MIDICLOCK_SYNCOUT)
+	{
+	  nb_tick_midi_send_clock++;
+	  nb_tick_midi_send_clock_mulsix++;
 
-      // arm a counter to send the six midi sync signal
-      // there is a / 6 and it prevent midi clock skew
-      if (nb_tick_midi_send_clock_mulsix>nb_tick_before_six_midi_send_clock-1)
-	{
-	  counter_send_midi_clock_six++;
-	  nb_tick_midi_send_clock=0;
-	  nb_tick_midi_send_clock_mulsix=0;
-	  midi_tick_number=0;
-	}
+	  // arm a counter to send the six midi sync signal
+	  // there is a / 6 and it prevent midi clock skew
+	  if (nb_tick_midi_send_clock_mulsix>nb_tick_before_six_midi_send_clock-1)
+	    {
+	      counter_send_midi_clock_six++;
+	      nb_tick_midi_send_clock=0;
+	      nb_tick_midi_send_clock_mulsix=0;
+	      midi_tick_number=0;
+	    }
       
-      // arm a counter to send a midi sync signal
-      if (midi_tick_number<5 &&
-	  nb_tick_midi_send_clock>nb_tick_before_midi_send_clock-1)
-	{
-	  counter_send_midi_clock++;
-	  nb_tick_midi_send_clock=0;
-	  midi_tick_number++;
+	  // arm a counter to send a midi sync signal
+	  if (midi_tick_number<5 &&
+	      nb_tick_midi_send_clock>nb_tick_before_midi_send_clock-1)
+	    {
+	      counter_send_midi_clock++;
+	      nb_tick_midi_send_clock=0;
+	      midi_tick_number++;
+	    }
 	}
+      // end sync out
+
       
-      if (nb_tick<nb_tick_before_step_change)
+
+      if (
+	  (nb_tick<nb_tick_before_step_change && 
+	   menu_config_midiClockMode!=MENU_CONFIG_Y_MIDICLOCK_SYNCIN
+	   )
+	  ||
+	  (counter_recv_midi_clock_six==0 && 
+	   menu_config_midiClockMode==MENU_CONFIG_Y_MIDICLOCK_SYNCIN))
 	{
 	  //buffer_out_left[i]=AM.tick();
 	  //buffer_out_right[i]=buffer_out_left[i];
 	  //buffer_out_right[i]=PS.tick();
 	  buffer_out_right[i]=AM.tick();
-	  #ifdef __VOLCASYNC__
+#ifdef __VOLCASYNC__
 	  buffer_out_left[i]=PS.tick();
-	  #else
+#else
 	  buffer_out_left[i]=buffer_out_right[i];
-	  #endif
+#endif
 	  //buffer_out_right[i]=buffer_out_left[i];
-
+	  
 	}
-      else
+
+      if (
+	  (nb_tick>=nb_tick_before_step_change &&
+	   menu_config_midiClockMode!=MENU_CONFIG_Y_MIDICLOCK_SYNCIN) 
+	  ||
+	  (counter_recv_midi_clock_six && 
+	   menu_config_midiClockMode==MENU_CONFIG_Y_MIDICLOCK_SYNCIN))
         {
           //printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!CALLL\n");                                                                                                                      
           //PP->seq_callback_update_step();
 	  if (seqCallback)
 	    (*seqCallback)();
           nb_tick=0;
-
+	  counter_recv_midi_clock=0;
+	  counter_recv_midi_clock_six=0;
+	  
 	  buffer_out_right[i]=AM.tick();
-	  #ifdef __VOLCASYNC__
+#ifdef __VOLCASYNC__
 	  buffer_out_left[i]=PS.tick();
-	  #else
+#else
 	  buffer_out_left[i]=buffer_out_right[i];
-	  #endif
-
+#endif
+	  
 	  // buffer_out_right[i]=AM.tick();
 	  // buffer_out_left[i]=PS.tick();
 	  //buffer_out_right[i]=buffer_out_left[i];

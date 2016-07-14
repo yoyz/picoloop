@@ -76,10 +76,6 @@ PSP_HEAP_SIZE_KB(-2048) ;
 #define MENU_CONFIG_Y_MAX           1
 #endif
 
-#define MENU_CONFIG_Y_MIDICLOCK_SYNCINTERNAL 0
-#define MENU_CONFIG_Y_MIDICLOCK_SYNCOUT      1
-#define MENU_CONFIG_Y_MIDICLOCK_SYNCIN       2
-#define MENU_CONFIG_Y_MIDICLOCK_SYNCMAX      2
 
 class Cursor
 {
@@ -143,7 +139,7 @@ int load_save_highligth_current[TRACK_MAX];
 
 //SDL_Thread *SDL_CreateThread(int (*fn)(void *), void *data);
 
-SDL_Thread *thread_midiclock = NULL;
+SDL_Thread *thread_midiclock_send = NULL;
 
 vector <Pattern>            P(TRACK_MAX);  
 vector <Machine   *>        M(TRACK_MAX);
@@ -202,6 +198,13 @@ const char * str_midi_clock_mode[]={"Internal","SyncOut","SyncIn"};
 
 int counter_send_midi_clock=0;      // send n clock and decrement the counter each time 
 int counter_send_midi_clock_six=0;  // send n clock and decrement the counter each time
+
+int counter_recv_midi_clock=0;      // recv n clock and decrement the counter each time 
+int counter_recv_midi_clock_six=0;  // recv n clock and decrement the counter each time
+
+
+int mmc_stop=0;
+
 long long clock_interval;           // interval in ns before two midiclock
                                     // clock_interval = 60000000000/(initialBpm*24);
                                     // midicloro.cpp:185
@@ -725,6 +728,7 @@ void display_config()
 
 #ifdef __RTMIDI__
   MidiOutSystem & MOS=MidiOutSystem::getInstance();
+  MidiInSystem  & MIS=MidiInSystem::getInstance();
 #endif
   if (config_key_pressed>=1 ||
       config_first_time)
@@ -734,6 +738,10 @@ void display_config()
 #ifdef __RTMIDI__
       midiOutputDeviceName=MOS.getMidiOutputName(menu_config_midiOutput);
       midiOutputDevice=MOS.getNumberOfMidiOutputDevice();      
+
+      midiInputDeviceName=MIS.getMidiInputName(menu_config_midiInput);
+      midiInputDevice=MIS.getNumberOfMidiInputDevice();      
+
 #endif
       config_key_pressed=0;
     }
@@ -776,6 +784,7 @@ void handle_key_config()
 
 #ifdef __RTMIDI__
   MidiOutSystem & MOS=MidiOutSystem::getInstance();
+  MidiInSystem  & MIS=MidiInSystem::getInstance();
 #endif 
 
   if (lastKey   == BUTTON_A && 
@@ -827,7 +836,7 @@ void handle_key_config()
       if (menu_config_y==MENU_CONFIG_Y_MIDIINPUT)
 	{
 	  menu_config_midiInput++;
-	  if (menu_config_midiInput > MOS.getNumberOfMidiOutputDevice())
+	  if (menu_config_midiInput > MIS.getNumberOfMidiInputDevice())
 	    menu_config_midiInput=0;
 	}
       // midi sync
@@ -873,12 +882,12 @@ void handle_key_config()
 	}
       
       // midi input
-      if (menu_config_y==MENU_CONFIG_Y_MIDIOUTPUT)
+      if (menu_config_y==MENU_CONFIG_Y_MIDIINPUT)
 	{
 	  menu_config_midiInput--;
 	  if (menu_config_midiInput < 0) 
 
-	    menu_config_midiOutput=MOS.getNumberOfMidiOutputDevice();
+	    menu_config_midiInput=MIS.getNumberOfMidiInputDevice();
 	}
 
       // midi sync
@@ -907,7 +916,9 @@ void handle_key_config()
     {
 #ifdef __RTMIDI__
       MidiOutSystem & MOS=MidiOutSystem::getInstance();
+      MidiInSystem & MIS=MidiInSystem::getInstance();
       MOS.closePort();
+      MIS.closePort();
       exit(0);
 #endif
     }
@@ -921,8 +932,13 @@ void handle_config()
   if (config_first_time || config_key_pressed)
     {
 #ifdef __RTMIDI__
+      /*
       MidiOutSystem & MOS=MidiOutSystem::getInstance();
       MOS.chooseMidiPortDeviceNumber(menu_config_midiOutput);
+
+      MidiInSystem & MIS=MidiInSystem::getInstance();
+      MIS.chooseMidiPortDeviceNumber(menu_config_midiInput);
+      */
 #endif 
       bank=menu_config_bank;
       AE.setAudioOutput(menu_config_audioOutput);
@@ -2611,7 +2627,14 @@ void seq_update_multiple_time_by_step()
       seq_update_tweakable_knob_all(TK.getAllNonZero());
     }
 
-
+  if (mmc_stop>0)
+    {
+      mmc_stop=0;
+      for(i=0;i<TRACK_MAX;i++)
+	{
+	  SEQ.getPatternSequencer(i).setStep(0);
+	}
+    }
   
 }
 
@@ -3040,11 +3063,27 @@ int seq()
   refresh_pecursor();
 
 #ifdef __RTMIDI__
+
+  // Open output Port
+  MidiOutSystem & MOS=MidiOutSystem::getInstance();
+  MOS.chooseMidiPortDeviceNumber(menu_config_midiOutput);
+  
+  // Open Input Port
+  MidiInSystem & MIS=MidiInSystem::getInstance();
+  MIS.chooseMidiPortDeviceNumber(menu_config_midiInput);
+
   // init the thread midi used only with RTMIDI and if sync out is enabled
   if (menu_config_midiClockMode==MENU_CONFIG_Y_MIDICLOCK_SYNCOUT)
     {
-      thread_midiclock = SDL_CreateThread( thread_seq_send_midiclock, NULL );
+      thread_midiclock_send = SDL_CreateThread( thread_seq_send_midiclock, NULL );
     }
+  if (menu_config_midiClockMode==MENU_CONFIG_Y_MIDICLOCK_SYNCIN ||
+      menu_config_midiClockMode==MENU_CONFIG_Y_MIDICLOCK_SYNCINTERNAL)
+    {
+      MidiInSystem  & MIS=MidiInSystem::getInstance();
+      MIS.setupcallback();
+    }
+
 #endif
   
   DPRINTF("openAudio start streaming");
