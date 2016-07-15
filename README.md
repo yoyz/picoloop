@@ -262,4 +262,12 @@ In this case you need a prx and an elf file.
 
 
 
+Changelog
+=========
+
+V0.69 : 
+	- add midi in  sync on linux/windows
+	- add midi out sync on linux/windows
+	- midi on windows add issue with latency
+	- windows can run MDADrumSynth, still with issue with the latency
 
