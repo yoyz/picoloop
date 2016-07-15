@@ -15,33 +15,49 @@
  */
 
 #pragma once
-#ifndef TWYTCH_SMOOTH_FILTER_H
-#define TWYTCH_SMOOTH_FILTER_H
+#ifndef TWYTCH_PORTAMENTO_SLOPE_H
+#define TWYTCH_PORTAMENTO_SLOPE_H
 
-#include "twytch_processor.h"
+#include "twytch_value.h"
 
 namespace mopotwytchsynth {
 
-  class SmoothFilter : public Processor {
+  // A processor that will slope to the target value over a given amount of
+  // time. Useful for portamento or smoothing out values.
+  class PortamentoSlope : public Processor {
     public:
       enum Inputs {
         kTarget,
-        kHalfLife,
+        kPortamentoType,
+        kNoteNumber,
+        kRunSeconds,
         kTriggerJump,
+        kTriggerStart,
         kNumInputs
       };
 
-      SmoothFilter();
+      enum State {
+        kPortamentoOff,
+        kPortamentoAuto,
+        kPortamentoOn,
+        kNumPortamentoStates,
+      };
+
+      PortamentoSlope();
+      virtual ~PortamentoSlope() { }
 
       virtual Processor* clone() const override {
-        return new SmoothFilter(*this);
+        return new PortamentoSlope(*this);
       }
 
+      void processTriggers();
+      void processBypass(int start);
       virtual void process() override;
+      void tick(int i);
 
     private:
       mopo_float last_value_;
   };
 } // namespace mopo
 
-#endif // FILTER_H
+#endif // PORTAMENTO_SLOPE_H

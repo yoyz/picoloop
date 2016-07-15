@@ -1,4 +1,4 @@
-/* Copyright 2013-2015 Matt Tytel
+/* Copyright 2013-2016 Matt Tytel
  *
  * mopo is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 
 #pragma once
 #ifndef TWYTCH_LINEAR_SLOPE_H
-#define LINEAR_SLOPE_H
+#define TWYTCH_LINEAR_SLOPE_H
 
 #include "twytch_value.h"
 
@@ -36,8 +36,11 @@ namespace mopotwytchsynth {
       LinearSlope();
       virtual ~LinearSlope() { }
 
-      virtual Processor* clone() const { return new LinearSlope(*this); }
-      virtual void process();
+      virtual Processor* clone() const override {
+        return new LinearSlope(*this);
+      }
+
+      virtual void process() override;
       void tick(int i);
 
     private:

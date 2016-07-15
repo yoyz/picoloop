@@ -1,4 +1,4 @@
-/* Copyright 2013-2015 Matt Tytel
+/* Copyright 2013-2016 Matt Tytel
  *
  * mopo is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 
 #pragma once
 #ifndef TWYTCH_TICK_ROUTER_H
-#define TICK_ROUTER_H
+#define TWYTCH_TICK_ROUTER_H
 
 #include "twytch_processor_router.h"
 
@@ -27,7 +27,7 @@ namespace mopotwytchsynth {
       TickRouter(int num_inputs = 0, int num_outputs = 0) :
           ProcessorRouter(num_inputs, num_outputs) { }
 
-      virtual void process() = 0;
+      virtual void process() override = 0;
       virtual void tick(int i) = 0;
   };
 } // namespace mopo

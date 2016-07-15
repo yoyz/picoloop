@@ -1,4 +1,4 @@
-/* Copyright 2013-2015 Matt Tytel
+/* Copyright 2013-2016 Matt Tytel
  *
  * mopo is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 
 #pragma once
 #ifndef TWYTCH_SIMPLE_DELAY_H
-#define SIMPLE_DELAY_H
+#define TWYTCH_SIMPLE_DELAY_H
 
 #include "twytch_memory.h"
 #include "twytch_processor.h"
@@ -38,8 +38,11 @@ namespace mopotwytchsynth {
       SimpleDelay(const SimpleDelay& other);
       virtual ~SimpleDelay() { }
 
-      virtual Processor* clone() const { return new SimpleDelay(*this); }
-      virtual void process();
+      virtual Processor* clone() const override {
+        return new SimpleDelay(*this);
+      }
+
+      virtual void process() override;
 
       void tick(int i) {
         mopo_float audio = input(kAudio)->at(i);
@@ -50,6 +53,7 @@ namespace mopotwytchsynth {
         mopo_float value = audio + read * feedback;
         memory_->push(value);
         output(0)->buffer[i] = value;
+        TWYTCH_MOPO_ASSERT(std::isfinite(value));
       }
 
     protected:

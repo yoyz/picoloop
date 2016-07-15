@@ -14,34 +14,9 @@
  * along with mopo.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#pragma once
-#ifndef TWYTCH_SMOOTH_FILTER_H
-#define TWYTCH_SMOOTH_FILTER_H
-
-#include "twytch_processor.h"
+#include "twytch_sample_decay_lookup.h"
 
 namespace mopotwytchsynth {
 
-  class SmoothFilter : public Processor {
-    public:
-      enum Inputs {
-        kTarget,
-        kHalfLife,
-        kTriggerJump,
-        kNumInputs
-      };
-
-      SmoothFilter();
-
-      virtual Processor* clone() const override {
-        return new SmoothFilter(*this);
-      }
-
-      virtual void process() override;
-
-    private:
-      mopo_float last_value_;
-  };
+  const SampleDecayLookupSingleton SampleDecayLookup::lookup_;
 } // namespace mopo
-
-#endif // FILTER_H

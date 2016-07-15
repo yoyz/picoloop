@@ -1,4 +1,4 @@
-/* Copyright 2013-2015 Matt Tytel
+/* Copyright 2013-2016 Matt Tytel
  *
  * mopo is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +17,6 @@
 #include "twytch_arpeggiator.h"
 
 #include "twytch_utils.h"
-#include "twytch_voice_handler.h"
 
 #include <algorithm>
 #include <cstdlib>
@@ -28,11 +27,11 @@ namespace mopotwytchsynth {
     const float MIN_VOICE_TIME = 0.01;
   } // namespace
 
-  Arpeggiator::Arpeggiator(VoiceHandler* voice_handler) :
-      Processor(kNumInputs, 1), voice_handler_(voice_handler),
+  Arpeggiator::Arpeggiator(NoteHandler* note_handler) :
+      Processor(kNumInputs, 1), note_handler_(note_handler),
       sustain_(false), phase_(1.0), note_index_(-1),
       current_octave_(0), octave_up_(true), last_played_note_(0) {
-    TWYTCH_MOPO_ASSERT(voice_handler);
+    TWYTCH_MOPO_ASSERT(note_handler);
   }
 
   void Arpeggiator::process() {
@@ -45,16 +44,16 @@ namespace mopotwytchsynth {
 
     // If we're past the gate phase and we're playing a note, turn it off.
     if (new_phase >= gate && last_played_note_ >= 0) {
-      int offset = CLAMP((gate - phase_) / delta_phase, 0, buffer_size_ - 1);
-      voice_handler_->noteOff(last_played_note_, offset);
+      int offset = twytchutils::iclamp((gate - phase_) / delta_phase, 0, buffer_size_ - 1);
+      note_handler_->noteOff(last_played_note_, offset);
       last_played_note_ = -1;
     }
 
     // Check if it's time to play the next note.
     if (getNumNotes() && new_phase >= 1) {
-      int offset = CLAMP((1 - phase_) / delta_phase, 0, buffer_size_ - 1);
+      int offset = twytchutils::iclamp((1 - phase_) / delta_phase, 0, buffer_size_ - 1);
       std::pair<mopo_float, mopo_float> note = getNextNote();
-      voice_handler_->noteOn(note.first, note.second, offset);
+      note_handler_->noteOn(note.first, note.second, offset);
       last_played_note_ = note.first;
       phase_ = new_phase - 1.0;
     }
@@ -109,7 +108,7 @@ namespace mopotwytchsynth {
         current_octave_ = (current_octave_ + octaves - 1) % octaves;
     }
     mopo_float base_note = pattern->at(note_index_);
-    mopo_float note = base_note + mopotwytchsynth::TWYTCH_NOTES_PER_OCTAVE * current_octave_;
+    mopo_float note = base_note + NOTES_PER_OCTAVE * current_octave_;
     mopo_float velocity = active_notes_[base_note];
     return std::pair<mopo_float, mopo_float>(note, velocity);
   }
@@ -156,10 +155,10 @@ namespace mopotwytchsynth {
     ascending_.clear();
     decending_.clear();
     as_played_.clear();
-    voice_handler_->allNotesOff();
+    note_handler_->allNotesOff();
   }
 
-  void Arpeggiator::noteOn(mopo_float note, mopo_float velocity, int sample) {
+  void Arpeggiator::noteOn(mopo_float note, mopo_float velocity, int sample, int channel) {
     if (active_notes_.count(note))
       return;
     if (pressed_notes_.size() == 0) {
@@ -172,9 +171,9 @@ namespace mopotwytchsynth {
     addNoteToPatterns(note);
   }
 
-  void Arpeggiator::noteOff(mopo_float note, int sample) {
+  VoiceEvent Arpeggiator::noteOff(mopo_float note, int sample) {
     if (pressed_notes_.count(note) == 0)
-      return;
+      return kVoiceOff;
 
     if (sustain_)
       sustained_notes_.insert(note);
@@ -184,5 +183,6 @@ namespace mopotwytchsynth {
     }
 
     pressed_notes_.erase(note);
+    return kVoiceOff;
   }
 } // namespace mopo

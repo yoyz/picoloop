@@ -1,4 +1,4 @@
-/* Copyright 2013-2015 Matt Tytel
+/* Copyright 2013-2016 Matt Tytel
  *
  * mopo is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,38 +15,67 @@
  */
 
 #include "twytch_helm_lfo.h"
+#include "twytch_common.h"
 
 #include <cmath>
 
 namespace mopotwytchsynth {
 
-  HelmLfo::HelmLfo() : Processor(kNumInputs, kNumOutputs), offset_(0.0) { }
+  namespace {
+    mopo_float randomLfoValue() {
+      return 2.0 * rand() / RAND_MAX - 1.0;
+    }
+  } // namespace
+
+
+  HelmLfo::HelmLfo() : Processor(kNumInputs, kNumOutputs), offset_(0.0),
+                       last_random_value_(0.0), current_random_value_(0.0) { }
 
   void HelmLfo::process() {
-    static mopo_float integral;
     int num_samples = buffer_size_;
 
-    if (input(kReset)->source->triggered &&
-        input(kReset)->source->trigger_value == kVoiceReset) {
+    if (input(kReset)->source->triggered) {
       num_samples = buffer_size_ - input(kReset)->source->trigger_offset;
       offset_ = 0.0;
+      last_random_value_ = current_random_value_;
+      current_random_value_ = randomLfoValue();
     }
-    
+
     Wave::Type waveform = static_cast<Wave::Type>(static_cast<int>(input(kWaveform)->at(0)));
     mopo_float frequency = input(kFrequency)->at(0);
     mopo_float phase = input(kPhase)->at(0);
 
     offset_ += num_samples * frequency / sample_rate_;
-    offset_ = modf(offset_, &integral);
-    mopo_float phased_offset = modf(offset_ + phase, &integral);
+
+    mopo_float offset_integral;
+    offset_ = twytchutils::mod(offset_, &offset_integral);
+
+    mopo_float phase_integral;
+    mopo_float phased_offset = twytchutils::mod(offset_ + phase, &phase_integral);
+
     output(kOscPhase)->buffer[0] = phased_offset;
-    output(kValue)->buffer[0] = Wave::wave(waveform, phased_offset);
+
+    if (waveform < Wave::kWhiteNoise)
+      output(kValue)->buffer[0] = Wave::wave(waveform, phased_offset);
+    else {
+      if (offset_integral) {
+        last_random_value_ = current_random_value_;
+        current_random_value_ = randomLfoValue();
+      }
+      if (waveform == Wave::kWhiteNoise)
+        output(kValue)->buffer[0] = current_random_value_;
+      else {
+        // Smooth random value.
+        float t = (1.0 - cos(TWYTCH_PI * phased_offset)) / 2.0;
+        output(kValue)->buffer[0] = INTERPOLATE(last_random_value_, current_random_value_, t);
+      }
+    }
   }
 
   void HelmLfo::correctToTime(mopo_float samples) {
     mopo_float frequency = input(kFrequency)->at(0);
     offset_ = samples * frequency / sample_rate_;
-    double integral;
-    offset_ = modf(offset_, &integral);
+    mopo_float integral;
+    offset_ = twytchutils::mod(offset_, &integral);
   }
 } // namespace mopo

@@ -1,4 +1,4 @@
-/* Copyright 2013-2015 Matt Tytel
+/* Copyright 2013-2016 Matt Tytel
  *
  * mopo is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,11 +21,19 @@
 namespace mopotwytchsynth {
 
   Voice::Voice(Processor* processor) : event_sample_(-1),
-      aftertouch_sample_(-1), aftertouch_(0.0), processor_(processor) { }
+      aftertouch_sample_(-1), aftertouch_(0.0), processor_(processor) {
+    state_.event = kVoiceOff;
+    state_.note = 0;
+    state_.velocity = 0;
+    state_.last_note = 0;
+    state_.note_pressed = 0;
+    state_.channel = 0;
+    key_state_ = kReleased;
+  }
 
   VoiceHandler::VoiceHandler(size_t polyphony) :
       ProcessorRouter(kNumInputs, 0), polyphony_(0), sustain_(false),
-      voice_killer_(0) {
+      legato_(false), voice_killer_(0), last_played_note_(-1.0) {
     setPolyphony(polyphony);
     voice_router_.router(this);
     global_router_.router(this);
@@ -33,15 +41,22 @@ namespace mopotwytchsynth {
 
   void VoiceHandler::prepareVoiceTriggers(Voice* voice) {
     note_.clearTrigger();
+    last_note_.clearTrigger();
+    note_pressed_.clearTrigger();
+    channel_.clearTrigger();
     velocity_.clearTrigger();
     voice_event_.clearTrigger();
     aftertouch_.clearTrigger();
+    channel_.buffer[0] = voice->state().channel;
 
     if (voice->hasNewEvent()) {
       voice_event_.trigger(voice->state().event, voice->event_sample());
       if (voice->state().event == kVoiceOn) {
         note_.trigger(voice->state().note, 0);
+        last_note_.trigger(voice->state().last_note, 0);
         velocity_.trigger(voice->state().velocity, 0);
+        note_pressed_.trigger(voice->state().note_pressed, 0);
+        channel_.trigger(voice->state().channel, 0);
       }
     }
 
@@ -53,36 +68,75 @@ namespace mopotwytchsynth {
 
   void VoiceHandler::processVoice(Voice* voice) {
     voice->processor()->process();
-    for (int out = 0; out < numOutputs(); ++out) {
-      int buffer_size = voice_outputs_[out]->owner->getBufferSize();
-      for (int i = 0; i < buffer_size; ++i)
-        output(out)->buffer[i] += voice_outputs_[out]->buffer[i];
+  }
+
+  void VoiceHandler::clearAccumulatedOutputs() {
+    for (int i = 0; i < numOutputs(); ++i) {
+      if (shouldAccumulate(voice_outputs_[i])) {
+        int buffer_size = voice_outputs_[i]->owner->getBufferSize();
+        memset(output(i)->buffer, 0, buffer_size * sizeof(mopo_float));
+      }
     }
+  }
+
+  void VoiceHandler::clearNonaccumulatedOutputs() {
+    for (int i = 0; i < numOutputs(); ++i) {
+      if (!shouldAccumulate(voice_outputs_[i]))
+        output(i)->buffer[0] = 0.0;
+    }
+  }
+
+  void VoiceHandler::accumulateOutputs() {
+    for (int out = 0; out < numOutputs(); ++out) {
+      if (shouldAccumulate(voice_outputs_[out])) {
+        int buffer_size = voice_outputs_[out]->owner->getBufferSize();
+        for (int i = 0; i < buffer_size; ++i)
+          output(out)->buffer[i] += voice_outputs_[out]->buffer[i];
+      }
+    }
+  }
+
+  void VoiceHandler::writeNonaccumulatedOutputs() {
+    for (int i = 0; i < numOutputs(); ++i) {
+      if (!shouldAccumulate(voice_outputs_[i])) {
+        if (active_voices_.size())
+          output(i)->buffer[0] = voice_outputs_[i]->buffer[0];
+      }
+    }
+  }
+
+  bool VoiceHandler::shouldAccumulate(Output* output) {
+    return !output->owner->isControlRate();
   }
 
   void VoiceHandler::process() {
     global_router_.process();
 
     int polyphony = static_cast<int>(input(kPolyphony)->at(0));
-    setPolyphony(CLAMP(polyphony, 1, polyphony));
-    for (int out = 0; out < numOutputs(); ++out)
-      memset(output(out)->buffer, 0, buffer_size_ * sizeof(mopo_float));
+    setPolyphony(twytchutils::iclamp(polyphony, 1, polyphony));
+    clearAccumulatedOutputs();
 
     std::list<Voice*>::iterator iter = active_voices_.begin();
     while (iter != active_voices_.end()) {
       Voice* voice = *iter;
       prepareVoiceTriggers(voice);
       processVoice(voice);
+      accumulateOutputs();
 
       // Remove voice if the right processor has a full silent buffer.
       if (voice_killer_ && voice->state().event != kVoiceOn &&
-          utils::isSilent(voice_killer_->buffer, buffer_size_)) {
+          twytchutils::isSilent(voice_killer_->buffer, buffer_size_)) {
         free_voices_.push_back(voice);
         iter = active_voices_.erase(iter);
       }
       else
         iter++;
     }
+
+    if (active_voices_.size())
+      writeNonaccumulatedOutputs();
+    else
+      clearNonaccumulatedOutputs();
   }
 
   void VoiceHandler::setSampleRate(int sample_rate) {
@@ -103,6 +157,14 @@ namespace mopotwytchsynth {
 
   int VoiceHandler::getNumActiveVoices() {
     return active_voices_.size();
+  }
+
+  bool VoiceHandler::isNotePlaying(mopo_float note) {
+    for (Voice* voice : active_voices_) {
+      if (voice->state().note == note)
+        return true;
+    }
+    return false;
   }
 
   void VoiceHandler::sustainOn() {
@@ -128,7 +190,8 @@ namespace mopotwytchsynth {
     Voice* voice = 0;
 
     // First check free voices.
-    if (free_voices_.size() && active_voices_.size() < polyphony_) {
+    if (free_voices_.size() &&
+       (!legato_ || pressed_notes_.size() == 0 || active_voices_.size() < polyphony_)) {
       voice = free_voices_.front();
       free_voices_.pop_front();
       return voice;
@@ -155,20 +218,65 @@ namespace mopotwytchsynth {
     }
 
     // If all are active just grab the oldest voice.
+    TWYTCH_MOPO_ASSERT(active_voices_.size());
     voice = active_voices_.front();
     active_voices_.pop_front();
     return voice;
   }
 
-  void VoiceHandler::noteOn(mopo_float note, mopo_float velocity, int sample) {
-    pressed_notes_.push_front(note);
+  Voice* VoiceHandler::getVoiceToKill() {
+    int excess_voices = active_voices_.size() - polyphony_;
+    Voice* oldest_released = 0;
+    Voice* oldest_sustained = 0;
+    Voice* oldest_held = 0;
 
-    Voice* voice = grabVoice();
-    voice->activate(note, velocity, sample);
-    active_voices_.push_back(voice);
+    std::list<Voice*>::iterator iter = active_voices_.begin();
+    for (; iter != active_voices_.end(); ++iter) {
+      Voice* voice = *iter;
+      if (voice->state().event == kVoiceKill)
+        excess_voices--;
+      else if (oldest_released == 0 && voice->key_state() == Voice::kReleased)
+        oldest_released = voice;
+      else if (oldest_sustained == 0 && voice->key_state() == Voice::kSustained)
+        oldest_sustained = voice;
+      else if (oldest_held == 0)
+        oldest_held = voice;
+    }
+
+    // Return null if we've killed enough voices.
+    if (excess_voices <= 0)
+      return 0;
+
+    // If there were any released notes kill the oldest.
+    if (oldest_released)
+      return oldest_released;
+
+    // Then if there were any sustained notes kill the oldest.
+    if (oldest_sustained)
+      return oldest_sustained;
+
+    // If all are active just grab the oldest held voice.
+    if (oldest_held)
+      return oldest_held;
+
+    return 0;
   }
 
-  void VoiceHandler::noteOff(mopo_float note, int sample) {
+  void VoiceHandler::noteOn(mopo_float note, mopo_float velocity, int sample, int channel) {
+    TWYTCH_MOPO_ASSERT(sample >= 0 && sample < buffer_size_);
+    TWYTCH_MOPO_ASSERT(channel >= 0 && channel < NUM_MIDI_CHANNELS);
+
+    Voice* voice = grabVoice();
+    pressed_notes_.push_front(note);
+
+    if (last_played_note_ < 0)
+      last_played_note_ = note;
+    voice->activate(note, velocity, last_played_note_, pressed_notes_.size(), sample, channel);
+    active_voices_.push_back(voice);
+    last_played_note_ = note;
+  }
+
+  VoiceEvent VoiceHandler::noteOff(mopo_float note, int sample) {
     pressed_notes_.remove(note);
 
     for (Voice* voice : active_voices_) {
@@ -176,17 +284,26 @@ namespace mopotwytchsynth {
         if (sustain_)
           voice->sustain();
         else {
-          if (polyphony_ <= pressed_notes_.size()) {
+          if (polyphony_ <= pressed_notes_.size() && voice->state().event != kVoiceKill) {
+            voice->kill();
+
+            Voice* new_voice = grabVoice();
+            active_voices_.push_back(new_voice);
             mopo_float old_note = pressed_notes_.back();
             pressed_notes_.pop_back();
             pressed_notes_.push_front(old_note);
-            voice->activate(old_note, voice->state().velocity, sample);
+            new_voice->activate(old_note, voice->state().velocity, last_played_note_,
+                                pressed_notes_.size() + 1, sample);
+            last_played_note_ = old_note;
+
+            return kVoiceReset;
           }
           else
             voice->deactivate(sample);
         }
       }
     }
+    return kVoiceOff;
   }
 
   void VoiceHandler::setAftertouch(mopo_float note, mopo_float aftertouch, int sample) {
@@ -200,16 +317,23 @@ namespace mopotwytchsynth {
     while (all_voices_.size() < polyphony) {
       Voice* new_voice = createVoice();
       all_voices_.push_back(new_voice);
-      free_voices_.push_back(new_voice);
+      active_voices_.push_back(new_voice);
     }
 
-    while (active_voices_.size() > polyphony) {
-      active_voices_.front()->deactivate();
-      free_voices_.push_back(active_voices_.front());
-      active_voices_.pop_front();
+    int num_voices_to_kill = active_voices_.size() - polyphony;
+    for (int i = 0; i < num_voices_to_kill; ++i) {
+      Voice* sacrifice = getVoiceToKill();
+      if (sacrifice)
+        sacrifice->kill();
     }
 
     polyphony_ = polyphony;
+  }
+
+  mopo_float VoiceHandler::getLastActiveNote() const {
+    if (active_voices_.size())
+      return active_voices_.back()->state().note;
+    return 0.0;
   }
 
   void VoiceHandler::addProcessor(Processor* processor) {
@@ -218,7 +342,7 @@ namespace mopotwytchsynth {
     voice_router_.addProcessor(processor);
   }
 
-  void VoiceHandler::removeProcessor(Processor* processor) {
+  void VoiceHandler::removeProcessor(const Processor* processor) {
     voice_router_.removeProcessor(processor);
   }
 
@@ -230,18 +354,17 @@ namespace mopotwytchsynth {
     global_router_.removeProcessor(processor);
   }
 
-  void VoiceHandler::registerOutput(Output* output) {
+  Processor::Output* VoiceHandler::registerOutput(Output* output) {
     Output* new_output = new Output();
     new_output->owner = this;
     ProcessorRouter::registerOutput(new_output);
     voice_outputs_.push_back(output);
+    return new_output;
   }
 
-  void VoiceHandler::registerOutput(Output* output, int index) {
-    while (voice_outputs_.size() <= index)
-      registerOutput(0);
-
-    voice_outputs_[index] = output;
+  Processor::Output* VoiceHandler::registerOutput(Output* output, int index) {
+    TWYTCH_MOPO_ASSERT(false);
+    return output;
   }
 
   bool VoiceHandler::isPolyphonic(const Processor* processor) const {

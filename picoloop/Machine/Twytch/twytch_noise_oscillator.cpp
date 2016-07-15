@@ -1,4 +1,4 @@
-/* Copyright 2013-2015 Matt Tytel
+/* Copyright 2013-2016 Matt Tytel
  *
  * helm is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,10 +18,20 @@
 
 namespace mopotwytchsynth {
 
-  NoiseOscillator::NoiseOscillator() : Processor(0, 1) { }
+  NoiseOscillator::NoiseOscillator() : Processor(kNumInputs, 1) {
+    current_noise_value_ = NOISE_CONSTANT;
+  }
 
   void NoiseOscillator::process() {
-    for (int i = 0; i < buffer_size_; ++i)
+    int i = 0;
+    if (input(kReset)->source->triggered) {
+      int trigger_offset = input(kReset)->source->trigger_offset;
+      for (; i < trigger_offset; ++i)
+        tick(i);
+
+      current_noise_value_ = rand() / mopo_float(RAND_MAX);
+    }
+    for (; i < buffer_size_; ++i)
       tick(i);
   }
 } // namespace mopo

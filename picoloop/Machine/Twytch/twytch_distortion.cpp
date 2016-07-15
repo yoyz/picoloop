@@ -1,4 +1,4 @@
-/* Copyright 2013-2015 Matt Tytel
+/* Copyright 2013-2016 Matt Tytel
  *
  * mopo is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,28 +15,42 @@
  */
 
 #include "twytch_distortion.h"
-
-#include <cmath>
+#include "twytch_utils.h"
 
 namespace mopotwytchsynth {
 
   void Distortion::processTanh() {
     mopo_float threshold = input(kThreshold)->at(0);
-    mopo_float compression_size = 1.0 - threshold;
-    mopo_float compression_scale = 1.0 / compression_size;
+    mopo_float compression_scale = 1.0 / threshold;
 
-    for (int i = 0; i < buffer_size_; ++i) {
-      mopo_float val = input(kAudio)->at(i);
+    const mopo_float* audio = input(kAudio)->source->buffer;
+    mopo_float* dest = output()->buffer;
+
+    int samples = buffer_size_;
+    #pragma clang loop vectorize(enable) interleave(enable)
+    for (int i = 0; i < samples; ++i) {
+      mopo_float val = audio[i];
       mopo_float magnitude = fabs(val);
-      float drive = CLAMP(compression_scale * magnitude - 1.0, 0.0, 1.0);
-      output()->buffer[i] = INTERPOLATE(val, tanh(val), drive);
+      tmp_buffer_[i] = compression_scale * magnitude - 1.0;
+    }
+
+    for (int i = 0; i < samples; ++i)
+      tmp_buffer_[i] = twytchutils::clamp(tmp_buffer_[i], 0.0, 1.0);
+
+    #pragma clang loop vectorize(enable) interleave(enable)
+    for (int i = 0; i < samples; ++i) {
+      mopo_float val = audio[i];
+      mopo_float val2 = val * val;
+      mopo_float compressed = val / (1 + (val2 / (3 + (val2 / (5 + val2 / (7 + val2 / 9))))));
+
+      dest[i] = INTERPOLATE(val, compressed, tmp_buffer_[i]);
     }
   }
 
   void Distortion::processHardClip() {
     for (int i = 0; i < buffer_size_; ++i) {
       mopo_float val = input(kAudio)->at(i);
-      output()->buffer[i] = CLAMP(val, -1.0, 1.0);
+      output()->buffer[i] = twytchutils::clamp(val, -1.0, 1.0);
     }
   }
 
@@ -51,7 +65,7 @@ namespace mopotwytchsynth {
 
       mopo_float normal_out = past_out_ + delta_in;
       mopo_float magnitude = fabs(normal_out);
-      float drive = CLAMP(compression_scale * magnitude - 1.0, 0.0, 1.0);
+      float drive = twytchutils::clamp(compression_scale * magnitude - 1.0, 0.0, 1.0);
       past_out_ = INTERPOLATE(normal_out, tanh(normal_out), drive);
       output()->buffer[i] = past_out_;
       past_in_ = val;

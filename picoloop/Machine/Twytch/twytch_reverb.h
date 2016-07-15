@@ -1,4 +1,4 @@
-/* Copyright 2013-2015 Matt Tytel
+/* Copyright 2013-2016 Matt Tytel
  *
  * mopo is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 
 #pragma once
 #ifndef TWYTCH_REVERB_H
-#define REVERB_H
+#define TWYTCH_REVERB_H
 
 #include "twytch_processor_router.h"
 
@@ -37,7 +37,7 @@ namespace mopotwytchsynth {
       Reverb();
       virtual ~Reverb() { }
 
-      virtual Processor* clone() const { return new Reverb(*this); }
+      virtual Processor* clone() const override { return new Reverb(*this); }
   };
 } // namespace mopo
 

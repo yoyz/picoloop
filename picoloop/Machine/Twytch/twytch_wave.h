@@ -1,4 +1,4 @@
-/* Copyright 2013-2015 Matt Tytel
+/* Copyright 2013-2016 Matt Tytel
  *
  * mopo is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,9 +16,10 @@
 
 #pragma once
 #ifndef TWYTCH_WAVE_H
-#define WAVE_H
+#define TWYTCH_WAVE_H
 
 #include "twytch_common.h"
+#include "twytch_utils.h"
 #include <cmath>
 #include <cstdlib>
 
@@ -89,14 +90,14 @@ namespace mopotwytchsynth {
 
       inline mopo_float fullsin(mopo_float t) const {
         mopo_float integral;
-        mopo_float fractional = modf(t * LOOKUP_SIZE, &integral);
+        mopo_float fractional = twytchutils::mod(t * LOOKUP_SIZE, &integral);
         int index = integral;
         return INTERPOLATE(sin_[index], sin_[index + 1], fractional);
       }
 
       inline mopo_float square(mopo_float t, int harmonics) const {
         mopo_float integral;
-        mopo_float fractional = modf(t * LOOKUP_SIZE, &integral);
+        mopo_float fractional = twytchutils::mod(t * LOOKUP_SIZE, &integral);
         int index = integral;
         return INTERPOLATE(square_[harmonics][index],
                            square_[harmonics][index + 1], fractional);
@@ -104,7 +105,7 @@ namespace mopotwytchsynth {
 
       inline mopo_float upsaw(mopo_float t, int harmonics) const {
         mopo_float integral;
-        mopo_float fractional = modf(t * LOOKUP_SIZE, &integral);
+        mopo_float fractional = twytchutils::mod(t * LOOKUP_SIZE, &integral);
         int index = integral;
         return INTERPOLATE(saw_[harmonics][index],
                            saw_[harmonics][index + 1], fractional);
@@ -116,7 +117,7 @@ namespace mopotwytchsynth {
 
       inline mopo_float triangle(mopo_float t, int harmonics) const {
         mopo_float integral;
-        mopo_float fractional = modf(t * LOOKUP_SIZE, &integral);
+        mopo_float fractional = twytchutils::mod(t * LOOKUP_SIZE, &integral);
         int index = integral;
         return INTERPOLATE(triangle_[harmonics][index],
                            triangle_[harmonics][index + 1], fractional);
@@ -139,7 +140,7 @@ namespace mopotwytchsynth {
 
         mopo_float integral;
         for (size_t i = 0; i < squares; ++i) {
-          out += square(modf(phase, &integral), harmonics);
+          out += square(twytchutils::mod(phase, &integral), harmonics);
           phase += phase_increment;
         }
         out /= squares;
@@ -257,7 +258,7 @@ namespace mopotwytchsynth {
 
       static inline mopo_float triangle(mopo_float t) {
         mopo_float integral;
-        return fabs(2.0 - 4.0 * modf(t + 0.75, &integral)) - 1;
+        return fabs(2.0 - 4.0 * twytchutils::mod(t + 0.75, &integral)) - 1;
       }
 
       static inline mopo_float downsaw(mopo_float t) {
@@ -288,7 +289,7 @@ namespace mopotwytchsynth {
 
         mopo_float integral;
         for (size_t i = 0; i < squares; ++i) {
-          out += square(modf(phase, &integral));
+          out += square(twytchutils::mod(phase, &integral));
           phase += phase_increment;
         }
         out /= squares;

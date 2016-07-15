@@ -1,4 +1,4 @@
-/* Copyright 2013-2015 Matt Tytel
+/* Copyright 2013-2016 Matt Tytel
  *
  * helm is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 
 #pragma once
 #ifndef TWYTCH_FIXED_POINT_OSCILLATOR_H
-#define FIXED_POINT_OSCILLATOR_H
+#define TWYTCH_FIXED_POINT_OSCILLATOR_H
 
 #include "twytch_mopo.h"
 #include "twytch_fixed_point_wave.h"
@@ -25,10 +25,13 @@ namespace mopotwytchsynth {
 
   class FixedPointOscillator : public Processor {
     public:
+      static const mopo_float SCALE_OUT;
+
       enum Inputs {
         kWaveform,
         kPhaseInc,
         kReset,
+        kShuffle,
         kNumInputs
       };
 
@@ -38,14 +41,6 @@ namespace mopotwytchsynth {
       virtual Processor* clone() const { return new FixedPointOscillator(*this); }
 
     protected:
-      void tick(int i, int waveform) {
-        static const mopo_float SCALE_OUT = 0.5 / (FixedPointWaveLookup::SCALE * INT_MAX);
-        int phase_inc = UINT_MAX * input(kPhaseInc)->source->buffer[i];
-
-        phase_ += phase_inc;
-        output()->buffer[i] = SCALE_OUT * FixedPointWave::wave(waveform, phase_, phase_inc);
-      }
-
       unsigned int phase_;
   };
 } // namespace mopo

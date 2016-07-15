@@ -1,4 +1,4 @@
-/* Copyright 2013-2015 Matt Tytel
+/* Copyright 2013-2016 Matt Tytel
  *
  * helm is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 
 #pragma once
 #ifndef TWYTCH_HELM_MODULE_H
-#define HELM_MODULE_H
+#define TWYTCH_HELM_MODULE_H
 
 #include "twytch_mopo.h"
 #include "twytch_helm_common.h"
@@ -41,8 +41,8 @@ namespace mopotwytchsynth {
       Processor* getPolyModulationDestination(std::string name);
 
       output_map getModulationSources();
-      output_map getMonoModulations();
-      output_map getPolyModulations();
+      virtual output_map getMonoModulations();
+      virtual output_map getPolyModulations();
       virtual void correctToTime(mopo_float samples);
 
     protected:

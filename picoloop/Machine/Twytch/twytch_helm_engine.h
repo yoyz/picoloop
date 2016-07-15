@@ -1,4 +1,4 @@
-/* Copyright 2013-2015 Matt Tytel
+/* Copyright 2013-2016 Matt Tytel
  *
  * helm is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 
 #pragma once
 #ifndef TWYTCH_HELM_ENGINE_H
-#define HELM_ENGINE_H
+#define TWYTCH_HELM_ENGINE_H
 
 #include "twytch_mopo.h"
 #include "twytch_helm_common.h"
@@ -29,7 +29,7 @@ namespace mopotwytchsynth {
   class Value;
 
   // The overall helm engine. All audio processing is contained in here.
-  class HelmEngine : public HelmModule {
+  class HelmEngine : public HelmModule, public NoteHandler {
     public:
       HelmEngine();
 
@@ -38,21 +38,20 @@ namespace mopotwytchsynth {
       void process() override;
 
       std::set<ModulationConnection*> getModulationConnections() { return mod_connections_; }
+      bool isModulationActive(ModulationConnection* connection);
       std::list<mopotwytchsynth::mopo_float> getPressedNotes();
       void connectModulation(ModulationConnection* connection);
       void disconnectModulation(ModulationConnection* connection);
-      ModulationConnection* getConnection(std::string source, std::string destination);
-      std::vector<ModulationConnection*> getSourceConnections(std::string source);
-      std::vector<ModulationConnection*> getDestinationConnections(std::string destination);
-      void clearModulations();
       int getNumActiveVoices();
+      mopo_float getLastActiveNote() const;
 
       // Keyboard events.
-      void allNotesOff(int sample = 0);
-      void noteOn(mopo_float note, mopo_float velocity = 1.0, int sample = 0);
-      void noteOff(mopo_float note, int sample = 0);
-      void setModWheel(mopo_float value);
-      void setPitchWheel(mopo_float value);
+      void allNotesOff(int sample = 0) override;
+      void noteOn(mopo_float note, mopo_float velocity = 1.0,
+                  int sample = 0, int channel = 0) override;
+      VoiceEvent noteOff(mopo_float note, int sample = 0) override;
+      void setModWheel(mopo_float value, int channel = 0);
+      void setPitchWheel(mopo_float value, int channel = 0);
       void setBpm(mopo_float bpm);
       void correctToTime(mopo_float samples) override;
       void setAftertouch(mopo_float note, mopo_float value, int sample = 0);
@@ -67,6 +66,9 @@ namespace mopotwytchsynth {
       Value* arp_on_;
       bool was_playing_arp_;
 
+      Value* lfo_1_retrigger_;
+      Value* lfo_2_retrigger_;
+      Value* step_sequencer_retrigger_;
       HelmLfo* lfo_1_;
       HelmLfo* lfo_2_;
       StepGenerator* step_sequencer_;

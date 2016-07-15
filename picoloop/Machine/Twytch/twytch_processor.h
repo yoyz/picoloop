@@ -1,4 +1,4 @@
-/* Copyright 2013-2015 Matt Tytel
+/* Copyright 2013-2016 Matt Tytel
  *
  * mopo is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 
 #pragma once
 #ifndef TWYTCH_PROCESSOR_H
-#define PROCESSOR_H
+#define TWYTCH_PROCESSOR_H
 
 #include "twytch_common.h"
 
@@ -143,9 +143,9 @@ namespace mopotwytchsynth {
       ProcessorRouter* getTopLevelRouter() const;
 
       virtual void registerInput(Input* input, int index);
-      virtual void registerOutput(Output* output, int index);
+      virtual Output* registerOutput(Output* output, int index);
       virtual void registerInput(Input* input);
-      virtual void registerOutput(Output* output);
+      virtual Output* registerOutput(Output* output);
 
       virtual int numInputs() const { return inputs_->size(); }
       virtual int numOutputs() const { return outputs_->size(); }

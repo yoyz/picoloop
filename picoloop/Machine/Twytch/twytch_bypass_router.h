@@ -1,4 +1,4 @@
-/* Copyright 2013-2015 Matt Tytel
+/* Copyright 2013-2016 Matt Tytel
  *
  * mopo is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 
 #pragma once
 #ifndef TWYTCH_BYPASS_ROUTER_H
-#define BYPASS_ROUTER_H
+#define TWYTCH_BYPASS_ROUTER_H
 
 #include "twytch_processor_router.h"
 
@@ -32,9 +32,11 @@ namespace mopotwytchsynth {
 
       BypassRouter(int num_inputs = kNumInputs, int num_outputs = 0);
 
-      virtual Processor* clone() const { return new BypassRouter(*this); }
+      virtual Processor* clone() const override {
+        return new BypassRouter(*this);
+      }
 
-      void process();
+      void process() override;
   };
 } // namespace mopo
 

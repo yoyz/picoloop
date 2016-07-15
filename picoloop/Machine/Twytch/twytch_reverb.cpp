@@ -1,4 +1,4 @@
-/* Copyright 2013-2015 Matt Tytel
+/* Copyright 2013-2016 Matt Tytel
  *
  * mopo is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,43 +39,46 @@ namespace mopotwytchsynth {
     gained_input->plug(audio_input, 0);
     gained_input->plug(gain, 1);
 
-    VariableAdd* left_comb_total = new VariableAdd();
-    for (int i = 0; i < NUM_COMB; ++i) {
-      ReverbComb* comb = new ReverbComb(REVERB_MAX_MEMORY);
-      Value* time = new Value(COMB_TUNINGS[i]);
-      TimeToSamples* samples = new TimeToSamples();
-      samples->plug(time);
-
-      comb->plug(damping_input, ReverbComb::kDamping);
-      comb->plug(feedback_input, ReverbComb::kFeedback);
-      comb->plug(gained_input, ReverbComb::kAudio);
-      comb->plug(samples, ReverbComb::kSampleDelay);
-      addProcessor(samples);
-      addProcessor(comb);
-      left_comb_total->plugNext(comb);
-    }
-
-    VariableAdd* right_comb_total = new VariableAdd();
-    for (int i = 0; i < NUM_COMB; ++i) {
-      ReverbComb* comb = new ReverbComb(REVERB_MAX_MEMORY);
-      Value* time = new Value(COMB_TUNINGS[i] + STEREO_SPREAD);
-      TimeToSamples* samples = new TimeToSamples();
-      samples->plug(time);
-
-      comb->plug(damping_input, ReverbComb::kDamping);
-      comb->plug(feedback_input, ReverbComb::kFeedback);
-      comb->plug(gained_input, ReverbComb::kAudio);
-      comb->plug(samples, ReverbComb::kSampleDelay);
-      addProcessor(samples);
-      addProcessor(comb);
-      right_comb_total->plugNext(comb);
-    }
-
     addProcessor(audio_input);
     addProcessor(gained_input);
     addProcessor(feedback_input);
     addProcessor(wet_input);
     addProcessor(damping_input);
+
+    VariableAdd* left_comb_total = new VariableAdd(NUM_COMB);
+    for (int i = 0; i < NUM_COMB; ++i) {
+      ReverbComb* comb = new ReverbComb(REVERB_MAX_MEMORY);
+      Value* time = new Value(COMB_TUNINGS[i]);
+      TimeToSamples* samples = new TimeToSamples();
+      samples->setControlRate();
+      samples->plug(time);
+
+      comb->plug(gained_input, ReverbComb::kAudio);
+      comb->plug(samples, ReverbComb::kSampleDelay);
+      comb->plug(feedback_input, ReverbComb::kFeedback);
+      comb->plug(damping_input, ReverbComb::kDamping);
+      left_comb_total->plugNext(comb);
+      addProcessor(samples);
+      addProcessor(comb);
+    }
+
+    VariableAdd* right_comb_total = new VariableAdd(NUM_COMB);
+    for (int i = 0; i < NUM_COMB; ++i) {
+      ReverbComb* comb = new ReverbComb(REVERB_MAX_MEMORY);
+      Value* time = new Value(COMB_TUNINGS[i] + STEREO_SPREAD);
+      TimeToSamples* samples = new TimeToSamples();
+      samples->setControlRate();
+      samples->plug(time);
+
+      comb->plug(gained_input, ReverbComb::kAudio);
+      comb->plug(samples, ReverbComb::kSampleDelay);
+      comb->plug(feedback_input, ReverbComb::kFeedback);
+      comb->plug(damping_input, ReverbComb::kDamping);
+      right_comb_total->plugNext(comb);
+      addProcessor(samples);
+      addProcessor(comb);
+    }
+
     addProcessor(left_comb_total);
     addProcessor(right_comb_total);
 
@@ -84,11 +87,12 @@ namespace mopotwytchsynth {
       ReverbAllPass* all_pass = new ReverbAllPass(REVERB_MAX_MEMORY);
       Value* time = new Value(ALL_PASS_TUNINGS[i]);
       TimeToSamples* samples = new TimeToSamples();
+      samples->setControlRate();
       samples->plug(time);
 
       all_pass->plug(left_audio, ReverbAllPass::kAudio);
       all_pass->plug(samples, ReverbAllPass::kSampleDelay);
-      all_pass->plug(&utils::value_half, ReverbAllPass::kFeedback);
+      all_pass->plug(&twytchutils::value_half, ReverbAllPass::kFeedback);
 
       addProcessor(all_pass);
       addProcessor(samples);
@@ -100,11 +104,12 @@ namespace mopotwytchsynth {
       ReverbAllPass* all_pass = new ReverbAllPass(REVERB_MAX_MEMORY);
       Value* time = new Value(ALL_PASS_TUNINGS[i] + STEREO_SPREAD);
       TimeToSamples* samples = new TimeToSamples();
+      samples->setControlRate();
       samples->plug(time);
 
       all_pass->plug(right_audio, ReverbAllPass::kAudio);
       all_pass->plug(samples, ReverbAllPass::kSampleDelay);
-      all_pass->plug(&utils::value_half, ReverbAllPass::kFeedback);
+      all_pass->plug(&twytchutils::value_half, ReverbAllPass::kFeedback);
 
       addProcessor(all_pass);
       addProcessor(samples);

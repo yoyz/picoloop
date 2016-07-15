@@ -1,4 +1,4 @@
-/* Copyright 2013-2015 Matt Tytel
+/* Copyright 2013-2016 Matt Tytel
  *
  * helm is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,15 +24,16 @@ namespace mopotwytchsynth {
   HelmModule::HelmModule() { }
 
   Value* HelmModule::createBaseControl(std::string name, bool smooth_value) {
-    
     mopo_float default_value = Parameters::getDetails(name).default_value;
     Value* val = 0;
     if (smooth_value) {
-      val = new SmoothValue(default_value);
+      val = new cr::SmoothValue(default_value);
       getMonoRouter()->addProcessor(val);
     }
-    else
+    else {
       val = new Value(default_value);
+      val->setControlRate();
+    }
 
     controls_[name] = val;
     return val;
@@ -41,8 +42,7 @@ namespace mopotwytchsynth {
   Processor* HelmModule::createBaseModControl(std::string name, bool smooth_value) {
     Processor* base_val = createBaseControl(name, smooth_value);
 
-    VariableAdd* mono_total = new VariableAdd();
-    mono_total->setControlRate(true);
+    cr::VariableAdd* mono_total = new cr::VariableAdd();
     mono_total->plugNext(base_val);
     getMonoRouter()->addProcessor(mono_total);
     mono_mod_destinations_[name] = mono_total;
@@ -61,11 +61,13 @@ namespace mopotwytchsynth {
     if (details.display_skew == ValueDetails::kQuadratic) {
       control_rate_total = new Square();
       control_rate_total->plug(base_control);
+      control_rate_total->setControlRate();
       mono_owner->addProcessor(control_rate_total);
     }
     else if (details.display_skew == ValueDetails::kExponential) {
       control_rate_total = new ExponentialScale(2.0);
       control_rate_total->plug(base_control);
+      control_rate_total->setControlRate();
       mono_owner->addProcessor(control_rate_total);
     }
 
@@ -84,19 +86,16 @@ namespace mopotwytchsynth {
     Processor* base_control = createBaseModControl(name, smooth_value);
     ProcessorRouter* poly_owner = getPolyRouter();
 
-    VariableAdd* poly_total = new VariableAdd();
-    poly_total->setControlRate(true);
+    cr::VariableAdd* poly_total = new cr::VariableAdd();
     poly_owner->addProcessor(poly_total);
     poly_mod_destinations_[name] = poly_total;
 
-    Add* modulation_total = new Add();
-    modulation_total->setControlRate(true);
+    cr::Add* modulation_total = new cr::Add();
     modulation_total->plug(base_control, 0);
     modulation_total->plug(poly_total, 1);
     poly_owner->addProcessor(modulation_total);
 
-    poly_owner->registerOutput(poly_total->output());
-    poly_modulation_readout_[name] = poly_owner->output(poly_owner->numOutputs() - 1);
+    poly_modulation_readout_[name] = poly_total->output();
 
     Processor* control_rate_total = modulation_total;
     if (details.display_skew == ValueDetails::kQuadratic) {
@@ -129,33 +128,40 @@ namespace mopotwytchsynth {
     ProcessorRouter* owner = poly ? getPolyRouter() : getMonoRouter();
     Processor* tempo = nullptr;
     if (poly)
-      tempo = createPolyModControl(name + "_tempo", 6, false);
+      tempo = createPolyModControl(name + "_tempo", frequency->isControlRate());
     else
-      tempo = createMonoModControl(name + "_tempo", 6, false);
+      tempo = createMonoModControl(name + "_tempo", frequency->isControlRate());
 
     Switch* choose_tempo = new Switch();
-
-    choose_tempo->plug(tempo, Switch::kSource);
     choose_tempo->setControlRate(frequency->isControlRate());
+    choose_tempo->plug(tempo, Switch::kSource);
 
     for (int i = 0; i < sizeof(synced_freq_ratios) / sizeof(Value); ++i)
       choose_tempo->plugNext(&synced_freq_ratios[i]);
 
     Switch* choose_modifier = new Switch();
+    choose_modifier->setControlRate(frequency->isControlRate());
     Value* sync = new Value(1);
     choose_modifier->plug(sync, Switch::kSource);
-    choose_modifier->plugNext(&utils::value_one);
-    choose_modifier->plugNext(&utils::value_one);
+    choose_modifier->plugNext(&twytchutils::value_one);
+    choose_modifier->plugNext(&twytchutils::value_one);
     choose_modifier->plugNext(&dotted_ratio);
     choose_modifier->plugNext(&triplet_ratio);
 
-    Multiply* modified_tempo = new Multiply();
-    modified_tempo->setControlRate(frequency->isControlRate());
+    Processor* modified_tempo = nullptr;
+    Processor* tempo_frequency = nullptr;
+    if (frequency->isControlRate()) {
+      modified_tempo = new cr::Multiply();
+      tempo_frequency = new cr::Multiply();
+    }
+    else {
+      modified_tempo = new Multiply();
+      tempo_frequency = new Multiply();
+    }
+
     modified_tempo->plug(choose_tempo, 0);
     modified_tempo->plug(choose_modifier, 1);
 
-    Multiply* tempo_frequency = new Multiply();
-    tempo_frequency->setControlRate(frequency->isControlRate());
     tempo_frequency->plug(modified_tempo, 0);
     tempo_frequency->plug(bps, 1);
 

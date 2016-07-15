@@ -1,4 +1,4 @@
-/* Copyright 2013-2015 Matt Tytel
+/* Copyright 2013-2016 Matt Tytel
  *
  * helm is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,10 +16,11 @@
 
 #include "twytch_helm_oscillators.h"
 
+#include "twytch_detune_lookup.h"
+
 #define RAND_DECAY 0.999
 
 namespace mopotwytchsynth {
-
   namespace {
     inline mopo_float getRandomPitchChange() {
       static const int RESOLUTION = 10000;
@@ -29,17 +30,26 @@ namespace mopotwytchsynth {
     }
   } // namespace
 
+  const mopo_float HelmOscillators::SCALE_OUT = 0.5 / (FixedPointWaveLookup::SCALE * INT_MAX);
+
   HelmOscillators::HelmOscillators() : Processor(kNumInputs, 1) {
     oscillator1_cross_mod_ = 0;
     oscillator2_cross_mod_ = 0;
 
-    for (int i = 0; i < MAX_UNISON; ++i) {
-      oscillator1_phases_[i] = 0;
-      oscillator2_phases_[i] = 0;
-      oscillator1_rand_offset_[i] = 0.0;
-      oscillator2_rand_offset_[i] = 0.0;
-      detune1_amounts_[i] = 1.0;
-      detune2_amounts_[i] = 1.0;
+    for (int v = 0; v < MAX_UNISON; ++v) {
+      oscillator1_phases_[v] = 0;
+      oscillator2_phases_[v] = 0;
+      oscillator1_rand_offset_[v] = 0.0;
+      oscillator2_rand_offset_[v] = 0.0;
+      wave_buffers1_[v] = nullptr;
+      wave_buffers2_[v] = nullptr;
+      detune_diffs1_[v] = 0;
+      detune_diffs2_[v] = 0;
+    }
+
+    for (int i = 0; i < MAX_BUFFER_SIZE; ++i) {
+      oscillator1_phase_diffs_[i] = 0;
+      oscillator2_phase_diffs_[i] = 0;
     }
   }
 
@@ -56,59 +66,102 @@ namespace mopotwytchsynth {
     oscillator1_cross_mod_ = 0;
     oscillator2_cross_mod_ = 0;
 
-    for (int i = 0; i < MAX_UNISON; ++i) {
-      oscillator1_phases_[i] = i * (INT_MAX / MAX_UNISON);
-      oscillator2_phases_[i] = i * (INT_MAX / MAX_UNISON);
+    oscillator1_phases_[0] = 0;
+    oscillator2_phases_[0] = 0;
+    oscillator1_rand_offset_[0] = 0.0;
+    oscillator2_rand_offset_[0] = 0.0;
+
+    for (int i = 1; i < MAX_UNISON; ++i) {
+      oscillator1_phases_[i] = rand();
+      oscillator2_phases_[i] = rand();
       oscillator1_rand_offset_[i] = 0.0;
       oscillator2_rand_offset_[i] = 0.0;
     }
   }
 
-  void HelmOscillators::computeDetuneRatios(mopo_float* detune_amounts,
-                                            mopo_float* random_offsets,
-                                            bool harmonize, mopo_float detune, int voices) {
-    for (int i = 0; i < voices; ++i) {
-      mopo_float amount = (detune * ((i + 1) / 2)) / ((voices + 1) / 2);
+  void HelmOscillators::loadBasePhaseInc() {
+    int samples = buffer_size_;
 
-      mopo_float exponent = amount / mopotwytchsynth::CENTS_PER_OCTAVE;
-      if (i % 2)
-        exponent = -exponent;
+    int* dest1 = oscillator1_phase_diffs_;
+    int* dest2 = oscillator2_phase_diffs_;
 
-      mopo_float harmonic = 1.0;
-      if (harmonize)
-        harmonic = i + 1;
+    const mopo_float* src1 = input(kOscillator1PhaseInc)->source->buffer;
+    const mopo_float* src2 = input(kOscillator2PhaseInc)->source->buffer;
 
-      detune_amounts[i] = harmonic + std::pow(2.0, exponent) + amount * random_offsets[i];
+    #pragma clang loop vectorize(enable) interleave(enable)
+    for (int i = 0; i < samples; ++i) {
+      dest1[i] = UINT_MAX * src1[i];
+      dest2[i] = UINT_MAX * src2[i];
+    }
+  }
+
+  void HelmOscillators::computeDetuneRatios(int* detune_diffs,
+                                            int oscillator_diff,
+                                            const mopo_float* random_offsets,
+                                            bool harmonize, mopo_float detune,
+                                            int voices) {
+    int harmonize_mult = harmonize ? 1 : 0;
+    for (int v = 0; v < MAX_UNISON; ++v) {
+      mopo_float amount = (detune * ((v + 1) / 2)) / ((voices + 1) / 2);
+
+      if (v % 2)
+        amount = -amount;
+
+      mopo_float harmonic = harmonize_mult * v;
+
+      mopo_float detune_ratio = harmonic + DetuneLookup::detuneLookup(amount) +
+                                amount * random_offsets[v];
+      detune_diffs[v] = detune_ratio * oscillator_diff - oscillator_diff;
+    }
+  }
+
+  void HelmOscillators::prepareBuffers(int** wave_buffers,
+                                       const int* detune_diffs,
+                                       const int* oscillator_phase_diffs,
+                                       int waveform) {
+    for (int v = 0; v < MAX_UNISON; ++v) {
+      int phase_diff = detune_diffs[v] + oscillator_phase_diffs[0];
+      wave_buffers[v] = FixedPointWave::getBuffer(waveform, phase_diff);
     }
   }
 
   void HelmOscillators::process() {
-    int voices1 = CLAMP(input(kUnisonVoices1)->source->buffer[0], 1, MAX_UNISON);
-    int voices2 = CLAMP(input(kUnisonVoices2)->source->buffer[0], 1, MAX_UNISON);
+    loadBasePhaseInc();
+    int voices1 = twytchutils::iclamp(input(kUnisonVoices1)->source->buffer[0], 1, MAX_UNISON);
+    int voices2 = twytchutils::iclamp(input(kUnisonVoices2)->source->buffer[0], 1, MAX_UNISON);
     mopo_float detune1 = input(kUnisonDetune1)->source->buffer[0];
     mopo_float detune2 = input(kUnisonDetune2)->source->buffer[0];
     mopo_float harmonize1 = input(kHarmonize1)->source->buffer[0];
     mopo_float harmonize2 = input(kHarmonize2)->source->buffer[0];
 
     addRandomPhaseToVoices();
-    computeDetuneRatios(detune1_amounts_, oscillator1_rand_offset_, harmonize1, detune1, voices1);
-    computeDetuneRatios(detune2_amounts_, oscillator2_rand_offset_, harmonize2, detune2, voices2);
+    computeDetuneRatios(detune_diffs1_, oscillator1_phase_diffs_[0],
+                        oscillator1_rand_offset_,
+                        harmonize1, detune1, voices1);
+    computeDetuneRatios(detune_diffs2_, oscillator2_phase_diffs_[0],
+                        oscillator2_rand_offset_,
+                        harmonize2, detune2, voices2);
 
     int wave1 = static_cast<int>(input(kOscillator1Waveform)->source->buffer[0] + 0.5);
     int wave2 = static_cast<int>(input(kOscillator2Waveform)->source->buffer[0] + 0.5);
+    wave1 = twytchutils::iclamp(wave1, 0, FixedPointWaveLookup::kWhiteNoise - 1);
+    wave2 = twytchutils::iclamp(wave2, 0, FixedPointWaveLookup::kWhiteNoise - 1);
 
-    wave1 = CLAMP(wave1, 0, FixedPointWaveLookup::kWhiteNoise - 1);
-    wave2 = CLAMP(wave2, 0, FixedPointWaveLookup::kWhiteNoise - 1);
+    prepareBuffers(wave_buffers1_, detune_diffs1_, oscillator1_phase_diffs_, wave1);
+    prepareBuffers(wave_buffers2_, detune_diffs2_, oscillator2_phase_diffs_, wave2);
+
+    float scale1 = 1.0f / ((voices1 >> 1) + 1);
+    float scale2 = 1.0f / ((voices2 >> 1) + 1);
 
     int i = 0;
     if (input(kReset)->source->triggered) {
       int trigger_offset = input(kReset)->source->trigger_offset;
       for (; i < trigger_offset; ++i)
-        tick(i, wave1, wave2, voices1, voices2);
+        tick(i, voices1, voices2, scale1, scale2);
 
       reset();
     }
     for (; i < buffer_size_; ++i)
-      tick(i, wave1, wave2, voices1, voices2);
+      tick(i, voices1, voices2, scale1, scale2);
   }
 } // namespace mopo

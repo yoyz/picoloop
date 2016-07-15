@@ -1,4 +1,4 @@
-/* Copyright 2013-2015 Matt Tytel
+/* Copyright 2013-2016 Matt Tytel
  *
  * mopo is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,12 +31,44 @@ namespace mopotwytchsynth {
   }
 
   void SmoothValue::process() {
+    if (value_ == target_value_ && value_ == output()->buffer[0] &&
+        value_ == output()->buffer[buffer_size_ - 1]) {
+      return;
+    }
     for (int i = 0; i < buffer_size_; ++i)
       tick(i);
   }
 
   inline void SmoothValue::tick(int i) {
     value_ = INTERPOLATE(value_, target_value_, decay_);
-    output(0)->buffer[i] = value_;
+    output()->buffer[i] = value_;
   }
+
+  namespace cr {
+
+    SmoothValue::SmoothValue(mopo_float value) :
+        Value(value), target_value_(value), decay_(1.0), num_samples_(1) {
+      setControlRate(true);
+    }
+
+    void SmoothValue::setSampleRate(int sample_rate) {
+      Value::setSampleRate(sample_rate);
+      computeDecay();
+    }
+
+    void SmoothValue::setBufferSize(int buffer_size) {
+      Value::setBufferSize(buffer_size);
+      num_samples_ = buffer_size;
+      computeDecay();
+    }
+
+    void SmoothValue::process() {
+      value_ = INTERPOLATE(value_, target_value_, decay_);
+      output()->buffer[0] = value_;
+    }
+
+    void SmoothValue::computeDecay() {
+      decay_ = 1 - exp(-2.0 * TWYTCH_PI * SMOOTH_CUTOFF * num_samples_ / sample_rate_);
+    }
+  } // namespace cr
 } // namespace mopo

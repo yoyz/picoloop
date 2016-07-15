@@ -1,4 +1,4 @@
-/* Copyright 2013-2015 Matt Tytel
+/* Copyright 2013-2016 Matt Tytel
  *
  * mopo is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,13 @@ namespace mopotwytchsynth {
   }
 
   void ReverbAllPass::process() {
+    mopo_float* dest = output()->buffer;
+
+    const mopo_float* audio_buffer = input(kAudio)->source->buffer;
+    const mopo_float* feedback_buffer = input(kFeedback)->source->buffer;
+    int period = input(kSampleDelay)->at(0);
+
     for (int i = 0; i < buffer_size_; ++i)
-      tick(i);
+      tick(i, dest, period, audio_buffer, feedback_buffer);
   }
 } // namespace mopo

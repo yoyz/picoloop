@@ -1,4 +1,4 @@
-/* Copyright 2013-2015 Matt Tytel
+/* Copyright 2013-2016 Matt Tytel
  *
  * helm is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,23 +16,38 @@
 
 #pragma once
 #ifndef TWYTCH_NOISE_OSCILLATOR_H
-#define NOISE_OSCILLATOR_H
+#define TWYTCH_NOISE_OSCILLATOR_H
 
 #include "twytch_mopo.h"
 
 namespace mopotwytchsynth {
 
+  const mopo_float NOISE_CONSTANT = 9.19191919191919191919191919191919191919191919;
+  const int NOISE_INT_CONSTANT = NOISE_CONSTANT;
+
   class NoiseOscillator : public Processor {
     public:
+      enum Inputs {
+        kReset,
+        kNumInputs
+      };
+
       NoiseOscillator();
 
       virtual void process();
       virtual Processor* clone() const { return new NoiseOscillator(*this); }
 
     protected:
-      void tick(int i) {
-        output()->buffer[i] = Wave::whitenoise();
+      inline void tick(int i) {
+        current_noise_value_ *= current_noise_value_;
+        current_noise_value_ = current_noise_value_ - int(current_noise_value_);
+
+        output()->buffer[i] = 2.0 * current_noise_value_ - 1.0;
+
+        current_noise_value_ += NOISE_INT_CONSTANT;
       }
+
+      mopo_float current_noise_value_;
   };
 } // namespace mopo
 
