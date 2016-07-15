@@ -65,15 +65,22 @@ int AudioDriver::openAudio()
     else
       {
 	std::cout << "\nOpening audio devices\n";
-	dac.openStream( &rtAudioOutputParams, 
-			NULL, 
-			FORMAT, 
-			DEFAULTFREQ, 
-			&bufferFrames, 
-			internal_callback,
-			//&this->callback,
-			(void *)userdata,
-			&rtAudioStreamOptions );
+	try {
+	  dac.openStream( &rtAudioOutputParams, 
+			  NULL, 
+			  FORMAT, 
+			  DEFAULTFREQ, 
+			  &bufferFrames, 
+			  internal_callback,
+			  //&this->callback,
+			  (void *)userdata,
+			  &rtAudioStreamOptions );
+	}
+	catch ( RtAudioError& e ) 
+	  {
+	    e.printMessage();
+	    exit( 1 );
+	  }
 	
 	//dac.startStream();  
 

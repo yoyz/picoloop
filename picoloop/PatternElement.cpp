@@ -9,7 +9,7 @@ using namespace std;
 
 PatternElement::PatternElement()
 {
-  DPRINTF("PatternElement::PatternElement()");
+  //DPRINTF("PatternElement::PatternElement()");
   this->init();
 }
 
