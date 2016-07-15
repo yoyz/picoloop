@@ -74,7 +74,8 @@ int AudioDriver::openAudio()
 			  internal_callback,
 			  //&this->callback,
 			  (void *)userdata,
-			  &rtAudioStreamOptions );
+			  &rtAudioStreamOptions,
+			  NULL);
 	}
 	catch ( RtAudioError& e ) 
 	  {
