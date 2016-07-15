@@ -1,4 +1,4 @@
-  /* Copyright 2013-2015 Matt Tytel
+/* Copyright 2013-2016 Matt Tytel
  *
  * mopo is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,14 +42,14 @@ namespace mopotwytchsynth {
 
   inline void LinearSlope::tick(int i) {
     mopo_float target = input(kTarget)->at(i);
-    if (utils::closeToZero(input(kRunSeconds)->at(i)))
+    if (twytchutils::closeToZero(input(kRunSeconds)->at(i)))
       last_value_ = input(kTarget)->at(i);
 
     mopo_float increment = 1.0 / (sample_rate_ * input(kRunSeconds)->at(0));
     if (target <= last_value_)
-      last_value_ = CLAMP(last_value_ - increment, target, last_value_);
+      last_value_ = twytchutils::clamp(last_value_ - increment, target, last_value_);
     else
-      last_value_ = CLAMP(last_value_ + increment, last_value_, target);
+      last_value_ = twytchutils::clamp(last_value_ + increment, last_value_, target);
     output(0)->buffer[i] = last_value_;
   }
 } // namespace mopo

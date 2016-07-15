@@ -1,4 +1,4 @@
-/* Copyright 2013-2015 Matt Tytel
+/* Copyright 2013-2016 Matt Tytel
  *
  * mopo is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 
 #pragma once
 #ifndef TWYTCH_MONO_PANNER_H
-#define MONO_PANNER_H
+#define TWYTCH_MONO_PANNER_H
 
 #include "twytch_processor.h"
 
@@ -42,8 +42,11 @@ namespace mopotwytchsynth {
       MonoPanner();
       virtual ~MonoPanner() { }
 
-      virtual Processor* clone() const { return new MonoPanner(*this); }
-      virtual void process();
+      virtual Processor* clone() const override {
+        return new MonoPanner(*this);
+      }
+
+      virtual void process() override;
   };
 } // namespace mopo
 

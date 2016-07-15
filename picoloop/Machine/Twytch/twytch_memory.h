@@ -1,4 +1,4 @@
-/* Copyright 2013-2015 Matt Tytel
+/* Copyright 2013-2016 Matt Tytel
  *
  * mopo is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 
 #pragma once
 #ifndef TWYTCH_MEMORY_H
-#define MEMORY_H
+#define TWYTCH_MEMORY_H
 
 #include "twytch_common.h"
 
@@ -42,15 +42,18 @@ namespace mopotwytchsynth {
       }
 
       mopo_float get(mopo_float past) const {
-        mopo_float float_index;
-        mopo_float sample_fraction = modf(past, &float_index);
-        int index = std::max<int>(float_index, 1);
+        TWYTCH_MOPO_ASSERT(past >= 0.0);
+        int index = std::max<int>(past, 1);
+        mopo_float sample_fraction = past - index;
 
-        // TODO(mtytel): Quadratic or all-pass interpolation is better.
         mopo_float from = getIndex(index - 1);
         mopo_float to = getIndex(index);
         return INTERPOLATE(from, to, sample_fraction);
       }
+
+      unsigned int getOffset() const { return offset_; }
+
+      void setOffset(int offset) { offset_ = offset; }
 
       const mopo_float* getPointer(int past) const {
         return memory_ + ((offset_ - past) & bitmask_);
@@ -58,10 +61,6 @@ namespace mopotwytchsynth {
 
       const mopo_float* getBuffer() const {
         return memory_;
-      }
-
-      int getOffset() const {
-        return offset_;
       }
 
       int getSize() const {

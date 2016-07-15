@@ -1,4 +1,4 @@
-/* Copyright 2013-2015 Matt Tytel
+/* Copyright 2013-2016 Matt Tytel
  *
  * mopo is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 
 #pragma once
 #ifndef TWYTCH_RESONANCE_LOOKUP_H
-#define RESONANCE_LOOKUP_H
+#define TWYTCH_RESONANCE_LOOKUP_H
 
 #include "twytch_common.h"
 #include "twytch_utils.h"
@@ -33,12 +33,12 @@ namespace mopotwytchsynth {
     public:
       ResonanceLookupSingleton() {
         for (int i = 0; i < Q_RESOLUTION + 2; ++i) {
-          q_lookup_[i] = utils::magnitudeToQ((1.0 * i) / Q_RESOLUTION);
+          q_lookup_[i] = twytchutils::magnitudeToQ((1.0 * i) / Q_RESOLUTION);
         }
       }
 
       mopo_float qLookup(mopo_float magnitude) const {
-        mopo_float index = Q_RESOLUTION * CLAMP(magnitude, 0.0, 1.0);
+        mopo_float index = Q_RESOLUTION * twytchutils::clamp(magnitude, 0.0, 1.0);
         int int_index = index;
         mopo_float fraction = index - int_index;
 

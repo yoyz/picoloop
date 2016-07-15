@@ -1,4 +1,4 @@
-/* Copyright 2013-2015 Matt Tytel
+/* Copyright 2013-2016 Matt Tytel
  *
  * mopo is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,8 @@
   #define USE_APPLE_ACCELERATE
 #endif
 
+#include <iostream>
+
 namespace mopotwytchsynth {
 
   void Operator::process() {
@@ -34,9 +36,13 @@ namespace mopotwytchsynth {
                 &min_, &max_,
                 output()->buffer, 1, buffer_size_);
 #else
+    mopo_float* dest = output()->buffer;
+    const mopo_float* source = input()->source->buffer;
+
     for (int i = 0; i < buffer_size_; ++i)
-      tick(i);
+      bufferTick(dest, source, i);
 #endif
+    processTriggers();
   }
 
   void Negate::process() {
@@ -47,6 +53,7 @@ namespace mopotwytchsynth {
     for (int i = 0; i < buffer_size_; ++i)
       tick(i);
 #endif
+    processTriggers();
   }
 
   void LinearScale::process() {
@@ -57,6 +64,7 @@ namespace mopotwytchsynth {
     for (int i = 0; i < buffer_size_; ++i)
       tick(i);
 #endif
+    processTriggers();
   }
 
   void Add::process() {
@@ -65,9 +73,15 @@ namespace mopotwytchsynth {
                input(1)->source->buffer, 1,
                output()->buffer, 1, buffer_size_);
 #else
+    mopo_float* dest = output()->buffer;
+    const mopo_float* source_left = input(0)->source->buffer;
+    const mopo_float* source_right = input(1)->source->buffer;
+
+#pragma clang loop vectorize(enable) interleave(enable)
     for (int i = 0; i < buffer_size_; ++i)
-      tick(i);
+      bufferTick(dest, source_left, source_right, i);
 #endif
+    processTriggers();
   }
 
   void Subtract::process() {
@@ -79,6 +93,7 @@ namespace mopotwytchsynth {
     for (int i = 0; i < buffer_size_; ++i)
       tick(i);
 #endif
+    processTriggers();
   }
 
   void Multiply::process() {
@@ -87,9 +102,15 @@ namespace mopotwytchsynth {
                input(1)->source->buffer, 1,
                output()->buffer, 1, buffer_size_);
 #else
+    mopo_float* dest = output()->buffer;
+    const mopo_float* source_left = input(0)->source->buffer;
+    const mopo_float* source_right = input(1)->source->buffer;
+
+#pragma clang loop vectorize(enable) interleave(enable)
     for (int i = 0; i < buffer_size_; ++i)
-      tick(i);
+      bufferTick(dest, source_left, source_right, i);
 #endif
+    processTriggers();
   }
 
   void Interpolate::process() {
@@ -103,32 +124,57 @@ namespace mopotwytchsynth {
                output()->buffer, 1,
                output()->buffer, 1, buffer_size_);
 #else
+#define INTERPOLATE(s, e, f) ((s) + (f) * ((e) - (s)))
+    mopo_float* dest = output()->buffer;
+    const mopo_float* from = input(kFrom)->source->buffer;
+    const mopo_float* to = input(kTo)->source->buffer;
+    const mopo_float* fractional = input(kFractional)->source->buffer;
+
+#pragma clang loop vectorize(enable) interleave(enable)
     for (int i = 0; i < buffer_size_; ++i)
-      tick(i);
+      bufferTick(dest, from, to, fractional, i);
 #endif
+    processTriggers();
   }
 
   void BilinearInterpolate::process() {
+#pragma clang loop vectorize(enable) interleave(enable)
     for (int i = 0; i < buffer_size_; ++i)
       tick(i);
+    processTriggers();
   }
 
   void VariableAdd::process() {
-    memset(output()->buffer, 0, buffer_size_ * sizeof(mopo_float));
+    mopo_float* dest = output()->buffer;
 
-    int num_inputs = inputs_->size();
-    for (int i = 0; i < num_inputs; ++i) {
-      if (input(i)->source != &Processor::null_source_) {
+    if (isControlRate()) {
+      dest[0] = 0.0;
+
+      int num_inputs = inputs_->size();
+      for (int i = 0; i < num_inputs; ++i)
+        dest[0] += input(i)->at(0);
+    }
+    else {
+      memset(dest, 0, buffer_size_ * sizeof(mopo_float));
+
+      int num_inputs = inputs_->size();
+      for (int i = 0; i < num_inputs; ++i) {
+        if (input(i)->source != &Processor::null_source_) {
 #ifdef USE_APPLE_ACCELERATE
-        vDSP_vaddD(input(i)->source->buffer, 1,
-                   output()->buffer, 1,
-                   output()->buffer, 1, buffer_size_);
+          vDSP_vaddD(input(i)->source->buffer, 1,
+                     output()->buffer, 1,
+                     output()->buffer, 1, buffer_size_);
 #else
-        for (int s = 0; s < buffer_size_; ++s)
-          output()->buffer[s] += input(i)->at(s);
+          const mopo_float* source = input(i)->source->buffer;
+
+#pragma clang loop vectorize(enable) interleave(enable)
+          for (int s = 0; s < buffer_size_; ++s)
+            dest[s] += source[s];
 #endif
+        }
       }
     }
+    processTriggers();
   }
 
   void FrequencyToPhase::process() {
@@ -140,6 +186,7 @@ namespace mopotwytchsynth {
     for (int i = 0; i < buffer_size_; ++i)
       tick(i);
 #endif
+    processTriggers();
   }
 
   void FrequencyToSamples::process() {
@@ -151,6 +198,7 @@ namespace mopotwytchsynth {
     for (int i = 0; i < buffer_size_; ++i)
       tick(i);
 #endif
+    processTriggers();
   }
 
   void TimeToSamples::process() {
@@ -162,13 +210,19 @@ namespace mopotwytchsynth {
     for (int i = 0; i < buffer_size_; ++i)
       tick(i);
 #endif
+    processTriggers();
   }
 
   void SampleAndHoldBuffer::process() {
-    if (input()->source->buffer[0] == output()->buffer[0])
+    mopo_float value = input()->source->buffer[0];
+    mopo_float* dest = output()->buffer;
+    if (value == dest[0])
       return;
+
+#pragma clang loop vectorize(enable) interleave(enable)
     for (int i = 0; i < buffer_size_; ++i)
-      tick(i);
+      bufferTick(dest, value, i);
+    processTriggers();
   }
 
   void LinearSmoothBuffer::process() {
@@ -176,7 +230,6 @@ namespace mopotwytchsynth {
 
     if (input(kTrigger)->source->triggered) {
       int trigger_samples = input(kTrigger)->source->trigger_offset;
-
       int i = 0;
       for (; i < trigger_samples; ++i)
         output()->buffer[i] = last_value_;
@@ -186,18 +239,22 @@ namespace mopotwytchsynth {
       for (; i < buffer_size_; ++i)
         output()->buffer[i] = last_value_;
     }
-    else if (new_value == output()->buffer[0] && new_value == output()->buffer[buffer_size_ - 1])
+    else if (last_value_ == new_value &&
+             new_value == output()->buffer[0] &&
+             new_value == output()->buffer[buffer_size_ - 1] &&
+             (buffer_size_ <= 1 || new_value == output()->buffer[buffer_size_ - 2])) {
       return;
+    }
     else {
       mopo_float inc = (new_value - last_value_) / buffer_size_;
 
-      int i = 0;
-      for (; i < buffer_size_; ++i) {
+      for (int i = 0; i < buffer_size_; ++i) {
         last_value_ += inc;
         output()->buffer[i] = last_value_;
       }
 
       last_value_ = new_value;
     }
+    processTriggers();
   }
 } // namespace mopo

@@ -1,4 +1,4 @@
-/* Copyright 2013-2015 Matt Tytel
+/* Copyright 2013-2016 Matt Tytel
  *
  * mopo is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 
 #pragma once
 #ifndef TWYTCH_REVERB_TUNING_H
-#define REVERB_TUNING_H
+#define TWYTCH_REVERB_TUNING_H
 
 namespace mopotwytchsynth {
 
@@ -24,16 +24,16 @@ namespace mopotwytchsynth {
   const int NUM_COMB = 8;
   const int NUM_ALL_PASS = 4;
   const mopo_float FIXED_GAIN = 0.015f;
-  const float scalewet = 3;
-  const float scaledry    = 2;
-  const float scaledamp    = 0.4f;
-  const float scaleroom    = 0.28f;
-  const float offsetroom    = 0.7f;
-  const float initialroom    = 0.5f;
-  const float initialdamp    = 0.5f;
-  const float initialwet    = 1/scalewet;
-  const float initialdry    = 0;
-  const float initialwidth  = 1;
+  const float scalewet = 3.0f;
+  const float scaledry = 2.0f;
+  const float scaledamp = 0.4f;
+  const float scaleroom = 0.28f;
+  const float offsetroom = 0.7f;
+  const float initialroom = 0.5f;
+  const float initialdamp = 0.5f;
+  const float initialwet = 1.0f / scalewet;
+  const float initialdry = 0.0f;
+  const float initialwidth = 1.0f;
   const mopo_float STEREO_SPREAD = 0.00052154195;
 
   const mopo_float COMB_TUNINGS[NUM_COMB] = {

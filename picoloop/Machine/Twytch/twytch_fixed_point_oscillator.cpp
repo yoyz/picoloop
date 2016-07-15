@@ -1,4 +1,4 @@
-/* Copyright 2013-2015 Matt Tytel
+/* Copyright 2013-2016 Matt Tytel
  *
  * helm is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,24 +18,48 @@
 
 namespace mopotwytchsynth {
 
-  FixedPointOscillator::FixedPointOscillator() : Processor(kNumInputs, 1) {
-    phase_ = 0;
-  }
+  const mopo_float FixedPointOscillator::SCALE_OUT = 0.5 / (FixedPointWaveLookup::SCALE * INT_MAX);
+
+  FixedPointOscillator::FixedPointOscillator() : Processor(kNumInputs, 1), phase_(0) { }
 
   void FixedPointOscillator::process() {
-    int waveform = static_cast<int>(input(kWaveform)->source->buffer[0] + 0.5);
+    int phase_inc = UINT_MAX * input(kPhaseInc)->source->buffer[0];
+    mopo_float shuffle = twytchutils::clamp(1.0 - input(kShuffle)->source->buffer[0], 0.0, 1.0);
+    mopo_float* dest = output()->buffer;
 
-    waveform = CLAMP(waveform, 0, FixedPointWaveLookup::kWhiteNoise - 1);
+    unsigned int shuffle_index = INT_MAX * shuffle;
+
+    int waveform = static_cast<int>(input(kWaveform)->source->buffer[0] + 0.5);
+    waveform = mopotwytchsynth::twytchutils::clamp(waveform, 0, FixedPointWaveLookup::kWhiteNoise - 1);
+    int* wave_buffer = FixedPointWave::getBuffer(waveform, 2.0 * phase_inc);
+
+    mopo_float first_adjust = bool(shuffle) * 2.0 / shuffle;
+    mopo_float second_adjust = 1.0 / (1.0 - 0.5 * shuffle);
+
+    if (input(kReset)->source->triggered)
+      phase_ = 0;
 
     int i = 0;
-    if (input(kReset)->source->triggered) {
-      int trigger_offset = input(kReset)->source->trigger_offset;
-      for (; i < trigger_offset; ++i)
-        tick(i, waveform);
+    unsigned int buffer_size = buffer_size_;
+    unsigned int current_phase = 0;
+    while (i < buffer_size) {
+      if (phase_ < shuffle_index) {
+        unsigned int max_samples = (shuffle_index - phase_) / phase_inc + 1;
+        unsigned int samples = std::min(buffer_size, i + max_samples);
+        for (; i < samples; ++i) {
+          phase_ += phase_inc;
+          current_phase = phase_ * first_adjust;
+          dest[i] = SCALE_OUT * wave_buffer[FixedPointWave::getIndex(current_phase)];
+        }
+      }
 
-      phase_ = 0;
+      unsigned int max_samples = -phase_ / phase_inc + 1;
+      unsigned int samples = std::min(buffer_size, i + max_samples);
+      for (; i < samples; ++i) {
+        phase_ += phase_inc;
+        current_phase = (phase_ - shuffle_index) * second_adjust;
+        dest[i] = SCALE_OUT * wave_buffer[FixedPointWave::getIndex(current_phase)];
+      }
     }
-    for (; i < buffer_size_; ++i)
-      tick(i, waveform);
   }
 } // namespace mopo

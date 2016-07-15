@@ -1,4 +1,4 @@
-/* Copyright 2013-2015 Matt Tytel
+/* Copyright 2013-2016 Matt Tytel
  *
  * mopo is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,17 +16,13 @@
 
 #pragma once
 #ifndef TWYTCH_FILTER_H
-#define FILTER_H
+#define TWYTCH_FILTER_H
 
 #include "twytch_processor.h"
 
 #include <complex>
 
 namespace mopotwytchsynth {
-
-  namespace {
-    const mopotwytchsynth::mopo_float COEFFICIENT_FILTERING = 0.99;
-  } // namespace
 
   // Implements RBJ biquad filters of different types.
   class Filter : public Processor {
@@ -50,6 +46,7 @@ namespace mopotwytchsynth {
         kBandShelf,
         kAllPass,
         kNotch,
+        kGainedBandPass,
         kNumTypes,
       };
 
@@ -72,131 +69,10 @@ namespace mopotwytchsynth {
       void computeCoefficients(Type type,
                                mopo_float cutoff,
                                mopo_float resonance,
-                               mopo_float gain) {
-        TWYTCH_MOPO_ASSERT(resonance > 0.0);
-        TWYTCH_MOPO_ASSERT(cutoff > 0.0);
-        TWYTCH_MOPO_ASSERT(gain >= 0.0);
+                               mopo_float gain);
 
-        mopo_float phase_delta = 2.0 * TWYTCH_PI * cutoff / sample_rate_;
-        mopo_float real_delta = cos(phase_delta);
-        mopo_float imag_delta = sin(phase_delta);
-
-        switch(type) {
-          case kLowPass: {
-            mopo_float alpha = imag_delta / (2.0 * resonance);
-            mopo_float norm = 1.0 + alpha;
-            target_in_0_ = (1.0 - real_delta) / (2.0 * norm);
-            target_in_1_ = (1.0 - real_delta) / norm;
-            target_in_2_ = target_in_0_;
-            target_out_1_ = -2.0 * real_delta / norm;
-            target_out_2_ = (1.0 - alpha) / norm;
-            break;
-          }
-          case kHighPass: {
-            mopo_float alpha = imag_delta / (2.0 * resonance);
-            mopo_float norm = 1.0 + alpha;
-            target_in_0_ = (1.0 + real_delta) / (2.0 * norm);
-            target_in_1_ = -(1.0 + real_delta) / norm;
-            target_in_2_ = target_in_0_;
-            target_out_1_ = -2.0 * real_delta / norm;
-            target_out_2_ = (1.0 - alpha) / norm;
-            break;
-          }
-          case kBandPass: {
-            mopo_float alpha = imag_delta / (2.0 * resonance);
-            mopo_float norm = 1.0 + alpha;
-            target_in_0_ = (imag_delta / 2.0) / norm;
-            target_in_1_ = 0;
-            target_in_2_ = -target_in_0_;
-            target_out_1_ = -2.0 * real_delta / norm;
-            target_out_2_ = (1.0 - alpha) / norm;
-            break;
-          }
-          case kLowShelf: {
-            mopo_float alpha = (imag_delta / 2.0) *
-                               std::sqrt((gain + 1.0 / gain) *
-                                         (1.0 / resonance - 1) + 2.0);
-            mopo_float sq = 2 * std::sqrt(gain) * alpha;
-            mopo_float norm = (gain + 1) + (gain - 1) * real_delta + sq;
-
-            target_in_0_ = ((gain + 1) - (gain - 1) * real_delta + sq) *
-                           (gain / norm);
-            target_in_1_ = 2 * ((gain - 1) - (gain + 1) * real_delta) *
-                           (gain / norm);
-            target_in_2_ = ((gain + 1) - (gain - 1) * real_delta - sq) *
-                           (gain / norm);
-            target_out_1_ = -2 * ((gain - 1) + (gain + 1) * real_delta) / norm;
-            target_out_2_ = ((gain + 1) + (gain - 1) * real_delta - sq) / norm;
-            break;
-          }
-          case kHighShelf: {
-            mopo_float alpha = (imag_delta / 2.0) *
-                               std::sqrt((gain + 1.0 / gain) *
-                                         (1.0 / resonance - 1) + 2.0);
-            mopo_float sq = 2 * std::sqrt(gain) * alpha;
-            mopo_float norm = (gain + 1) - (gain - 1) * real_delta + sq;
-
-            target_in_0_ = ((gain + 1) + (gain - 1) * real_delta + sq) *
-                           (gain / norm);
-            target_in_1_ = -2 * ((gain - 1) + (gain + 1) * real_delta) *
-                           (gain / norm);
-            target_in_2_ = ((gain + 1) + (gain - 1) * real_delta - sq) *
-                           (gain / norm);
-            target_out_1_ = 2 * ((gain - 1) - (gain + 1) * real_delta) / norm;
-            target_out_2_ = ((gain + 1) - (gain - 1) * real_delta - sq) / norm;
-            break;
-          }
-          case kBandShelf: {
-            mopo_float alpha = imag_delta *
-                               sinh(log(2.0) * resonance * phase_delta /
-                                    (2.0 * imag_delta));
-            mopo_float norm = 1.0 + alpha / gain;
-
-            target_in_0_ = (1.0 + alpha * gain) / norm;
-            target_in_1_ = -2.0 * real_delta / norm;
-            target_in_2_ = (1.0 - alpha * gain) / norm;
-            target_out_1_ = -2.0 * real_delta / norm;
-            target_out_2_ = (1.0 - alpha / gain) / norm;
-            break;
-          }
-          case kAllPass: {
-            mopo_float alpha = imag_delta / (2.0 * resonance);
-            mopo_float norm = 1.0 + alpha;
-            target_in_0_ = (1.0 - alpha) / norm;
-            target_in_1_ = -2.0 * real_delta / norm;
-            target_in_2_ = 1.0;
-            target_out_1_ = -2.0 * real_delta / norm;
-            target_out_2_ = (1.0 - alpha) / norm;
-            break;
-          }
-          case kNotch: {
-            mopo_float alpha = imag_delta / (2.0 * resonance);
-            mopo_float norm = 1.0 + alpha;
-            target_in_0_ = 1.0 / norm;
-            target_in_1_ = -2.0 * real_delta / norm;
-            target_in_2_ = target_in_0_;
-            target_out_1_ = target_in_1_;
-            target_out_2_ = (1.0 - alpha) / norm;
-            break;
-          }
-          default: {
-            target_in_0_ = 1.0;
-            target_in_2_ = target_in_1_ = target_out_2_ = target_out_1_ = 0.0;
-          }
-        }
-
-        current_cutoff_ = cutoff;
-        current_resonance_ = resonance;
-      }
-
-      void tick(int i) {
-        mopo_float audio = input(kAudio)->at(i);
-        in_0_ = INTERPOLATE(target_in_0_, in_0_, COEFFICIENT_FILTERING);
-        in_1_ = INTERPOLATE(target_in_1_, in_1_, COEFFICIENT_FILTERING);
-        in_2_ = INTERPOLATE(target_in_2_, in_2_, COEFFICIENT_FILTERING);
-        out_1_ = INTERPOLATE(target_out_1_, out_1_, COEFFICIENT_FILTERING);
-        out_2_ = INTERPOLATE(target_out_2_, out_2_, COEFFICIENT_FILTERING);
-
+      inline void tick(int i, mopo_float* dest, const mopo_float* audio_buffer) {
+        mopo_float audio = audio_buffer[i];
         mopo_float out = audio * in_0_ +
                          past_in_1_ * in_1_ +
                          past_in_2_ * in_2_ -
@@ -206,7 +82,7 @@ namespace mopotwytchsynth {
         past_in_1_ = audio;
         past_out_2_ = past_out_1_;
         past_out_1_ = out;
-        output(0)->buffer[i] = out;
+        dest[i] = out;
       }
 
     private:

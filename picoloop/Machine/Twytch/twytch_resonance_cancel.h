@@ -1,4 +1,4 @@
-/* Copyright 2013-2015 Matt Tytel
+/* Copyright 2013-2016 Matt Tytel
  *
  * mopo is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 
 #pragma once
 #ifndef TWYTCH_RESONANCE_CANCEL_H
-#define RESONANCE_CANCEL_H
+#define TWYTCH_RESONANCE_CANCEL_H
 
 #include "twytch_processor.h"
 

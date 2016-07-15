@@ -1,4 +1,4 @@
-/* Copyright 2013-2015 Matt Tytel
+/* Copyright 2013-2016 Matt Tytel
  *
  * mopo is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,9 +16,11 @@
 
 #pragma once
 #ifndef TWYTCH_FORMANT_MANAGER_H
-#define FORMANT_MANAGER_H
+#define TWYTCH_FORMANT_MANAGER_H
 
 #include "twytch_processor_router.h"
+
+#include <complex>
 
 namespace mopotwytchsynth {
 
@@ -34,10 +36,22 @@ namespace mopotwytchsynth {
 
       FormantManager(int num_formants = 4);
 
-      virtual Processor* clone() const { return new FormantManager(*this); }
+      virtual Processor* clone() const override {
+        return new FormantManager(*this);
+      }
 
       Filter* getFormant(int index = 0) { return formants_[index]; }
       int num_formants() { return formants_.size(); }
+
+      std::complex<mopo_float> getResponse(mopo_float frequency);
+
+      mopo_float getAmplitudeResponse(mopo_float frequency) {
+        return std::abs(getResponse(frequency));
+      }
+
+      mopo_float getPhaseResponse(mopo_float frequency) {
+        return std::arg(getResponse(frequency));
+      }
 
     protected:
       std::vector<Filter*> formants_;

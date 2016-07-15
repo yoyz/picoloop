@@ -1,4 +1,4 @@
-/* Copyright 2013-2015 Matt Tytel
+/* Copyright 2013-2016 Matt Tytel
  *
  * mopo is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,10 +33,10 @@ namespace mopotwytchsynth {
     for (int i = 0; i < buffer_size_; ++i) {
       mopo_float audio = input(kAudio)->at(i);
       mopo_float pan = input(kPan)->at(i);
-      mopo_float left_gain = Wave::fullsin(modf(pan + LEFT_ROTATION,
-                                                &integral));
-      mopo_float right_gain = Wave::fullsin(modf(pan + RIGHT_ROTATION,
-                                                 &integral));
+      mopo_float left_gain = Wave::fullsin(twytchutils::mod(pan + LEFT_ROTATION,
+                                                      &integral));
+      mopo_float right_gain = Wave::fullsin(twytchutils::mod(pan + RIGHT_ROTATION,
+                                                       &integral));
 
       output(kLeft)->buffer[i] = audio * left_gain;
       output(kRight)->buffer[i] = audio * right_gain;

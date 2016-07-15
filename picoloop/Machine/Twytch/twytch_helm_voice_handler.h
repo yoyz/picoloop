@@ -1,4 +1,4 @@
-/* Copyright 2013-2015 Matt Tytel
+/* Copyright 2013-2016 Matt Tytel
  *
  * helm is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 
 #pragma once
 #ifndef TWYTCH_HELM_VOICE_HANDLER_H
-#define HELM_VOICE_HANDLER_H
+#define TWYTCH_HELM_VOICE_HANDLER_H
 
 #include "twytch_mopo.h"
 #include "twytch_helm_common.h"
@@ -37,6 +37,7 @@ namespace mopotwytchsynth {
   class StepGenerator;
   class TriggerCombiner;
   class HelmOscillators;
+  class Switch;
 
   // The voice handler duplicates processors to produce polyphony.
   // Everything in the synthesizer we want per-voice instances of must be
@@ -48,13 +49,21 @@ namespace mopotwytchsynth {
 
       void init() override;
 
-      void setModWheel(mopo_float value);
-      void setPitchWheel(mopo_float value);
+      void process() override;
+      void noteOn(mopo_float note, mopo_float velocity = 1,
+                  int sample = 0, int channel = 0) override;
+      VoiceEvent noteOff(mopo_float note, int sample = 0) override;
+      void setModWheel(mopo_float value, int channel = 0);
+      void setPitchWheel(mopo_float value, int channel = 0);
+      Output* note_retrigger() { return &note_retriggered_; }
+
+      // HelmModule
+      output_map getPolyModulations() override;
 
     private:
       // Create the portamento, legato, amplifier envelope and other processors
       // that effect how voices start and turn into other notes.
-      void createArticulation(Output* note, Output* velocity, Output* trigger);
+      void createArticulation(Output* note, Output* last_note, Output* velocity, Output* trigger);
 
       // Create the oscillators and hook up frequency controls.
       void createOscillators(Output* frequency, Output* reset);
@@ -63,24 +72,34 @@ namespace mopotwytchsynth {
       void createModulators(Output* reset);
 
       // Create the filter and filter envelope.
-      void createFilter(Output* audio, Output* keytrack, Output* reset, Output* note_event);
+      void createFilter(Output* audio, Output* keytrack, Output* reset);
+
+      void setupPolyModulationReadouts();
 
       Processor* beats_per_second_;
 
-      Add* note_from_center_;
-      SmoothValue* mod_wheel_amount_;
-      SmoothValue* pitch_wheel_amount_;
-      LinearSlope* current_frequency_;
+      Processor* note_from_center_;
+      Switch* choose_pitch_wheel_;
+      Value* mod_wheel_amounts_[mopotwytchsynth::NUM_MIDI_CHANNELS];
+      Value* pitch_wheel_amounts_[mopotwytchsynth::NUM_MIDI_CHANNELS];
+      Processor* current_frequency_;
       Envelope* amplitude_envelope_;
       Multiply* amplitude_;
       SimpleDelay* osc_feedback_;
 
+      TriggerCombiner* env_trigger_;
+      Envelope* extra_envelope_;
+
+      Value* legato_;
       Distortion* distorted_filter_;
       FormantManager* formant_filter_;
       Envelope* filter_envelope_;
       BypassRouter* formant_container_;
+      Output note_retriggered_;
 
       Multiply* output_;
+
+      output_map poly_readouts_;
   };
 } // namespace mopo
 

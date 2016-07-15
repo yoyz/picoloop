@@ -1,4 +1,4 @@
-/* Copyright 2013-2015 Matt Tytel
+/* Copyright 2013-2016 Matt Tytel
  *
  * mopo is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,11 @@
 
 #include "twytch_envelope.h"
 
+#include "twytch_sample_decay_lookup.h"
+
 #include <cmath>
+
+#define ATTACK_DONE 0.999
 
 namespace mopotwytchsynth {
 
@@ -41,59 +45,93 @@ namespace mopotwytchsynth {
       state_ = kAttacking;
       current_value_ = 0.0;
     }
+    else if (event == kVoiceKill) {
+      state_ = kKilling;
+      next_life_state_ = kReleasing;
+    }
   }
 
   void Envelope::process() {
     kill_decrement_ = 1.0 / (VOICE_KILL_TIME * sample_rate_);
     output(kFinished)->clearTrigger();
-    // Only update decay and release rate once per buffer.
+
+    // Only update rates once per buffer.
+    mopo_float attack = input(kAttack)->at(0);
+    mopo_float attack_increment = bool(attack) * 1.0 / (sample_rate_ * attack);
+
     mopo_float decay_samples = sample_rate_ * input(kDecay)->at(0);
-    decay_samples = CLAMP(decay_samples, 1.0, decay_samples);
-    decay_decay_ = pow(CLOSE_ENOUGH, 1.0 / decay_samples);
+    decay_decay_ = SampleDecayLookup::sampleDecayLookup(decay_samples);
 
     mopo_float release_samples = sample_rate_ * input(kRelease)->at(0);
-    release_samples = CLAMP(release_samples, 1.0, release_samples);
-    release_decay_ = pow(CLOSE_ENOUGH, 1.0 / release_samples);
+    release_decay_ = SampleDecayLookup::sampleDecayLookup(release_samples);
+
+
+    mopo_float* out_buffer = output(kValue)->buffer;
+    mopo_float current_value = current_value_;
+
+    int trigger_offset = -1;
+    int buffer_size = buffer_size_;
+    if (input(kTrigger)->source->triggered) {
+      trigger_offset = input(kRelease)->source->trigger_offset;
+      buffer_size = trigger_offset;
+    }
 
     int i = 0;
-    if (input(kTrigger)->source->triggered) {
-      int trigger_offset = input(kRelease)->source->trigger_offset;
-
-      for (; i < trigger_offset; ++i)
-        tick(i);
-
-      trigger(input(kTrigger)->source->trigger_value, trigger_offset);
-    }
-
-    for (; i < buffer_size_; ++i)
-      tick(i);
-  }
-
-  inline void Envelope::tick(int i) {
-    if (state_ == kAttacking) {
-      if (input(kAttack)->at(i) <= 0)
-        current_value_ = 1;
-      else {
-        mopo_float change = 1.0 / (sample_rate_ * input(kAttack)->at(i));
-        current_value_ = CLAMP(current_value_ + change, 0, 1);
+    while (i < buffer_size_) {
+      if (state_ == kReleasing) {
+        for (; i < buffer_size; ++i) {
+          current_value *= release_decay_;
+          out_buffer[i] = current_value;
+        }
       }
-      if (current_value_ >= 1)
-        state_ = kDecaying;
-    }
-    else if (state_ == kDecaying) {
-      current_value_ = INTERPOLATE(input(kSustain)->at(i),
-                                   current_value_,
-                                   decay_decay_);
-    }
-    else if (state_ == kKilling) {
-      current_value_ -= kill_decrement_;
-      if (current_value_ <= 0) {
-        output(kFinished)->trigger(kVoiceReset, i);
-        state_ = next_life_state_;
+      else if (state_ == kDecaying) {
+        for (; i < buffer_size; ++i) {
+          current_value = INTERPOLATE(input(kSustain)->at(i), current_value, decay_decay_);
+          out_buffer[i] = current_value;
+        }
+      }
+      else if (state_ == kAttacking) {
+        if (attack <= 0.0) {
+          if (i < buffer_size) {
+            current_value = 1.0;
+            out_buffer[i++] = current_value;
+            state_ = kDecaying;
+          }
+        }
+        else {
+          for (; i < buffer_size; ++i) {
+            current_value = current_value + attack_increment;
+
+            if (current_value >= ATTACK_DONE) {
+              state_ = kDecaying;
+              current_value = 1.0;
+              out_buffer[i++] = current_value;
+              break;
+            }
+            out_buffer[i] = current_value;
+          }
+        }
+      }
+      else if (state_ == kKilling) {
+        for (; i < buffer_size; ++i) {
+          current_value -= kill_decrement_;
+          if (current_value <= 0) {
+            current_value = 0.0;
+            output(kFinished)->trigger(kVoiceReset, i);
+            state_ = next_life_state_;
+            out_buffer[i++] = current_value;
+            break;
+          }
+          out_buffer[i] = current_value;
+        }
+      }
+
+      if (i == trigger_offset) {
+        trigger(input(kTrigger)->source->trigger_value, trigger_offset);
+        current_value = current_value_;
+        buffer_size = buffer_size_;
       }
     }
-    else if (state_ == kReleasing)
-      current_value_ *= release_decay_;
-    output(kValue)->buffer[i] = current_value_;
+    current_value_ = current_value;
   }
 } // namespace mopo

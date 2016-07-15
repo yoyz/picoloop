@@ -1,4 +1,4 @@
-/* Copyright 2013-2015 Matt Tytel
+/* Copyright 2013-2016 Matt Tytel
  *
  * mopo is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,10 +16,11 @@
 
 #pragma once
 #ifndef TWYTCH_STUTTER_H
-#define STUTTER_H
+#define TWYTCH_STUTTER_H
 
 #include "twytch_memory.h"
 #include "twytch_processor.h"
+#include "twytch_utils.h"
 
 namespace mopotwytchsynth {
 
@@ -31,6 +32,7 @@ namespace mopotwytchsynth {
         kAudio,
         kStutterFrequency,
         kResampleFrequency,
+        kWindowSoftness,
         kReset,
         kNumInputs
       };
@@ -39,36 +41,23 @@ namespace mopotwytchsynth {
       Stutter(const Stutter& other);
       virtual ~Stutter();
 
-      virtual Processor* clone() const { return new Stutter(*this); }
-      virtual void process();
-
-      void tick(int i) {
-        offset_ -= 1.0;
-        resample_offset_ -= 1.0;
-        if (resample_offset_ <= 0.0) {
-          resampling_ = true;
-          resample_offset_ += sample_rate_ / input(kResampleFrequency)->at(i);
-          offset_ = sample_rate_ / input(kStutterFrequency)->at(i);
-        }
-        else if (offset_ <= 0.0) {
-          resampling_ = false;
-          offset_ += sample_rate_ / input(kStutterFrequency)->at(i);
-        }
-
-        if (resampling_) {
-          mopo_float audio = input(kAudio)->at(i);
-          memory_->push(audio);
-          output(0)->buffer[i] = audio;
-        }
-        else {
-          output(0)->buffer[i] = memory_->get(offset_);
-        }
-      }
+      virtual Processor* clone() const override { return new Stutter(*this); }
+      virtual void process() override;
 
     protected:
+      void startResampling(mopo_float sample_period) {
+        resampling_ = true;
+        resample_countdown_ = sample_period;
+        offset_ = 0.0;
+        memory_offset_ = 0.0;
+      }
+
       Memory* memory_;
       mopo_float offset_;
-      mopo_float resample_offset_;
+      mopo_float memory_offset_;
+      mopo_float resample_countdown_;
+      mopo_float last_softness_;
+      mopo_float last_stutter_period_;
       bool resampling_;
   };
 } // namespace mopo

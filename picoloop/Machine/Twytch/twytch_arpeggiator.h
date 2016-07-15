@@ -1,4 +1,4 @@
-/* Copyright 2013-2015 Matt Tytel
+/* Copyright 2013-2016 Matt Tytel
  *
  * mopo is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,8 +16,9 @@
 
 #pragma once
 #ifndef TWYTCH_ARPEGGIATOR_H
-#define ARPEGGIATOR_H
+#define TWYTCH_ARPEGGIATOR_H
 
+#include "twytch_note_handler.h"
 #include "twytch_processor.h"
 #include "twytch_value.h"
 
@@ -28,9 +29,7 @@
 
 namespace mopotwytchsynth {
 
-  class VoiceHandler;
-
-  class Arpeggiator : public Processor {
+  class Arpeggiator : public Processor, public NoteHandler {
     public:
       enum Pattern {
         kUp,
@@ -49,10 +48,14 @@ namespace mopotwytchsynth {
         kNumInputs
       };
 
-      Arpeggiator(VoiceHandler* voice_handler);
+      Arpeggiator(NoteHandler* note_handler);
 
-      virtual Processor* clone() const { TWYTCH_MOPO_ASSERT(false); return 0; }
-      virtual void process();
+      virtual Processor* clone() const override {
+        TWYTCH_MOPO_ASSERT(false);
+        return 0;
+      }
+
+      virtual void process() override;
 
       int getNumNotes() { return pressed_notes_.size(); }
       std::list<mopo_float> getPressedNotes();
@@ -60,16 +63,17 @@ namespace mopotwytchsynth {
       void addNoteToPatterns(mopo_float note);
       void removeNoteFromPatterns(mopo_float note);
 
-      void allNotesOff(int sample = 0);
-      void noteOn(mopo_float note, mopo_float velocity = 1, int sample = 0);
-      void noteOff(mopo_float note, int sample = 0);
+      void allNotesOff(int sample = 0) override;
+      void noteOn(mopo_float note, mopo_float velocity = 1,
+                  int sample = 0, int channel = 0) override;
+      VoiceEvent noteOff(mopo_float note, int sample = 0) override;
       void sustainOn();
       void sustainOff();
 
     private:
       Arpeggiator() : Processor(0, 0) { }
 
-      VoiceHandler* voice_handler_;
+      NoteHandler* note_handler_;
 
       bool sustain_;
       mopo_float phase_;

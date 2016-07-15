@@ -302,7 +302,8 @@ void TwytchsynthMachine::setI(int what,int val)
      }  
 
 
-   if (what==OSC12_MIX && osc12_mix!=val)             { osc12_mix=val;  TWE->getControls().at("osc_mix")->set(f_val); }
+   //if (what==OSC12_MIX && osc12_mix!=val)             { osc12_mix=val;  TWE->getControls().at("osc_mix")->set(f_val); }
+   //if (what==OSC12_MIX && osc12_mix!=val)             { osc12_mix=val;  TWE->getControls().at("osc_mix")->set(0); }
 
    if (what==VELOCITY && velocity!=val)               { velocity=val;   TWE->getControls().at("velocity_track"     )->set(abs(f_val-1)); }
 
@@ -345,7 +346,8 @@ void TwytchsynthMachine::setI(int what,int val)
        f_env2_amount=abs(abs(f_val-0.5)*2);
        TWE->getControls().at("mono_lfo_2_amplitude")->set(((f_val*2)-1)*4);
 
-       TWE->clearModulations();
+	// clearModulations disapear from 0.4 to 0.6
+        // TWE->clearModulations();
        mopotwytchsynth::ModulationConnection * connection1;
        mopotwytchsynth::ModulationConnection * connection2;
 

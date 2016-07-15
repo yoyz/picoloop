@@ -1,4 +1,4 @@
-/* Copyright 2013-2015 Matt Tytel
+/* Copyright 2013-2016 Matt Tytel
  *
  * helm is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 
 #pragma once
 #ifndef TWYTCH_HELM_COMMON_H
-#define HELM_COMMON_H
+#define TWYTCH_HELM_COMMON_H
 
 #include "twytch_mopo.h"
 #include "twytch_value.h"
@@ -26,6 +26,8 @@
 #include <string>
 
 namespace mopotwytchsynth {
+
+  class ModulationConnection;
 
   struct ValueDetails {
     enum DisplaySkew {
@@ -43,6 +45,7 @@ namespace mopotwytchsynth {
     mopo_float display_multiply;
     DisplaySkew display_skew;
     std::string display_units;
+    std::string display_name;
   } typedef ValueDetails;
 
   namespace strings {
@@ -73,6 +76,13 @@ namespace mopotwytchsynth {
       "Tempo Triplets"
     };
 
+
+    const std::string freq_retrigger_styles[] = {
+      "Free",
+      "Retrigger",
+      "Sync to Playhead"
+    };
+
     const std::string filter_types[] = {
       "low pass",
       "high pass",
@@ -95,7 +105,8 @@ namespace mopotwytchsynth {
       "3 pyramid",
       "5 pyramid",
       "9 pyramid",
-      "white noise"
+      "sample and hold",
+      "sample and glide",
     };
 
     const std::string synced_frequencies[] = {
@@ -116,9 +127,22 @@ namespace mopotwytchsynth {
 
   const mopo_float MAX_STEPS = 32;
   const int NUM_FORMANTS = 4;
+  const int NUM_CHANNELS = 2;
+  const int MEMORY_SAMPLE_RATE = 2205;
+  const int MEMORY_RESOLUTION = 52;
+  const mopo_float STUTTER_MAX_SAMPLES = 192000.0;
+  const int DEFAULT_MODULATION_CONNECTIONS = 256;
+
+  const int DEFAULT_KEYBOARD_OFFSET = 48;
+  const std::wstring DEFAULT_KEYBOARD = L"awsedftgyhujkolp;'";
+  const wchar_t DEFAULT_KEYBOARD_OCTAVE_UP = 'x';
+  const wchar_t DEFAULT_KEYBOARD_OCTAVE_DOWN = 'z';
+
+  const std::string PATCH_EXTENSION = "helm";
 
   typedef std::map<std::string, Value*> control_map;
-  typedef std::map<char, std::string> midi_learn_map;
+  typedef std::pair<Value*, mopo_float> control_change;
+  typedef std::pair<ModulationConnection*, mopo_float> modulation_change;
   typedef std::map<std::string, Processor*> input_map;
   typedef std::map<std::string, Processor::Output*> output_map;
 
@@ -138,21 +162,68 @@ namespace mopotwytchsynth {
   };
 
   struct ModulationConnection {
+    ModulationConnection() : ModulationConnection("", "") { }
+
     ModulationConnection(std::string from, std::string to) :
-        source(from), destination(to) { }
+        source(from), destination(to) {
+      amount.setControlRate();
+    }
+
+    void resetConnection(const std::string& from, const std::string& to) {
+      source = from;
+      destination = to;
+      modulation_scale.router(nullptr);
+    }
 
     std::string source;
     std::string destination;
     Value amount;
-    Multiply modulation_scale;
+    cr::Multiply modulation_scale;
+  };
+
+  class ModulationConnectionBank {
+    public:
+      ModulationConnectionBank();
+      ~ModulationConnectionBank();
+      ModulationConnection* get(const std::string& from, const std::string& to);
+      void recycle(ModulationConnection* connection);
+
+      static ModulationConnectionBank* instance();
+
+    private:
+      void allocateMoreConnections();
+      std::list<ModulationConnection*> available_connections_;
+      std::vector<ModulationConnection*> all_connections_;
+  };
+
+  class StringLayout {
+    public:
+      std::wstring getLayout() { return layout_; }
+      void setLayout(std::wstring layout) { layout_ = layout; }
+
+      wchar_t getUpKey() { return up_key_; }
+      void setUpKey(wchar_t up_key) { up_key_ = up_key; }
+
+      wchar_t getDownKey() { return down_key_; }
+      void setDownKey(wchar_t down_key) { down_key_ = down_key; }
+
+    protected:
+      std::wstring layout_;
+      int up_key_;
+      int down_key_;
   };
 
   class ValueDetailsLookup {
     public:
       ValueDetailsLookup();
-      const ValueDetails& getDetails(std::string name) {
-        TWYTCH_MOPO_ASSERT(details_lookup_.count(name));
-        return details_lookup_[name];
+      const bool isParameter(const std::string& name) const {
+        return details_lookup_.count(name);
+      }
+
+      const ValueDetails& getDetails(const std::string& name) const {
+        auto details = details_lookup_.find(name);
+        TWYTCH_MOPO_ASSERT(details != details_lookup_.end());
+        return details->second;
       }
 
     private:
@@ -162,7 +233,14 @@ namespace mopotwytchsynth {
 
   class Parameters {
     public:
-      static const ValueDetails& getDetails(std::string name) { return lookup_.getDetails(name); }
+      static const ValueDetails& getDetails(const std::string& name) {
+        return lookup_.getDetails(name);
+      }
+
+      static const bool isParameter(const std::string& name) {
+        return lookup_.isParameter(name);
+      }
+
     private:
       static ValueDetailsLookup lookup_;
   };

@@ -1,4 +1,4 @@
-/* Copyright 2013-2015 Matt Tytel
+/* Copyright 2013-2016 Matt Tytel
  *
  * mopo is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 
 #pragma once
 #ifndef TWYTCH_MOPO_H
-#define MOPO_H
+#define TWYTCH_MOPO_H
 
 #include "twytch_alias.h"
 #include "twytch_arpeggiator.h"
@@ -34,9 +34,11 @@
 #include "twytch_memory.h"
 #include "twytch_midi_lookup.h"
 #include "twytch_mono_panner.h"
+#include "twytch_note_handler.h"
 #include "twytch_operators.h"
 #include "twytch_oscillator.h"
 #include "twytch_phaser.h"
+#include "twytch_portamento_slope.h"
 #include "twytch_processor.h"
 #include "twytch_processor_router.h"
 #include "twytch_resonance_lookup.h"
@@ -55,4 +57,4 @@
 #include "twytch_voice_handler.h"
 #include "twytch_wave.h"
 
-#endif // MOPO_H
+#endif // TWYTCH_MOPO_H

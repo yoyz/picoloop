@@ -1,4 +1,4 @@
-/* Copyright 2013-2015 Matt Tytel
+/* Copyright 2013-2016 Matt Tytel
  *
  * mopo is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 
 #pragma once
 #ifndef TWYTCH_BIT_CRUSH_H
-#define BIT_CRUSH_H
+#define TWYTCH_BIT_CRUSH_H
 
 #include "twytch_processor.h"
 #include <cmath>
@@ -35,8 +35,8 @@ namespace mopotwytchsynth {
 
       BitCrush();
 
-      virtual Processor* clone() const { return new BitCrush(*this); }
-      virtual void process();
+      virtual Processor* clone() const override { return new BitCrush(*this); }
+      virtual void process() override;
 
       void tick(int i) {
         mopo_float audio = input(kAudio)->at(i);

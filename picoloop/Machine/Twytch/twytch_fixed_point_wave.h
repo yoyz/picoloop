@@ -1,4 +1,4 @@
-/* Copyright 2013-2015 Matt Tytel
+/* Copyright 2013-2016 Matt Tytel
  *
  * mopo is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,10 +16,11 @@
 
 #pragma once
 #ifndef TWYTCH_FIXED_POINT_WAVE_H
-#define FIXED_POINT_WAVE_H
+#define TWYTCH_FIXED_POINT_WAVE_H
 
 #include "twytch_common.h"
 #include "twytch_wave.h"
+#include "twytch_utils.h"
 #include <climits>
 #include <cmath>
 #include <cstdlib>
@@ -45,11 +46,11 @@ namespace mopotwytchsynth {
         kNumFixedPointWaveforms
       };
 
-      static const int FIXED_LOOKUP_BITS = 12;
-      static const int FIXED_LOOKUP_SIZE = 4096;
+      static const int FIXED_LOOKUP_BITS = 13;
+      static const int FIXED_LOOKUP_SIZE = 8192;
 
-      static const int FRACTIONAL_BITS = 20;
-      static const int FRACTIONAL_SIZE = 1048576;
+      static const int FRACTIONAL_BITS = 19;
+      static const int FRACTIONAL_SIZE = 524288;
 
       static const int HARMONICS = 127;
 
@@ -86,23 +87,36 @@ namespace mopotwytchsynth {
 
   class FixedPointWave {
     public:
+      static inline int harmonicWave(int waveform, unsigned int t, int harmonic) {
+        return lookup_.waves_[waveform][harmonic][getIndex(t)];
+      }
+
       static inline int wave(int waveform, unsigned int t, int phase_inc) {
-        int ratio = INT_MAX / phase_inc;
-        int less_harmonics2 = CLAMP(FixedPointWaveLookup::HARMONICS + 1 - ratio,
-                                    0, FixedPointWaveLookup::HARMONICS - 1);
+        return lookup_.waves_[waveform][getHarmonicIndex(phase_inc)][getIndex(t)];
+      }
+
+      static inline int wave(int waveform, unsigned int t) {
         unsigned int index = getIndex(t);
-        return lookup_.waves_[waveform][less_harmonics2][index];
+        return lookup_.waves_[waveform][0][index];
       }
 
       static inline int* getBuffer(int waveform, int phase_inc) {
+        int clamped_inc = mopotwytchsynth::twytchutils::iclamp(phase_inc, 1, INT_MAX);
+        return lookup_.waves_[waveform][getHarmonicIndex(clamped_inc)];
+      }
+
+      static inline int getHarmonicIndex(int phase_inc) {
         int ratio = INT_MAX / phase_inc;
-        int less_harmonics2 = CLAMP(FixedPointWaveLookup::HARMONICS + 1 - ratio,
-                                    0, FixedPointWaveLookup::HARMONICS - 1);
-        return lookup_.waves_[waveform][less_harmonics2];
+        return mopotwytchsynth::twytchutils::iclamp(FixedPointWaveLookup::HARMONICS + 1 - ratio,
+                                   0, FixedPointWaveLookup::HARMONICS - 1);
       }
 
       static inline unsigned int getIndex(unsigned int t) {
         return t >> FixedPointWaveLookup::FRACTIONAL_BITS;
+      }
+
+      static inline unsigned int getFractional(unsigned int t) {
+        return t & FixedPointWaveLookup::FRACTIONAL_BITS;
       }
 
     protected:

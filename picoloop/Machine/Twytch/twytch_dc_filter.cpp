@@ -14,28 +14,35 @@
  * along with mopo.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "twytch_reverb_comb.h"
+#include "twytch_dc_filter.h"
 
 namespace mopotwytchsynth {
 
-  ReverbComb::ReverbComb(int size) : Processor(ReverbComb::kNumInputs, 1) {
-    memory_ = new Memory(size);
-    filtered_sample_ = 0.0;
+  DcFilter::DcFilter() : Processor(DcFilter::kNumInputs, 1) {
+    coefficient_ = 0.0;
+    past_in_ = past_out_ = 0.0;
   }
 
-  ReverbComb::ReverbComb(const ReverbComb& other) : Processor(other) {
-    this->memory_ = new Memory(*other.memory_);
-    this->filtered_sample_ = 0.0;
-  }
+  void DcFilter::process() {
+    computeCoefficients();
 
-  void ReverbComb::process() {
+    const mopo_float* source = input(kAudio)->source->buffer;
     mopo_float* dest = output()->buffer;
-    const mopo_float* audio_buffer = input(kAudio)->source->buffer;
-    int period = input(kSampleDelay)->source->buffer[0];
-    const mopo_float* feedback_buffer = input(kFeedback)->source->buffer;
-    const mopo_float* damping_buffer = input(kDamping)->source->buffer;
+    int i = 0;
+    if (inputs_->at(kReset)->source->triggered &&
+        inputs_->at(kReset)->source->trigger_value == kVoiceReset) {
+      int trigger_offset = inputs_->at(kReset)->source->trigger_offset;
+      for (; i < trigger_offset; ++i)
+        tick(i, dest, source);
 
-    for (int i = 0; i < buffer_size_; ++i)
-      tick(i, dest, period, audio_buffer, feedback_buffer, damping_buffer);
+      reset();
+    }
+    for (; i < buffer_size_; ++i)
+      tick(i, dest, source);
   }
+
+  void DcFilter::reset() {
+    past_in_ = past_out_ = 0.0;
+  }
+
 } // namespace mopo

@@ -1,4 +1,4 @@
-/* Copyright 2013-2015 Matt Tytel
+/* Copyright 2013-2016 Matt Tytel
  *
  * mopo is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 
 #pragma once
 #ifndef TWYTCH_HELM_LFO_H
-#define HELM_LFO_H
+#define TWYTCH_HELM_LFO_H
 
 #include "twytch_processor.h"
 #include "twytch_wave.h"
@@ -50,6 +50,8 @@ namespace mopotwytchsynth {
 
     protected:
       mopo_float offset_;
+      mopo_float last_random_value_;
+      mopo_float current_random_value_;
   };
 } // namespace mopo
 

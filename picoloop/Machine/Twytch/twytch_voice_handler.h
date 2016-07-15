@@ -1,4 +1,4 @@
-/* Copyright 2013-2015 Matt Tytel
+/* Copyright 2013-2016 Matt Tytel
  *
  * mopo is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,8 +16,9 @@
 
 #pragma once
 #ifndef TWYTCH_VOICE_HANDLER_H
-#define VOICE_HANDLER_H
+#define TWYTCH_VOICE_HANDLER_H
 
+#include "twytch_note_handler.h"
 #include "twytch_processor_router.h"
 #include "twytch_value.h"
 
@@ -29,7 +30,10 @@ namespace mopotwytchsynth {
   struct VoiceState {
     VoiceEvent event;
     mopo_float note;
+    mopo_float last_note;
     mopo_float velocity;
+    int note_pressed;
+    int channel;
   };
 
   class Voice {
@@ -51,11 +55,16 @@ namespace mopotwytchsynth {
       mopo_float aftertouch() { return aftertouch_; }
       mopo_float aftertouch_sample() { return aftertouch_sample_; }
 
-      void activate(mopo_float note, mopo_float velocity, int sample = 0) {
+      void activate(mopo_float note, mopo_float velocity,
+                    mopo_float last_note, int note_pressed = 0,
+                    int sample = 0, int channel = 0) {
         event_sample_ = sample;
         state_.event = kVoiceOn;
         state_.note = note;
         state_.velocity = velocity;
+        state_.last_note = last_note;
+        state_.note_pressed = note_pressed;
+        state_.channel = channel;
         aftertouch_ = velocity;
         aftertouch_sample_ = sample;
         key_state_ = kHeld;
@@ -69,6 +78,11 @@ namespace mopotwytchsynth {
         event_sample_ = sample;
         state_.event = kVoiceOff;
         key_state_ = kReleased;
+      }
+
+      void kill(int sample = 0) {
+        event_sample_ = sample;
+        state_.event = kVoiceKill;
       }
 
       bool hasNewEvent() {
@@ -102,7 +116,7 @@ namespace mopotwytchsynth {
       Processor* processor_;
   };
 
-  class VoiceHandler : public virtual ProcessorRouter {
+  class VoiceHandler : public virtual ProcessorRouter, public NoteHandler {
     public:
       enum Inputs {
         kPolyphony,
@@ -111,35 +125,46 @@ namespace mopotwytchsynth {
 
       VoiceHandler(size_t polyphony = 1);
 
-      virtual Processor* clone() const { TWYTCH_MOPO_ASSERT(false); return 0; }
-      virtual void process();
-      virtual void setSampleRate(int sample_rate);
-      virtual void setBufferSize(int buffer_size);
+      virtual Processor* clone() const override {
+        TWYTCH_MOPO_ASSERT(false);
+        return 0;
+      }
+
+      virtual void process() override;
+      virtual void setSampleRate(int sample_rate) override;
+      virtual void setBufferSize(int buffer_size) override;
       int getNumActiveVoices();
       std::list<mopo_float> getPressedNotes() { return pressed_notes_; }
+      bool isNotePlaying(mopo_float note);
 
-      void allNotesOff(int sample = 0);
-      Voice* grabVoice();
-      void noteOn(mopo_float note, mopo_float velocity = 1, int sample = 0);
-      void noteOff(mopo_float note, int sample = 0);
+      void allNotesOff(int sample = 0) override;
+      virtual void noteOn(mopo_float note, mopo_float velocity = 1,
+                          int sample = 0, int channel = 0) override;
+      virtual VoiceEvent noteOff(mopo_float note, int sample = 0) override;
       void setAftertouch(mopo_float note, mopo_float aftertouch, int sample = 0);
       void sustainOn();
       void sustainOff(int sample = 0);
 
       Output* voice_event() { return &voice_event_; }
       Output* note() { return &note_; }
+      Output* last_note() { return &last_note_; }
+      Output* note_pressed() { return &note_pressed_; }
+      Output* channel() { return &channel_; }
       Output* velocity() { return &velocity_; }
       Output* aftertouch() { return &aftertouch_; }
+      size_t polyphony() { return polyphony_; }
+    
+      mopo_float getLastActiveNote() const;
 
       virtual ProcessorRouter* getMonoRouter() override { return &global_router_; }
       virtual ProcessorRouter* getPolyRouter() override { return &voice_router_; }
 
-      void addProcessor(Processor* processor);
-      void removeProcessor(Processor* processor);
+      void addProcessor(Processor* processor) override;
+      void removeProcessor(const Processor* processor) override;
       void addGlobalProcessor(Processor* processor);
       void removeGlobalProcessor(Processor* processor);
-      void registerOutput(Output* output);
-      void registerOutput(Output* output, int index);
+      Output* registerOutput(Output* output) override;
+      Output* registerOutput(Output* output, int index) override;
 
       void setPolyphony(size_t polyphony);
 
@@ -147,25 +172,41 @@ namespace mopotwytchsynth {
         voice_killer_ = killer;
       }
 
+      void setLegato(bool legato) {
+        legato_ = legato;
+      }
+
       void setVoiceKiller(const Processor* killer) {
         setVoiceKiller(killer->output());
       }
 
-      bool isPolyphonic(const Processor* processor) const;
+      bool isPolyphonic(const Processor* processor) const override;
 
     private:
       VoiceHandler() { }
 
+      Voice* grabVoice();
+      Voice* getVoiceToKill();
       Voice* createVoice();
       void prepareVoiceTriggers(Voice* voice);
       void processVoice(Voice* voice);
+      void clearAccumulatedOutputs();
+      void clearNonaccumulatedOutputs();
+      void accumulateOutputs();
+      void writeNonaccumulatedOutputs();
+      bool shouldAccumulate(Output* output);
 
       size_t polyphony_;
       bool sustain_;
+      bool legato_;
       std::vector<Output*> voice_outputs_;
       const Output* voice_killer_;
+      mopo_float last_played_note_;
       Output voice_event_;
       Output note_;
+      Output last_note_;
+      Output note_pressed_;
+      Output channel_;
       Output velocity_;
       Output aftertouch_;
 

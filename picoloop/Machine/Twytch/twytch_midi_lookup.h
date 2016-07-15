@@ -1,4 +1,4 @@
-/* Copyright 2013-2015 Matt Tytel
+/* Copyright 2013-2016 Matt Tytel
  *
  * mopo is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 
 #pragma once
 #ifndef TWYTCH_MIDI_LOOKUP_H
-#define MIDI_LOOKUP_H
+#define TWYTCH_MIDI_LOOKUP_H
 
 #include "twytch_common.h"
 #include "twytch_utils.h"
@@ -28,13 +28,13 @@ namespace mopotwytchsynth {
   class MidiLookupSingleton {
     public:
       MidiLookupSingleton() {
-        for (int i = 0; i < TWYTCH_MAX_CENTS + 2; ++i) {
-          frequency_lookup_[i] = utils::midiCentsToFrequency(i);
+        for (int i = 0; i < MAX_CENTS + 2; ++i) {
+          frequency_lookup_[i] = twytchutils::midiCentsToFrequency(i);
         }
       }
 
       mopo_float centsLookup(mopo_float cents_from_0) const {
-        mopo_float clamped_cents = CLAMP(cents_from_0, 0.0, TWYTCH_MAX_CENTS);
+        mopo_float clamped_cents = twytchutils::clamp(cents_from_0, 0.0, MAX_CENTS);
         int full_cents = clamped_cents;
         mopo_float fraction_cents = clamped_cents - full_cents;
 
@@ -43,7 +43,7 @@ namespace mopotwytchsynth {
       }
 
     private:
-      mopo_float frequency_lookup_[TWYTCH_MAX_CENTS + 2];
+      mopo_float frequency_lookup_[MAX_CENTS + 2];
   };
 
   class MidiLookup {

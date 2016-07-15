@@ -1,4 +1,4 @@
-/* Copyright 2013-2014 Little IO
+/* Copyright 2013-2016 Matt Tytel
  *
  * mopo is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,27 +16,47 @@
 
 #pragma once
 #ifndef TWYTCH_UTILS_H
-#define UTILS_H
+#define TWYTCH_UTILS_H
 
 #include "twytch_common.h"
 #include "twytch_value.h"
 #include <cmath>
+#include <cstdlib>
+
+#ifdef __SSE2__
+#include <emmintrin.h>
+#else
+#include <algorithm>
+#endif
 
 namespace mopotwytchsynth {
 
+#ifndef MIDI_0_FREQUENCY
+#define MIDI_0_FREQUENCY 8.1757989156
+#endif
+#ifndef NOTES_PER_OCTAVE
+#define NOTES_PER_OCTAVE 12
+#endif
+#ifndef CENTS_PER_NOTE
+#define CENTS_PER_NOTE 100
+#endif
+#ifndef MAX_CENTS
+#define MAX_CENTS (MIDI_SIZE * CENTS_PER_NOTE)
+#endif
+
   namespace {
     const mopo_float EPSILON = 1e-16;
-    const mopo_float DB_GAIN_CONVERSION_MULT = 40.0;
-    const mopo_float TWYTCH_MIDI_0_FREQUENCY = 8.1757989156;
-    const int TWYTCH_NOTES_PER_OCTAVE = 12;
-    const int TWYTCH_CENTS_PER_NOTE = 100;
-    const int CENTS_PER_OCTAVE = TWYTCH_NOTES_PER_OCTAVE * TWYTCH_CENTS_PER_NOTE;
-    const int TWYTCH_MAX_CENTS = MIDI_SIZE * TWYTCH_CENTS_PER_NOTE;
+    const mopo_float DB_GAIN_CONVERSION_MULT = 20.0;
+    //const mopo_float MIDI_0_FREQUENCY = 8.1757989156;
+    //const int NOTES_PER_OCTAVE = 12;
+    //const int CENTS_PER_NOTE = 100;
+    const int CENTS_PER_OCTAVE = NOTES_PER_OCTAVE * CENTS_PER_NOTE;
+    //const int MAX_CENTS = MIDI_SIZE * CENTS_PER_NOTE;
     const mopo_float MAX_Q_POW = 4.0;
     const mopo_float MIN_Q_POW = -1.0;
   }
 
-  namespace utils {
+  namespace twytchutils {
 
     const Value value_zero(0.0);
     const Value value_one(1.0);
@@ -46,6 +66,45 @@ namespace mopotwytchsynth {
     const Value value_2pi(2.0 * TWYTCH_PI);
     const Value value_neg_one(-1.0);
 
+#ifdef __SSE2__
+    inline mopo_float min(mopo_float one, mopo_float two) {
+      _mm_store_sd(&one, _mm_min_sd(_mm_set_sd(one),_mm_set_sd(two)));
+      return one;
+    }
+
+    inline mopo_float max(mopo_float one, mopo_float two) {
+      _mm_store_sd(&one, _mm_max_sd(_mm_set_sd(one),_mm_set_sd(two)));
+      return one;
+    }
+
+    inline mopo_float clamp(mopo_float value, mopo_float min, mopo_float max) {
+      _mm_store_sd(&value, _mm_min_sd(_mm_max_sd(_mm_set_sd(value),
+                                                 _mm_set_sd(min)),
+                                                 _mm_set_sd(max)));
+      return value;
+    }
+#else
+    inline mopo_float min(mopo_float one, mopo_float two) {
+      return std::min(one, two);
+    }
+
+    inline mopo_float max(mopo_float one, mopo_float two) {
+      return std::max(one, two);
+    }
+
+    inline mopo_float clamp(mopo_float value, mopo_float min, mopo_float max) {
+      return std::min(max, std::max(value, min));
+    }
+#endif
+
+    inline mopo_float mod(mopo_float value, mopo_float* integral) {
+      return modf(value, integral);
+    }
+
+    inline mopo_float iclamp(int value, int min, int max) {
+      return value > max ? max : (value < min ? min : value);
+    }
+
     inline bool closeToZero(mopo_float value) {
       return value <= EPSILON && value >= -EPSILON;
     }
@@ -54,24 +113,28 @@ namespace mopotwytchsynth {
       return DB_GAIN_CONVERSION_MULT * log10(gain);
     }
 
-    inline mopo_float dbToGain(mopo_float decibals) {
-      return std::pow(10.0, decibals / DB_GAIN_CONVERSION_MULT);
+    inline mopo_float dbToGain(mopo_float decibels) {
+      return std::pow(10.0, decibels / DB_GAIN_CONVERSION_MULT);
+    }
+
+    inline mopo_float centsToRatio(mopo_float cents) {
+      return pow(2.0, cents / CENTS_PER_OCTAVE);
     }
 
     inline mopo_float midiCentsToFrequency(mopo_float cents) {
-      return TWYTCH_MIDI_0_FREQUENCY * pow(2.0, cents / CENTS_PER_OCTAVE);
+      return MIDI_0_FREQUENCY * centsToRatio(cents);
     }
 
     inline mopo_float midiNoteToFrequency(mopo_float note) {
-      return midiCentsToFrequency(note * TWYTCH_CENTS_PER_NOTE);
+      return midiCentsToFrequency(note * CENTS_PER_NOTE);
     }
 
     inline mopo_float frequencyToMidiNote(mopo_float frequency) {
-      return TWYTCH_NOTES_PER_OCTAVE * log(frequency / TWYTCH_MIDI_0_FREQUENCY) / log(2.0);
+      return NOTES_PER_OCTAVE * log(frequency / MIDI_0_FREQUENCY) / log(2.0);
     }
 
     inline mopo_float frequencyToMidiCents(mopo_float frequency) {
-      return TWYTCH_CENTS_PER_NOTE * frequencyToMidiNote(frequency);
+      return CENTS_PER_NOTE * frequencyToMidiNote(frequency);
     }
 
     inline mopo_float magnitudeToQ(mopo_float magnitude) {

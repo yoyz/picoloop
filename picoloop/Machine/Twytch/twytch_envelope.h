@@ -1,4 +1,4 @@
-/* Copyright 2013-2015 Matt Tytel
+/* Copyright 2013-2016 Matt Tytel
  *
  * mopo is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,8 +19,7 @@
 #define ENVELOPE_H
 
 #include "twytch_processor.h"
-
-#define CLOSE_ENOUGH (1.0 / 256.0)
+#include "twytch_utils.h"
 
 namespace mopotwytchsynth {
 
@@ -60,10 +59,10 @@ namespace mopotwytchsynth {
       Envelope();
       virtual ~Envelope() { }
 
-      virtual Processor* clone() const { return new Envelope(*this); }
-      void process();
+      virtual Processor* clone() const override { return new Envelope(*this); }
+      void processSection(mopo_float* output_buffer, int start, int end);
+      void process() override;
       void trigger(mopo_float event, int offset);
-      void tick(int i);
 
     protected:
       State state_;

@@ -1,4 +1,4 @@
-/* Copyright 2013-2015 Matt Tytel
+/* Copyright 2013-2016 Matt Tytel
  *
  * mopo is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 
 #pragma once
 #ifndef TWYTCH_TRIGGER_OPERATORS_H
-#define TRIGGER_OPERATORS_H
+#define TWYTCH_TRIGGER_OPERATORS_H
 
 #include "twytch_processor.h"
 
@@ -26,9 +26,11 @@ namespace mopotwytchsynth {
     public:
       TriggerCombiner();
 
-      virtual Processor* clone() const { return new TriggerCombiner(*this); }
+      virtual Processor* clone() const override {
+        return new TriggerCombiner(*this);
+      }
 
-      void process();
+      void process() override ;
   };
 
   class TriggerWait : public Processor {
@@ -41,9 +43,11 @@ namespace mopotwytchsynth {
 
       TriggerWait();
 
-      virtual Processor* clone() const { return new TriggerWait(*this); }
+      virtual Processor* clone() const override {
+        return new TriggerWait(*this);
+      }
 
-      void process();
+      void process() override;
 
     private:
       void waitTrigger(mopo_float trigger_value);
@@ -63,11 +67,49 @@ namespace mopotwytchsynth {
       TriggerFilter(mopo_float fitler = 0.0);
       ~TriggerFilter() { }
 
-      virtual Processor* clone() const { return new TriggerFilter(*this); }
-      void process();
+      virtual Processor* clone() const override {
+        return new TriggerFilter(*this);
+      }
+
+      void process() override;
 
     private:
       mopo_float trigger_filter_;
+  };
+
+  class TriggerEquals : public Processor {
+    public:
+      enum Inputs {
+        kTrigger,
+        kCondition,
+        kNumInputs
+      };
+      TriggerEquals(mopo_float value) : Processor(kNumInputs, 1), value_(value) { }
+
+      virtual Processor* clone() const override {
+        return new TriggerEquals(*this);
+      }
+
+      void process() override;
+
+    private:
+      mopo_float value_;
+  };
+
+  class TriggerNonZero : public Processor {
+    public:
+      enum Inputs {
+        kTrigger,
+        kCondition,
+        kNumInputs
+      };
+      TriggerNonZero() : Processor(kNumInputs, 1) { }
+
+      virtual Processor* clone() const override {
+        return new TriggerNonZero(*this);
+      }
+
+      void process() override;
   };
 
   class LegatoFilter : public Processor {
@@ -86,9 +128,11 @@ namespace mopotwytchsynth {
 
       LegatoFilter();
 
-      virtual Processor* clone() const { return new LegatoFilter(*this); }
+      virtual Processor* clone() const override {
+        return new LegatoFilter(*this);
+      }
 
-      void process();
+      void process() override;
 
     private:
       mopo_float last_value_;
@@ -112,9 +156,11 @@ namespace mopotwytchsynth {
 
       PortamentoFilter();
 
-      virtual Processor* clone() const { return new PortamentoFilter(*this); }
+      virtual Processor* clone() const override {
+        return new PortamentoFilter(*this);
+      }
 
-      void process();
+      void process() override;
 
     private:
 

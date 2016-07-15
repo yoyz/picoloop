@@ -1,4 +1,4 @@
-/* Copyright 2013-2015 Matt Tytel
+/* Copyright 2013-2016 Matt Tytel
  *
  * mopo is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,17 +24,30 @@ namespace mopotwytchsynth {
   }
 
   void Value::process() {
+    output()->clearTrigger();
     if (output()->buffer[0] == value_ &&
         output()->buffer[buffer_size_ - 1] == value_ &&
         !input(kSet)->source->triggered) {
       return;
     }
 
-    if (input(kSet)->source->triggered)
+    if (input(kSet)->source->triggered) {
+      int i = 0;
+      int offset = input(kSet)->source->trigger_offset;
+      for (; i < offset; ++i)
+        output()->buffer[i] = value_;
+
       value_ = input(kSet)->source->trigger_value;
 
-    for (int i = 0; i < buffer_size_; ++i)
-      output()->buffer[i] = value_;
+      for (; i < buffer_size_; ++i)
+        output()->buffer[i] = value_;
+
+      output()->trigger(value_, input(kSet)->source->trigger_offset);
+    }
+    else {
+      for (int i = 0; i < buffer_size_; ++i)
+        output()->buffer[i] = value_;
+    }
   }
 
   void Value::set(mopo_float value) {

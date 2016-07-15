@@ -1,4 +1,4 @@
-/* Copyright 2013-2015 Matt Tytel
+/* Copyright 2013-2016 Matt Tytel
  *
  * mopo is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
  */
 
 #include "twytch_switch.h"
-
+#include "twytch_utils.h"
 #include <cmath>
 
 namespace mopotwytchsynth {
@@ -24,9 +24,13 @@ namespace mopotwytchsynth {
 
   void Switch::process() {
     int source = static_cast<int>(input(kSource)->at(0));
-    source = CLAMP(source, 0, numInputs() - kNumInputs - 1);
+    source = twytchutils::clamp(source, 0, numInputs() - kNumInputs - 1);
 
-    memcpy(output()->buffer, input(kNumInputs + source)->source->buffer,
-           buffer_size_ * sizeof(mopo_float));
+    if (isControlRate())
+      output()->buffer[0] = input(kNumInputs + source)->at(0);
+    else {
+      memcpy(output()->buffer, input(kNumInputs + source)->source->buffer,
+             buffer_size_ * sizeof(mopo_float));
+    }
   }
 } // namespace mopo

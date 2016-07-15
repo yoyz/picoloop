@@ -15,57 +15,51 @@
  */
 
 #pragma once
-#ifndef TWYTCH_DISTORTION_H
-#define TWYTCH_DISTORTION_H
+#ifndef TWYTCH_DC_FILTER_H
+#define TWYTCH_DC_FILTER_H
 
 #include "twytch_processor.h"
 
-#include <complex>
+#define COEFFICIENT_TO_SR_CONSTANT 25.0
 
 namespace mopotwytchsynth {
 
-  // Implements RBJ biquad filters of different types.
-  class Distortion : public Processor {
+  class DcFilter : public Processor {
     public:
       enum Inputs {
         kAudio,
-        kType,
-        kThreshold,
+        kReset,
         kNumInputs
       };
 
-      enum Type {
-        kTanh,
-        kHardClip,
-        kVelTanh,
-        kNumTypes,
-      };
+      DcFilter();
+      virtual ~DcFilter() { }
 
-      Distortion();
-      virtual ~Distortion() { }
+      virtual Processor* clone() const { return new DcFilter(*this); }
+      virtual void process();
 
-      virtual Processor* clone() const override {
-        return new Distortion(*this);
+      void computeCoefficients() {
+        coefficient_ = 1.0 - COEFFICIENT_TO_SR_CONSTANT / getSampleRate();
       }
 
-      virtual void process() override;
-
-      void processTanh();
-      void processHardClip();
-      void processVelTanh();
-
-      void tick(int i) {
+      void tick(int i, mopo_float* dest, const mopo_float* source) {
+        mopo_float audio = source[i];
+        mopo_float out = audio - past_in_ + coefficient_ * past_out_;
+        past_in_ = audio;
+        past_out_ = out;
+        dest[i] = out;
       }
 
     private:
       void reset();
 
-      Type current_type_;
+      // Current biquad coefficients.
+      mopo_float coefficient_;
 
+      // Past input and output values.
       mopo_float past_in_;
       mopo_float past_out_;
-      mopo_float tmp_buffer_[MAX_BUFFER_SIZE];
   };
 } // namespace mopo
 
-#endif // DISTORTION_H
+#endif // DC_FILTER_H
