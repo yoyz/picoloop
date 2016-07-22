@@ -1,53 +1,96 @@
-# README
+# PICOLOOP 0.69 README #
 
-Picoloop is a synth Stepsequencer  ( a nanoloop clone ).
-A pattern of 16 notes is played repeatedly while these notes can be edited in various respects like volume, pitch, filter, lfo etc. 
+
+
+## Overview ##
+
+Picoloop is a synth and a stepsequencer  ( a clone of the famous nanoloop ).
+The step sequencer play 4 track simultaneously, by default each track are 16 step long, you can set the track to be up to 128 step.
+Each track has a synthengine which can be a Virtual Analog, a Drum Synth, a FM synth.
+Each of the step can be edited on the 4 track.
+So for example, you can set a C4 note on step 0, nothing on step 1 and 2, then a D+5 on step 3 until the step 15.
+
+A pattern of 16 step is played repeatedly while these notes can be edited in various respects like volume, pitch, filter, lfo etc. 
 All parameters are set step-wise, so you can make huge variation of sound on the same pattern.
-There are four channels, playing simultaneously.
 Each channel's patterns can be saved to file slots  and are then available for new combinations. 
 Finally, saved patterns can be arranged in a song structure.
 
 Besides the song editor and manual loading of patterns, there are 3 different ways to modify each channel's patterns so that they form longer structures:                                       
 
 - 1/2, 1/4 or 1/8 speed                                                               
-- Different pattern lengths
+- Different pattern lengths by track
 
 
 Picoloop is target for linux/SDL compatible system.
 It use SDL     to render graphics.
 It use RtAudio or SDL to render audio out.
+It use RtMidi  to send and receive midi message, today only clock
 
 
-# HOW IT WORKS
+## How it works ##
 
-There is two pane, the 16 box and the menu which is above the 16 box.
+
+There is two pane :
+ - the 16 step ;
+ - the menu which is above the 16 step ;
+ 
 On the 16 box, there is a moving cursor which display the current played step.
 and another cursor which display the current selected step.
 There is a text menu, which allow you to select channel and edit parameter.
 All notes in the sequencer can be edited simultaneously.
 
-The menu mode
-
-</>             move backward/forward in the menu
-^/v             select the track from 0 to track 3
-B               do nothing
-A + </>/^/v,    edit all step at once
-A               enter the edit mode
-SELECT          call menu2 or menu1 ( it cycle between the two menu )
-        
-
-The edit mode
+### The menu mode ###
 
 
-</>             select next step
-^/v             select step+4, step-4
-B               enter a note in a step, it works as a cut/paste
-A + </>/^/v,    edit the current step
-A               do nothing
-SELECT          call menu2 or menu1 ( it cycle between the two menu )
-START           cycle between the different parameter
+The menu mode change the selected textual menu at the bottom of the screen.
+This allow you to choose what kind of parameter you want to change, for example, the NOTE, the OSC, the Filter
+In menu mode, when you press left/right, it change the textual menu in the bottom of the screen
 
-menu1 : 
+    </>             move backward/forward in the menu
+    ^/v             select the track from 0 to track 3
+    B               do nothing
+    A + </>/^/v,    edit all step at once
+    A               enter the edit mode
+    SELECT          call menu2 or menu1 ( it cycle between the two menu )
+
+
+### The edit mode ###
+
+The edit mode change the curent step on the 16 step display.
+In edit mode, when you press left/right, it change the current step in the sequencer.
+
+
+    </>             select next step
+    ^/v             select step+4, step-4
+    B               enter a note in a step, it works as a cut/paste
+    A + </>/^/v,    edit the current step
+    A               do nothing
+    SELECT          call menu2 or menu1 ( it cycle between the two menu )
+    START           cycle between the different parameter
+
+
+
+
+
+#### menu1 ####
+
+The menu 1 is the first menu. It allow to modify the parameter of the synthengine of the current track.
+Each synth engine has different kind of parameter.
+
+
+You can :
+
+1. A/R  : the enveloppe of the synth
+2. Note : the value of the note trigged
+3. OSC  : the oscillator of the synth
+4. VCO  : the vco parameter for example a osc1 and osc2 mixer
+5. LFO  : the lfo parameter
+6. FLTR : the filter parameter.
+
+
+
+Here is the global overview of the most common parameter you will find by synth engine.
+
 - A/R : 
     - Amp Enveloppe 
         - Attack/Release     Amp /  FM operator1   
@@ -78,45 +121,54 @@ menu1 :
     - algo/mode ( lp/bp/hp )
 
 
-menu 2 :
-- L/S :
-    - Load/Save pattern live
+#### menu 2 ####
 
-- BANK :
-    - give the ability to choose another bank for save/load pattern and song 
+The menu 2 is a more general menu. You can :
 
-- PSH :
-    - shift the pattern to the left/right, reduce the size of the pattern ( from 16 step to 1 step )
-
-- MAC :
-    - change the synth engine : synth, drumsynth, dbopl ( adlib fm )
-
-- FX :
-    - change the depth and the speed of the echo delay
-
-- BPM :
-    - change the bpm of the track and change the swing
+1. L/S   load and save a pattern  track or the 4 pattern track ;
+2. BANK  change the current bank which allow you to have more pattern.
+3. PSH   shift left or right the pattern of a track ;
+4. MAC   change the current synth engine, synth, drumsynth, dbopl ( adlib fm )
+5. FX    apply fx on the current track delay
+6. BPM   change the BPM and swing of the 4 track and the step diviser of the current track
 
 
 
 
 
 
-# PACKAGE DEPENDENCY & DEVEL PACKAGE
 
-     - libsdl*      => version 1.2 the 2.0 was not tested "ttf" and "gfx" needed
+
+
+
+
+### Package dependency, build from source ###
+
+
+This section describe the dependency for building picoloop.
+On most platform in 2016, you will need this kind of package.
+
+     - libsdl*      => version 1.2 with the "ttf" and "gfx"
      - libasound2*  => alsa
-     - libpthread*  => pthread
+     - libpthread*  => pthread for multiple thread
      - g++          => I use the g++ 4.7.2  
      - make         => U use the make 3.81
 
 
-# LASTEST SOURCE
+#### LASTEST SOURCE ####
+
+You can allways download the lastest source.
+But, you should probably switch to a tag then.
+
 
 <tt> # git clone https://github.com/yoyz/audio.git </tt> </br>
+<tt> # git tag </tt> </br>
+<tt> # git checkout picoloop-0.69 </tt> </br>
+
+Tag should be safier.
 
 
-# COMPILATION FOR DEBIAN
+#### COMPILATION FOR DEBIAN ####
 
      # cd      picoloop
      # make -f Makefile.RtAudio_debian               clean
@@ -126,7 +178,7 @@ menu 2 :
      # make -f Makefile.RtMidi_debian
      # make -f Makefile.PatternPlayer_debian_RtAudio
 
-# COMPILATION FOR OPENDINGUX
+#### COMPILATION FOR OPENDINGUX ####
 
 On debian you need the /opt/opendingux-toolchain/ directory.
 you can fetch fetch it there : http://www.treewalker.org/opendingux/
@@ -138,10 +190,11 @@ you can fetch fetch it there : http://www.treewalker.org/opendingux/
      # make -j 64 -f Makefile.RtAudio_opendingux
      # make -j 64 -f Makefile.PatternPlayer_opendingux_RtAudio
 
-# COMPILATION FOR GP2X
+#### COMPILATION FOR GP2X ####
 
 On debian you need the /opt/open2x/ directory.
 you can fetch it there : http://wiki.gp2x.org/articles/i/n/s/Installing_the_Open2x_toolchain.html
+I don't have build it month ago, so at your own risk.
 
      # cd      picoloop
      # make -j 64 -f Makefile.RtAudio_opendingux               clean
@@ -152,20 +205,21 @@ you can fetch it there : http://wiki.gp2x.org/articles/i/n/s/Installing_the_Open
 
 
 
-# COMPILATION FOR WINDOWS WITH MINGW32
+#### COMPILATION FOR WINDOWS WITH MINGW32 ####
 
 On debian, you need the mingw32 package.
 Picoloop provide the header and binary for SDL 1.2 on windows.
 
      # cd         picoloop
-     # make       -f Makefile.RtAudio_mingw32                              clean
-     # make       -f Makefile.PatternPlayer_windows_mingw_RtAudio clean
-
-     # make       -f Makefile.RtAudio_mingw32
+     # make       -f Makefile.RtAudio_windows                              clean
+     # make       -f Makefile.RtMidi_windows                               clean
+     # make       -f Makefile.PatternPlayer_windows_mingw_RtAudio          clean
+     # make       -f Makefile.RtAudio_windows                              
+     # make       -f Makefile.RtMidi_windows                               
      # make       -f Makefile.PatternPlayer_windows_mingw_RtAudio -j 64
 
 
-# COMPILATION FOR PSP
+#### COMPILATION FOR PSP ####
 
 you need to have the sdk, the toolchain and the external lib.
 All can be fetched here : https://github.com/pspdev
@@ -177,6 +231,8 @@ All can be fetched here : https://github.com/pspdev
 
 
 # LAUNCHING
+
+
 
 <tt> # ./PatternPlayer				</tt> <br>
 
@@ -265,9 +321,14 @@ In this case you need a prx and an elf file.
 Changelog
 =========
 
-V0.69 : 
-	- add midi in  sync on linux/windows
-	- add midi out sync on linux/windows
-	- midi on windows add issue with latency
-	- windows can run MDADrumSynth, still with issue with the latency
+V0.70 :
+
+- add a readme.html in the repo
+
+V0.69 :
+
+- add midi in  sync on linux/windows
+- add midi out sync on linux/windows
+- midi on windows add issue with latency
+- windows can run MDADrumSynth, still with issue with the latency
 
