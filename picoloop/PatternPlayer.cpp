@@ -719,6 +719,8 @@ void display_config()
 
   char str_menuconfig[128];
 
+
+  
   static char * audioOutputDeviceName;
   static char * midiOutputDeviceName;
   static char * midiInputDeviceName;
@@ -726,6 +728,23 @@ void display_config()
   static int     midiOutputDevice;
   static int     midiInputDevice;
 
+
+  static char   cursor_line1=' ';
+  static char   cursor_line2=' ';
+  static char   cursor_line3=' ';
+  static char   cursor_line4=' ';
+  static char    cursor_line5=' ';
+  
+  static char cursor_line[8];
+  int i=0;
+
+  for (i=0;i<8;i++)
+    cursor_line[i]=' ';
+
+  cursor_line[menu_config_y]='>';
+
+  
+  
 #ifdef __RTMIDI__
   MidiOutSystem & MOS=MidiOutSystem::getInstance();
   MidiInSystem  & MIS=MidiInSystem::getInstance();
@@ -746,17 +765,17 @@ void display_config()
       config_key_pressed=0;
     }
 
-
-  sprintf(str_menuconfig    ,"menuconfig    : %d %d",menu_config_y,debugcounter++);
-  sprintf(str_bank          ,"Current Bank  : %d "  ,menu_config_bank);
-  sprintf(str_audiooutput   ,"AudioOutput   : %d/%d : %s",menu_config_audioOutput,audioOutputDevice,audioOutputDeviceName);
+  
+  //sprintf(str_menuconfig    ,"menuconfig    : %d %d"        ,menu_config_y,debugcounter++);
+  sprintf(str_bank          ,"%c Current Bank  : %d "       ,cursor_line[0],menu_config_bank);
+  sprintf(str_audiooutput   ,"%c AudioOutput   : %d/%d : %s",cursor_line[1],menu_config_audioOutput,audioOutputDevice,audioOutputDeviceName);
 #ifdef __RTMIDI__
-  sprintf(str_midioutput    ,"MidiOutput    : %d/%d : %s",menu_config_midiOutput,midiOutputDevice,midiOutputDeviceName);
-  sprintf(str_midiinput     ,"MidiInput     : %d/%d : %s",menu_config_midiInput,midiInputDevice,midiInputDeviceName);
-  sprintf(str_midiclockmode ,"MidiClockMode : %s",str_midi_clock_mode[menu_config_midiClockMode]); 
+  sprintf(str_midioutput    ,"%c MidiOutput    : %d/%d : %s",cursor_line[2],menu_config_midiOutput,midiOutputDevice,midiOutputDeviceName);
+  sprintf(str_midiinput     ,"%c MidiInput     : %d/%d : %s",cursor_line[3],menu_config_midiInput,midiInputDevice,midiInputDeviceName);
+  sprintf(str_midiclockmode ,"%c MidiClockMode : %s"        ,cursor_line[4],str_midi_clock_mode[menu_config_midiClockMode]); 
 #endif
   SG.clearScreen();  
-  SG.guiTTFText(30,0,   str_menuconfig);
+  //SG.guiTTFText(30,0,   str_menuconfig);
   SG.guiTTFText(30,20,  str_bank);
   SG.guiTTFText(30,40,  str_audiooutput);
 #ifdef __RTMIDI__
