@@ -14,6 +14,8 @@ CFLAGS=-c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb  -pg
 CFLAGS=-Wall -c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb  
 CFLAGS= -O3 -D__WIN32__ -I/c/MinGW/include/  -DLINUX -I. -ISDL_windows -D__RTAUDIO__ -DLINUX_DESKTOP -ggdb 
 CFLAGS= -std=c++11 -O3 -DWIN32 -D__WIN32__ -I/c/MinGW/include/ -I/usr/i686-w64-mingw32/include/ -DLINUX -I. -ISDL_windows -D__RTAUDIO__ -D__RTMIDI__ -DLINUX_DESKTOP -ggdb -fpermissive
+CFLAGS= -std=c++11 -O3 -DWIN32 -D__WIN32__ -I/c/MinGW/include/ -I/usr/i686-w64-mingw32/include/ -I. -ISDL_windows -D__RTAUDIO__ -D__RTMIDI__ -DPC_DESKTOP -ggdb -fpermissive
+CFLAGS= -std=c++11 -O3 -DWIN32 -D__WIN32__ -I/c/MinGW/include/ -I/usr/i686-w64-mingw32/include/ -I. -ISDL_windows -D__RTAUDIO__ -D__RTMIDI__ -DPC_DESKTOP -ggdb -fpermissive
 
 
 LDFLAGS=-lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread -pg

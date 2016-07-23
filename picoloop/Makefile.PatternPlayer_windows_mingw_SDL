@@ -12,6 +12,7 @@ CFLAGS=-c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb  -pg
 CFLAGS=-Wall -c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb  
 #CFLAGS= -c -O1 -D__WIN32__ -I/c/MinGW/include/  -DLINUX -I. -LSDL/lib -D__SDL_AUDIO__ -DLINUX_DESKTOP -ggdb  -fpermissive
 CFLAGS=  -c -std=c++11 -O3 -DWIN32 -D__WIN32__ -I/c/MinGW/include/  -DLINUX -I. -ISDL_windows -D__SDL_AUDIO__ -DLINUX_DESKTOP -ggdb  -fpermissive
+CFLAGS=  -c -std=c++11 -O3 -DWIN32 -D__WIN32__ -I/c/MinGW/include/  -I. -ISDL_windows -D__SDL_AUDIO__ -DPC_DESKTOP -ggdb  -fpermissive
 
 
 LDFLAGS=-lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread -pg
@@ -170,7 +171,18 @@ SOURCES=PatternPlayer.cpp			\
 			Machine/Twytch/twytch_smooth_filter.cpp			\
 			Machine/Twytch/twytch_simple_delay.cpp			\
 			Machine/Twytch/twytch_wave.cpp				\
-			Machine/Twytch/twytch_voice_handler.cpp			
+			Machine/Twytch/twytch_voice_handler.cpp			\
+			Machine/Twytch/twytch_detune_lookup.cpp			\
+			Machine/Twytch/twytch_sample_decay_lookup.cpp		\
+			Machine/Twytch/twytch_portamento_slope.cpp		\
+			Machine/Twytch/twytch_dc_filter.cpp			\
+			Machine/MidiOutSystem/MidiOutUserInterface.cpp            \
+			Machine/MidiOutSystem/MidiOutMachine.cpp                  \
+			Machine/MDADrum/MDADrumMachine.cpp			\
+			Machine/MDADrum/MDADrumUserInterface.cpp			\
+			Machine/MDADrum/drumsynth.cpp				\
+			Machine/MDADrum/profport.cpp				
+
 
 
 
