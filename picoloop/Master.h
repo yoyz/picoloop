@@ -243,14 +243,21 @@ enum {
 // BEGIN DINGOO A320 SDL
 #endif
 
-#ifdef LINUX_DESKTOP
+#ifdef PC_DESKTOP
 
 #define __FPU__         1
 
 #define SCREEN_WIDTH	320
 #define SCREEN_HEIGHT	240
 #define SCREEN_DEPTH	16
+
+
+
+
+
+#ifndef SCREEN_MULT 
 #define SCREEN_MULT     2
+#endif
 // BEGIN DINGOO A320 SDL use by linux too
 
 //#define DEFAULTSAMPLES   2048
