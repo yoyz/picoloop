@@ -70,7 +70,7 @@ int SDL_GUI::initVideo()
 			    SCREEN_DEPTH,			
 			    SDL_HWSURFACE|SDL_DOUBLEBUF|SDL_FULLSCREEN);
   #endif
-  #ifdef LINUX_DESKTOP
+  #ifdef PC_DESKTOP
   screen = SDL_SetVideoMode(SCREEN_WIDTH*SCREEN_MULT, 
 			    SCREEN_HEIGHT*SCREEN_MULT, 
 			    SCREEN_DEPTH,			
