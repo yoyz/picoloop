@@ -105,7 +105,7 @@ int SDL_GUI::initVideo()
   joystick = SDL_JoystickOpen(0);
 
   #endif
-
+  
 
 
   if (screen == NULL)
@@ -113,7 +113,10 @@ int SDL_GUI::initVideo()
       DPRINTF("Couldn't set video mode: %s", SDL_GetError());
       SDL_Quit();
       return 0;
-    }  
+    }
+
+  SDL_WM_SetCaption("Picoloop", NULL);
+  
   return 1;
 }
 
