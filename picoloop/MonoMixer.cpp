@@ -47,6 +47,7 @@ void MonoMixer::init()
   CS.init();
   O303.init();
   TW.init();
+  MD.init();
 #endif
 
   //FX=&FXDelay;
