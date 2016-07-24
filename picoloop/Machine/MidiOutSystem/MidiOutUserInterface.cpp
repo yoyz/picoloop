@@ -727,9 +727,9 @@ void MidiOutUserInterface::display_board_text()
 		right_y_display_offset_line2,str_line2);
 
 
-  if (menu==MENU_ON_PAGE1)
-    SG.guiTTFText(right_x_display_offset,
-		  right_y_display_offset_line4,str_line4);
+  // if (menu==MENU_ON_PAGE1)
+  //   SG.guiTTFText(right_x_display_offset,
+  // 		  right_y_display_offset_line4,str_line4);
 
   if (menu==MENU_ON_PAGE1)
     SG.guiTTFText(menu_x_display_offset,

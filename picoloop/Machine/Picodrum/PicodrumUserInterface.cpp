@@ -769,9 +769,9 @@ void PicodrumUserInterface::display_board_text()
   if (menu_cursor==GLOBALMENU_FLTR)             sprintf(str_up,"FLTR    ");
 
 
-  if (menu==MENU_ON_PAGE1)
-    SG.guiTTFText(right_x_display_offset,
-		  right_y_display_offset_line4,str_up);
+  // if (menu==MENU_ON_PAGE1)
+  //   SG.guiTTFText(right_x_display_offset,
+  // 		  right_y_display_offset_line4,str_up);
 
   if (menu==MENU_ON_PAGE1)
     SG.guiTTFText(menu_x_display_offset,
