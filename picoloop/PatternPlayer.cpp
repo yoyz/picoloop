@@ -734,8 +734,11 @@ void display_config()
   static char   cursor_line3=' ';
   static char   cursor_line4=' ';
   static char    cursor_line5=' ';
+
+  static char * test_str;
   
-  static char cursor_line[8];
+  static char cursor_line[8];  
+  
   int i=0;
 
   for (i=0;i<8;i++)
@@ -743,6 +746,8 @@ void display_config()
 
   cursor_line[menu_config_y]='>';
 
+
+  
   
   
 #ifdef __RTMIDI__
@@ -775,14 +780,18 @@ void display_config()
   sprintf(str_midiclockmode ,"%c MidiClockMode : %s"        ,cursor_line[4],str_midi_clock_mode[menu_config_midiClockMode]); 
 #endif
   SG.clearScreen();  
-  //SG.guiTTFText(30,0,   str_menuconfig);
-  SG.guiTTFText(30,20,  str_bank);
-  SG.guiTTFText(30,40,  str_audiooutput);
+  //SG.guiTTFText(30,0,   str_menuconfig);  
+  SG.guiTTFText(COLLUMN03,LINE01,  str_bank);
+  SG.guiTTFText(COLLUMN03,LINE02,  str_audiooutput);
 #ifdef __RTMIDI__
-  SG.guiTTFText(30,60,  str_midioutput);
-  SG.guiTTFText(30,80,  str_midiinput);
-  SG.guiTTFText(30,100, str_midiclockmode);
+  SG.guiTTFText(COLLUMN03,LINE03,  str_midioutput);
+  SG.guiTTFText(COLLUMN03,LINE04,  str_midiinput);
+  SG.guiTTFText(COLLUMN03,LINE05, str_midiclockmode);
 #endif
+  //test_str="1234567890123456789012345678901234567890123456789012345678901234";
+  //SG.guiTTFText(COLLUMN00,LINE00,    test_str);
+  //SG.guiTTFText(COLLUMN01,LINE01,    test_str);
+  //SG.guiTTFText(COLLUMN63,LINE29,    test_str);
   display_refresh();
 }
 
@@ -976,7 +985,8 @@ void display_board_bank()
 
 
 
-  char str_bank[16];
+  char str_bank_current[16];
+  char str_bank_toload[16];
   char str_song[16];
 
 
@@ -1005,15 +1015,15 @@ void display_board_bank()
       menu_cursor  ==  GLOBALMENU_BANK 
       )
     {
-     DPRINTF("HIT");
+     DPRINTF("HIT");    
       SG.clearScreen();
+
+      sprintf(str_bank_current,"Current Bank %d ",bank);
+      sprintf(str_bank_toload,"Bank to load %d ",bank_to_load);
       
-      sprintf(str_bank,"Current Bank %d ",bank);
+      SG.guiTTFText(COLLUMN03,LINE01, str_bank_current);
+      SG.guiTTFText(COLLUMN03,LINE02, str_bank_toload);
 
-      SG.guiTTFText(30,10, str_bank);
-
-      sprintf(str_bank,"Bank to load %d ",bank_to_load);
-      SG.guiTTFText(30,30, str_bank);
     }
 
   if (menu         !=  MENU_OFF        && 

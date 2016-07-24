@@ -673,6 +673,164 @@ enum
     FM_TYPE_SIZE,
   };
 
+#define FONTSIZE         8
+
+// Screen size is
+//  LINE00    to LINE63
+//  COLLUMN00 to COLLUMN29
+
+#define COLLUMN00           0*5*SCREEN_MULT
+#define COLLUMN01           1*5*SCREEN_MULT
+#define COLLUMN02           2*5*SCREEN_MULT
+#define COLLUMN03           3*5*SCREEN_MULT
+#define COLLUMN04           4*5*SCREEN_MULT
+#define COLLUMN05           5*5*SCREEN_MULT
+#define COLLUMN06           6*5*SCREEN_MULT
+#define COLLUMN07           7*5*SCREEN_MULT
+#define COLLUMN08           8*5*SCREEN_MULT
+#define COLLUMN09           9*5*SCREEN_MULT
+
+#define COLLUMN10          10*5*SCREEN_MULT
+#define COLLUMN11          11*5*SCREEN_MULT
+#define COLLUMN12          12*5*SCREEN_MULT
+#define COLLUMN13          13*5*SCREEN_MULT
+#define COLLUMN14          14*5*SCREEN_MULT
+#define COLLUMN15          15*5*SCREEN_MULT
+#define COLLUMN16          16*5*SCREEN_MULT
+#define COLLUMN17          17*5*SCREEN_MULT
+#define COLLUMN18          18*5*SCREEN_MULT
+#define COLLUMN19          19*5*SCREEN_MULT
+
+#define COLLUMN20          20*5*SCREEN_MULT
+#define COLLUMN21          21*5*SCREEN_MULT
+#define COLLUMN22          22*5*SCREEN_MULT
+#define COLLUMN23          23*5*SCREEN_MULT
+#define COLLUMN24          24*5*SCREEN_MULT
+#define COLLUMN25          25*5*SCREEN_MULT
+#define COLLUMN26          26*5*SCREEN_MULT
+#define COLLUMN27          27*5*SCREEN_MULT
+#define COLLUMN28          28*5*SCREEN_MULT
+#define COLLUMN29          29*5*SCREEN_MULT
+
+#define COLLUMN30          30*5*SCREEN_MULT
+#define COLLUMN31          31*5*SCREEN_MULT
+#define COLLUMN32          32*5*SCREEN_MULT
+#define COLLUMN33          33*5*SCREEN_MULT
+#define COLLUMN34          34*5*SCREEN_MULT
+#define COLLUMN35          35*5*SCREEN_MULT
+#define COLLUMN36          36*5*SCREEN_MULT
+#define COLLUMN37          37*5*SCREEN_MULT
+#define COLLUMN38          38*5*SCREEN_MULT
+#define COLLUMN39          39*5*SCREEN_MULT
+
+#define COLLUMN40          40*5*SCREEN_MULT
+#define COLLUMN41          41*5*SCREEN_MULT
+#define COLLUMN42          42*5*SCREEN_MULT
+#define COLLUMN43          43*5*SCREEN_MULT
+#define COLLUMN44          44*5*SCREEN_MULT
+#define COLLUMN45          45*5*SCREEN_MULT
+#define COLLUMN46          46*5*SCREEN_MULT
+#define COLLUMN47          47*5*SCREEN_MULT
+#define COLLUMN48          48*5*SCREEN_MULT
+#define COLLUMN49          49*5*SCREEN_MULT
+
+#define COLLUMN50          50*5*SCREEN_MULT
+#define COLLUMN51          51*5*SCREEN_MULT
+#define COLLUMN52          52*5*SCREEN_MULT
+#define COLLUMN53          53*5*SCREEN_MULT
+#define COLLUMN54          54*5*SCREEN_MULT
+#define COLLUMN55          55*5*SCREEN_MULT
+#define COLLUMN56          56*5*SCREEN_MULT
+#define COLLUMN57          57*5*SCREEN_MULT
+#define COLLUMN58          58*5*SCREEN_MULT
+#define COLLUMN59          59*5*SCREEN_MULT
+
+#define COLLUMN60          60*5*SCREEN_MULT
+#define COLLUMN61          61*5*SCREEN_MULT
+#define COLLUMN62          62*5*SCREEN_MULT
+#define COLLUMN63          63*5*SCREEN_MULT
+#define COLLUMN64          64*5*SCREEN_MULT
+#define COLLUMN65          65*5*SCREEN_MULT
+#define COLLUMN66          66*5*SCREEN_MULT
+#define COLLUMN67          67*5*SCREEN_MULT
+#define COLLUMN68          68*5*SCREEN_MULT
+#define COLLUMN69          69*5*SCREEN_MULT
+
+
+
+
+
+#define LINE00        0*8*SCREEN_MULT
+#define LINE01        1*8*SCREEN_MULT
+#define LINE02        2*8*SCREEN_MULT
+#define LINE03        3*8*SCREEN_MULT
+#define LINE04        4*8*SCREEN_MULT
+#define LINE05        5*8*SCREEN_MULT
+#define LINE06        6*8*SCREEN_MULT
+#define LINE07        7*8*SCREEN_MULT
+#define LINE08        8*8*SCREEN_MULT
+#define LINE09        9*8*SCREEN_MULT
+
+#define LINE10       10*8*SCREEN_MULT
+#define LINE11       11*8*SCREEN_MULT
+#define LINE12       12*8*SCREEN_MULT
+#define LINE13       13*8*SCREEN_MULT
+#define LINE14       14*8*SCREEN_MULT
+#define LINE15       15*8*SCREEN_MULT
+#define LINE16       16*8*SCREEN_MULT
+#define LINE17       17*8*SCREEN_MULT
+#define LINE18       18*8*SCREEN_MULT
+#define LINE19       19*8*SCREEN_MULT
+
+#define LINE20       20*8*SCREEN_MULT
+#define LINE21       21*8*SCREEN_MULT
+#define LINE22       22*8*SCREEN_MULT
+#define LINE23       23*8*SCREEN_MULT
+#define LINE24       24*8*SCREEN_MULT
+#define LINE25       25*8*SCREEN_MULT
+#define LINE26       26*8*SCREEN_MULT
+#define LINE27       27*8*SCREEN_MULT
+#define LINE28       28*8*SCREEN_MULT
+#define LINE29       29*8*SCREEN_MULT
+
+#define LINE30       30*8*SCREEN_MULT
+#define LINE31       31*8*SCREEN_MULT
+#define LINE32       32*8*SCREEN_MULT
+#define LINE33       33*8*SCREEN_MULT
+#define LINE34       34*8*SCREEN_MULT
+#define LINE35       35*8*SCREEN_MULT
+#define LINE36       36*8*SCREEN_MULT
+#define LINE37       37*8*SCREEN_MULT
+#define LINE38       38*8*SCREEN_MULT
+#define LINE39       39*8*SCREEN_MULT
+
+#define LINE40       40*8*SCREEN_MULT
+#define LINE41       41*8*SCREEN_MULT
+#define LINE42       42*8*SCREEN_MULT
+#define LINE43       43*8*SCREEN_MULT
+#define LINE44       44*8*SCREEN_MULT
+#define LINE45       45*8*SCREEN_MULT
+#define LINE46       46*8*SCREEN_MULT
+#define LINE47       47*8*SCREEN_MULT
+#define LINE48       48*8*SCREEN_MULT
+#define LINE49       49*8*SCREEN_MULT
+
+#define LINE50       50*8*SCREEN_MULT
+#define LINE51       51*8*SCREEN_MULT
+#define LINE52       52*8*SCREEN_MULT
+#define LINE53       53*8*SCREEN_MULT
+#define LINE54       54*8*SCREEN_MULT
+#define LINE55       55*8*SCREEN_MULT
+#define LINE56       56*8*SCREEN_MULT
+#define LINE57       57*8*SCREEN_MULT
+#define LINE58       58*8*SCREEN_MULT
+#define LINE59       59*8*SCREEN_MULT
+
+#define LINE60       60*8*SCREEN_MULT
+#define LINE61       61*8*SCREEN_MULT
+#define LINE62       62*8*SCREEN_MULT
+#define LINE63       63*8*SCREEN_MULT
+#define LINE64       64*8*SCREEN_MULT
 
 
 
@@ -690,3 +848,6 @@ enum
 
 
 #endif
+
+
+
