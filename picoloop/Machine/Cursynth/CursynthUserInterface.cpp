@@ -782,14 +782,16 @@ void CursynthUserInterface::display_board_text()
   char str_divider[64];
   char str_submenu[64];
 
-  int  right_x_display_offset=      200*SCREEN_MULT;
-  int  right_y_display_offset_line1=20*SCREEN_MULT;
-  int  right_y_display_offset_line2=40*SCREEN_MULT;
-  int  right_y_display_offset_line3=60*SCREEN_MULT;
-  int  right_y_display_offset_line4=80*SCREEN_MULT;
+  int  right_x_display_offset=       COLLUMN40;
+  int  right_y_display_offset_line1= LINE02;
+  int  right_y_display_offset_line2= LINE03;
+  int  right_y_display_offset_line3= LINE04;
+  int  right_y_display_offset_line4= LINE05;
+  int  right_y_display_offset_line5= LINE06;
+  int  right_y_display_offset_line6= LINE07;
 
-  int  menu_x_display_offset=       10*SCREEN_MULT;
-  int  menu_y_display_offset=      200*SCREEN_MULT;
+  int  menu_x_display_offset=       COLLUMN01;
+  int  menu_y_display_offset=       LINE25;
 
   int  cty=SEQ.getCurrentTrackY();
   int  stepdiv=SEQ.getPatternSequencer(cty).getBPMDivider();
