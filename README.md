@@ -324,6 +324,7 @@ Changelog
 V0.70 :
 
 - add a readme.html in the repo
+- fix some glitch on the screen from 320x240 to 640x480
 
 V0.69 :
 
