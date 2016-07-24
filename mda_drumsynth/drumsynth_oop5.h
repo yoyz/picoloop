@@ -99,7 +99,7 @@ class drumsynth
   drumsynth();
   ~drumsynth();
   void init();
-  void prepare_generate(char *dsfile, char *wavfile);
+  void load_patch(char *dsfile);
   int LongestEnv(void);
   float LoudestEnv(void);
   void UpdateEnv(int e, long t);
@@ -108,7 +108,7 @@ class drumsynth
   //int ds2mem(char *dsfile, short *buffer, float t, float o, float n, float b, float tune, float time);
   //int ds2buf(long samples, short *buffer);
   //int ds2wav(char *dsfile, char *wavfile);
-  int setdsfile(char * mydsfile);
+  //int setdsfile(char * mydsfile);
   //int setwavefile(char * mywavefile);
 
   int generate(short *buffer, int len);

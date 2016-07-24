@@ -15,11 +15,11 @@
 #include <stdio.h>    //sscanf(), sprintf()
 #include <stdlib.h>   //RAND_MAX
 
-#define BLOCKSIZE 32
+//#define BLOCKSIZE 32
 
 drumsynth::drumsynth()
 {
-  wave=NULL;
+  //wave=NULL;
 }
 
 drumsynth::~drumsynth()
@@ -63,9 +63,9 @@ void drumsynth::init()
 
   prepare=0;
   commentLen=0;
-  if (wave)
-    free(wave);
-  wave=NULL;
+  /* if (wave) */
+  /*   free(wave); */
+  /* wave=NULL; */
 
 
 
@@ -222,8 +222,9 @@ float drumsynth::waveform(float ph, int form)
 
 
 
-void drumsynth::prepare_generate(char *dsfile, char *wavfile)
+void drumsynth::load_patch(char *dsfile)
 {
+  init();
   if(wavemode==0) //semi-real-time adjustments if working in memory!!
   {
     mem_t = 1.0f;
@@ -395,64 +396,13 @@ void drumsynth::prepare_generate(char *dsfile, char *wavfile)
   for (i=1;i<8;i++) { envData[i][NEXTT]=0; envData[i][PNT]=0; }
   Length = LongestEnv();
 
-  if(wave!=NULL) free(wave);
-  wave = (short *)malloc(2 * Length + 1280); //wave memory buffer
+  /* if(wave!=NULL) free(wave); */
+  /* wave = (short *)malloc(2 * Length + 1280); //wave memory buffer */
   if(wave==NULL) {busy=0; return 3;}
   wavewords = 0;
-
-  if(wavemode==0)
-  {
-    //open output file
-    fp = fopen(wavfile, "wb");
-    if(!fp) {busy=0; return 3;} //output fail
-
-     //set up INFO chunk
-    WI.list = 0x5453494C;
-    WI.listLength = 36 + commentLen;
-    WI.info = 0x4F464E49;
-    WI.isft = 0x54465349;
-    WI.isftLength = 16;
-    //lstrcpy(WI.software, "DrumSynth v2.0 "); WI.software[15]=0;
-    strcpy(WI.software, "DrumSynth v2.0 "); WI.software[15]=0;
-    WI.icmt = 0x544D4349;
-    WI.icmtLength = commentLen;
-
-    //write WAV header
-    WH.riff = 0x46464952;
-    WH.riffLength = 36 + (2 * Length) + 44 + commentLen;  
-    WH.wave = 0x45564157;
-    WH.fmt = 0x20746D66;
-    WH.waveLength = 16;
-    //WH.wFormatTag = WAVE_FORMAT_PCM;
-    
-    WH.wFormatTag = 1;
-
-    WH.nChannels = 1;
-    WH.nSamplesPerSec = Fs;
-    WH.nAvgBytesPerSec = 2 * Fs;
-    WH.nBlockAlign = 2;
-    WH.wBitsPerSample = 16;
-    WH.data = 0x61746164;
-    WH.dataLength = 2 * Length;
-    fwrite(&WH, 1, 44, fp);
-  }
-
+  prepare=1;
 }
 
-int drumsynth::setdsfile(char * mydsfile)
-{
-  dsfile=mydsfile;
-}
-
-/* int drumsynth::setwavefile(char * mywavefile) */
-/* { */
-/*   wavefile=mywavefile; */
-/* } */
-
-
-
-//int APIENTRY ds2wav(char *dsfile, char *wavfile, HWND hWnd)
-//int ds2wav(char *dsfile, char *wavfile, HWND hWnd)
 int drumsynth::generate(short * buffer,int len)
 {
   //MessageBox(NULL, dsfile, "DrumSynth", MB_OK); //////////////////
@@ -474,8 +424,7 @@ int drumsynth::generate(short * buffer,int len)
 
   if (prepare==0)
     {
-      prepare_generate(dsfile,wavefile);
-      prepare=1;
+      return -1;
     }
 
   for (i=0;i<len;i++)
@@ -486,7 +435,7 @@ int drumsynth::generate(short * buffer,int len)
   //tpos = 0;
   //while(tpos<Length)
   //{
-    tplus = tpos + BLOCKSIZE-1;
+    tplus = tpos + len-1;
 
     if(NON==1) //noise
     {
@@ -502,7 +451,7 @@ int drumsynth::generate(short * buffer,int len)
       }
       if(t>=envData[2][MAX]) NON=0;
     }
-    else for(j=0; j<BLOCKSIZE; j++) DF[j]=0.f;
+    else for(j=0; j<len; j++) DF[j]=0.f;
     
     if(TON==1) //tone
     {
@@ -528,7 +477,7 @@ int drumsynth::generate(short * buffer,int len)
       }
       if(t>=envData[1][MAX]) TON=0;
     }
-    else for(j=0; j<BLOCKSIZE; j++) phi[j]=F2; //for overtone sync
+    else for(j=0; j<len; j++) phi[j]=F2; //for overtone sync
     
     if(BON==1) //noise band 1
     {
@@ -672,10 +621,10 @@ int drumsynth::generate(short * buffer,int len)
     
     if(DiON==1) //bit resolution
     {
-      for(j=0; j<BLOCKSIZE; j++)
+      for(j=0; j<len; j++)
         DF[j] = DGain * (int)(DF[j] / DAtten);
       
-      for(j=0; j<BLOCKSIZE; j+=DStep) //downsampling
+      for(j=0; j<len; j+=DStep) //downsampling
       {
         DownAve = 0;
         DownStart = j;
@@ -687,9 +636,9 @@ int drumsynth::generate(short * buffer,int len)
           DF[jj] = DownAve;
       }  
     }
-    else for(j=0; j<BLOCKSIZE; j++) DF[j] *= DGain;
+    else for(j=0; j<len; j++) DF[j] *= DGain;
     
-    for(j = 0; j<BLOCKSIZE; j++) //clipping + output
+    for(j = 0; j<len; j++) //clipping + output
     {
       if(DF[j] > clippoint) 
         buffer[wavewords++] = clippoint;
@@ -707,7 +656,7 @@ int drumsynth::generate(short * buffer,int len)
       //if(hWnd>0) SetWindowText(hWnd, percent);
       
     }
-    tpos = tpos + BLOCKSIZE;
+    tpos = tpos + len;
     //}
 
   /* if(wavemode==0) */
