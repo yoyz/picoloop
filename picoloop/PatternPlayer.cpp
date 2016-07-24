@@ -1294,7 +1294,7 @@ void display_board_text_global()
 
 
   //int  right_x_display_offset=      200*SCREEN_MULT;
-  int  right_x_display_offset=      COLLUMN40;
+  int  right_x_display_offset=       COLLUMN40;
   int  right_y_display_offset_line1= LINE02;
   int  right_y_display_offset_line2= LINE03;
   int  right_y_display_offset_line3= LINE04;
