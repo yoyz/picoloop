@@ -1051,7 +1051,9 @@ void display_board_load_save()
 
 
   char str_bank[16];
-  char str_song[16];
+  char str_song1[16];
+  char str_song2[16];
+  char str_song3[16];
 
   static const char * txt_pattern_modulo_sixteen_slot[] = 
     { 
@@ -1112,22 +1114,19 @@ void display_board_load_save()
      DPRINTF("HIT");
       SG.clearScreen();
       
-      sprintf(str_bank,"Bank %d ",bank);
+      sprintf(str_bank, "Bank %d ",bank);
+      sprintf(str_song1,"SongPosition %d ",SEQ.getSongSequencer().getStep());
+      sprintf(str_song2,"LoopA %d ",SEQ.getSongSequencer().getLoopA());
+      sprintf(str_song3,"LoopB %d ",SEQ.getSongSequencer().getLoopB());
 
-      SG.guiTTFText(30,10, str_bank);
-      SG.guiTTFText(30,30,txt_pattern_modulo_sixteen_slot[loadsave_cursor_x_div_sixteen]);
+      SG.guiTTFText(COLLUMN03,LINE01, str_bank);
+      SG.guiTTFText(COLLUMN03,LINE02, txt_pattern_modulo_sixteen_slot[loadsave_cursor_x_div_sixteen]);      
 
-
-      sprintf(str_song,"SongPosition %d ",SEQ.getSongSequencer().getStep());
-
-      SG.guiTTFText(30,(SCREEN_HEIGHT/2)*SCREEN_MULT+0, str_song);
-      SG.guiTTFText(30,(SCREEN_HEIGHT/2)*SCREEN_MULT+20,txt_pattern_modulo_sixteen_slot[song_cursor_x_div_sixteen]);
-
-      sprintf(str_song,"LoopA %d ",SEQ.getSongSequencer().getLoopA());
-      SG.guiTTFText((SCREEN_WIDTH/2)*SCREEN_MULT,(SCREEN_HEIGHT/2)*SCREEN_MULT+0, str_song);
-
-      sprintf(str_song,"LoopB %d ",SEQ.getSongSequencer().getLoopB());
-      SG.guiTTFText((SCREEN_WIDTH/2)*SCREEN_MULT,(SCREEN_HEIGHT/2)*SCREEN_MULT+20,str_song);
+      SG.guiTTFText(COLLUMN03,LINE15, str_song1);
+      SG.guiTTFText(COLLUMN03,LINE16, txt_pattern_modulo_sixteen_slot[song_cursor_x_div_sixteen]);
+      
+      SG.guiTTFText(COLLUMN33,LINE16, str_song2);      
+      SG.guiTTFText(COLLUMN33,LINE17, str_song3);
 
 
 
@@ -1294,16 +1293,17 @@ void display_board_text_global()
 
 
 
-  int  right_x_display_offset=      200*SCREEN_MULT;
-  int  right_y_display_offset_line1= 20*SCREEN_MULT;
-  int  right_y_display_offset_line2= 40*SCREEN_MULT;
-  int  right_y_display_offset_line3= 60*SCREEN_MULT;
-  int  right_y_display_offset_line4= 80*SCREEN_MULT;
-  int  right_y_display_offset_line5=100*SCREEN_MULT;
-  int  right_y_display_offset_line6=120*SCREEN_MULT;
+  //int  right_x_display_offset=      200*SCREEN_MULT;
+  int  right_x_display_offset=      COLLUMN40;
+  int  right_y_display_offset_line1= LINE02;
+  int  right_y_display_offset_line2= LINE03;
+  int  right_y_display_offset_line3= LINE04;
+  int  right_y_display_offset_line4= LINE05;
+  int  right_y_display_offset_line5= LINE06;
+  int  right_y_display_offset_line6= LINE07;
 
-  int  menu_x_display_offset=       10*SCREEN_MULT;
-  int  menu_y_display_offset=      200*SCREEN_MULT;
+  int  menu_x_display_offset=       COLLUMN01;
+  int  menu_y_display_offset=       LINE25;
 
   int  cty=SEQ.getCurrentTrackY();
   int  stepdiv=SEQ.getPatternSequencer(cty).getBPMDivider();
