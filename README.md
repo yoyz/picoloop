@@ -1,4 +1,4 @@
-# PICOLOOP 0.69 README #
+# PICOLOOP 0.71 README #
 
 
 
@@ -320,6 +320,11 @@ In this case you need a prx and an elf file.
 
 Changelog
 =========
+
+V0.71 :
+
+- improve realtime of mda drum synth, now quite useable, but need to be improved
+
 
 V0.70 :
 
