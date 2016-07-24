@@ -192,7 +192,7 @@ SOURCES=PatternPlayer.cpp \
 		      Machine/MidiOutSystem/MidiOutMachine.cpp                  \
 		      Machine/MDADrum/MDADrumMachine.cpp			\
 		      Machine/MDADrum/MDADrumUserInterface.cpp			\
-		      Machine/MDADrum/drumsynth.cpp				\
+		      Machine/MDADrum/drumsynth_oop5.cpp			\
 		      Machine/MDADrum/profport.cpp				
 
 

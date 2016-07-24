@@ -62,7 +62,7 @@
 #define MDA_BANK_TR909_SIZE         13
 
 
-MDADrumMachine::MDADrumMachine() : filter()
+MDADrumMachine::MDADrumMachine() : filter(), dsoop()
 {
   DPRINTF("MDADrumMachine::MDADrumMachine()\n");  
   buffer=0;
@@ -96,7 +96,7 @@ void MDADrumMachine::init()
   int i;
 
   filter.init();
-
+  buffer = (Sint16*)malloc(sizeof(Sint16)*SAM*8);
   //HO(44100);
   // if (buffer==0)
   //   {
@@ -2175,9 +2175,16 @@ void MDADrumMachine::setI(int what,int val)
 
 int MDADrumMachine::tick()
 {
-
+  int       i=0;
   Sint16 s_in=0;
   Sint16 s_out=0;
+  Sint16 sum=0;
+  Sint16 ret=0;
+
+  if (index>=SAM | 
+      index<0)
+    index=0;
+
 
   if (need_note_on==1)
     {
@@ -2185,39 +2192,38 @@ int MDADrumMachine::tick()
       std::string  bank=this->getMachineParamCharStar(OSC1_TYPE,osc1_type);
       std::string  sound=this->getMachineTwoParamCharStar(OSC2_TYPE,osc1_type,osc2_type);
       std::string  path=prefix+"/"+bank+"/"+sound+".ds";
-      if (buffer!=0)
-	{
-	  free(buffer);
-	  buffer=0;
-	}
-      //buffer_size=ds2mem("patch/MDADrum/tr808/Kick.ds",&buffer,1.0,1.0,1.0,1.0,0.0,1.0);
-      //buffer_size=ds2mem(this->getMachineParamCharStar(255,osc1_type),&buffer,1.0,1.0,1.0,1.0,0.0,1.0);
-      
-      buffer_size=ds2mem(path.c_str(),&buffer,1.0,1.0,1.0,1.0,0.0,1.0);
-      // buffer_size=ds2mem(path.c_str(),&buffer,
-      // 			 param_t,
-      // 			 param_o,
-      // 			 param_n,
-      // 			 param_b,
-      // 			 param_tune,
-      // 			 param_time);
+      buffer_size=SAM;
+      index=0;
       DPRINTF("MDA buffer_size: %d buffer:0x%08.8X\n",buffer_size,buffer);
       DPRINTF("MDA path: %s \n",path.c_str());
-      index=0;
+
+      dsoop.load_patch(path.c_str());      
       need_note_on=0;
       note_on=1;
     }
   if (note_on)
     {
-      if (index<buffer_size)
+      if (index==0)
 	{
-	  s_in=buffer[++index]/4;
-	  s_out=filter.process(s_in);
+
+	  ret=dsoop.generate(buffer,buffer_size);
+
+	  // printf("~~");
+	  //for (i=0;i<SAM;i++)
+	  //sum=buffer[i]+sum;
+
+	  //DPRINTF("MDA GENERATE : %d %d",sum,ret);
+	  //   printf("%d",buffer[i]);
+	  // printf("\n");
 	}
+      s_in=buffer[index]/4;
+      s_out=filter.process(s_in);
        	//return buffer[++index]/4;
-      else
-       	note_on=0;
+      // else
+      //  	note_on=0;
     }
+  index++;
+  
   return s_out;
 }
 

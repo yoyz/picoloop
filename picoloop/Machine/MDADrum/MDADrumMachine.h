@@ -1,12 +1,13 @@
 using namespace std;
 
+
 #include "Machine.h"
 //#include "Machine/MDADrum/hiopl.h"
 
 #include "Filter.h"
 #include <SDL/SDL.h>
 #include "NoteFreq.h"
-#include "drumsynth.h"
+#include "drumsynth_oop5.h"
 //#include "Biquad.h"
 //#include "SineOscillator.h"
 //#include "dbopl/mixer.h"
@@ -91,6 +92,7 @@ class MDADrumMachine : public Machine
   int                   osc1_type;
   int                   osc2_type;
 
+  drumsynth             dsoop;
 
 };
 
