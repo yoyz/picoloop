@@ -588,14 +588,19 @@ void display_board_one_and_two_param_text(int machineParam1,int machineParam2)
   int  step=SEQ.getPatternSequencer(cty).getStep();
 
   int    size_of_zero=5;
-  char   line1[size_of_zero];
-  char   line2[size_of_zero];
+  char   line1[128];
+  char   line2[128];
 
   char * line1_to_process;
   char * line2_to_process;
   int    line1_size;
   int    line2_size;
 
+  int  right_x_display_offset=       COLLUMN40;
+  int  right_y_display_offset_line7= LINE08;
+  int  right_y_display_offset_line8= LINE09;
+
+  
   display_board_trig();
 
   for (i=0;i<16;i++)
@@ -607,11 +612,12 @@ void display_board_one_and_two_param_text(int machineParam1,int machineParam2)
 
 	  line1_to_process=SAM->getMachineParamCharStar(machineParam1,
 							P[cty].getPatternElement(j).get(machineParam1));
-
+      
 	  line2_to_process=SAM->getMachineTwoParamCharStar(machineParam2,
-							   P[cty].getPatternElement(j).get(machineParam1),
-							   P[cty].getPatternElement(j).get(machineParam2));
-
+						       P[cty].getPatternElement(j).get(machineParam1),
+						       P[cty].getPatternElement(j).get(machineParam2));
+	  // if (line1_to_process==NULL | line2_to_process==NULL)
+	  //   break;
 	  line1_size=strlen(line1_to_process);
 	  line2_size=strlen(line2_to_process);
 
@@ -630,10 +636,20 @@ void display_board_one_and_two_param_text(int machineParam1,int machineParam2)
 	    }
 	  else
 	    strcpy(line2,line2_to_process);
-       	  
+
 	  SG.drawTTFTextNumberFirstLine( i,line1);	  
 	  SG.drawTTFTextNumberSecondLine(i,line2);
 
+	  // display two additional line of text in the right of the screen
+	  // the display is "cursor position" dependant
+	  if (cursor==i)
+	    {
+	      SG.guiTTFText(right_x_display_offset,
+			    right_y_display_offset_line7,line1_to_process);
+	      SG.guiTTFText(right_x_display_offset,
+			    right_y_display_offset_line8,line2_to_process);
+	    }
+	  
 	}
     }  
 }
