@@ -222,18 +222,25 @@ float drumsynth::waveform(float ph, int form)
 
 
 
+void drumsynth::set_tune(float t)
+{
+  mem_tune=t;
+  //printf("set_tune:%f\n",t);
+}
+
 void drumsynth::load_patch(char *dsfile)
 {
-  init();
-  if(wavemode==0) //semi-real-time adjustments if working in memory!!
-  {
-    mem_t = 1.0f;
-    mem_o = 1.0f;
-    mem_n = 1.0f;
-    mem_b = 1.0f;
-    mem_tune = 0.0f;
-    mem_time = 1.0f;
-  }
+  // init();
+  // if(wavemode==0) //semi-real-time adjustments if working in memory!!
+  // {
+  //   mem_t = 1.0f;
+  //   mem_o = 1.0f;
+  //   mem_n = 1.0f;
+  //   mem_b = 1.0f;
+  //   mem_tune = 0.0f;
+  //   mem_time = 1.0f;
+  //   mem_time = 2.0f;
+  // }
 
   //try to read version from input file
   //lstrcpy(sec, "General");
