@@ -101,6 +101,7 @@ class drumsynth
   drumsynth();
   ~drumsynth();
   void init();
+  void set_tune(float t);
   void load_patch(char *dsfile);
   int LongestEnv(void);
   float LoudestEnv(void);
