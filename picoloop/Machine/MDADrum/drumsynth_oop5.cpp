@@ -228,6 +228,16 @@ void drumsynth::set_tune(float t)
   //printf("set_tune:%f\n",t);
 }
 
+void drumsynth::set_time(float t)
+{
+  mem_t=t;
+  mem_o=t;
+  mem_n=t;
+  mem_b=t;
+  //printf("set_tune:%f\n",t);
+}
+
+ 
 void drumsynth::load_patch(char *dsfile)
 {
   // init();
