@@ -1076,7 +1076,8 @@ void MDADrumUserInterface::display_board_osc()
 
   if (menu_cursor==GLOBALMENU_OSC)
     {
-      display_board_one_and_two_param_text(OSC1_TYPE,OSC2_TYPE);
+      display_board_one_and_two_param_text(20,21);
+      //display_board_one_and_two_param_text(OSC1_TYPE,OSC2_TYPE);
     }
 }
 

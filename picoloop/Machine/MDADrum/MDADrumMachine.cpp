@@ -50,8 +50,8 @@
 #define MDA_BANK_MAGNETBOY_SIZE     27
 #define MDA_BANK_MISC_CLAPS_SIZE    12
 #define MDA_BANK_MISC_BASS_SIZE     18
-#define MDA_BANK_MISC_SIZE         182
-#define MDA_BANK_MISC_ELECTRO_SIZE  51
+#define MDA_BANK_MISC_SIZE         201
+#define MDA_BANK_MISC_ELECTRO_SIZE  60
 #define MDA_BANK_MISC_FX_SIZE       83
 #define MDA_BANK_MISC_PERC_SIZE     62
 #define MDA_BANK_MISC_HATS_SIZE     72
@@ -450,7 +450,7 @@ static const char * bank_instrmnt_whistler                        = "whistler";
  bank_instrmnt_array[7] = bank_instrmnt_soft_piano;         
  bank_instrmnt_array[8] = bank_instrmnt_square_lead;        
  bank_instrmnt_array[9] = bank_instrmnt_sweep;              
- bank_instrmnt_array[0] = bank_instrmnt_techno_stab;        
+ bank_instrmnt_array[10] = bank_instrmnt_techno_stab;        
  bank_instrmnt_array[11] = bank_instrmnt_Temple_Bell;        
  bank_instrmnt_array[12] = bank_instrmnt_tinkle;             
  bank_instrmnt_array[13] = bank_instrmnt_trumpet;            
@@ -594,7 +594,7 @@ static const char * bank_misc_bass_warm_bass                      = "warm_bass";
  bank_misc_bass_array[16] = bank_misc_bass_the_funk;                 
  bank_misc_bass_array[17] = bank_misc_bass_warm_bass;                
 
- static const char * bank_misc_array[182];
+ static const char * bank_misc_array[MDA_BANK_MISC_SIZE];
 
 static const char * bank_misc_AAH                                 = "AAH";                         
 static const char * bank_misc_airbrush_bd                         = "airbrush_bd";                 
@@ -799,8 +799,9 @@ bank_misc_array[5] = bank_misc_and_loud_sn;
 bank_misc_array[6] = bank_misc_another_909_moment;         
 bank_misc_array[7] = bank_misc_another_example_snare;      
 bank_misc_array[8] = bank_misc_application_bass_drum;      
-bank_misc_array[9] = bank_misc_b1_0;                       
-bank_misc_array[0] = bank_misc_b1_2;                       
+bank_misc_array[9] = bank_misc_b1_0;
+ 
+bank_misc_array[10] = bank_misc_b1_2;                       
 bank_misc_array[11] = bank_misc_b1_5;                       
 bank_misc_array[12] = bank_misc_b1_9;                       
 bank_misc_array[13] = bank_misc_B1_B2;                      
@@ -809,7 +810,8 @@ bank_misc_array[15] = bank_misc_battle_hook_sn;
 bank_misc_array[16] = bank_misc_bauble_bd;                  
 bank_misc_array[17] = bank_misc_beat_box_bd;                
 bank_misc_array[18] = bank_misc_beefy_wack;                 
-bank_misc_array[19] = bank_misc_big_80_s;                   
+bank_misc_array[19] = bank_misc_big_80_s;
+ 
 bank_misc_array[20] = bank_misc_big_80_s_2;                 
 bank_misc_array[21] = bank_misc_big_sleeper_snare;          
 bank_misc_array[22] = bank_misc_blended_snare;              
@@ -819,7 +821,8 @@ bank_misc_array[25] = bank_misc_breathing_snare;
 bank_misc_array[26] = bank_misc_bright_house_sn;            
 bank_misc_array[27] = bank_misc_buff_hit;                   
 bank_misc_array[28] = bank_misc_buff_sound;                 
-bank_misc_array[29] = bank_misc_bug_into_water;             
+bank_misc_array[29] = bank_misc_bug_into_water;
+ 
 bank_misc_array[30] = bank_misc_bulge_n_yr_woofer;          
 bank_misc_array[31] = bank_misc_bumpin_quickie;             
 bank_misc_array[32] = bank_misc_calamity_snare;             
@@ -829,7 +832,8 @@ bank_misc_array[35] = bank_misc_Clap;
 bank_misc_array[36] = bank_misc_clappy_snare;               
 bank_misc_array[37] = bank_misc_clean_low_key_kick;         
 bank_misc_array[38] = bank_misc_clean_soft_808;             
-bank_misc_array[39] = bank_misc_clearly_snare;              
+bank_misc_array[39] = bank_misc_clearly_snare;
+ 
 bank_misc_array[40] = bank_misc_close_mic_sn;                       
 bank_misc_array[41] = bank_misc_compression_does_it_808;            
 bank_misc_array[42] = bank_misc_crusty_bump;                        
@@ -839,17 +843,8 @@ bank_misc_array[45] = bank_misc_decompression_snare;
 bank_misc_array[46] = bank_misc_deep_bauble_bd;                     
 bank_misc_array[47] = bank_misc_deep_tones;                         
 bank_misc_array[48] = bank_misc_difference_snare;                   
-bank_misc_array[49] = bank_misc_different_909_snare;                
-bank_misc_array[40] = bank_misc_dirty_world_bd;                     
-bank_misc_array[41] = bank_misc_Distant_Thunder;                    
-bank_misc_array[42] = bank_misc_dist_sub_kick;                      
-bank_misc_array[43] = bank_misc_dist_sub_kick_2;                    
-bank_misc_array[44] = bank_misc_electro_dnb_kick;                   
-bank_misc_array[45] = bank_misc_electronic_rim;                     
-bank_misc_array[46] = bank_misc_electro_snare_layer;                
-bank_misc_array[47] = bank_misc_end_transmission;                   
-bank_misc_array[48] = bank_misc_every_909;                          
-bank_misc_array[49] = bank_misc_fatness;                            
+bank_misc_array[49] = bank_misc_different_909_snare;
+  
 bank_misc_array[50] = bank_misc_fattie_bd;
 bank_misc_array[51] = bank_misc_feel_me_;
 bank_misc_array[52] = bank_misc_few_people_will_use_this_snare;     
@@ -859,7 +854,8 @@ bank_misc_array[55] = bank_misc_fried_food;
 bank_misc_array[56] = bank_misc_funky_trashcan_snare;               
 bank_misc_array[57] = bank_misc_fuzzy_sn;                           
 bank_misc_array[58] = bank_misc_gabbakick;                          
-bank_misc_array[59] = bank_misc_gimme_a_hard_tone;                  
+bank_misc_array[59] = bank_misc_gimme_a_hard_tone;
+ 
 bank_misc_array[60] = bank_misc_gimmie_a_tone;                      
 bank_misc_array[61] = bank_misc_hardcore_a_bd;                      
 bank_misc_array[62] = bank_misc_hardcore_bd;                        
@@ -869,7 +865,8 @@ bank_misc_array[65] = bank_misc_hardersnare;
 bank_misc_array[66] = bank_misc_hard_hittin;                        
 bank_misc_array[67] = bank_misc_heady_mix_sn;                       
 bank_misc_array[68] = bank_misc_heavy;                              
-bank_misc_array[69] = bank_misc_hed_chunk_snare;                    
+bank_misc_array[69] = bank_misc_hed_chunk_snare;
+ 
 bank_misc_array[70] = bank_misc_hi_pass;                            
 bank_misc_array[71] = bank_misc_hip_hop_fantasy_kick;               
 bank_misc_array[72] = bank_misc_hi_pic;                             
@@ -879,7 +876,8 @@ bank_misc_array[75] = bank_misc_hitthosesubs;
 bank_misc_array[76] = bank_misc_hot_morning_bass_drum;              
 bank_misc_array[77] = bank_misc_HOTSNARE;                           
 bank_misc_array[78] = bank_misc_i_luv_u_fat_noise;                  
-bank_misc_array[79] = bank_misc_invisible_909_kick;                 
+bank_misc_array[79] = bank_misc_invisible_909_kick;
+ 
 bank_misc_array[80] = bank_misc_it_s_like_that_snare;               
 bank_misc_array[81] = bank_misc_just_the_bass_drum;                 
 bank_misc_array[82] = bank_misc_kneel_and_buzz;                     
@@ -889,7 +887,8 @@ bank_misc_array[85] = bank_misc__lectro_hammer;
 bank_misc_array[86] = bank_misc__lectro_square_hammer;              
 bank_misc_array[87] = bank_misc_light_snare;                        
 bank_misc_array[88] = bank_misc_lo_fi_bass_drum;                    
-bank_misc_array[89] = bank_misc_lo_fi_march;                        
+bank_misc_array[89] = bank_misc_lo_fi_march;
+ 
 bank_misc_array[90] = bank_misc_lo_fi_rim;                          
 bank_misc_array[91] = bank_misc_loudness_sn;                        
 bank_misc_array[92] = bank_misc_lovely_clean_bd;                    
@@ -899,7 +898,8 @@ bank_misc_array[95] = bank_misc_manipulate_bd;
 bank_misc_array[96] = bank_misc_many_frequencies;                   
 bank_misc_array[97] = bank_misc_mello_bd;                           
 bank_misc_array[98] = bank_misc_mind_ya_h;                          
-bank_misc_array[99] = bank_misc_missing_snare;                      
+bank_misc_array[99] = bank_misc_missing_snare;
+ 
 bank_misc_array[100] = bank_misc_missing_snare_2;                    
 bank_misc_array[101] = bank_misc_more_basic_bd;                      
 bank_misc_array[102] = bank_misc_more_snap;                          
@@ -909,7 +909,8 @@ bank_misc_array[105] = bank_misc_neo808_2;
 bank_misc_array[106] = bank_misc_n_hi;                               
 bank_misc_array[107] = bank_misc_N_low;                              
 bank_misc_array[108] = bank_misc_n_mid;                              
-bank_misc_array[109] = bank_misc_noise;                              
+bank_misc_array[109] = bank_misc_noise;
+ 
 bank_misc_array[110] = bank_misc_noise_calling_kick;                 
 bank_misc_array[111] = bank_misc_noise_clip;                         
 bank_misc_array[112] = bank_misc_nosie_calling_kick_2;               
@@ -919,7 +920,8 @@ bank_misc_array[115] = bank_misc_original_tone_snare;
 bank_misc_array[116] = bank_misc_ot_12;                              
 bank_misc_array[117] = bank_misc_ot_34;                              
 bank_misc_array[118] = bank_misc_ot_sine;                            
-bank_misc_array[119] = bank_misc_overdriver_kick;                    
+bank_misc_array[119] = bank_misc_overdriver_kick;
+ 
 bank_misc_array[120] = bank_misc_pleasure_factory_kick;              
 bank_misc_array[121] = bank_misc_pop_1_off_snare;                    
 bank_misc_array[122] = bank_misc_power_out;                          
@@ -929,7 +931,8 @@ bank_misc_array[125] = bank_misc_puppy_kick;
 bank_misc_array[126] = bank_misc_q_ey_bass_drum;                    
 bank_misc_array[127] = bank_misc_q_kick_2;                          
 bank_misc_array[128] = bank_misc_questoin_kick;                     
-bank_misc_array[129] = bank_misc_r_b_fantasy_kick;                  
+bank_misc_array[129] = bank_misc_r_b_fantasy_kick;
+ 
 bank_misc_array[130] = bank_misc_reverb_please_snare;               
 bank_misc_array[131] = bank_misc_rimmy_noise;                       
 bank_misc_array[132] = bank_misc_RimShot;                           
@@ -939,7 +942,8 @@ bank_misc_array[135] = bank_misc_ring_fray_kick;
 bank_misc_array[136] = bank_misc_ring_mod_drone_bd;                 
 bank_misc_array[137] = bank_misc_rm;                                
 bank_misc_array[138] = bank_misc_rubber__82;                        
-bank_misc_array[139] = bank_misc_rubbery_deep_house_kick;           
+bank_misc_array[139] = bank_misc_rubbery_deep_house_kick;
+ 
 bank_misc_array[140] = bank_misc_Saber_fight;                       
 bank_misc_array[141] = bank_misc_serious_bd;                        
 bank_misc_array[142] = bank_misc_short_909;                         
@@ -949,7 +953,8 @@ bank_misc_array[145] = bank_misc_simple_click_bd;
 bank_misc_array[146] = bank_misc_simple_h;                          
 bank_misc_array[147] = bank_misc_simple_k;                          
 bank_misc_array[148] = bank_misc_Simple_r;                          
-bank_misc_array[149] = bank_misc_Simple_s;                          
+bank_misc_array[149] = bank_misc_Simple_s;
+ 
 bank_misc_array[150] = bank_misc_skiwlz_snare;                      
 bank_misc_array[151] = bank_misc_slepper_n_the_wilderness;          
 bank_misc_array[152] = bank_misc_sloppy_electric;                   
@@ -959,7 +964,8 @@ bank_misc_array[155] = bank_misc_softsnare;
 bank_misc_array[156] = bank_misc_sou_like_a_low_tom;                
 bank_misc_array[157] = bank_misc_sounding_kick;                     
 bank_misc_array[158] = bank_misc_special_man_bass_drum;             
-bank_misc_array[159] = bank_misc_splatter;                          
+bank_misc_array[159] = bank_misc_splatter;
+ 
 bank_misc_array[160] = bank_misc_sticky_q_kick;                     
 bank_misc_array[161] = bank_misc_stiffy_snare;                      
 bank_misc_array[162] = bank_misc_sweet_tight_snare;                 
@@ -969,7 +975,8 @@ bank_misc_array[165] = bank_misc_test;
 bank_misc_array[166] = bank_misc_think_bd;                          
 bank_misc_array[167] = bank_misc_think_sn_1;                        
 bank_misc_array[168] = bank_misc_think_sn_2;                        
-bank_misc_array[169] = bank_misc_this_snare_spells_electronic;      
+bank_misc_array[169] = bank_misc_this_snare_spells_electronic;
+ 
 bank_misc_array[170] = bank_misc_tomita_clip;                       
 bank_misc_array[171] = bank_misc_tone;                          
 bank_misc_array[172] = bank_misc_tone_deg;                      
@@ -979,9 +986,21 @@ bank_misc_array[175] = bank_misc_Tone_sw2;
 bank_misc_array[176] = bank_misc_Tone_swp;                      
 bank_misc_array[177] = bank_misc_transient_snare;               
 bank_misc_array[178] = bank_misc_trashyovertones;               
-bank_misc_array[179] = bank_misc_type_snare;                    
+bank_misc_array[179] = bank_misc_type_snare;
+ 
 bank_misc_array[180] = bank_misc_ultra_electro_bd;              
 bank_misc_array[181] = bank_misc_usgae;                    
+bank_misc_array[182] = bank_misc_dirty_world_bd;                     
+bank_misc_array[183] = bank_misc_Distant_Thunder;                    
+bank_misc_array[184] = bank_misc_dist_sub_kick;                      
+bank_misc_array[185] = bank_misc_dist_sub_kick_2;                    
+bank_misc_array[186] = bank_misc_electro_dnb_kick;                   
+bank_misc_array[187] = bank_misc_electronic_rim;                     
+bank_misc_array[188] = bank_misc_electro_snare_layer;                
+bank_misc_array[189] = bank_misc_end_transmission;                   
+
+bank_misc_array[200] = bank_misc_every_909;                          
+bank_misc_array[201] = bank_misc_fatness;
 
 
  static const char * bank_misc_electro_array[MDA_BANK_MISC_ELECTRO_SIZE];
@@ -1058,7 +1077,7 @@ bank_misc_electro_array[6] = bank_misc_electro_cheap_fx;
 bank_misc_electro_array[7] = bank_misc_electro_chrip_q;                     
 bank_misc_electro_array[8] = bank_misc_electro_clean_rock_bd;               
 bank_misc_electro_array[9] = bank_misc_electro_cold_shot;                   
-bank_misc_electro_array[0] = bank_misc_electro_confusion;                   
+bank_misc_electro_array[10] = bank_misc_electro_confusion;                   
 bank_misc_electro_array[11] = bank_misc_electro_cymbal_madness;              
 bank_misc_electro_array[12] = bank_misc_electro_depth_fx;                    
 bank_misc_electro_array[13] = bank_misc_electro_dialed;                      
@@ -1068,47 +1087,47 @@ bank_misc_electro_array[16] = bank_misc_electro_electro_perc_long;
 bank_misc_electro_array[17] = bank_misc_electro_electro_perc_short;          
 bank_misc_electro_array[18] = bank_misc_electro_electro_rim_2;               
 bank_misc_electro_array[19] = bank_misc_electro_electro_rim_3;               
-bank_misc_electro_array[10] = bank_misc_electro_electro_rim;                 
-bank_misc_electro_array[11] = bank_misc_electro_electro_squeek;              
-bank_misc_electro_array[12] = bank_misc_electro_fuzzy_q_bd;                  
-bank_misc_electro_array[13] = bank_misc_electro_general_obscurity;           
-bank_misc_electro_array[14] = bank_misc_electro_g_question;                  
-bank_misc_electro_array[15] = bank_misc_electro_hard_bork;                   
-bank_misc_electro_array[16] = bank_misc_electro_hello_q;                     
-bank_misc_electro_array[17] = bank_misc_electro_just_the_tweet;              
-bank_misc_electro_array[18] = bank_misc_electro__lectro_spliff;              
-bank_misc_electro_array[19] = bank_misc_electro_lo_fi_house_c;               
-bank_misc_electro_array[20] = bank_misc_electro_lo_fi_metal;                 
-bank_misc_electro_array[21] = bank_misc_electro_lo_finess;                   
-bank_misc_electro_array[22] = bank_misc_electro_long_q_1;                    
-bank_misc_electro_array[23] = bank_misc_electro_long_q_2;                    
-bank_misc_electro_array[24] = bank_misc_electro_long_q_3;                    
-bank_misc_electro_array[25] = bank_misc_electro_long_quack;                  
-bank_misc_electro_array[26] = bank_misc_electro_low_bit_tom;                 
-bank_misc_electro_array[27] = bank_misc_electro_metal_noise_shot;            
-bank_misc_electro_array[28] = bank_misc_electro_open_reso;                   
-bank_misc_electro_array[29] = bank_misc_electro_paging_the_jetsons;          
-bank_misc_electro_array[30] = bank_misc_electro_pan;                         
-bank_misc_electro_array[31] = bank_misc_electro_pleasant_combo;              
-bank_misc_electro_array[32] = bank_misc_electro_q_ziq_for_the_masses;        
-bank_misc_electro_array[33] = bank_misc_electro_rich_bd;                     
-bank_misc_electro_array[34] = bank_misc_electro_ring;                        
-bank_misc_electro_array[35] = bank_misc_electro_ringing_sn;                  
-bank_misc_electro_array[36] = bank_misc_electro_rockin_electro_bass_drum;    
-bank_misc_electro_array[37] = bank_misc_electro_shocking_kiss;             
-bank_misc_electro_array[38] = bank_misc_electro_siren_sing;                
-bank_misc_electro_array[39] = bank_misc_electro_slide_tom;                 
-bank_misc_electro_array[40] = bank_misc_electro_space_dynamic;             
-bank_misc_electro_array[41] = bank_misc_electro_spaceness;                 
-bank_misc_electro_array[42] = bank_misc_electro_startling_one;             
-bank_misc_electro_array[43] = bank_misc_electro_tone_percussion;           
-bank_misc_electro_array[44] = bank_misc_electro_tweet;                     
-bank_misc_electro_array[45] = bank_misc_electro_wee_dog;                   
-bank_misc_electro_array[46] = bank_misc_electro_what_to_do_at_220;         
-bank_misc_electro_array[47] = bank_misc_electro_who_hears_all_sound;       
-bank_misc_electro_array[48] = bank_misc_electro_why_hit;                   
-bank_misc_electro_array[49] = bank_misc_electro_yr_tv_will_be_next;        
-bank_misc_electro_array[50] = bank_misc_electro_zappy_bells;               
+bank_misc_electro_array[20] = bank_misc_electro_electro_rim;                 
+bank_misc_electro_array[21] = bank_misc_electro_electro_squeek;              
+bank_misc_electro_array[22] = bank_misc_electro_fuzzy_q_bd;                  
+bank_misc_electro_array[23] = bank_misc_electro_general_obscurity;           
+bank_misc_electro_array[24] = bank_misc_electro_g_question;                  
+bank_misc_electro_array[25] = bank_misc_electro_hard_bork;                   
+bank_misc_electro_array[26] = bank_misc_electro_hello_q;                     
+bank_misc_electro_array[27] = bank_misc_electro_just_the_tweet;              
+bank_misc_electro_array[28] = bank_misc_electro__lectro_spliff;              
+bank_misc_electro_array[29] = bank_misc_electro_lo_fi_house_c;               
+bank_misc_electro_array[30] = bank_misc_electro_lo_fi_metal;                 
+bank_misc_electro_array[31] = bank_misc_electro_lo_finess;                   
+bank_misc_electro_array[32] = bank_misc_electro_long_q_1;                    
+bank_misc_electro_array[33] = bank_misc_electro_long_q_2;                    
+bank_misc_electro_array[34] = bank_misc_electro_long_q_3;                    
+bank_misc_electro_array[35] = bank_misc_electro_long_quack;                  
+bank_misc_electro_array[36] = bank_misc_electro_low_bit_tom;                 
+bank_misc_electro_array[37] = bank_misc_electro_metal_noise_shot;            
+bank_misc_electro_array[38] = bank_misc_electro_open_reso;                   
+bank_misc_electro_array[39] = bank_misc_electro_paging_the_jetsons;          
+bank_misc_electro_array[40] = bank_misc_electro_pan;                         
+bank_misc_electro_array[41] = bank_misc_electro_pleasant_combo;              
+bank_misc_electro_array[42] = bank_misc_electro_q_ziq_for_the_masses;        
+bank_misc_electro_array[43] = bank_misc_electro_rich_bd;                     
+bank_misc_electro_array[44] = bank_misc_electro_ring;                        
+bank_misc_electro_array[45] = bank_misc_electro_ringing_sn;                  
+bank_misc_electro_array[46] = bank_misc_electro_rockin_electro_bass_drum;    
+bank_misc_electro_array[47] = bank_misc_electro_shocking_kiss;             
+bank_misc_electro_array[48] = bank_misc_electro_siren_sing;                
+bank_misc_electro_array[49] = bank_misc_electro_slide_tom;                 
+bank_misc_electro_array[50] = bank_misc_electro_space_dynamic;             
+bank_misc_electro_array[51] = bank_misc_electro_spaceness;                 
+bank_misc_electro_array[52] = bank_misc_electro_startling_one;             
+bank_misc_electro_array[53] = bank_misc_electro_tone_percussion;           
+bank_misc_electro_array[54] = bank_misc_electro_tweet;                     
+bank_misc_electro_array[55] = bank_misc_electro_wee_dog;                   
+bank_misc_electro_array[56] = bank_misc_electro_what_to_do_at_220;         
+bank_misc_electro_array[57] = bank_misc_electro_who_hears_all_sound;       
+bank_misc_electro_array[58] = bank_misc_electro_why_hit;                   
+bank_misc_electro_array[59] = bank_misc_electro_yr_tv_will_be_next;        
+bank_misc_electro_array[60] = bank_misc_electro_zappy_bells;               
 
 
 
@@ -1675,7 +1694,9 @@ static const char * bank_R_B_x_backwd                             = "x_backwd";
  bank_misc_synth_array[6]  = bank_misc_synth_dist_high_c;               
  bank_misc_synth_array[7]  = bank_misc_synth_eno_s_lift;                
  bank_misc_synth_array[8]  = bank_misc_synth_eno_s_pad;                 
- bank_misc_synth_array[9]  = bank_misc_synth_eno_s_ride;                
+ bank_misc_synth_array[9]  = bank_misc_synth_eno_s_ride;
+
+ bank_misc_synth_array[10] = bank_misc_synth_wowmelodictone;             
  bank_misc_synth_array[11] = bank_misc_synth_flat_square_c;             
  bank_misc_synth_array[12] = bank_misc_synth_fm_c_bass_burst;           
  bank_misc_synth_array[13] = bank_misc_synth_fur_strings_2;             
@@ -1684,13 +1705,14 @@ static const char * bank_R_B_x_backwd                             = "x_backwd";
  bank_misc_synth_array[16] = bank_misc_synth_layered_bass_synth_c;      
  bank_misc_synth_array[17] = bank_misc_synth_my_red_hot_guitar;         
  bank_misc_synth_array[18] = bank_misc_synth_raver_organ;               
- bank_misc_synth_array[19] = bank_misc_synth_strong_c_dub_bass;         
+ bank_misc_synth_array[19] = bank_misc_synth_strong_c_dub_bass;
+ 
  bank_misc_synth_array[20] = bank_misc_synth_sync_drift;                
  bank_misc_synth_array[21] = bank_misc_synth_sync_man;                  
  bank_misc_synth_array[22] = bank_misc_synth_that_house_chord_cm;       
  bank_misc_synth_array[23] = bank_misc_synth_vibrato_pad;               
  bank_misc_synth_array[24] = bank_misc_synth_who_loves_ya__baby;        
- bank_misc_synth_array[25] = bank_misc_synth_wowmelodictone;            
+
 
 
  const char * bank_tr909_array[13];
@@ -2097,9 +2119,18 @@ int MDADrumMachine::checkI(int what,int val)
     case OSC1_TYPE:
       if (val<0) return 0;
       if (val>MDA_BANK_SIZE-1) return MDA_BANK_SIZE-1;
+      osc1_type=val;
       return val;
       break;
 
+
+    case OSC2_TYPE:
+      if (val<0) return 0;      
+      osc2_type=val;
+      return val;
+      break;
+
+      
 
     case FILTER1_TYPE:
       if (val<0) return 0;
@@ -2149,6 +2180,13 @@ void MDADrumMachine::setI(int what,int val)
   if (what==OSC1_TYPE)           { osc1_type=this->checkI(OSC1_TYPE,val); }
   if (what==OSC2_TYPE)           { osc2_type=this->checkI(OSC2_TYPE,val); }
 
+  if (what==NOTE1)
+    {
+      note=val;
+      NoteFreq & NF = NoteFreq::getInstance();
+      freq=NF.getINoteFreq(note);
+    }
+  
   if (what==FILTER1_CUTOFF)      
     { 
       cutoff=val;
@@ -2196,8 +2234,10 @@ int MDADrumMachine::tick()
       index=0;
       DPRINTF("MDA buffer_size: %d buffer:0x%08.8X\n",buffer_size,buffer);
       DPRINTF("MDA path: %s \n",path.c_str());
-
-      dsoop.load_patch(path.c_str());      
+      dsoop.init();
+      dsoop.set_tune(1.0+(float)freq/6.8);
+      dsoop.load_patch(path.c_str());
+      
       need_note_on=0;
       note_on=1;
     }
