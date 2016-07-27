@@ -162,6 +162,7 @@ Machine  *                   SAM; // Standalone Machine
 Sequencer      SEQ;         // used to  store/get information about sequencer 
 AudioEngine    AE;          // used to  init alsa/rtaudio
 PatternReader  PR;          // used to  read data.pic file
+Pattern        PA;          // used for copy paste Pattern
 PatternElement PE;          // used for copy paste PatternElement
 PatternElement PECursor;    // used for storing the current PatternElement ( under the cursor )
 InputManager   IE;          // used to  fetch key
@@ -2046,6 +2047,7 @@ void handle_key_load_save()
   int    lastEvent;
   int    lastKey;
 
+
   keyState=IE.keyState();
   keyRepeat=IE.keyRepeat();
   lastEvent=IE.lastEvent();
@@ -2106,7 +2108,8 @@ void handle_key_load_save()
 	  if (keyState[BUTTON_DOWN])
 	    { save=true; dirty_graphic=1; }
 	  if (keyState[BUTTON_UP])	
-	    load=true;
+	    { load=true;  }           // can't load and copy a a pattern to a copy paste element today ... 
+	                              // a pattern can only be save horizontaly...
 	}
 
       
