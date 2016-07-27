@@ -2199,10 +2199,15 @@ void MDADrumMachine::setI(int what,int val)
       filter.setResonance(resonance);
     }
 
+
+  if (what==FILTER1_TYPE)     filter.setFilterType(val);
+  if (what==FILTER1_ALGO)     filter.setFilterAlgo(val);
+
+
   // if (what==ADSR_ENV0_ATTACK)    {  param_t=val;       param_t=param_t/64; }
   // if (what==ADSR_ENV0_DECAY )    {  param_o=val;       param_o=param_o/64; }
   // if (what==ADSR_ENV0_SUSTAIN)   {  param_n=val;       param_n=param_n/64; }
-  // if (what==ADSR_ENV0_RELEASE)   {  param_b=val;       param_b=param_b/64; }
+  if (what==ADSR_ENV0_RELEASE)      {  param_time=val;    param_time=param_time/48.0; }
 
   // if (what==ADSR_ENV1_ATTACK)    {  param_tune=val;    param_tune=param_tune/128; }
   // if (what==ADSR_ENV1_DECAY )    {  param_time=val;    param_time=param_time/16; }
@@ -2236,6 +2241,7 @@ int MDADrumMachine::tick()
       DPRINTF("MDA path: %s \n",path.c_str());
       dsoop.init();
       dsoop.set_tune(1.0+(float)freq/6.8);
+      dsoop.set_time(param_time);
       dsoop.load_patch(path.c_str());
       
       need_note_on=0;
@@ -2256,7 +2262,7 @@ int MDADrumMachine::tick()
 	  //   printf("%d",buffer[i]);
 	  // printf("\n");
 	}
-      s_in=buffer[index]/4;
+      s_in=buffer[index]/8;
       s_out=filter.process(s_in);
        	//return buffer[++index]/4;
       // else

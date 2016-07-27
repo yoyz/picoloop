@@ -68,30 +68,13 @@ void MDADrumUserInterface::handle_key_amp_env()
     }  
 
 
-  // M_DS AMP
-  // Move Decay Sustain
-  // Insert/Remove Trig
-  if (menu          == MENU_OFF && 
-      menu_cursor   == GLOBALMENU_AD     &&
-      menu_ad      == MENU_AD_AMP_DECAY_SUSTAIN)
-    {
-      // Insert/Remove Trig
-      sub_handle_invert_trig();
-
-      handle_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, ADSR_AMP_DECAY,    -1, 0);
-      handle_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, ADSR_AMP_DECAY,     1, 0);
-
-      handle_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, ADSR_AMP_SUSTAIN,   1, 0);
-      handle_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, ADSR_AMP_SUSTAIN,  -1, 0);
-    }  
-
 
   // GLOBALMENU_AD AMP
   // Move Attack Release 
   // Insert/Remove Trig
   if (menu          != MENU_OFF && 
       menu_cursor   == GLOBALMENU_AD     &&
-      menu_ad      == MENU_AD_AMP_ATTACK_RELEASE)
+      menu_ad       == MENU_AD_AMP_ATTACK_RELEASE)
     {
       handle_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, ADSR_AMP_RELEASE, -1, 1);
       handle_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, ADSR_AMP_RELEASE,  1, 1);
@@ -100,93 +83,11 @@ void MDADrumUserInterface::handle_key_amp_env()
       handle_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, ADSR_AMP_ATTACK,  -1, 1);
     }  
 
-  // GLOBALMENU_AD AMP
-  // Move Decay Sustain
-  // Insert/Remove Trig
-  if (menu          != MENU_OFF && 
-      menu_cursor   == GLOBALMENU_AD     &&
-      menu_ad      == MENU_AD_AMP_DECAY_SUSTAIN)
-    {
-      handle_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, ADSR_AMP_DECAY,    -1, 1);
-      handle_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, ADSR_AMP_DECAY,     1, 1);
-
-      handle_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, ADSR_AMP_SUSTAIN,   1, 1);
-      handle_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, ADSR_AMP_SUSTAIN,  -1, 1);
-    }  
-
-
-
-
-  // GLOBALMENU_AD FLTR
-  // Move Attack Release 
-  // Insert/Remove Trig
-  if (menu          == MENU_OFF && 
-      menu_cursor   == GLOBALMENU_AD     &&
-      menu_ad      == MENU_AD_FLTR_ATTACK_RELEASE)
-    {
-      // Insert/Remove Trig
-      sub_handle_invert_trig();
-
-      handle_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, ADSR_FLTR_RELEASE, -1, 0);
-      handle_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, ADSR_FLTR_RELEASE,  1, 0);
-
-      handle_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, ADSR_FLTR_ATTACK,   1, 0);
-      handle_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, ADSR_FLTR_ATTACK,  -1, 0);
-    }  
-
-  // GLOBALMENU_AD FLTR
-  // Move Decay Sustain
-  // Insert/Remove Trig
-  if (menu          == MENU_OFF && 
-      menu_cursor   == GLOBALMENU_AD     &&
-      menu_ad      == MENU_AD_FLTR_DECAY_SUSTAIN)
-    {
-      // Insert/Remove Trig
-      sub_handle_invert_trig();
-
-      handle_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, ADSR_FLTR_DECAY,    -1, 0);
-      handle_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, ADSR_FLTR_DECAY,     1, 0);
-
-      handle_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, ADSR_FLTR_SUSTAIN,   1, 0);
-      handle_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, ADSR_FLTR_SUSTAIN,  -1, 0);
-    }  
-
-
-
-  // GLOBALMENU_AD FLTR
-  // Move Attack Release 
-  // Insert/Remove Trig
-  if (menu          != MENU_OFF && 
-      menu_cursor   == GLOBALMENU_AD     &&
-      menu_ad      == MENU_AD_FLTR_ATTACK_RELEASE)
-    {
-      handle_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, ADSR_FLTR_RELEASE, -1, 1);
-      handle_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, ADSR_FLTR_RELEASE,  1, 1);
-
-      handle_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, ADSR_FLTR_ATTACK,   1, 1);
-      handle_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, ADSR_FLTR_ATTACK,  -1, 1);
-    }  
-
-  // GLOBALMENU_AD FLTR
-  // Move Decay Sustain
-  // Insert/Remove Trig
-  if (menu          != MENU_OFF && 
-      menu_cursor   == GLOBALMENU_AD     &&
-      menu_ad      == MENU_AD_FLTR_DECAY_SUSTAIN)
-    {
-      handle_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, ADSR_FLTR_DECAY,    -1, 1);
-      handle_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, ADSR_FLTR_DECAY,     1, 1);
-
-      handle_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, ADSR_FLTR_SUSTAIN,   1, 1);
-      handle_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, ADSR_FLTR_SUSTAIN,  -1, 1);
-    }  
-
-
 
 
   if (menu          == MENU_OFF && 
       menu_cursor   == GLOBALMENU_AD     &&
-      menu_ad      == MENU_AD_TRIGTIME_AMP)
+      menu_ad       == MENU_AD_TRIGTIME_AMP)
     {
       if (lastKey   == BUTTON_A && 
 	  lastEvent == KEYPRESSED)
@@ -226,7 +127,7 @@ void MDADrumUserInterface::handle_key_amp_env()
     {
       menu_ad--;
       if (menu_ad<=-1)
-	menu_ad=4;
+	menu_ad=2;
       dirty_graphic=1;
       IE.clearLastKeyEvent();
       menu_ad_dirty_keyboard=1;
@@ -239,7 +140,7 @@ void MDADrumUserInterface::handle_key_amp_env()
       menu_cursor ==  GLOBALMENU_AD)
     {
       menu_ad++;
-      if (menu_ad>=4)
+      if (menu_ad>=2)
 	menu_ad=0;
       dirty_graphic=1;
       IE.clearLastKeyEvent();
@@ -254,11 +155,8 @@ void MDADrumUserInterface::handle_key_amp_env()
     {
       if (menu_ad_dirty_keyboard==0)
 	{
-	  if      (menu_ad==MENU_AD_AMP_ATTACK_RELEASE)       { menu_ad=MENU_AD_AMP_DECAY_SUSTAIN;        }
-	  else if (menu_ad==MENU_AD_AMP_DECAY_SUSTAIN)        { menu_ad=MENU_AD_FLTR_ATTACK_RELEASE;      }   
-	  else if (menu_ad==MENU_AD_FLTR_ATTACK_RELEASE)      { menu_ad=MENU_AD_FLTR_DECAY_SUSTAIN;       }   
-	  else if (menu_ad==MENU_AD_FLTR_DECAY_SUSTAIN)       { menu_ad=MENU_AD_TRIGTIME_AMP;             }   
-	  else if (menu_ad==MENU_AD_TRIGTIME_AMP)             { menu_ad=MENU_AD_AMP_ATTACK_RELEASE;      }   
+	  if      (menu_ad==MENU_AD_AMP_ATTACK_RELEASE)       { menu_ad=MENU_AD_TRIGTIME_AMP;             }
+	  else if (menu_ad==MENU_AD_TRIGTIME_AMP)             { menu_ad=MENU_AD_AMP_ATTACK_RELEASE;       }   
 	  dirty_graphic=1;
 	}
       menu_ad_dirty_keyboard=0;
@@ -981,14 +879,14 @@ void MDADrumUserInterface::display_board_amp_env()
       if (menu_ad==MENU_AD_AMP_ATTACK_RELEASE)
 	display_board_two_param(ADSR_AMP_RELEASE,ADSR_AMP_ATTACK);
 
-      if (menu_ad==MENU_AD_AMP_DECAY_SUSTAIN)
-	display_board_two_param(ADSR_AMP_DECAY,ADSR_AMP_SUSTAIN);
+      // if (menu_ad==MENU_AD_AMP_DECAY_SUSTAIN)
+      // 	display_board_two_param(ADSR_AMP_DECAY,ADSR_AMP_SUSTAIN);
 
-      if (menu_ad==MENU_AD_FLTR_ATTACK_RELEASE)
-	display_board_two_param(ADSR_FLTR_RELEASE,ADSR_FLTR_ATTACK);
+      // if (menu_ad==MENU_AD_FLTR_ATTACK_RELEASE)
+      // 	display_board_two_param(ADSR_FLTR_RELEASE,ADSR_FLTR_ATTACK);
 
-      if (menu_ad==MENU_AD_FLTR_DECAY_SUSTAIN)
-	display_board_two_param(ADSR_FLTR_DECAY,ADSR_FLTR_SUSTAIN);
+      // if (menu_ad==MENU_AD_FLTR_DECAY_SUSTAIN)
+      // 	display_board_two_param(ADSR_FLTR_DECAY,ADSR_FLTR_SUSTAIN);
 
       if (menu_ad==MENU_AD_TRIGTIME_AMP)
 	display_board_two_param(AMP,TRIG_TIME_DURATION);	
