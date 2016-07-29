@@ -137,6 +137,10 @@ using namespace std;
 #define OSC2_UNISONDT       93 // unison detune
 
 
+
+#define TRIG_TIME_MODE      101  // Used by PatternPlayer to predefined the time of NOTE_ON
+#define TRIG_TIME_DURATION  102  // Used by PatternPlayer to predefined the time of NOTE_ON
+
 /*   HERE IS THE NOT RELATED TO MACHINE STUFF     */
 #define INVERT_TRIG         144  // invert the trig to on/off
 #define SWING               145  // used to store the +/- of swing
@@ -147,8 +151,8 @@ using namespace std;
 #define NOTE_ON             150  // Used by PatternPlayer sequencer 
                                  // external hardware/WaveSynth
 
-#define TRIG_TIME_MODE      101  // Used by PatternPlayer to predefined the time of NOTE_ON
-#define TRIG_TIME_DURATION  102  // Used by PatternPlayer to predefined the time of NOTE_ON
+
+#define MIDI_SEND_DELTA      160  // used to store the +/- of midi delta clock
 
 //#define NOTE1               200   // Store note1 value
 #define MACHINE_TYPE        210   // Store the machine type dbOpl, Picosynth...

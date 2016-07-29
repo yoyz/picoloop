@@ -203,6 +203,8 @@ int counter_send_midi_clock_six=0;  // send n clock and decrement the counter ea
 int counter_recv_midi_clock=0;      // recv n clock and decrement the counter each time 
 int counter_recv_midi_clock_six=0;  // recv n clock and decrement the counter each time
 
+int counter_delta_midi_clock=0;
+int delta_midi_clock=0;
 
 int mmc_stop=0;
 
@@ -272,6 +274,7 @@ int menu_fltr=MENU_FLTR_CUTOFF_RESONANCE;
 int menu_fx=MENU_FX_DEPTH_SPEED;
 int menu_ls=MENU_LS_PATTERN;
 
+int menu_bpm=MENU_PAGE0_SUB0;
 int menu_ad_dirty_keyboard=0;
 
 //int ct=0;               // current_track
@@ -1369,8 +1372,17 @@ void display_board_text_global()
       menu_cursor==GLOBALMENU_NOTE)
       sprintf(str_line2,"DOT");
 
-  if (menu_cursor==GLOBALMENU_BPM)
-    sprintf(str_line2,  "BPM %.1f SWING %d",bpm_current,current_swing);
+  if (menu_cursor==GLOBALMENU_BPM &&
+      menu_bpm==MENU_PAGE0_SUB0)
+    sprintf(str_line2,  "BPM %.1f ",bpm_current);
+
+  if (menu_cursor==GLOBALMENU_BPM &&
+      menu_bpm==MENU_PAGE0_SUB1)
+    sprintf(str_line2,  "SWING %d",bpm_current,current_swing);
+
+  if (menu_cursor==GLOBALMENU_BPM &&
+      menu_bpm==MENU_PAGE0_SUB2)
+    sprintf(str_line2,  "MIDI DELTA SEND %d",delta_midi_clock);
 
 
 
@@ -2012,8 +2024,9 @@ void handle_key_bpm()
 
   // GLOBALMENU_BPM
   // change bpm speed
-  if (menu        == MENU_OFF && 
-      menu_cursor == GLOBALMENU_BPM )
+  if (menu        == MENU_OFF        && 
+      menu_bpm    == MENU_PAGE0_SUB0 &&
+      menu_cursor == GLOBALMENU_BPM ) 
     {
       handle_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_LONG    , BPM ,             -1, 0);
       handle_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_LONG    , BPM ,              1, 0);
@@ -2022,20 +2035,55 @@ void handle_key_bpm()
       handle_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG    , BPM            , -10, 0);
     }  
 
-  if (menu        == MENU_OFF && 
+  if (menu        == MENU_OFF        &&
+      menu_bpm    == MENU_PAGE0_SUB1 &&
       menu_cursor == GLOBALMENU_BPM )
     {
-      handle_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG    , BPM_DIVIDER    ,   1, 0);
-      handle_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG    , BPM_DIVIDER    ,  -1, 0);
+      handle_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG    , BPM_DIVIDER    ,   1, 0);
+      handle_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG    , BPM_DIVIDER    ,  -1, 0);
+
+      handle_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_LONG    , SWING          ,  -1, 0);
+      handle_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_LONG    , SWING          ,   1, 0);
     }  
 
 
+  if (menu        == MENU_OFF        &&
+      menu_bpm    == MENU_PAGE0_SUB2 &&
+      menu_cursor == GLOBALMENU_BPM )
+    {
+      handle_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONGEST    , MIDI_SEND_DELTA,   1, 0);
+      handle_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONGEST    , MIDI_SEND_DELTA,  -1, 0);
+
+      handle_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_LONGEST    , MIDI_SEND_DELTA, -10, 0);
+      handle_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_LONGEST    , MIDI_SEND_DELTA,  10, 0);
+    }  
+
+
+  /*
   if (menu        == MENU_OFF && 
       menu_cursor == GLOBALMENU_BPM )
     {
-      handle_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_LONG    , SWING    ,  -1, 0);
-      handle_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_LONG    , SWING    ,   1, 0);
     }  
+
+  */
+
+  // change GLOBALMENU_VCO SUBMENU
+  if (lastKey     ==  BUTTON_START  && 
+      lastEvent   ==  KEYRELEASED     && 
+      menu_cursor ==  GLOBALMENU_BPM)
+    {
+      if (menu_ad_dirty_keyboard==0)
+	{
+	  if      (menu_bpm==MENU_PAGE0_SUB0)              { menu_bpm=MENU_PAGE0_SUB1;    }
+	  else if (menu_bpm==MENU_PAGE0_SUB1)              { menu_bpm=MENU_PAGE0_SUB2;    }
+	  else if (menu_bpm==MENU_PAGE0_SUB2)              { menu_bpm=MENU_PAGE0_SUB0;    }
+	  dirty_graphic=1;
+	}
+      menu_ad_dirty_keyboard=0;
+      IE.clearLastKeyEvent();
+      DPRINTF("[sub menu env : %d]",menu_ad);
+    }
+
 
 
 }
@@ -2611,6 +2659,14 @@ void seq_update_multiple_time_by_step()
       TK.set(BPM,0);
       refresh_bpm();
       
+    }
+
+
+  if (TK.get(MIDI_SEND_DELTA)!=0)
+    {
+      counter_delta_midi_clock += TK.get(MIDI_SEND_DELTA);
+      delta_midi_clock         += TK.get(MIDI_SEND_DELTA);
+      TK.set(MIDI_SEND_DELTA,0);
     }
   
   if (TK.get(SWING)!=0)
