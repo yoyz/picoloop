@@ -183,9 +183,10 @@ void AudioEngine::processBuffer(int len)
 	  if (nb_tick_midi_send_clock_mulsix>nb_tick_before_six_midi_send_clock-1)
 	    {
 	      counter_send_midi_clock_six++;
-	      nb_tick_midi_send_clock=0;
-	      nb_tick_midi_send_clock_mulsix=0;
+	      nb_tick_midi_send_clock=-counter_delta_midi_clock*50;
+	      nb_tick_midi_send_clock_mulsix=-counter_delta_midi_clock*50;
 	      midi_tick_number=0;
+	      counter_delta_midi_clock=0;
 	    }
       
 	  // arm a counter to send a midi sync signal
