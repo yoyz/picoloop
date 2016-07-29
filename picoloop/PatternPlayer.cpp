@@ -2051,11 +2051,11 @@ void handle_key_bpm()
       menu_bpm    == MENU_PAGE0_SUB2 &&
       menu_cursor == GLOBALMENU_BPM )
     {
-      handle_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONGEST    , MIDI_SEND_DELTA,   1, 0);
-      handle_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONGEST    , MIDI_SEND_DELTA,  -1, 0);
+      handle_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONGEST    , MIDI_SEND_DELTA,  10, 0);
+      handle_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONGEST    , MIDI_SEND_DELTA,  -10, 0);
 
-      handle_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_LONGEST    , MIDI_SEND_DELTA, -10, 0);
-      handle_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_LONGEST    , MIDI_SEND_DELTA,  10, 0);
+      handle_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_LONGEST    , MIDI_SEND_DELTA, -1, 0);
+      handle_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_LONGEST    , MIDI_SEND_DELTA,  1, 0);
     }  
 
 
