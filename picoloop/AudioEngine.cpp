@@ -183,8 +183,13 @@ void AudioEngine::processBuffer(int len)
 	  if (nb_tick_midi_send_clock_mulsix>nb_tick_before_six_midi_send_clock-1)
 	    {
 	      counter_send_midi_clock_six++;
+
+	      // This trick allow to transpose the send of the midi clock
+	      // it can be used on a system which buffer too much audio
+	      // it is linked to the BPM menu
 	      nb_tick_midi_send_clock=-counter_delta_midi_clock*50;
 	      nb_tick_midi_send_clock_mulsix=-counter_delta_midi_clock*50;
+
 	      midi_tick_number=0;
 	      counter_delta_midi_clock=0;
 	    }
