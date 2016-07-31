@@ -45,6 +45,7 @@ SOURCES=PatternPlayer.cpp \
 		      PitchBend.cpp            \
 		      TweakableKnob.cpp	       \
 		      UserInterface.cpp	       \
+		      MachineCheck.cpp	       \
 		      Machine/Picosynth/PicosynthUserInterface.cpp \
 		      Machine/Picosynth/PicosynthADSR.cpp        \
 		      Machine/Picosynth/PicosynthVCO.cpp         \
