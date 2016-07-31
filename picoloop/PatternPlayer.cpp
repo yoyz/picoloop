@@ -26,7 +26,7 @@ using namespace std;
 
 #include "NoteFreq.h"
 #include "TweakableKnob.h"
-
+#include "MachineCheck.h"
 #include "UserInterface.h"
 #include "Machine/Picosynth/PicosynthUserInterface.h"
 #include "Machine/Picodrum/PicodrumUserInterface.h"
@@ -156,7 +156,10 @@ MonoMixer                   SAMM; // Standalone MonoMixer
                                   //  it is used in seq_update_multiple_time_by_step()
 
 Machine  *                   SAM; // Standalone Machine
-                                  //  it is used in seq_update_multiple_time_by_step()
+                                  //  used in seq_update_multiple_time_by_step()
+
+MachineCheck                 MC;  // Allow to switch to the next,previous machine
+                                  //  used in seq_update_multiple_time_by_step()
 
 
 Sequencer      SEQ;         // used to  store/get information about sequencer 
@@ -2361,22 +2364,26 @@ void handle_key_bank()
 void refresh_pecursor_ui(int i)
 {
   int  cty=SEQ.getCurrentTrackY();
+  int machine_type;
+  int exit_code=8;
   PECursor=P[cty].getPatternElement(i);  
-  if (PECursor.get(MACHINE_TYPE)==SYNTH_PICOSYNTH)    { UI=&PSUI; return ;   }
-  if (PECursor.get(MACHINE_TYPE)==SYNTH_PICODRUM)     { UI=&PDUI; return ;   }
-  if (PECursor.get(MACHINE_TYPE)==SYNTH_OPL2    )     { UI=&DBUI; return ;   }
-  if (PECursor.get(MACHINE_TYPE)==SYNTH_PBSYNTH)      { UI=&PBUI; return ;   }
+  machine_type=PECursor.get(MACHINE_TYPE);
+
+  if (machine_type==SYNTH_PICOSYNTH)    { UI=&PSUI; return ;   }
+  if (machine_type==SYNTH_PICODRUM)     { UI=&PDUI; return ;   }
+  if (machine_type==SYNTH_OPL2    )     { UI=&DBUI; return ;   }
+  if (machine_type==SYNTH_PBSYNTH)      { UI=&PBUI; return ;   }
 #ifdef __FPU__
-  if (PECursor.get(MACHINE_TYPE)==SYNTH_CURSYNTH)     { UI=&CSUI;   return ; }
-  if (PECursor.get(MACHINE_TYPE)==SYNTH_OPEN303)      { UI=&O303UI; return ; }
-  if (PECursor.get(MACHINE_TYPE)==SYNTH_TWYTCHSYNTH)  { UI=&TWUI;   return ; }
-  if (PECursor.get(MACHINE_TYPE)==SYNTH_MDADRUM)      { UI=&MDUI;   return ; }
+  if (machine_type==SYNTH_CURSYNTH)     { UI=&CSUI;   return ; }
+  if (machine_type==SYNTH_OPEN303)      { UI=&O303UI; return ; }
+  if (machine_type==SYNTH_TWYTCHSYNTH)  { UI=&TWUI;   return ; }
+  if (machine_type==SYNTH_MDADRUM)      { UI=&MDUI;   return ; }
 #endif
 #ifdef __RTMIDI__
-  if (PECursor.get(MACHINE_TYPE)==SYNTH_MIDIOUT)      { UI=&MIDIUI; return ; }
+  if (machine_type==SYNTH_MIDIOUT)      { UI=&MIDIUI; return ; }
 #endif
   
-  printf("NO UI found\n");
+  DPRINTF("refresh_pecursor_ui(%d)\nmachine_type=%d\nexit(%d)\nNO UI found\n",i,machine_type,exit_code);
   exit(8);
 }
 
@@ -2502,8 +2509,8 @@ void seq_update_tweakable_knob_one(int machineParam)
 
 	//SAM->checkI(machineParam,P[cty].getPatternElement(cursor).get(AMP)+TK.get(machineParam)));
       TK.set(machineParam,0);
-      if (debug)
-	printf("[param:%d:%d]\n",machineParam,P[cty].getPatternElement(cursor).get(machineParam));
+      //if (debug)
+      DPRINTF("[param:%d:%d]",machineParam,P[cty].getPatternElement(cursor).get(machineParam));
     }  
 }
 
@@ -2518,16 +2525,16 @@ void seq_update_tweakable_knob_all(int machineParam)
       //for (i=pattern_display_offset[cty];i<pattern_display_offset[cty]+16;i++)
       for (i=0;i<plen;i++)
 	{
-	  if (P[cty].getPatternElement(i).get(NOTE_ON))
-	    {
-	      update_SAMM(cty,i);
-	      P[cty].getPatternElement(i).set(machineParam,
-					      SAM->checkI(machineParam,P[cty].getPatternElement(i).get(machineParam)+TK.getAll(machineParam)));
-	    }
+	  // if (P[cty].getPatternElement(i).get(NOTE_ON))
+	  //   {
+	  update_SAMM(cty,i);
+	  P[cty].getPatternElement(i).set(machineParam,
+					  SAM->checkI(machineParam,P[cty].getPatternElement(i).get(machineParam)+TK.getAll(machineParam)));
+	      //}
 	}
       TK.setAll(machineParam,0);
-      if (debug)
-	printf("[paramAll:%d:%d]\n",machineParam,P[cty].getPatternElement(cursor).get(machineParam));
+      //if (debug)
+      DPRINTF("[paramAll:%d:%d]",machineParam,P[cty].getPatternElement(cursor).get(machineParam));
     }  
 }
 
@@ -2542,9 +2549,39 @@ void seq_update_multiple_time_by_step()
   int          oldstep=0;
   int          i=0;
   int          t=0;
+  int          currentMachine;
+  int          nextMachine;
 
   // Read all valued contained in the Tweakable Knob
   // Apply the Value to the sequencer, then to the Machine
+
+
+  if (  TK.get(   MACHINE_TYPE)!=0 ||
+	TK.getAll(MACHINE_TYPE)!=0)
+    {
+      currentMachine=P[cty].getPatternElement(cursor+pattern_display_offset[cty]).get(MACHINE_TYPE);
+
+      if ((TK.get(  MACHINE_TYPE)>0)||
+	  TK.getAll(MACHINE_TYPE)>0)
+	{
+	  nextMachine=MC.getNext(currentMachine);
+	  for (i=0;i<MAX_STEP_PER_TRACK;i++)
+	    P[cty].getPatternElement(i).set(MACHINE_TYPE,nextMachine);
+	}
+
+      if ((TK.get(  MACHINE_TYPE)<0)||
+	  TK.getAll(MACHINE_TYPE)<0)
+
+	{
+	  nextMachine=MC.getPrevious(currentMachine);
+	  for (i=0;i<MAX_STEP_PER_TRACK;i++)
+	    P[cty].getPatternElement(i).set(MACHINE_TYPE,nextMachine);
+	}
+      TK.set(   MACHINE_TYPE,0);
+      TK.setAll(MACHINE_TYPE,0);
+      DPRINTF("currentMachine:%d,nextMachine:%d\n",currentMachine,nextMachine);
+    }
+
 
   if (TK.get(BPM_DIVIDER)!=0)
     {	  

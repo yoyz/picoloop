@@ -70,6 +70,7 @@ SOURCES=PatternPlayer.cpp \
 		      SysMutex.cpp	       \
 		      MidiOutSystem.cpp	       \
 		      MidiInSystem.cpp	       \
+		      MachineCheck.cpp	       \
 		      Machine/Picosynth/PicosynthUserInterface.cpp \
 		      Machine/Picosynth/PicosynthADSR.cpp        \
 		      Machine/Picosynth/PicosynthVCO.cpp         \

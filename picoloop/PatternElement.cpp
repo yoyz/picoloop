@@ -283,7 +283,8 @@ void PatternElement::set(int what,int val)
       break;
 
     case MACHINE_TYPE:
-      machine_type=checkSevenBitBoundarie(val)%SYNTH_SIZE; // HACK TO make the DBOPL/PICOSYNTH/PICODRUM TO WORK
+      machine_type=checkSevenBitBoundarie(val);
+      //machine_type=checkSevenBitBoundarie(val)%SYNTH_SIZE; // HACK TO make the DBOPL/PICOSYNTH/PICODRUM TO WORK
       break;
 
 

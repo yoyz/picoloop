@@ -39,6 +39,7 @@ OBJS=PatternPlayer.o \
 		      PitchBend.o            \
 		      TweakableKnob.o	       \
 		      UserInterface.o	       \
+		      MachineCheck.cpp	       \
 		      Machine/Picosynth/PicosynthUserInterface.o \
 		      Machine/Picosynth/PicosynthADSR.o        \
 		      Machine/Picosynth/PicosynthVCO.o         \
