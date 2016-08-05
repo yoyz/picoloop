@@ -16,6 +16,7 @@ void sub_handle_invert_trig();
 int handle_key_two_button(int buttonPressed,int buttonKeyRepeat,int repeatInterval,int machineParam,int paramValue,int all);
 void display_board_one_param_text(int machineParam1);
 void display_board_two_param_text(int machineParam1,int machineParam2);
+void display_board_two_param_number(int machineParam1,int machineParam2);
 void display_board_trig();
 
 
@@ -278,7 +279,8 @@ void PicosynthUserInterface::handle_key_osc()
   // GLOBALMENU_OSC
   // change oscilltor one and two type
   if (menu        == MENU_OFF && 
-      menu_cursor == GLOBALMENU_OSC )
+      menu_cursor == GLOBALMENU_OSC &&
+      menu_osc    == MENU_OSC_OSC1OSC2)
     {
       // Insert/Remove Trig
       sub_handle_invert_trig();
@@ -293,7 +295,8 @@ void PicosynthUserInterface::handle_key_osc()
   // GLOBALMENU_OSC
   // change oscilltor one and two type
   if (menu        != MENU_OFF && 
-      menu_cursor == GLOBALMENU_OSC )
+      menu_cursor == GLOBALMENU_OSC &&
+      menu_osc    == MENU_OSC_OSC1OSC2)
     {
 
       handle_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_LONG    , OSC1_TYPE,        -1, 1);
@@ -303,6 +306,37 @@ void PicosynthUserInterface::handle_key_osc()
       handle_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG    , OSC2_TYPE      ,  -1, 1);
 
     }
+  // GLOBALMENU_OSC
+  // change oscilltor one and two scale
+  if (menu        == MENU_OFF       && 
+      menu_cursor == GLOBALMENU_OSC &&
+      menu_osc    == MENU_OSC_OSC1SCALE_OSC2SCALE)
+    {
+      // Insert/Remove Trig
+      sub_handle_invert_trig();
+
+      handle_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_LONG    , OSC1_SCALE,        -1, 0);
+      handle_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_LONG    , OSC1_SCALE,         1, 0);
+
+      handle_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG    , OSC2_SCALE      ,   1, 0);
+      handle_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG    , OSC2_SCALE      ,  -1, 0);
+    }
+
+  // GLOBALMENU_OSC
+  // change oscilltor one and two scale
+  if (menu        != MENU_OFF       && 
+      menu_cursor == GLOBALMENU_OSC &&
+      menu_osc    == MENU_OSC_OSC1SCALE_OSC2SCALE)
+    {
+
+      handle_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_LONG    , OSC1_SCALE,        -1, 1);
+      handle_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_LONG    , OSC1_SCALE,         1, 1);
+
+      handle_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG    , OSC2_SCALE      ,   1, 1);
+      handle_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG    , OSC2_SCALE      ,  -1, 1);
+
+    }
+
   // change GLOBALMENU_OSC SUBMENU
   if (lastKey     ==  BUTTON_START  && 
       lastEvent   ==  KEYRELEASED     && 
@@ -310,10 +344,11 @@ void PicosynthUserInterface::handle_key_osc()
     {
       if (menu_ad_dirty_keyboard==0)
 	{
-	  // if      (menu_osc==MENU_OSC_OSC1OSC2)            { menu_osc=MENU_OSC_LFO1LFO2;            }
-	  // else if (menu_osc==MENU_OSC_LFO1LFO2)            { menu_osc=MENU_OSC_OSC1OSC2;            }
-	  // else                                             { menu_osc=MENU_OSC_OSC1OSC2;            }
-	  menu_osc=MENU_OSC_OSC1OSC2;
+	  if      (menu_osc==MENU_OSC_OSC1OSC2)            { menu_osc=MENU_OSC_OSC1SCALE_OSC2SCALE;            }
+	  else if (menu_osc==MENU_OSC_OSC1SCALE_OSC2SCALE) { menu_osc=MENU_OSC_OSC1OSC2;                       }
+	  else                                             { menu_osc=MENU_OSC_OSC1OSC2;                       }
+
+	  //menu_osc=MENU_OSC_OSC1OSC2;
 	  dirty_graphic=1;
 	}
       menu_ad_dirty_keyboard=0;
@@ -828,10 +863,17 @@ void PicosynthUserInterface::display_board_osc()
   int  cty=SEQ.getCurrentTrackY();
   int  step=SEQ.getPatternSequencer(cty).getStep();
 
-  if (menu_cursor==GLOBALMENU_OSC)
+  if (menu_cursor==GLOBALMENU_OSC &&
+      menu_osc   ==MENU_OSC_OSC1OSC2)
     {
       display_board_two_param_text(OSC1_TYPE,OSC2_TYPE);
     }
+  if (menu_cursor==GLOBALMENU_OSC &&
+      menu_osc   ==MENU_OSC_OSC1SCALE_OSC2SCALE)
+    {
+      display_board_two_param_number(OSC1_SCALE,OSC2_SCALE);
+    }
+
 }
 
 

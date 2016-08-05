@@ -1018,8 +1018,6 @@ void PBSynthUserInterface::display_board_osc()
     {
       display_board_two_param_number(OSC1_SCALE,OSC2_SCALE);
     }
-
-
 }
 
 
