@@ -218,8 +218,8 @@ void PBSynthMachine::setI(int what,int val)
       keyon=1;
       SE->releaseNote();
       //SE->triggerNote(note);
-      SE->triggerNoteOsc(0,note);
-      SE->triggerNoteOsc(1,note+5);
+      SE->triggerNoteOsc(0,note+osc1_scale);
+      SE->triggerNoteOsc(1,note+osc2_scale);
       // sineLfoOsc1.reset();
       // NoteFreq & NF = NoteFreq::getInstance();
       // HO->KeyOn(1,NF.getINoteFreq(note));
@@ -244,6 +244,10 @@ void PBSynthMachine::setI(int what,int val)
 	SE->getPBSynthOscillator(1)->setWave(this->checkI(OSC2_TYPE,val));
       }
 
+    if (what==OSC1_SCALE)    osc1_scale=val;
+    if (what==OSC2_SCALE)    osc2_scale=val;
+
+
     if (what==ADSR_ENV0_ATTACK)    SE->getEnvelope(0)->setA(-1+f_val);
     if (what==ADSR_ENV0_DECAY)     SE->getEnvelope(0)->setD(-1+f_val);
     if (what==ADSR_ENV0_SUSTAIN)   SE->getEnvelope(0)->setS( f_val);
@@ -259,7 +263,8 @@ void PBSynthMachine::setI(int what,int val)
     //if (what==VCO_MIX)             SE.setParameter(SENGINE_ENV2_TO_CUTOFF,1.0f/(val+1));
     //if (what==VCO_MIX)             SE.setParameter(SENGINE_ENV2_TO_CUTOFF,(f_val*2)-1);
     //if (what==OSC1_PHASE)          SE->setParameter(SENGINE_ENV2_TO_CUTOFF,(f_val*2)-1);
-    if (what==OSC1_PHASE)          SE->setParameter(SENGINE_ENV2_TO_CUTOFF,(-f_val*2)+1);
+
+
     if (what==VCO_MIX)             SE->setParameter(SENGINE_OSCMIX,(f_val));
 
     if (what==LFO1_DEPTH)          SE->setParameter(SENGINE_LFO1_TO_AMP,(f_val));
@@ -276,8 +281,22 @@ void PBSynthMachine::setI(int what,int val)
 
   // if (what==FILTER1_CUTOFF)         SE.setParameter(SENGINE_FILTFREQ,1.0f/(val+1));
   // if (what==FILTER1_RESONANCE)      SE.setParameter(SENGINE_FILTRESO,1.0f/(val+1));
-  if (what==FILTER1_CUTOFF)         SE->setParameter(SENGINE_FILTFREQ,(f_val*2)-1);
-  if (what==FILTER1_RESONANCE)      SE->setParameter(SENGINE_FILTRESO,(f_val*2)-1);
+
+#ifdef FIXED
+    // in fixed point mode  -0.5 0.5
+    if (what==OSC1_PHASE)          SE->setParameter(SENGINE_ENV2_TO_CUTOFF,(f_val-float(0.5)));
+    if (what==FILTER1_CUTOFF)      SE->setParameter(SENGINE_FILTFREQ,(f_val-float(0.5)));
+    if (what==FILTER1_RESONANCE)   SE->setParameter(SENGINE_FILTRESO,(f_val-float(0.5)));
+
+#else
+    // in floating point mode  -1 1
+    if (what==OSC1_PHASE)          SE->setParameter(SENGINE_ENV2_TO_CUTOFF,(-f_val*2)+1);
+    if (what==FILTER1_CUTOFF)      SE->setParameter(SENGINE_FILTFREQ,(f_val*2)-1);
+    if (what==FILTER1_RESONANCE)   SE->setParameter(SENGINE_FILTRESO,(f_val*2)-1);
+
+#endif
+
+
 
   if (what==OSC1_AMP)               SE->setParameter(SENGINE_ENV1_TO_OSC1PW,(f_val*2)-1);
   if (what==OSC2_AMP)               SE->setParameter(SENGINE_ENV1_TO_OSC2PW,(f_val*2)-1);
