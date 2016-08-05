@@ -646,6 +646,10 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
   fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
+  machineParam=OSC1_DETUNE;
+  fgets(line,sizeoflinemax,fd);
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
+
 
   if (retcode==true)
     {
@@ -995,6 +999,9 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
   data.insert(data.end(),line);
 
 
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,OSC2_DETUNE);
+  data.insert(data.end(),line);
+
 
   sprintf(line,"\n");
   data.insert(data.end(),line);
@@ -1112,6 +1119,7 @@ const char * PatternReader::getParameterCharStar(int param)
   static const char * vcomix="VCOMix";
 
   static const char * osc1_detune="OSC1Detune";
+  static const char * osc2_detune="OSC2Detune";
 
   static const char * lfo1_waveform="LFO1Waveform";
   static const char * lfo2_waveform="LFO2Waveform";
@@ -1207,6 +1215,7 @@ const char * PatternReader::getParameterCharStar(int param)
     case VCO_MIX:            return vcomix;                   break;
 
     case OSC1_DETUNE:        return osc1_detune;              break;
+    case OSC2_DETUNE:        return osc2_detune;              break;
 
     case LFO1_WAVEFORM:      return lfo1_waveform;            break;
     case LFO2_WAVEFORM:      return lfo2_waveform;            break;

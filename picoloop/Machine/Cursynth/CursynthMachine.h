@@ -51,6 +51,9 @@ class CursynthMachine : public Machine
   int                   osc1_type;
   int                   osc2_type;
 
+  int                   osc1_scale;
+  int                   osc2_scale;
+
   int                   velocity;
 
 };

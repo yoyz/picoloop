@@ -206,6 +206,10 @@ void CursynthMachine::setI(int what,int val)
   //if (what==ADSR_ENV0_RELEASE)   CSE->getControls().at("delay dry/wet")->set(f_val);
   //if (what==ADSR_ENV0_DECAY)     CSE->getControls().at("delay feedback")->set(f_val);
 
+  //  if (what==OSC1_SCALE)          { CSE->getControls().at("osc 1 transpose")->set(f_val*128); }
+  if (what==OSC2_SCALE)          { CSE->getControls().at("osc 2 transpose")->set(f_val*128); }
+
+
   if (what==OSC1_TYPE)           { CSE->getControls().at("osc 1 waveform")->set(f_val*128); }
   if (what==OSC2_TYPE)           { CSE->getControls().at("osc 2 waveform")->set(f_val*128); }
 
