@@ -272,6 +272,10 @@ void TwytchsynthMachine::setI(int what,int val)
   if (what==OSC1_TYPE && osc1_type!=val )                 { osc1_type=val; TWE->getControls().at("osc_1_waveform")->set(f_val*128); }
   if (what==OSC2_TYPE && osc2_type!=val )                 { osc2_type=val; TWE->getControls().at("osc_2_waveform")->set(f_val*128); }
 
+  if (what==OSC1_SCALE)                                   {                TWE->getControls().at("osc_1_transpose")->set(f_val*128); }
+
+  if (what==OSC2_SCALE)                                   {                TWE->getControls().at("osc_2_transpose")->set(f_val*128); }
+
   if (what==OSC3_TYPE && osc3_type!=val )                 { osc3_type=val; TWE->getControls().at("sub_waveform"  )->set(f_val*128); }
 
   if (what==LFO1_WAVEFORM && lfo1_waveform!=val)          { lfo1_waveform=val; TWE->getControls().at("mono_lfo_1_waveform")->set(f_val*128); }
