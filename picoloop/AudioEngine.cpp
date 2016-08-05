@@ -8,8 +8,13 @@ PulseSync::PulseSync()
   nb_tick=0;
   nb_tick_before_step_change=0;
   nb_tick_before_step_change_real=0;
+
   tick_length_high=3;
   tick_length_low=tick_length_high*2;
+
+  tick_length_high=3;
+  tick_length_low=3;
+
   tick_height_std=0;
 
   //tick_height_low=-8000;

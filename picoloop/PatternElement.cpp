@@ -75,6 +75,7 @@ void PatternElement::init()
   lfo2_env_amount=64;
 
   osc1_detune=64;
+  osc2_detune=64;
 
   machine_type=SYNTH_PICOSYNTH;
 
@@ -299,6 +300,10 @@ void PatternElement::set(int what,int val)
 
     case OSC1_DETUNE:
       osc1_detune=checkSevenBitBoundarie(val);
+      break;
+
+    case OSC2_DETUNE:
+      osc2_detune=checkSevenBitBoundarie(val);
       break;
 
 
@@ -529,6 +534,10 @@ int PatternElement::get(int what)
 
     case OSC1_DETUNE:
       return osc1_detune;
+      break;
+
+    case OSC2_DETUNE:
+      return osc2_detune;
       break;
 
     case LFO1_WAVEFORM:

@@ -75,6 +75,7 @@ const char * PBSynthMachine::getMachineParamCharStar(int machineParam,int paramV
   static const char * str_pbsynth_trgl       = " TRGL";
   static const char * str_pbsynth_saw        = "  SAW";
 
+
   const char * str_osc[PICO_PBSYNTH_SIZE];
 
   static const char * str_fltr_algo_pblp = "PBLP";
@@ -237,12 +238,27 @@ void PBSynthMachine::setI(int what,int val)
 	osc1_type=val;
 	SE->getPBSynthOscillator(0)->setWave(this->checkI(OSC1_TYPE,val));
       }
+
+    if (what==OSC1_DETUNE)           
+      {
+	osc1_detune=val;
+	SE->getPBSynthOscillator(0)->setDetune(this->checkI(OSC1_DETUNE,val));
+      }
+
+
+    if (what==OSC2_DETUNE)           
+      {
+	osc2_detune=val;
+	SE->getPBSynthOscillator(1)->setDetune(this->checkI(OSC2_DETUNE,val));
+      }
+
     if (what==OSC2_TYPE)           
       {
 	osc2_type=val;
 	//SE.getPBSynthOscillator(1)->setWave(val%2);
 	SE->getPBSynthOscillator(1)->setWave(this->checkI(OSC2_TYPE,val));
       }
+
 
     if (what==OSC1_SCALE)    osc1_scale=val;
     if (what==OSC2_SCALE)    osc2_scale=val;

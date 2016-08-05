@@ -111,6 +111,7 @@ private:
   int lfo2Waveform;
 
   int osc1_detune;
+  int osc2_detune;
 
   int velocity;
 

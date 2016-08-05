@@ -376,6 +376,39 @@ void PBSynthUserInterface::handle_key_osc()
 
 
   // GLOBALMENU_OSC
+  // change oscilltor one and two type
+  if (menu        == MENU_OFF       && 
+      menu_cursor == GLOBALMENU_OSC &&
+      menu_osc    == MENU_OSC_OSC1DETUNE_OSC2DETUNE)
+    {
+      // Insert/Remove Trig
+      sub_handle_invert_trig();
+
+      handle_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALL    , OSC1_DETUNE,        -1, 1);
+      handle_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALL    , OSC1_DETUNE,         1, 1);
+
+      handle_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALL    , OSC2_DETUNE,        -1, 0);
+      handle_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALL    , OSC2_DETUNE,         1, 0);
+
+
+    }
+
+  // GLOBALMENU_OSC
+  // change oscilltor one and two type
+  if (menu        != MENU_OFF       && 
+      menu_cursor == GLOBALMENU_OSC &&
+      menu_osc    == MENU_OSC_OSC1DETUNE_OSC2DETUNE)
+    {
+
+      handle_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALL    , OSC1_DETUNE,        -1, 1);
+      handle_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALL    , OSC1_DETUNE,         1, 1);
+
+      handle_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALL    , OSC2_DETUNE      ,   1, 1);
+      handle_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALL    , OSC2_DETUNE      ,  -1, 1);
+    }
+
+
+  // GLOBALMENU_OSC
   // change oscilltor one and two scale
   if (menu        == MENU_OFF       && 
       menu_cursor == GLOBALMENU_OSC &&
@@ -413,9 +446,10 @@ void PBSynthUserInterface::handle_key_osc()
     {
       if (menu_ad_dirty_keyboard==0)
 	{
-	  if      (menu_osc==MENU_OSC_OSC1OSC2)            { menu_osc=MENU_OSC_OSC1SCALE_OSC2SCALE;            }
-	  else if (menu_osc==MENU_OSC_OSC1SCALE_OSC2SCALE) { menu_osc=MENU_OSC_OSC1OSC2;                       }
-	  else                                             { menu_osc=MENU_OSC_OSC1OSC2;                       }
+	  if      (menu_osc==MENU_OSC_OSC1OSC2)              { menu_osc=MENU_OSC_OSC1SCALE_OSC2SCALE;            }
+	  else if (menu_osc==MENU_OSC_OSC1SCALE_OSC2SCALE)   { menu_osc=MENU_OSC_OSC1DETUNE_OSC2DETUNE;          }
+	  else if (menu_osc==MENU_OSC_OSC1DETUNE_OSC2DETUNE) { menu_osc=MENU_OSC_OSC1OSC2;                       }
+	  else                                               { menu_osc=MENU_OSC_OSC1OSC2;                       }
 	  dirty_graphic=1;
 	}
       menu_ad_dirty_keyboard=0;
@@ -1017,6 +1051,11 @@ void PBSynthUserInterface::display_board_osc()
       menu_osc   ==MENU_OSC_OSC1SCALE_OSC2SCALE)
     {
       display_board_two_param_number(OSC1_SCALE,OSC2_SCALE);
+    }
+  if (menu_cursor==GLOBALMENU_OSC &&
+      menu_osc   ==MENU_OSC_OSC1DETUNE_OSC2DETUNE)
+    {
+      display_board_two_param(OSC1_DETUNE,OSC2_DETUNE);
     }
 }
 
