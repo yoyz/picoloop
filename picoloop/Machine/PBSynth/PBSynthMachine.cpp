@@ -194,8 +194,8 @@ void PBSynthMachine::setF(int what,float val)
 
   //if (what==OSC1_FREQ)           { freq=val; }
   //  if (what==LFO1_FREQ)           { lfo_speed=val/4.0; sineLfoOsc1.setFreq(lfo_speed); }
-  if (what==LFO1_FREQ)           SE->getLFO(0)->setRate(f_val*100);
-  if (what==LFO2_FREQ)           SE->getLFO(1)->setRate(f_val*100);
+  if (what==LFO1_FREQ)           SE->getLFO(0)->setRate(f_val);
+  if (what==LFO2_FREQ)           SE->getLFO(1)->setRate(f_val);
 
 }
 
@@ -208,7 +208,7 @@ void PBSynthMachine::setI(int what,int val)
   float        f_val;
 
   f_val=val;
-  f_val=f_val/128;
+  f_val=f_val/128.0;
   if (what==TRIG_TIME_MODE)       trig_time_mode=val;
   if (what==TRIG_TIME_DURATION) { trig_time_duration=val; trig_time_duration_sample=val*512; }
 
@@ -217,7 +217,9 @@ void PBSynthMachine::setI(int what,int val)
     { 
       keyon=1;
       SE->releaseNote();
-      SE->triggerNote(note);
+      //SE->triggerNote(note);
+      SE->triggerNoteOsc(0,note);
+      SE->triggerNoteOsc(1,note+5);
       // sineLfoOsc1.reset();
       // NoteFreq & NF = NoteFreq::getInstance();
       // HO->KeyOn(1,NF.getINoteFreq(note));
@@ -266,7 +268,7 @@ void PBSynthMachine::setI(int what,int val)
 
     if (what==LFO2_DEPTH)          SE->setParameter(SENGINE_LFO2_TO_CUTOFF,(f_val));
 
-  if (what==NOTE1)                note=val;
+    if (what==NOTE1)                note=val;
     //if (what==OSC1_FREQ)           freq=val;
 
   // if (what==FILTER1_CUTOFF)         SE.setParameter(SENGINE_FILTFREQ,(2.0f/(val)-1));
@@ -302,7 +304,8 @@ int PBSynthMachine::tick()
       for(i=0;i<SAM;i++)
        	{
        	  //buffer[i]=buffer[i]*2048;
-	  buffer_i[i]=buffer_f[i]*2048;
+	  buffer_i[i]=buffer_f[i]*1536;
+	  buffer_i[i]=buffer_f[i]*1280;
        	}
     }
 
