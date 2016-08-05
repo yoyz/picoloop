@@ -585,6 +585,52 @@ void display_board_two_param_text(int machineParam1,int machineParam2)
     }  
 }
 
+
+
+void display_board_two_param_number(int machineParam1,int machineParam2)
+{
+  int  i;
+  int  cty=SEQ.getCurrentTrackY();
+  int  step=SEQ.getPatternSequencer(cty).getStep();
+
+  const char * space="    ";
+
+  int  size_of_zero=5;
+  char line1[size_of_zero+1];
+  char line2[size_of_zero+1];
+
+  char * line1_to_process;
+  char * line2_to_process;
+  int    line1_size;
+  int    line2_size;
+
+  int    param1;
+  int    param2;
+
+  display_board_trig();
+
+  for (i=0;i<16;i++)
+    {	  // Draw text on Trigged step
+      if (P[cty].getPatternElement(i+pattern_display_offset[cty]).get(NOTE_ON))
+	{
+	  update_SAMM(cty,i+pattern_display_offset[cty]);
+	  strcpy(line1,space);
+	  param1=P[cty].getPatternElement(i+pattern_display_offset[cty]).get(machineParam1);
+	  param2=P[cty].getPatternElement(i+pattern_display_offset[cty]).get(machineParam2);
+
+	  
+	  sprintf(line1,"  %d",param1);
+	  sprintf(line2,"  %d",param2);
+
+	  SG.drawTTFTextNumberFirstLine( i,line1);	  
+	  SG.drawTTFTextNumberSecondLine(i,line2);
+
+	}
+    }  
+}
+
+
+
 // Used by MDA to display 
 // the bank name and the waveform name in the bank
 void display_board_one_and_two_param_text(int machineParam1,int machineParam2)
@@ -2984,6 +3030,10 @@ void seq_update_track(int t)
 	  //M[t]->set(OSC1_FREQ,i);
 	  M[t]->reset();
 	  //M[t]->setF(OSC1_FREQ,f);
+	  M[t]->setI(OSC1_SCALE,P[t].getPatternElement(step).get(OSC1_SCALE));
+	  M[t]->setI(OSC2_SCALE,P[t].getPatternElement(step).get(OSC2_SCALE));
+	  M[t]->setI(OSC3_SCALE,P[t].getPatternElement(step).get(OSC3_SCALE));
+	  M[t]->setI(OSC4_SCALE,P[t].getPatternElement(step).get(OSC4_SCALE));
 	  M[t]->setI(NOTE1,P[t].getPatternElement(step).get(NOTE1));
 
 	  /*

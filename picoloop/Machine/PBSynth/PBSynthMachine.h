@@ -72,6 +72,10 @@ class PBSynthMachine : public Machine
   int                   osc2_type;
 
 
+  int                   osc1_scale;
+  int                   osc2_scale;
+
+
 };
 
 #endif
