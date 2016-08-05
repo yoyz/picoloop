@@ -23,7 +23,8 @@ public:
   int checkSevenBitBoundarie(int val);
   //void setFSynthFreq(float ffreq);
   //void setISynthFreq(int   ifreq);
-  void setNoteDetune(int note,int detune);
+  //void setNoteDetune(int note,int detune);
+  void setNoteDetune(int noteosc1,int noteosc2,int detune);
   void setOscillator(int oscillator_number,int oscillator_type);
   /*
   void setSineOsc();

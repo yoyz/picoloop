@@ -289,16 +289,16 @@ Oscillator * PicosynthVCO::getOscillatorOne()
 
 
 
-void PicosynthVCO::setNoteDetune(int nt,int dt)
+//void PicosynthVCO::setNoteDetune(int nt,int dt)
+void PicosynthVCO::setNoteDetune(int nt1,int nt2,int dt)
 {
   NoteFreq & NF = NoteFreq::getInstance();
   detune=dt;
-
-  s1->setNoteDetune(nt,64);
-  s2->setNoteDetune(nt,dt);
-  freqOsc1=NF.getINoteFreq(nt);
-  freqOsc2=NF.getINoteFreq(nt);
-  note=nt;
+  s1->setNoteDetune(nt1,64);
+  s2->setNoteDetune(nt2,dt);
+  freqOsc1=NF.getINoteFreq(nt1);
+  freqOsc2=NF.getINoteFreq(nt2);
+  note=nt1;
 
   pb.setNote(note); 
 }

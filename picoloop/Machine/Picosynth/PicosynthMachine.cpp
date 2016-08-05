@@ -72,7 +72,7 @@ void PicosynthMachine::init()
   this->getADSRFltr().init();
   this->getVCO().init();
   //this->getVCO().setSynthFreq(0);      
-  this->getVCO().setNoteDetune(0,0);      
+  this->getVCO().setNoteDetune(0,0,0);      
   this->getADSRAmp().setNoteADSR(1);
   this->getADSRFltr().setNoteADSR(1);
 
@@ -158,7 +158,7 @@ void PicosynthMachine::setI(int what,int val)
 
   if (what==NOTE_ON && val==1) 
     { 
-      this->getVCO().setNoteDetune(note,detune);
+      this->getVCO().setNoteDetune(note+osc1_scale,note+osc2_scale,detune);
       this->getADSRAmp().reset();
       this->getADSRFltr().reset();
       this->getVCO().reset();
@@ -190,6 +190,8 @@ void PicosynthMachine::setI(int what,int val)
 
   //if (what==OSC1_AMP)            detune=val;
   //if (what==OSC2_AMP)            //HO->SetAttenuation(1,2,32-(val/4));
+  if (what==OSC1_SCALE)    osc1_scale=val;
+  if (what==OSC2_SCALE)    osc2_scale=val;
 
 
 

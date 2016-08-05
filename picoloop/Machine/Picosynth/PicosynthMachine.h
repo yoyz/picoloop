@@ -48,6 +48,8 @@ class PicosynthMachine : public Machine
   Sint16              * tanh_table;
 
   int                   note;
+  int                   osc1_scale;
+  int                   osc2_scale;
   int                   detune;
 
   int                   trig_time_mode;
