@@ -38,6 +38,7 @@ void EffectDelay::init()
 {
   DPRINTF("EffectDelay::init() before malloc buffer=%x.8",buffer);
   //buffer=0;
+  int i;
   index=0;
   indexOffset=0;
   sample_num=0;
@@ -49,6 +50,10 @@ void EffectDelay::init()
   {
     DPRINTF("EffectDelay::init() after malloc buffer=%x.8",buffer);
     buffer=(int16_t*)malloc(sizeof(int16_t)*FX_SIZE);
+    for (i=0;i<FX_SIZE;i++)
+      {
+	buffer[i]=0;
+      }
   }
   
 }

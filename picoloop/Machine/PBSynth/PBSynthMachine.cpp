@@ -63,6 +63,10 @@ void PBSynthMachine::init()
 
   SE->init();
   SE->setPBSynthFilter24dB(1);
+  SE->process(buffer_f,SAM);
+  SE->process(buffer_f,SAM);
+  SE->process(buffer_f,SAM);
+  SE->process(buffer_f,SAM);
   //SE.getPBSynthOscillator(0)->setWave(0);
   //SE.getPBSynthOscillator(1)->setWave(0);
   //SE.reset();
@@ -339,7 +343,7 @@ int PBSynthMachine::tick()
       for(i=0;i<SAM;i++)
        	{
        	  //buffer[i]=buffer[i]*2048;
-	  buffer_i[i]=buffer_f[i]*1536;
+	  //buffer_i[i]=buffer_f[i]*1536;
 	  buffer_i[i]=buffer_f[i]*1280;
        	}
     }
