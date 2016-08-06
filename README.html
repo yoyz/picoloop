@@ -149,6 +149,25 @@ Each synth engine has different kind of parameter.</p>
 <li>BPM   change the BPM and swing of the 4 track and the step diviser of the current track</li>
 </ol>
 
+<h2>What you need to know</h2>
+
+<p>Every pattern is stored in the bank/bankXXX/file so if you backup this directory you should be fine.</p>
+
+<p>You can write pattern on Dingux and push it on your laptop, unfortunately, it could sound little different.
+This is not the case for PSP which is able to sound the same.
+You won't be able to push pattern from PC to PSP/Opendingux, it could work but it depend if the Machine is available on the PSP.</p>
+
+<p>The combo Select+UP, Select+Down allow you to raise or decrease the volume.</p>
+
+<p>If you plug on Windows/Linux a midi cable you can use it with midi sync in or midi sync out.
+The MMC message ( "play", "stop" ) are received by picoloop, but it doesn't transmit this kind of message.
+It understand the "stop" and "play" MMC message. </p>
+
+<p>The MDA Drum synth works with file patch ".ds" file.
+So if you have a laptop with a harddrive which is not an ssd, you should work with a PSU and not the battery to
+avoid disk shutdown. The automatic disk shutdown will block audio for 10ms and it became audible.
+Will be fixed in a latter version.</p>
+
 <h3>Package dependency, build from source</h3>
 
 <p>This section describe the dependency for building picoloop.
