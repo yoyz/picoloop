@@ -56,6 +56,11 @@ using namespace std;
 #include <psppower.h>
 #include "psp_callback.h"
 
+
+char pada='a';
+char padb='b';
+char padc='c';
+
 #define VERS    1 //Talk about this
 #define REVS    0
 
