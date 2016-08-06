@@ -1,4 +1,4 @@
-<h1>PICOLOOP 0.71 README</h1>
+<h1>PICOLOOP 0.73 README</h1>
 
 <h2>Overview</h2>
 
@@ -47,6 +47,8 @@ In menu mode, when you press left/right, it change the textual menu in the botto
 B               do nothing
 A + &lt;/&gt;/^/v,    edit all step at once
 A               enter the edit mode
+L               go to the next     16 step on the same track
+R               go to the previous 16 step on the same track
 SELECT          call menu2 or menu1 ( it cycle between the two menu )
 </code></pre>
 
@@ -60,6 +62,8 @@ In edit mode, when you press left/right, it change the current step in the seque
 B               enter a note in a step, it works as a cut/paste
 A + &lt;/&gt;/^/v,    edit the current step
 A               do nothing
+L               go to the next     16 step on the same track
+R               go to the previous 16 step on the same track
 SELECT          call menu2 or menu1 ( it cycle between the two menu )
 START           cycle between the different parameter
 </code></pre>
@@ -110,7 +114,7 @@ Each synth engine has different kind of parameter.</p>
 <li><p>OSC : </p>
 
 <ul>
-<li>Choose the two OSC of the synth, the drumsynth, the FM synth                             </li>
+<li>Choose the two OSC shape of the synth, the drumsynth, the FM synth                             </li>
 </ul></li>
 <li><p>VCO : </p>
 
@@ -139,7 +143,7 @@ Each synth engine has different kind of parameter.</p>
 <ol>
 <li>L/S   load and save a pattern  track or the 4 pattern track ;</li>
 <li>BANK  change the current bank which allow you to have more pattern.</li>
-<li>PSH   shift left or right the pattern of a track ;</li>
+<li>PSH   shift left or right the pattern of a track and add bunch of 16 step ;</li>
 <li>MAC   change the current synth engine, synth, drumsynth, dbopl ( adlib fm )</li>
 <li>FX    apply fx on the current track delay</li>
 <li>BPM   change the BPM and swing of the 4 track and the step diviser of the current track</li>
@@ -309,13 +313,20 @@ In this case, you need the prx file ( not an elf or EBOOT.PBP ).</p>
 
 <h1>Changelog</h1>
 
-<p>V0.73 :
-- add a midi delta option in the [BPM] menu to move the sync signal in time, it is a kind of "midi delay" but doesn't work exactly the same way
-- add a 'osc scale' which allow to change oscillator one or oscillator two pitch to make basic chord with two note
-- rework a bit BPSynth on opendingoo to allow to remove some bad FixedPoint behaviour</p>
+<p>V0.73 :</p>
 
-<p>V0.71 :
-- improve realtime of mda drum synth, now quite useable, but need to be improved</p>
+<ul>
+<li>add a midi delta option in the [BPM] menu to move the sync signal in time, it is a kind of "midi delay" but doesn't work exactly the same way</li>
+<li>add a 'osc scale' which allow to change oscillator one or oscillator two pitch to make basic chord with two note</li>
+<li>rework a bit BPSynth on opendingoo to allow to remove some bad FixedPoint behaviour</li>
+<li>fix first buffer audio generation of pbsynth which lead to an audio glitch</li>
+</ul>
+
+<p>V0.71 :</p>
+
+<ul>
+<li>improve realtime of mda drum synth, now quite useable, but need to be improved</li>
+</ul>
 
 <p>V0.70 :</p>
 

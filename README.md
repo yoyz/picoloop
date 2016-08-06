@@ -1,4 +1,4 @@
-# PICOLOOP 0.71 README #
+# PICOLOOP 0.73 README #
 
 
 
@@ -51,6 +51,8 @@ In menu mode, when you press left/right, it change the textual menu in the botto
     B               do nothing
     A + </>/^/v,    edit all step at once
     A               enter the edit mode
+    L               go to the next     16 step on the same track
+    R               go to the previous 16 step on the same track
     SELECT          call menu2 or menu1 ( it cycle between the two menu )
 
 
@@ -65,6 +67,8 @@ In edit mode, when you press left/right, it change the current step in the seque
     B               enter a note in a step, it works as a cut/paste
     A + </>/^/v,    edit the current step
     A               do nothing
+    L               go to the next     16 step on the same track
+    R               go to the previous 16 step on the same track
     SELECT          call menu2 or menu1 ( it cycle between the two menu )
     START           cycle between the different parameter
 
@@ -106,7 +110,7 @@ Here is the global overview of the most common parameter you will find by synth 
     - Choose note with "dot"                                                                   
     
 - OSC : 
-    - Choose the two OSC of the synth, the drumsynth, the FM synth                             
+    - Choose the two OSC shape of the synth, the drumsynth, the FM synth                             
 
 - VCO : 
     - VCO mix in synth mode, OP1mult/OP2mult in FM mode                                        
@@ -127,7 +131,7 @@ The menu 2 is a more general menu. You can :
 
 1. L/S   load and save a pattern  track or the 4 pattern track ;
 2. BANK  change the current bank which allow you to have more pattern.
-3. PSH   shift left or right the pattern of a track ;
+3. PSH   shift left or right the pattern of a track and add bunch of 16 step ;
 4. MAC   change the current synth engine, synth, drumsynth, dbopl ( adlib fm )
 5. FX    apply fx on the current track delay
 6. BPM   change the BPM and swing of the 4 track and the step diviser of the current track
@@ -320,13 +324,17 @@ In this case you need a prx and an elf file.
 
 Changelog
 =========
+
 V0.73 :
+
 - add a midi delta option in the [BPM] menu to move the sync signal in time, it is a kind of "midi delay" but doesn't work exactly the same way
 - add a 'osc scale' which allow to change oscillator one or oscillator two pitch to make basic chord with two note
 - rework a bit BPSynth on opendingoo to allow to remove some bad FixedPoint behaviour
+- fix first buffer audio generation of pbsynth which lead to an audio glitch
 
 
 V0.71 :
+
 - improve realtime of mda drum synth, now quite useable, but need to be improved
 
 
