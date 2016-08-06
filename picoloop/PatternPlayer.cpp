@@ -2459,6 +2459,7 @@ void refresh_pecursor_ui(int i)
   PECursor=P[cty].getPatternElement(i);  
   machine_type=PECursor.get(MACHINE_TYPE);
 
+  DPRINTF("refresh_pecursor_ui(%d),machine_type=%d",i,machine_type);
   if (machine_type==SYNTH_PICOSYNTH)    { UI=&PSUI; return ;   }
   if (machine_type==SYNTH_PICODRUM)     { UI=&PDUI; return ;   }
   if (machine_type==SYNTH_OPL2    )     { UI=&DBUI; return ;   }
@@ -2489,21 +2490,16 @@ void refresh_pecursor()
 {
   int  cty=SEQ.getCurrentTrackY();
   int  i=0;
-  int  cursor_not_on=0;
-  // Refresh the PECursor with the current Element
-  // if (P[cty].getPatternElement(cursor).get(NOTE_ON))
+  int  cursor_note_on=-1;
+  // Refresh the PECursor with the first NOTE_ON
+  // for (i=0;i<=15;i++)
   //   {
-  //     refresh_pecursor_ui(cursor);
+  //     if (P[cty].getPatternElement(i).get(NOTE_ON))
+  // 	cursor_note_on=i;
   //   }
-  // else
-  //   {
-  for (i=0;i<=16;i++)
-    {
-      if (P[cty].getPatternElement(i).get(NOTE_ON))
-	cursor_not_on=i;
-    }
-  refresh_pecursor_ui(cursor_not_on);
-  //}
+  //refresh_pecursor_ui(cursor_note_on);
+  refresh_pecursor_ui(0);
+  
 }
 
 
