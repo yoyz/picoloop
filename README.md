@@ -320,9 +320,13 @@ In this case you need a prx and an elf file.
 
 Changelog
 =========
+V0.73 :
+- add a midi delta option in the [BPM] menu to move the sync signal in time, it is a kind of "midi delay" but doesn't work exactly the same way
+- add a 'osc scale' which allow to change oscillator one or oscillator two pitch to make basic chord with two note
+- rework a bit BPSynth on opendingoo to allow to remove some bad FixedPoint behaviour
+
 
 V0.71 :
-
 - improve realtime of mda drum synth, now quite useable, but need to be improved
 
 
