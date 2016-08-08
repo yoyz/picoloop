@@ -362,7 +362,7 @@ void PatternElement::set(int what,int val)
       break;
 
     case KEYTRACK:
-      keytrack=checkThreeOctaveScale(val);
+      keytrack=checkSevenBitBoundarie(val);
       break;
 
 
