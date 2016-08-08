@@ -315,8 +315,8 @@ void TwytchsynthMachine::setI(int what,int val)
    if (what==OSC1_DETUNE )                            { TWE->getControls().at("osc_2_tune"   )->set((f_val*2)-1); }
    if (what==OSC1_MOD    )                            { TWE->getControls().at("cross_modulation")->set(f_val/2); }
 
-   if (what==OSC1_AMP   )                             { TWE->getControls().at("keytrack"     )->set(((f_val*2)-1)); }
-   if (what==OSC2_AMP )                               { TWE->getControls().at("fil_env_depth")->set(((f_val*2)-1)*128); }
+   if (what==KEYTRACK   )                             { TWE->getControls().at("keytrack"     )->set(((f_val*2)-1)); }
+   if (what==ENV1_DEPTH )                             { TWE->getControls().at("fil_env_depth")->set(((f_val*2)-1)*128); }
 
    if (what==OSC3_AMP )                               { TWE->getControls().at("sub_volume"     )->set(f_val);}
    if (what==OSC4_AMP )                               { TWE->getControls().at("noise_volume"   )->set(f_val);}
