@@ -123,6 +123,13 @@ private:
   int osc2_scale;
   int osc3_scale;
   int osc4_scale;
+
+  int env1_depth;
+  int env2_depth;
+  int env3_depth;
+  int env4_depth;
+
+  int keytrack;
 };
 
 #endif

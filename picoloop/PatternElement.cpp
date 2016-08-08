@@ -108,6 +108,13 @@ void PatternElement::init()
   osc2_scale=0;
   osc3_scale=0;
   osc4_scale=0;
+
+  env1_depth=64;
+  env2_depth=64;
+  env3_depth=64;
+  env4_depth=64;
+
+  keytrack=64;
 }
 
 void PatternElement::set(int what,int val)
@@ -339,6 +346,23 @@ void PatternElement::set(int what,int val)
 
     case OSC4_SCALE:
       osc4_scale=checkThreeOctaveScale(val);
+      break;
+
+    case ENV1_DEPTH:
+      env1_depth=checkSevenBitBoundarie(val);
+      break;
+    case ENV2_DEPTH:
+      env2_depth=checkSevenBitBoundarie(val);
+      break;
+    case ENV3_DEPTH:
+      env3_depth=checkSevenBitBoundarie(val);
+      break;
+    case ENV4_DEPTH:
+      env4_depth=checkSevenBitBoundarie(val);
+      break;
+
+    case KEYTRACK:
+      keytrack=checkThreeOctaveScale(val);
       break;
 
 
@@ -574,6 +598,22 @@ int PatternElement::get(int what)
       return osc4_scale;
       break;
 
+    case ENV1_DEPTH:
+      return env1_depth;
+      break;
+    case ENV2_DEPTH:
+      return env2_depth;
+      break;
+    case ENV3_DEPTH:
+      return env3_depth;
+      break;
+    case ENV4_DEPTH:
+      return env4_depth;
+      break;
+
+    case KEYTRACK:
+      return keytrack;
+      break;
 
 
     default:

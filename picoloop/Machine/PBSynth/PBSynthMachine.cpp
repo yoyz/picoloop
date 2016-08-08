@@ -246,14 +246,14 @@ void PBSynthMachine::setI(int what,int val)
     if (what==OSC1_DETUNE)           
       {
 	osc1_detune=val;
-	SE->getPBSynthOscillator(0)->setDetune(this->checkI(OSC1_DETUNE,val));
+	SE->getPBSynthOscillator(0)->setDetune(this->checkI(OSC1_DETUNE,val)-192);
       }
 
 
     if (what==OSC2_DETUNE)           
       {
 	osc2_detune=val;
-	SE->getPBSynthOscillator(1)->setDetune(this->checkI(OSC2_DETUNE,val));
+	SE->getPBSynthOscillator(1)->setDetune(this->checkI(OSC2_DETUNE,val)-192);
       }
 
     if (what==OSC2_TYPE)           
@@ -304,13 +304,15 @@ void PBSynthMachine::setI(int what,int val)
 
 #ifdef FIXED
     // in fixed point mode  -0.5 0.5
-    if (what==OSC1_PHASE)          SE->setParameter(SENGINE_ENV2_TO_CUTOFF,(f_val-float(0.5)));
+    //if (what==ENV1_DEPTH)          SE->setParameter(SENGINE_ENV2_TO_CUTOFF,(f_val-float(0.5)));
+    if (what==ENV1_DEPTH)          SE->setParameter(SENGINE_ENV2_TO_CUTOFF,(float(0.5)-f_val));
     if (what==FILTER1_CUTOFF)      SE->setParameter(SENGINE_FILTFREQ,(f_val-float(0.5)));
     if (what==FILTER1_RESONANCE)   SE->setParameter(SENGINE_FILTRESO,(f_val-float(0.5)));
 
 #else
     // in floating point mode  -1 1
-    if (what==OSC1_PHASE)          SE->setParameter(SENGINE_ENV2_TO_CUTOFF,(-f_val*2)+1);
+    //if (what==ENV1_DEPTH)          SE->setParameter(SENGINE_ENV2_TO_CUTOFF,(-f_val*2)+1);
+    if (what==ENV1_DEPTH)          SE->setParameter(SENGINE_ENV2_TO_CUTOFF,(f_val*2)-1);
     if (what==FILTER1_CUTOFF)      SE->setParameter(SENGINE_FILTFREQ,(f_val*2)-1);
     if (what==FILTER1_RESONANCE)   SE->setParameter(SENGINE_FILTRESO,(f_val*2)-1);
 
@@ -318,8 +320,8 @@ void PBSynthMachine::setI(int what,int val)
 
 
 
-  if (what==OSC1_AMP)               SE->setParameter(SENGINE_ENV1_TO_OSC1PW,(f_val*2)-1);
-  if (what==OSC2_AMP)               SE->setParameter(SENGINE_ENV1_TO_OSC2PW,(f_val*2)-1);
+    //if (what==OSC1_AMP)               SE->setParameter(SENGINE_ENV1_TO_OSC1PW,(f_val*2)-1);
+    if (what==OSC2_AMP)               SE->setParameter(SENGINE_ENV1_TO_OSC2PW,(f_val*2)-1);
 
 }
 
