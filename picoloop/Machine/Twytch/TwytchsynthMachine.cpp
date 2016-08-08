@@ -243,26 +243,26 @@ void TwytchsynthMachine::setI(int what,int val)
 
       if (old_note!=note)
 	{
-	  TWE->noteOn(note-1);
-	  TWE->noteOff(old_note-1);
+	  TWE->noteOn(note-1+12);
+	  TWE->noteOff(old_note-1+12);
 	  //need_note_on=1;
 	}
       else
 	{
 	  if (note_on==0)
 	    {
-	      TWE->noteOn(note-1);
+	      TWE->noteOn(note-1+12);
 	    }
 	  else
 	    {
-	      TWE->noteOn(note-1);
+	      TWE->noteOn(note-1+12);
 	    }
 	}
     }
   if (what==NOTE_ON && val==0) 
     { 
       note_on=0;
-      TWE->noteOff(note-1);
+      TWE->noteOff(note-1+12);
     }
 
   if (what==NOTE1)                                    {  old_note=note; note=val; }
@@ -312,15 +312,14 @@ void TwytchsynthMachine::setI(int what,int val)
    if (what==VELOCITY && velocity!=val)               { velocity=val;   TWE->getControls().at("velocity_track"     )->set(abs(f_val-1)); }
 
 
-   if (what==OSC1_DETUNE && osc1_detune!=val)         { detune=val;     TWE->getControls().at("osc_2_tune"   )->set((f_val*2)-1); }
-   if (what==OSC1_MOD    && osc1_mod!=val)            { osc1_mod=val;   TWE->getControls().at("cross_modulation")->set(f_val/2); }
+   if (what==OSC1_DETUNE )                            { TWE->getControls().at("osc_2_tune"   )->set((f_val*2)-1); }
+   if (what==OSC1_MOD    )                            { TWE->getControls().at("cross_modulation")->set(f_val/2); }
 
-   if (what==OSC1_AMP && osc1_amp!=val)               { osc1_amp=val;   TWE->getControls().at("keytrack"     )->set(((f_val*2)-1)); }
-   if (what==OSC2_AMP && osc2_amp!=val)               { osc2_amp=val;   TWE->getControls().at("fil_env_depth")->set(((f_val*2)-1)*128); }
+   if (what==OSC1_AMP   )                             { TWE->getControls().at("keytrack"     )->set(((f_val*2)-1)); }
+   if (what==OSC2_AMP )                               { TWE->getControls().at("fil_env_depth")->set(((f_val*2)-1)*128); }
 
-
-   if (what==OSC3_AMP && osc3_amp!=val)               { osc3_amp=val;   TWE->getControls().at("sub_volume"     )->set(f_val);}
-   if (what==OSC4_AMP && osc4_amp!=val)               { osc4_amp=val,   TWE->getControls().at("noise_volume"   )->set(f_val);}
+   if (what==OSC3_AMP )                               { TWE->getControls().at("sub_volume"     )->set(f_val);}
+   if (what==OSC4_AMP )                               { TWE->getControls().at("noise_volume"   )->set(f_val);}
 
 
    if (what==OSC1_UNISON && osc1_unison!=val)         { osc1_unison=val; TWE->getControls().at("osc_1_unison_voices")->set(f_val*15); }

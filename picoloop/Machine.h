@@ -136,6 +136,12 @@ using namespace std;
 #define OSC1_UNISONDT       92 // unison detune
 #define OSC2_UNISONDT       93 // unison detune
 
+#define ENV1_DEPTH          94
+#define ENV2_DEPTH          95
+#define ENV3_DEPTH          96
+#define ENV4_DEPTH          97
+
+#define KEYTRACK            98
 
 
 #define TRIG_TIME_MODE      101  // Used by PatternPlayer to predefined the time of NOTE_ON

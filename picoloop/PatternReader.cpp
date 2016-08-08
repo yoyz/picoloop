@@ -650,6 +650,26 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
   fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
+  machineParam=ENV1_DEPTH;
+  fgets(line,sizeoflinemax,fd);
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
+
+  machineParam=ENV2_DEPTH;
+  fgets(line,sizeoflinemax,fd);
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
+
+  machineParam=ENV3_DEPTH;
+  fgets(line,sizeoflinemax,fd);
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
+
+  machineParam=ENV4_DEPTH;
+  fgets(line,sizeoflinemax,fd);
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
+
+  machineParam=KEYTRACK;
+  fgets(line,sizeoflinemax,fd);
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
+
 
   if (retcode==true)
     {
@@ -1002,6 +1022,20 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
   this->writePatternDataLine(PatternNumber,TrackNumber,P,line,OSC2_DETUNE);
   data.insert(data.end(),line);
 
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,ENV1_DEPTH);
+  data.insert(data.end(),line);
+
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,ENV2_DEPTH);
+  data.insert(data.end(),line);
+
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,ENV3_DEPTH);
+  data.insert(data.end(),line);
+
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,ENV4_DEPTH);
+  data.insert(data.end(),line);
+
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,KEYTRACK);
+  data.insert(data.end(),line);
 
   sprintf(line,"\n");
   data.insert(data.end(),line);
@@ -1142,6 +1176,13 @@ const char * PatternReader::getParameterCharStar(int param)
   static const char * osc1_unisondt="Osc1UnisonDetune";        
   static const char * osc2_unisondt="Osc2UnisonDetune";        
 
+  static const char * env1_depth="Env1Depth";        
+  static const char * env2_depth="Env2Depth";        
+  static const char * env3_depth="Env3Depth";        
+  static const char * env4_depth="Env4Depth";        
+
+  static const char * keytrack="Keytrack";        
+
 
   switch (param)
     {
@@ -1231,6 +1272,14 @@ const char * PatternReader::getParameterCharStar(int param)
     case OSC2_SCALE:         return osc2_scale;                 break;
     case OSC3_SCALE:         return osc3_scale;                 break;
     case OSC4_SCALE:         return osc4_scale;                 break;
+
+    case ENV1_DEPTH:         return env1_depth;                 break;
+    case ENV2_DEPTH:         return env2_depth;                 break;
+    case ENV3_DEPTH:         return env3_depth;                 break;
+    case ENV4_DEPTH:         return env4_depth;                 break;
+
+    case KEYTRACK:           return keytrack;                 break;
+
     
     default:                 printf("PatternReader::getParameterCharStar(%d) not found => exit\n"); exit(1); break;
     }

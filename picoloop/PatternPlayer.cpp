@@ -3152,9 +3152,13 @@ void seq_update_track(int t)
 	  M[t]->setI(FILTER1_SATURATION,   P[t].getPatternElement(step).get(FILTER1_SATURATION));
 	  M[t]->setI(FILTER1_FEEDBACK,     P[t].getPatternElement(step).get(FILTER1_FEEDBACK));
 
+	  M[t]->setI(ENV1_DEPTH,      P[t].getPatternElement(step).get(ENV1_DEPTH));
+	  M[t]->setI(ENV2_DEPTH,      P[t].getPatternElement(step).get(ENV2_DEPTH));
+	  M[t]->setI(ENV3_DEPTH,      P[t].getPatternElement(step).get(ENV3_DEPTH));
+	  M[t]->setI(ENV4_DEPTH,      P[t].getPatternElement(step).get(ENV4_DEPTH));
 
 	  M[t]->setI(OSC1_DETUNE,      P[t].getPatternElement(step).get(OSC1_DETUNE));
-	  M[t]->setI(OSC2_DETUNE,      P[t].getPatternElement(step).get(OSC1_DETUNE));
+	  M[t]->setI(OSC2_DETUNE,      P[t].getPatternElement(step).get(OSC2_DETUNE));
 
 	  M[t]->setI(VELOCITY,         P[t].getPatternElement(step).get(VELOCITY));
 	  M[t]->setI(OSC1_MOD,         P[t].getPatternElement(step).get(OSC1_MOD));
