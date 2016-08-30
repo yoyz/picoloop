@@ -355,6 +355,54 @@ enum {
 #endif
 
 
+#ifdef LINUX_POCKETCHIP
+
+//#define __FPU__         0
+
+#define SCREEN_WIDTH	320
+#define SCREEN_HEIGHT	240
+#define SCREEN_DEPTH	16
+#define SCREEN_MULT     1
+
+
+
+// Fine tuning 2048 for MIDI_DELAY_IN_SAMPLE and 512 for DEFAULTSAMPLES
+#define MIDI_DELAY_IN_SAMPLE 2048
+#define DEFAULTSAMPLES   2048 // Raspberry 1 can not handle 512 sample
+
+
+
+#define KEY_REPEAT_INTERVAL_SMALLEST  4
+#define KEY_REPEAT_INTERVAL_SMALL     8
+#define KEY_REPEAT_INTERVAL_MIDDLE    32
+#define KEY_REPEAT_INTERVAL_LONG      64
+#define KEY_REPEAT_INTERVAL_LONGEST   128
+
+
+
+#define BUTTON_B            SDLK_LALT
+#define BUTTON_A            SDLK_LCTRL
+#define BUTTON_X            SDLK_SPACE
+#define BUTTON_Y            SDLK_LSHIFT
+
+#define BUTTON_UP           SDLK_UP
+#define BUTTON_DOWN         SDLK_DOWN
+#define BUTTON_LEFT         SDLK_LEFT
+#define BUTTON_RIGHT        SDLK_RIGHT
+
+#define BUTTON_SELECT       SDLK_ESCAPE
+#define BUTTON_START        SDLK_RETURN
+
+#define BUTTON_L            SDLK_TAB
+#define BUTTON_R            SDLK_BACKSPACE
+
+#define KEYPRESSED          SDL_KEYDOWN
+#define KEYRELEASED         SDL_KEYUP
+
+// END LINUX_POCKETCHIP 
+#endif
+
+
 #ifdef PSP
 #define SCREEN_MULT     1
 #define SCREEN_WIDTH	480
