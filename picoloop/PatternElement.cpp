@@ -115,6 +115,7 @@ void PatternElement::init()
   env4_depth=64;
 
   keytrack=64;
+  phaseOsc1=0;
 }
 
 void PatternElement::set(int what,int val)

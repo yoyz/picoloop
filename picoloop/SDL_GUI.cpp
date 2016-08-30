@@ -84,6 +84,13 @@ int SDL_GUI::initVideo()
 			    SDL_HWSURFACE|SDL_DOUBLEBUF);
   #endif
 
+  #ifdef LINUX_POCKETCHIP
+  screen = SDL_SetVideoMode(SCREEN_WIDTH*SCREEN_MULT, 
+			    SCREEN_HEIGHT*SCREEN_MULT, 
+			    SCREEN_DEPTH,			
+			    SDL_HWSURFACE|SDL_DOUBLEBUF);
+  #endif
+
 
   #ifdef GP2X
   screen = SDL_SetVideoMode(SCREEN_WIDTH, 
