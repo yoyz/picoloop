@@ -6,7 +6,11 @@ MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(), CS(), O303(), TW(), MD(), MID
 #endif
 
 #if   defined(__FPU__) && !defined(__RTMIDI__)
-MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(), CS(), O303(), TW(),                 FXDelay(), FXDisabled()
+MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(), CS(), O303(), TW(),                   FXDelay(), FXDisabled()
+#endif
+
+#if   !defined(__FPU__) && defined(__RTMIDI__)
+MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(),                           MIDIOUTM(), FXDelay(), FXDisabled()
 #endif
 
 #if  !defined(__FPU__) && !defined(__RTMIDI__)
