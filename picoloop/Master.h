@@ -359,8 +359,8 @@ enum {
 
 //#define __FPU__         0
 
-#define SCREEN_WIDTH	320
-#define SCREEN_HEIGHT	240
+#define SCREEN_WIDTH	480
+#define SCREEN_HEIGHT	272
 #define SCREEN_DEPTH	16
 #define SCREEN_MULT     1
 
@@ -380,8 +380,8 @@ enum {
 
 
 
-#define BUTTON_B            SDLK_LALT
-#define BUTTON_A            SDLK_LCTRL
+#define BUTTON_B            SDLK_RSHIFT
+#define BUTTON_A            SDLK_RCTRL
 #define BUTTON_X            SDLK_SPACE
 #define BUTTON_Y            SDLK_LSHIFT
 
