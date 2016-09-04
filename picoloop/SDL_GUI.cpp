@@ -137,8 +137,10 @@ void SDL_GUI::refresh()
 
 void SDL_GUI::clearScreen()
 {
+  extern int32_t * pal;
   DPRINTF("SDL_GUI::clearScreen()");
-  SDL_FillRect(screen,NULL, 0x000000);
+  //SDL_FillRect(screen,NULL, 0x000000);
+  SDL_FillRect(screen,NULL, pal[8]);
 }
 
 
@@ -343,8 +345,20 @@ void SDL_GUI::apply_surface( int x, int y, SDL_Surface* source, SDL_Surface* des
 
 int SDL_GUI::guiTTFText(int x,int y,const char *txt)
 {
-  SDL_Color textColor = { 54, 25, 255 };
+  //SDL_Color textColor = { 54, 25, 255 };
+  extern int32_t * pal;
+  //SDL_Color textColor = { pal[7]&&0x0000FF, pal[7]&&0x00FF00, pal[7]&&0xFF0000 };
+  //SDL_Color textColor = { pal[7], pal[7], pal[7] };
+  //SDL_Color textColor = { (pal[7]&&0x0000FF), (pal[7]&&0x00FF00)>>8, (pal[7]&&0xFF0000)>>16 };
+
+  SDL_Color textColor;
   SDL_Rect * clip = NULL;
+  textColor.r=pal[7]&0x0000FF;
+  textColor.g=pal[7]&0x00FF00>>8;
+  textColor.b=pal[7]&0xFF0000>>16;
+
+
+  //printf("textcolor : %d %d %d\n",textColor.r, textColor.g, textColor.b);
 
   if (message!=NULL)
     SDL_FreeSurface(message);
