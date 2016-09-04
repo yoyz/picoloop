@@ -175,7 +175,9 @@ On most platform in 2016, you will need this kind of package.
      - libasound2*  => alsa
      - libpthread*  => pthread for multiple thread
      - g++          => I use the g++ 4.7.2  
-     - make         => U use the make 3.81
+     - make         => I use the make 3.81
+     - libjack-dev  => I use jack 2.0, and the jack dependency is needed today 
+     
 
 
 #### LASTEST SOURCE ####
@@ -200,6 +202,32 @@ Tag should be safier.
      # make -f Makefile.RtAudio_debian
      # make -f Makefile.RtMidi_debian
      # make -f Makefile.PatternPlayer_debian_RtAudio
+
+#### COMPILATION FOR POCKETCHIP ####
+
+You have to build it on the pocketchip.
+
+     # cd      picoloop
+     # make -f Makefile.RtAudio_pocketchip               clean
+     # make -f Makefile.RtMidi_pocketchip                clean
+     # make -f Makefile.PatternPlayer_pocketchip_RtAudio clean
+     # make -f Makefile.RtAudio_pocketchip
+     # make -f Makefile.RtMidi_pocketchip
+     # make -f Makefile.PatternPlayer_pocketchip_RtAudio
+
+
+#### COMPILATION FOR RASPBERRYPI1 ####
+
+You have to build it directly on the raspberry.
+If you have a raspberry 2 or 3, you should go to the "debian" section.
+This build type is a light version like the opendingux one.
+
+     # cd      picoloop
+     # make -f Makefile.RtAudio_raspi1                  clean
+     # make -f Makefile.PatternPlayer_raspi1_RtAudio    clean
+     # make -f Makefile.RtAudio_raspi1                  
+     # make -f Makefile.PatternPlayer_raspi1_RtAudio    
+
 
 #### COMPILATION FOR OPENDINGUX ####
 
@@ -232,6 +260,7 @@ I don't have build it month ago, so at your own risk.
 
 On debian, you need the mingw32 package.
 Picoloop provide the header and binary for SDL 1.2 on windows.
+So here it is a "cross build" you build on linux for windows.
 
      # cd         picoloop
      # make       -f Makefile.RtAudio_windows                              clean
@@ -343,6 +372,12 @@ In this case you need a prx and an elf file.
 
 Changelog
 =========
+
+V0.74 :
+
+- add pocketchip platform, which is a "kind of variant" of raspberry pi 1, thank to garvalf from chipmusic.org
+- fix a PatternElement.cpp issue related to a value not initialized 
+
 
 V0.73 :
 

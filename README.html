@@ -177,7 +177,8 @@ On most platform in 2016, you will need this kind of package.</p>
  - libasound2*  =&gt; alsa
  - libpthread*  =&gt; pthread for multiple thread
  - g++          =&gt; I use the g++ 4.7.2  
- - make         =&gt; U use the make 3.81
+ - make         =&gt; I use the make 3.81
+ - libjack-dev  =&gt; I use jack 2.0, and the jack dependency is needed today
 </code></pre>
 
 <h4>LASTEST SOURCE</h4>
@@ -200,6 +201,32 @@ But, you should probably switch to a tag then.</p>
  # make -f Makefile.RtAudio_debian
  # make -f Makefile.RtMidi_debian
  # make -f Makefile.PatternPlayer_debian_RtAudio
+</code></pre>
+
+<h4>COMPILATION FOR POCKETCHIP</h4>
+
+<p>You have to build it on the pocketchip.</p>
+
+<pre><code> # cd      picoloop
+ # make -f Makefile.RtAudio_pocketchip               clean
+ # make -f Makefile.RtMidi_pocketchip                clean
+ # make -f Makefile.PatternPlayer_pocketchip_RtAudio clean
+ # make -f Makefile.RtAudio_pocketchip
+ # make -f Makefile.RtMidi_pocketchip
+ # make -f Makefile.PatternPlayer_pocketchip_RtAudio
+</code></pre>
+
+<h4>COMPILATION FOR RASPBERRYPI1</h4>
+
+<p>You have to build it directly on the raspberry.
+If you have a raspberry 2 or 3, you should go to the "debian" section.
+This build type is a light version like the opendingux one.</p>
+
+<pre><code> # cd      picoloop
+ # make -f Makefile.RtAudio_raspi1                  clean
+ # make -f Makefile.PatternPlayer_raspi1_RtAudio    clean
+ # make -f Makefile.RtAudio_raspi1                  
+ # make -f Makefile.PatternPlayer_raspi1_RtAudio
 </code></pre>
 
 <h4>COMPILATION FOR OPENDINGUX</h4>
@@ -232,7 +259,8 @@ I don't have build it month ago, so at your own risk.</p>
 <h4>COMPILATION FOR WINDOWS WITH MINGW32</h4>
 
 <p>On debian, you need the mingw32 package.
-Picoloop provide the header and binary for SDL 1.2 on windows.</p>
+Picoloop provide the header and binary for SDL 1.2 on windows.
+So here it is a "cross build" you build on linux for windows.</p>
 
 <pre><code> # cd         picoloop
  # make       -f Makefile.RtAudio_windows                              clean
@@ -331,6 +359,13 @@ In this case, you need the prx file ( not an elf or EBOOT.PBP ).</p>
 <p>In this case you need a prx and an elf file.</p>
 
 <h1>Changelog</h1>
+
+<p>V0.74 :</p>
+
+<ul>
+<li>add pocketchip platform, which is a "kind of variant" of raspberry pi 1, thank to garvalf from chipmusic.org</li>
+<li>fix a PatternElement.cpp issue related to a value not initialized </li>
+</ul>
 
 <p>V0.73 :</p>
 
