@@ -421,8 +421,8 @@ int dboplMachine::tick()
       //modulated_freq=((sineLfoOsc1.tick()>>7)*lfo_depth>>7);
       //modulated_freq=((sineLfoOsc1.tick()*lfo_depth));
       modulated_freq=((sineLfoOsc1.tick()>>7)*lfo_depth)>>7;
-      if (sample_num%64==0)
-	printf("freq:%ld modulated_freq:%ld\n",freq,modulated_freq);
+      //      if (sample_num%64==0)
+      //	printf("freq:%ld modulated_freq:%ld\n",freq,modulated_freq);
       if (keyon)
 	{
 	  //HO->KeyOn(1,freq+modulated_freq);
