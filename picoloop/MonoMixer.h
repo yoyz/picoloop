@@ -64,6 +64,10 @@ class MonoMixer
 
   int                   fx_depth;
   int                   fx_speed;
+
+  int                   index;
+  Sint16                * buffer16;
+  Sint32                * buffer32;
 };
 
 

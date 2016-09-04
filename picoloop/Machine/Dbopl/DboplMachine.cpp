@@ -1,7 +1,7 @@
 #include "DboplMachine.h"
 
 //#define SAM 512
-#define SAM 64
+#define SAM 1
 
 //enum {
 //  FMTYPE_2_OP_AM,
@@ -252,6 +252,12 @@ void dboplMachine::setI(int what,int val)
   float        f_val_resonance;
   FreqMultiple freqM[15];
   Waveform     w[4];
+  int          fmval;
+  int          tab[16]={15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0};
+
+  fmval=tab[val/8];
+  //printf("fmval: %d\n",fmval);
+  
   w[0]=SIN;
   w[1]=HALF_SIN;
   w[2]=ABS_SIN;
@@ -306,15 +312,15 @@ void dboplMachine::setI(int what,int val)
       }
 
 
-    if (what==ADSR_ENV0_ATTACK)    HO->SetEnvelopeAttack( 1,1,val/16);
-    if (what==ADSR_ENV0_DECAY)     HO->SetEnvelopeDecay(  1,1,val/16);
-    if (what==ADSR_ENV0_SUSTAIN)   HO->SetEnvelopeSustain(1,1,val/16);
-    if (what==ADSR_ENV0_RELEASE)   HO->SetEnvelopeRelease(1,1,val/16);
+    if (what==ADSR_ENV0_ATTACK)    HO->SetEnvelopeAttack( 1,1,fmval);
+    if (what==ADSR_ENV0_DECAY)     HO->SetEnvelopeDecay(  1,1,fmval);
+    if (what==ADSR_ENV0_SUSTAIN)   HO->SetEnvelopeSustain(1,1,fmval);
+    if (what==ADSR_ENV0_RELEASE)   HO->SetEnvelopeRelease(1,1,fmval);
 
-    if (what==ADSR_ENV1_ATTACK)    HO->SetEnvelopeAttack( 1,2,val/16);
-    if (what==ADSR_ENV1_DECAY)     HO->SetEnvelopeDecay(  1,2,val/16);
-    if (what==ADSR_ENV1_SUSTAIN)   HO->SetEnvelopeSustain(1,2,val/16);
-    if (what==ADSR_ENV1_RELEASE)   HO->SetEnvelopeRelease(1,2,val/16);
+    if (what==ADSR_ENV1_ATTACK)    HO->SetEnvelopeAttack( 1,2,fmval);
+    if (what==ADSR_ENV1_DECAY)     HO->SetEnvelopeDecay(  1,2,fmval);
+    if (what==ADSR_ENV1_SUSTAIN)   HO->SetEnvelopeSustain(1,2,fmval);
+    if (what==ADSR_ENV1_RELEASE)   HO->SetEnvelopeRelease(1,2,fmval);
 
 
     if (what==LFO1_DEPTH)           {
@@ -351,7 +357,7 @@ void dboplMachine::setI(int what,int val)
       if (val > 118  && val <= 122 )  { lfo_depth=val ; lfo_depth_shift=4;         }
       if (val > 122  && val <= 128 )  { lfo_depth=val ; lfo_depth_shift=3;         } 
       
-      sineLfoOsc1.setFreq(lfo_speed);
+      sineLfoOsc1.setFreq(lfo_speed/2);
       
     }
 
@@ -400,7 +406,8 @@ int dboplMachine::tick()
 {
   Sint16 s_in;
   Sint16 s_out;
-  int    modulated_freq;
+  Sint32 modulated_freq;
+  //int    modulated_freq=0;
 
   if (index>=SAM | 
       index<0)
@@ -410,11 +417,16 @@ int dboplMachine::tick()
   if (index==0 )
     {
       //modulated_freq=(sineLfoOsc1.tick()>>lfo_depth_shift);
-      modulated_freq=((sineLfoOsc1.tick()>>5)/(128-lfo_depth));
-      
+      //modulated_freq=((sineLfoOsc1.tick()>>5)/(128-lfo_depth));
+      //modulated_freq=((sineLfoOsc1.tick()>>7)*lfo_depth>>7);
+      //modulated_freq=((sineLfoOsc1.tick()*lfo_depth));
+      modulated_freq=((sineLfoOsc1.tick()>>7)*lfo_depth)>>7;
+      if (sample_num%64==0)
+	printf("freq:%ld modulated_freq:%ld\n",freq,modulated_freq);
       if (keyon)
 	{
 	  //HO->KeyOn(1,freq+modulated_freq);
+
 	  HO->SetFrequency(1,freq+modulated_freq,true);
 	  //HO->KeyOn(1,freq);
 	}
