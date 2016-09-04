@@ -40,15 +40,28 @@
 
 #define KEY_REPEAT_INTERVAL 400
 
-
+/*
 #define DISABLEDBOX_COLOR   0x0AF0FE
 #define BOX_COLOR           0xAECD15
 #define TRIG_COLOR          0x0E4C15
 #define NOTE_COLOR          0x46DC65
 #define CURSOR_COLOR        0x1515CD
 #define STEP_COLOR          0x242C45
-
 #define SMALLBOX_COLOR      0x442233
+*/
+
+#define DISABLEDBOX_COLOR   0
+#define ENABLEDBOX_COLOR    1
+#define TRIG_COLOR          2
+#define NOTE_COLOR          3
+#define CURSOR_COLOR        4
+#define STEP_COLOR          5
+#define SMALLBOX_COLOR      6
+#define TEXTCOLOR           7
+#define BACKGROUND          8
+#define MAXCOLOR            9
+
+
 
 #define DISABLE             0
 #define ENABLE              1

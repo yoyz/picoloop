@@ -64,21 +64,26 @@ char padc='c';
 #define VERS    1 //Talk about this
 #define REVS    0
 
+
+
 PSP_MODULE_INFO("PatternPlayer", PSP_MODULE_USER, VERS, REVS);
 PSP_MAIN_THREAD_ATTR(PSP_THREAD_ATTR_USER|THREAD_ATTR_VFPU);
 PSP_HEAP_SIZE_KB(-2048) ;
 #endif // PSP
 
-#define MENU_CONFIG_Y_BANK          0 
-#define MENU_CONFIG_Y_AUDIOOUTPUT   1
-#define MENU_CONFIG_Y_MIDIOUTPUT    2
-#define MENU_CONFIG_Y_MIDIINPUT     3
-#define MENU_CONFIG_Y_MIDISYNCINOUT 4
+
+
+#define MENU_CONFIG_Y_PALETTE       0
+#define MENU_CONFIG_Y_BANK          1
+#define MENU_CONFIG_Y_AUDIOOUTPUT   2
+#define MENU_CONFIG_Y_MIDIOUTPUT    3
+#define MENU_CONFIG_Y_MIDIINPUT     4
+#define MENU_CONFIG_Y_MIDISYNCINOUT 5
 
 #ifdef __RTMIDI__
-#define MENU_CONFIG_Y_MAX           4
+#define MENU_CONFIG_Y_MAX           5
 #else
-#define MENU_CONFIG_Y_MAX           1
+#define MENU_CONFIG_Y_MAX           2
 #endif
 
 
@@ -136,6 +141,17 @@ MidiOutUserInterface MIDIUI;
 //UI.a=1;
 //UI=PUI;
 //PUI.a=1;
+
+//int32_t pal[0x0AF0FE,0xAECD15,0x0E4C15,0x46DC65,0x1515CD,0x242C45,0x442233];
+
+#define MAX_PALETTE 1
+int32_t pal0[MAXCOLOR]={0x0AF0FE,0xAECD15,0x0E4C15, 0x46DC65, 0x1515CD, 0x242C45, 0x442233, 0xFFFFFF, 0x0 };
+int32_t pal1[MAXCOLOR]={0x0,     0xFFFFFF,0x00FF00, 0xFF00FF, 0x0000FF, 0x770077, 0x007700, 0xFFFFFF, 0x123456 };
+
+//int32_t *pal=pal2;
+//int32_t pal[MAXCOLOR]={0x0,     0xFFFFFF,0x00FF00, 0xFF00FF, 0x0000FF, 0x770077, 0x007700, 0xFFFFFF};
+int32_t *pal=pal0;
+int      menu_config_palette=0;
 
 // highlight the loaded and saved active track 
 // load_save_highligth_current[0..t-1]=-1 by default
@@ -457,11 +473,11 @@ void display_board_trig()
   int  step=SEQ.getPatternSequencer(cty).getStep();
 
   // User Cursor postion      
-  SG.drawBoxNumber(cursor,CURSOR_COLOR);
+  SG.drawBoxNumber(cursor,pal[CURSOR_COLOR]);
 
   // Draw the sequencer position
   if (step/16==pattern_display_offset[cty]/16)
-    SG.drawBoxNumber(step-pattern_display_offset[cty],STEP_COLOR);  
+    SG.drawBoxNumber(step-pattern_display_offset[cty],pal[STEP_COLOR]);  
 
   for (i=0;i<16;i++)
     {	  
@@ -469,15 +485,15 @@ void display_board_trig()
       if (P[cty].getPatternElement(i+pattern_display_offset[cty]).get(NOTE_ON))
 	{
 	  // Display note which will be trigged
-	  SG.drawBoxNumber(i,TRIG_COLOR);
+	  SG.drawBoxNumber(i,pal[TRIG_COLOR]);
 
 	  // Display the user cursor position on top of the trig
 	  if (cursor==i)
-	    SG.drawBoxNumber(cursor,CURSOR_COLOR);
+	    SG.drawBoxNumber(cursor,pal[CURSOR_COLOR]);
 	  
 	  // Display the sequencer position on top of the trig
 	  if (i+pattern_display_offset[cty]==step)
-	    SG.drawBoxNumber(step,STEP_COLOR);  
+	    SG.drawBoxNumber(step,pal[STEP_COLOR]);  
 	}
     }  
 }
@@ -494,8 +510,8 @@ void display_board_two_param(int machineParam1,int machineParam2)
     {	  // Draw trigged box trig color   
       if (P[cty].getPatternElement(i+pattern_display_offset[cty]).get(NOTE_ON))
 	{
-	  SG.smallBoxNumber(i,P[cty].getPatternElement(i+pattern_display_offset[cty]).get(machineParam1),128,SMALLBOX_COLOR);
-	  SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i+pattern_display_offset[cty]).get(machineParam2),SMALLBOX_COLOR);
+	  SG.smallBoxNumber(i,P[cty].getPatternElement(i+pattern_display_offset[cty]).get(machineParam1),128,pal[SMALLBOX_COLOR]);
+	  SG.smallBoxNumber(i,0,128-P[cty].getPatternElement(i+pattern_display_offset[cty]).get(machineParam2),pal[SMALLBOX_COLOR]);
 	}
     }  
 }
@@ -821,6 +837,7 @@ void display_board_bpm()
 
 void display_config()
 {
+  char str_palette[128];
   char str_bank[128];
   char str_audiooutput[128];
   char str_midioutput[128];
@@ -885,15 +902,17 @@ void display_config()
 
   
   //sprintf(str_menuconfig    ,"menuconfig    : %d %d"        ,menu_config_y,debugcounter++);
-  sprintf(str_bank          ,"%c Current Bank  : %d "       ,cursor_line[0],menu_config_bank);
-  sprintf(str_audiooutput   ,"%c AudioOutput   : %d/%d : %s",cursor_line[1],menu_config_audioOutput,audioOutputDevice,audioOutputDeviceName);
+  sprintf(str_palette       ,"%c Current palette : %d "       ,cursor_line[0],menu_config_palette);
+  sprintf(str_bank          ,"%c Current Bank    : %d "       ,cursor_line[1],menu_config_bank);
+  sprintf(str_audiooutput   ,"%c AudioOutput     : %d/%d : %s",cursor_line[2],menu_config_audioOutput,audioOutputDevice,audioOutputDeviceName);
 #ifdef __RTMIDI__
-  sprintf(str_midioutput    ,"%c MidiOutput    : %d/%d : %s",cursor_line[2],menu_config_midiOutput,midiOutputDevice,midiOutputDeviceName);
-  sprintf(str_midiinput     ,"%c MidiInput     : %d/%d : %s",cursor_line[3],menu_config_midiInput,midiInputDevice,midiInputDeviceName);
-  sprintf(str_midiclockmode ,"%c MidiClockMode : %s"        ,cursor_line[4],str_midi_clock_mode[menu_config_midiClockMode]); 
+  sprintf(str_midioutput    ,"%c MidiOutput      : %d/%d : %s",cursor_line[3],menu_config_midiOutput,midiOutputDevice,midiOutputDeviceName);
+  sprintf(str_midiinput     ,"%c MidiInput       : %d/%d : %s",cursor_line[4],menu_config_midiInput,midiInputDevice,midiInputDeviceName);
+  sprintf(str_midiclockmode ,"%c MidiClockMode   : %s"        ,cursor_line[5],str_midi_clock_mode[menu_config_midiClockMode]); 
 #endif
   SG.clearScreen();  
   //SG.guiTTFText(30,0,   str_menuconfig);  
+  SG.guiTTFText(COLLUMN03,LINE00,  str_palette);
   SG.guiTTFText(COLLUMN03,LINE01,  str_bank);
   SG.guiTTFText(COLLUMN03,LINE02,  str_audiooutput);
 #ifdef __RTMIDI__
@@ -950,6 +969,15 @@ void handle_key_config()
   if (lastKey   == BUTTON_RIGHT && 
       lastEvent == KEYRELEASED)
     {
+
+      // palette
+      if (menu_config_y==MENU_CONFIG_Y_PALETTE)
+	{
+	  menu_config_palette++;
+	  if (menu_config_palette > MAX_PALETTE)
+	    menu_config_palette=0;
+	}
+
       // bank loading
       if (menu_config_y == MENU_CONFIG_Y_BANK)
 	{
@@ -996,6 +1024,14 @@ void handle_key_config()
   if (lastKey   == BUTTON_LEFT && 
       lastEvent == KEYRELEASED)
     {
+
+      // palette
+      if (menu_config_y==MENU_CONFIG_Y_PALETTE)
+	{
+	  menu_config_palette--;
+	  if (menu_config_palette < 0)
+	    menu_config_palette=MAX_PALETTE;
+	}
 
       // bank loading
       if (menu_config_y==MENU_CONFIG_Y_BANK)
@@ -1084,7 +1120,11 @@ void handle_config()
       bank=menu_config_bank;
       AE.setAudioOutput(menu_config_audioOutput);
       config_first_time=0;
+      if (menu_config_palette==0) { pal=pal0; }
+      if (menu_config_palette==1) { pal=pal1; }
     }
+  if (IE.shouldExit())
+    exit(0);
 }
 
 void display_board_bank()
@@ -1255,12 +1295,12 @@ void display_board_load_save()
 	      {
 		// Display if it is a loaded pattern
 		if (load_save_highligth_current[y]==x)
-		  SG.middleBoxNumberUp(x%16,y,BOX_COLOR);
+		  SG.middleBoxNumberUp(x%16,y,pal[ENABLEDBOX_COLOR]);
 		else
-		  SG.middleBoxNumberUp(x%16,y,NOTE_COLOR);
+		  SG.middleBoxNumberUp(x%16,y,pal[NOTE_COLOR]);
 	      }
 	    else
-	      SG.middleBoxNumberUp(x%16,y,STEP_COLOR);
+	      SG.middleBoxNumberUp(x%16,y,pal[STEP_COLOR]);
 	  }
 
       // Display box song
@@ -1271,7 +1311,7 @@ void display_board_load_save()
 	    //if (SEQ.getSongSequencer().getPatternNumberAtCursorPosition(i))
 	    //SG.middleBoxNumberDown(x%16,y,NOTE_COLOR);
 	    //else
-	    SG.middleBoxNumberDown(x%16,y,STEP_COLOR);
+	    SG.middleBoxNumberDown(x%16,y,pal[STEP_COLOR]);
 	  }
 
 
@@ -1284,7 +1324,7 @@ void display_board_load_save()
 	    //if (loadsave_cursor_mode==CURSOR_SONG)
 	    SG.middleBoxNumberDown(SEQ.getSongSequencer().getStep()%16,
 				   y,
-				   NOTE_COLOR);
+				   pal[NOTE_COLOR]);
 	}
 
 
@@ -1295,14 +1335,14 @@ void display_board_load_save()
       if (loadsave_cursor_mode==CURSOR_LOADSAVE)
 	SG.middleBoxNumberUp(loadsave_cursor.x%16,
 			     loadsave_cursor.y,
-			     TRIG_COLOR);
+			     pal[TRIG_COLOR]);
 
       // we are in song mode
       // Display your current position
       if (loadsave_cursor_mode==CURSOR_SONG)
 	SG.middleBoxNumberDown(song_cursor.x%16,
 			       song_cursor.y,
-			       TRIG_COLOR);
+			       pal[TRIG_COLOR]);
 
       
       
@@ -1433,26 +1473,26 @@ void display_board_text_global()
     // Left  bracket
     SG.smallBox((OFFSET_X_PATTERN_CURSOR-10),
 		(OFFSET_Y_PATTERN_CURSOR),
-		TRIG_COLOR);
+		pal[TRIG_COLOR]);
     SG.smallBox((OFFSET_X_PATTERN_STEP-10),
 		(OFFSET_Y_PATTERN_STEP),
-		TRIG_COLOR);
+		pal[TRIG_COLOR]);
 
     // Rigth bracket
     SG.smallBox((OFFSET_X_PATTERN_CURSOR+(pattern_length>>4)*8),
 		(OFFSET_Y_PATTERN_CURSOR),
-		TRIG_COLOR);
+		pal[TRIG_COLOR]);
     SG.smallBox((OFFSET_X_PATTERN_STEP  +(pattern_length>>4)*8),
 		(OFFSET_Y_PATTERN_STEP),
-		TRIG_COLOR);
+		pal[TRIG_COLOR]);
 
     // cursor/step
     SG.smallBox((OFFSET_X_PATTERN_CURSOR+(current_step>>4)*8),
 		(OFFSET_Y_PATTERN_CURSOR),
-		CURSOR_COLOR);    
+		pal[CURSOR_COLOR]);    
     SG.smallBox((OFFSET_X_PATTERN_STEP+  (current_offset>>4)*8),
 		(OFFSET_Y_PATTERN_STEP),
-		STEP_COLOR);
+		pal[STEP_COLOR]);
     
 
   sprintf(str_line3,    "Div  /%d",stepdiv);
@@ -1557,10 +1597,10 @@ void display_board()
   UI->display_board_text();
 
   for (i=pattern_display_offset[cty];i<SEQ.getPatternSequencer(cty).getPatternLength();i++)
-    { SG.drawBoxNumber(i-pattern_display_offset[cty],BOX_COLOR); }
+    { SG.drawBoxNumber(i-pattern_display_offset[cty],pal[ENABLEDBOX_COLOR]); }
 
   for (i=i;i<pattern_display_offset[cty]+16;i++)
-    { SG.drawBoxNumber(i-pattern_display_offset[cty],DISABLEDBOX_COLOR); }
+    { SG.drawBoxNumber(i-pattern_display_offset[cty],pal[DISABLEDBOX_COLOR]); }
      
 
   if (menu_cursor==GLOBALMENU_AD)   display_board_amp_env();
