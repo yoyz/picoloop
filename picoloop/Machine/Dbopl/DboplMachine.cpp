@@ -1,7 +1,7 @@
 #include "DboplMachine.h"
 
 //#define SAM 512
-#define SAM 1
+#define SAM 64
 
 //enum {
 //  FMTYPE_2_OP_AM,
