@@ -60,6 +60,9 @@ using namespace std;
 char pada='a';
 char padb='b';
 char padc='c';
+char padd='d';
+char pade='e';
+char padf='f';
 
 #define VERS    1 //Talk about this
 #define REVS    0
@@ -1203,10 +1206,10 @@ void display_board_load_save()
   int song_cursor_x_divmul_sixteen=song_cursor_x_div_sixteen*16;
 
 
-  char str_bank[16];
-  char str_song1[16];
-  char str_song2[16];
-  char str_song3[16];
+  char str_bank[32];
+  char str_song1[32];
+  char str_song2[32];
+  char str_song3[32];
 
   static const char * txt_pattern_modulo_sixteen_slot[] = 
     { 
@@ -1225,7 +1228,55 @@ void display_board_load_save()
     "192-207",
     "208-223",
     "224-239",
-    "240-255" 
+    "240-255", 
+    "256-271",
+    "272-287",
+    "288-303",
+    "304-319",
+    "320-335",
+    "336-351",
+    "352-367",
+    "368-383",
+    "384-399",
+    "400-415",
+    "416-431",
+    "432-447",
+    "448-463",
+    "464-479",
+    "480-495",
+    "496-511",
+    "512-527",
+    "528-543",
+    "544-559",
+    "560-575",
+    "576-591",
+    "592-607",
+    "608-623",
+    "624-639",
+    "640-655",
+    "656-671",
+    "672-687",
+    "688-703",
+    "704-719",
+    "720-735",
+    "736-751",
+    "752-767",
+    "768-783",
+    "784-799",
+    "800-815",
+    "816-831",
+    "832-847",
+    "848-863",
+    "864-879",
+    "880-895",
+    "896-911",
+    "912-927",
+    "928-943",
+    "944-959",
+    "960-975",
+    "976-991",
+    "992-1007",
+    "1008-1023"
     }; 
 
   /*
@@ -2356,6 +2407,8 @@ void handle_key_load_save()
 	  SEQ.setCurrentTrackY(loadsave_cursor.y);
 	}
 
+
+      // Song mode
       if (menu                 == MENU_OFF     && 	  
 	  loadsave_cursor_mode == CURSOR_SONG  &&
 	  (!(
@@ -2378,8 +2431,8 @@ void handle_key_load_save()
 	    if (keyRepeat[BUTTON_DOWN]==1  || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONG==0)  
 	      { song_cursor.y++;  dirty_graphic=1;}
 	  
-	  if (song_cursor.x>MAX_PATTERN_BY_PROJECT-1)            { song_cursor.x=0;                           }
-	  if (song_cursor.x<0)                                   { song_cursor.x=MAX_PATTERN_BY_PROJECT-1;    }
+	  if (song_cursor.x>MAX_SONG_LENGHT_BY_PROJECT-1)        { song_cursor.x=0;                           }
+	  if (song_cursor.x<0)                                   { song_cursor.x=MAX_SONG_LENGHT_BY_PROJECT-1;}
 
 	  if (song_cursor.y>TRACK_MAX-1)                         { song_cursor.y=0;                           }
 	  if (song_cursor.y<0)                                   { song_cursor.y=TRACK_MAX-1;                 }  
@@ -2416,8 +2469,10 @@ void handle_key_load_save()
 	    if (keyRepeat[BUTTON_DOWN]==1  || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONG==0)  
 	      { song_cursor_y++;  dirty_graphic=1;}
 	  */
-	  if (song_cursor.x>MAX_PATTERN_BY_PROJECT-1)            { song_cursor.x=0;                           }
-	  if (song_cursor.x<0)                                   { song_cursor.x=MAX_PATTERN_BY_PROJECT-1;    }
+
+	  
+	  if (song_cursor.x>MAX_SONG_LENGHT_BY_PROJECT-1)        { song_cursor.x=0;                           }
+	  if (song_cursor.x<0)                                   { song_cursor.x=MAX_SONG_LENGHT_BY_PROJECT-1;}
 
 	  if (song_cursor.y>TRACK_MAX-1)                         { song_cursor.y=0;                           }
 	  if (song_cursor.y<0)                                   { song_cursor.y=TRACK_MAX-1;                 }  
