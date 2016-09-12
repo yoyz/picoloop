@@ -211,7 +211,8 @@ int patternRemove=false;
 int config_loaded=0;
 
 //int bpm_current=120;    // current value for the four ( TRACK_MAX ) tracks
-float bpm_current=120.0;    // current value for the four ( TRACK_MAX ) tracks
+float bpm_current=120.0;  // current value for the four ( TRACK_MAX ) tracks
+int   bpm_lock=0;         // if (bpm_lock) can not change bpm by load
 
 
 //int nbcb=0;             // current nb audio callback 
@@ -3042,13 +3043,24 @@ int seq_update_by_step()
 	  PR.readPatternData(loadsave_cursor.x,loadsave_cursor.y,P[cty]);
 	  load_save_highligth_current[loadsave_cursor.y]=loadsave_cursor.x;
 
-	  // Don't update BPM and Swing on single pattern load
-	  // Do it only on "loadall"
 
 	  SEQ.getPatternSequencer(cty).setPatternLength(P[cty].getSize());
 	  SEQ.getPatternSequencer(cty).setBPMDivider(P[cty].getBPMDivider());
 	  P[cty].setSize(SEQ.getPatternSequencer(cty).getPatternLength());
 
+	  // update BPM and Swing only if bpm_lock==0
+	  // and for example (int)120.1 != 120
+
+	  if (bpm_lock==0 && (int)bpm_current != (int)P[cty].getBPM())
+	    {
+	      bpm_current=P[cty].getBPM();
+	      current_swing=P[cty].getSwing();
+	    }
+	  else
+	    {
+	      P[cty].setBPM(bpm_current);
+	    }
+	  
 	  refresh_bpm();
 
 	}
@@ -3071,19 +3083,32 @@ int seq_update_by_step()
 	    {
 	      PR.readPatternData(loadsave_cursor.x,t,P[t]);
 	      load_save_highligth_current[t]=loadsave_cursor.x;
-	      bpm_current=P[t].getBPM();
-	      current_swing=P[t].getSwing();
+
 
 	      SEQ.getPatternSequencer(t).setPatternLength(P[t].getSize());
 	      SEQ.getPatternSequencer(t).setBPMDivider(P[t].getBPMDivider());
 	      P[t].setSize(SEQ.getPatternSequencer(t).getPatternLength());
 
+	      // update BPM and Swing only if bpm_lock==0
+	      // and for example (int)120.1 != 120
+	      // AND if we are on the loadsave_cursor.y
+
+	      if (bpm_lock==0 && (int)bpm_current != (int)P[t].getBPM() && t==loadsave_cursor.y)
+		{
+		  bpm_current=P[t].getBPM();
+		  current_swing=P[t].getSwing();
+		}
+	      else // bpm_lock==1 for example
+		{
+		  P[t].setBPM(bpm_current);
+		  P[t].setSwing(current_swing);
+		}
 	      refresh_bpm();
 	    }
 	  else
 	    {
 	      P[t].init();
-	      load_save_highligth_current[t]=-10;
+	      load_save_highligth_current[t]=-10; // don't highlight
 	    }
 	}
       loadall=false;

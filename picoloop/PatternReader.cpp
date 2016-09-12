@@ -768,7 +768,7 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
   sprintf(line,"Pattern %d Track %d Param PatternBPM %d\n",
 	  PatternNumber,
 	  TrackNumber, 
-	  P.getBPM());
+	  (int)P.getBPM());
   data.insert(data.end(),line);
 
   sprintf(line,"Pattern %d Track %d Param PatternBPMDivider %d\n",
