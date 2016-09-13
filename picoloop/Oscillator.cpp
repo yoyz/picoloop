@@ -5,6 +5,7 @@ using namespace std;
 
 Oscillator::Oscillator()
 {
+
   frequency=0;
   amplitude=0;
   sample_num=0;
@@ -15,11 +16,12 @@ Oscillator::Oscillator()
   table_size=WAVETABLE_SIZE;
   index=0;
   ph=0;
+  DPRINTF("Oscillator::Oscillator() %d",index);
 }
 
 Oscillator::~Oscillator()
 {
-  DPRINTF("Oscillator::~Oscillator()");
+  DPRINTF("Oscillator::~Oscillator() %d",index);
 }
 
 void Oscillator::reset()
