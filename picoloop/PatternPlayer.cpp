@@ -147,7 +147,7 @@ MidiOutUserInterface MIDIUI;
 
 //int32_t pal[0x0AF0FE,0xAECD15,0x0E4C15,0x46DC65,0x1515CD,0x242C45,0x442233];
 
-#define MAX_PALETTE 3
+#define MAX_PALETTE 4
 
 // DISABLEDBOX_COLOR, ENABLEDBOX_COLOR, TRIG_COLOR, NOTE_COLOR, CURSOR_COLOR, STEP_COLOR, SMALLBOX_COLOR, TEXTCOLOR, BACKGROUND
 
@@ -159,7 +159,8 @@ int32_t pal1[MAXCOLOR]={0xDF7000, 0xB7E4F8, 0x236481, 0x184D63, 0xE8D100, 0x3DBF
 int32_t pal2[MAXCOLOR]={0xC05800, 0x55310E, 0x925518, 0xCF7B30, 0xE16700, 0xC00000, 0xFAA46A, 0xEEEEEE, 0x633A17 };
 // grey:
 int32_t pal3[MAXCOLOR]={0x882288, 0xDDDDDD, 0x444444, 0x222222, 0x555555, 0x777777, 0x888888, 0xEEEEEE, 0x777777 };
-
+// grey nanoloop:
+int32_t pal4[MAXCOLOR]={0x882288, 0xA8A8A8, 0x969696, 0xA4A4A4, 0xC9C9C9, 0x767676, 0x222222, 0x222222, 0xE3E7E3 };
 
 //int32_t *pal=pal2;
 //int32_t pal[MAXCOLOR]={0x0,     0xFFFFFF,0x00FF00, 0xFF00FF, 0x0000FF, 0x770077, 0x007700, 0xFFFFFF};
@@ -1138,6 +1139,7 @@ void handle_config()
       if (menu_config_palette==1) { pal=pal1; }
       if (menu_config_palette==2) { pal=pal2; }
       if (menu_config_palette==3) { pal=pal3; }
+      if (menu_config_palette==4) { pal=pal4; }
     }
   if (IE.shouldExit())
     exit(0);
