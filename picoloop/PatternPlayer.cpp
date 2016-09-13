@@ -157,7 +157,7 @@ MidiOutUserInterface MIDIUI;
 // DISABLEDBOX_COLOR, ENABLEDBOX_COLOR, TRIG_COLOR, NOTE_COLOR, CURSOR_COLOR, STEP_COLOR, SMALLBOX_COLOR, TEXTCOLOR, BACKGROUND
 
 // black, green, pink:
-int32_t pal0[MAXCOLOR]={0xC8A0A8, 0xC8A0A8, 0x59AADA, 0xFFA11C, 0x39CE90, 0x36B82B, 0x3E789A, 0xFFFFFF, 0x0 };
+int32_t pal0[MAXCOLOR]={0x0,      0xC8A0A8, 0x59AADA, 0xFFA11C, 0x39CE90, 0x36B82B, 0x3E789A, 0xFFFFFF, 0x0 };
 // blue:
 int32_t pal1[MAXCOLOR]={0xDF7000, 0xB7E4F8, 0x236481, 0x184D63, 0xE8D100, 0x3DBFF4, 0xFF8000, 0xFFFFFF, 0x3088B0 };
 // automn:
@@ -1501,8 +1501,40 @@ void display_board_mac()
 	}
     }
 }
+// navigation bar allow user to navigate between 16 step in the 128 available
+// call from display_board
+void display_board_navigation_bar()
+{
+  int  cty=SEQ.getCurrentTrackY();
+  int  current_step=SEQ.getPatternSequencer(cty).getStep();
+  int  current_offset=pattern_display_offset[cty];
+  int  pattern_length=SEQ.getPatternSequencer(cty).getPatternLength();
 
-
+  // Left  bracket
+  SG.smallBox((OFFSET_X_PATTERN_CURSOR-10),
+	      (OFFSET_Y_PATTERN_CURSOR),
+	      pal[TRIG_COLOR]);
+  SG.smallBox((OFFSET_X_PATTERN_STEP-10),
+	      (OFFSET_Y_PATTERN_STEP),
+	      pal[TRIG_COLOR]);
+  
+  // Rigth bracket
+  SG.smallBox((OFFSET_X_PATTERN_CURSOR+(pattern_length>>4)*8),
+	      (OFFSET_Y_PATTERN_CURSOR),
+	      pal[TRIG_COLOR]);
+  SG.smallBox((OFFSET_X_PATTERN_STEP  +(pattern_length>>4)*8),
+	      (OFFSET_Y_PATTERN_STEP),
+	      pal[TRIG_COLOR]);
+  
+  // cursor/step
+  SG.smallBox((OFFSET_X_PATTERN_CURSOR+(current_step>>4)*8),
+	      (OFFSET_Y_PATTERN_CURSOR),
+	      pal[CURSOR_COLOR]);    
+  SG.smallBox((OFFSET_X_PATTERN_STEP+  (current_offset>>4)*8),
+	      (OFFSET_Y_PATTERN_STEP),
+	      pal[STEP_COLOR]);
+  
+}
 
 void display_board_text_global()
 {
@@ -1541,30 +1573,6 @@ void display_board_text_global()
 
 
 
-    // Left  bracket
-    SG.smallBox((OFFSET_X_PATTERN_CURSOR-10),
-		(OFFSET_Y_PATTERN_CURSOR),
-		pal[TRIG_COLOR]);
-    SG.smallBox((OFFSET_X_PATTERN_STEP-10),
-		(OFFSET_Y_PATTERN_STEP),
-		pal[TRIG_COLOR]);
-
-    // Rigth bracket
-    SG.smallBox((OFFSET_X_PATTERN_CURSOR+(pattern_length>>4)*8),
-		(OFFSET_Y_PATTERN_CURSOR),
-		pal[TRIG_COLOR]);
-    SG.smallBox((OFFSET_X_PATTERN_STEP  +(pattern_length>>4)*8),
-		(OFFSET_Y_PATTERN_STEP),
-		pal[TRIG_COLOR]);
-
-    // cursor/step
-    SG.smallBox((OFFSET_X_PATTERN_CURSOR+(current_step>>4)*8),
-		(OFFSET_Y_PATTERN_CURSOR),
-		pal[CURSOR_COLOR]);    
-    SG.smallBox((OFFSET_X_PATTERN_STEP+  (current_offset>>4)*8),
-		(OFFSET_Y_PATTERN_STEP),
-		pal[STEP_COLOR]);
-    
 
   sprintf(str_line3,    "Div  /%d",stepdiv);
 
@@ -1663,7 +1671,7 @@ void display_board()
   dirty_graphic=0;
 
   SG.clearScreen();
-
+  display_board_navigation_bar();
   display_board_text_global();
   UI->display_board_text();
 
