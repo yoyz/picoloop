@@ -1091,10 +1091,8 @@ void handle_key_config()
 	}
       
       
-      
-      config_key_pressed++;
-      
-#endif
+#endif      
+      config_key_pressed++;      
     }
       
 #ifdef __RTMIDI__
@@ -1123,6 +1121,7 @@ void handle_config()
   // Handler which make change to the configuration
   if (config_first_time || config_key_pressed)
     {
+      DPRINTF("config_key_pressed:%d",config_key_pressed);
 #ifdef __RTMIDI__
       /*
       MidiOutSystem & MOS=MidiOutSystem::getInstance();
@@ -1135,6 +1134,7 @@ void handle_config()
       bank=menu_config_bank;
       AE.setAudioOutput(menu_config_audioOutput);
       config_first_time=0;
+
       if (menu_config_palette==0) { pal=pal0; }
       if (menu_config_palette==1) { pal=pal1; }
       if (menu_config_palette==2) { pal=pal2; }
@@ -3718,6 +3718,7 @@ int main(int argc,char **argv)
   SG.openBMPFont();
   if (SG.openTTFFont()==false) {DPRINTF("ttf font error"); exit(1); }
   SG.loadingScreen();
+  SDL_Delay(1000);
 
   config_loaded=0;
   config_key_pressed=0;
