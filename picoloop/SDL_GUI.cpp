@@ -139,8 +139,9 @@ void SDL_GUI::clearScreen()
 {
   extern int32_t * pal;
   DPRINTF("SDL_GUI::clearScreen()");
-  //SDL_FillRect(screen,NULL, 0x000000);
-  SDL_FillRect(screen,NULL, pal[8]);
+  //SDL_FillRect(screen,NULL, pal[8]);
+  SDL_FillRect(screen,NULL, SDL_MapRGB(screen->format, (pal[8]&0xFF0000)>>16,(pal[8]&0x00FF00)>>8,(pal[8]&0x0000FF)>>0));
+
 }
 
 
@@ -231,25 +232,25 @@ void SDL_GUI::emptyBox(int x, int y, int w, int h, Uint32 c)
   r.y = y;
   r.w = w;
   r.h = 1;
-  SDL_FillRect(screen, &r, c);
+  SDL_FillRect(screen, &r, SDL_MapRGB(screen->format, (c&0xFF0000)>>16,(c&0x00FF00)>>8,(c&0x0000FF)>>0));
   
   r.x = x;
   r.y = y + h - 1;
   r.w = w;
   r.h = 1;
-  SDL_FillRect(screen, &r, c);
+  SDL_FillRect(screen, &r, SDL_MapRGB(screen->format, (c&0xFF0000)>>16,(c&0x00FF00)>>8,(c&0x0000FF)>>0));
   
   r.x = x;
   r.y = y + 1;
   r.w = 1;
   r.h = h - 2;
-  SDL_FillRect(screen, &r, c);
+  SDL_FillRect(screen, &r, SDL_MapRGB(screen->format, (c&0xFF0000)>>16,(c&0x00FF00)>>8,(c&0x0000FF)>>0));
 	
   r.x = x + w - 1;
   r.y = y + 1;
   r.w = 1;
   r.h = h - 2;
-  SDL_FillRect(screen, &r, c);
+  SDL_FillRect(screen, &r, SDL_MapRGB(screen->format, (c&0xFF0000)>>16,(c&0x00FF00)>>8,(c&0x0000FF)>>0));
 }
 
 void SDL_GUI::fullBox(int x, int y, int w, int h, Uint32 c)
@@ -284,7 +285,7 @@ void SDL_GUI::fullBox(int x, int y, int w, int h, Uint32 c)
   r.y = y;
   r.w = w;
   r.h = h;
-  SDL_FillRect(screen, &r, c);  
+  SDL_FillRect(screen, &r, SDL_MapRGB(screen->format, (c&0xFF0000)>>16,(c&0x00FF00)>>8,(c&0x0000FF)>>0));  
 }
 
 
@@ -353,10 +354,14 @@ int SDL_GUI::guiTTFText(int x,int y,const char *txt)
 
   SDL_Color textColor;
   SDL_Rect * clip = NULL;
-  textColor.r=pal[7]&0x0000FF;
-  textColor.g=pal[7]&0x00FF00>>8;
-  textColor.b=pal[7]&0xFF0000>>16;
+  //textColor.r=pal[7]&0x0000FF;
+  //textColor.g=(pal[7]&0x00FF00)>>8;
+  //textColor.b=(pal[7]&0xFF0000)>>16;
 
+  textColor.r=(pal[7]&0xFF0000)>>16;
+  textColor.g=(pal[7]&0x00FF00)>>8;
+  textColor.b=(pal[7]&0x0000FF);
+	
 
   //printf("textcolor : %d %d %d\n",textColor.r, textColor.g, textColor.b);
 
