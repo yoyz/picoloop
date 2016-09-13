@@ -56,7 +56,12 @@ using namespace std;
 #include <psppower.h>
 #include "psp_callback.h"
 
-
+/* 
+   Padding for PSP
+   if it is not correctly padded ( I don't know what is correct or not ) 
+   The EBOOT.BPB binary won't load with an error message at launch
+   The error code is weird like this one : 80010002
+*/
 char pada='a';
 char padb='b';
 char padc='c';
