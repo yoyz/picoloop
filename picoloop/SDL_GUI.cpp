@@ -232,25 +232,25 @@ void SDL_GUI::emptyBox(int x, int y, int w, int h, Uint32 c)
   r.y = y;
   r.w = w;
   r.h = 1;
-  SDL_FillRect(screen, &r, c);
+  SDL_FillRect(screen, &r, SDL_MapRGB(screen->format, (c&0xFF0000)>>16,(c&0x00FF00)>>8,(c&0x0000FF)>>0));
   
   r.x = x;
   r.y = y + h - 1;
   r.w = w;
   r.h = 1;
-  SDL_FillRect(screen, &r, c);
+  SDL_FillRect(screen, &r, SDL_MapRGB(screen->format, (c&0xFF0000)>>16,(c&0x00FF00)>>8,(c&0x0000FF)>>0));
   
   r.x = x;
   r.y = y + 1;
   r.w = 1;
   r.h = h - 2;
-  SDL_FillRect(screen, &r, c);
+  SDL_FillRect(screen, &r, SDL_MapRGB(screen->format, (c&0xFF0000)>>16,(c&0x00FF00)>>8,(c&0x0000FF)>>0));
 	
   r.x = x + w - 1;
   r.y = y + 1;
   r.w = 1;
   r.h = h - 2;
-  SDL_FillRect(screen, &r, c);
+  SDL_FillRect(screen, &r, SDL_MapRGB(screen->format, (c&0xFF0000)>>16,(c&0x00FF00)>>8,(c&0x0000FF)>>0));
 }
 
 void SDL_GUI::fullBox(int x, int y, int w, int h, Uint32 c)
@@ -285,7 +285,7 @@ void SDL_GUI::fullBox(int x, int y, int w, int h, Uint32 c)
   r.y = y;
   r.w = w;
   r.h = h;
-  SDL_FillRect(screen, &r, c);  
+  SDL_FillRect(screen, &r, SDL_MapRGB(screen->format, (c&0xFF0000)>>16,(c&0x00FF00)>>8,(c&0x0000FF)>>0));  
 }
 
 
