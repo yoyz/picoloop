@@ -139,8 +139,9 @@ void SDL_GUI::clearScreen()
 {
   extern int32_t * pal;
   DPRINTF("SDL_GUI::clearScreen()");
-  //SDL_FillRect(screen,NULL, 0x000000);
-  SDL_FillRect(screen,NULL, pal[8]);
+  //SDL_FillRect(screen,NULL, pal[8]);
+  SDL_FillRect(screen,NULL, SDL_MapRGB(screen->format, (pal[8]&0xFF0000)>>16,(pal[8]&0x00FF00)>>8,(pal[8]&0x0000FF)>>0));
+
 }
 
 
@@ -353,10 +354,14 @@ int SDL_GUI::guiTTFText(int x,int y,const char *txt)
 
   SDL_Color textColor;
   SDL_Rect * clip = NULL;
-  textColor.r=pal[7]&0x0000FF;
-  textColor.g=pal[7]&0x00FF00>>8;
-  textColor.b=pal[7]&0xFF0000>>16;
+  //textColor.r=pal[7]&0x0000FF;
+  //textColor.g=(pal[7]&0x00FF00)>>8;
+  //textColor.b=(pal[7]&0xFF0000)>>16;
 
+  textColor.r=(pal[7]&0xFF0000)>>16;
+  textColor.g=(pal[7]&0x00FF00)>>8;
+  textColor.b=(pal[7]&0x0000FF);
+	
 
   //printf("textcolor : %d %d %d\n",textColor.r, textColor.g, textColor.b);
 
