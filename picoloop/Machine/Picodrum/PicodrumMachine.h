@@ -1,9 +1,9 @@
 using namespace std;
 
-#include "Machine.h"
+#include "../../Machine.h"
 #include "PicodrumVCO.h"
 #include "PicodrumADSR.h"
-#include "Filter.h"
+#include "../../Filter.h"
 
 #ifndef __PICODRUMMACHINE____
 #define __PICODRUMMACHINE____

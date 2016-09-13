@@ -20,7 +20,8 @@ MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(),                              
 #define SAM 32
 
 {
-  DPRINTF("MonoMixer::MonoMixer()");  
+  int a=0;
+  DPRINTF("MonoMixer::MonoMixer() %d",a);  
   amplitude=127;
   //  M=NULL;
   //M=&PM;
@@ -43,7 +44,8 @@ MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(),                              
 
 MonoMixer::~MonoMixer()
 {
-  DPRINTF("MonoMixer::~MonoMixer()");  
+  int a=0;
+  DPRINTF("MonoMixer::~MonoMixer() %d",a);  
 }
 
 

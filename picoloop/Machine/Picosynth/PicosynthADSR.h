@@ -1,8 +1,8 @@
 #include <string>
 #include <stdio.h>
 #include <math.h>
-#include "Wave.h"
-#include "AudioEngine.h"
+#include "../../Wave.h"
+#include "../../AudioEngine.h"
 //#include "Oscillator.h"
 //#include "SineOscillator.h"
 #include "PicosynthVCO.h"

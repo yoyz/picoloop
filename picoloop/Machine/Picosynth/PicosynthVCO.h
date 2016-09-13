@@ -1,5 +1,5 @@
-#include "Oscillator.h"
-#include "PitchBend.h"
+#include "../../Oscillator.h"
+#include "../../PitchBend.h"
 
 #ifndef __PICOSYNTHVCO__
 #define __PICOSYNTHVCO__
