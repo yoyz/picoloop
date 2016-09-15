@@ -21,5 +21,6 @@ void UserInterface::display_board(int menu)
 
 void UserInterface::display_board_text()
 {
-  DPRINTF("UserInterface::display_board_text()\n");
+  int a=0;
+  DPRINTF("UserInterface::display_board_text() %d\n",a);
 }

@@ -153,7 +153,8 @@ int SDL_GUI::closeVideo()
 
 void SDL_GUI::loadingScreen()
 {
-  char txt[128]="Loading picoloop";
+  char txt[128];
+  sprintf(txt,"Loading picoloop %s",PICOLOOP_VERSION);
   this->guiTTFText((SCREEN_WIDTH/2)*SCREEN_MULT,(SCREEN_HEIGHT/2)*SCREEN_MULT,txt);
   this->refresh();
 }

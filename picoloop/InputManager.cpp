@@ -3,7 +3,7 @@
 InputManager::InputManager() : key_state(new  bool[MAX_KEY]),
 			       key_repeat(new int[MAX_KEY])
 {
-  int i;
+  int i=0;
   //  key_state=NULL;
   //  key_repeat=NULL;
   last_key=0;
@@ -29,9 +29,8 @@ InputManager::~InputManager()
 
 void InputManager::init()
 {
-  int i;
-
-  DPRINTF("InputManager::init()\n");
+  int i=0;
+  DPRINTF("InputManager::init() %d",i);
 
   //key_state=NULL;
   //  key_repeat=NULL;
@@ -64,7 +63,7 @@ void InputManager::printState()
   symbol=SDLK_RIGHT;   DPRINTF("%d[%d %d]\n",symbol,key_state[symbol],key_repeat[symbol]);
   symbol=SDLK_UP;      DPRINTF("%d[%d %d]\n",symbol,key_state[symbol],key_repeat[symbol]);
   symbol=SDLK_DOWN;    DPRINTF("%d[%d %d]\n",symbol,key_state[symbol],key_repeat[symbol]);
-  DPRINTF("\n");
+  //DPRINTF("\n");
 }
 
 
@@ -84,11 +83,12 @@ int InputManager::updateState(int symbol,bool state)
 
 int InputManager::shouldExit()
 {
+  int a=0;
   //if (key_state[SDLK_ESCAPE] && key_state[SDLK_RETURN])
   if (key_state[BUTTON_SELECT] && key_state[BUTTON_START])
     {
       this->printState();
-      DPRINTF("[SELECT] + [START] => END \n");      
+      DPRINTF("[SELECT] + [START] => END %d",a);      
       quit=1;
       return(1);
     }

@@ -5,12 +5,13 @@ using namespace std;
 
 OneOscillator::OneOscillator() : table(new Sint16[WAVETABLE_SIZE])
 {
-  DPRINTF("OneOscillator::OneOscillator()");
+  index=0;
+  DPRINTF("OneOscillator::OneOscillator() %d",index);
   table_size=WAVETABLE_SIZE;
   //table=NULL;
   //table=(Sint16*)malloc(sizeof(Sint16)*table_size);
   //table=new Sint16[table_size];
-  index=0;
+ 
   //table = (Sint16*)malloc(sizeof(Sint16)*table_size);
 }
 
