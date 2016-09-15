@@ -1,10 +1,10 @@
 using namespace std;
 
-#include "Machine.h"
+#include "../../Machine.h"
 #include "PicosynthVCO.h"
 #include "PicosynthADSR.h"
-#include "Filter.h"
-#include "OneOscillator.h"
+#include "../../Filter.h"
+#include "../../OneOscillator.h"
 
 #ifndef __PICOSYNTHMACHINE____
 #define __PICOSYNTHMACHINE____

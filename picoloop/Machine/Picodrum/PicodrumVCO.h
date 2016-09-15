@@ -1,8 +1,8 @@
 #ifndef __PicodrumVCO____
 #define __PicodrumVCO____
 
-#include "Oscillator.h"
-#include "PitchBend.h"
+#include "../../Oscillator.h"
+#include "../../PitchBend.h"
 
 class PicodrumVCO : public Oscillator
 {
