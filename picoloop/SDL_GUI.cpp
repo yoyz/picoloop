@@ -368,8 +368,13 @@ int SDL_GUI::guiTTFText(int x,int y,const char *txt)
 
   if (message!=NULL)
     SDL_FreeSurface(message);
-  
-  message = TTF_RenderText_Solid( ttf_font, txt, textColor );
+	#if   !defined(__FPU__) 
+		message=TTF_RenderText_Solid( ttf_font, txt, textColor );
+	#endif
+
+	#if   defined(__FPU__) 
+		message = TTF_RenderText_Blended( ttf_font, txt, textColor );
+	#endif
   //apply_surface( 0, 0, background, screen );
   this->apply_surface( x, y, message, screen,clip);
 }
