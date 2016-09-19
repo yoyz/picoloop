@@ -4,7 +4,7 @@
 
 ## Overview ##
 
-Picoloop is a synth and a stepsequencer  (a clone of the famous nanoloop).
+Picoloop is a synth and a stepsequencer (a clone of the famous nanoloop).
 The step sequencer play 4 tracks simultaneously, by default each track are 16 steps long, you can set the track to be up to 128 steps.
 Each track has a synthengine which can be a Virtual Analog, a Drum Synth, a FM synth.
 Each of the step can be edited on the 4 tracks.
@@ -12,7 +12,7 @@ So for example, you can set a C4 note on step 0, nothing on step 1 and 2, then a
 
 A pattern of 16 steps is played repeatedly while these notes can be edited in various respects like volume, pitch, filter, lfo etc. 
 All parameters are set step-wise, so you can make huge variation of sound on the same pattern.
-Each channel's patterns can be saved to file slots  and are then available for new combinations. 
+Each channel's patterns can be saved to file slots and are then available for new combinations. 
 Finally, saved patterns can be arranged in a song structure.
 
 Besides the song editor and manual loading of patterns, there are 3 different ways to modify each channel's patterns so that they form longer structures:                                       
@@ -21,10 +21,10 @@ Besides the song editor and manual loading of patterns, there are 3 different wa
 - Different pattern lengths by track
 
 
-Picoloop is target for linux/SDL compatible system.
-It use SDL     to render graphics.
-It use RtAudio or SDL to render audio out.
-It use RtMidi  to send and receive midi message, today only clock
+Picoloop is targeted for linux/SDL compatible system.
+It uses SDL     to render graphics.
+It uses RtAudio or SDL to render audio out.
+It uses RtMidi  to send and receive midi message, today only clock
 
 
 ## How it works ##
@@ -34,32 +34,32 @@ There is two pane :
  - the 16 steps ;
  - the menu which is above the 16 steps ;
  
-On the 16 box, there is a moving cursor which display the current played step.
-and another cursor which display the current selected step.
-There is a text menu, which allow you to select channel and edit parameter.
+On the 16 boxes, there is a moving cursor which displays the current played step.
+And another cursor which displays the current selected step.
+There is a text menu, which allows you to select channel and edit parameter.
 All notes in the sequencer can be edited simultaneously.
 
 ### The menu mode ###
 
 
-The menu mode change the selected textual menu at the bottom of the screen.
-This allow you to choose what kind of parameter you want to change, for example, the NOTE, the OSC, the Filter
-In menu mode, when you press left/right, it change the textual menu in the bottom of the screen
+The menu mode changes the selected textual menu at the bottom of the screen.
+This allows you to choose what kind of parameter you want to change, for example, the NOTE, the OSC, the Filter...
+In menu mode, when you press left/right, it changes the textual menu in the bottom of the screen
 
     </>             move backward/forward in the menu
     ^/v             select the track from 0 to track 3
     B               do nothing
-    A + </>/^/v,    edit all step at once
+    A + </>/^/v,    edit all steps at once
     A               enter the edit mode
-    L               go to the next     16 step on the same track
-    R               go to the previous 16 step on the same track
+    L               go to the next     16 steps on the same track
+    R               go to the previous 16 steps on the same track
     SELECT          call menu2 or menu1 ( it cycle between the two menu )
 
 
 ### The edit mode ###
 
-The edit mode change the curent step on the 16 step display.
-In edit mode, when you press left/right, it change the current step in the sequencer.
+The edit mode changes the current step on the 16 steps display.
+In edit mode, when you press left/right, it changes the current step in the sequencer.
 
 
     </>             select next step
@@ -82,7 +82,7 @@ The menu 1 is the first menu. It allows to modify the parameter of the synthengi
 Each synth engine has different kind of parameter.
 
 
-You can :
+You can:
 
 1. A/R  : the enveloppe of the synth
 2. Note : the value of the note trigged
@@ -93,7 +93,7 @@ You can :
 
 
 
-Here is the global overview of the most common parameter you will find by synth engine.
+Here is the global overview of the most common parameters you will find by synth engine.
 
 - A/R : 
     - Amp Enveloppe 
@@ -127,7 +127,7 @@ Here is the global overview of the most common parameter you will find by synth 
 
 #### menu 2 ####
 
-The menu 2 is a more general menu. You can :
+The menu 2 is a more general menu. You can:
 
 1. L/S   load and save a pattern  track or the 4 pattern track ;
 2. BANK  change the current bank which allow you to have more pattern.
@@ -139,7 +139,7 @@ The menu 2 is a more general menu. You can :
 
 ##### L/S menu
 
-The top menu show the tracks and patterns. 
+The top menu shows the tracks and patterns. 
 - Save your current track by selecting an empty slow, then B+down.
 - Save your current pattern (group of 4 tracks) by selecting a column, then A+down.
 - Load a track with A+up (it will replace your current working track).
@@ -191,7 +191,7 @@ Will be fixed in a latter version.
 ### Package dependency, build from source ###
 
 
-This section describe the dependency for building picoloop.
+This section describes the dependency for building picoloop.
 On most platform in 2016, you will need this kind of package.
 
      - libsdl*      => version 1.2 with the "ttf" and "gfx"
@@ -205,7 +205,7 @@ On most platform in 2016, you will need this kind of package.
 
 #### LASTEST SOURCE ####
 
-You can allways download the lastest source.
+You can always download the lastest source.
 But, you should probably switch to a tag then.
 
 
