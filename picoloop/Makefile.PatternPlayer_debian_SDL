@@ -54,6 +54,7 @@ SOURCES=PatternPlayer.cpp \
 		      SysMutex.cpp	       \
 		      MidiOutSystem.cpp	       \
 		      MidiInSystem.cpp	       \
+		      MachineCheck.cpp	       \
 		      Machine/Picosynth/PicosynthUserInterface.cpp \
 		      Machine/Picosynth/PicosynthADSR.cpp        \
 		      Machine/Picosynth/PicosynthVCO.cpp         \
@@ -168,11 +169,15 @@ SOURCES=PatternPlayer.cpp \
 		      Machine/Twytch/twytch_simple_delay.cpp			\
 		      Machine/Twytch/twytch_wave.cpp				\
 		      Machine/Twytch/twytch_voice_handler.cpp			\
+		      Machine/Twytch/twytch_detune_lookup.cpp			\
+		      Machine/Twytch/twytch_sample_decay_lookup.cpp		\
+		      Machine/Twytch/twytch_portamento_slope.cpp		\
+		      Machine/Twytch/twytch_dc_filter.cpp			\
 		      Machine/MidiOutSystem/MidiOutUserInterface.cpp            \
 		      Machine/MidiOutSystem/MidiOutMachine.cpp                  \
 		      Machine/MDADrum/MDADrumMachine.cpp			\
 		      Machine/MDADrum/MDADrumUserInterface.cpp			\
-		      Machine/MDADrum/drumsynth.cpp				\
+		      Machine/MDADrum/drumsynth_oop5.cpp			\
 		      Machine/MDADrum/profport.cpp				
 
 
