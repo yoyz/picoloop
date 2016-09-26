@@ -277,6 +277,12 @@ int pattern_display_offset[TRACK_MAX]={0}; // 0,16,32,48..
                                            // cursor+pattern_display_offset[cty] is used to
                                            // know where data had to be read/write
 
+int pattern_cursor_max_pos[TRACK_MAX]={15};// between 0-15
+                                           // this value is the max the 'cursor' could be
+                                           // if the pattern 0 is 12 step long,
+                                           // pattern_cursor_max_pos[0]=11
+                                           // if the pattern 1 is 18 step long ( 16 + 2 )
+                                           // pattern_cursor_max_pos[1]=1
 
 
 //int loadsave_cursor_x=0; // index in the load/save menu
@@ -485,6 +491,46 @@ void refresh_bpm()
   nb_tick_before_step_change=nb_tick_before_step_change_f;
   refresh_swing();
 }
+
+
+// handle the :
+//  - fix of the cursor,display_offset[] linked to a load of a new pattern
+//  - fix the pattern_cursor_max_pos[] of the current track to be
+//    able to move only on available step
+
+void refresh_cursor_display_offset_cursor_max_pos(int track)
+{
+  int  cty=SEQ.getCurrentTrackY();
+  int plen=P[track].getSize();
+  
+  if (pattern_display_offset[track]>(plen/16)*16)
+    pattern_display_offset[track]=0;
+  
+  if (cursor+pattern_display_offset[track]>=P[track].getSize())
+    cursor=0;
+  
+  if (cursor>pattern_cursor_max_pos[track])
+    cursor=0;
+
+  if (pattern_cursor_max_pos[track]>15)
+    pattern_cursor_max_pos[track]=15;
+
+}
+
+// handle the :
+//  - init the lenght of the pattern and setup the lenght of the sequencer
+//  - fix the pattern_cursor_max_pos[] of the current track to be
+//    able to move only on available step
+void init_cursor_display_offset_cursor_max_pos(int track)
+{
+  int plen=P[track].getSize();
+  
+  SEQ.getPatternSequencer(track).setPatternLength(plen);
+  pattern_cursor_max_pos[track]=plen-1-pattern_display_offset[track];
+  if (pattern_cursor_max_pos[track]>15)
+    pattern_cursor_max_pos[track]=15;
+}
+
 
 //char * tmp_str;
 
@@ -1733,6 +1779,7 @@ void handle_key_patternlenght()
   int    cty=SEQ.getCurrentTrackY();
   int    step=SEQ.getPatternSequencer(cty).getStep();
   int    plen=SEQ.getPatternSequencer(cty).getPatternLength();
+  int    need_to_change_cursor_max_pos=0;
 
 
   keyState=IE.keyState();
@@ -1756,6 +1803,8 @@ void handle_key_patternlenght()
       DPRINTF("key BUTTON_R");      
       dirty_graphic=1;
       IE.clearLastKeyEvent();
+
+      need_to_change_cursor_max_pos=1;
     }  
 
   // -16
@@ -1777,9 +1826,21 @@ void handle_key_patternlenght()
       DPRINTF("key BUTTON_L");      
       dirty_graphic=1;
       IE.clearLastKeyEvent();
+
+      need_to_change_cursor_max_pos=1;
     }  
 
-
+  if (need_to_change_cursor_max_pos)
+    {
+      pattern_cursor_max_pos[cty]=plen-1-pattern_display_offset[cty];
+      DPRINTF("$$$$$$$$$$$$$$$$$$$$$$$$pattern_cursor_max_pos:%d", pattern_cursor_max_pos[cty]);
+      if (cursor>pattern_cursor_max_pos[cty])
+	cursor=0;
+      if (pattern_cursor_max_pos[cty]>15)
+	pattern_cursor_max_pos[cty]=15;
+      refresh_cursor_display_offset_cursor_max_pos(cty);
+      need_to_change_cursor_max_pos=0;
+    }
 }
 
 
@@ -1981,7 +2042,7 @@ void handle_key_sixteenbox()
   int  * keyRepeat;
   int    lastEvent;
   int    lastKey;
-
+  int    last_cursor=cursor;
   int          cty=SEQ.getCurrentTrackY();
 
   keyState=IE.keyState();
@@ -2012,8 +2073,16 @@ void handle_key_sixteenbox()
 	  if (keyRepeat[BUTTON_UP]   ==1 || 
 	      keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONG==0)	    
 	    cursor=cursor-4;
-	  if (cursor < 0) cursor=cursor +16;
-	 DPRINTF("key down : up");
+	  //if (cursor < 0) cursor=cursor +16;
+	  //if (cursor < 0) cursor=cursor +16;
+	  if (cursor < 0) cursor=cursor +16;	 
+	  if (cursor>pattern_cursor_max_pos[cty])
+	    cursor=((pattern_cursor_max_pos[cty]/4)*4)+last_cursor;
+	  if (cursor>pattern_cursor_max_pos[cty])
+	    cursor=cursor-4;
+
+	  //cursor=cursor-
+	  DPRINTF("key down : up");
 	  dirty_graphic=1;
 	}
       
@@ -2022,10 +2091,16 @@ void handle_key_sixteenbox()
 	{
 	  if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONG==0)
 	    cursor=( cursor+4 ) %16;
+	  if (cursor>pattern_cursor_max_pos[cty])
+	    cursor=cursor%4;
+	  if (cursor>pattern_cursor_max_pos[cty])
+	    cursor=0;
 	 DPRINTF("key down : down");
 	  dirty_graphic=1;
 	}
-      
+
+
+      // move cursor to the left
       if(keyState[BUTTON_LEFT] && 
 	 !keyState[BUTTON_B])
 	{
@@ -2033,7 +2108,8 @@ void handle_key_sixteenbox()
 	      keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_LONG==0)
 	    cursor--;
 	  
-	  if (cursor<0) cursor=15;
+	  //if (cursor<0) cursor=15;
+	  if (cursor<0) cursor=pattern_cursor_max_pos[cty];
 	 DPRINTF("key left");            
 	  dirty_graphic=1;
 	}
@@ -2044,7 +2120,8 @@ void handle_key_sixteenbox()
 	  if (keyRepeat[BUTTON_RIGHT]   ==1 || 
 	      keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_LONG==0)
 	    cursor++;
-	  if (cursor>15) cursor=0;
+	  //if (cursor>15) cursor=0;
+	  if (cursor>pattern_cursor_max_pos[cty]) cursor=0;
 	 DPRINTF("key right");      
 	  dirty_graphic=1;
 	}
@@ -2764,6 +2841,8 @@ void seq_update_multiple_time_by_step()
   int          currentMachine;
   int          nextMachine;
 
+  DPRINTF("*********************pattern_cursor_max_pos:%d",pattern_cursor_max_pos[cty]);
+  
   // Read all valued contained in the Tweakable Knob
   // Apply the Value to the sequencer, then to the Machine
 
@@ -2806,7 +2885,8 @@ void seq_update_multiple_time_by_step()
     }
 
 
-  // Change PatternLength
+  // Change PatternLength of a track
+  // update the : Pattern in memory, the Sequencer and the cursor_max_position
   if (TK.getAll(PATTERN_LENGTH)!=0)
     { 
       int cur_plen=SEQ.getPatternSequencer(cty).getPatternLength();
@@ -2832,6 +2912,12 @@ void seq_update_multiple_time_by_step()
       TK.setAll(PATTERN_LENGTH,0);
       TK.set(PATTERN_LENGTH,0);
       P[cty].setSize(SEQ.getPatternSequencer(cty).getPatternLength());
+
+      
+      pattern_cursor_max_pos[cty]=dest_plen-1-pattern_display_offset[cty];
+      if (pattern_cursor_max_pos[cty]>15)
+	pattern_cursor_max_pos[cty]=15;
+      DPRINTF("*********************pattern_cursor_max_pos:%d",pattern_cursor_max_pos[cty]);
     }
 
   /*
@@ -3030,6 +3116,11 @@ int seq_update_by_step()
 	  else
 	    {
 	      P[t].init();
+	      init_cursor_display_offset_cursor_max_pos(t);
+	      refresh_cursor_display_offset_cursor_max_pos(t);
+	      //init_cursor_display_offset_cursor_max_pos(t);
+	      
+	      //refresh_cursor_display_offset_cursor_max_pos();
 	    }
 	}
 	    
@@ -3090,15 +3181,18 @@ int seq_update_by_step()
 	    {
 	      P[cty].setBPM(bpm_current);
 	    }
-	  
 	  refresh_bpm();
-
 	}
       else
 	{
 	  P[cty].init();
+	  init_cursor_display_offset_cursor_max_pos(cty);
 	  load_save_highligth_current[loadsave_cursor.y]=-1;
+	  //init_cursor_display_offset_cursor_max_pos(cty);
+	  refresh_cursor_display_offset_cursor_max_pos(cty);
 	}
+      init_cursor_display_offset_cursor_max_pos(cty);
+      refresh_cursor_display_offset_cursor_max_pos(cty);
       load=false;
     }
 
@@ -3138,9 +3232,15 @@ int seq_update_by_step()
 	  else
 	    {
 	      P[t].init();
+	      init_cursor_display_offset_cursor_max_pos(t);
 	      load_save_highligth_current[t]=-10; // don't highlight
+	      //init_cursor_display_offset_cursor_max_pos(t);
+	      refresh_cursor_display_offset_cursor_max_pos(t);
 	    }
+	  init_cursor_display_offset_cursor_max_pos(t);
+	  refresh_cursor_display_offset_cursor_max_pos(t);		
 	}
+
       loadall=false;
     }
 
@@ -3176,6 +3276,9 @@ int seq_update_by_step()
       else
 	{
 	  P[cty].init();
+	  init_cursor_display_offset_cursor_max_pos(cty);
+	  refresh_cursor_display_offset_cursor_max_pos(cty);
+	  //init_cursor_display_offset_cursor_max_pos(cty);    
 	 DPRINTF("<==[Remove==Failed]==>");
 	}
       patternRemove=false;
@@ -3390,7 +3493,12 @@ void seq_callback_update_step()
 		    SEQ.getPatternSequencer(i).setBPMDivider(P[i].getBPMDivider());
 		  }
 		else
-		  P[i].init();
+		  {
+		    P[i].init();
+		    init_cursor_display_offset_cursor_max_pos(i);
+		    refresh_cursor_display_offset_cursor_max_pos(i);
+		    //init_cursor_display_offset_cursor_max_pos(i);
+		  }
 	     
 	      //if (i==TRACK_MAX-1)
 	      //{
@@ -3439,6 +3547,9 @@ int seq()
       
       M[t]=MM[t]->getInput();                             
       M[t]->init();
+
+      P[t].init();
+      init_cursor_display_offset_cursor_max_pos(t);
     }
 
 
@@ -3753,7 +3864,7 @@ int main(int argc,char **argv)
                      // menu_config_bank allow to choose it at startup
 
   load_pattern();
-
+  
 
 
   //sleep(10);
