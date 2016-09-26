@@ -274,7 +274,7 @@ const char * NoteFreq::getNoteCharStar(int note)
   static const char * G0plus="G0+";
   static const char * A0=    "A0 ";
   static const char * A0plus="A0+";
-  static const char * B1=    "B1 ";
+  static const char * B0=    "B0 ";
   
   static const char * C1=    "C1 ";
   static const char * C1plus="C1+";
@@ -287,7 +287,7 @@ const char * NoteFreq::getNoteCharStar(int note)
   static const char * G1plus="G1+";
   static const char * A1=    "A1 ";
   static const char * A1plus="A1+";
-  static const char * B2=    "B2 ";
+  static const char * B1=    "B1 ";
   
   static const char * C2=    "C2 ";
   static const char * C2plus="C2+";
@@ -300,7 +300,7 @@ const char * NoteFreq::getNoteCharStar(int note)
   static const char * A2plus="A2+";
   static const char * G2=    "G2 ";
   static const char * G2plus="G2+";
-  static const char * B3=    "B3 ";
+  static const char * B2=    "B2 ";
   
   static const char * C3=    "C3 ";
   static const char * C3plus="C3+";
@@ -313,7 +313,7 @@ const char * NoteFreq::getNoteCharStar(int note)
   static const char * G3plus="G3+";
   static const char * A3=    "A3 ";
   static const char * A3plus="A3+";
-  static const char * B4=    "B4 ";
+  static const char * B3=    "B3 ";
   
   static const char * C4=    "C4 ";
   static const char * C4plus="C4+";
@@ -326,7 +326,7 @@ const char * NoteFreq::getNoteCharStar(int note)
   static const char * G4plus="G4+";
   static const char * A4=    "A4 ";
   static const char * A4plus="A4+";
-  static const char * B5=    "B5 ";
+  static const char * B4=    "B4 ";
   
   static const char * C5=    "C5 ";
   static const char * C5plus="C5+";
@@ -339,7 +339,7 @@ const char * NoteFreq::getNoteCharStar(int note)
   static const char * G5plus="G5+";
   static const char * A5=    "A5 ";
   static const char * A5plus="A5+";
-  static const char * B6=    "B6 ";
+  static const char * B5=    "B5 ";
   
   static const char * C6=    "C6 ";
   static const char * C6plus="C6+";
@@ -352,7 +352,7 @@ const char * NoteFreq::getNoteCharStar(int note)
   static const char * G6plus="G6+";
   static const char * A6=    "A6 ";
   static const char * A6plus="A6+";
-  static const char * B7=    "B7 ";
+  static const char * B6=    "B6 ";
   
   static const char * C7=    "C7 ";
   static const char * C7plus="C7+";
@@ -372,7 +372,7 @@ const char * NoteFreq::getNoteCharStar(int note)
     case 9:   return  G0plus;  break;
     case 10:  return  A0;      break;
     case 11:  return  A0plus;  break;
-    case 12:  return  B1;      break;
+    case 12:  return  B0;      break;
 
     case 13:  return  C1;      break;
     case 14:  return  C1plus;  break;
@@ -385,7 +385,7 @@ const char * NoteFreq::getNoteCharStar(int note)
     case 21:  return  G1plus;  break;
     case 22:  return  A1;      break;
     case 23:  return  A1plus;  break;
-    case 24:  return  B2;      break;
+    case 24:  return  B1;      break;
 
     case 25:  return  C2;      break;
     case 26:  return  C2plus;  break;
@@ -398,7 +398,7 @@ const char * NoteFreq::getNoteCharStar(int note)
     case 33:  return  G2plus;  break;
     case 34:  return  A2;      break;
     case 35:  return  A2plus;  break;
-    case 36:  return  B3;      break;
+    case 36:  return  B2;      break;
 
     case 37:  return  C3;      break;
     case 38:  return  C3plus;  break;
@@ -411,7 +411,7 @@ const char * NoteFreq::getNoteCharStar(int note)
     case 45:  return  G3plus;  break;
     case 46:  return  A3;      break;
     case 47:  return  A3plus;  break;
-    case 48:  return  B4;      break;
+    case 48:  return  B3;      break;
 
     case 49:  return  C4;      break;
     case 50:  return  C4plus;  break;
@@ -424,7 +424,7 @@ const char * NoteFreq::getNoteCharStar(int note)
     case 57:  return  G4plus;  break;
     case 58:  return  A4;      break;
     case 59:  return  A4plus;  break;
-    case 60:  return  B5;      break;
+    case 60:  return  B4;      break;
 
     case 61:  return  C5;      break;
     case 62:  return  C5plus;  break;
@@ -437,7 +437,7 @@ const char * NoteFreq::getNoteCharStar(int note)
     case 69:  return  G5plus;  break;
     case 70:  return  A5;      break;
     case 71:  return  A5plus;  break;
-    case 72:  return  B6;      break;
+    case 72:  return  B5;      break;
 
     case 73:  return  C6;      break;
     case 74:  return  C6plus;  break;
@@ -450,7 +450,7 @@ const char * NoteFreq::getNoteCharStar(int note)
     case 81:  return  G6plus;  break;
     case 82:  return  A6;      break;
     case 83:  return  A6plus;  break;
-    case 84:  return  B7;      break;
+    case 84:  return  B6;      break;
 
     case 85:  return  C7;      break;
     case 86:  return  C7plus;  break;
