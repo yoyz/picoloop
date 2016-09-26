@@ -1,6 +1,6 @@
 #include "AudioEngine.h"
 
-
+extern int menu_config_audiopulseclock_out;
 
 
 PulseSync::PulseSync()
@@ -223,14 +223,24 @@ void AudioEngine::processBuffer(int len)
 	  //buffer_out_left[i]=AM.tick();
 	  //buffer_out_right[i]=buffer_out_left[i];
 	  //buffer_out_right[i]=PS.tick();
-	  buffer_out_right[i]=AM.tick();
-#ifdef __VOLCASYNC__
-	  buffer_out_left[i]=PS.tick();
-#else
-	  buffer_out_left[i]=buffer_out_right[i];
-#endif
-	  //buffer_out_right[i]=buffer_out_left[i];
-	  
+	  if (menu_config_audiopulseclock_out==0)
+	    {
+	      buffer_out_right[i]=AM.tick();
+	      buffer_out_left[i]=buffer_out_right[i];
+	    }
+	  else
+	    {
+	      if (menu_config_audiopulseclock_out==1) // left
+		{
+		  buffer_out_right[i]=AM.tick();
+		  buffer_out_left[i]=PS.tick();
+		}
+	      if (menu_config_audiopulseclock_out==2) // right
+		{
+		  buffer_out_left[i]=AM.tick();
+		  buffer_out_right[i]=PS.tick();
+		}
+	    }	  
 	}
 
       if (
@@ -247,14 +257,34 @@ void AudioEngine::processBuffer(int len)
           nb_tick=0;
 	  counter_recv_midi_clock=0;
 	  counter_recv_midi_clock_six=0;
-	  
+
+	  if (menu_config_audiopulseclock_out==0)
+	    {
+	      buffer_out_right[i]=AM.tick();
+	      buffer_out_left[i]=buffer_out_right[i];
+	    }
+	  else
+	    {
+	      if (menu_config_audiopulseclock_out==1) // left
+		{
+		  buffer_out_right[i]=AM.tick();
+		  buffer_out_left[i]=PS.tick();
+		}
+	      if (menu_config_audiopulseclock_out==2) // right
+		{
+		  buffer_out_left[i]=AM.tick();
+		  buffer_out_right[i]=PS.tick();
+		}
+	    }	  
+
+	  /*	  
 	  buffer_out_right[i]=AM.tick();
 #ifdef __VOLCASYNC__
 	  buffer_out_left[i]=PS.tick();
 #else
 	  buffer_out_left[i]=buffer_out_right[i];
 #endif
-	  
+	  */
 	  // buffer_out_right[i]=AM.tick();
 	  // buffer_out_left[i]=PS.tick();
 	  //buffer_out_right[i]=buffer_out_left[i];

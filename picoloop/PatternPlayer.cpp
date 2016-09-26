@@ -64,10 +64,10 @@ using namespace std;
 */
 char pada='a';
 char padb='b';
-char padc='c';
-char padd='d';
-char pade='e';
-char padf='f';
+//char padc='c';
+//char padd='d';
+//char pade='e';
+//char padf='f';
 
 #define VERS    1 //Talk about this
 #define REVS    0
@@ -81,17 +81,19 @@ PSP_HEAP_SIZE_KB(-2048) ;
 
 
 
-#define MENU_CONFIG_Y_PALETTE       0
-#define MENU_CONFIG_Y_BANK          1
-#define MENU_CONFIG_Y_AUDIOOUTPUT   2
-#define MENU_CONFIG_Y_MIDIOUTPUT    3
-#define MENU_CONFIG_Y_MIDIINPUT     4
-#define MENU_CONFIG_Y_MIDISYNCINOUT 5
+#define MENU_CONFIG_Y_PALETTE            0
+#define MENU_CONFIG_Y_BANK               1
+#define MENU_CONFIG_Y_AUDIOPULSECLOCKOUT 2
+#define MENU_CONFIG_Y_AUDIOOUTPUT        3
+#define MENU_CONFIG_Y_MIDIOUTPUT         4
+#define MENU_CONFIG_Y_MIDIINPUT          5
+#define MENU_CONFIG_Y_MIDISYNCINOUT      6
+
 
 #ifdef __RTMIDI__
-#define MENU_CONFIG_Y_MAX           5
+#define MENU_CONFIG_Y_MAX           6
 #else
-#define MENU_CONFIG_Y_MAX           2
+#define MENU_CONFIG_Y_MAX           3
 #endif
 
 
@@ -240,7 +242,8 @@ int   bpm_lock=0;         // if (bpm_lock) can not change bpm by load
 
 int nb_tick_before_step_change;     //=(60*DEFAULT_FREQ)/(bpm_current*4);
 
-const char * str_midi_clock_mode[]={"Internal","SyncOut","SyncIn"};
+const char * str_midi_clock_mode[]   = {"Internal","SyncOut","SyncIn"};
+const char * str_audio_pulse_clock[] = {"NoPulse","LeftChannel","RightChannel"};
 
 
 int counter_send_midi_clock=0;      // send n clock and decrement the counter each time 
@@ -303,17 +306,20 @@ int bank_inc=0;
 int bank_to_load=0;
 
 
-//int start_key=0;        // start key pressed ?
-//int step=0;             // current step in the sequencer
-
+/*
+  Variable use in the "configuration menu"
+ */
 int   menu_config_bank=0;           // will choose the bank to load at startup
 int   menu_config_audioOutput=0;    // audioOutputNumber define in the config menu
 int   menu_config_midiOutput=0;     //  midiOutputNumber define in the config menu
 int   menu_config_midiInput=0;      //  midiInputNumber  define in the config menu
 int   menu_config_midiClockMode=0;  // 0 internal, 1 midi sync out, 2 midi sync in 
+int   menu_config_audiopulseclock_out=0; // 0 no sync, 1 sync left, 2 sync right
 int   menu_config_y=0;              // current selected item in menu_config
 
-
+/*
+  Variable of the standard menu
+ */
 
 int menu_cursor=GLOBALMENU_AD;      // index int the menu
 int menu=MENU_ON_PAGE1;             // menu mode
@@ -329,9 +335,6 @@ int menu_ls=MENU_LS_PATTERN;
 int menu_bpm=MENU_PAGE0_SUB0;
 int menu_ad_dirty_keyboard=0;
 
-//int ct=0;               // current_track
-//int ct_x=0;             
-//int ct_y=0;
 
 
 int dirty_graphic=1;           // 1 : the UI need to be updated
@@ -343,7 +346,7 @@ int seq_update_by_step_next=0; // 0 : the UI audio and seq are sync
                                //   : seq_update_by_step(), load,save...
 
 int current_swing=50;  
-//int current_swing=64;
+
 int first_clock=1;
 struct timeval timev_now,timev_prev,timev_lastclock;
 time_t difft=0;
@@ -907,6 +910,7 @@ void display_config()
 {
   char str_palette[128];
   char str_bank[128];
+  char str_pulsesyncout[128];
   char str_audiooutput[128];
   char str_midioutput[128];
   char str_midiinput[128];
@@ -970,28 +974,27 @@ void display_config()
 
   
   //sprintf(str_menuconfig    ,"menuconfig    : %d %d"        ,menu_config_y,debugcounter++);
-  sprintf(str_palette       ,"%c Current palette : %d "       ,cursor_line[0],menu_config_palette);
-  sprintf(str_bank          ,"%c Current Bank    : %d "       ,cursor_line[1],menu_config_bank);
-  sprintf(str_audiooutput   ,"%c AudioOutput     : %d/%d : %s",cursor_line[2],menu_config_audioOutput,audioOutputDevice,audioOutputDeviceName);
+  sprintf(str_palette       ,"%c Current palette    : %d "       ,cursor_line[0],menu_config_palette);
+  sprintf(str_bank          ,"%c Current Bank       : %d "       ,cursor_line[1],menu_config_bank);
+  sprintf(str_pulsesyncout  ,"%c AudioOut PulseSync : %s "       ,cursor_line[2],str_audio_pulse_clock[menu_config_audiopulseclock_out]);
+  sprintf(str_audiooutput   ,"%c AudioOutput        : %d/%d : %s",cursor_line[3],menu_config_audioOutput,audioOutputDevice,audioOutputDeviceName);
 #ifdef __RTMIDI__
-  sprintf(str_midioutput    ,"%c MidiOutput      : %d/%d : %s",cursor_line[3],menu_config_midiOutput,midiOutputDevice,midiOutputDeviceName);
-  sprintf(str_midiinput     ,"%c MidiInput       : %d/%d : %s",cursor_line[4],menu_config_midiInput,midiInputDevice,midiInputDeviceName);
-  sprintf(str_midiclockmode ,"%c MidiClockMode   : %s"        ,cursor_line[5],str_midi_clock_mode[menu_config_midiClockMode]); 
+  sprintf(str_midioutput    ,"%c MidiOutput         : %d/%d : %s",cursor_line[4],menu_config_midiOutput,midiOutputDevice,midiOutputDeviceName);
+  sprintf(str_midiinput     ,"%c MidiInput          : %d/%d : %s",cursor_line[5],menu_config_midiInput,midiInputDevice,midiInputDeviceName);
+  sprintf(str_midiclockmode ,"%c MidiClockMode      : %s"        ,cursor_line[6],str_midi_clock_mode[menu_config_midiClockMode]); 
+
 #endif
   SG.clearScreen();  
-  //SG.guiTTFText(30,0,   str_menuconfig);  
   SG.guiTTFText(COLLUMN03,LINE00,  str_palette);
   SG.guiTTFText(COLLUMN03,LINE01,  str_bank);
-  SG.guiTTFText(COLLUMN03,LINE02,  str_audiooutput);
+  SG.guiTTFText(COLLUMN03,LINE02,  str_pulsesyncout);
+  SG.guiTTFText(COLLUMN03,LINE03,  str_audiooutput);
+
 #ifdef __RTMIDI__
-  SG.guiTTFText(COLLUMN03,LINE03,  str_midioutput);
-  SG.guiTTFText(COLLUMN03,LINE04,  str_midiinput);
-  SG.guiTTFText(COLLUMN03,LINE05, str_midiclockmode);
+  SG.guiTTFText(COLLUMN03,LINE04,  str_midioutput);
+  SG.guiTTFText(COLLUMN03,LINE05,  str_midiinput);
+  SG.guiTTFText(COLLUMN03,LINE06, str_midiclockmode);
 #endif
-  //test_str="1234567890123456789012345678901234567890123456789012345678901234";
-  //SG.guiTTFText(COLLUMN00,LINE00,    test_str);
-  //SG.guiTTFText(COLLUMN01,LINE01,    test_str);
-  //SG.guiTTFText(COLLUMN63,LINE29,    test_str);
   display_refresh();
 }
 
@@ -1054,6 +1057,14 @@ void handle_key_config()
 	      menu_config_bank=0;
 	}
 
+      // AudioPulseClock output
+      if (menu_config_y==MENU_CONFIG_Y_AUDIOPULSECLOCKOUT)
+	{
+	  menu_config_audiopulseclock_out++;
+	  if (menu_config_audiopulseclock_out>2)
+	    menu_config_audiopulseclock_out=0;
+	}
+
       // audio output
       if (menu_config_y==MENU_CONFIG_Y_AUDIOOUTPUT)
 	{
@@ -1109,6 +1120,14 @@ void handle_key_config()
 	      menu_config_bank=MAX_BANK-1;
 	}
 
+      // AudioPulseClock output
+      if (menu_config_y==MENU_CONFIG_Y_AUDIOPULSECLOCKOUT)
+	{
+	  menu_config_audiopulseclock_out++;
+	  if (menu_config_audiopulseclock_out>2)
+	    menu_config_audiopulseclock_out=0;
+	}
+
       // audio output
       if (menu_config_y==MENU_CONFIG_Y_AUDIOOUTPUT)
 	{
@@ -1147,14 +1166,18 @@ void handle_key_config()
 #endif      
       config_key_pressed++;      
     }
-      
-#ifdef __RTMIDI__
+
+  // Number of configuration Element if there is Midi support or not MENU_CONFIG_Y_MAX
+  //#ifdef __RTMIDI__
   if (menu_config_y>MENU_CONFIG_Y_MAX) menu_config_y=0;
   if (menu_config_y<0)                 menu_config_y=MENU_CONFIG_Y_MAX;
+  /*
 #else
-  if (menu_config_y>1)                 menu_config_y=0;
-  if (menu_config_y<0)                 menu_config_y=1;
+  if (menu_config_y>2)                 menu_config_y=0;
+  if (menu_config_y<0)                 menu_config_y=2;
 #endif
+  */
+
   if (IE.shouldExit())
     {
 #ifdef __RTMIDI__
