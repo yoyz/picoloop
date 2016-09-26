@@ -1833,7 +1833,7 @@ void handle_key_patternlenght()
   if (need_to_change_cursor_max_pos)
     {
       pattern_cursor_max_pos[cty]=plen-1-pattern_display_offset[cty];
-      DPRINTF("$$$$$$$$$$$$$$$$$$$$$$$$pattern_cursor_max_pos:%d", pattern_cursor_max_pos[cty]);
+      //DPRINTF("$$$$$$$$$$$$$$$$$$$$$$$$pattern_cursor_max_pos:%d", pattern_cursor_max_pos[cty]);
       if (cursor>pattern_cursor_max_pos[cty])
 	cursor=0;
       if (pattern_cursor_max_pos[cty]>15)
@@ -2841,7 +2841,7 @@ void seq_update_multiple_time_by_step()
   int          currentMachine;
   int          nextMachine;
 
-  DPRINTF("*********************pattern_cursor_max_pos:%d",pattern_cursor_max_pos[cty]);
+  //DPRINTF("*********************pattern_cursor_max_pos:%d",pattern_cursor_max_pos[cty]);
   
   // Read all valued contained in the Tweakable Knob
   // Apply the Value to the sequencer, then to the Machine
