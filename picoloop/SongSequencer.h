@@ -19,7 +19,9 @@ public:
   int  setStep(int step);
   int  setLoopPoint(int loopStep);
   int  getLoopA();
-  int  getLoopB(); 
+  int  getLoopB();
+  void shiftTrackLeft(int x,int y);
+  void shiftTrackRight(int x, int y);  
   int  getPatternNumber(int cp,int trackNumber);
   int  getPatternNumberAtCursorPosition(int trackNumber);
   void setPatternNumber(int cursorPosition,int trackNumber,int patternNumber);

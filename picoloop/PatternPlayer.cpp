@@ -2549,17 +2549,34 @@ void handle_key_load_save()
 	}
 
 
+
+      // Shift the pattern of the song to the left or to the right
+      if (menu                 == MENU_OFF     && 	  
+	  loadsave_cursor_mode == CURSOR_SONG  &&
+	  (
+	   keyState[BUTTON_A]
+	   ))
+	{
+	  if (keyState[BUTTON_LEFT])
+	    if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_LONG==0)
+	      {
+		SEQ.getSongSequencer().shiftTrackLeft(song_cursor.x,song_cursor.y);
+	      }
+
+	  if (keyState[BUTTON_RIGHT])
+	    if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_LONG==0)
+	      {
+		SEQ.getSongSequencer().shiftTrackRight(song_cursor.x,song_cursor.y);
+	      }
+
+	}
+      
       if (menu                 == MENU_OFF     && 	  
 	  loadsave_cursor_mode == CURSOR_SONG  &&
 	  (
 	   keyState[BUTTON_B]
 	   ))
 	{
-	  /*
-	  if (keyState[BUTTON_LEFT])
-	    if (keyRepeat[BUTTON_LEFT]==1  || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_LONG==0)  
-	      { song_cursor_x--;  dirty_graphic=1;}
-	  */
 	  if (keyState[BUTTON_RIGHT])
 	    if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_LONG==0) 
 	      { song_cursor.x++; dirty_graphic=1; SEQ.getSongSequencer().setPatternNumber(song_cursor.x,song_cursor.y,SEQ.getSongSequencer().getPatternNumber(song_cursor.x-1,song_cursor.y));}
@@ -2568,15 +2585,6 @@ void handle_key_load_save()
 	    if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_LONG==0) 
 	      { song_cursor.x--; dirty_graphic=1; SEQ.getSongSequencer().setPatternNumber(song_cursor.x,song_cursor.y,SEQ.getSongSequencer().getPatternNumber(song_cursor.x+1,song_cursor.y));}
 
-	  /*
-	  if (keyState[BUTTON_UP])
-	    if (keyRepeat[BUTTON_UP]==1    || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONG==0)    
-	      { song_cursor_y--;  dirty_graphic=1;}
-	  
-	  if (keyState[BUTTON_DOWN])
-	    if (keyRepeat[BUTTON_DOWN]==1  || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONG==0)  
-	      { song_cursor_y++;  dirty_graphic=1;}
-	  */
 
 	  
 	  if (song_cursor.x>MAX_SONG_LENGHT_BY_PROJECT-1)        { song_cursor.x=0;                           }
@@ -2585,7 +2593,6 @@ void handle_key_load_save()
 	  if (song_cursor.y>TRACK_MAX-1)                         { song_cursor.y=0;                           }
 	  if (song_cursor.y<0)                                   { song_cursor.y=TRACK_MAX-1;                 }  
 	  
-	  //SEQ.setCurrentTrackY(loadsave_cursor_y);
 	}
 
 

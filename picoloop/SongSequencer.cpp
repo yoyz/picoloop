@@ -18,6 +18,25 @@ SongSequencer::~SongSequencer()
 }
 
 
+void SongSequencer::shiftTrackLeft(int x, int y)
+{
+  int i=y;
+  for(i=x;i<MAX_SONG_LENGHT_BY_PROJECT;i++)
+    {
+      if (i>0 && i<MAX_SONG_LENGHT_BY_PROJECT-1)
+	songVector[i][y]=songVector[i+1][y];
+    }
+}
+
+void SongSequencer::shiftTrackRight(int x, int y)
+{
+  int i=y;
+  for(i=MAX_SONG_LENGHT_BY_PROJECT-1;i>x;i--)
+    {
+      if (i>0 && i<MAX_SONG_LENGHT_BY_PROJECT-1)
+	songVector[i][y]=songVector[i-1][y];
+    }
+}
 
 int SongSequencer::incStep()
 {
