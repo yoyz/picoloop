@@ -62,6 +62,12 @@ public:
   int tick_height_std;
   int step;
 
+  int out;
+  int last_out;
+  int stepdec1;
+  int stepdec2;
+
+
 };
 
 
