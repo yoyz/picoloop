@@ -1,7 +1,7 @@
 CC=g++
 CFLAGS=-c -O1 -DLINUX -D__RTAUDIO__ -DLINUX_DESKTOP -I. -LSDL/lib -g -fpermissive 
-CFLAGS=-c -O3 -D__LINUX__ -DLINUX  -DLINUX_DESKTOP -std=c++11 -DLINUX -D__RTAUDIO__  -I. -LSDL/lib -g -fpermissive 
-LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf -lasound -lpthread
+CFLAGS=-c -O3 -D__LINUX__ -DLINUX  -DPC_DESKTOP -std=c++11 -DLINUX -D__RTAUDIO__  -I. -LSDL/lib -g -fpermissive 
+LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf -lasound -lpthread -lpulse -lpulse-simple -ljack
 
 OBJTOLINK=RtAudio.o RtMidi.o
 
@@ -38,7 +38,11 @@ SOURCES=WaveSynth.cpp            \
 		      SongSequencer.cpp        \
 		      NoteFreq.cpp             \
 		      PitchBend.cpp            \
+		      TweakableKnob.cpp	\
+		      SysMutex.cpp \
 		      MidiOutSystem.cpp	       \
+		      MidiInSystem.cpp \
+		      MachineCheck.cpp \
 		      Machine/Picosynth/PicosynthADSR.cpp        \
 		      Machine/Picosynth/PicosynthVCO.cpp         \
 		      Machine/Picosynth/PicosynthMachine.cpp     \
@@ -147,9 +151,13 @@ SOURCES=WaveSynth.cpp            \
 		      Machine/Twytch/twytch_simple_delay.cpp			\
 		      Machine/Twytch/twytch_wave.cpp				\
 		      Machine/Twytch/twytch_voice_handler.cpp			\
+		      Machine/Twytch/twytch_detune_lookup.cpp \
+		      Machine/Twytch/twytch_sample_decay_lookup.cpp \
+		      Machine/Twytch/twytch_portamento_slope.cpp \
+		      Machine/Twytch/twytch_dc_filter.cpp \
 		      Machine/MidiOutSystem/MidiOutMachine.cpp                  \
 		      Machine/MDADrum/MDADrumMachine.cpp			\
-		      Machine/MDADrum/drumsynth.cpp				\
+		      Machine/MDADrum/drumsynth_oop5.cpp				\
 		      Machine/MDADrum/profport.cpp				
 
 
