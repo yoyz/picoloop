@@ -80,6 +80,9 @@ int decay_fltr=96;
 int sustain_fltr=96;
 int release_fltr=96;
 
+int osc1_detune=64;
+int osc2_detune=64;
+
 
 int vcomix=63;
 int phase=63;
@@ -615,6 +618,55 @@ void handle_key()
 
 
 
+  //
+  // osc1_detune osc2_detune
+  //
+  if (keyRepeat[SDLK_n]%16    && 
+      keyRepeat[SDLK_DOWN]%16 
+      )
+    {
+      osc1_detune=osc1_detune-1;
+      if (osc1_detune <=0) osc1_detune=0;
+      redraw=true;
+      printf("[n]+[down] => osc1_detune:%d\n",osc1_detune);
+    }
+
+
+  if (keyRepeat[SDLK_n]%16    && 
+      keyRepeat[SDLK_UP]%16   
+      )
+    {
+      osc1_detune=osc1_detune+1;
+      if (osc1_detune >=126) osc1_detune=126;
+      redraw=true;
+      printf("[n]+[up] => osc1_detune:%d\n",osc1_detune);
+    }
+
+
+  if (keyRepeat[SDLK_n]%64    && 
+      keyRepeat[SDLK_RIGHT]%64 
+      )
+    {
+      osc2_detune=osc2_detune+1;
+      if (osc2_detune >=127) osc2_detune=127;
+      redraw=true;
+      printf("[n]+[right] => osc2_detune:%d\n",osc2_detune);
+    }
+
+
+  if (keyRepeat[SDLK_n]%64    && 
+      keyRepeat[SDLK_LEFT]%64   
+      )
+    {
+      osc2_detune=osc2_detune-1;
+      if (osc2_detune <=0) osc2_detune=1;
+      redraw=true;
+      printf("[n]+[left] => osc2_detune:%d\n",osc2_detune);
+    }
+
+
+
+
 
   if(lastKey==SDLK_PAGEUP)
     {
@@ -740,6 +792,9 @@ void handle_key()
 	  M[t]->setI(OSC1_TYPE,waveform_op1);
 	  M[t]->setI(OSC2_TYPE,waveform_op2);
 
+	  M[t]->setI(OSC1_DETUNE, osc1_detune);
+	  M[t]->setI(OSC2_DETUNE, osc2_detune);
+
 
 	  M[t]->setI(ADSR_ENV0_ATTACK,attack_amp);
 	  M[t]->setI(ADSR_ENV0_DECAY,decay_amp);
@@ -751,6 +806,13 @@ void handle_key()
 	  M[t]->setI(ADSR_ENV1_ATTACK,sustain_fltr);
 	  M[t]->setI(ADSR_ENV1_RELEASE,release_fltr);
 
+	  M[t]->setI(LFO1_DEPTH,     0);
+	  M[t]->setI(LFO1_ENV_AMOUNT,0);
+	  M[t]->setF(LFO1_FREQ,      0);
+
+	  M[t]->setI(LFO2_DEPTH,     0);
+	  M[t]->setI(LFO2_ENV_AMOUNT,0);
+	  M[t]->setF(LFO2_FREQ,      0);
 
 
 	  M[t]->setI(FILTER1_CUTOFF,cutoff);
