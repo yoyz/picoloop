@@ -82,13 +82,16 @@ void TwytchsynthMachine::init()
       buffer_f = (mopotwytchsynth::mopo_float*)malloc(sizeof(mopotwytchsynth::mopo_float)*SAM);
 
       TWE->setBufferSize(SAM);
-      TWE->setSampleRate(44100);
+      //TWE->setSampleRate(44100);
+      TWE->setSampleRate(48000);
 
     }
   for (i=0;i<SAM;i++)
     buffer_i[i]=0;
   for (i=0;i<SAM;i++)
     buffer_f[i]=0.0;
+
+  TWE->getControls().at("polyphony")->set(1);
   TWE->getControls().at("filter_type")->set(0);
   TWE->getControls().at("beats_per_minute")->set(120);
   TWE->getControls().at("legato")->set(0);
@@ -100,7 +103,7 @@ void TwytchsynthMachine::init()
   TWE->getControls().at("osc_feedback_tune")->set(0);
   TWE->getControls().at("step_frequency")->set(3);
   TWE->getControls().at("stutter_on")->set(0);
-  TWE->getControls().at("volume")->set(0.6);
+  TWE->getControls().at("volume")->set(0.5);
   TWE->getControls().at("delay_on")->set(0);
   TWE->getControls().at("delay_sync")->set(1);
   TWE->getControls().at("filter_saturation")->set(0);
@@ -108,11 +111,32 @@ void TwytchsynthMachine::init()
   TWE->getControls().at("portamento")->set(-9);
   TWE->getControls().at("reverb_on")->set(0);
 
+  TWE->getControls().at("osc_1_tune"   )->set(0.3);
+  TWE->getControls().at("osc_2_tune"   )->set(0.3);
+
+  TWE->getControls().at("osc_1_tune"   )->set(0.28);
+  TWE->getControls().at("osc_2_tune"   )->set(0.28);
+
+  TWE->getControls().at("osc_1_tune"   )->set(0.29);
+  TWE->getControls().at("osc_2_tune"   )->set(0.29);
+
+  TWE->getControls().at("osc_1_tune"   )->set(0.285);
+  TWE->getControls().at("osc_2_tune"   )->set(0.285);
+
+  TWE->getControls().at("osc_1_tune"   )->set(0.287);
+  TWE->getControls().at("osc_2_tune"   )->set(0.287);
+
+  TWE->getControls().at("osc_1_tune"   )->set(0.295);
+  TWE->getControls().at("osc_2_tune"   )->set(0.295);
+
+  TWE->getControls().at("osc_1_tune"   )->set(0);
+  TWE->getControls().at("osc_2_tune"   )->set(0);
+
   note_on=0;
   sample_num=0;
 
   note=0;
-  detune=64;
+  detune=0;
 
   trig_time_mode=0;
   trig_time_duration=0;
@@ -231,6 +255,7 @@ void TwytchsynthMachine::setI(int what,int val)
   float f_val_cutoff;
   float f_val_resonance;
 
+  int   noteShift=14;
   float f_val=val;
   f_val=f_val/128;
 
@@ -243,26 +268,26 @@ void TwytchsynthMachine::setI(int what,int val)
 
       if (old_note!=note)
 	{
-	  TWE->noteOn(note-1+12);
-	  TWE->noteOff(old_note-1+12);
+	  TWE->noteOn(note-1+noteShift);
+	  TWE->noteOff(old_note-1+noteShift);
 	  //need_note_on=1;
 	}
       else
 	{
 	  if (note_on==0)
 	    {
-	      TWE->noteOn(note-1+12);
+	      TWE->noteOn(note-1+noteShift);
 	    }
 	  else
 	    {
-	      TWE->noteOn(note-1+12);
+	      TWE->noteOn(note-1+noteShift);
 	    }
 	}
     }
   if (what==NOTE_ON && val==0) 
     { 
       note_on=0;
-      TWE->noteOff(note-1+12);
+      TWE->noteOff(note-1+noteShift);
     }
 
   if (what==NOTE1)                                    {  old_note=note; note=val; }
@@ -312,7 +337,7 @@ void TwytchsynthMachine::setI(int what,int val)
    if (what==VELOCITY && velocity!=val)               { velocity=val;   TWE->getControls().at("velocity_track"     )->set(abs(f_val-1)); }
 
 
-   if (what==OSC1_DETUNE )                            { TWE->getControls().at("osc_2_tune"   )->set((f_val*2)-1); }
+   //if (what==OSC1_DETUNE )                            { TWE->getControls().at("osc_2_tune"   )->set((f_val*2)-1); }
    if (what==OSC1_MOD    )                            { TWE->getControls().at("cross_modulation")->set(f_val/2); }
 
    if (what==KEYTRACK   )                             { TWE->getControls().at("keytrack"     )->set(((f_val*2)-1)); }

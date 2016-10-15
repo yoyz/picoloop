@@ -38,6 +38,9 @@ void CursynthMachine::init()
       buffer_f = (mopocursynth::mopo_float*)malloc(sizeof(mopocursynth::mopo_float)*SAM*8);
 
       CSE->setBufferSize(SAM);
+      //CSE->setSampleRate(48000);
+      //CSE->setSampleRate(44100);
+      //CSE->setSampleRate(44100);
       CSE->setSampleRate(44100);
 
     }
@@ -51,11 +54,13 @@ void CursynthMachine::init()
   CSE->getControls().at("delay time")->set(0.0);      
   CSE->getControls().at("delay dry/wet")->set(0.0);   
 
-  CSE->getControls().at("delay feedback")->set(0.4);
+  //CSE->getControls().at("delay feedback")->set(0.4);
+  CSE->getControls().at("delay feedback")->set(0);
   CSE->getControls().at("cross modulation")->set(0);  
 
   CSE->getControls().at("osc 2 transpose")->set(0); 
   CSE->getControls().at("osc 2 tune")->set(0); 
+
   CSE->getControls().at("volume")->set(0.1);
 
   CSE->getControls().at("lfo 1 waveform")->set(2); 
@@ -66,11 +71,11 @@ void CursynthMachine::init()
   CSE->getControls().at("mod source 2")->set(4);     
   CSE->getControls().at("mod destination 1")->set(4);     
   CSE->getControls().at("mod destination 2")->set(2);     
-  CSE->getControls().at("mod scale 1")->set(0.9);     
-  CSE->getControls().at("mod scale 2")->set(0.9);     
-  CSE->getControls().at("lfo 1 frequency")->set(2.2);     
-  CSE->getControls().at("lfo 1 frequency")->set(3.2);     
-
+  CSE->getControls().at("mod scale 1")->set(0);     
+  CSE->getControls().at("mod scale 2")->set(0);     
+  //CSE->getControls().at("lfo 1 frequency")->set(2.2);     
+  CSE->getControls().at("lfo 1 frequency")->set(0);     
+  //CSE->getControls().at("pitch wheel")->set();
 
   //bq.reset();
   note_on=0;
@@ -80,7 +85,8 @@ void CursynthMachine::init()
 
 
   note=0;
-  detune=64;
+  //detune=64;
+  detune=0;
 
   trig_time_mode=0;
   trig_time_duration=0;
@@ -156,6 +162,7 @@ void CursynthMachine::setI(int what,int val)
 {
   float f_val_cutoff;
   float f_val_resonance;
+  int   noteShift=12;
 
   float f_val=val;
   f_val=f_val/128;
@@ -165,22 +172,22 @@ void CursynthMachine::setI(int what,int val)
 
   if (what==NOTE_ON && val==1) 
     { 
-      NoteFreq & NF = NoteFreq::getInstance(); 
+      //NoteFreq & NF = NoteFreq::getInstance(); 
       note_on=1;
 
       if (old_note!=note)
 	{
-	  CSE->noteOn(note+11,velocity/32);
-	  CSE->noteOff(old_note+11);
+	  CSE->noteOn(note+noteShift,velocity/32);
+	  CSE->noteOff(old_note+noteShift);
 	}
       else
 	{
 	  if (note_on==0)
-	    CSE->noteOn(note+11,velocity/32);
+	    CSE->noteOn(note+noteShift,velocity/32);
 	  else
 	    {
-	      CSE->noteOff(old_note+11);	  
-	      CSE->noteOn(note+11,velocity/32);
+	      CSE->noteOff(old_note+noteShift);	  
+	      CSE->noteOn(note+noteShift,velocity/32);
 	    }
 	}
 
@@ -194,7 +201,7 @@ void CursynthMachine::setI(int what,int val)
   if (what==NOTE_ON && val==0) 
     { 
       note_on=0;
-      CSE->noteOff(note+11);
+      CSE->noteOff(note+noteShift);
     }
 
   //if (what==OSC1_NOTE)           { if (note_on) { this->setI(NOTE_ON,0); note=val; } }
@@ -240,8 +247,11 @@ void CursynthMachine::setI(int what,int val)
   //if (what==OSC12_MIX)           CSE->getControls().at("osc mix")->set(f_val);
 
   //if (what==OSC1_AMP)            CSE->getControls().at("velocity track")->set(f_val);
+
+  //if (what==OSC1_DETUNE)         CSE->getControls().at("osc 2 tune"   )->set((f_val*2)-1);
   //if (what==OSC1_DETUNE)         CSE->getControls().at("osc 2 tune"   )->set(((f_val*2)-1)*128);
-  if (what==OSC1_DETUNE)         CSE->getControls().at("osc 2 tune"   )->set((f_val*2)-1);
+
+  if (what==OSC1_DETUNE)         CSE->getControls().at("osc 2 tune"   )->set(((f_val*2)-1));
   if (what==OSC1_MOD)            CSE->getControls().at("cross modulation")->set(f_val);
 
   if (what==KEYTRACK)            CSE->getControls().at("keytrack"     )->set(((f_val*2)-1)*128);
@@ -417,6 +427,13 @@ int CursynthMachine::tick()
       index==0 )
     {
       CSE->process();
+      for (index==0;index<SAM;index++)
+	{
+	  buffer_f[index]=CSE->output()->buffer[index];
+	  buffer_f[index]=buffer_f[index]*8192;
+	  buffer_i[index]=buffer_f[index];
+	}
+      index=0;
     }
 
   if (trig_time_mode)
@@ -431,12 +448,10 @@ int CursynthMachine::tick()
     }
 
  
-  buffer_f[index]=CSE->output()->buffer[index];
-  buffer_f[index]=buffer_f[index]*8192;
   //buffer_f[index]=buffer_f[index]*14336;
   //buffer_f[index]=buffer_f[index]*2048;
   //buffer_f[index]=buffer_f[index]*1024;
-  buffer_i[index]=buffer_f[index];
+
     
   s_out=buffer_i[index];
 

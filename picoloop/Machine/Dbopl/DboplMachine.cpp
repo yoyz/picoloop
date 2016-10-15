@@ -60,7 +60,8 @@ void dboplMachine::init()
   filter.init();
 
   //HO->SetSampleRate(22050);
-  HO->SetSampleRate(44100);
+  //HO->SetSampleRate(44100);
+  HO->SetSampleRate(48000);
   //HO->SetSampleRate(88200);
 
   HO->SetWaveform(1,1,QUART_SIN);
@@ -288,8 +289,9 @@ void dboplMachine::setI(int what,int val)
       keyon=1;
       sineLfoOsc1.reset();
       NoteFreq & NF = NoteFreq::getInstance();
-      HO->KeyOn(1,NF.getINoteFreq(note));
-      freq=NF.getINoteFreq(note);
+      //HO->KeyOn(1,NF.getINoteFreq(note+2));
+      freq=NF.getINoteFreq(note+2);
+      //printf(">>>>>>>FREQ:%f\n",freq);
     }
 
     if (what==NOTE_ON && val==0) 
@@ -427,12 +429,14 @@ int dboplMachine::tick()
 	{
 	  //HO->KeyOn(1,freq+modulated_freq);
 
-	  HO->SetFrequency(1,freq+modulated_freq,true);
+	  //HO->SetFrequency(1,freq+modulated_freq,true);
+	  HO->SetFrequency(1,freq,true);
 	  //HO->KeyOn(1,freq);
 	}
       else
 	{
-	  HO->SetFrequency(1,freq+modulated_freq,false);
+	  //HO->SetFrequency(1,freq+modulated_freq,false);
+	  HO->SetFrequency(1,freq,false);
 	  //HO->SetFrequency(1,freq,false);
 	}
       HO->Generate(SAM,buffer);

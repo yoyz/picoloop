@@ -32,7 +32,8 @@ void Open303Machine::init()
   int j;
 
   O303E=new rosic::Open303();
-  O303E->setSampleRate(44100);
+  //O303E->setSampleRate(44100);
+  O303E->setSampleRate(48000);
   //  O303E->setAccent(127);
 
   // O303E->noteOn(1,velocity,0.0);
@@ -113,6 +114,7 @@ void Open303Machine::setF(int what,float val)
 
 void Open303Machine::setI(int what,int val)
 {
+  int noteShift=13;
   float f_val=val;
   f_val=f_val/128;
 
@@ -129,20 +131,20 @@ void Open303Machine::setI(int what,int val)
 
        if (old_note!=note)
 	 {
-	   O303E->noteOn(note+11,velocity,0.0);
-	   O303E->noteOn(old_note+11,0,0.0);
+	   O303E->noteOn(note+noteShift,velocity,0.0);
+	   O303E->noteOn(old_note+noteShift,0,0.0);
 	 }
        else
 	 {
-	   O303E->noteOn(old_note+11,0,0.0);
-	   O303E->noteOn(note+11,velocity,0.0);		   
+	   O303E->noteOn(old_note+noteShift,0,0.0);
+	   O303E->noteOn(note+noteShift,velocity,0.0);		   
 	 }
       
     }
   if (what==NOTE_ON && val==0) 
     { 
        note_on=0;
-       O303E->noteOn(note+11,0,0.0);
+       O303E->noteOn(note+noteShift,0,0.0);
        //CSE->noteOff(note);
        //O303E->releaseNote(note);
        //O303E->allNotesOff();
