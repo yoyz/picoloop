@@ -646,7 +646,7 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
   fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
-  machineParam=OSC1_DETUNE;
+  machineParam=OSC2_DETUNE;
   fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
