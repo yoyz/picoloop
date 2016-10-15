@@ -230,7 +230,15 @@ int NoteFreq::getWTJumpDetune(int note,int detune)
     nt=88;
 
   if (dt<0)
-    dt=0;
+    {
+      if (dt>-128 && nt>0)
+	{
+	  nt--;
+	  dt=dt+128;
+	}
+      else
+	dt=0;
+    }
   if (dt>127)
     dt=127;
 

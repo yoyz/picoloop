@@ -135,7 +135,12 @@ Sint16 Oscillator::tick()
   const int   wtshift=1<<shift;
 
   index=index+offset_next_index;
-  //if (index<0) index=0;
+  /*
+  // Need to fix this one day
+  // The index at start could go outside of the table[XXX], so I need a way to prevent it
+  if (index<0) index=0;
+  */
+  if (index<0) index=0;
   if ((index>>shift)>=table_size)
     {
       index=index-(table_size<<shift);

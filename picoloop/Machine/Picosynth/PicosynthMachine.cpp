@@ -158,7 +158,9 @@ void PicosynthMachine::setI(int what,int val)
 
   if (what==NOTE_ON && val==1) 
     { 
-      this->getVCO().setNoteDetune(note+osc1_scale,note+osc2_scale,detune);
+      // I need to detune -64
+      //this->getVCO().setNoteDetune(note+1+osc1_scale,note+1+osc2_scale,detune-64);
+      this->getVCO().setNoteDetune(note+1+osc1_scale,note+1+osc2_scale,detune);
       this->getADSRAmp().reset();
       this->getADSRFltr().reset();
       this->getVCO().reset();

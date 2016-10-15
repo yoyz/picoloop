@@ -367,6 +367,7 @@ Sint16 PicodrumVCO::tick()
       else
 	{
 	  //s2->setFreq(freqOsc1+abs(sinput1/((128-lfo_depth)*2)));
+	  //s2->setNoteDetune(note*128+detune+abs(sinput1/((128-lfo_depth)*1)));
 	  s2->setNoteDetune(note*128+detune+abs(sinput1/((128-lfo_depth)*1)));
 	  //s2->setNoteDetune(note*128+detune+abs((sinput1*tanh_table[lfo_depth*8])/1024));
 	}

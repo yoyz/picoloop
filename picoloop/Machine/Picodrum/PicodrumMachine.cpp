@@ -11,7 +11,7 @@ PicodrumMachine::PicodrumMachine() : adsr_amp(), vco(), filter()
   cutoff=125;
   resonance=10;
   note=0;
-  detune=64;
+  detune=0;
 }
 
 
@@ -47,7 +47,7 @@ void PicodrumMachine::init()
   //this->getADSRAmp().setNoteADSR(0);
 
   note=0;
-  detune=64;
+  detune=0;
 
 }
 
@@ -111,7 +111,7 @@ void PicodrumMachine::setI(int what,int val)
 
   if (what==NOTE_ON && val==1) 
     { 
-      this->getPicodrumVCO().setNoteDetune(note,detune);
+      this->getPicodrumVCO().setNoteDetune(note+1,detune);
       this->getADSRAmp().reset();
       this->getPicodrumVCO().reset();
       this->getPicodrumVCO().setPicodrumVCOPhase(phase);

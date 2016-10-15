@@ -294,8 +294,12 @@ void PicosynthVCO::setNoteDetune(int nt1,int nt2,int dt)
 {
   NoteFreq & NF = NoteFreq::getInstance();
   detune=dt;
-  s1->setNoteDetune(nt1,64);
-  s2->setNoteDetune(nt2,dt);
+
+  // detune works from 0-127 value
+  
+  s1->setNoteDetune(nt1,0);
+  s2->setNoteDetune(nt2,dt-64);
+  //s2->setNoteDetune(nt2,0);
   freqOsc1=NF.getINoteFreq(nt1);
   freqOsc2=NF.getINoteFreq(nt2);
   note=nt1;
@@ -333,7 +337,8 @@ Sint16 PicosynthVCO::tick()
 	{
 	  // Lfo activated
 	  lfo_tick=lfo1->tick();
-	  lfo_tick_normdownshift=((lfo_tick>>7)*lfo_depth>>7)+64;
+	  //lfo_tick_normdownshift=((lfo_tick>>7)*lfo_depth>>7)+64;
+	  lfo_tick_normdownshift=((lfo_tick>>7)*lfo_depth>>7)+0;
 	  
 	  //pb.setNote(note);
 	  //pb.setDepth(lfo_depth);
@@ -346,7 +351,8 @@ Sint16 PicosynthVCO::tick()
 	{
 	  // Fixed value 64 for the detuning of oscillator 1 
 	  // 0 << 64 << 127
-	  lfo_tick_normdownshift=64;
+	  //lfo_tick_normdownshift=64;
+	  lfo_tick_normdownshift=0;
 	}
       s1->setNoteDetune((note<<7)+lfo_tick_normdownshift);
     }
