@@ -41,7 +41,7 @@ void CursynthMachine::init()
       //CSE->setSampleRate(48000);
       //CSE->setSampleRate(44100);
       //CSE->setSampleRate(44100);
-      CSE->setSampleRate(44100);
+      CSE->setSampleRate(DEFAULTFREQ);
 
     }
   for (i=0;i<SAM;i++)

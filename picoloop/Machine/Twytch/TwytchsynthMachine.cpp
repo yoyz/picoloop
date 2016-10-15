@@ -83,7 +83,7 @@ void TwytchsynthMachine::init()
 
       TWE->setBufferSize(SAM);
       //TWE->setSampleRate(44100);
-      TWE->setSampleRate(48000);
+      TWE->setSampleRate(DEFAULTFREQ);
 
     }
   for (i=0;i<SAM;i++)

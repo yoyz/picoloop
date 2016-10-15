@@ -33,7 +33,7 @@ void Open303Machine::init()
 
   O303E=new rosic::Open303();
   //O303E->setSampleRate(44100);
-  O303E->setSampleRate(48000);
+  O303E->setSampleRate(DEFAULTFREQ);
   //  O303E->setAccent(127);
 
   // O303E->noteOn(1,velocity,0.0);

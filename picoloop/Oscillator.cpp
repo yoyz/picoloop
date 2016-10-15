@@ -79,7 +79,7 @@ void Oscillator::setFreq(int freq)
   if (freq <= 0)          
     {
       freq=1;
-      offset_next_index=(table_size)/44100;
+      offset_next_index=(table_size)/DEFAULTFREQ;
     }
   else 
     if (freq > 20000) freq=20000;
@@ -92,7 +92,7 @@ void Oscillator::setFreq(int freq)
       //tmp=(freq*((wtshift))*WAVETABLE_SIZE)/(44100);
       //tmp=(freq*((wtshift))*WAVETABLE_SIZE)/(44100);
       //tmp=((freq*WAVETABLE_SIZE)/44100)*wtshift;
-      tmp=(WAVETABLE_SIZE*wtshift/44100)*freq;
+      tmp=(WAVETABLE_SIZE*wtshift/DEFAULTFREQ)*freq;
       //tmp=tmp/44100;
       //offset_next_index=(freq*table_size*65535)/44100;
       offset_next_index=tmp;

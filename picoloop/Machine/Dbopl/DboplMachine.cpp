@@ -61,7 +61,7 @@ void dboplMachine::init()
 
   //HO->SetSampleRate(22050);
   //HO->SetSampleRate(44100);
-  HO->SetSampleRate(48000);
+  HO->SetSampleRate(DEFAULTFREQ);
   //HO->SetSampleRate(88200);
 
   HO->SetWaveform(1,1,QUART_SIN);
