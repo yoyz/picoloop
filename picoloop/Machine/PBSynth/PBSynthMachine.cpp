@@ -247,6 +247,9 @@ void PBSynthMachine::setI(int what,int val)
       {
 	osc1_detune=val;
 	//SE->getPBSynthOscillator(0)->setDetune(this->checkI(OSC1_DETUNE,val)-192);
+	//SE->getPBSynthOscillator(0)->setDetune(this->checkI(OSC1_DETUNE,val)-128);
+	SE->getPBSynthOscillator(0)->setDetune(this->checkI(OSC1_DETUNE,val)-96);
+	SE->getPBSynthOscillator(0)->setDetune(this->checkI(OSC1_DETUNE,val)-32);
 	SE->getPBSynthOscillator(0)->setDetune(this->checkI(OSC1_DETUNE,val)-128);
       }
 
@@ -255,6 +258,8 @@ void PBSynthMachine::setI(int what,int val)
       {
 	osc2_detune=val;
 	//SE->getPBSynthOscillator(1)->setDetune(this->checkI(OSC2_DETUNE,val)-192);
+	SE->getPBSynthOscillator(1)->setDetune(this->checkI(OSC2_DETUNE,val)-96);
+	//SE->getPBSynthOscillator(1)->setDetune(this->checkI(OSC2_DETUNE,val)-32);
 	SE->getPBSynthOscillator(1)->setDetune(this->checkI(OSC2_DETUNE,val)-128);
       }
 
