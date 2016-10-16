@@ -211,7 +211,7 @@ void PBSynthMachine::setI(int what,int val)
   float        f_val_cutoff;
   float        f_val_resonance;
   float        f_val;
-
+  int          noteShift=2;
   f_val=val;
   f_val=f_val/128.0;
   if (what==TRIG_TIME_MODE)       trig_time_mode=val;
@@ -223,8 +223,8 @@ void PBSynthMachine::setI(int what,int val)
       keyon=1;
       SE->releaseNote();
       //SE->triggerNote(note);
-      SE->triggerNoteOsc(0,note+osc1_scale);
-      SE->triggerNoteOsc(1,note+osc2_scale);
+      SE->triggerNoteOsc(0,note+osc1_scale-noteShift);
+      SE->triggerNoteOsc(1,note+osc2_scale-noteShift);
       // sineLfoOsc1.reset();
       // NoteFreq & NF = NoteFreq::getInstance();
       // HO->KeyOn(1,NF.getINoteFreq(note));
@@ -247,10 +247,7 @@ void PBSynthMachine::setI(int what,int val)
       {
 	osc1_detune=val;
 	//SE->getPBSynthOscillator(0)->setDetune(this->checkI(OSC1_DETUNE,val)-192);
-	//SE->getPBSynthOscillator(0)->setDetune(this->checkI(OSC1_DETUNE,val)-128);
-	SE->getPBSynthOscillator(0)->setDetune(this->checkI(OSC1_DETUNE,val)-96);
-	SE->getPBSynthOscillator(0)->setDetune(this->checkI(OSC1_DETUNE,val)-32);
-	SE->getPBSynthOscillator(0)->setDetune(this->checkI(OSC1_DETUNE,val)-128);
+	SE->getPBSynthOscillator(0)->setDetune(this->checkI(OSC1_DETUNE,val)+64);
       }
 
 
@@ -258,9 +255,7 @@ void PBSynthMachine::setI(int what,int val)
       {
 	osc2_detune=val;
 	//SE->getPBSynthOscillator(1)->setDetune(this->checkI(OSC2_DETUNE,val)-192);
-	SE->getPBSynthOscillator(1)->setDetune(this->checkI(OSC2_DETUNE,val)-96);
-	//SE->getPBSynthOscillator(1)->setDetune(this->checkI(OSC2_DETUNE,val)-32);
-	SE->getPBSynthOscillator(1)->setDetune(this->checkI(OSC2_DETUNE,val)-128);
+	SE->getPBSynthOscillator(1)->setDetune(this->checkI(OSC2_DETUNE,val)+64);
       }
 
     if (what==OSC2_TYPE)           

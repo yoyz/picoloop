@@ -162,7 +162,7 @@ void CursynthMachine::setI(int what,int val)
 {
   float f_val_cutoff;
   float f_val_resonance;
-  int   noteShift=12;
+  int   noteShift=11;
 
   float f_val=val;
   f_val=f_val/128;

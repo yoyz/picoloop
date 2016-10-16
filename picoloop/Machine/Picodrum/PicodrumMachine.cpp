@@ -108,10 +108,11 @@ void PicodrumMachine::setI(int what,int val)
 {
   float f_val_cutoff;
   float f_val_resonance;
+  int noteShift=0;
 
   if (what==NOTE_ON && val==1) 
     { 
-      this->getPicodrumVCO().setNoteDetune(note+1,detune);
+      this->getPicodrumVCO().setNoteDetune(note+noteShift,detune);
       this->getADSRAmp().reset();
       this->getPicodrumVCO().reset();
       this->getPicodrumVCO().setPicodrumVCOPhase(phase);

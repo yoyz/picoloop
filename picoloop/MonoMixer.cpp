@@ -6,22 +6,14 @@ MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(), CS(), O303(), TW(), MD(), MID
 #endif
 
 #if   defined(__FPU__) && !defined(__RTMIDI__)
-MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(), CS(), O303(), TW(),                   FXDelay(), FXDisabled()
-#endif
-
-#if   !defined(__FPU__) && defined(__RTMIDI__)
-MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(),                           MIDIOUTM(), FXDelay(), FXDisabled()
+MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(), CS(), O303(), TW(),                 FXDelay(), FXDisabled()
 #endif
 
 #if  !defined(__FPU__) && !defined(__RTMIDI__)
 MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(),                                     FXDelay(), FXDisabled()
 #endif
-
-#define SAM 32
-
 {
-  int a=0;
-  DPRINTF("MonoMixer::MonoMixer() %d",a);  
+  DPRINTF("MonoMixer::MonoMixer()");  
   amplitude=127;
   //  M=NULL;
   //M=&PM;
@@ -36,16 +28,11 @@ MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(),                              
 
   fx_depth=125;
   fx_speed=90;
-
-  index=0;
-  buffer16=NULL;
-  buffer32=NULL;
 }
 
 MonoMixer::~MonoMixer()
 {
-  int a=0;
-  DPRINTF("MonoMixer::~MonoMixer() %d",a);  
+  DPRINTF("MonoMixer::~MonoMixer()");  
 }
 
 
@@ -100,12 +87,6 @@ void MonoMixer::init()
   if (machine_type==SYNTH_MIDIOUT)
     M=&MIDIOUTM;
 #endif
-
-  if (buffer16==NULL)
-    buffer16=(Sint16*)malloc(sizeof(Sint16)*SAM);
-  if (buffer32==NULL)
-    buffer32=(Sint32*)malloc(sizeof(Sint32)*SAM);
-
 }
 
 
@@ -199,37 +180,16 @@ Sint16 MonoMixer::tick()
   Sint32 res32=0;
   Sint16 tick=0;
   Sint16 res16=0;
-  int    i=0;
   //tick=M->tick();
   //tick=FX.process(M->tick());
   //tick=FXDelay.process(M->tick());
 
-  if (index<SAM)    
-    return buffer16[index++];
-
-  index=0;
-  for (i=0;i<SAM;i++)
-    buffer32[i]=M->tick();
-  for (i=0;i<SAM;i++)
-    buffer32[i]=FX->process(buffer32[i]);
-  for (i=0;i<SAM;i++)
-    buffer32[i]=(buffer32[i]*amplitude) >> 4;
-  for (i=0;i<SAM;i++)
-    {
-      if (buffer32[i]>32000) buffer32[i]=32000;
-      if (buffer32[i]<-32000) buffer32[i]=-32000;
-    }
-  for (i=0;i<SAM;i++)
-    buffer16[i]=(buffer32[i]);
-
-  return buffer16[index];
-  
-  //tick=FX->process(M->tick());
-  //res32=tick*amplitude;
+  tick=FX->process(M->tick());
+  res32=tick*amplitude;
   //  res32=tick*127;
   //res32=res32/127;
   
-  //res32=res32>>4;
+  res32=res32>>4;
 
   //if (res32>32000)  res32=32000-(res32>>6);
   //if (res32<-32000) res32=-32000+(res32>>6);

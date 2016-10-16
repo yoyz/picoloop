@@ -114,7 +114,7 @@ void Open303Machine::setF(int what,float val)
 
 void Open303Machine::setI(int what,int val)
 {
-  int noteShift=13;
+  int noteShift=11;
   float f_val=val;
   f_val=f_val/128;
 
