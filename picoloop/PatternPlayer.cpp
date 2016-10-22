@@ -232,7 +232,7 @@ int config_loaded=0;
 
 //int bpm_current=120;    // current value for the four ( TRACK_MAX ) tracks
 float bpm_current=120.0;  // current value for the four ( TRACK_MAX ) tracks
-int   bpm_lock=0;         // if (bpm_lock) can not change bpm by load
+int   bpm_lock=1;         // if (bpm_lock) can not change bpm by load
 
 
 //int nbcb=0;             // current nb audio callback 
@@ -3146,6 +3146,7 @@ int seq_update_by_step()
 	  else
 	    {
 	      P[t].init();
+	      SEQ.getPatternSequencer(t).setBPMDivider(P[t].getBPMDivider());
 	      init_cursor_display_offset_cursor_max_pos(t);
 	      refresh_cursor_display_offset_cursor_max_pos(t);
 	      //init_cursor_display_offset_cursor_max_pos(t);
@@ -3216,6 +3217,7 @@ int seq_update_by_step()
       else
 	{
 	  P[cty].init();
+	  SEQ.getPatternSequencer(cty).setBPMDivider(P[cty].getBPMDivider());
 	  init_cursor_display_offset_cursor_max_pos(cty);
 	  load_save_highligth_current[loadsave_cursor.y]=-1;
 	  //init_cursor_display_offset_cursor_max_pos(cty);
@@ -3262,6 +3264,7 @@ int seq_update_by_step()
 	  else
 	    {
 	      P[t].init();
+	      SEQ.getPatternSequencer(t).setBPMDivider(P[t].getBPMDivider());
 	      init_cursor_display_offset_cursor_max_pos(t);
 	      load_save_highligth_current[t]=-10; // don't highlight
 	      //init_cursor_display_offset_cursor_max_pos(t);
@@ -3306,6 +3309,7 @@ int seq_update_by_step()
       else
 	{
 	  P[cty].init();
+	  SEQ.getPatternSequencer(cty).setBPMDivider(P[cty].getBPMDivider());
 	  init_cursor_display_offset_cursor_max_pos(cty);
 	  refresh_cursor_display_offset_cursor_max_pos(cty);
 	  //init_cursor_display_offset_cursor_max_pos(cty);    
@@ -3525,6 +3529,7 @@ void seq_callback_update_step()
 		else
 		  {
 		    P[i].init();
+		    SEQ.getPatternSequencer(i).setBPMDivider(P[i].getBPMDivider());
 		    init_cursor_display_offset_cursor_max_pos(i);
 		    refresh_cursor_display_offset_cursor_max_pos(i);
 		    //init_cursor_display_offset_cursor_max_pos(i);
@@ -3579,6 +3584,7 @@ int seq()
       M[t]->init();
 
       P[t].init();
+      SEQ.getPatternSequencer(t).setBPMDivider(P[t].getBPMDivider());
       init_cursor_display_offset_cursor_max_pos(t);
     }
 
