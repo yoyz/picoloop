@@ -404,7 +404,7 @@ void dboplMachine::setI(int what,int val)
   
 }
 
-int dboplMachine::tick()
+Sint16 dboplMachine::tick()
 {
   Sint16 s_in;
   Sint16 s_out;

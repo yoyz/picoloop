@@ -29,7 +29,7 @@ class MDADrumMachine : public Machine
 
   void init();
   void reset();
-  int  tick();
+  Sint16  tick();
 
   void setI(int what,int   val);
   void setF(int what,float val);

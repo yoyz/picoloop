@@ -179,7 +179,7 @@ class Machine
 
   virtual void init();
   virtual void reset();
-  virtual int  tick();
+  virtual Sint16 tick();
 
   virtual int  checkI(int what,int val);
   virtual int  checkITwoVal(int what,int val1,int val2);

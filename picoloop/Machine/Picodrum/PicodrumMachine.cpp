@@ -279,7 +279,7 @@ void PicodrumMachine::reset()
 }
 
 
-int PicodrumMachine::tick()
+Sint16 PicodrumMachine::tick()
 {
   float  f_in;
   float  f_out;

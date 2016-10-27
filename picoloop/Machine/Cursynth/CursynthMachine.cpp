@@ -393,7 +393,7 @@ void CursynthMachine::reset()
 }
 
 
-int CursynthMachine::tick()
+Sint16 CursynthMachine::tick()
 {
   float  f_in;
   float  f_out;

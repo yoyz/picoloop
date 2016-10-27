@@ -520,7 +520,7 @@ void TwytchsynthMachine::reset()
 }
 
 
-int TwytchsynthMachine::tick()
+Sint16 TwytchsynthMachine::tick()
 {
   float  f_in;
   float  f_out;

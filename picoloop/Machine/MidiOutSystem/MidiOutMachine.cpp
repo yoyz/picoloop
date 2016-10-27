@@ -309,7 +309,7 @@ void MidiOutMachine::reset()
 }
 
 
-int MidiOutMachine::tick()
+Sint16 MidiOutMachine::tick()
 {
   float  f_in;
   float  f_out;

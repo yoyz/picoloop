@@ -2216,7 +2216,7 @@ void MDADrumMachine::setI(int what,int val)
 }
 
 
-int MDADrumMachine::tick()
+Sint16 MDADrumMachine::tick()
 {
   int       i=0;
   Sint16 s_in=0;

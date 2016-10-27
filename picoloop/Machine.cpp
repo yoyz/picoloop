@@ -47,9 +47,10 @@ void Machine::reset()
 }
 
 
-int Machine::tick()
+Sint16 Machine::tick()
 {
   DPRINTF("Machine::tick()");
+  return 0;
 }
 
 

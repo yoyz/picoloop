@@ -329,7 +329,7 @@ void PicosynthMachine::reset()
 }
 
 
-int PicosynthMachine::tick()
+Sint16 PicosynthMachine::tick()
 {
   float  f_in;
   float  f_out;
