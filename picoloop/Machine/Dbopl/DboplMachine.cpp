@@ -290,7 +290,7 @@ void dboplMachine::setI(int what,int val)
       sineLfoOsc1.reset();
       NoteFreq & NF = NoteFreq::getInstance();
       //HO->KeyOn(1,NF.getINoteFreq(note+2));
-      freq=NF.getINoteFreq(note+2);
+      freq=NF.getINoteFreq(note+4);
       //printf(">>>>>>>FREQ:%f\n",freq);
     }
 
