@@ -75,6 +75,9 @@ void CursynthMachine::init()
   CSE->getControls().at("mod scale 2")->set(0);     
   //CSE->getControls().at("lfo 1 frequency")->set(2.2);     
   CSE->getControls().at("lfo 1 frequency")->set(0);     
+
+  CSE->getControls().at("polyphony")->set(1);     
+
   //CSE->getControls().at("pitch wheel")->set();
 
   //bq.reset();
