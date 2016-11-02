@@ -1927,7 +1927,7 @@ void handle_key_menu()
       
       // We exit the LS Menu so we had to 
       // sync SEQ.Y with the cursor in the load save screen
-      // save the song to a file
+      // save the song to a file if song_need_saving==1
       if (last_menu        == MENU_OFF &&
 	  menu             != MENU_OFF &&
 	  menu_cursor      == GLOBALMENU_LS)
@@ -1937,11 +1937,11 @@ void handle_key_menu()
 	  // Only save song if the song structure is modified
 	  if (song_need_saving!=0)
 	    {
-	      DPRINTF("SAVING SONG TO FILE");
-	      PR.saveSong(SEQ.getSongSequencer());
-	      song_need_saving=0;
+	  DPRINTF("SAVING SONG TO FILE song_need_saving:%d",song_need_saving);
+	  PR.saveSong(SEQ.getSongSequencer());
+	  song_need_saving=0;
 
-	      }
+	   }
 	}
       //printf("HERE IAMn");
       dirty_graphic=1;
@@ -2462,15 +2462,22 @@ void handle_key_load_save()
 	}
 
 
-
+      // song mode
+      // increment/decrement value of the current bar
       if (menu                 == MENU_OFF    && 
 	  loadsave_cursor_mode == CURSOR_SONG &&
 	  keyState[BUTTON_B] )
 	{
 	  if (keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONGEST==1)
-	    pattern_song_inc=-1;
-	  if (keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONGEST==1)	
-	    pattern_song_inc=1;
+	    {
+	      pattern_song_inc=-1;
+	      song_need_saving=1;
+	    }
+	  if (keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONGEST==1)
+	    {
+	      pattern_song_inc=1;
+	      song_need_saving=1;
+	    }
 	}
 
 
@@ -2550,6 +2557,7 @@ void handle_key_load_save()
 
 
       // Song mode
+      // moving the cursor in the song mode
       if (menu                 == MENU_OFF     && 	  
 	  loadsave_cursor_mode == CURSOR_SONG  &&
 	  (!(
@@ -2582,8 +2590,9 @@ void handle_key_load_save()
 	}
 
 
-
+      
       // Shift the pattern of the song to the left or to the right
+      // A+LEFT || A+RIGHT
       if (menu                 == MENU_OFF     && 	  
 	  loadsave_cursor_mode == CURSOR_SONG  &&
 	  (
@@ -2605,8 +2614,10 @@ void handle_key_load_save()
 	      }
 
 	}
-      // B+LEFT || B+RIGHT
+      
       // copy the current element of the song to a next element ( right or left )
+      // arm the song_need_saving variable
+      // B+LEFT || B+RIGHT
       if (menu                 == MENU_OFF     && 	  
 	  loadsave_cursor_mode == CURSOR_SONG  &&
 	  (
