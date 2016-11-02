@@ -47,7 +47,8 @@
 extern int counter_recv_midi_clock;     // send n clock and decrement the counter each time
 extern int counter_recv_midi_clock_six; // send n clock and decrement the counter each tim
 extern int mmc_stop;                    // reset the step sequencer to step 0
-
+extern int mmc_start;                   // 
+extern int sequencer_play;              //
 
 class MidiInSystem
 {

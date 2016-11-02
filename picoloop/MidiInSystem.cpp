@@ -39,12 +39,25 @@ void midiincallback( double deltatime, std::vector< unsigned char > *message, vo
       if (i==5) msg5=(int)message->at(i);
     }
 
+  /*
+     MMC are sysex commands
+     ( from http://www.rncbc.org/drupal/node/92 ) 
+     F0 7F xx 06 01 F7 = MMC STOP
+     F0 7F xx 06 02 F7 = MMC PLAY
+     F0 7F xx 06 04 F7 = MMC FFWD
+     F0 7F xx 06 05 F7 = MMC REW
+     F0 7F xx 06 06 F7 = MMC REC STROBE
+     F0 7F xx 06 07 F7 = MMC REC STOP
+     F0 7F xx 06 08 F7 = MMC REC PAUSE
+     F0 7F xx 06 09 F7 = MMC PAUSE
+   */
+  
   // MMC STOP
-  if (msg0==240 && 
-      msg1==127 && 
-      msg2==127 &&
+  if (msg0==240  && 
+      msg1==127  && 
+      msg2==127  &&
       msg3==6    &&
-      msg4==1    &&
+      msg4==1    && // STOP
       msg5==247)
     {
       mmc_stop=1;
@@ -52,6 +65,21 @@ void midiincallback( double deltatime, std::vector< unsigned char > *message, vo
       counter_recv_midi_clock_six=0;
     }
 
+  // MMC PLAY
+  if (msg0==240  && 
+      msg1==127  && 
+      msg2==127  &&
+      msg3==6    &&
+      msg4==2    && // PLAY
+      msg5==247)
+    {
+      mmc_start=1;
+      counter_recv_midi_clock=0;
+      counter_recv_midi_clock_six=0;
+    }
+
+
+  
   if (msg==248)
     {
       counter_recv_midi_clock++;

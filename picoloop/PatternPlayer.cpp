@@ -255,7 +255,10 @@ int counter_recv_midi_clock_six=0;  // recv n clock and decrement the counter ea
 int counter_delta_midi_clock=0;
 int delta_midi_clock=0;
 
-int mmc_stop=0;
+int mmc_stop=0;                     // we have received a mmc stop
+int mmc_start=1;                    // we have received a mmc stop
+int sequencer_playing=1;            // the sequencer is currently playing,
+                                    //  so we move from step 0 to 1, 1 to 2 ...
 
 long long clock_interval;           // interval in ns before two midiclock
                                     // clock_interval = 60000000000/(initialBpm*24);
@@ -353,6 +356,8 @@ int current_swing=50;
 int first_clock=1;
 struct timeval timev_now,timev_prev,timev_lastclock;
 time_t difft=0;
+
+void seq_update_track(int t);
 
 long difftime(struct timeval & a0, struct timeval & a1)
 {
@@ -1886,6 +1891,31 @@ void handle_key_menu()
   lastEvent=IE.lastEvent();
   lastKey=IE.lastKey();
 
+  
+  // We stop the sequencer A+B in [BPM] menu
+  if (menu             != MENU_OFF       &&
+      menu_cursor      == GLOBALMENU_BPM &&
+      sequencer_playing==1               &&
+      (keyState[BUTTON_B]    &&
+       keyState[BUTTON_A]    )
+      )
+    {
+      IE.clearLastKeyEvent();
+      mmc_stop=1;      
+    }
+
+    // We restart the sequencer START in [BPM] menu
+  if (menu             != MENU_OFF       &&
+      menu_cursor      == GLOBALMENU_BPM &&
+      sequencer_playing==0               &&
+      (keyState[BUTTON_START]
+       ))
+    {
+      IE.clearLastKeyEvent();
+      mmc_start=1;      
+    }
+
+  
 
   // Enter and cycle thru menu pages
   if (lastKey   ==  BUTTON_SELECT && 
@@ -2892,6 +2922,12 @@ void seq_update_tweakable_knob_all(int machineParam)
 }
 
 
+// this function is called multiple time in one step
+// it's goal is to put at 0 every "state" variable :
+// - TK which contain the MACHINE_TYPE, BPM_DIVIDER, CUTOFF, etc... of the current track
+// - also some more "hackish" variable which may be moved to another function
+//   - bank_inc to change the current bank
+//   - mmc_stop to put the four sequencer of the track at step 0
 
 void seq_update_multiple_time_by_step()
 {
@@ -3093,21 +3129,20 @@ void seq_update_multiple_time_by_step()
       // invert trig => insert/remove/copy note 
   if (TK.get(INVERT_TRIG)!=0)
     {
+      // if there is a "NOTE_ON" element here I copy it in the PE global object
+      // PE is a PatternElement object
       if (P[cty].getPatternElement(cursor+pattern_display_offset[cty]).get(NOTE_ON))
 	{
 	  P[cty].getPatternElement(cursor+pattern_display_offset[cty]).set(NOTE_ON,(P[cty].getPatternElement(cursor+pattern_display_offset[cty]).get(NOTE_ON)+1)%2);
 	  PE=P[cty].getPatternElement(cursor+pattern_display_offset[cty]);
 	}
-      else
+      else // I paste the PE Object here
 	{
 	  P[cty].setPatternElement(cursor+pattern_display_offset[cty],PE);
 	  P[cty].getPatternElement(cursor+pattern_display_offset[cty]).set(NOTE_ON,1);
 	  if (P[cty].getPatternElement(cursor+pattern_display_offset[cty]).get(NOTE1)==0)
 	    {
-	      //P[cty].getPatternElement(cursor).setAttack_amp(0);
-	      //P[cty].getPatternElement(cursor).setRelease_amp(64);
-	      //P[cty].getPatternElement(cursor).setNote(37);
-	      P[cty].getPatternElement(cursor+pattern_display_offset[cty]).set(NOTE1,25);
+	      P[cty].getPatternElement(cursor+pattern_display_offset[cty]).set(NOTE1,25); // NOTE1=25 mean => C2
 	    }
 	}
       TK.set(INVERT_TRIG,0);
@@ -3129,13 +3164,27 @@ void seq_update_multiple_time_by_step()
     {
       seq_update_tweakable_knob_all(TK.getAllNonZero());
     }
-
+  // midi machine command stop related
+  // midi related but not only, A+B on the [BPM] menu "should"
+  //  - on first  A+B : stop  the sequencer
+  //  - on second A+B : start the sequencer
   if (mmc_stop>0)
     {
       mmc_stop=0;
+      sequencer_playing=0;     // we stop the sequencer
       for(i=0;i<TRACK_MAX;i++)
 	{
 	  SEQ.getPatternSequencer(i).setStep(0);
+	}
+    }
+  if (mmc_start>0)
+    {
+      mmc_start=0;
+      sequencer_playing=1;     // we start the sequencer
+      for(i=0;i<TRACK_MAX;i++)
+	{
+	  SEQ.getPatternSequencer(i).setStep(0);
+	  seq_update_track(i);
 	}
     }
   
@@ -3521,15 +3570,16 @@ void seq_update_track(int t)
 
 // This callback run in a really high priority thread
 // No IO or syscall is allowed to prevent audio drifting/garbage
-// EX : printf      forbiden
-//      read(fd...) forbiden
+// EX : printf      SHOULD BE forbiden ( not the case today ) 
+//      read(fd...) MUST BE forbiden ( unfortunately not the case too )
 void seq_callback_update_step()
 {
   int i;
   int oldstep;
   int songSequencerHasInc=0;
 
-
+  if (sequencer_playing==0) // we don't have something to do the sequencer is not playing
+    return;
   //for ( i=0;i<10;i++)
   //  {
   //SEQ.getSongSequencer().setPatternNumberAtCursorPosition(i,0,i);
