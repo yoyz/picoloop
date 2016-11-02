@@ -1896,8 +1896,9 @@ void handle_key_menu()
   if (menu             != MENU_OFF       &&
       menu_cursor      == GLOBALMENU_BPM &&
       sequencer_playing==1               &&
-      (keyState[BUTTON_B]    &&
-       keyState[BUTTON_A]    )
+      (keyState[BUTTON_B]      &&
+       keyState[BUTTON_A]    ) &&
+      !(keyState[BUTTON_START])
       )
     {
       IE.clearLastKeyEvent();
@@ -1908,11 +1909,23 @@ void handle_key_menu()
   if (menu             != MENU_OFF       &&
       menu_cursor      == GLOBALMENU_BPM &&
       sequencer_playing==0               &&
-      (keyState[BUTTON_START]
-       ))
+      (keyState[BUTTON_START])  &&
+      !(keyState[BUTTON_B]      &&
+        keyState[BUTTON_A]    ))
     {
       IE.clearLastKeyEvent();
       mmc_start=1;      
+    }
+
+  // We force the sequencer START in [BPM] menu
+  if (menu             != MENU_OFF       &&
+      menu_cursor      == GLOBALMENU_BPM &&
+      (keyState[BUTTON_START]  &&
+       keyState[BUTTON_A]    )
+      )
+    {
+      IE.clearLastKeyEvent();
+      mmc_start=1;
     }
 
   
@@ -2423,9 +2436,14 @@ void handle_key_bpm()
   */
 
   // change GLOBALMENU_VCO SUBMENU
-  if (lastKey     ==  BUTTON_START  && 
-      lastEvent   ==  KEYRELEASED     && 
-      menu_cursor ==  GLOBALMENU_BPM)
+  if (lastKey     ==  BUTTON_START    && 
+      lastEvent   ==  KEYRELEASED     &&
+      menu_cursor ==  GLOBALMENU_BPM &&
+      !(
+	keyState[BUTTON_A] ||
+	keyState[BUTTON_B]
+	))
+
     {
       if (menu_ad_dirty_keyboard==0)
 	{
