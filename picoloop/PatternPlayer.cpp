@@ -293,6 +293,7 @@ int pattern_cursor_max_pos[TRACK_MAX]={15};// between 0-15
 Cursor loadsave_cursor;
 
 Cursor song_cursor;
+
 //int song_cursor_x=0; // index in the song menu
 //int song_cursor_y=0; // index in the song menu
 
@@ -300,6 +301,8 @@ int loadsave_cursor_mode=0; // 0 loadsave mode cursor // 1 song mode cursor
 int pattern_song_inc=0;     // increment/decrement the current value of song_cursor_x/song_cursor_y
 int pattern_song_reload=0;  // if > 1 reload from current position
 int pattern_song_loop=0;    // if > 1 loop from current song position to loop point
+
+int song_need_saving=0;     // if >=1 the song file need to be stored on disk
 
 int bank=0;
 int bank_inc=0;
@@ -1233,9 +1236,9 @@ void display_board_bank()
 
 
 
-  char str_bank_current[16];
-  char str_bank_toload[16];
-  char str_song[16];
+  char str_bank_current[128];
+  char str_bank_toload[128];
+  char str_song[128];
 
 
   static const char * txt_tab[] = 
@@ -1930,8 +1933,15 @@ void handle_key_menu()
 	  menu_cursor      == GLOBALMENU_LS)
 	{
 	  SEQ.setCurrentTrackY(loadsave_cursor.y);
-	  PR.saveSong(SEQ.getSongSequencer());
-	 DPRINTF("SAVING SONG TO FILE");
+
+	  // Only save song if the song structure is modified
+	  if (song_need_saving!=0)
+	    {
+	      DPRINTF("SAVING SONG TO FILE");
+	      PR.saveSong(SEQ.getSongSequencer());
+	      song_need_saving=0;
+
+	      }
 	}
       //printf("HERE IAMn");
       dirty_graphic=1;
@@ -2584,16 +2594,19 @@ void handle_key_load_save()
 	    if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_LONG==0)
 	      {
 		SEQ.getSongSequencer().shiftTrackLeft(song_cursor.x,song_cursor.y);
+		song_need_saving=1;
 	      }
 
 	  if (keyState[BUTTON_RIGHT])
 	    if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_LONG==0)
 	      {
 		SEQ.getSongSequencer().shiftTrackRight(song_cursor.x,song_cursor.y);
+		song_need_saving=1;
 	      }
 
 	}
-      
+      // B+LEFT || B+RIGHT
+      // copy the current element of the song to a next element ( right or left )
       if (menu                 == MENU_OFF     && 	  
 	  loadsave_cursor_mode == CURSOR_SONG  &&
 	  (
@@ -2602,11 +2615,21 @@ void handle_key_load_save()
 	{
 	  if (keyState[BUTTON_RIGHT])
 	    if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_LONG==0) 
-	      { song_cursor.x++; dirty_graphic=1; SEQ.getSongSequencer().setPatternNumber(song_cursor.x,song_cursor.y,SEQ.getSongSequencer().getPatternNumber(song_cursor.x-1,song_cursor.y));}
+	      {
+		song_cursor.x++;
+		SEQ.getSongSequencer().setPatternNumber(song_cursor.x,song_cursor.y,SEQ.getSongSequencer().getPatternNumber(song_cursor.x-1,song_cursor.y));
+		dirty_graphic=1;
+		song_need_saving=1;
+	      }
 
 	  if (keyState[BUTTON_LEFT])
 	    if (keyRepeat[BUTTON_LEFT]==1 || keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_LONG==0) 
-	      { song_cursor.x--; dirty_graphic=1; SEQ.getSongSequencer().setPatternNumber(song_cursor.x,song_cursor.y,SEQ.getSongSequencer().getPatternNumber(song_cursor.x+1,song_cursor.y));}
+	      {
+		song_cursor.x--;
+		SEQ.getSongSequencer().setPatternNumber(song_cursor.x,song_cursor.y,SEQ.getSongSequencer().getPatternNumber(song_cursor.x+1,song_cursor.y));
+		dirty_graphic=1;
+		song_need_saving=1;
+	      }
 
 
 	  
