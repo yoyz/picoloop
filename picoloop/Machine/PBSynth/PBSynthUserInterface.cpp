@@ -586,11 +586,12 @@ void PBSynthUserInterface::handle_key_lfo()
       // Insert/Remove Trig
       sub_handle_invert_trig();
 
-      handle_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, PITCHBEND_DEPTH,     -1, 0);
-      handle_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, PITCHBEND_DEPTH,      1, 0);
+      handle_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, LFO2_DEPTH     ,     -1, 0);
+      handle_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, LFO2_DEPTH     ,      1, 0);
 
-      handle_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, PITCHBEND_SPEED,      1, 0);
-      handle_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, PITCHBEND_SPEED,     -1, 0);
+      handle_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, LFO2_FREQ      ,      1, 0);
+      handle_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, LFO2_FREQ      ,     -1, 0);
+
     }
 
 
@@ -599,11 +600,12 @@ void PBSynthUserInterface::handle_key_lfo()
       menu_lfo    == MENU_LFO_PITCHBEND
       )
     {
-      handle_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, PITCHBEND_DEPTH,     -1, 1);
-      handle_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, PITCHBEND_DEPTH,      1, 1);
+      handle_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, LFO2_DEPTH     ,     -1, 1);
+      handle_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, LFO2_DEPTH     ,      1, 1);
 
-      handle_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, PITCHBEND_SPEED,      1, 1);
-      handle_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, PITCHBEND_SPEED,     -1, 1);
+      handle_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, LFO2_FREQ      ,      1, 1);
+      handle_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, LFO2_FREQ      ,     -1, 1);
+
     }
 
 
@@ -1023,7 +1025,7 @@ void PBSynthUserInterface::display_board_lfo()
   if (menu_cursor==GLOBALMENU_LFO &&
       menu_lfo   ==MENU_LFO_PITCHBEND)
     {
-      display_board_two_param(PITCHBEND_DEPTH,PITCHBEND_SPEED);
+      display_board_two_param(LFO2_DEPTH,LFO2_FREQ);
     }
 
 }
