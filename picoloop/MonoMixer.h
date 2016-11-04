@@ -10,6 +10,7 @@ using namespace std;
 #include "Machine/Open303/Open303Machine.h"
 #include "Machine/Twytch/TwytchsynthMachine.h"
 #include "Machine/MDADrum/MDADrumMachine.h"
+#include "Machine/SIDSynth/SIDSynthMachine.h"
 #endif 
 
 #ifdef __RTMIDI__
@@ -49,6 +50,7 @@ class MonoMixer
   Open303Machine        O303;
   TwytchsynthMachine    TW;
   MDADrumMachine        MD;
+  SIDSynthMachine       SS;
 #endif
 
 #ifdef __RTMIDI__

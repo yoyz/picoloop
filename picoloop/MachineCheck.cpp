@@ -19,6 +19,7 @@ int MachineCheck::machineExist(int machineType)
   if (machineType==SYNTH_OPEN303)     return 1;
   if (machineType==SYNTH_TWYTCHSYNTH) return 1;
   if (machineType==SYNTH_MDADRUM)     return 1;
+  if (machineType==SYNTH_SIDSYNTH)    return 1;
 #endif
 
 #if    defined(__RTMIDI__)

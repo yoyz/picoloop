@@ -38,6 +38,7 @@ using namespace std;
 #include "Machine/Open303/Open303UserInterface.h"
 #include "Machine/Twytch/TwytchsynthUserInterface.h"
 #include "Machine/MDADrum/MDADrumUserInterface.h"
+#include "Machine/SIDSynth/SIDSynthUserInterface.h"
 #endif
 
 
@@ -141,6 +142,7 @@ CursynthUserInterface    CSUI;
 Open303UserInterface     O303UI;
 TwytchsynthUserInterface TWUI;
 MDADrumUserInterface     MDUI;
+SIDSynthUserInterface    SSUI;
 #endif
 
 #ifdef __RTMIDI__
@@ -2784,6 +2786,7 @@ void refresh_pecursor_ui(int i)
   if (machine_type==SYNTH_OPEN303)      { UI=&O303UI; return ; }
   if (machine_type==SYNTH_TWYTCHSYNTH)  { UI=&TWUI;   return ; }
   if (machine_type==SYNTH_MDADRUM)      { UI=&MDUI;   return ; }
+  if (machine_type==SYNTH_SIDSYNTH)     { UI=&SSUI;   return ; }
 #endif
 #ifdef __RTMIDI__
   if (machine_type==SYNTH_MIDIOUT)      { UI=&MIDIUI; return ; }

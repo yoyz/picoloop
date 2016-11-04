@@ -547,13 +547,14 @@ enum
 #define SYNTH_TWYTCHSYNTH  6
 #define SYNTH_MIDIOUT      7
 #define SYNTH_MDADRUM      8
+#define SYNTH_SIDSYNTH     9
 
 #if    defined(__FPU__) && defined(__RTMIDI__)
-#define SYNTH_SIZE 9
+#define SYNTH_SIZE 10
 #endif
 
 #if    defined(__FPU__) && !defined(__RTMIDI__)
-#define SYNTH_SIZE 7
+#define SYNTH_SIZE 8
 #endif
 
 #if   !defined(__FPU__) && !defined(__RTMIDI__)

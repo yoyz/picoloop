@@ -2,11 +2,11 @@
 
 
 #if   defined(__FPU__) && defined(__RTMIDI__)
-MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(), CS(), O303(), TW(), MD(), MIDIOUTM(), FXDelay(), FXDisabled()
+MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(), CS(), O303(), TW(), MD(), SS(), MIDIOUTM(), FXDelay(), FXDisabled()
 #endif
 
 #if   defined(__FPU__) && !defined(__RTMIDI__)
-MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(), CS(), O303(), TW(),                   FXDelay(), FXDisabled()
+MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(), CS(), O303(), TW(), MD(), SS(),             FXDelay(), FXDisabled()
 #endif
 
 #if   !defined(__FPU__) && defined(__RTMIDI__)
@@ -61,6 +61,7 @@ void MonoMixer::init()
   O303.init();
   TW.init();
   MD.init();
+  SS.init();
 #endif
 
   //FX=&FXDelay;
@@ -147,6 +148,9 @@ void MonoMixer::setMachineType(int type)
       break;
     case SYNTH_MDADRUM:
       M=&MD;
+      break;
+    case SYNTH_SIDSYNTH:
+      M=&SS;
       break;
 #endif
 
