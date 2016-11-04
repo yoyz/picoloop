@@ -7,7 +7,24 @@
 #define SID_SAMPLERATE 44118
 #define SID_CLOCKFREQ (22.5 * SID_SAMPLERATE) //nearest int to 985248
 
+#define FREQUENCY_VOICE_1_HIGH_BYTE 0x01
+#define FREQUENCY_VOICE_2_HIGH_BYTE 0x08
 
+#define CONTROL_REGISTER_VOICE_1    0x04
+#define CONTROL_REGISTER_VOICE_2    0x0b
+
+#define AD_VOICE1                   0x05
+#define SR_VOICE1                   0x06
+
+#define AD_VOICE2                   0x0c
+#define SR_VOICE2                   0x0d
+
+#define AD_VOICE3                   0x13
+#define SR_VOICE3                   0x14
+
+#define CUTOFF_HIGH                 0x16
+#define RES_ROUTE                   0x17
+#define FILTER_MAINVOL              0x18
 //#      sid->write(0x18,0x1F);  // MODE/VOL
 //#for(i=0; i<128; i++) note_frqs[i]=440.0*pow(2,((double)i-69.0)/12.0);
 
@@ -86,9 +103,9 @@ void SIDSynthMachine::init()
   sid->set_sampling_parameters(SID_CLOCKFREQ, SAMPLE_FAST, SID_SAMPLERATE);
   sid->reset();
 
-  sid->write(0x04,0x20);    // CONTROL
-  sid->write(0x12,0x40);    // CONTROL
-  sid->write(0x18,0x1F);  // MODE/VOL
+  //sid->write(0x04,0x20);    // CONTROL
+  //sid->write(0x12,0x40);    // CONTROL
+  sid->write(FILTER_MAINVOL,0x1F);  // MODE/VOL
   
   /*
   SE->init();
@@ -258,7 +275,8 @@ void SIDSynthMachine::setI(int what,int val)
       keyon=1;
 
       //sid->write(0x04,0x40);    // CONTROL
-      sid->write(0x04,osc1_type*16);    // CONTROL
+      sid->write(CONTROL_REGISTER_VOICE_1,osc1_type*16);    // CONTROL
+      sid->write(CONTROL_REGISTER_VOICE_2,osc2_type*16);    // CONTROL
       //sid->write(0x12,0x40);    // CONTROL
 
       //sid->write(0x04,0x20);    // CONTROL
@@ -270,7 +288,8 @@ void SIDSynthMachine::setI(int what,int val)
       //sid->write(0x00,0x0);    // v1 freq lo
       //sid->write(0x01,0x4);    // v1 freq hi voice 1
       int tmp=sid_note_frqs[note];
-      sid->write(0x01,tmp/12);    // v1 freq hi voice 1
+      sid->write(FREQUENCY_VOICE_1_HIGH_BYTE,tmp/12);    // v1 freq hi voice 1
+      sid->write(FREQUENCY_VOICE_2_HIGH_BYTE,tmp/12);    // v1 freq hi voice 2
       //printf("*********************************************************************************** %d\n",tmp);
       //printf("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ %d\n",note);
 
@@ -298,23 +317,29 @@ void SIDSynthMachine::setI(int what,int val)
 
 
 
-      sid->write(0x05,((attack/8)*16)+(decay/8));     // ATK/DCY voice 1
-      sid->write(0x06,((sustain/8)*16)+release/8);    // STN/RLS voice 1
+      sid->write(AD_VOICE1,((attack/8)*16)+(decay/8));     // ATK/DCY voice 1
+      sid->write(SR_VOICE1,((sustain/8)*16)+release/8);    // STN/RLS voice 1
+
+      sid->write(AD_VOICE1,((attack/8)*16)+(decay/8));     // ATK/DCY voice 1
+      sid->write(SR_VOICE2,((sustain/8)*16)+release/8);    // STN/RLS voice 1
+
+
       //sid->write(0x13,((attack/8)*16)+(decay/8));     // ATK/DCY voice 2
       //sid->write(0x14,((sustain/8)*16)+release/8);    // STN/RLS voice 2
 
 
 
       //sid->write(0x10,0x3F);    // PULSEWIDTH
-      sid->write(0x04,osc1_type*16+1);    // CONTROL voice 1
+      sid->write(CONTROL_REGISTER_VOICE_1,osc1_type*16+1);    // CONTROL voice 1 + GateOn
+      sid->write(CONTROL_REGISTER_VOICE_2,osc2_type*16+1);    // CONTROL voice 2 + GateOn
       //sid->write(0x12,0x41);    // CONTROL voice 2
       
       //sid->write(0x16,j--);    // Cutoff
       //sid->write(0x17,0xFF);    // filter
       //sid->write(0x17,0x07);    // filter
-      sid->write(0x17,((resonance/8)*16)+7);    // filter
+      sid->write(RES_ROUTE,((resonance/8)*16)+7);    // filter
       //sid->write(0x16,0xFF);    // Cutoff
-      sid->write(0x16,cutoff);    // Cutoff
+      sid->write(CUTOFF_HIGH,cutoff);    // Cutoff
       //sid->write(0x16,cutoff);    // Cutoff
 
       
@@ -322,42 +347,37 @@ void SIDSynthMachine::setI(int what,int val)
 
     if (what==NOTE_ON && val==0) 
     { 
-      //SE->releaseNote();
       keyon=0;
-      sid->write(0x04,osc1_type*16);    // CONTROL
+      sid->write(CONTROL_REGISTER_VOICE_1,osc1_type*16);    // CONTROL
+      sid->write(CONTROL_REGISTER_VOICE_2,osc2_type*16);    // CONTROL
       //sid->write(0x12,0x40);          // CONTROL
 
     }
 
     if (what==OSC1_TYPE)           
       { 
-	osc1_type=val;
 	if (val==PICO_SIDSYNTH_SQUARE)  osc1_type=4;
 	if (val==PICO_SIDSYNTH_TRIANGE) osc1_type=1;
 	if (val==PICO_SIDSYNTH_SAW)     osc1_type=2;
 	if (val==PICO_SIDSYNTH_NOISE)   osc1_type=8;
       }
+    if (what==OSC2_TYPE)           
+      { 
+	if (val==PICO_SIDSYNTH_SQUARE)  osc2_type=4;
+	if (val==PICO_SIDSYNTH_TRIANGE) osc2_type=1;
+	if (val==PICO_SIDSYNTH_SAW)     osc2_type=2;
+	if (val==PICO_SIDSYNTH_NOISE)   osc2_type=8;
+      }
 
     if (what==OSC1_DETUNE)           
       {
 	osc1_detune=val;
-	//SE->getSIDSynthOscillator(0)->setDetune(this->checkI(OSC1_DETUNE,val)-192);
-	//SE->getSIDSynthOscillator(0)->setDetune(this->checkI(OSC1_DETUNE,val)+64);
       }
 
 
     if (what==OSC2_DETUNE)           
       {
 	osc2_detune=val;
-	//SE->getSIDSynthOscillator(1)->setDetune(this->checkI(OSC2_DETUNE,val)-192);
-	//SE->getSIDSynthOscillator(1)->setDetune(this->checkI(OSC2_DETUNE,val)+64);
-      }
-
-    if (what==OSC2_TYPE)           
-      {
-	osc2_type=val;
-	//SE.getSIDSynthOscillator(1)->setWave(val%2);
-	//SE->getSIDSynthOscillator(1)->setWave(this->checkI(OSC2_TYPE,val));
       }
 
 
