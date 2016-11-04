@@ -105,13 +105,14 @@ void SIDSynthMachine::init()
 
 const char * SIDSynthMachine::getMachineParamCharStar(int machineParam,int paramValue)
 {
-  static const char * str_pbsynth_null       = " NULL";
-  static const char * str_pbsynth_sqr        = "  SQR";
-  static const char * str_pbsynth_trgl       = " TRGL";
-  static const char * str_pbsynth_saw        = "  SAW";
+  static const char * str_sidsynth_null       = " NULL";
+  static const char * str_sidsynth_sqr        = "  SQR";
+  static const char * str_sidsynth_trgl       = " TRGL";
+  static const char * str_sidsynth_saw        = "  SAW";
+  static const char * str_sidsynth_noise      = "NOISE";
 
 
-  const char * str_osc[PICO_PBSYNTH_SIZE];
+  const char * str_osc[PICO_SIDSYNTH_SIZE];
 
   static const char * str_fltr_algo_pblp = "PBLP";
   
@@ -129,9 +130,10 @@ const char * SIDSynthMachine::getMachineParamCharStar(int machineParam,int param
   const        char * str_fm_type[FM_TYPE_SIZE];
 
 
-  str_osc[PICO_PBSYNTH_SQUARE]        = str_pbsynth_sqr;
-  str_osc[PICO_PBSYNTH_SAW]           = str_pbsynth_saw;
-  str_osc[PICO_PBSYNTH_TRIANGLE]      = str_pbsynth_trgl;
+  str_osc[PICO_SIDSYNTH_SQUARE]        = str_sidsynth_sqr;
+  str_osc[PICO_SIDSYNTH_SAW]           = str_sidsynth_saw;
+  str_osc[PICO_SIDSYNTH_TRIANGE]       = str_sidsynth_trgl;
+  str_osc[PICO_SIDSYNTH_NOISE]         = str_sidsynth_noise;
 
   str_fltr_algo[PBSYNTH_FILTER_ALGO_PBLP]       = str_fltr_algo_pblp;
 
@@ -162,7 +164,7 @@ const char * SIDSynthMachine::getMachineParamCharStar(int machineParam,int param
       return str_fm_type[paramValue];
 
     }
-  return str_pbsynth_null;
+  return str_sidsynth_null;
 }
 
 
@@ -182,14 +184,14 @@ int SIDSynthMachine::checkI(int what,int val)
   switch (what)
     {
     case OSC1_TYPE:
-      if (val<0)                  return 0;
-      if (val>=PICO_PBSYNTH_SIZE) return PICO_PBSYNTH_SIZE-1;
+      if (val<0)                   return 0;
+      if (val>=PICO_SIDSYNTH_SIZE) return PICO_SIDSYNTH_SIZE-1;
       return val;
       break;
 
     case OSC2_TYPE:
-      if (val<0)                  return 0;
-      if (val>=PICO_PBSYNTH_SIZE) return PICO_PBSYNTH_SIZE-1;
+      if (val<0)                   return 0;
+      if (val>=PICO_SIDSYNTH_SIZE) return PICO_SIDSYNTH_SIZE-1;
       return val;
       break;
 
@@ -255,8 +257,9 @@ void SIDSynthMachine::setI(int what,int val)
     { 
       keyon=1;
 
-      sid->write(0x04,0x00);    // CONTROL
-      sid->write(0x12,0x00);    // CONTROL
+      //sid->write(0x04,0x40);    // CONTROL
+      sid->write(0x04,osc1_type*16);    // CONTROL
+      //sid->write(0x12,0x40);    // CONTROL
 
       //sid->write(0x04,0x20);    // CONTROL
       //sid->write(0x12,0x40);    // CONTROL
@@ -268,8 +271,8 @@ void SIDSynthMachine::setI(int what,int val)
       //sid->write(0x01,0x4);    // v1 freq hi voice 1
       int tmp=sid_note_frqs[note];
       sid->write(0x01,tmp/12);    // v1 freq hi voice 1
-      printf("*********************************************************************************** %d\n",tmp);
-      printf("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ %d\n",note);
+      //printf("*********************************************************************************** %d\n",tmp);
+      //printf("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ %d\n",note);
 
 
       //sid->write(0x0f,0x4);    // v1 freq hi voice 2
@@ -303,7 +306,7 @@ void SIDSynthMachine::setI(int what,int val)
 
 
       //sid->write(0x10,0x3F);    // PULSEWIDTH
-      sid->write(0x04,0x41);    // CONTROL voice 1
+      sid->write(0x04,osc1_type*16+1);    // CONTROL voice 1
       //sid->write(0x12,0x41);    // CONTROL voice 2
       
       //sid->write(0x16,j--);    // Cutoff
@@ -321,15 +324,18 @@ void SIDSynthMachine::setI(int what,int val)
     { 
       //SE->releaseNote();
       keyon=0;
-      sid->write(0x04,0x20);    // CONTROL
-      sid->write(0x12,0x40);    // CONTROL
+      sid->write(0x04,osc1_type*16);    // CONTROL
+      //sid->write(0x12,0x40);          // CONTROL
 
     }
 
     if (what==OSC1_TYPE)           
       { 
 	osc1_type=val;
-	//SE->getSIDSynthOscillator(0)->setWave(this->checkI(OSC1_TYPE,val));
+	if (val==PICO_SIDSYNTH_SQUARE)  osc1_type=4;
+	if (val==PICO_SIDSYNTH_TRIANGE) osc1_type=1;
+	if (val==PICO_SIDSYNTH_SAW)     osc1_type=2;
+	if (val==PICO_SIDSYNTH_NOISE)   osc1_type=8;
       }
 
     if (what==OSC1_DETUNE)           

@@ -613,6 +613,15 @@ enum
     PICO_PBSYNTH_SIZE
   };
 
+enum 
+  {
+    PICO_SIDSYNTH_SQUARE,
+    PICO_SIDSYNTH_TRIANGE,
+    PICO_SIDSYNTH_SAW,
+    PICO_SIDSYNTH_NOISE,
+    PICO_SIDSYNTH_SIZE
+  };
+
 
 enum 
   {
