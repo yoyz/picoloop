@@ -5,7 +5,7 @@
 //#include "fixed.h"
 #include <SDL/SDL.h>
 #include "../../NoteFreq.h"
-
+#include "sid.h"
 
 
 
@@ -50,6 +50,7 @@ class SIDSynthMachine : public Machine
   Sint16              * buffer_i;
   int                   index;
 
+  SID                 * sid;
   //int                   freq;
   float                 freq;
   int                   keyon;
@@ -77,6 +78,8 @@ class SIDSynthMachine : public Machine
 
   int                   osc1_detune;
   int                   osc2_detune;
+
+  cycle_count           delta_t;
 
 
 };

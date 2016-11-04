@@ -1,6 +1,8 @@
 #include "SIDSynthMachine.h"
 //#define SAM 512
 #define SAM 64
+#define SID_SAMPLERATE 44118
+#define SID_CLOCKFREQ (22.5 * SID_SAMPLERATE) //nearest int to 985248
 
 SIDSynthMachine::SIDSynthMachine()
 {
@@ -41,6 +43,7 @@ void SIDSynthMachine::init()
   //HO(44100);
   if (buffer_f==0)
     {
+      sid=new SID();
       //SE=new SynthEngine(SAM,100);
       buffer_f = (float*)malloc(sizeof(float)*SAM);
     }
@@ -60,6 +63,11 @@ void SIDSynthMachine::init()
   index=0;
   freq=110.0;
   keyon=0;
+
+  sid->set_chip_model(MOS8580);
+  sid->set_sampling_parameters(SID_CLOCKFREQ, SAMPLE_FAST, SID_SAMPLERATE);
+  sid->reset();
+  
   /*
   SE->init();
   SE->setSIDSynthFilter24dB(1);
@@ -224,6 +232,36 @@ void SIDSynthMachine::setI(int what,int val)
     if (what==NOTE_ON && val==1) 
     { 
       keyon=1;
+
+
+      sid->write(0x18, 0x08);  // MODE/VOL
+
+  
+      sid->write(0x00,0x0);    // v1 freq lo
+      sid->write(0x01,0x4);    // v1 freq hi
+      
+      sid->write(0x05,0x0F);    // ATK/DCY
+      sid->write(0x06,0xF6);    // STN/RLS
+      sid->write(0x04,0x21);    // CONTROL
+      
+      
+      //sid->write(0x18, 0x08);  // MODE/VOL
+      //sid->write(0x17,0xF7);    // filter
+      
+      sid->write(0x18,0x1F);  // MODE/VOL
+      sid->write(0x0e,0x1);    // v1 freq lo
+      sid->write(0x0f,0x4);    // v1 freq hi
+      
+      sid->write(0x13,0x0F);    // ATK/DCY
+      sid->write(0x14,0xF6);    // STN/RLS
+      //sid->write(0x10,0x3F);    // PULSEWIDTH
+      sid->write(0x12,0x41);    // CONTROL
+      
+      sid->write(0x17,0xFF);    // filter
+      //sid->write(0x16,j--);    // Cutoff
+      sid->write(0x16,0xFF);    // Cutoff
+
+      
       /*
       SE->releaseNote();
       //SE->triggerNote(note);
@@ -240,6 +278,9 @@ void SIDSynthMachine::setI(int what,int val)
     { 
       //SE->releaseNote();
       keyon=0;
+      sid->write(0x04,0x20);    // CONTROL
+      sid->write(0x12,0x40);    // CONTROL
+
     }
 
     if (what==OSC1_TYPE)           
@@ -350,13 +391,16 @@ Sint16 SIDSynthMachine::tick()
 
   if ( index==0 )
     {
+      delta_t=SID_CLOCKFREQ / (SID_SAMPLERATE / SAM);
+      //nbsample=mysid.clock(delta_t,out_buffer_i,SAM);
+      sid->clock(delta_t,buffer_i,SAM);      
       //SE->process(buffer_f,SAM);
-      for(i=0;i<SAM;i++)
-       	{
+      //for(i=0;i<SAM;i++)
+      // 	{
        	  //buffer[i]=buffer[i]*2048;
 	  //buffer_i[i]=buffer_f[i]*1536;
 	  buffer_i[i]=buffer_f[i]*1280;
-       	}
+	  // 	}
     }
 
 
@@ -366,6 +410,7 @@ Sint16 SIDSynthMachine::tick()
 	{
 	  this->setI(NOTE_ON,0);
 	  trig_time_mode=0;
+
 	  //DPRINTF("\t\t\t\t\t\tDONE\n");
 	}
 
