@@ -1,0 +1,48 @@
+SID Register Map
+REG #	DATA                                           REG NAME TYPE
+(Hex)	d7    d6    d5    d4    d3    d2    d1    d0
+- --------------------------------------------------------------------
+
+Voice 1:
+
+00     F7    F6    F5    F4    F3    F2    F1    F0    FREQ LO  Write
+01     F15   F14   F13   F12   F11   F10   F9    F8    FREQ HI  Write
+02     PW7   PW6   PW5   PW4   PW3   PW2   PW1   PW0   PW LO	Write
+03     -     -     -     -     PW11  PW10  PW9   PW8   PW HI    Write
+04     Noise Pulse ///   /\/\  TEST  RING  SYNC  GATE  CONTROL  Write
+05     ATK3  ATK2  ATK1  ATK0  DCY3  DCY2  DCY1  DCY0  ATK/DCY	Write
+06     STN3  STN2  STN1  STN0  RLS3  RLS2  RLS1  RLS0  STN/RLS  Write
+
+Voice 2:
+
+07     F7    F6    F5    F4    F3    F2    F1    F0    FREQ LO  Write
+08     F15   F14   F13   F12   F11   F10   F9    F8    FREQ HI  Write
+09     PW7   PW6   PW5   PW4   PW3   PW2   PW1   PW0   PW LO	Write
+0A     -     -     -     -     PW11  PW10  PW9   PW8   PW HI    Write
+0B     Noise Pulse ///   /\/\  TEST  RING  SYNC  GATE  CONTROL  Write
+0C     ATK3  ATK2  ATK1  ATK0  DCY3  DCY2  DCY1  DCY0  ATK/DCY	Write
+0D     STN3  STN2  STN1  STN0  RLS3  RLS2  RLS1  RLS0  STN/RLS  Write
+
+Voice 3:
+
+0E     F7    F6    F5    F4    F3    F2    F1    F0    FREQ LO  Write
+0F     F15   F14   F13   F12   F11   F10   F9    F8    FREQ HI  Write
+10     PW7   PW6   PW5   PW4   PW3   PW2   PW1   PW0   PW LO	Write
+11     -     -     -     -     PW11  PW10  PW9   PW8   PW HI    Write
+12     Noise Pulse ///   /\/\  TEST  RING  SYNC  GATE  CONTROL  Write
+13     ATK3  ATK2  ATK1  ATK0  DCY3  DCY2  DCY1  DCY0  ATK/DCY	Write
+14     STN3  STN2  STN1  STN0  RLS3  RLS2  RLS1  RLS0  STN/RLS  Write
+
+Filter:
+
+15     -     -     -     -     -     FC2   FC1   FC0   FC LO	Write
+16     FC10  FC9   FC8   FC7   FC6   FC5   FC4   FC3   FC HI    Write
+17     RES3  RES2  RES1  RES0  FILEX FILT3 FILT2 FILT1 RES/FILT Write
+18     3 OFF HP    BP    LP    VOL3  VOL2  VOL1  VOL0  MODE/VOL Write
+
+Misc.:
+
+19     PX7   PX6   PX5   PX4   PX3   PX2   PX1   PX0   POT X    Read
+1A     PY7   PY6   PY5   PY4   PY3   PY2   PY1   PY0   POT Y    Read
+1B     O7    O6    O5    O4    O3    O2    O1    O0    OSC3/RND Read
+1C     E7    E6    E5    E4    E3    E2    E1    E0    ENV3     Read
