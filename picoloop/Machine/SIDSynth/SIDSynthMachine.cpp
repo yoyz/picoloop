@@ -242,6 +242,9 @@ void SIDSynthMachine::setI(int what,int val)
       
       sid->write(0x05,0x0F);    // ATK/DCY
       sid->write(0x06,0xF6);    // STN/RLS
+      //sid->write(0x05,(128+attack/128)+(decay/128));
+      //sid->write(0x06,(128+sustain/128)+release/128);    // STN/RLS
+      
       sid->write(0x04,0x21);    // CONTROL
       
       
@@ -252,8 +255,11 @@ void SIDSynthMachine::setI(int what,int val)
       sid->write(0x0e,0x1);    // v1 freq lo
       sid->write(0x0f,0x4);    // v1 freq hi
       
-      sid->write(0x13,0x0F);    // ATK/DCY
-      sid->write(0x14,0xF6);    // STN/RLS
+      //sid->write(0x13,0x0F);    // ATK/DCY
+      //sid->write(0x14,0xF6);    // STN/RLS
+      sid->write(0x13,0x00);    // ATK/DCY
+      sid->write(0x14,0x00);    // STN/RLS
+
       //sid->write(0x10,0x3F);    // PULSEWIDTH
       sid->write(0x12,0x41);    // CONTROL
       
@@ -314,6 +320,12 @@ void SIDSynthMachine::setI(int what,int val)
 
     if (what==OSC1_SCALE)    osc1_scale=val;
     if (what==OSC2_SCALE)    osc2_scale=val;
+
+
+    if (what==ADSR_ENV0_ATTACK)    attack=val;
+    if (what==ADSR_ENV0_DECAY)     decay=val;
+    if (what==ADSR_ENV0_SUSTAIN)   sustain=val;
+    if (what==ADSR_ENV0_RELEASE)   release=val;
 
     /*
     if (what==ADSR_ENV0_ATTACK)    SE->getEnvelope(0)->setA(-1+f_val);

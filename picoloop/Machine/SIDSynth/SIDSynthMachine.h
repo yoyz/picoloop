@@ -81,6 +81,10 @@ class SIDSynthMachine : public Machine
 
   cycle_count           delta_t;
 
+  int                   attack;
+  int                   decay;
+  int                   sustain;
+  int                   release;
 
 };
 
