@@ -1,8 +1,15 @@
 #include "SIDSynthMachine.h"
+#include "math.h"
+#include <stdlib.h>
+
 //#define SAM 512
 #define SAM 64
 #define SID_SAMPLERATE 44118
 #define SID_CLOCKFREQ (22.5 * SID_SAMPLERATE) //nearest int to 985248
+
+
+//#      sid->write(0x18,0x1F);  // MODE/VOL
+//#for(i=0; i<128; i++) note_frqs[i]=440.0*pow(2,((double)i-69.0)/12.0);
 
 SIDSynthMachine::SIDSynthMachine()
 {
@@ -54,6 +61,17 @@ void SIDSynthMachine::init()
 
   DPRINTF("buffer_f:0x%08.8X\n",buffer_f);
   DPRINTF("buffer_i:0x%08.8X\n",buffer_i);
+
+  sid_note_frqs=malloc(sizeof(double)*128);
+  for(i=0; i<128; i++) 
+    {
+      sid_note_frqs[i]=440.0*pow(2,((double)i-69.0)/12.0);
+      printf("i:%d %f\n",i,sid_note_frqs[i]);
+      // i:0 8.175799
+      // i:29 43.653529
+      // i:127 12543.853951
+    }
+
   for (i=0;i<SAM;i++)
     {
       buffer_f[i]=0;
@@ -67,6 +85,10 @@ void SIDSynthMachine::init()
   sid->set_chip_model(MOS8580);
   sid->set_sampling_parameters(SID_CLOCKFREQ, SAMPLE_FAST, SID_SAMPLERATE);
   sid->reset();
+
+  sid->write(0x04,0x20);    // CONTROL
+  sid->write(0x12,0x40);    // CONTROL
+  sid->write(0x18,0x1F);  // MODE/VOL
   
   /*
   SE->init();
@@ -233,51 +255,66 @@ void SIDSynthMachine::setI(int what,int val)
     { 
       keyon=1;
 
+      sid->write(0x04,0x00);    // CONTROL
+      sid->write(0x12,0x00);    // CONTROL
 
-      sid->write(0x18, 0x08);  // MODE/VOL
+      //sid->write(0x04,0x20);    // CONTROL
+      //sid->write(0x12,0x40);    // CONTROL
 
+      //sid->write(0x18, 0x08);  // MODE/VOL
+      //sid->write(0x18,0x1F);  // MODE/VOL
   
-      sid->write(0x00,0x0);    // v1 freq lo
-      sid->write(0x01,0x4);    // v1 freq hi
+      //sid->write(0x00,0x0);    // v1 freq lo
+      //sid->write(0x01,0x4);    // v1 freq hi voice 1
+      int tmp=sid_note_frqs[note];
+      sid->write(0x01,tmp/12);    // v1 freq hi voice 1
+      printf("*********************************************************************************** %d\n",tmp);
+      printf("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ %d\n",note);
+
+
+      //sid->write(0x0f,0x4);    // v1 freq hi voice 2
+      //sid->write(0x01,note);    // v1 freq hi
       
-      sid->write(0x05,0x0F);    // ATK/DCY
-      sid->write(0x06,0xF6);    // STN/RLS
-      //sid->write(0x05,(128+attack/128)+(decay/128));
-      //sid->write(0x06,(128+sustain/128)+release/128);    // STN/RLS
+      //sid->write(0x05,0x0F);    // ATK/DCY
+      //sid->write(0x06,0xF6);    // STN/RLS
       
-      sid->write(0x04,0x21);    // CONTROL
+
       
       
       //sid->write(0x18, 0x08);  // MODE/VOL
       //sid->write(0x17,0xF7);    // filter
       
-      sid->write(0x18,0x1F);  // MODE/VOL
-      sid->write(0x0e,0x1);    // v1 freq lo
-      sid->write(0x0f,0x4);    // v1 freq hi
       
+      //sid->write(0x0e,0x1);    // v1 freq lo
+
+      //sid->write(0x0f,note);
       //sid->write(0x13,0x0F);    // ATK/DCY
       //sid->write(0x14,0xF6);    // STN/RLS
-      sid->write(0x13,0x00);    // ATK/DCY
-      sid->write(0x14,0x00);    // STN/RLS
+      //sid->write(0x13,0x00);    // ATK/DCY
+      //sid->write(0x14,0x00);    // STN/RL
+
+
+
+      sid->write(0x05,((attack/8)*16)+(decay/8));     // ATK/DCY voice 1
+      sid->write(0x06,((sustain/8)*16)+release/8);    // STN/RLS voice 1
+      //sid->write(0x13,((attack/8)*16)+(decay/8));     // ATK/DCY voice 2
+      //sid->write(0x14,((sustain/8)*16)+release/8);    // STN/RLS voice 2
+
+
 
       //sid->write(0x10,0x3F);    // PULSEWIDTH
-      sid->write(0x12,0x41);    // CONTROL
+      sid->write(0x04,0x41);    // CONTROL voice 1
+      //sid->write(0x12,0x41);    // CONTROL voice 2
       
-      sid->write(0x17,0xFF);    // filter
       //sid->write(0x16,j--);    // Cutoff
-      sid->write(0x16,0xFF);    // Cutoff
+      //sid->write(0x17,0xFF);    // filter
+      //sid->write(0x17,0x07);    // filter
+      sid->write(0x17,((resonance/8)*16)+7);    // filter
+      //sid->write(0x16,0xFF);    // Cutoff
+      sid->write(0x16,cutoff);    // Cutoff
+      //sid->write(0x16,cutoff);    // Cutoff
 
       
-      /*
-      SE->releaseNote();
-      //SE->triggerNote(note);
-      SE->triggerNoteOsc(0,note+osc1_scale-noteShift);
-      SE->triggerNoteOsc(1,note+osc2_scale-noteShift);
-      */
-      // sineLfoOsc1.reset();
-      // NoteFreq & NF = NoteFreq::getInstance();
-      // HO->KeyOn(1,NF.getINoteFreq(note));
-      // freq=NF.getINoteFreq(note);
     }
 
     if (what==NOTE_ON && val==0) 
@@ -327,64 +364,11 @@ void SIDSynthMachine::setI(int what,int val)
     if (what==ADSR_ENV0_SUSTAIN)   sustain=val;
     if (what==ADSR_ENV0_RELEASE)   release=val;
 
-    /*
-    if (what==ADSR_ENV0_ATTACK)    SE->getEnvelope(0)->setA(-1+f_val);
-    if (what==ADSR_ENV0_DECAY)     SE->getEnvelope(0)->setD(-1+f_val);
-    if (what==ADSR_ENV0_SUSTAIN)   SE->getEnvelope(0)->setS( f_val);
-    if (what==ADSR_ENV0_RELEASE)   SE->getEnvelope(0)->setR(-1+f_val);
-
-
-    if (what==ADSR_ENV1_ATTACK)    SE->getEnvelope(1)->setA(-1+f_val);
-    if (what==ADSR_ENV1_DECAY)     SE->getEnvelope(1)->setD(-1+f_val);
-    if (what==ADSR_ENV1_SUSTAIN)   SE->getEnvelope(1)->setS( 1+f_val);
-    if (what==ADSR_ENV1_RELEASE)   SE->getEnvelope(1)->setR(-1+f_val);
-    */
-    //if (what==VCO_MIX)             SE.setParameter(SENGINE_OSCMIX,1.0f/val);
-    //if (what==VCO_MIX)             SE.setParameter(SENGINE_ENV2_TO_CUTOFF,1.0f/(val+1));
-    //if (what==VCO_MIX)             SE.setParameter(SENGINE_ENV2_TO_CUTOFF,(f_val*2)-1);
-    //if (what==OSC1_PHASE)          SE->setParameter(SENGINE_ENV2_TO_CUTOFF,(f_val*2)-1);
-
-
-    //if (what==VCO_MIX)             SE->setParameter(SENGINE_OSCMIX,(f_val));
-
-    if (what==LFO1_DEPTH)          //SE->setParameter(SENGINE_LFO1_TO_AMP,(f_val));
-    //if (what==LFO1_FREQ)           SE->setParameter(SENGINE_LFO1_TO_AMP,(f_val));
-
-
-      if (what==LFO2_DEPTH)          //SE->setParameter(SENGINE_LFO2_TO_CUTOFF,(f_val/2));
-
     if (what==NOTE1)                note=val;
-    //if (what==OSC1_FREQ)           freq=val;
-
-  // if (what==FILTER1_CUTOFF)         SE.setParameter(SENGINE_FILTFREQ,(2.0f/(val)-1));
-  // if (what==FILTER1_RESONANCE)      SE.setParameter(SENGINE_FILTRESO,(2.0f/(val)-1));
-
-  // if (what==FILTER1_CUTOFF)         SE.setParameter(SENGINE_FILTFREQ,1.0f/(val+1));
-  // if (what==FILTER1_RESONANCE)      SE.setParameter(SENGINE_FILTRESO,1.0f/(val+1));
-
-#ifdef FIXED
-    // in fixed point mode  -0.5 0.5
-    //if (what==ENV1_DEPTH)          SE->setParameter(SENGINE_ENV2_TO_CUTOFF,(f_val-float(0.5)));
-    /*
-    if (what==ENV1_DEPTH)          SE->setParameter(SENGINE_ENV2_TO_CUTOFF,(float(0.5)-f_val));
-    if (what==FILTER1_CUTOFF)      SE->setParameter(SENGINE_FILTFREQ,(f_val-float(0.5)));
-    if (what==FILTER1_RESONANCE)   SE->setParameter(SENGINE_FILTRESO,(f_val-float(0.5)));
-    */
-#else
-    // in floating point mode  -1 1
-    //if (what==ENV1_DEPTH)          SE->setParameter(SENGINE_ENV2_TO_CUTOFF,(-f_val*2)+1);
-    /*
-    if (what==ENV1_DEPTH)          SE->setParameter(SENGINE_ENV2_TO_CUTOFF,(f_val*2)-1);
-    if (what==FILTER1_CUTOFF)      SE->setParameter(SENGINE_FILTFREQ,(f_val*2)-1);
-    if (what==FILTER1_RESONANCE)   SE->setParameter(SENGINE_FILTRESO,(f_val*2)-1);
-    */
-#endif
 
 
-    /*
-    //if (what==OSC1_AMP)               SE->setParameter(SENGINE_ENV1_TO_OSC1PW,(f_val*2)-1);
-    if (what==OSC2_AMP)               SE->setParameter(SENGINE_ENV1_TO_OSC2PW,(f_val*2)-1);
-    */
+    if (what==FILTER1_CUTOFF)            cutoff=val;
+    if (what==FILTER1_RESONANCE)         resonance=val;
 }
 
 Sint16 SIDSynthMachine::tick()
@@ -411,7 +395,7 @@ Sint16 SIDSynthMachine::tick()
       // 	{
        	  //buffer[i]=buffer[i]*2048;
 	  //buffer_i[i]=buffer_f[i]*1536;
-	  buffer_i[i]=buffer_f[i]*1280;
+      //buffer_i[i]=buffer_f[i]*1280;
 	  // 	}
     }
 

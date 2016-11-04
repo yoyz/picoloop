@@ -85,7 +85,7 @@ class SIDSynthMachine : public Machine
   int                   decay;
   int                   sustain;
   int                   release;
-
+  double   *            sid_note_frqs;
 };
 
 #endif
