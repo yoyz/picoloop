@@ -125,7 +125,7 @@ void SIDSynthMachine::init()
   for(i=0; i<128; i++) 
     {
       sid_note_frqs[i]=440.0*pow(2,((double)i-69.0)/12.0);
-      printf("i:%d %f\n",i,sid_note_frqs[i]);
+      //printf("i:%d %f\n",i,sid_note_frqs[i]);
       // i:0 8.175799
       // i:29 43.653529
       // i:127 12543.853951
@@ -147,7 +147,8 @@ void SIDSynthMachine::init()
 
   //sid->write(0x04,0x20);    // CONTROL
   //sid->write(0x12,0x40);    // CONTROL
-  sid->write(FILTER_MAINVOL,0x1F);  // MODE/VOL
+  //sid->write(FILTER_MAINVOL,0x1F);  // MODE/VOL
+  sid->write(FILTER_MAINVOL,0x15);  // MODE/VOL
   sid->write(PULSE_WAVE_DUTY_CYCLE_VOICE_1_HIGH_BYTE,0x7F); // set pulse width to middle
   sid->write(PULSE_WAVE_DUTY_CYCLE_VOICE_2_HIGH_BYTE,0x7F); // for the three voice
   sid->write(PULSE_WAVE_DUTY_CYCLE_VOICE_3_HIGH_BYTE,0x7F); // 1 2 3
@@ -357,7 +358,7 @@ void SIDSynthMachine::setI(int what,int val)
 	  sid->write(FREQUENCY_VOICE_2_LOW_BYTE,low2);      // v1 freq lo voice 2
 	}
 
-      printf("*********************************************************************************** %d\n",tmp);
+      //printf("*********************************************************************************** %d\n",tmp);
       //printf("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ %d\n",note);
 
 
