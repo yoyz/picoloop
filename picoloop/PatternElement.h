@@ -116,6 +116,7 @@ private:
   int velocity;
 
   int osc1_mod;
+  int osc2_mod;
 
   int polyphony;
 

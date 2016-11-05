@@ -47,6 +47,7 @@
 #define RES_ROUTE                               0x17  // 8 bit full 0b[RRRR][E321]
                                                       // [Resonance][External Voice3 Voice2 Voice1]
 #define FILTER_MAINVOL                          0x18  // 8 bit full 0b[MHBL][VVVV]
+#define FREQ_TABLE_SIZE                           96
 
 int freq_low[96]={
 0x17,0x27,0x39,0x4b,0x5f,0x74,0x8a,0xa1,0xba,0xd4,0xf0,0x0e,
@@ -147,18 +148,9 @@ void SIDSynthMachine::init()
   //sid->write(0x04,0x20);    // CONTROL
   //sid->write(0x12,0x40);    // CONTROL
   sid->write(FILTER_MAINVOL,0x1F);  // MODE/VOL
-  
-  /*
-  SE->init();
-  SE->setSIDSynthFilter24dB(1);
-  SE->process(buffer_f,SAM);
-  SE->process(buffer_f,SAM);
-  SE->process(buffer_f,SAM);
-  SE->process(buffer_f,SAM);
-  */
-  //SE.getSIDSynthOscillator(0)->setWave(0);
-  //SE.getSIDSynthOscillator(1)->setWave(0);
-  //SE.reset();
+  sid->write(PULSE_WAVE_DUTY_CYCLE_VOICE_1_HIGH_BYTE,0x7F); // set pulse width to middle
+  sid->write(PULSE_WAVE_DUTY_CYCLE_VOICE_2_HIGH_BYTE,0x7F); // for the three voice
+  sid->write(PULSE_WAVE_DUTY_CYCLE_VOICE_3_HIGH_BYTE,0x7F); // 1 2 3
 }
 
 const char * SIDSynthMachine::getMachineParamCharStar(int machineParam,int paramValue)
@@ -304,7 +296,16 @@ void SIDSynthMachine::setI(int what,int val)
   float        f_val_cutoff;
   float        f_val_resonance;
   float        f_val;
-  int          noteShift=2;
+  int          noteShift=4;
+  int          low1=0;
+  int          high1=0;
+  int          low2=0;
+  int          high2=0;
+  int          low3=0;
+  int          high3=0;
+
+  int          tmp;
+  
   f_val=val;
   f_val=f_val/128.0;
   if (what==TRIG_TIME_MODE)       trig_time_mode=val;
@@ -318,6 +319,10 @@ void SIDSynthMachine::setI(int what,int val)
       //sid->write(0x04,0x40);    // CONTROL
       sid->write(CONTROL_REGISTER_VOICE_1,osc1_type*16);    // CONTROL
       sid->write(CONTROL_REGISTER_VOICE_2,osc2_type*16);    // CONTROL
+
+      sid->write(PULSE_WAVE_DUTY_CYCLE_VOICE_1_HIGH_BYTE,(255-osc1_mod*2));    // PWM voice 1
+      sid->write(PULSE_WAVE_DUTY_CYCLE_VOICE_2_HIGH_BYTE,(255-osc2_mod*2));    // PWM voice 2
+
       //sid->write(0x12,0x40);    // CONTROL
 
       //sid->write(0x04,0x20);    // CONTROL
@@ -333,18 +338,23 @@ void SIDSynthMachine::setI(int what,int val)
       sid->write(FREQUENCY_VOICE_1_HIGH_BYTE,tmp/12);    // v1 freq hi voice 1
       sid->write(FREQUENCY_VOICE_2_HIGH_BYTE,tmp/12);    // v1 freq hi voice 2
       */
-      int low=0;
-      int high=0;
-      int tmp;
-      int noteshift=4;
-      if (note>=0-noteshift && note < 96-noteshift)
+      if (note>=0-noteShift && note < FREQ_TABLE_SIZE-noteShift)
 	{
-	  low=freq_low[note+noteshift];
-	  high=freq_high[note+noteshift];
-	  sid->write(FREQUENCY_VOICE_1_HIGH_BYTE,high);    // v1 freq hi voice 1
-	  sid->write(FREQUENCY_VOICE_2_HIGH_BYTE,high);    // v1 freq hi voice 2
-	  sid->write(FREQUENCY_VOICE_1_LOW_BYTE,low);      // v1 freq hi voice 1
-	  sid->write(FREQUENCY_VOICE_2_LOW_BYTE,low);      // v1 freq hi voice 2
+	  if (note+noteShift+osc1_scale<FREQ_TABLE_SIZE)
+	    {
+	      low1=freq_low[note+noteShift+osc1_scale];
+	      high1=freq_high[note+noteShift+osc1_scale];
+	    }
+	  if (note+noteShift+osc2_scale<FREQ_TABLE_SIZE)
+	    {
+	      low2=freq_low[note+noteShift+osc2_scale];
+	      high2=freq_high[note+noteShift+osc2_scale];
+	    }
+
+	  sid->write(FREQUENCY_VOICE_1_HIGH_BYTE,high1);    // v1 freq hi voice 1
+	  sid->write(FREQUENCY_VOICE_2_HIGH_BYTE,high2);    // v1 freq hi voice 2
+	  sid->write(FREQUENCY_VOICE_1_LOW_BYTE,low1);      // v1 freq lo voice 1
+	  sid->write(FREQUENCY_VOICE_2_LOW_BYTE,low2);      // v1 freq lo voice 2
 	}
 
       printf("*********************************************************************************** %d\n",tmp);
@@ -440,6 +450,9 @@ void SIDSynthMachine::setI(int what,int val)
 
     if (what==OSC1_SCALE)    osc1_scale=val;
     if (what==OSC2_SCALE)    osc2_scale=val;
+
+    if (what==OSC1_MOD)      osc1_mod=val;
+    if (what==OSC2_MOD)      osc2_mod=val;
 
 
     if (what==ADSR_ENV0_ATTACK)    attack=val;

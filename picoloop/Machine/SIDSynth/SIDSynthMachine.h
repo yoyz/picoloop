@@ -79,6 +79,9 @@ class SIDSynthMachine : public Machine
   int                   osc1_detune;
   int                   osc2_detune;
 
+  int                   osc1_mod; // Pulse wave voice 1 here
+  int                   osc2_mod; // Pulse wave voice 2 here
+
   cycle_count           delta_t;
 
   int                   attack;

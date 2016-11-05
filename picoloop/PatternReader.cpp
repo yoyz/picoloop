@@ -670,6 +670,10 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
   fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
+  machineParam=OSC2_MOD;
+  fgets(line,sizeoflinemax,fd);
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
+
 
   if (retcode==true)
     {
@@ -1037,6 +1041,10 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
   this->writePatternDataLine(PatternNumber,TrackNumber,P,line,KEYTRACK);
   data.insert(data.end(),line);
 
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,OSC2_MOD);
+  data.insert(data.end(),line);
+
+
   sprintf(line,"\n");
   data.insert(data.end(),line);
 
@@ -1164,6 +1172,7 @@ const char * PatternReader::getParameterCharStar(int param)
   static const char * velocity="Velocity";
 
   static const char * osc1_mod="OSC1Mod";
+  static const char * osc2_mod="OSC2Mod";
 
   static const char * osc1_scale="OSC1Scale";
   static const char * osc2_scale="OSC2Scale";
@@ -1267,6 +1276,7 @@ const char * PatternReader::getParameterCharStar(int param)
     case VELOCITY:           return velocity;                 break;
 
     case OSC1_MOD:           return osc1_mod;                 break;
+    case OSC2_MOD:           return osc2_mod;                 break;
 
     case OSC1_SCALE:         return osc1_scale;                 break;
     case OSC2_SCALE:         return osc2_scale;                 break;

@@ -486,11 +486,11 @@ void SIDSynthUserInterface::handle_key_vco()
       // Insert/Remove Trig
       sub_handle_invert_trig();
 
-      handle_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, OSC2_AMP      ,     -1, 0);
-      handle_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, OSC2_AMP      ,      1, 0);
+      handle_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, OSC1_MOD      ,     -1, 0);
+      handle_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, OSC1_MOD      ,      1, 0);
 
-      handle_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, ENV1_DEPTH        ,      1, 0);
-      handle_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, ENV1_DEPTH        ,     -1, 0);
+      handle_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, OSC2_MOD       ,      1, 0);
+      handle_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, OSC2_MOD       ,     -1, 0);
     }
 
   if (menu        != MENU_OFF && 
@@ -498,11 +498,11 @@ void SIDSynthUserInterface::handle_key_vco()
       menu_vco    == MENU_PAGE0_SUB1
       )
     {
-      handle_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, OSC2_AMP        ,     -1, 1);
-      handle_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, OSC2_AMP        ,      1, 1);
+      handle_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, OSC1_MOD        ,     -1, 1);
+      handle_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, OSC1_MOD        ,      1, 1);
 
-      handle_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, ENV1_DEPTH          ,      1, 1);
-      handle_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, ENV1_DEPTH          ,     -1, 1);
+      handle_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, OSC2_MOD         ,      1, 1);
+      handle_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, OSC2_MOD         ,     -1, 1);
     }
 
 
@@ -798,7 +798,7 @@ void SIDSynthUserInterface::display_board_text()
       menu_cursor==GLOBALMENU_VCO
       )
     {
-      sprintf(str_submenu,"ENVDEPTH/PWM");
+      sprintf(str_submenu,"PWM1/PWM2");
       SG.guiTTFText(right_x_display_offset,
 		    right_y_display_offset_line2,str_submenu);
     }
@@ -977,7 +977,7 @@ void SIDSynthUserInterface::display_board_vco()
   if (menu_cursor == GLOBALMENU_VCO  && 
       menu_vco    == MENU_PAGE0_SUB1)
     {
-      display_board_two_param(OSC2_AMP,ENV1_DEPTH);
+      display_board_two_param(OSC1_MOD,OSC2_MOD);
     }  
 }
 
