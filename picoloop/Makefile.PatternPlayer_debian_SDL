@@ -178,7 +178,24 @@ SOURCES=PatternPlayer.cpp \
 		      Machine/MDADrum/MDADrumMachine.cpp			\
 		      Machine/MDADrum/MDADrumUserInterface.cpp			\
 		      Machine/MDADrum/drumsynth_oop5.cpp			\
-		      Machine/MDADrum/profport.cpp				
+		      Machine/MDADrum/profport.cpp				\
+		      Machine/SIDSynth/sid.cpp					\
+		      Machine/SIDSynth/wave.cpp					\
+		      Machine/SIDSynth/sidfilter.cpp				\
+		      Machine/SIDSynth/envelope.cpp				\
+		      Machine/SIDSynth/extfilt.cpp				\
+		      Machine/SIDSynth/pot.cpp					\
+		      Machine/SIDSynth/voice.cpp				\
+		      Machine/SIDSynth/wave8580__ST.cpp				\
+		      Machine/SIDSynth/wave8580_P_T.cpp				\
+		      Machine/SIDSynth/wave8580_PS_.cpp				\
+		      Machine/SIDSynth/wave8580_PST.cpp				\
+		      Machine/SIDSynth/wave6581__ST.cpp				\
+		      Machine/SIDSynth/wave6581_P_T.cpp				\
+		      Machine/SIDSynth/wave6581_PS_.cpp				\
+		      Machine/SIDSynth/wave6581_PST.cpp				\
+		      Machine/SIDSynth/SIDSynthMachine.cpp			\
+		      Machine/SIDSynth/SIDSynthUserInterface.cpp
 
 
 
@@ -207,6 +224,8 @@ DIRTOCREATE:
 	-mkdir -p $(OBJDIR)/Machine/Twytch
 	-mkdir -p $(OBJDIR)/Machine/MidiOutSystem
 	-mkdir -p $(OBJDIR)/Machine/MDADrum
+	-mkdir -p $(OBJDIR)/Machine/SIDSynth
+
 
 $(EXECUTABLE): $(DEPENDENCYINOBJDIR) $(OBJECTSINOBJDIR)
 	$(CC) $(OBJTOLINKINOBJDIR)  $(OBJECTSINOBJDIR) -o $@ $(LDFLAGS)
