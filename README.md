@@ -1,4 +1,4 @@
-# PICOLOOP 0.74 README #
+# PICOLOOP 0.75 README #
 
 Manual and tutorial for PC/PSP/Pocketchip can be fetch here : https://github.com/farvardin/picoloop-manual
 
