@@ -11,6 +11,7 @@ Open303Machine::Open303Machine()
   DPRINTF("Open303Machine::Open303Machine()\n");  
   note_on=0;
   velocity=5;
+  parameter_portamento=32;
   //buffer_i=0;
   //buffer_f=0;
 
@@ -121,6 +122,7 @@ void Open303Machine::setI(int what,int val)
    if (what==TRIG_TIME_MODE)       trig_time_mode=val;
    if (what==TRIG_TIME_DURATION) 
      { 
+       if (val<3) val=3;
        trig_time_duration=val;
        trig_time_duration_sample=val*512; 
      }
@@ -160,7 +162,7 @@ void Open303Machine::setI(int what,int val)
   if (what==ADSR_ENV0_DECAY)        O303E->setSlideTime(val*4);        // <= it works
   if (what==ADSR_ENV0_SUSTAIN)      O303E->setSquarePhaseShift(val*4);
 
-  if (what==OSC1_PHASE)             O303E->setEnvMod(1.5-(f_val*192));    
+
   if (what==OSC12_MIX)              O303E->setWaveform(f_val); 
 
   if (what==OSC1_AMP)               velocity=val;
@@ -168,16 +170,26 @@ void Open303Machine::setI(int what,int val)
   
   if (what==FILTER1_TYPE)            O303E->filter.setMode(val);
 
+  if (what==OSC1_PHASE)             
+    {
+      //O303E->setEnvMod(1.5-(f_val*192));    
+      old_envdepth=env_depth;
+      env_depth=val;
+    }
 
   if (what==FILTER1_CUTOFF)      
      { 
-       //O303E->setCutoff(314+val*16);
-       O303E->setCutoff(100+val*17);
+       //O303E->setCutoff(100+val*17);
+       old_cutoff=cutoff;
+       cutoff=val;      // formula : 100+val*17
+
      }
   
    if (what==FILTER1_RESONANCE)         
      {   
-       O303E->setResonance(f_val*128);
+       //O303E->setResonance(f_val*128);
+       old_resonance=resonance;
+       resonance=val;
      }
 }
 
@@ -329,10 +341,14 @@ void Open303Machine::reset()
 }
 
 
+
 Sint16 Open303Machine::tick()
 {
   double    f_in;
   Sint16 s_out;
+  float  f_val;
+  
+
    if (trig_time_mode)
      {
        if (trig_time_duration_sample<sample_num)
@@ -341,11 +357,41 @@ Sint16 Open303Machine::tick()
 	   trig_time_mode=0;
 	 }       
      }
+
+   if (index>parameter_portamento)
+     {
+       index=0;
+
+       if (current_cuttoff<cutoff)
+	 current_cuttoff++;
+       if (current_cuttoff>cutoff)
+	   current_cuttoff--;
+       O303E->setCutoff(100+current_cuttoff*17);
+
+       if (current_resonance<resonance)
+	 current_resonance++;
+       if (current_resonance>resonance)
+	   current_resonance--;
+       f_val=current_resonance;
+       f_val/128.0;
+       O303E->setResonance(f_val);
+
+       if (current_envdepth<env_depth)
+	 current_envdepth++;
+       if (current_envdepth>env_depth)
+	 current_envdepth--;
+       O303E->setEnvMod(1.5-((float)current_envdepth/128.0)*192);
+       //O303E->setResonance(current_resonance*128);
+
+
+
+
+     }
       
    
    f_in=O303E->getSample();
    s_out=f_in*2048;
    sample_num++;
-
+   index++;
   return s_out;
 }

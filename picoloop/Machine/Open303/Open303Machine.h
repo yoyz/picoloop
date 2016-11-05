@@ -29,6 +29,17 @@ class Open303Machine : public Machine
 
   int                   cutoff;
   int                   resonance;
+  int                   env_depth;
+
+  int                   old_cutoff;
+  int                   old_resonance;
+  int                   old_envdepth;
+
+  int                   current_cuttoff;
+  int                   current_resonance;
+  int                   current_envdepth;
+
+  int                   parameter_portamento;
 
   Sint16              * buffer_i;
   //mopo::mopo_float    * buffer_f;
