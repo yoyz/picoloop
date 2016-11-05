@@ -1,16 +1,18 @@
-<h1>PICOLOOP 0.73 README</h1>
+<h1>PICOLOOP 0.74 README</h1>
+
+<p>Manual and tutorial for PC/PSP/Pocketchip can be fetch here : https://github.com/farvardin/picoloop-manual</p>
 
 <h2>Overview</h2>
 
-<p>Picoloop is a synth and a stepsequencer  ( a clone of the famous nanoloop ).
-The step sequencer play 4 track simultaneously, by default each track are 16 step long, you can set the track to be up to 128 step.
+<p>Picoloop is a synth and a stepsequencer (a clone of the famous nanoloop).
+The step sequencer play 4 tracks simultaneously, by default each track are 16 steps long, you can set the track to be up to 128 steps.
 Each track has a synthengine which can be a Virtual Analog, a Drum Synth, a FM synth.
-Each of the step can be edited on the 4 track.
+Each of the step can be edited on the 4 tracks.
 So for example, you can set a C4 note on step 0, nothing on step 1 and 2, then a D+5 on step 3 until the step 15.</p>
 
-<p>A pattern of 16 step is played repeatedly while these notes can be edited in various respects like volume, pitch, filter, lfo etc. 
+<p>A pattern of 16 steps is played repeatedly while these notes can be edited in various respects like volume, pitch, filter, lfo etc. 
 All parameters are set step-wise, so you can make huge variation of sound on the same pattern.
-Each channel's patterns can be saved to file slots  and are then available for new combinations. 
+Each channel's patterns can be saved to file slots and are then available for new combinations. 
 Finally, saved patterns can be arranged in a song structure.</p>
 
 <p>Besides the song editor and manual loading of patterns, there are 3 different ways to modify each channel's patterns so that they form longer structures:                                       </p>
@@ -20,42 +22,42 @@ Finally, saved patterns can be arranged in a song structure.</p>
 <li>Different pattern lengths by track</li>
 </ul>
 
-<p>Picoloop is target for linux/SDL compatible system.
-It use SDL     to render graphics.
-It use RtAudio or SDL to render audio out.
-It use RtMidi  to send and receive midi message, today only clock</p>
+<p>Picoloop is targeted for linux/SDL compatible system.
+It uses SDL     to render graphics.
+It uses RtAudio or SDL to render audio out.
+It uses RtMidi  to send and receive midi message, today only clock</p>
 
 <h2>How it works</h2>
 
 <p>There is two pane :
- - the 16 step ;
- - the menu which is above the 16 step ;</p>
+ - the 16 steps ;
+ - the menu which is above the 16 steps ;</p>
 
-<p>On the 16 box, there is a moving cursor which display the current played step.
-and another cursor which display the current selected step.
-There is a text menu, which allow you to select channel and edit parameter.
+<p>On the 16 boxes, there is a moving cursor which displays the current played step.
+And another cursor which displays the current selected step.
+There is a text menu, which allows you to select channel and edit parameter.
 All notes in the sequencer can be edited simultaneously.</p>
 
 <h3>The menu mode</h3>
 
-<p>The menu mode change the selected textual menu at the bottom of the screen.
-This allow you to choose what kind of parameter you want to change, for example, the NOTE, the OSC, the Filter
-In menu mode, when you press left/right, it change the textual menu in the bottom of the screen</p>
+<p>The menu mode changes the selected textual menu at the bottom of the screen.
+This allows you to choose what kind of parameter you want to change, for example, the NOTE, the OSC, the Filter...
+In menu mode, when you press left/right, it changes the textual menu in the bottom of the screen</p>
 
 <pre><code>&lt;/&gt;             move backward/forward in the menu
 ^/v             select the track from 0 to track 3
 B               do nothing
-A + &lt;/&gt;/^/v,    edit all step at once
+A + &lt;/&gt;/^/v,    edit all steps at once
 A               enter the edit mode
-L               go to the next     16 step on the same track
-R               go to the previous 16 step on the same track
+L               go to the next     16 steps on the same track
+R               go to the previous 16 steps on the same track
 SELECT          call menu2 or menu1 ( it cycle between the two menu )
 </code></pre>
 
 <h3>The edit mode</h3>
 
-<p>The edit mode change the curent step on the 16 step display.
-In edit mode, when you press left/right, it change the current step in the sequencer.</p>
+<p>The edit mode changes the current step on the 16 steps display.
+In edit mode, when you press left/right, it changes the current step in the sequencer.</p>
 
 <pre><code>&lt;/&gt;             select next step
 ^/v             select step+4, step-4
@@ -70,10 +72,10 @@ START           cycle between the different parameter
 
 <h4>menu1</h4>
 
-<p>The menu 1 is the first menu. It allow to modify the parameter of the synthengine of the current track.
+<p>The menu 1 is the first menu. It allows to modify the parameter of the synthengine of the current track.
 Each synth engine has different kind of parameter.</p>
 
-<p>You can :</p>
+<p>You can:</p>
 
 <ol>
 <li>A/R  : the enveloppe of the synth</li>
@@ -84,7 +86,7 @@ Each synth engine has different kind of parameter.</p>
 <li>FLTR : the filter parameter.</li>
 </ol>
 
-<p>Here is the global overview of the most common parameter you will find by synth engine.</p>
+<p>Here is the global overview of the most common parameters you will find by synth engine.</p>
 
 <ul>
 <li><p>A/R : </p>
@@ -138,16 +140,41 @@ Each synth engine has different kind of parameter.</p>
 
 <h4>menu 2</h4>
 
-<p>The menu 2 is a more general menu. You can :</p>
+<p>The menu 2 is a more general menu. You can:</p>
 
 <ol>
 <li>L/S   load and save a pattern  track or the 4 pattern track ;</li>
 <li>BANK  change the current bank which allow you to have more pattern.</li>
 <li>PSH   shift left or right the pattern of a track and add bunch of 16 step ;</li>
-<li>MAC   change the current synth engine, synth, drumsynth, dbopl ( adlib fm )</li>
+<li>MAC   change the current synth engine, synth, drumsynth, dbopl (adlib fm)</li>
 <li>FX    apply fx on the current track delay</li>
 <li>BPM   change the BPM and swing of the 4 track and the step diviser of the current track</li>
 </ol>
+
+<h5>L/S menu</h5>
+
+<p>The top menu shows the tracks and patterns. 
+- Save your current track by selecting an empty slow, then B+down.
+- Save your current pattern (group of 4 tracks) by selecting a column, then A+down.
+- Load a track with A+up (it will replace your current working track).
+- Load a pattern with B+up (il will replace the 4 current working tracks).</p>
+
+<p>You can clone a track by loading it into memory, then saving it to another track.</p>
+
+<p>The menu below (song position) allows you to order your tracks. You can enter it with Start key. 
+- Define Loop start position with A+up
+- Define Loop end position with A+down
+- Change the values with B+up and B+down.</p>
+
+<h5>PSH menu</h5>
+
+<ul>
+<li>Increase the track size (16 steps block) with A+UP</li>
+<li>Decrease the track size (16 steps block) with A+DOWN</li>
+<li>Increase the track size (1 step) with A+RIGHT</li>
+<li>Decrease the track size (1 step) with A+LEFT</li>
+<li>Navigate into the new steps (move the position by -16 or +16) with the LEFT and RIGHT SHOULDER (or TAB and BACKSPACE on PC)</li>
+</ul>
 
 <h2>What you need to know</h2>
 
@@ -170,7 +197,7 @@ Will be fixed in a latter version.</p>
 
 <h3>Package dependency, build from source</h3>
 
-<p>This section describe the dependency for building picoloop.
+<p>This section describes the dependency for building picoloop.
 On most platform in 2016, you will need this kind of package.</p>
 
 <pre><code> - libsdl*      =&gt; version 1.2 with the "ttf" and "gfx"
@@ -183,7 +210,7 @@ On most platform in 2016, you will need this kind of package.</p>
 
 <h4>LASTEST SOURCE</h4>
 
-<p>You can allways download the lastest source.
+<p>You can always download the lastest source.
 But, you should probably switch to a tag then.</p>
 
 <p><tt> # git clone https://github.com/yoyz/audio.git </tt> </br>
@@ -295,6 +322,8 @@ All can be fetched here : https://github.com/pspdev</p>
 - L-CTRL            : A      key : insert note/delete node/copy note
 - L-ALT             : B      key : change the value on the screen of the selected step
 - ESC+ENTER         : quit
+- TAB               : LEFT Shoulder
+- BACKSPACE         : RIGHT Shoulder
 </code></pre>
 
 <p>Depending on the current menu selected : A/R, OSC, VCO, BPM, LS, etc.</p>
@@ -360,11 +389,19 @@ In this case, you need the prx file ( not an elf or EBOOT.PBP ).</p>
 
 <h1>Changelog</h1>
 
-<p>V0.74 :</p>
+<p>V0.75a: </p>
+
+<ul>
+<li>add the resid engine </li>
+</ul>
+
+<p>V0.74acd:</p>
 
 <ul>
 <li>add pocketchip platform, which is a "kind of variant" of raspberry pi 1, thank to garvalf from chipmusic.org</li>
 <li>fix a PatternElement.cpp issue related to a value not initialized </li>
+<li>shift track to the left and to the write in the song "orderlist"</li>
+<li>fix a bug with the note tuning which appear from 0.71 to 0.74</li>
 </ul>
 
 <p>V0.73 :</p>

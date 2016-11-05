@@ -399,10 +399,17 @@ In this case you need a prx and an elf file.
 Changelog
 =========
 
-V0.74 :
+V0.75a: 
+
+- add the resid engine 
+
+
+V0.74acd:
 
 - add pocketchip platform, which is a "kind of variant" of raspberry pi 1, thank to garvalf from chipmusic.org
 - fix a PatternElement.cpp issue related to a value not initialized 
+- shift track to the left and to the write in the song "orderlist"
+- fix a bug with the note tuning which appear from 0.71 to 0.74
 
 
 V0.73 :

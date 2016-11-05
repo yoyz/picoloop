@@ -12,6 +12,10 @@ Marc Nostromo								for the lgpt tracker for the idea
 Robin Schmidtj from http://sourceforge.net/projects/open303/		for this good sound engine
 Gary P. Scavone from https://www.music.mcgill.ca/~gary/rtaudio/		for the RtAudio package
 Christian Nowak from an obscure handleds site				for the pbsynth designed for gp32/gp2x
+Eric Forgeot ( garvalf )                                                for skins, manual, porting to pocketchip and testing the software
+Dag Lem                                                                 for the resid C64 sid chip engine
+Mike Dawson								for the reMID which use reSID, I don't use much of it, but it help me a lots
+
 
 AUTHORS
 =======
