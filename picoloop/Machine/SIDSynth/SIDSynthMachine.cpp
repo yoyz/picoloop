@@ -7,26 +7,47 @@
 #define SID_SAMPLERATE 44118
 #define SID_CLOCKFREQ (22.5 * SID_SAMPLERATE) //nearest int to 985248
 
-#define FREQUENCY_VOICE_1_HIGH_BYTE 0x01
-#define FREQUENCY_VOICE_2_HIGH_BYTE 0x08
 
-#define CONTROL_REGISTER_VOICE_1    0x04
-#define CONTROL_REGISTER_VOICE_2    0x0b
+// Voice 1
+#define FREQUENCY_VOICE_1_LOW_BYTE              0x00  // 8 bit full 0xXX
+#define FREQUENCY_VOICE_1_HIGH_BYTE             0x01  // 8 bit full 0xXX
+#define PULSE_WAVE_DUTY_CYCLE_VOICE_1_LOW_BYTE  0x02  // 8 bit full 0xXX
+#define PULSE_WAVE_DUTY_CYCLE_VOICE_1_HIGH_BYTE 0x03  // 4 bit low  0x0X
+#define CONTROL_REGISTER_VOICE_1                0x04  // 0b[NPST][TRSG]
+                                                      // [Noise Pulse Saw Triange][Test Ring Sync Gate]
+#define AD_VOICE1                               0x05  // 8 bit full 0xAD
+#define SR_VOICE1                               0x06  // 8 bit full 0xSR
 
-#define AD_VOICE1                   0x05
-#define SR_VOICE1                   0x06
+// Voice 2
+#define FREQUENCY_VOICE_2_LOW_BYTE              0x07  // 8 bit full 0xXX
+#define FREQUENCY_VOICE_2_HIGH_BYTE             0x08  // 8 bit full 0xXX
+#define PULSE_WAVE_DUTY_CYCLE_VOICE_2_LOW_BYTE  0x09  // 8 bit full 0xXX
+#define PULSE_WAVE_DUTY_CYCLE_VOICE_2_HIGH_BYTE 0x0a  // 4 bit low  0x0X
+#define CONTROL_REGISTER_VOICE_2                0x0b  // 0b[NPST][TRSG]
 
-#define AD_VOICE2                   0x0c
-#define SR_VOICE2                   0x0d
+#define AD_VOICE2                               0x0c  // 8 bit full 0xAD
+#define SR_VOICE2                               0x0d  // 8 bit full 0xSR
 
-#define AD_VOICE3                   0x13
-#define SR_VOICE3                   0x14
+// Voice 3
+#define FREQUENCY_VOICE_3_LOW_BYTE              0x0e  // 8 bit full 0xXX
+#define FREQUENCY_VOICE_3_HIGH_BYTE             0x0f  // 8 bit full 0xXX
+#define PULSE_WAVE_DUTY_CYCLE_VOICE_3_LOW_BYTE  0x10  // 8 bit full 0xXX
+#define PULSE_WAVE_DUTY_CYCLE_VOICE_3_HIGH_BYTE 0x11  // 4 bit low  0x0X
+#define CONTROL_REGISTER_VOICE_3                0x12  // 0b[NPST][TRSG]
+                                                      // [Noise Pulse Saw Triange][Test Ring Sync Gate]
 
-#define CUTOFF_HIGH                 0x16
-#define RES_ROUTE                   0x17
-#define FILTER_MAINVOL              0x18
-//#      sid->write(0x18,0x1F);  // MODE/VOL
-//#for(i=0; i<128; i++) note_frqs[i]=440.0*pow(2,((double)i-69.0)/12.0);
+#define AD_VOICE3                               0x13  // 8 bit full 0xAD
+#define SR_VOICE3                               0x14  // 8 bit full 0xSR
+
+
+
+// Filter & Volume & Routing
+#define CUTOFF_LOW                              0x15  // 4 bit low  0x0C
+#define CUTOFF_HIGH                             0x16  // 8 bit full 0xXX
+#define RES_ROUTE                               0x17  // 8 bit full 0b[RRRR][E321]
+                                                      // [Resonance][External Voice3 Voice2 Voice1]
+#define FILTER_MAINVOL                          0x18  // 8 bit full 0b[MHBL][VVVV]
+
 
 SIDSynthMachine::SIDSynthMachine()
 {
