@@ -40,6 +40,7 @@ OBJS=PatternPlayer.o \
 		      TweakableKnob.o	       \
 		      UserInterface.o	       \
 		      MachineCheck.o	       \
+		      WaveFileWriter.o         \
 		      Machine/Picosynth/PicosynthUserInterface.o \
 		      Machine/Picosynth/PicosynthADSR.o        \
 		      Machine/Picosynth/PicosynthVCO.o         \

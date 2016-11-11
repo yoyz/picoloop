@@ -47,6 +47,7 @@ SOURCES=PatternPlayer.cpp \
 		      UserInterface.cpp	       \
 		      SysMutex.cpp	       \
 		      MachineCheck.cpp	       \
+                      WaveFileWriter.cpp       \
 		      Machine/Picosynth/PicosynthUserInterface.cpp \
 		      Machine/Picosynth/PicosynthADSR.cpp        \
 		      Machine/Picosynth/PicosynthVCO.cpp         \

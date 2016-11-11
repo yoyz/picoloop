@@ -43,6 +43,8 @@ SOURCES=PatternPlayer.cpp \
 		      NoteFreq.cpp             \
 		      PitchBend.cpp            \
 		      TweakableKnob.cpp        \
+		      MachineCheck.cpp	       \
+                      WaveFileWriter.cpp       \
 		      Machine/Picosynth/PicosynthADSR.cpp        \
 		      Machine/Picosynth/PicosynthVCO.cpp         \
 		      Machine/Picosynth/PicosynthMachine.cpp     \
@@ -52,6 +54,19 @@ SOURCES=PatternPlayer.cpp \
 		      Machine/Dbopl/dbopl.cpp                    \
 		      Machine/Dbopl/hiopl.cpp                    \
 		      Machine/Dbopl/DboplMachine.cpp             \
+		      Machine/PBSynth/PBSynthUserInterface.cpp   \
+		      Machine/PBSynth/synthengine.cpp            \
+		      Machine/PBSynth/osc.cpp                    \
+		      Machine/PBSynth/lfo.cpp                    \
+		      Machine/PBSynth/filter.cpp                 \
+		      Machine/PBSynth/env.cpp                    \
+		      Machine/PBSynth/echo.cpp                   \
+		      Machine/PBSynth/osctab.cpp                 \
+		      Machine/PBSynth/lfotab.cpp                 \
+		      Machine/PBSynth/envtab.cpp                 \
+		      Machine/PBSynth/coeff.cpp                  \
+		      Machine/PBSynth/PBSynthMachine.cpp         \
+
 
 
 

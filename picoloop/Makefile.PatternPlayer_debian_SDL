@@ -55,6 +55,7 @@ SOURCES=PatternPlayer.cpp \
 		      MidiOutSystem.cpp	       \
 		      MidiInSystem.cpp	       \
 		      MachineCheck.cpp	       \
+		      WaveFileWriter.cpp       \
 		      Machine/Picosynth/PicosynthUserInterface.cpp \
 		      Machine/Picosynth/PicosynthADSR.cpp        \
 		      Machine/Picosynth/PicosynthVCO.cpp         \
@@ -195,7 +196,7 @@ SOURCES=PatternPlayer.cpp \
 		      Machine/SIDSynth/wave6581_PS_.cpp				\
 		      Machine/SIDSynth/wave6581_PST.cpp				\
 		      Machine/SIDSynth/SIDSynthMachine.cpp			\
-		      Machine/SIDSynth/SIDSynthUserInterface.cpp
+		      Machine/SIDSynth/SIDSynthUserInterface.cpp		
 
 
 

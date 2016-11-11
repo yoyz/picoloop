@@ -47,6 +47,7 @@ SOURCES=PatternPlayer.cpp \
 		      TweakableKnob.cpp	       \
 		      UserInterface.cpp	       \
 		      MachineCheck.cpp	       \
+		      WaveFileWriter.cpp       \
 		      Machine/Picosynth/PicosynthUserInterface.cpp \
 		      Machine/Picosynth/PicosynthADSR.cpp        \
 		      Machine/Picosynth/PicosynthVCO.cpp         \
