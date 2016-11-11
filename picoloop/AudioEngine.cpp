@@ -131,12 +131,21 @@ AudioEngine::AudioEngine() : AM(),
   bufferFrames = BUFFER_FRAME; // Weird ?
   nbCallback=0;
 
+
+  dump_audio_env=getenv("DUMP_AUDIO");
+  if (dump_audio_env!=NULL)
+    {
+      if (atoi(dump_audio_env)==1)
+	dump_audio=1;
+      else
+	dump_audio=0;
+    }
   // Debug audio allow to dump audio to audioout file which is a raw file
-  #ifndef DUMP_AUDIO
-  dump_audio=0;
-  #else
-  dump_audio=DUMP_AUDIO;
-  #endif
+  //#ifndef DUMP_AUDIO
+  //dump_audio=0;
+  //#else
+  //dump_audio=DUMP_AUDIO;
+  //#endif
   
   for (i=0;i<INTERNAL_BUFFER_SIZE;i++)
     buffer_out_right[i]=0;

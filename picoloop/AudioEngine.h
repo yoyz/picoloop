@@ -167,7 +167,7 @@ class AudioEngine
 
   Sint32       fwrite_byte_counter;
 
-
+  char      *  dump_audio_env;
   WaveFileWriter WFW;          
 };
 
