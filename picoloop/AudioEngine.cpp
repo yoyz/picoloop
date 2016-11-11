@@ -146,8 +146,8 @@ AudioEngine::AudioEngine() : AM(),
     {
       WFW.setName("audioout.wav");
       WFW.setNbChannel(1);
-      WFW.setBitRate(16);
-      WFW.setFrequency(44100);
+      WFW.setBitRate(DEFAULTBITRATE);
+      WFW.setFrequency(DEFAULTFREQ);
       WFW.createEmptyWaveFile();
     }
 

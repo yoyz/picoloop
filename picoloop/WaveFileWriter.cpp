@@ -49,10 +49,10 @@ int WaveFileWriter::createEmptyWaveFile()
   waveHeader.waveLength=16;            // allways 16 ?
   waveHeader.wFormatTag=1;             // 1==PCM
   waveHeader.nChannels=1;              // 1==mono
-  waveHeader.frequency=DEFAULTFREQ;    // 44100 defined in Master.h
-  waveHeader.bytePerSec=DEFAULTFREQ*2; // 
-  waveHeader.bytePerBloc=2;            // 
-  waveHeader.wBitsPerSample=16;        //  16 bit
+  waveHeader.frequency=frequency;    // 44100 defined in Master.h
+  waveHeader.bytePerSec=frequency*nbChannel*bitPerSample/8; // 
+  waveHeader.bytePerBloc=bitPerSample/8*nbChannel;            // 
+  waveHeader.wBitsPerSample=bitPerSample;  //  16 bit
 
   waveHeader.data[0]='d';               // «data»  (0x64,0x61,0x74,0x61)
   waveHeader.data[1]='a';               // «data»  (0x64,0x61,0x74,0x61)
