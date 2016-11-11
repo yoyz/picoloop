@@ -153,6 +153,7 @@ AudioEngine::AudioEngine() : AM(),
 
 			     //buffer_out( new Sint16[BUFFER_FRAME])
 {
+  int i;
   freq=DEFAULTFREQ;
   samples=DEFAULTSAMPLES;
   channels=DEFAULTCHANNELS;
@@ -171,12 +172,49 @@ AudioEngine::AudioEngine() : AM(),
   #else
   dump_audio=DUMP_AUDIO;
   #endif
-
+  
+  for (i=0;i<INTERNAL_BUFFER_SIZE;i++)
+    buffer_out_right[i]=0;
+  for (i=0;i<INTERNAL_BUFFER_SIZE;i++)
+    buffer_out_left[i]=0;
 
   if (dump_audio) 
     {
-      fd = fopen("audioout","w+");
+      fd = fopen("audioout.wav","w+");
+      //waveHeader.riff=0x46464952;          // "RIFF"
+      waveHeader.riff[0]='R';          // "RIFF"
+      waveHeader.riff[1]='I';          // "RIFF"
+      waveHeader.riff[2]='F';          // "RIFF"
+      waveHeader.riff[3]='F';          // "RIFF"
+      waveHeader.riffLength=0;             // 0 - 8 => 0
+      //waveHeader.wave=0x45564157;          // "WAVE"
+      waveHeader.wave[0]='W';
+      waveHeader.wave[1]='A';
+      waveHeader.wave[2]='V';
+      waveHeader.wave[3]='E';
+      //waveHeader.fmt=0x20746D66;           // (0x66,0x6D, 0x74,0x20)
+      waveHeader.fmt[0]=0x66;
+      waveHeader.fmt[1]=0x6d;
+      waveHeader.fmt[2]=0x74;
+      waveHeader.fmt[3]=0x20;
+      waveHeader.waveLength=16;            // allways 16 ?
+      waveHeader.wFormatTag=1;             // 1==PCM
+      waveHeader.nChannels=1;              // 1==mono
+      waveHeader.frequency=DEFAULTFREQ;    // 44100 defined in Master.h
+      waveHeader.bytePerSec=DEFAULTFREQ*2; // 
+      waveHeader.bytePerBloc=2;            // 
+      waveHeader.wBitsPerSample=16;        //  16 bit
+      //waveHeader.data=0x61746164;          // «data»  (0x64,0x61,0x74,0x61)
+      waveHeader.data[0]='d';               // «data»  (0x64,0x61,0x74,0x61)
+      waveHeader.data[1]='a';               // «data»  (0x64,0x61,0x74,0x61)
+      waveHeader.data[2]='t';               // «data»  (0x64,0x61,0x74,0x61)
+      waveHeader.data[3]='a';               // «data»  (0x64,0x61,0x74,0x61)
+      waveHeader.dataLength=0;              // fileSize - sizeof(WAVEHEADER)
+      
+      fwrite(&waveHeader,44,sizeof(WHAE),fd);
+      fflush(fd);
     }
+  fwrite_byte_counter=0;
   //buffer_out=(Sint16*)malloc(sizeof(Sint16)*BUFFER_FRAME);
   bufferGenerated=0;
 
@@ -449,7 +487,9 @@ void AudioEngine::callback(void *unused, Uint8 *stream, int len)
 
   #ifdef DUMP_AUDIO
   if (dump_audio)
-    fwrite(buffer_out_right,buffer_size,sizeof(Sint16),fd);
+    {
+      fwrite_byte_counter+=fwrite(buffer_out_right,buffer_size,sizeof(Sint16),fd)*buffer_size;
+    }
   #endif
 
     
@@ -527,6 +567,15 @@ int rtcallback(
 // disable audio callback
 int AudioEngine::stopAudio()
 {
+    if (dump_audio) 
+      {
+	printf("fwrite_byte_counter:%d\n",fwrite_byte_counter);
+	fseek(fd,0,SEEK_SET);
+	waveHeader.riffLength=fwrite_byte_counter+44-8; // size of file - 8
+	waveHeader.dataLength=fwrite_byte_counter-44;   // data - size of header
+	fwrite(&waveHeader,44,sizeof(WHAE),fd);
+	fclose(fd);
+      }
   //  dac.stopStream();
 
 }
