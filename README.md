@@ -399,10 +399,9 @@ In this case you need a prx and an elf file.
 Changelog
 =========
 
-V0.75a: 
-
+V0.75ab: 
 - add the resid engine 
-
+- export DUMP_AUDIO=1 now export a wav file
 
 V0.74acd:
 

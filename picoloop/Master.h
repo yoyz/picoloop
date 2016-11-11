@@ -2,7 +2,7 @@
 #define __MASTER____
 #include <SDL/SDL.h>
 
-#define PICOLOOP_VERSION "0.75a"
+#define PICOLOOP_VERSION "0.75b"
 //#define INTERNAL_BUFFER_SIZE 128*1024   
 #define INTERNAL_BUFFER_SIZE 16*1024   
 //#define DEFAULTFREQ      44100

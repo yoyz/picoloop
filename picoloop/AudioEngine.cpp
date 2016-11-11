@@ -140,12 +140,6 @@ AudioEngine::AudioEngine() : AM(),
       else
 	dump_audio=0;
     }
-  // Debug audio allow to dump audio to audioout file which is a raw file
-  //#ifndef DUMP_AUDIO
-  //dump_audio=0;
-  //#else
-  //dump_audio=DUMP_AUDIO;
-  //#endif
   
   for (i=0;i<INTERNAL_BUFFER_SIZE;i++)
     buffer_out_right[i]=0;
@@ -413,12 +407,12 @@ void AudioEngine::callback(void *unused, Uint8 *stream, int len)
     //this->processBuffer(BUFFER_FRAME);
     this->processBuffer(buffer_size);
 
-  #ifdef DUMP_AUDIO
+
   if (dump_audio)
     {
       WFW.fillBuffer(buffer_out_right,buffer_size);
     }
-  #endif
+
 
     
     //for (int i=0;i<len;i++)
