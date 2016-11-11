@@ -3693,7 +3693,13 @@ int seq()
       init_cursor_display_offset_cursor_max_pos(t);
     }
 
-
+  // startup all track 
+  // dump 64 sample without using each
+  for (t=0;t<TRACK_MAX;t++)
+    {
+      for (i=0;i<64;i++)
+	MM[t]->tick();
+    }
   // Init all track to the current step, step0 in this particular case 
   for (i=0;i<TRACK_MAX;i++)
     seq_update_track(i);

@@ -107,6 +107,7 @@ class AudioEngine
   int  openAudio();
   int  openAudioSdl();
   int  closeAudio();
+  int  closeDumpAudioFile();
   int  closeAudioSdl();
   int  getNumberOfAudioOutputDevice();
   void setAudioOutput(int deviceNumber);
@@ -180,6 +181,8 @@ class AudioEngine
   //RtAudio::StreamOptions    rtAudioStreamOptions;
   AudioDriver  AD;
   PulseSync    PS;
+
+  int          callback_called;
   //SDL_AudioSpec * sdlAudioSpecWanted;
   //  SDL_AudioSpec * sdlAudioSpecObtained;
 
