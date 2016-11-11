@@ -64,6 +64,7 @@ SOURCES=PatternPlayer.cpp			\
 			MidiOutSystem.cpp	       \
 		        MidiInSystem.cpp	       \
 			MachineCheck.cpp	       \
+			WaveFileWriter.cpp	       \
 			Machine/Picosynth/PicosynthMachine.cpp		\
 			Machine/Picosynth/PicosynthUserInterface.cpp	\
 			Machine/Picosynth/PicosynthADSR.cpp		\
