@@ -65,7 +65,7 @@ using namespace std;
 */
 char pada='a';
 char padb='b';
-//char padc='c';
+char padc='c';
 //char padd='d';
 //char pade='e';
 //char padf='f';
