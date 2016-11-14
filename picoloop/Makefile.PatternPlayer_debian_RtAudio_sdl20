@@ -21,14 +21,14 @@ CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -D __R
 CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -D __RTMIDI__ -DPC_DESKTOP -ggdb                   -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive
 
 
-CFLAGS_SDLVERS=-D__SDL12__
+CFLAGS_SDLVERS=-D__SDL20__
 CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -D __RTMIDI__ -DPC_DESKTOP -ggdb  ${CFLAGS_SDLVERS}                 -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive
 
 LDFLAGS=-lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread -pg
 LDFLAGS=-lasound -lSDL           -lSDL_ttf -lpthread -pg
 LDFLAGS=-lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread
-LDFLAGS=-lasound -lSDL2 -lSDL2_ttf -lpthread -lpulse -lpulse-simple -ljack
 LDFLAGS=-lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread -lpulse -lpulse-simple -ljack
+LDFLAGS=-lasound -lSDL2 -lSDL2_ttf -lpthread -lpulse -lpulse-simple -ljack
 
 
 OBJTOLINK=RtAudio.o
@@ -224,7 +224,7 @@ SOURCES=PatternPlayer.cpp \
 
 
 
-OBJDIR             =     debianrtaudio
+OBJDIR             =     debianrtaudio_sdl20
 OBJECTS            =   $(SOURCES:.cpp=.o)
 DEPENDENCY         =   $(SOURCES:.cpp=.d)
 
@@ -232,7 +232,7 @@ DEPENDENCYINOBJDIR = $(addprefix $(OBJDIR)/,$(DEPENDENCY))
 OBJECTSINOBJDIR    = $(addprefix $(OBJDIR)/,$(OBJECTS))
 OBJTOLINKINOBJDIR  = $(addprefix $(OBJDIR)/,$(OBJTOLINK))
 
-EXECUTABLE=PatternPlayer_debian_Rtaudio
+EXECUTABLE=PatternPlayer_debian_Rtaudio_sdl20
 
 #all: DIRTOCREATE $(DEPENDENCY) $(SOURCES) $(EXECUTABLE)
 

@@ -1,0 +1,20 @@
+CC=g++
+CFLAGS=-c -DLINUX -I. -LSDL/lib -g
+CFLAGS=-O3 -Wall -I.. -DHAVE_GETTIMEOFDAY -D__LINUX_ALSA__
+LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf
+SOURCES=RtMidi.cpp
+OBJDIR=debianrtaudio_sdl20
+OBJECTS=$(SOURCES:.cpp=.o)
+OBJECTSINOBJDIR    = $(addprefix $(OBJDIR)/,$(OBJECTS))
+
+all: DIRTOCREATE $(OBJECTSINOBJDIR)
+
+
+$(OBJDIR)/%.o : %.cpp
+	$(CC) $(CFLAGS) -c $< -o $@
+
+DIRTOCREATE:
+	-mkdir -p $(OBJDIR)
+
+clean:
+	-rm -f $(OBJECTSINOBJDIR)

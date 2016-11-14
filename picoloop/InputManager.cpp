@@ -1,14 +1,20 @@
 #include "InputManager.h"
 #include "Master.h"
 
+#ifdef __SDL12__
 InputManager::InputManager() 
+//: m_key_state(new  int[MAX_KEY]),
+//			       m_key_repeat(new int[MAX_KEY])
+#endif
+#ifdef __SDL20__
+InputManager::InputManager() 
+#endif
 {
   int i=0;
   last_key=0;
   last_event=0;
   quit=0;
   escape=0;
-
 }
 
 InputManager::~InputManager()
@@ -25,8 +31,16 @@ void InputManager::init()
   last_event=0;
   quit=0;
   escape=0;
+#ifdef __SDL12__
+  m_key_state=malloc(sizeof(int)*MAX_KEY);
+  m_key_repeat=malloc(sizeof(int)*MAX_KEY);
 
-  //keycode_list=malloc(sizeof(int64_t)*MAX_KEY;
+  for (i=0;i<MAX_KEY;i++)
+    m_key_state[i]=0;
+
+  for (i=0;i<MAX_KEY;i++)
+    m_key_repeat[i]=0;
+#endif
 }
 
 void InputManager::printState()
@@ -42,7 +56,7 @@ void InputManager::printState()
 
 }
 
-
+#ifdef __SDL20__
 int InputManager::updateStateNoKeyPress()
 {
   for(mapii::iterator it = m_key_state.begin(); it != m_key_state.end(); ++it) 
@@ -53,7 +67,18 @@ int InputManager::updateStateNoKeyPress()
 	}
     }  
 }
+#endif
+#ifdef __SDL12__
+int InputManager::updateStateNoKeyPress()
+{
+  int i;
+  for (i=0;i<MAX_KEY;i++)
+    if (m_key_state[i])
+      m_key_repeat[i]=m_key_repeat[i]+1;
+}
+#endif
 
+#ifdef __SDL20__
 int InputManager::updateState(int symbol,int state)
 {
   int i;
@@ -74,6 +99,23 @@ int InputManager::updateState(int symbol,int state)
 	  }
       }
 }
+#endif //__SDL20__
+
+#ifdef __SDL12__
+int InputManager::updateState(int symbol,int state)
+{
+  int i;
+  m_key_state[symbol]=state;
+  if (state==false)
+    m_key_repeat[symbol]=0;
+  
+  if (state)
+    for (i=0;i<MAX_KEY;i++)
+      if (m_key_state[i])
+	m_key_repeat[i]=m_key_repeat[i]+1;
+}
+#endif
+
 
 int InputManager::shouldExit()
 {
@@ -93,11 +135,18 @@ int InputManager::shouldExit()
 
 mapii & InputManager::keyState()
 {
+#ifdef __SDL12__
+  return m_key_state;
+#endif
   return m_key_state;
 }
 
 mapii & InputManager::keyRepeat()
 {
+#ifdef __SDL12__
+  return m_key_repeat;
+#endif
+
   return m_key_repeat;
 }
 
