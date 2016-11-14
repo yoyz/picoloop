@@ -1,0 +1,12 @@
+This document aim to help developper to understand the high level construction of the software
+
+
+InputManager
+============
+
+store keyRepeat and keyState in two different structure (key,value)
+mapii {aka std::map<int, int>}
+
+The Key is the SDL_KEYCODE, the value is 0 or 1           for keyState
+The Key is the SDL_KEYCODE, the value is 0 to really high for keyRepeat
+
