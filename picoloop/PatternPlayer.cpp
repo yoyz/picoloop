@@ -1010,18 +1010,12 @@ void display_config()
 
 void handle_key_config()
 {
-  int  * keyState;
-  int  * keyRepeat;
-  int    lastEvent;
-  int    lastKey;
-
-
   IE.handleKey();
 
-  keyState=IE.keyState();
-  keyRepeat=IE.keyRepeat();
-  lastEvent=IE.lastEvent();
-  lastKey=IE.lastKey();
+  mapii keyState=IE.keyState();
+  mapii keyRepeat=IE.keyRepeat();
+  int    lastEvent=IE.lastEvent();
+  int    lastKey=IE.lastKey();
 
 #ifdef __RTMIDI__
   MidiOutSystem & MOS=MidiOutSystem::getInstance();
@@ -1805,18 +1799,18 @@ void sub_handle_invert_trig()
 
 void handle_key_patternlenght()
 {
-  int  * keyState;
-  int  * keyRepeat;
-  int    lastEvent;
-  int    lastKey;
+  mapii keyState=IE.keyState();
+  mapii keyRepeat=IE.keyRepeat();
+  int    lastEvent=IE.lastEvent();
+  int    lastKey=IE.lastKey();
+
+
   int    cty=SEQ.getCurrentTrackY();
   int    step=SEQ.getPatternSequencer(cty).getStep();
   int    plen=SEQ.getPatternSequencer(cty).getPatternLength();
   int    need_to_change_cursor_max_pos=0;
 
 
-  keyState=IE.keyState();
-  keyRepeat=IE.keyRepeat();
   lastEvent=IE.lastEvent();
   lastKey=IE.lastKey();
 
@@ -1879,17 +1873,15 @@ void handle_key_patternlenght()
 
 void handle_key_menu()
 {
-  int  * keyState;
-  int  * keyRepeat;
-  int    lastEvent;
-  int    lastKey;
+  mapii keyState=IE.keyState();
+  mapii keyRepeat=IE.keyRepeat();
+  int    lastEvent=IE.lastEvent();
+  int    lastKey=IE.lastKey();
 
   int last_menu=0xffff;
   int last_menu_cursor=0xffff;
   int menu_switching=0;         // when 1 we will switch from one menu to one another
 
-  keyState=IE.keyState();
-  keyRepeat=IE.keyRepeat();
   lastEvent=IE.lastEvent();
   lastKey=IE.lastKey();
 
@@ -2116,17 +2108,14 @@ void handle_key_menu()
 
 void handle_key_sixteenbox()
 {
-  int  * keyState;
-  int  * keyRepeat;
-  int    lastEvent;
-  int    lastKey;
+  mapii keyState=IE.keyState();
+  mapii keyRepeat=IE.keyRepeat();
+  int    lastEvent=IE.lastEvent();
+  int    lastKey=IE.lastKey();
+
   int    last_cursor=cursor;
   int          cty=SEQ.getCurrentTrackY();
 
-  keyState=IE.keyState();
-  keyRepeat=IE.keyRepeat();
-  lastEvent=IE.lastEvent();
-  lastKey=IE.lastKey();
 
   //MOVE the cursor in the sixteen box : LEFT UP DOWN RIGHT   
   if ((menu==MENU_OFF && menu_cursor==GLOBALMENU_AD    ||
@@ -2209,15 +2198,11 @@ void handle_key_sixteenbox()
 
 int handle_key_two_button(int buttonPressed,int buttonKeyRepeat,int repeatInterval,int machineParam,int paramValue,int all)
 {
-  int  * keyState;
-  int  * keyRepeat;
-  int    lastEvent;
-  int    lastKey;
+  mapii keyState=IE.keyState();
+  mapii keyRepeat=IE.keyRepeat();
+  int    lastEvent=IE.lastEvent();
+  int    lastKey=IE.lastKey();
 
-  keyState=IE.keyState();
-  keyRepeat=IE.keyRepeat();
-  lastEvent=IE.lastEvent();
-  lastKey=IE.lastKey();
 
 
   if (keyState[buttonPressed]  && keyState[buttonKeyRepeat])
@@ -2249,15 +2234,10 @@ void handle_key_osc()
 
 void handle_key_fx()
 {
-  int  * keyState;
-  int  * keyRepeat;
-  int    lastEvent;
-  int    lastKey;
-
-  keyState=IE.keyState();
-  keyRepeat=IE.keyRepeat();
-  lastEvent=IE.lastEvent();
-  lastKey=IE.lastKey();
+  mapii keyState=IE.keyState();
+  mapii keyRepeat=IE.keyRepeat();
+  int    lastEvent=IE.lastEvent();
+  int    lastKey=IE.lastKey();
 
   // GLOBALMENU_FX
   // change fx_depth and fx_speed
@@ -2300,15 +2280,10 @@ void handle_key_vco()
 
 void handle_key_mac()
 {
-  int  * keyState;
-  int  * keyRepeat;
-  int    lastEvent;
-  int    lastKey;
-
-  keyState=IE.keyState();
-  keyRepeat=IE.keyRepeat();
-  lastEvent=IE.lastEvent();
-  lastKey=IE.lastKey();
+  mapii keyState=IE.keyState();
+  mapii keyRepeat=IE.keyRepeat();
+  int    lastEvent=IE.lastEvent();
+  int    lastKey=IE.lastKey();
 
   // GLOBALMENU_MAC
   // change machine type
@@ -2343,15 +2318,10 @@ void handle_key_lfo()
 
 void handle_key_psh()
 {
-  int  * keyState;
-  int  * keyRepeat;
-  int    lastEvent;
-  int    lastKey;
-
-  keyState=IE.keyState();
-  keyRepeat=IE.keyRepeat();
-  lastEvent=IE.lastEvent();
-  lastKey=IE.lastKey();
+  mapii keyState=IE.keyState();
+  mapii keyRepeat=IE.keyRepeat();
+  int    lastEvent=IE.lastEvent();
+  int    lastKey=IE.lastKey();
 
 
 
@@ -2382,15 +2352,10 @@ void handle_key_fltr()
 
 void handle_key_bpm()
 {
-  int  * keyState;
-  int  * keyRepeat;
-  int    lastEvent;
-  int    lastKey;
-
-  keyState=IE.keyState();
-  keyRepeat=IE.keyRepeat();
-  lastEvent=IE.lastEvent();
-  lastKey=IE.lastKey();
+  mapii keyState=IE.keyState();
+  mapii keyRepeat=IE.keyRepeat();
+  int    lastEvent=IE.lastEvent();
+  int    lastKey=IE.lastKey();
 
   // GLOBALMENU_BPM
   // change bpm speed
@@ -2465,16 +2430,10 @@ void handle_key_bpm()
 
 void handle_key_load_save()
 {
-  int  * keyState;
-  int  * keyRepeat;
-  int    lastEvent;
-  int    lastKey;
-
-
-  keyState=IE.keyState();
-  keyRepeat=IE.keyRepeat();
-  lastEvent=IE.lastEvent();
-  lastKey=IE.lastKey();
+  mapii keyState=IE.keyState();
+  mapii keyRepeat=IE.keyRepeat();
+  int    lastEvent=IE.lastEvent();
+  int    lastKey=IE.lastKey();
 
 
   // GLOBALMENU_LS
@@ -2710,15 +2669,10 @@ void handle_key_load_save()
 
 void handle_key_bank()
 {
-  int  * keyState;
-  int  * keyRepeat;
-  int    lastEvent;
-  int    lastKey;
-
-  keyState=IE.keyState();
-  keyRepeat=IE.keyRepeat();
-  lastEvent=IE.lastEvent();
-  lastKey=IE.lastKey();
+  mapii keyState=IE.keyState();
+  mapii keyRepeat=IE.keyRepeat();
+  int    lastEvent=IE.lastEvent();
+  int    lastKey=IE.lastKey();
 
 
   // GLOBALMENU_LS
@@ -2825,15 +2779,16 @@ void refresh_pecursor()
 
 void handle_key()
 {
+  IE.handleKey();
+
+  mapii keyState=IE.keyState();
+  mapii keyRepeat=IE.keyRepeat();
+  int    lastEvent=IE.lastEvent();
+  int    lastKey=IE.lastKey();
 
   int  cty=SEQ.getCurrentTrackY();
   
-  int  * keyState;
-  int  * keyRepeat;
-  int    lastEvent;
-  int    lastKey;
 
-  IE.handleKey();
 
   keyState=IE.keyState();
   keyRepeat=IE.keyRepeat();

@@ -39,15 +39,10 @@ void PicosynthUserInterface::handle_key(int menu)
 
 void PicosynthUserInterface::handle_key_amp_env()
 {
-  int  * keyState;
-  int  * keyRepeat;
-  int    lastEvent;
-  int    lastKey;
-  
-  keyState=IE.keyState();
-  keyRepeat=IE.keyRepeat();
-  lastEvent=IE.lastEvent();
-  lastKey=IE.lastKey();
+  mapii keyState=IE.keyState();
+  mapii keyRepeat=IE.keyRepeat();
+  int    lastEvent=IE.lastEvent();
+  int    lastKey=IE.lastKey();
   
   
   // GLOBALMENU_AD AMP
@@ -206,16 +201,10 @@ void PicosynthUserInterface::handle_key_amp_env()
 
 void PicosynthUserInterface::handle_key_note()
 {
-
-  int  * keyState;
-  int  * keyRepeat;
-  int    lastEvent;
-  int    lastKey;
-
-  keyState=IE.keyState();
-  keyRepeat=IE.keyRepeat();
-  lastEvent=IE.lastEvent();
-  lastKey=IE.lastKey();
+  mapii keyState=IE.keyState();
+  mapii keyRepeat=IE.keyRepeat();
+  int    lastEvent=IE.lastEvent();
+  int    lastKey=IE.lastKey();
 
     // GLOBALMENU_NOTE
   // change note
@@ -266,16 +255,10 @@ void PicosynthUserInterface::handle_key_note()
 
 void PicosynthUserInterface::handle_key_osc()
 {
-  
-  int  * keyState;
-  int  * keyRepeat;
-  int    lastEvent;
-  int    lastKey;
-
-  keyState=IE.keyState();
-  keyRepeat=IE.keyRepeat();
-  lastEvent=IE.lastEvent();
-  lastKey=IE.lastKey();
+  mapii keyState=IE.keyState();
+  mapii keyRepeat=IE.keyRepeat();
+  int    lastEvent=IE.lastEvent();
+  int    lastKey=IE.lastKey();
 
   // GLOBALMENU_OSC
   // change oscilltor one and two type
@@ -361,16 +344,10 @@ void PicosynthUserInterface::handle_key_osc()
 
 void PicosynthUserInterface::handle_key_vco()
 {
-  int  * keyState;
-  int  * keyRepeat;
-  int    lastEvent;
-  int    lastKey;
-
-  keyState=IE.keyState();
-  keyRepeat=IE.keyRepeat();
-  lastEvent=IE.lastEvent();
-  lastKey=IE.lastKey();
-
+  mapii keyState=IE.keyState();
+  mapii keyRepeat=IE.keyRepeat();
+  int    lastEvent=IE.lastEvent();
+  int    lastKey=IE.lastKey();
 
 
 
@@ -431,15 +408,10 @@ void PicosynthUserInterface::handle_key_vco()
 
 void PicosynthUserInterface::handle_key_lfo()
 {  
-  int  * keyState;
-  int  * keyRepeat;
-  int    lastEvent;
-  int    lastKey;
-
-  keyState=IE.keyState();
-  keyRepeat=IE.keyRepeat();
-  lastEvent=IE.lastEvent();
-  lastKey=IE.lastKey();
+  mapii keyState=IE.keyState();
+  mapii keyRepeat=IE.keyRepeat();
+  int    lastEvent=IE.lastEvent();
+  int    lastKey=IE.lastKey();
 
   // GLOBALMENU_LFO
   // LFO Menu
@@ -553,15 +525,10 @@ void PicosynthUserInterface::handle_key_lfo()
 
 void PicosynthUserInterface::handle_key_fltr()
 {
-  int  * keyState;
-  int  * keyRepeat;
-  int    lastEvent;
-  int    lastKey;
-
-  keyState=IE.keyState();
-  keyRepeat=IE.keyRepeat();
-  lastEvent=IE.lastEvent();
-  lastKey=IE.lastKey();
+  mapii keyState=IE.keyState();
+  mapii keyRepeat=IE.keyRepeat();
+  int    lastEvent=IE.lastEvent();
+  int    lastKey=IE.lastKey();
 
 
   // GLOBALMENU_FLTR

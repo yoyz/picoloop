@@ -38,15 +38,10 @@ void PBSynthUserInterface::handle_key(int menu)
 
 void PBSynthUserInterface::handle_key_amp_env()
 {
-  int  * keyState;
-  int  * keyRepeat;
-  int    lastEvent;
-  int    lastKey;
-  
-  keyState=IE.keyState();
-  keyRepeat=IE.keyRepeat();
-  lastEvent=IE.lastEvent();
-  lastKey=IE.lastKey();
+  mapii keyState=IE.keyState();
+  mapii keyRepeat=IE.keyRepeat();
+  int    lastEvent=IE.lastEvent();
+  int    lastKey=IE.lastKey();
   
   
   // GLOBALMENU_AD AMP
@@ -273,15 +268,10 @@ void PBSynthUserInterface::handle_key_amp_env()
 
 void PBSynthUserInterface::handle_key_note()
 {
-  int  * keyState;
-  int  * keyRepeat;
-  int    lastEvent;
-  int    lastKey;
-
-  keyState=IE.keyState();
-  keyRepeat=IE.keyRepeat();
-  lastEvent=IE.lastEvent();
-  lastKey=IE.lastKey();
+  mapii keyState=IE.keyState();
+  mapii keyRepeat=IE.keyRepeat();
+  int    lastEvent=IE.lastEvent();
+  int    lastKey=IE.lastKey();
 
     // GLOBALMENU_NOTE
   // change note
@@ -332,15 +322,10 @@ void PBSynthUserInterface::handle_key_note()
 
 void PBSynthUserInterface::handle_key_osc()
 {
-  int  * keyState;
-  int  * keyRepeat;
-  int    lastEvent;
-  int    lastKey;
-
-  keyState=IE.keyState();
-  keyRepeat=IE.keyRepeat();
-  lastEvent=IE.lastEvent();
-  lastKey=IE.lastKey();
+  mapii keyState=IE.keyState();
+  mapii keyRepeat=IE.keyRepeat();
+  int    lastEvent=IE.lastEvent();
+  int    lastKey=IE.lastKey();
 
   // GLOBALMENU_OSC
   // change oscilltor one and two type
@@ -427,15 +412,10 @@ void PBSynthUserInterface::handle_key_osc()
 
 void PBSynthUserInterface::handle_key_vco()
 {
-  int  * keyState;
-  int  * keyRepeat;
-  int    lastEvent;
-  int    lastKey;
-
-  keyState=IE.keyState();
-  keyRepeat=IE.keyRepeat();
-  lastEvent=IE.lastEvent();
-  lastKey=IE.lastKey();
+  mapii keyState=IE.keyState();
+  mapii keyRepeat=IE.keyRepeat();
+  int    lastEvent=IE.lastEvent();
+  int    lastKey=IE.lastKey();
 
 
 
@@ -532,15 +512,10 @@ void PBSynthUserInterface::handle_key_vco()
 
 void PBSynthUserInterface::handle_key_lfo()
 {
-  int  * keyState;
-  int  * keyRepeat;
-  int    lastEvent;
-  int    lastKey;
-
-  keyState=IE.keyState();
-  keyRepeat=IE.keyRepeat();
-  lastEvent=IE.lastEvent();
-  lastKey=IE.lastKey();
+  mapii keyState=IE.keyState();
+  mapii keyRepeat=IE.keyRepeat();
+  int    lastEvent=IE.lastEvent();
+  int    lastKey=IE.lastKey();
 
   // GLOBALMENU_LFO
   // LFO Menu
@@ -633,15 +608,10 @@ void PBSynthUserInterface::handle_key_lfo()
 
 void PBSynthUserInterface::handle_key_fltr()
 {
-  int  * keyState;
-  int  * keyRepeat;
-  int    lastEvent;
-  int    lastKey;
-
-  keyState=IE.keyState();
-  keyRepeat=IE.keyRepeat();
-  lastEvent=IE.lastEvent();
-  lastKey=IE.lastKey();
+  mapii keyState=IE.keyState();
+  mapii keyRepeat=IE.keyRepeat();
+  int    lastEvent=IE.lastEvent();
+  int    lastKey=IE.lastKey();
 
 
   // GLOBALMENU_FLTR
