@@ -12,6 +12,9 @@ CFLAGS= -c -O3 -DLINUX -I. -LSDL/lib -D__SDL_AUDIO__  -DLINUX_DESKTOP -ggdb  -fp
 CFLAGS= -c -std=c++11 -O3 -DLINUX -I. -LSDL/lib -D__SDL_AUDIO__  -DLINUX_DESKTOP -ggdb  -fpermissive
 CFLAGS= -c -std=c++11 -O3 -DLINUX -I. -LSDL/lib -D__SDL_AUDIO__  -DPC_DESKTOP -ggdb  -fpermissive 
 
+CFLAGS_SDLVERS=-D__SDL12__
+CFLAGS= -c -std=c++11 -O3 ${CFLAGS_SDLVERS} -DLINUX -I. -LSDL/lib -D__SDL_AUDIO__  -DPC_DESKTOP -ggdb  -fpermissive 
+
 LDFLAGS=-lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread -pg
 LDFLAGS=-lasound -lSDL           -lSDL_ttf -lpthread -pg
 LDFLAGS=-lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread
@@ -23,8 +26,6 @@ SOURCES=PatternPlayer.cpp \
 		      SYSTEMLINUX.cpp	       \
 		      AudioEngine.cpp          \
 		      AudioDriverSDL.cpp       \
-		      Instrument.cpp           \
-		      Synth.cpp                \
 		      Oscillator.cpp           \
 		      OneOscillator.cpp        \
 		      Biquad.cpp               \
@@ -233,7 +234,7 @@ $(EXECUTABLE): $(DEPENDENCYINOBJDIR) $(OBJECTSINOBJDIR)
 
 # the .d file contain the dependency
 $(OBJDIR)/%.d : %.cpp %.h
-	$(CC) -I. -MM $< -o $@
+	$(CC) ${CFLAGS_SDLVERS} -I. -MM $< -o $@
 
 $(OBJDIR)/%.o : %.cpp 
 	$(CC) $(CFLAGS) $< -o $@
@@ -246,11 +247,11 @@ $(OBJDIR)/%.o : %.cpp
 
 # SYSTEMLINUX.d does have a .h which is SYSTEM.h, so it need a tweaks
 $(OBJDIR)/SYSTEMLINUX.d:SYSTEMLINUX.cpp 
-	$(CC) -I. -MM $< -o $@ 
+	$(CC) ${CFLAGS_SDLVERS} -I. -MM $< -o $@ 
 
 # PatternPlayer.d does have a .h which is system.h
 PatternPlayer.d:PatternPlayer.cpp
-	$(CC) -std=c++11 -I. -MM $< -o $@ 
+	$(CC) ${CFLAGS_SDLVERS} -std=c++11 -I. -MM $< -o $@ 
 
 
 clean:

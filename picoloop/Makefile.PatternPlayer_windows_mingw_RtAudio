@@ -17,6 +17,8 @@ CFLAGS= -std=c++11 -O3 -DWIN32 -D__WIN32__ -I/c/MinGW/include/ -I/usr/i686-w64-m
 CFLAGS= -std=c++11 -O3 -DWIN32 -D__WIN32__ -I/c/MinGW/include/ -I/usr/i686-w64-mingw32/include/ -I. -ISDL_windows -D__RTAUDIO__ -D__RTMIDI__ -DPC_DESKTOP -ggdb -fpermissive
 CFLAGS= -std=c++11 -O3 -DWIN32 -D__WIN32__ -I/c/MinGW/include/ -I/usr/i686-w64-mingw32/include/ -I. -ISDL_windows -D__RTAUDIO__ -D__RTMIDI__ -DPC_DESKTOP -ggdb -fpermissive
 
+CFLAGS_SDLVERS=-D__SDL12__
+CFLAGS= -std=c++11 -O3 -DWIN32 -D__WIN32__ -I/c/MinGW/include/ -I/usr/i686-w64-mingw32/include/ -I. -ISDL_windows ${CFLAGS_SDLVERS} -D__RTAUDIO__ -D__RTMIDI__ -DPC_DESKTOP -ggdb -fpermissive
 
 LDFLAGS=-lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread -pg
 #LDFLAGS=-L. -lmingw32 -lSDLmain -lSDL -lSDL_ttf
@@ -32,8 +34,6 @@ SOURCES=PatternPlayer.cpp			\
 			SYSTEMWINDOWS.cpp	\
 			AudioEngine.cpp		\
 			AudioDriverRTAudio.cpp	\
-			Instrument.cpp		\
-			Synth.cpp		\
 			Oscillator.cpp		\
 			OneOscillator.cpp	\
 			Biquad.cpp		\
@@ -250,7 +250,7 @@ $(EXECUTABLE): $(DEPENDENCYINOBJDIR) $(OBJECTSINOBJDIR)
 
 # the .d file contain the dependency
 $(OBJDIR)/%.d : %.cpp %.h
-	$(CC) -I. -ISDL_windows -MM $< -o $@
+	$(CC) ${CFLAGS_SDLVERS} -I. -ISDL_windows -MM $< -o $@
 
 $(OBJDIR)/%.o : %.cpp 
 	$(CC) -c $(CFLAGS) $< -o $@
@@ -263,11 +263,11 @@ $(OBJDIR)/%.o : %.cpp
 
 # SYSTEMWINDOWS.d does have a .h which is SYSTEM.h, so it need a tweaks
 $(OBJDIR)/SYSTEMWINDOWS.d:SYSTEMWINDOWS.cpp 
-	$(CC) -I. -ISDL_windows -MM $< -o $@ 
+	$(CC) ${CFLAGS_SDLVERS} -I. -ISDL_windows -MM $< -o $@ 
 
 # systemlinux.d does have a .h which is system.h
 $(OBJDIR)/PatternPlayer.d:PatternPlayer.cpp
-	$(CC) -I. -ISDL_windows -MM $< -o $@ 
+	$(CC) ${CFLAGS_SDLVERS} -I. -ISDL_windows -MM $< -o $@ 
 
 
 

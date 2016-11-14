@@ -8,6 +8,9 @@ LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf -lpthread  RtAudio.o
 CFLAGS=-c -DLINUX -I. -LSDL/lib
 CFLAGS=-c -O3 -DLINUX -D__RTAUDIO__ -DOPENDINGUX -I. -I/opt/opendingux-toolchain/usr/include/ -L/opt/opendingux-toolchain/usr/lib/ -lSDL -lSDL_ttf -fpermissive -DFIXED -fno-rtti -fomit-frame-pointer -ffunction-sections -ffast-math -fsingle-precision-constant -G0
 
+CFLAGS_SDLVERS=-D__SDL12__
+CFLAGS=-c -O3 ${CFLAGS_SDLVERS} -DLINUX -D__RTAUDIO__ -DOPENDINGUX -I. -I/opt/opendingux-toolchain/usr/include/ -L/opt/opendingux-toolchain/usr/lib/ -lSDL -lSDL_ttf -fpermissive -DFIXED -fno-rtti -fomit-frame-pointer -ffunction-sections -ffast-math -fsingle-precision-constant -G0
+
 LDFLAGS=-L/opt/opendingux-toolchain/usr/lib/ -lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread  -DFIXED
 
 OBJTOLINK=RtAudio.o
@@ -17,8 +20,6 @@ SOURCES=PatternPlayer.cpp \
 		      SYSTEMLINUX.cpp          \
 		      AudioEngine.cpp          \
 		      AudioDriverRTAudio.cpp   \
-		      Instrument.cpp           \
-		      Synth.cpp                \
 		      Oscillator.cpp           \
 		      OneOscillator.cpp        \
 		      Biquad.cpp               \
@@ -100,7 +101,7 @@ $(EXECUTABLE): $(DEPENDENCYINOBJDIR) $(OBJECTSINOBJDIR)
 
 # the .d file contain the dependency
 $(OBJDIR)/%.d : %.cpp %.h
-	$(CC) -I. -MM $< -o $@
+	$(CC) ${CFLAGS_SDLVERS} -I. -MM $< -o $@
 
 $(OBJDIR)/%.o : %.cpp 
 	$(CC) $(CFLAGS) $< -o $@
@@ -111,12 +112,12 @@ $(OBJDIR)/%.o : %.cpp
 
 # SYSTEMLINUX.d does have a .h which is SYSTEM.h, so it need a tweaks
 $(OBJDIR)/SYSTEMLINUX.d:SYSTEMLINUX.cpp 
-	$(CC) -I. -MM $< -o $@ 
+	$(CC) ${CFLAGS_SDLVERS} -I. -MM $< -o $@ 
 
 
 # PatternPlayer.d does have a .h which is system.h
 PatternPlayer.d:PatternPlayer.cpp
-	$(CC) -std=c++11 -I. -MM $< -o $@ 
+	$(CC) ${CFLAGS_SDLVERS} -std=c++11 -I. -MM $< -o $@ 
 
 
 clean:
