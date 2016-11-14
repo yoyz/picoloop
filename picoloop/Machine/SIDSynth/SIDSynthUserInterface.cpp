@@ -38,15 +38,10 @@ void SIDSynthUserInterface::handle_key(int menu)
 
 void SIDSynthUserInterface::handle_key_amp_env()
 {
-  bool * keyState;
-  int  * keyRepeat;
-  int    lastEvent;
-  int    lastKey;
-  
-  keyState=IE.keyState();
-  keyRepeat=IE.keyRepeat();
-  lastEvent=IE.lastEvent();
-  lastKey=IE.lastKey();
+  mapii keyState=IE.keyState();
+  mapii keyRepeat=IE.keyRepeat();
+  int    lastEvent=IE.lastEvent();
+  int    lastKey=IE.lastKey();
   
   
   // GLOBALMENU_AD AMP
@@ -273,16 +268,10 @@ void SIDSynthUserInterface::handle_key_amp_env()
 
 void SIDSynthUserInterface::handle_key_note()
 {
-
-  bool * keyState;
-  int  * keyRepeat;
-  int    lastEvent;
-  int    lastKey;
-
-  keyState=IE.keyState();
-  keyRepeat=IE.keyRepeat();
-  lastEvent=IE.lastEvent();
-  lastKey=IE.lastKey();
+  mapii keyState=IE.keyState();
+  mapii keyRepeat=IE.keyRepeat();
+  int    lastEvent=IE.lastEvent();
+  int    lastKey=IE.lastKey();
 
     // GLOBALMENU_NOTE
   // change note
@@ -333,15 +322,10 @@ void SIDSynthUserInterface::handle_key_note()
 
 void SIDSynthUserInterface::handle_key_osc()
 {
-  bool * keyState;
-  int  * keyRepeat;
-  int    lastEvent;
-  int    lastKey;
-
-  keyState=IE.keyState();
-  keyRepeat=IE.keyRepeat();
-  lastEvent=IE.lastEvent();
-  lastKey=IE.lastKey();
+  mapii keyState=IE.keyState();
+  mapii keyRepeat=IE.keyRepeat();
+  int    lastEvent=IE.lastEvent();
+  int    lastKey=IE.lastKey();
 
   // GLOBALMENU_OSC
   // change oscilltor one and two type
@@ -428,15 +412,10 @@ void SIDSynthUserInterface::handle_key_osc()
 
 void SIDSynthUserInterface::handle_key_vco()
 {
-  bool * keyState;
-  int  * keyRepeat;
-  int    lastEvent;
-  int    lastKey;
-
-  keyState=IE.keyState();
-  keyRepeat=IE.keyRepeat();
-  lastEvent=IE.lastEvent();
-  lastKey=IE.lastKey();
+  mapii keyState=IE.keyState();
+  mapii keyRepeat=IE.keyRepeat();
+  int    lastEvent=IE.lastEvent();
+  int    lastKey=IE.lastKey();
 
 
 
@@ -533,15 +512,10 @@ void SIDSynthUserInterface::handle_key_vco()
 
 void SIDSynthUserInterface::handle_key_lfo()
 {
-  bool * keyState;
-  int  * keyRepeat;
-  int    lastEvent;
-  int    lastKey;
-
-  keyState=IE.keyState();
-  keyRepeat=IE.keyRepeat();
-  lastEvent=IE.lastEvent();
-  lastKey=IE.lastKey();
+  mapii keyState=IE.keyState();
+  mapii keyRepeat=IE.keyRepeat();
+  int    lastEvent=IE.lastEvent();
+  int    lastKey=IE.lastKey();
 
   // GLOBALMENU_LFO
   // LFO Menu
@@ -634,15 +608,10 @@ void SIDSynthUserInterface::handle_key_lfo()
 
 void SIDSynthUserInterface::handle_key_fltr()
 {
-  bool * keyState;
-  int  * keyRepeat;
-  int    lastEvent;
-  int    lastKey;
-
-  keyState=IE.keyState();
-  keyRepeat=IE.keyRepeat();
-  lastEvent=IE.lastEvent();
-  lastKey=IE.lastKey();
+  mapii keyState=IE.keyState();
+  mapii keyRepeat=IE.keyRepeat();
+  int    lastEvent=IE.lastEvent();
+  int    lastKey=IE.lastKey();
 
 
   // GLOBALMENU_FLTR

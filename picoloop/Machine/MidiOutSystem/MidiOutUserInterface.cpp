@@ -38,15 +38,10 @@ void MidiOutUserInterface::handle_key(int menu)
 
 void MidiOutUserInterface::handle_key_amp_env()
 {
-  bool * keyState;
-  int  * keyRepeat;
-  int    lastEvent;
-  int    lastKey;
-  
-  keyState=IE.keyState();
-  keyRepeat=IE.keyRepeat();
-  lastEvent=IE.lastEvent();
-  lastKey=IE.lastKey();
+  mapii keyState=IE.keyState();
+  mapii keyRepeat=IE.keyRepeat();
+  int    lastEvent=IE.lastEvent();
+  int    lastKey=IE.lastKey();
   
   
   // GLOBALMENU_AD AMP
@@ -204,16 +199,10 @@ void MidiOutUserInterface::handle_key_amp_env()
 
 void MidiOutUserInterface::handle_key_note()
 {
-
-  bool * keyState;
-  int  * keyRepeat;
-  int    lastEvent;
-  int    lastKey;
-
-  keyState=IE.keyState();
-  keyRepeat=IE.keyRepeat();
-  lastEvent=IE.lastEvent();
-  lastKey=IE.lastKey();
+  mapii keyState=IE.keyState();
+  mapii keyRepeat=IE.keyRepeat();
+  int    lastEvent=IE.lastEvent();
+  int    lastKey=IE.lastKey();
 
     // GLOBALMENU_NOTE
   // change note
@@ -264,15 +253,10 @@ void MidiOutUserInterface::handle_key_note()
 
 void MidiOutUserInterface::handle_key_osc()
 {
-  bool * keyState;
-  int  * keyRepeat;
-  int    lastEvent;
-  int    lastKey;
-
-  keyState=IE.keyState();
-  keyRepeat=IE.keyRepeat();
-  lastEvent=IE.lastEvent();
-  lastKey=IE.lastKey();
+  mapii keyState=IE.keyState();
+  mapii keyRepeat=IE.keyRepeat();
+  int    lastEvent=IE.lastEvent();
+  int    lastKey=IE.lastKey();
 
   // GLOBALMENU_OSC
   // change oscilltor one and two type
@@ -324,15 +308,10 @@ void MidiOutUserInterface::handle_key_osc()
 
 void MidiOutUserInterface::handle_key_vco()
 {
-  bool * keyState;
-  int  * keyRepeat;
-  int    lastEvent;
-  int    lastKey;
-
-  keyState=IE.keyState();
-  keyRepeat=IE.keyRepeat();
-  lastEvent=IE.lastEvent();
-  lastKey=IE.lastKey();
+  mapii keyState=IE.keyState();
+  mapii keyRepeat=IE.keyRepeat();
+  int    lastEvent=IE.lastEvent();
+  int    lastKey=IE.lastKey();
 
 
 
@@ -426,15 +405,10 @@ void MidiOutUserInterface::handle_key_vco()
 
 void MidiOutUserInterface::handle_key_lfo()
 {
-  bool * keyState;
-  int  * keyRepeat;
-  int    lastEvent;
-  int    lastKey;
-
-  keyState=IE.keyState();
-  keyRepeat=IE.keyRepeat();
-  lastEvent=IE.lastEvent();
-  lastKey=IE.lastKey();
+  mapii keyState=IE.keyState();
+  mapii keyRepeat=IE.keyRepeat();
+  int    lastEvent=IE.lastEvent();
+  int    lastKey=IE.lastKey();
 
   // GLOBALMENU_LFO
   // LFO Menu
@@ -548,16 +522,10 @@ void MidiOutUserInterface::handle_key_lfo()
 
 void MidiOutUserInterface::handle_key_fltr()
 {
-  bool * keyState;
-  int  * keyRepeat;
-  int    lastEvent;
-  int    lastKey;
-
-  keyState=IE.keyState();
-  keyRepeat=IE.keyRepeat();
-  lastEvent=IE.lastEvent();
-  lastKey=IE.lastKey();
-
+  mapii keyState=IE.keyState();
+  mapii keyRepeat=IE.keyRepeat();
+  int    lastEvent=IE.lastEvent();
+  int    lastKey=IE.lastKey();
 
   // GLOBALMENU_FLTR
   // Move Cutoff Resonance

@@ -38,15 +38,10 @@ void Open303UserInterface::handle_key(int menu)
 
 void Open303UserInterface::handle_key_amp_env()
 {
-  bool * keyState;
-  int  * keyRepeat;
-  int    lastEvent;
-  int    lastKey;
-  
-  keyState=IE.keyState();
-  keyRepeat=IE.keyRepeat();
-  lastEvent=IE.lastEvent();
-  lastKey=IE.lastKey();
+  mapii keyState=IE.keyState();
+  mapii keyRepeat=IE.keyRepeat();
+  int    lastEvent=IE.lastEvent();
+  int    lastKey=IE.lastKey();
   
   
   // GLOBALMENU_AD AMP
@@ -181,16 +176,10 @@ void Open303UserInterface::handle_key_amp_env()
 
 void Open303UserInterface::handle_key_note()
 {
-
-  bool * keyState;
-  int  * keyRepeat;
-  int    lastEvent;
-  int    lastKey;
-
-  keyState=IE.keyState();
-  keyRepeat=IE.keyRepeat();
-  lastEvent=IE.lastEvent();
-  lastKey=IE.lastKey();
+  mapii keyState=IE.keyState();
+  mapii keyRepeat=IE.keyRepeat();
+  int    lastEvent=IE.lastEvent();
+  int    lastKey=IE.lastKey();
 
     // GLOBALMENU_NOTE
   // change note
@@ -241,16 +230,10 @@ void Open303UserInterface::handle_key_note()
 
 void Open303UserInterface::handle_key_osc()
 {
-  bool * keyState;
-  int  * keyRepeat;
-  int    lastEvent;
-  int    lastKey;
-
-  keyState=IE.keyState();
-  keyRepeat=IE.keyRepeat();
-  lastEvent=IE.lastEvent();
-  lastKey=IE.lastKey();
-
+  mapii keyState=IE.keyState();
+  mapii keyRepeat=IE.keyRepeat();
+  int    lastEvent=IE.lastEvent();
+  int    lastKey=IE.lastKey();
 
 
   // change GLOBALMENU_OSC SUBMENU
@@ -273,15 +256,10 @@ void Open303UserInterface::handle_key_osc()
 
 void Open303UserInterface::handle_key_vco()
 {
-  bool * keyState;
-  int  * keyRepeat;
-  int    lastEvent;
-  int    lastKey;
-
-  keyState=IE.keyState();
-  keyRepeat=IE.keyRepeat();
-  lastEvent=IE.lastEvent();
-  lastKey=IE.lastKey();
+  mapii keyState=IE.keyState();
+  mapii keyRepeat=IE.keyRepeat();
+  int    lastEvent=IE.lastEvent();
+  int    lastKey=IE.lastKey();
 
 
 
@@ -375,15 +353,10 @@ void Open303UserInterface::handle_key_vco()
 
 void Open303UserInterface::handle_key_lfo()
 {
-  bool * keyState;
-  int  * keyRepeat;
-  int    lastEvent;
-  int    lastKey;
-
-  keyState=IE.keyState();
-  keyRepeat=IE.keyRepeat();
-  lastEvent=IE.lastEvent();
-  lastKey=IE.lastKey();
+  mapii keyState=IE.keyState();
+  mapii keyRepeat=IE.keyRepeat();
+  int    lastEvent=IE.lastEvent();
+  int    lastKey=IE.lastKey();
 
   // change GLOBALMENU_VCO SUBMENU
   if (lastKey     ==  BUTTON_START  && 
@@ -408,16 +381,10 @@ void Open303UserInterface::handle_key_lfo()
 
 void Open303UserInterface::handle_key_fltr()
 {
-  bool * keyState;
-  int  * keyRepeat;
-  int    lastEvent;
-  int    lastKey;
-
-  keyState=IE.keyState();
-  keyRepeat=IE.keyRepeat();
-  lastEvent=IE.lastEvent();
-  lastKey=IE.lastKey();
-
+  mapii keyState=IE.keyState();
+  mapii keyRepeat=IE.keyRepeat();
+  int    lastEvent=IE.lastEvent();
+  int    lastKey=IE.lastKey();
 
   // GLOBALMENU_FLTR
   // Move Cutoff Resonance
