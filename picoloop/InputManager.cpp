@@ -1,22 +1,15 @@
 #include "InputManager.h"
 #include "Master.h"
-InputManager::InputManager() : key_state(new  bool[MAX_KEY]),
-			       key_repeat(new int[MAX_KEY])
+//InputManager::InputManager() : key_state(new  bool[MAX_KEY]),
+//			       key_repeat(new int[MAX_KEY])
+InputManager::InputManager()
 {
   int i=0;
-  //  key_state=NULL;
-  //  key_repeat=NULL;
   last_key=0;
   last_event=0;
-  quit=false;
-  escape=false;
-  //max_key=0;
+  quit=0;
+  escape=0;
 
-  for (i=0;i<MAX_KEY;i++)
-    key_state[i]=false;
-
-  for (i=0;i<MAX_KEY;i++)
-    key_repeat[i]=0;
 }
 
 InputManager::~InputManager()
@@ -32,25 +25,21 @@ void InputManager::init()
   int i=0;
   DPRINTF("InputManager::init() %d",i);
 
-  //key_state=NULL;
-  //  key_repeat=NULL;
-  last_key=0;
-  last_event=0;
-  quit=false;
-  escape=false;
-  //max_key=0;
-
-  //  if (key_state==NULL)
-  //    key_state=(bool*)malloc(sizeof(bool)*MAX_KEY);
-
-  //  if (key_repeat==NULL)
-  //    key_repeat=(int*)malloc(sizeof(int)*MAX_KEY);
+  key_state=malloc(sizeof(int)*MAX_KEY);
+  key_repeat=malloc(sizeof(int)*MAX_KEY);
 
   for (i=0;i<MAX_KEY;i++)
-    key_state[i]=false;
+    key_state[i]=0;
 
   for (i=0;i<MAX_KEY;i++)
     key_repeat[i]=0;
+
+
+  last_key=0;
+  last_event=0;
+  quit=0;
+  escape=0;
+
 }
 
 void InputManager::printState()
@@ -67,11 +56,11 @@ void InputManager::printState()
 }
 
 
-int InputManager::updateState(int symbol,bool state)
+int InputManager::updateState(int symbol,int state)
 {
   int i;
   key_state[symbol]=state;
-  if (state==false)
+  if (state==0)
     key_repeat[symbol]=0;
 
   if (state)
@@ -98,7 +87,7 @@ int InputManager::shouldExit()
 }
 
 
-bool * InputManager::keyState()
+int * InputManager::keyState()
 {
   return key_state;
 }
@@ -155,7 +144,7 @@ int InputManager::handleKey()
 	  last_key=event.key.keysym.sym;
 	  last_event=event.type;
 	  //last_event=2;
-	  this->updateState(event.key.keysym.sym,false);
+	  this->updateState(event.key.keysym.sym,0);
 	  break;
 
 	  
@@ -165,7 +154,7 @@ int InputManager::handleKey()
 	  last_key=event.key.keysym.sym;
 	  last_event=event.type;
 	  //last_event=3;
-	  this->updateState(event.key.keysym.sym,true);
+	  this->updateState(event.key.keysym.sym,1);
 	  break;
 
 	case SDL_JOYBUTTONUP:
@@ -174,7 +163,7 @@ int InputManager::handleKey()
 	  last_key=event.jbutton.button;
 	  last_event=event.type;
 	  //last_event=3;
-	  this->updateState(event.jbutton.button,false);
+	  this->updateState(event.jbutton.button,1);
 	  break;	 
 
 	case SDL_JOYBUTTONDOWN:
@@ -183,7 +172,7 @@ int InputManager::handleKey()
 	  last_key=event.jbutton.button;
 	  last_event=event.type;
 	  //last_event=3;
-	  this->updateState(event.jbutton.button,true);
+	  this->updateState(event.jbutton.button,1);
 	  break;
 
 
@@ -211,6 +200,6 @@ int InputManager::handleKey()
 
     }
   if (keypressrelease==0) //need to update the state to increment keypress
-    this->updateState(MAX_KEY,true); 
+    this->updateState(MAX_KEY,1); 
   return keypressrelease;
 }

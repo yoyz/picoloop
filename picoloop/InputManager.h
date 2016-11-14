@@ -1,11 +1,20 @@
 using namespace std;
 
-#include <SDL/SDL.h>
+//#include <SDL/SDL.h>
+#ifdef   __SDL12__               
+#include <SDL/SDL.h>             
+#endif // __SDL12__              
+#ifdef  __SDL20__                
+#include <SDL2/SDL.h>            
+#endif // __SDL20__              
+#include <map>
 
 #ifndef __INPUTMANAGER__
 #define __INPUTMANAGER__
 
+//#define MAX_KEY 512
 #define MAX_KEY 512
+//#define MAX_KEY 1<<32
 
 class InputManager
 {
@@ -15,22 +24,22 @@ public:
   void   init();
   int    handleKey();
   int    shouldExit();
-  int    updateState(int symbol,bool state);
+  int    updateState(int symbol,int state);
   void   printState();
   int    lastKey();
   int    lastEvent(); 
   void   clearLastKeyEvent();  
-  bool * keyState();
+  int * keyState();
   int  * keyRepeat();
 
  private:
 
-  bool  * key_state;            // [ 0,1, 0, 1,0,0....] value of key
+  int  * key_state;            // [ 0,1, 0, 1,0,0....] value of key
   int   * key_repeat;           // [ 0,12,0,32,0,0....] number of time handleKey is called 
   int     last_key;             // the last key   : SDLK_XXX number          || 0 if event cleared
   int    last_event;           // the last event : SDL_KEYUP || SDL_KEYDOWN || 0 if event cleared 
-  bool    quit;
-  bool    escape;
+  int    quit;
+  int    escape;
   //int     max_key;
 };
 

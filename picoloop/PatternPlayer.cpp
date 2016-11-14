@@ -1010,7 +1010,7 @@ void display_config()
 
 void handle_key_config()
 {
-  bool * keyState;
+  int  * keyState;
   int  * keyRepeat;
   int    lastEvent;
   int    lastKey;
@@ -1805,7 +1805,7 @@ void sub_handle_invert_trig()
 
 void handle_key_patternlenght()
 {
- bool * keyState;
+  int  * keyState;
   int  * keyRepeat;
   int    lastEvent;
   int    lastKey;
@@ -1879,7 +1879,7 @@ void handle_key_patternlenght()
 
 void handle_key_menu()
 {
-  bool * keyState;
+  int  * keyState;
   int  * keyRepeat;
   int    lastEvent;
   int    lastKey;
@@ -2116,7 +2116,7 @@ void handle_key_menu()
 
 void handle_key_sixteenbox()
 {
-  bool * keyState;
+  int  * keyState;
   int  * keyRepeat;
   int    lastEvent;
   int    lastKey;
@@ -2209,7 +2209,7 @@ void handle_key_sixteenbox()
 
 int handle_key_two_button(int buttonPressed,int buttonKeyRepeat,int repeatInterval,int machineParam,int paramValue,int all)
 {
-  bool * keyState;
+  int  * keyState;
   int  * keyRepeat;
   int    lastEvent;
   int    lastKey;
@@ -2249,7 +2249,7 @@ void handle_key_osc()
 
 void handle_key_fx()
 {
-  bool * keyState;
+  int  * keyState;
   int  * keyRepeat;
   int    lastEvent;
   int    lastKey;
@@ -2300,7 +2300,7 @@ void handle_key_vco()
 
 void handle_key_mac()
 {
-  bool * keyState;
+  int  * keyState;
   int  * keyRepeat;
   int    lastEvent;
   int    lastKey;
@@ -2343,7 +2343,7 @@ void handle_key_lfo()
 
 void handle_key_psh()
 {
-  bool * keyState;
+  int  * keyState;
   int  * keyRepeat;
   int    lastEvent;
   int    lastKey;
@@ -2382,7 +2382,7 @@ void handle_key_fltr()
 
 void handle_key_bpm()
 {
-  bool * keyState;
+  int  * keyState;
   int  * keyRepeat;
   int    lastEvent;
   int    lastKey;
@@ -2465,7 +2465,7 @@ void handle_key_bpm()
 
 void handle_key_load_save()
 {
-  bool * keyState;
+  int  * keyState;
   int  * keyRepeat;
   int    lastEvent;
   int    lastKey;
@@ -2710,7 +2710,7 @@ void handle_key_load_save()
 
 void handle_key_bank()
 {
-  bool * keyState;
+  int  * keyState;
   int  * keyRepeat;
   int    lastEvent;
   int    lastKey;
@@ -2828,7 +2828,7 @@ void handle_key()
 
   int  cty=SEQ.getCurrentTrackY();
   
-  bool * keyState;
+  int  * keyState;
   int  * keyRepeat;
   int    lastEvent;
   int    lastKey;
@@ -3719,7 +3719,12 @@ int seq()
   // init the thread midi used only with RTMIDI and if sync out is enabled
   if (menu_config_midiClockMode==MENU_CONFIG_Y_MIDICLOCK_SYNCOUT)
     {
+#ifdef __SDL12__
       thread_midiclock_send = SDL_CreateThread( thread_seq_send_midiclock, NULL );
+#endif
+#ifdef __SDL20__
+      thread_midiclock_send = SDL_CreateThread( thread_seq_send_midiclock, "midiclockthread", NULL );
+#endif
     }
   if (menu_config_midiClockMode==MENU_CONFIG_Y_MIDICLOCK_SYNCIN ||
       menu_config_midiClockMode==MENU_CONFIG_Y_MIDICLOCK_SYNCINTERNAL)

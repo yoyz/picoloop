@@ -38,7 +38,7 @@ void PicodrumUserInterface::handle_key(int menu)
 
 void PicodrumUserInterface::handle_key_amp_env()
 {
-  bool * keyState;
+  int  * keyState;
   int  * keyRepeat;
   int    lastEvent;
   int    lastKey;
@@ -270,8 +270,7 @@ void PicodrumUserInterface::handle_key_amp_env()
 
 void PicodrumUserInterface::handle_key_note()
 {
-
-  bool * keyState;
+  int  * keyState;
   int  * keyRepeat;
   int    lastEvent;
   int    lastKey;
@@ -330,7 +329,7 @@ void PicodrumUserInterface::handle_key_note()
 
 void PicodrumUserInterface::handle_key_osc()
 {
-  bool * keyState;
+  int  * keyState;
   int  * keyRepeat;
   int    lastEvent;
   int    lastKey;
@@ -391,7 +390,7 @@ void PicodrumUserInterface::handle_key_osc()
 
 void PicodrumUserInterface::handle_key_vco()
 {
-  bool * keyState;
+  int  * keyState;
   int  * keyRepeat;
   int    lastEvent;
   int    lastKey;
@@ -458,7 +457,7 @@ void PicodrumUserInterface::handle_key_vco()
 
 void PicodrumUserInterface::handle_key_lfo()
 {
-  bool * keyState;
+  int  * keyState;
   int  * keyRepeat;
   int    lastEvent;
   int    lastKey;
@@ -559,7 +558,7 @@ void PicodrumUserInterface::handle_key_lfo()
 
 void PicodrumUserInterface::handle_key_fltr()
 {
-  bool * keyState;
+  int  * keyState;
   int  * keyRepeat;
   int    lastEvent;
   int    lastKey;

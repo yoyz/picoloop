@@ -39,7 +39,7 @@ void PicosynthUserInterface::handle_key(int menu)
 
 void PicosynthUserInterface::handle_key_amp_env()
 {
-  bool * keyState;
+  int  * keyState;
   int  * keyRepeat;
   int    lastEvent;
   int    lastKey;
@@ -207,7 +207,7 @@ void PicosynthUserInterface::handle_key_amp_env()
 void PicosynthUserInterface::handle_key_note()
 {
 
-  bool * keyState;
+  int  * keyState;
   int  * keyRepeat;
   int    lastEvent;
   int    lastKey;
@@ -266,7 +266,8 @@ void PicosynthUserInterface::handle_key_note()
 
 void PicosynthUserInterface::handle_key_osc()
 {
-  bool * keyState;
+  
+  int  * keyState;
   int  * keyRepeat;
   int    lastEvent;
   int    lastKey;
@@ -360,7 +361,7 @@ void PicosynthUserInterface::handle_key_osc()
 
 void PicosynthUserInterface::handle_key_vco()
 {
-  bool * keyState;
+  int  * keyState;
   int  * keyRepeat;
   int    lastEvent;
   int    lastKey;
@@ -429,8 +430,8 @@ void PicosynthUserInterface::handle_key_vco()
 
 
 void PicosynthUserInterface::handle_key_lfo()
-{
-  bool * keyState;
+{  
+  int  * keyState;
   int  * keyRepeat;
   int    lastEvent;
   int    lastKey;
@@ -552,7 +553,7 @@ void PicosynthUserInterface::handle_key_lfo()
 
 void PicosynthUserInterface::handle_key_fltr()
 {
-  bool * keyState;
+  int  * keyState;
   int  * keyRepeat;
   int    lastEvent;
   int    lastKey;

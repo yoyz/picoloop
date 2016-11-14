@@ -25,7 +25,7 @@ SDL_GUI::~SDL_GUI()
 }
 
 
-
+#ifdef __SDL12__
 int SDL_GUI::initVideo()
 {
 
@@ -126,15 +126,59 @@ int SDL_GUI::initVideo()
   
   return 1;
 }
+#endif // __SDL12__
 
+#ifdef __SDL20__
+
+int SDL_GUI::initVideo()
+{
+  fprintf(stderr,"before SDL_Init\n");
+
+  if ( SDL_Init(SDL_INIT_VIDEO)<0)
+    {
+      DPRINTF("Couldn't initialize SDL: %s", SDL_GetError());
+      return 0;
+    }
+  fprintf(stderr,"After SDL_Init\n");
+  fprintf(stderr,"Before SDL_CreateWindow\n");
+  window = SDL_CreateWindow("Ma fenêtre de jeu",
+                            SDL_WINDOWPOS_UNDEFINED,
+                            SDL_WINDOWPOS_UNDEFINED,
+                            640, 480,
+                            SDL_WINDOW_SHOWN);
+
+  fprintf(stderr,"After SDL_CreateWindow\n");
+  if (window == NULL) {
+    // In the case that the window could not be made...
+    fprintf(stderr,"Could not create window: %s\n", SDL_GetError());
+    return 1;
+  }
+
+  screen=SDL_GetWindowSurface( window );
+}
+
+#endif
+
+
+#ifdef __SDL12__
 void SDL_GUI::refresh()
 {
   //SDL_LockSurface(screen);
   SDL_Flip(screen);
   //SDL_UnlockSurface(screen);
 }
+#endif
+
+#ifdef __SDL20__
+void SDL_GUI::refresh()
+{
+  DPRINTF("SDL_GUI::refresh()");
+  SDL_UpdateWindowSurface( window );
+}
+#endif // __SDL20__
 
 
+#ifdef __SDL12__
 void SDL_GUI::clearScreen()
 {
   extern int32_t * pal;
@@ -143,6 +187,18 @@ void SDL_GUI::clearScreen()
   SDL_FillRect(screen,NULL, SDL_MapRGB(screen->format, (pal[8]&0xFF0000)>>16,(pal[8]&0x00FF00)>>8,(pal[8]&0x0000FF)>>0));
 
 }
+#endif // __SDL12__
+
+#ifdef __SDL20__
+void SDL_GUI::clearScreen()
+{
+  extern int32_t * pal;
+  DPRINTF("SDL_GUI::clearScreen()");
+  //SDL_FillRect(screen,NULL, 0x000000);
+  SDL_FillRect(screen,NULL, pal[8]);
+}
+#endif
+
 
 
 int SDL_GUI::closeVideo()
@@ -380,7 +436,7 @@ int SDL_GUI::guiTTFText(int x,int y,const char *txt)
 }
 
 
-
+#ifdef __SDL12__
 SDL_Surface * SDL_GUI::loadBMP(const char *fn)
 {
   SDL_Surface *cvt;
@@ -391,6 +447,15 @@ SDL_Surface * SDL_GUI::loadBMP(const char *fn)
   SDL_FreeSurface(img);
   return cvt;
 }
+#endif //__SDL12__
+
+#ifdef __SDL20__
+SDL_Surface * SDL_GUI::loadBMP(const char *fn)
+{
+  // To be implemented, today loadBMP is not used
+}
+#endif
+
 
 
 void SDL_GUI::smallBoxNumber(int n,int x,int y,Uint32 c)

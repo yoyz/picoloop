@@ -4,7 +4,7 @@ using namespace std;
 #include "hiopl.h"
 
 #include "../../Filter.h"
-#include <SDL/SDL.h>
+//#include <SDL/SDL.h>
 #include "../../NoteFreq.h"
 //#include "Biquad.h"
 //#include "SineOscillator.h"

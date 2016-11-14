@@ -1,4 +1,12 @@
-#include <SDL/SDL_types.h>
+//#include <SDL/SDL_types.h>
+
+#ifdef   __SDL12__               
+#include <SDL/SDL.h>             
+#endif // __SDL12__              
+#ifdef  __SDL20__                
+#include <SDL2/SDL.h>            
+#endif // __SDL20__              
+
 #include "Master.h"
 #ifndef __WAVETABLE__
 #define __WAVETABLE__

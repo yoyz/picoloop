@@ -5,8 +5,13 @@
 #include <stdio.h>
 #include <string>
 #include "Master.h"
-#include <SDL/SDL.h>
-
+//#include <SDL/SDL.h>
+#ifdef   __SDL12__               
+#include <SDL/SDL.h>             
+#endif // __SDL12__              
+#ifdef  __SDL20__                
+#include <SDL2/SDL.h>            
+#endif // __SDL20__              
 
 
 /*

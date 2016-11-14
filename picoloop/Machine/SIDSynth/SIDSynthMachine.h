@@ -3,7 +3,7 @@
 #include "../../Machine.h"
 //#include "synthengine.h"
 //#include "fixed.h"
-#include <SDL/SDL.h>
+//#include <SDL/SDL.h>
 #include "../../NoteFreq.h"
 #include "sid.h"
 

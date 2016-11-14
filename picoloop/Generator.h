@@ -1,6 +1,14 @@
 using namespace std;
 
-#include <SDL/SDL_types.h>
+//#include <SDL/SDL_types.h>
+
+#ifdef   __SDL12__               
+#include <SDL/SDL.h>             
+#endif // __SDL12__              
+#ifdef  __SDL20__                
+#include <SDL2/SDL.h>            
+#endif // __SDL20__              
+
 #include <math.h>
 #include "Master.h"
 

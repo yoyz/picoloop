@@ -20,10 +20,15 @@ CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -D __R
 CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -D __RTMIDI__ -DLINUX_DESKTOP -ggdb   -DDUMP_AUDIO=1  -DDEBUGPRINTF -fpermissive
 CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -D __RTMIDI__ -DPC_DESKTOP -ggdb                   -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive
 
+
+CFLAGS_SDLVERS=-D__SDL20__
+CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -D __RTMIDI__ -DPC_DESKTOP -ggdb  ${CFLAGS_SDLVERS}                 -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive
+
 LDFLAGS=-lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread -pg
 LDFLAGS=-lasound -lSDL           -lSDL_ttf -lpthread -pg
 LDFLAGS=-lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread
 LDFLAGS=-lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread -lpulse -lpulse-simple -ljack
+LDFLAGS=-lasound -lSDL2 -lSDL2_ttf -lpthread -lpulse -lpulse-simple -ljack
 
 
 OBJTOLINK=RtAudio.o
@@ -34,13 +39,14 @@ SOURCES=Machine.cpp Track.cpp AudioMixer.cpp AudioEngine.cpp PatternElement.cpp 
 
 #Machine.cpp Track.cpp AudioMixer.cpp AudioEngine.cpp PatternElement.cpp Pattern.cpp PatternPlayer.cpp PatternReader.cpp Oscillator.cpp OneOscillator.cpp MonoMixer.cpp ADSR.cpp SDL_GUI.cpp VCO.cpp Sequencer.cpp InputManager.cpp Biquad.cpp PatternSequencer.cpp AudioDriverRTAudio.cpp PicosynthMachine.cpp  PicodrumMachine.cpp dbopl/dbopl.cpp dbopl/hiopl.cpp DboplMachine.cpp Filter.cpp AMSynthLowPassFilter.cpp Effect.cpp EffectDelay.cpp SongSequencer.cpp WaveTableManager.cpp WaveTable.cpp Generator.cpp 
 
+# 		      Synth.cpp                \
+#		      Instrument.cpp           \
+
 SOURCES=PatternPlayer.cpp \
 		      SDL_GUI.cpp              \
 		      SYSTEMLINUX.cpp	       \
 		      AudioEngine.cpp          \
 		      AudioDriverRTAudio.cpp   \
-		      Instrument.cpp           \
-		      Synth.cpp                \
 		      Oscillator.cpp           \
 		      OneOscillator.cpp        \
 		      Biquad.cpp               \
@@ -250,7 +256,7 @@ $(EXECUTABLE): $(DEPENDENCYINOBJDIR) $(OBJECTSINOBJDIR)
 
 # the .d file contain the dependency
 $(OBJDIR)/%.d : %.cpp %.h
-	$(CC) -I. -MM $< -o $@
+	$(CC) $(CFLAGS_SDLVERS) -I. -MM $< -o $@
 
 $(OBJDIR)/%.o : %.cpp 
 	$(CC) $(CFLAGS) $< -o $@
@@ -263,11 +269,11 @@ $(OBJDIR)/%.o : %.cpp
 
 # SYSTEMLINUX.d does have a .h which is SYSTEM.h, so it need a tweaks
 $(OBJDIR)/SYSTEMLINUX.d:SYSTEMLINUX.cpp 
-	$(CC) -I. -MM $< -o $@ 
+	$(CC) $(CFLAGS_SDLVERS) -I. -MM $< -o $@ 
 
 # PatternPlayer.d does have a .h which is system.h
 PatternPlayer.d:PatternPlayer.cpp
-	$(CC) -std=c++11 -I. -MM $< -o $@ 
+	$(CC) $(CFLAGS_SDLVERS) -std=c++11 -I. -MM $< -o $@ 
 
 
 clean:

@@ -38,7 +38,7 @@ void PBSynthUserInterface::handle_key(int menu)
 
 void PBSynthUserInterface::handle_key_amp_env()
 {
-  bool * keyState;
+  int  * keyState;
   int  * keyRepeat;
   int    lastEvent;
   int    lastKey;
@@ -273,8 +273,7 @@ void PBSynthUserInterface::handle_key_amp_env()
 
 void PBSynthUserInterface::handle_key_note()
 {
-
-  bool * keyState;
+  int  * keyState;
   int  * keyRepeat;
   int    lastEvent;
   int    lastKey;
@@ -333,7 +332,7 @@ void PBSynthUserInterface::handle_key_note()
 
 void PBSynthUserInterface::handle_key_osc()
 {
-  bool * keyState;
+  int  * keyState;
   int  * keyRepeat;
   int    lastEvent;
   int    lastKey;
@@ -428,7 +427,7 @@ void PBSynthUserInterface::handle_key_osc()
 
 void PBSynthUserInterface::handle_key_vco()
 {
-  bool * keyState;
+  int  * keyState;
   int  * keyRepeat;
   int    lastEvent;
   int    lastKey;
@@ -533,7 +532,7 @@ void PBSynthUserInterface::handle_key_vco()
 
 void PBSynthUserInterface::handle_key_lfo()
 {
-  bool * keyState;
+  int  * keyState;
   int  * keyRepeat;
   int    lastEvent;
   int    lastKey;
@@ -634,7 +633,7 @@ void PBSynthUserInterface::handle_key_lfo()
 
 void PBSynthUserInterface::handle_key_fltr()
 {
-  bool * keyState;
+  int  * keyState;
   int  * keyRepeat;
   int    lastEvent;
   int    lastKey;

@@ -1,8 +1,24 @@
+#include <string>
+
+
+#ifdef   __SDL12__
 #include <SDL/SDL.h>
+#include <SDL/SDL_video.h>
 #include <SDL/SDL_audio.h>
 #include "SDL/SDL_image.h"
 #include "SDL/SDL_ttf.h"
-#include <string>
+#endif // __SDL12__
+
+#ifdef  __SDL20__
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_audio.h>
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_video.h>
+typedef struct SDL_Window SDL_Window;
+#endif // __SDL20__
+
+
 
 #include "Master.h"
 #ifndef __SDL_GUI__
@@ -81,6 +97,10 @@ class SDL_GUI
 
   int boxSize;
   int boxOffset;
+
+#ifdef __SDL20__
+  SDL_Window * window;
+#endif
 
 };
 

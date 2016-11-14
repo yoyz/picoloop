@@ -19,7 +19,7 @@ using namespace std;
 //#include "Effect.h"
 #include "EffectDelay.h"
 #include "EffectDisabled.h"
-#include <SDL/SDL_types.h>
+//#include <SDL/SDL_types.h>
 
 #ifndef __MONOMIXER____
 #define __MONOMIXER____

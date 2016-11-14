@@ -1,6 +1,17 @@
 #ifndef __MASTER____
 #define __MASTER____
+
+#if !defined(__SDL20__) && !defined(__SDL12__)
+#error "SDL1.2 or SDL2.0 are mandatory, you should put -D__SDL12 or -D__SDL20__ in the CFLAGS"
+#endif
+
+#ifdef   __SDL12__
 #include <SDL/SDL.h>
+#endif
+#ifdef  __SDL20__
+#include <SDL2/SDL.h>
+#endif
+
 
 #define PICOLOOP_VERSION "0.75b"
 //#define INTERNAL_BUFFER_SIZE 128*1024   

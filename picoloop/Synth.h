@@ -1,5 +1,7 @@
-#include <SDL/SDL.h>
-#include <SDL/SDL_audio.h>
+
+
+//#include <SDL/SDL.h>
+//#include <SDL/SDL_audio.h>
 #include <queue>
 #include <cmath>
 
