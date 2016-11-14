@@ -75,6 +75,7 @@ int InputManager::updateStateNoKeyPress()
   for (i=0;i<MAX_KEY;i++)
     if (m_key_state[i])
       m_key_repeat[i]=m_key_repeat[i]+1;
+  return 0;
 }
 #endif
 
@@ -106,13 +107,14 @@ int InputManager::updateState(int symbol,int state)
 {
   int i;
   m_key_state[symbol]=state;
-  if (state==false)
+  if (state==0)
     m_key_repeat[symbol]=0;
   
   if (state)
     for (i=0;i<MAX_KEY;i++)
       if (m_key_state[i])
 	m_key_repeat[i]=m_key_repeat[i]+1;
+  return 0;
 }
 #endif
 
@@ -211,7 +213,7 @@ int InputManager::handleKey()
 	  joy=1;
 	  last_key=event.jbutton.button;
 	  last_event=event.type;
-	  this->updateState(event.jbutton.button,1);
+	  this->updateState(event.jbutton.button,0);
 	  break;	 
 
 	case SDL_JOYBUTTONDOWN:
