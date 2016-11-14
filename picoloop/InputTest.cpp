@@ -18,29 +18,33 @@ int main()
   IE.init();
   SG.initVideo();
   
-  int  * key_state;
-  int  * key_repeat;
+  mapii key_state;
+  mapii key_repeat;
   int    last_event;
   int    last_key;
 
   while (true)
     {
-
-      //printf("%d %d ",SDLK_p, SDLK_m);
-      //printf("launch InputManager::.handleKey()\n");
       IE.handleKey();
       key_state=IE.keyState();
       key_repeat=IE.keyRepeat();
       last_event=IE.lastEvent();
       last_key=IE.lastKey();
-      //if (key_state[SDLK_LEFT])
-      //if (IE.lastEvent()==0 && IE.lastKey()==SDLK_LEFT)
+
       if (last_key   == BUTTON_A && 
 	  last_event == KEYPRESSED)
 	{
-	  printf("LEFT:%d\n",key_repeat[SDLK_LEFT]);	  
+	  printf("A:%d\n",key_repeat[BUTTON_A]);	  
 	  //IE.clearLastKeyEvent();
 	}
+      if (key_state[BUTTON_B]      &&
+	  key_state[BUTTON_START]  &&
+	  last_event == KEYPRESSED)
+	{
+	  printf("B+START:%d\n",key_repeat[BUTTON_B]);	  
+	  //IE.clearLastKeyEvent();
+	}
+
       
       //IE.printState();
       SDL_Delay(10);

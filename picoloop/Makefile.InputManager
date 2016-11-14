@@ -1,6 +1,13 @@
 CC=g++
+
 CFLAGS=-c -DLINUX -I. -LSDL/lib -ggdb  -D__SDL12__ -fpermissive -DPC_DESKTOP
+CFLAGS=-c -DLINUX -I. -LSDL/lib -ggdb  -D__SDL20__ -fpermissive -DPC_DESKTOP
+CFLAGS=-c -DLINUX -I. -LSDL/lib -ggdb  -D__SDL12__ -fpermissive -DPC_DESKTOP
+CFLAGS=-c -DLINUX -I. -LSDL/lib -ggdb  -D__SDL20__ -fpermissive -DPC_DESKTOP
 LDFLAGS=-lSDL -lSDL_ttf
+LDFLAGS=-lSDL2 -lSDL2_ttf
+LDFLAGS=-lSDL -lSDL_ttf
+LDFLAGS=-lSDL2 -lSDL2_ttf
 SOURCES=InputManager.cpp SDL_GUI.cpp InputTest.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=InputTest
