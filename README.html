@@ -180,19 +180,24 @@ Each synth engine has different kind of parameter.</p>
 
 <p>Every pattern is stored in the bank/bankXXX/file so if you backup this directory you should be fine.</p>
 
-<p>You can write pattern on Dingux and push it on your laptop, unfortunately, it could sound little different.
-This is not the case for PSP which is able to sound the same.
-You won't be able to push pattern from PC to PSP/Opendingux, it could work but it depend if the Machine is available on the PSP.</p>
+<p>You can write pattern on OpenDingux and push it on your laptop, unfortunately, it could sound little different.
+The OpenDingux a320 lack FPU so every thing is done in fixed point.
+On PC and PSP it's done in floating point...</p>
 
-<p>The combo Select+UP, Select+Down allow you to raise or decrease the volume.</p>
+<p>You won't be able to push pattern from PC to PSP/Opendingux, it could work but it depend if the Machine is available on the PSP.
+Today ( picoloop 0.75c ) only Picosynth, Picodrum, DBopl and PBSynth are available on slower platform : PSP, opendingux.</p>
+
+<p>The combo Select+UP, Select+Down allow you to raise or decrease the internal volume of the apps</p>
 
 <p>If you plug on Windows/Linux a midi cable you can use it with midi sync in or midi sync out.
 The MMC message ( "play", "stop" ) are received by picoloop, but it doesn't transmit this kind of message.
 It understand the "stop" and "play" MMC message. </p>
 
+<p>You can use midi delay to fine tune the sync between midi hardware and picoloop software.</p>
+
 <p>The MDA Drum synth works with file patch ".ds" file.
 So if you have a laptop with a harddrive which is not an ssd, you should work with a PSU and not the battery to
-avoid disk shutdown. The automatic disk shutdown will block audio for 10ms and it became audible.
+avoid disk spinning down. The automatic disk shutdown will block audio for 10ms and it became really audible.
 Will be fixed in a latter version.</p>
 
 <h3>Package dependency, build from source</h3>
@@ -210,15 +215,16 @@ On most platform in 2016, you will need this kind of package.</p>
 
 <h4>LASTEST SOURCE</h4>
 
-<p>You can always download the lastest source.
-But, you should probably switch to a tag then.</p>
+<p>You can always update to the lastest source.
+But, you should then switch to a tag.</p>
 
 <p><tt> # git clone https://github.com/yoyz/audio.git </tt> </br>
 <tt> # git tag </tt> </br>
 <tt> # git checkout picoloop-0.75b </tt> </br></p>
 
-<p>Tag should be safier.
-And today, it's a known issue, the build of PatternPlayer need two build.
+<p>Tag are safier.
+And today, there is a known issue, the build of PatternPlayer need two build.
+The issue come from the "mkdir" which is launch after the other command, so every thing seem to fail on the first make...
 Unfortunately I have not fixed this issue because you fall into this issue only when cloning the software from the repo.</p>
 
 <h4>COMPILATION FOR DEBIAN</h4>
