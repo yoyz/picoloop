@@ -212,9 +212,11 @@ But, you should probably switch to a tag then.
 
 <tt> # git clone https://github.com/yoyz/audio.git </tt> </br>
 <tt> # git tag </tt> </br>
-<tt> # git checkout picoloop-0.69 </tt> </br>
+<tt> # git checkout picoloop-0.75b </tt> </br>
 
 Tag should be safier.
+And today, it's a known issue, the build of PatternPlayer need two build.
+Unfortunately I have not fixed this issue because you fall into this issue only when cloning the software from the repo.
 
 
 #### COMPILATION FOR DEBIAN ####
@@ -225,6 +227,7 @@ Tag should be safier.
      # make -f Makefile.PatternPlayer_debian_RtAudio clean
      # make -f Makefile.RtAudio_debian
      # make -f Makefile.RtMidi_debian
+     # make -f Makefile.PatternPlayer_debian_RtAudio
      # make -f Makefile.PatternPlayer_debian_RtAudio
 
 #### COMPILATION FOR POCKETCHIP ####
@@ -237,6 +240,7 @@ You have to build it on the pocketchip.
      # make -f Makefile.PatternPlayer_pocketchip_RtAudio clean
      # make -f Makefile.RtAudio_pocketchip
      # make -f Makefile.RtMidi_pocketchip
+     # make -f Makefile.PatternPlayer_pocketchip_RtAudio
      # make -f Makefile.PatternPlayer_pocketchip_RtAudio
 
 
@@ -251,6 +255,7 @@ This build type is a light version like the opendingux one.
      # make -f Makefile.PatternPlayer_raspi1_RtAudio    clean
      # make -f Makefile.RtAudio_raspi1                  
      # make -f Makefile.PatternPlayer_raspi1_RtAudio    
+     # make -f Makefile.PatternPlayer_raspi1_RtAudio    
 
 
 #### COMPILATION FOR OPENDINGUX ####
@@ -264,6 +269,7 @@ you can fetch fetch it there : http://www.treewalker.org/opendingux/
 
      # make -j 64 -f Makefile.RtAudio_opendingux
      # make -j 64 -f Makefile.PatternPlayer_opendingux_RtAudio
+     # make -j 64 -f Makefile.PatternPlayer_opendingux_RtAudio
 
 #### COMPILATION FOR GP2X ####
 
@@ -276,6 +282,7 @@ I don't have build it month ago, so at your own risk.
      # make -j 64 -f Makefile.PatternPlayer_opendingux_RtAudio clean
 
      # make -j 64 -f Makefile.RtAudio_opendingux
+     # make -j 64 -f Makefile.PatternPlayer_opendingux_RtAudio
      # make -j 64 -f Makefile.PatternPlayer_opendingux_RtAudio
 
 
@@ -292,7 +299,8 @@ So here it is a "cross build" you build on linux for windows.
      # make       -f Makefile.PatternPlayer_windows_mingw_RtAudio          clean
      # make       -f Makefile.RtAudio_windows                              
      # make       -f Makefile.RtMidi_windows                               
-     # make       -f Makefile.PatternPlayer_windows_mingw_RtAudio -j 64
+     # make       -f Makefile.PatternPlayer_windows_mingw_RtAudio 
+     # make       -f Makefile.PatternPlayer_windows_mingw_RtAudio 
 
 
 #### COMPILATION FOR PSP ####
@@ -303,6 +311,7 @@ All can be fetched here : https://github.com/pspdev
      # cd      picoloop
      # source ~/local/pspdev/env_build
      # make -f Makefile.PatternPlayer_psp_SDL        clean
+     # make -f Makefile.PatternPlayer_psp_SDL 
      # make -f Makefile.PatternPlayer_psp_SDL 
 
 
