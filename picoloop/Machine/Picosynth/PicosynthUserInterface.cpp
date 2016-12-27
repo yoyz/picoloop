@@ -42,12 +42,6 @@ void PicosynthUserInterface::handle_key(int menu)
 
 void PicosynthUserInterface::handle_key_amp_env()
 {
-  mapii keyState=IE.keyState();
-  mapii keyRepeat=IE.keyRepeat();
-  int    lastEvent=IE.lastEvent();
-  int    lastKey=IE.lastKey();
-  
-  
   // GLOBALMENU_AD AMP
   // Move Attack Release 
   // Insert/Remove Trig
@@ -72,11 +66,6 @@ void PicosynthUserInterface::handle_key_amp_env()
 
 void PicosynthUserInterface::handle_key_note()
 {
-  mapii keyState=IE.keyState();
-  mapii keyRepeat=IE.keyRepeat();
-  int    lastEvent=IE.lastEvent();
-  int    lastKey=IE.lastKey();
-
   // GLOBALMENU_NOTE
   // change note
   // copy/paste
@@ -91,21 +80,16 @@ void PicosynthUserInterface::handle_key_note()
 
 void PicosynthUserInterface::handle_key_osc()
 {
-  mapii keyState=IE.keyState();
-  mapii keyRepeat=IE.keyRepeat();
-  int    lastEvent=IE.lastEvent();
-  int    lastKey=IE.lastKey();
-
   // GLOBALMENU_OSC
   // change oscilltor one and two type
 
-  helper_handle_key_two_button(GLOBALMENU_OSC, MENU_OSC_OSC1OSC2, KEY_REPEAT_INTERVAL_LONG,
+  helper_handle_key_two_button(GLOBALMENU_OSC, MENU_PAGE0_SUB0, KEY_REPEAT_INTERVAL_LONG,
 			       OSC1_TYPE,
 			       OSC2_TYPE,
 			       1,1);
 
 
-  helper_handle_key_two_button(GLOBALMENU_OSC, MENU_OSC_OSC1SCALE_OSC2SCALE, KEY_REPEAT_INTERVAL_LONG,
+  helper_handle_key_two_button(GLOBALMENU_OSC, MENU_PAGE0_SUB1, KEY_REPEAT_INTERVAL_LONG,
 			       OSC1_SCALE,
 			       OSC2_SCALE,
 			       1,1);
@@ -117,18 +101,11 @@ void PicosynthUserInterface::handle_key_osc()
 
 void PicosynthUserInterface::handle_key_vco()
 {
-  mapii keyState=IE.keyState();
-  mapii keyRepeat=IE.keyRepeat();
-  int    lastEvent=IE.lastEvent();
-  int    lastKey=IE.lastKey();
-
-
-
   // GLOBALMENU_VCO
   // VCO Menu
   // Change Value
 
-  helper_handle_key_two_button(GLOBALMENU_VCO, MENU_VCO_OSCMIX_PHASE, KEY_REPEAT_INTERVAL_SMALLEST,
+  helper_handle_key_two_button(GLOBALMENU_VCO, MENU_PAGE0_SUB0, KEY_REPEAT_INTERVAL_SMALLEST,
 			       VCO_MIX,
 			       OSC1_DETUNE,
 			       1,1);
@@ -144,11 +121,6 @@ void PicosynthUserInterface::handle_key_vco()
 
 void PicosynthUserInterface::handle_key_lfo()
 {  
-  mapii keyState=IE.keyState();
-  mapii keyRepeat=IE.keyRepeat();
-  int    lastEvent=IE.lastEvent();
-  int    lastKey=IE.lastKey();
-
   // GLOBALMENU_LFO
   // LFO Menu
   // Change Value
@@ -176,12 +148,6 @@ void PicosynthUserInterface::handle_key_lfo()
 
 void PicosynthUserInterface::handle_key_fltr()
 {
-  mapii keyState=IE.keyState();
-  mapii keyRepeat=IE.keyRepeat();
-  int    lastEvent=IE.lastEvent();
-  int    lastKey=IE.lastKey();
-
-
   // GLOBALMENU_FLTR
   // Move Cutoff Resonance
   // Insert/Remove Trig
@@ -311,10 +277,7 @@ void PicosynthUserInterface::display_board(int menu)
 void PicosynthUserInterface::display_board_amp_env()
 {
   DPRINTF("PicosynthUserInterface::display_board_amp_env()");
-  int  i;
-  int  cty=SEQ.getCurrentTrackY();
-  int  step=SEQ.getPatternSequencer(cty).getStep();
-  // Attack/Release
+
   if (menu_cursor==GLOBALMENU_AD)
     {
       if (menu_sub>MENU_PAGE0_SUB2)
@@ -379,14 +342,13 @@ void PicosynthUserInterface::display_board_note()
 
 void PicosynthUserInterface::display_board_vco()
 {
-  if (menu_sub>MENU_PAGE0_SUB0)
-    { menu_sub=MENU_PAGE0_SUB0; }
-
   //VCO
-  if (menu_cursor == GLOBALMENU_VCO  && 
-      menu_sub    == MENU_VCO_OSCMIX_PHASE)
+  if (menu_cursor == GLOBALMENU_VCO)
     {
-      display_board_two_param(VCO_MIX,OSC1_DETUNE);
+      if (menu_sub>MENU_PAGE0_SUB0)
+	{ menu_sub=MENU_PAGE0_SUB0; }
+
+      if (menu_sub    == MENU_PAGE0_SUB0) display_board_two_param(VCO_MIX,OSC1_DETUNE);
     }
 }
 
@@ -412,45 +374,24 @@ void PicosynthUserInterface::display_board_osc()
 
 void PicosynthUserInterface::display_board_lfo()
 {
-  if (menu_sub>MENU_PAGE0_SUB2)
-    { menu_sub=MENU_PAGE0_SUB0; }
-  
-  // LFOPITCH
-
-  if (menu_cursor==GLOBALMENU_LFO &&
-      menu_lfo   ==MENU_PAGE0_SUB0)
+  if (menu_cursor==GLOBALMENU_LFO)
     {
-      display_board_two_param(LFO1_DEPTH,LFO1_FREQ);
-    }
-
-  // PITCHBEND
-
-  if (menu_cursor==GLOBALMENU_LFO &&
-      menu_sub   ==MENU_PAGE0_SUB1)
-    {
-      display_board_two_param(PITCHBEND_DEPTH,PITCHBEND_SPEED);
-    }
-
-  if (menu_cursor==GLOBALMENU_LFO &&
-      menu_sub==MENU_LFO_TYPE)
-    {
-      display_board_one_param_text(LFO_TYPE);
+      if (menu_sub>MENU_PAGE0_SUB2)
+	{ menu_sub=MENU_PAGE0_SUB0; }
+      
+      // LFOPITCH   // PITCHBEND
+      if (menu_sub==MENU_PAGE0_SUB0) display_board_two_param(LFO1_DEPTH,LFO1_FREQ);
+      if (menu_sub==MENU_PAGE0_SUB1) display_board_two_param(PITCHBEND_DEPTH,PITCHBEND_SPEED);
+      if (menu_sub==MENU_PAGE0_SUB2) display_board_one_param_text(LFO_TYPE);
     }
 }
-
 
 void PicosynthUserInterface::display_board_fltr()
 {
   if (menu_cursor==GLOBALMENU_FLTR)
     {
-      if (menu_sub==MENU_FLTR_CUTOFF_RESONANCE)
-	{
-	  display_board_two_param(FILTER1_RESONANCE,FILTER1_CUTOFF);
-	}
-      if (menu_sub==MENU_FLTR_ALGO_TYPE)
-	{
-	  display_board_two_param_text(FILTER1_ALGO,FILTER1_TYPE);
-	}
+      if (menu_sub==MENU_PAGE0_SUB0) display_board_two_param(FILTER1_RESONANCE,FILTER1_CUTOFF);
+      if (menu_sub==MENU_PAGE0_SUB1) display_board_two_param_text(FILTER1_ALGO,FILTER1_TYPE);
     }
 }
 
