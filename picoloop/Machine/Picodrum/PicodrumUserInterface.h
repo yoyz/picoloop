@@ -44,13 +44,15 @@ extern TweakableKnob  TK;          // used to  store "variation" which will be a
 
 extern int menu;
 extern int menu_cursor;
+extern int menu_sub;
+/* BEGIN this next one should be removed */
 extern int menu_ad;
 extern int menu_note;
 extern int menu_vco;
 extern int menu_osc;
 extern int menu_lfo;
 extern int menu_fltr;
-
+/* END this next one should be removed */
 extern int dirty_graphic;
 
 extern int cursor;

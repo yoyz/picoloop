@@ -379,28 +379,23 @@ void PicosynthUserInterface::display_board_note()
 
 void PicosynthUserInterface::display_board_vco()
 {
-  int  i;
-  int  cty=SEQ.getCurrentTrackY();
-  int  step=SEQ.getPatternSequencer(cty).getStep();
-
   if (menu_sub>MENU_PAGE0_SUB0)
     { menu_sub=MENU_PAGE0_SUB0; }
 
-  // VCO
+  //VCO
   if (menu_cursor == GLOBALMENU_VCO  && 
       menu_sub    == MENU_VCO_OSCMIX_PHASE)
     {
       display_board_two_param(VCO_MIX,OSC1_DETUNE);
     }
-
 }
 
 void PicosynthUserInterface::display_board_osc()
 {
-  int  i;
-  int  cty=SEQ.getCurrentTrackY();
-  int  step=SEQ.getPatternSequencer(cty).getStep();
+  if (menu_sub>MENU_PAGE0_SUB1)
+    { menu_sub=MENU_PAGE0_SUB0; }
 
+  
   if (menu_cursor==GLOBALMENU_OSC &&
       menu_sub   ==MENU_PAGE0_SUB0)
     {
@@ -417,28 +412,27 @@ void PicosynthUserInterface::display_board_osc()
 
 void PicosynthUserInterface::display_board_lfo()
 {
-  int  i;
-  int  cty=SEQ.getCurrentTrackY();
-  int  step=SEQ.getPatternSequencer(cty).getStep();
-
+  if (menu_sub>MENU_PAGE0_SUB2)
+    { menu_sub=MENU_PAGE0_SUB0; }
+  
   // LFOPITCH
 
   if (menu_cursor==GLOBALMENU_LFO &&
-      menu_lfo   ==MENU_LFO_LFOPITCH)
+      menu_lfo   ==MENU_PAGE0_SUB0)
     {
-
       display_board_two_param(LFO1_DEPTH,LFO1_FREQ);
     }
 
   // PITCHBEND
 
   if (menu_cursor==GLOBALMENU_LFO &&
-      menu_sub   ==MENU_LFO_PITCHBEND)
+      menu_sub   ==MENU_PAGE0_SUB1)
     {
       display_board_two_param(PITCHBEND_DEPTH,PITCHBEND_SPEED);
     }
 
-  if (menu_sub==MENU_LFO_TYPE)
+  if (menu_cursor==GLOBALMENU_LFO &&
+      menu_sub==MENU_LFO_TYPE)
     {
       display_board_one_param_text(LFO_TYPE);
     }
@@ -447,13 +441,8 @@ void PicosynthUserInterface::display_board_lfo()
 
 void PicosynthUserInterface::display_board_fltr()
 {
-  int  i;
-  int  cty=SEQ.getCurrentTrackY();
-  int  step=SEQ.getPatternSequencer(cty).getStep();
-
   if (menu_cursor==GLOBALMENU_FLTR)
     {
-
       if (menu_sub==MENU_FLTR_CUTOFF_RESONANCE)
 	{
 	  display_board_two_param(FILTER1_RESONANCE,FILTER1_CUTOFF);

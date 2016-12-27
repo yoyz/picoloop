@@ -69,17 +69,15 @@ int PicodrumMachine::checkI(int what,int val)
 
     case FILTER1_TYPE:
       if (val<0) return 0;
-      if (val>3) return 3;
+      if (val>=FILTER_TYPE_SIZE-1) return FILTER_TYPE_SIZE-1;
       return val;
       break;
 
     case FILTER1_ALGO:
       if (val<0) return 0;
-      if (val>2) return 2;
+      if (val>=FILTER_ALGO_SIZE-1) return FILTER_ALGO_SIZE-1;
       return val;
       break;
-
-
 
     default:
       if (val<0)   return 0;
