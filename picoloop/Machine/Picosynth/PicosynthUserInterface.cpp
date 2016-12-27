@@ -75,7 +75,7 @@ void PicosynthUserInterface::handle_key_note()
 			       NOTE1,
 			       1,12);
 
-  helper_change_sub_menu(MENU_PAGE0_SUB0); // minus 1
+  helper_change_sub_menu(MENU_PAGE0_SUB0);
 }
 
 void PicosynthUserInterface::handle_key_osc()
@@ -283,14 +283,9 @@ void PicosynthUserInterface::display_board_amp_env()
       if (menu_sub>MENU_PAGE0_SUB2)
 	{ menu_sub=MENU_PAGE0_SUB0; }
 
-      if (menu_sub==MENU_PAGE0_SUB0)
-	display_board_two_param(ADSR_AMP_RELEASE,ADSR_AMP_ATTACK);
-
-      if (menu_sub==MENU_PAGE0_SUB1)
-	display_board_two_param(ADSR_AMP_DECAY,ADSR_AMP_SUSTAIN);
-
-      if (menu_sub==MENU_PAGE0_SUB2)
-	display_board_two_param(AMP,TRIG_TIME_DURATION);	
+      if (menu_sub==MENU_PAGE0_SUB0) display_board_two_param(ADSR_AMP_RELEASE,ADSR_AMP_ATTACK);
+      if (menu_sub==MENU_PAGE0_SUB1) display_board_two_param(ADSR_AMP_DECAY,ADSR_AMP_SUSTAIN);
+      if (menu_sub==MENU_PAGE0_SUB2) display_board_two_param(AMP,TRIG_TIME_DURATION);	
     }  
 }
 
@@ -354,19 +349,13 @@ void PicosynthUserInterface::display_board_vco()
 
 void PicosynthUserInterface::display_board_osc()
 {
-  if (menu_sub>MENU_PAGE0_SUB1)
-    { menu_sub=MENU_PAGE0_SUB0; }
-
+  if (menu_cursor==GLOBALMENU_OSC)
+    {
+      if (menu_sub>MENU_PAGE0_SUB1)
+	{ menu_sub=MENU_PAGE0_SUB0; }
   
-  if (menu_cursor==GLOBALMENU_OSC &&
-      menu_sub   ==MENU_PAGE0_SUB0)
-    {
-      display_board_two_param_text(OSC1_TYPE,OSC2_TYPE);
-    }
-  if (menu_cursor==GLOBALMENU_OSC &&
-      menu_sub   ==MENU_PAGE0_SUB1)
-    {
-      display_board_two_param_number(OSC1_SCALE,OSC2_SCALE);
+      if (menu_sub   ==MENU_PAGE0_SUB0) display_board_two_param_text(OSC1_TYPE,OSC2_TYPE);
+      if (menu_sub   ==MENU_PAGE0_SUB1) display_board_two_param_number(OSC1_SCALE,OSC2_SCALE);	
     }
 
 }
