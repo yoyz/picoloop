@@ -332,11 +332,15 @@ int   menu_config_y=0;              // current selected item in menu_config
 int menu_cursor=GLOBALMENU_AD;      // index int the menu
 int menu=MENU_ON_PAGE1;             // menu mode
 int menu_note=ENABLE;
+int menu_sub=0;
+/* BEGIN this next one should be removed */
 int menu_ad=MENU_AD_AMP_ATTACK_RELEASE;
 int menu_osc=MENU_OSC_OSC1OSC2;
 int menu_vco=MENU_VCO_OSCMIX_PHASE;
 int menu_lfo=MENU_LFO_LFOPITCH;
 int menu_fltr=MENU_FLTR_CUTOFF_RESONANCE;
+/* END this next one should be removed */
+
 int menu_fx=MENU_FX_DEPTH_SPEED;
 int menu_ls=MENU_LS_PATTERN;
 
@@ -543,6 +547,7 @@ void init_cursor_display_offset_cursor_max_pos(int track)
   if (pattern_cursor_max_pos[track]>15)
     pattern_cursor_max_pos[track]=15;
 }
+
 
 
 //char * tmp_str;
@@ -2193,6 +2198,47 @@ void handle_key_sixteenbox()
 	  dirty_graphic=1;
 	}
     }
+}
+
+
+void helper_handle_key_two_button(int menu_cursor_tc,
+				  int menu_ad_tc,
+				  int key_repeat_interval,
+				  int param1,
+				  int param2,
+				  int inc_param1,
+				  int inc_param2
+				  )
+{
+  if (menu          == MENU_OFF && 
+      menu_cursor   == menu_cursor_tc     &&
+      menu_sub       == menu_ad_tc)
+    {
+      // Insert/Remove Trig
+      sub_handle_invert_trig();
+ 
+      handle_key_two_button( BUTTON_B, BUTTON_LEFT,    key_repeat_interval, param1, -inc_param1, 0);
+      handle_key_two_button( BUTTON_B, BUTTON_RIGHT,   key_repeat_interval, param1,  inc_param1, 0);
+
+      handle_key_two_button( BUTTON_B, BUTTON_UP,      key_repeat_interval, param2,   inc_param2, 0);
+      handle_key_two_button( BUTTON_B, BUTTON_DOWN,    key_repeat_interval, param2,  -inc_param2, 0);
+
+    }  
+
+  // GLOBALMENU_AD AMP
+  // Move Attack Release 
+  // Insert/Remove Trig
+  if (menu          != MENU_OFF && 
+      menu_cursor   == menu_cursor_tc     &&
+      menu_sub      == menu_ad_tc)
+    {
+      handle_key_two_button( BUTTON_A, BUTTON_LEFT,    key_repeat_interval, param1, -inc_param1, 1);
+      handle_key_two_button( BUTTON_A, BUTTON_RIGHT,   key_repeat_interval, param1,  inc_param1, 1);
+
+      handle_key_two_button( BUTTON_A, BUTTON_UP,      key_repeat_interval, param2,   inc_param2, 1);
+      handle_key_two_button( BUTTON_A, BUTTON_DOWN,    key_repeat_interval, param2,  -inc_param2, 1);
+    }  
+
 }
 
 
