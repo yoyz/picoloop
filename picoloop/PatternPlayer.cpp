@@ -2026,6 +2026,7 @@ void handle_key_menu()
 	    {
 	      menu_cursor--;
 	      menu_switching=1;
+	      menu_sub=0;
 	    }
 	  //	  if (menu_cursor<GLOBALMENU_AD  && menu==MENU_ON_PAGE1) menu_cursor=GLOBALMENU_VCO;
 	  //	  if (menu_cursor<GLOBALMENU_OSC && menu==MENU_ON_PAGE2) menu_cursor=GLOBALMENU_BPM;
@@ -2044,6 +2045,7 @@ void handle_key_menu()
 	    {
 	      menu_cursor++;
 	      menu_switching=1;
+	      menu_sub=0;
 	    }
 	  //if (menu_cursor>GLOBALMENU_VCO  && menu==MENU_ON_PAGE1) menu_cursor=GLOBALMENU_AD;
 	  //if (menu_cursor>GLOBALMENU_BPM  && menu==MENU_ON_PAGE2) menu_cursor=GLOBALMENU_OSC;
@@ -2200,6 +2202,31 @@ void handle_key_sixteenbox()
     }
 }
 
+void helper_change_sub_menu(int nb_menu)
+{
+  mapii keyState=IE.keyState();
+  mapii keyRepeat=IE.keyRepeat();
+  int    lastEvent=IE.lastEvent();
+  int    lastKey=IE.lastKey();
+
+  if (lastKey     ==  BUTTON_START  && 
+      lastEvent   ==  KEYRELEASED    )
+    {
+      if (menu_ad_dirty_keyboard==0)
+	{
+	  if (menu_sub+1 <= nb_menu)
+	    menu_sub++;
+	  else
+	    menu_sub=0;
+	  dirty_graphic=1;
+	}
+      menu_ad_dirty_keyboard=0;
+      IE.clearLastKeyEvent();
+      DPRINTF("[sub menu env : %d]",menu_sub);
+    }
+
+}
+
 
 void helper_handle_key_two_button(int menu_cursor_tc,
 				  int menu_ad_tc,
@@ -2237,6 +2264,39 @@ void helper_handle_key_two_button(int menu_cursor_tc,
 
       handle_key_two_button( BUTTON_A, BUTTON_UP,      key_repeat_interval, param2,   inc_param2, 1);
       handle_key_two_button( BUTTON_A, BUTTON_DOWN,    key_repeat_interval, param2,  -inc_param2, 1);
+    }  
+
+}
+
+void helper_handle_key_one_button(int menu_cursor_tc,
+				  int menu_ad_tc,
+				  int key_repeat_interval,
+				  int param1,
+				  int inc_param1
+				  )
+{
+  if (menu          == MENU_OFF && 
+      menu_cursor   == menu_cursor_tc     &&
+      menu_sub       == menu_ad_tc)
+    {
+      // Insert/Remove Trig
+      sub_handle_invert_trig();
+ 
+      handle_key_two_button( BUTTON_B, BUTTON_LEFT,    key_repeat_interval, param1, -inc_param1, 0);
+      handle_key_two_button( BUTTON_B, BUTTON_RIGHT,   key_repeat_interval, param1,  inc_param1, 0);
+
+    }  
+
+  // GLOBALMENU_AD AMP
+  // Move Attack Release 
+  // Insert/Remove Trig
+  if (menu          != MENU_OFF && 
+      menu_cursor   == menu_cursor_tc     &&
+      menu_sub      == menu_ad_tc)
+    {
+      handle_key_two_button( BUTTON_A, BUTTON_LEFT,    key_repeat_interval, param1, -inc_param1, 1);
+      handle_key_two_button( BUTTON_A, BUTTON_RIGHT,   key_repeat_interval, param1,  inc_param1, 1);
+
     }  
 
 }
