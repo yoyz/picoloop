@@ -99,14 +99,19 @@ void PBSynthUserInterface::handle_key_osc()
 			       OSC2_TYPE,
 			       1,1);
 
+  helper_handle_key_two_button(GLOBALMENU_OSC, MENU_PAGE0_SUB1, KEY_REPEAT_INTERVAL_SMALLEST,
+			       OSC1_DETUNE,
+			       OSC2_DETUNE,
+			       1,1);
 
-  helper_handle_key_two_button(GLOBALMENU_OSC, MENU_PAGE0_SUB1, KEY_REPEAT_INTERVAL_LONG,
+
+  helper_handle_key_two_button(GLOBALMENU_OSC, MENU_PAGE0_SUB2, KEY_REPEAT_INTERVAL_LONG,
 			       OSC1_SCALE,
 			       OSC2_SCALE,
 			       1,1);
 
   // change GLOBALMENU_OSC SUBMENU  
-  helper_change_sub_menu(MENU_PAGE0_SUB1); 
+  helper_change_sub_menu(MENU_PAGE0_SUB2); 
 }
 
 
@@ -210,7 +215,8 @@ void PBSynthUserInterface::display_board_text()
   if (menu_cursor==GLOBALMENU_OSC)
     {
       if (menu_sub==MENU_PAGE0_SUB0)      sprintf(str_line2,"OSC WAVEFORM");
-      if (menu_sub==MENU_PAGE0_SUB1)      sprintf(str_line2,"OSC SCALE");
+      if (menu_sub==MENU_PAGE0_SUB1)      sprintf(str_line2,"OSC DETUNE");
+      if (menu_sub==MENU_PAGE0_SUB2)      sprintf(str_line2,"OSC SCALE");
     }
   if (menu_cursor==GLOBALMENU_LFO)
     {
@@ -347,7 +353,7 @@ void PBSynthUserInterface::display_board_osc()
 {
   if (menu_cursor==GLOBALMENU_OSC)
     {
-      if (menu_sub>MENU_PAGE0_SUB1)
+      if (menu_sub>MENU_PAGE0_SUB2)
 	{ menu_sub=MENU_PAGE0_SUB0; }
       
       if (menu_sub==MENU_PAGE0_SUB0) display_board_two_param_text(OSC1_TYPE,OSC2_TYPE);
