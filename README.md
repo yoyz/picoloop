@@ -411,7 +411,7 @@ In this case you need a prx and an elf file.
 Changelog
 =========
 
-V0.75abcd: 
+V0.75abcde: 
 
 - remove a lot of duplicate code in XXXUserInterface, because it was really needed
 - a add the resid engine 
