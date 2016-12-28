@@ -411,7 +411,9 @@ In this case you need a prx and an elf file.
 Changelog
 =========
 
-V0.75abc: 
+V0.75abcd: 
+
+- remove a lot of duplicate code in XXXUserInterface, because it was really needed
 - a add the resid engine 
 - b export DUMP_AUDIO=1 now export a wav file
 - c add SDL2.0 compatibility and keep SDL1.2 as default because it works
