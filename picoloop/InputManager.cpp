@@ -211,7 +211,7 @@ int InputManager::handleKey()
 	  joy=1;
 	  last_key=event.jbutton.button;
 	  last_event=event.type;
-	  this->updateState(event.jbutton.button,1);
+	  this->updateState(event.jbutton.button,0);
 	  break;	 
 
 	case SDL_JOYBUTTONDOWN:
