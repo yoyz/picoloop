@@ -1665,17 +1665,12 @@ void display_board_text_global()
       menu_cursor==GLOBALMENU_NOTE)
       sprintf(str_line2,"DOT");
 
-  if (menu_cursor==GLOBALMENU_BPM &&
-      menu_bpm==MENU_PAGE0_SUB0)
-    sprintf(str_line2,  "BPM %.1f ",bpm_current);
-
-  if (menu_cursor==GLOBALMENU_BPM &&
-      menu_bpm==MENU_PAGE0_SUB1)
-    sprintf(str_line2,  "SWING %d",bpm_current,current_swing);
-
-  if (menu_cursor==GLOBALMENU_BPM &&
-      menu_bpm==MENU_PAGE0_SUB2)
-    sprintf(str_line2,  "MIDI DELTA SEND %d",delta_midi_clock);
+  if (menu_cursor==GLOBALMENU_BPM)
+    {
+      if (menu_sub==MENU_PAGE0_SUB0) sprintf(str_line2,  "BPM %.1f ",bpm_current);
+      if (menu_sub==MENU_PAGE0_SUB1) sprintf(str_line2,  "SWING %d",bpm_current,current_swing);
+      if (menu_sub==MENU_PAGE0_SUB2) sprintf(str_line2,  "MIDI DELTA SEND %d",delta_midi_clock);
+    }
 
 
 
@@ -2340,42 +2335,11 @@ void handle_key_osc()
 
 void handle_key_fx()
 {
-  mapii keyState=IE.keyState();
-  mapii keyRepeat=IE.keyRepeat();
-  int    lastEvent=IE.lastEvent();
-  int    lastKey=IE.lastKey();
 
-  // GLOBALMENU_FX
-  // change fx_depth and fx_speed
-  if (menu        == MENU_OFF && 
-      menu_cursor == GLOBALMENU_FX)
-    {
-      // Insert/Remove Trig
-      sub_handle_invert_trig();
-
-      handle_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, FX1_DEPTH      ,     -1, 0);
-      handle_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, FX1_DEPTH      ,      1, 0);
-
-      handle_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, FX1_SPEED         ,   1, 0);
-      handle_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, FX1_SPEED         ,  -1, 0);
-    }
-
-  // GLOBALMENU_FX
-  // change fx_depth and fx_speed
-  if (menu        != MENU_OFF && 
-      menu_cursor == GLOBALMENU_FX)
-    {
-      // Insert/Remove Trig
-      //sub_handle_invert_trig();
-
-      handle_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_SMALLEST, FX1_DEPTH      ,     -1, 1);
-      handle_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_SMALLEST, FX1_DEPTH      ,      1, 1);
-
-      handle_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_SMALLEST, FX1_SPEED         ,   1, 1);
-      handle_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_SMALLEST, FX1_SPEED         ,  -1, 1);
-
-    }
-
+  helper_handle_key_two_button(GLOBALMENU_FX,0,KEY_REPEAT_INTERVAL_SMALLEST,
+			       FX1_DEPTH,
+			       FX1_SPEED,
+			       1,1);
 }
 
 void handle_key_vco()
@@ -2386,33 +2350,9 @@ void handle_key_vco()
 
 void handle_key_mac()
 {
-  mapii keyState=IE.keyState();
-  mapii keyRepeat=IE.keyRepeat();
-  int    lastEvent=IE.lastEvent();
-  int    lastKey=IE.lastKey();
-
-  // GLOBALMENU_MAC
-  // change machine type
-  if (menu        == MENU_OFF && 
-      menu_cursor == GLOBALMENU_MAC )
-    {
-      // Insert/Remove Trig
-      sub_handle_invert_trig();
-
-      handle_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG,     MACHINE_TYPE        ,      1, 1);
-      handle_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG,     MACHINE_TYPE        ,     -1, 1);      
-    }
-
-  // GLOBALMENU_MAC
-  // change machine type
-  if (menu        != MENU_OFF && 
-      menu_cursor == GLOBALMENU_MAC )
-    {
-
-      handle_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG,     MACHINE_TYPE        ,      1, 1);
-      handle_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG,     MACHINE_TYPE        ,     -1, 1);
-    }
-
+  helper_handle_key_one_button(GLOBALMENU_MAC,0,KEY_REPEAT_INTERVAL_LONG,
+			       MACHINE_TYPE,
+			       1);
 }
 
 void handle_key_lfo()
@@ -2424,28 +2364,11 @@ void handle_key_lfo()
 
 void handle_key_psh()
 {
-  mapii keyState=IE.keyState();
-  mapii keyRepeat=IE.keyRepeat();
-  int    lastEvent=IE.lastEvent();
-  int    lastKey=IE.lastKey();
-
-
-
-  if (menu        == MENU_OFF && 
-      menu_cursor == GLOBALMENU_PSH
-      )
-    {
-      handle_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_LONG    , PATTERN_SHIFT,    -1, 1);
-      handle_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_LONG    , PATTERN_SHIFT,     1, 1);
-
-      handle_key_two_button( BUTTON_A, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONGEST , PATTERN_LENGTH ,  16, 1);
-      handle_key_two_button( BUTTON_A, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONGEST , PATTERN_LENGTH , -16, 1);
-
-      handle_key_two_button( BUTTON_A, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_LONG    , PATTERN_LENGTH ,  -1, 1);
-      handle_key_two_button( BUTTON_A, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_LONG    , PATTERN_LENGTH ,   1, 1);
-
-    }
-
+  helper_handle_key_two_button(GLOBALMENU_PSH,0,KEY_REPEAT_INTERVAL_LONG,
+			       PATTERN_SHIFT,
+			       PATTERN_LENGTH,
+			       1,16);
+  
 }
 
 
@@ -2458,80 +2381,23 @@ void handle_key_fltr()
 
 void handle_key_bpm()
 {
-  mapii keyState=IE.keyState();
-  mapii keyRepeat=IE.keyRepeat();
-  int    lastEvent=IE.lastEvent();
-  int    lastKey=IE.lastKey();
+  helper_handle_key_two_button(GLOBALMENU_BPM,MENU_PAGE0_SUB0,KEY_REPEAT_INTERVAL_LONG,
+			       BPM,
+			       BPM,
+			       1,10);
 
-  // GLOBALMENU_BPM
-  // change bpm speed
-  if (menu        == MENU_OFF        && 
-      menu_bpm    == MENU_PAGE0_SUB0 &&
-      menu_cursor == GLOBALMENU_BPM ) 
-    {
-      handle_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_LONG    , BPM ,             -1, 0);
-      handle_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_LONG    , BPM ,              1, 0);
+  helper_handle_key_two_button(GLOBALMENU_BPM,MENU_PAGE0_SUB1,KEY_REPEAT_INTERVAL_LONG,
+			       BPM_DIVIDER,
+			       SWING,
+			       1,1);
 
-      handle_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG    , BPM            ,  10, 0);
-      handle_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG    , BPM            , -10, 0);
-    }  
-
-  if (menu        == MENU_OFF        &&
-      menu_bpm    == MENU_PAGE0_SUB1 &&
-      menu_cursor == GLOBALMENU_BPM )
-    {
-      handle_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONG    , BPM_DIVIDER    ,   1, 0);
-      handle_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONG    , BPM_DIVIDER    ,  -1, 0);
-
-      handle_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_LONG    , SWING          ,  -1, 0);
-      handle_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_LONG    , SWING          ,   1, 0);
-    }  
+  helper_handle_key_two_button(GLOBALMENU_BPM,MENU_PAGE0_SUB2,KEY_REPEAT_INTERVAL_LONG,
+			       MIDI_SEND_DELTA,
+			       MIDI_SEND_DELTA,
+			       1,10);
 
 
-  if (menu        == MENU_OFF        &&
-      menu_bpm    == MENU_PAGE0_SUB2 &&
-      menu_cursor == GLOBALMENU_BPM )
-    {
-      handle_key_two_button( BUTTON_B, BUTTON_UP,      KEY_REPEAT_INTERVAL_LONGEST    , MIDI_SEND_DELTA,  10, 0);
-      handle_key_two_button( BUTTON_B, BUTTON_DOWN,    KEY_REPEAT_INTERVAL_LONGEST    , MIDI_SEND_DELTA,  -10, 0);
-
-      handle_key_two_button( BUTTON_B, BUTTON_LEFT,    KEY_REPEAT_INTERVAL_LONGEST    , MIDI_SEND_DELTA, -1, 0);
-      handle_key_two_button( BUTTON_B, BUTTON_RIGHT,   KEY_REPEAT_INTERVAL_LONGEST    , MIDI_SEND_DELTA,  1, 0);
-    }  
-
-
-  /*
-  if (menu        == MENU_OFF && 
-      menu_cursor == GLOBALMENU_BPM )
-    {
-    }  
-
-  */
-
-  // change GLOBALMENU_VCO SUBMENU
-  if (lastKey     ==  BUTTON_START    && 
-      lastEvent   ==  KEYRELEASED     &&
-      menu_cursor ==  GLOBALMENU_BPM &&
-      !(
-	keyState[BUTTON_A] ||
-	keyState[BUTTON_B]
-	))
-
-    {
-      if (menu_ad_dirty_keyboard==0)
-	{
-	  if      (menu_bpm==MENU_PAGE0_SUB0)              { menu_bpm=MENU_PAGE0_SUB1;    }
-	  else if (menu_bpm==MENU_PAGE0_SUB1)              { menu_bpm=MENU_PAGE0_SUB2;    }
-	  else if (menu_bpm==MENU_PAGE0_SUB2)              { menu_bpm=MENU_PAGE0_SUB0;    }
-	  dirty_graphic=1;
-	}
-      menu_ad_dirty_keyboard=0;
-      IE.clearLastKeyEvent();
-      DPRINTF("[sub menu env : %d]",menu_ad);
-    }
-
-
-
+  helper_change_sub_menu(MENU_PAGE0_SUB2);
 }
 
 void handle_key_load_save()
@@ -3022,6 +2888,8 @@ void seq_update_multiple_time_by_step()
   int          t=0;
   int          currentMachine;
   int          nextMachine;
+  int          knobNonZero=0;
+  int          knobAllNonZero=0;
 
   //DPRINTF("*********************pattern_cursor_max_pos:%d",pattern_cursor_max_pos[cty]);
   
@@ -3069,10 +2937,11 @@ void seq_update_multiple_time_by_step()
 
   // Change PatternLength of a track
   // update the : Pattern in memory, the Sequencer and the cursor_max_position
-  if (TK.getAll(PATTERN_LENGTH)!=0)
+  if (TK.getAll(PATTERN_LENGTH)!=0 ||
+      TK.get(PATTERN_LENGTH)!=0)
     { 
       int cur_plen=SEQ.getPatternSequencer(cty).getPatternLength();
-      int dest_plen=SEQ.getPatternSequencer(cty).getPatternLength()+TK.getAll(PATTERN_LENGTH);
+      int dest_plen=SEQ.getPatternSequencer(cty).getPatternLength()+TK.getAll(PATTERN_LENGTH)+TK.get(PATTERN_LENGTH);
       int i;
       int j;
 
@@ -3116,11 +2985,13 @@ void seq_update_multiple_time_by_step()
 
 
   // shift PatternEntry
-  if (TK.getAll(PATTERN_SHIFT)!=0)
+  if (TK.getAll(PATTERN_SHIFT)!=0 ||
+      TK.get(PATTERN_SHIFT)!=0)
     {       
       PatternElement Pe;
 
-      if (TK.getAll(PATTERN_SHIFT)<0)
+      if (TK.getAll(PATTERN_SHIFT)<0 ||
+	  TK.get(PATTERN_SHIFT)<0)
 	{
 	  Pe=P[cty].getPatternElement(0);
 	  for (i=0;i<15;i++)
@@ -3131,7 +3002,8 @@ void seq_update_multiple_time_by_step()
 	  P[cty].getPatternElement(15)=Pe;	    
 	}
 
-      if (TK.getAll(PATTERN_SHIFT)>0)
+      if (TK.getAll(PATTERN_SHIFT)>0 ||
+	  TK.get(PATTERN_SHIFT)>0)
 	{
 	  Pe=P[cty].getPatternElement(15);
 	  for (i=15;i>0;i--)
@@ -3143,6 +3015,7 @@ void seq_update_multiple_time_by_step()
 	}
 
       TK.setAll(PATTERN_SHIFT,0);
+      TK.set(PATTERN_SHIFT,0);
       dirty_graphic=1;
      DPRINTF("[pshift_all:left]");	  
     }
@@ -3239,12 +3112,17 @@ void seq_update_multiple_time_by_step()
   
   while (TK.getNonZero()!=-1)
     {
-      seq_update_tweakable_knob_one(TK.getNonZero());
+      knobNonZero=TK.getNonZero();
+      seq_update_tweakable_knob_one(knobNonZero);
+      TK.set(knobNonZero,0);
     }
 
   while (TK.getAllNonZero()!=-1)
     {
-      seq_update_tweakable_knob_all(TK.getAllNonZero());
+      knobAllNonZero=TK.getAllNonZero();
+      seq_update_tweakable_knob_all(knobAllNonZero);
+      TK.setAll(knobAllNonZero,0);      
+      //seq_update_tweakable_knob_all(TK.getAllNonZero());
     }
   // midi machine command stop related
   // midi related but not only, A+B on the [BPM] menu "should"

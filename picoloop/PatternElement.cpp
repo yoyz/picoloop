@@ -123,6 +123,21 @@ void PatternElement::set(int what,int val)
 {
   switch (what)
     {
+      // BEGIN NOT CATCHED BY PATTERN_ELEMENT
+    case BPM:
+      break;
+    case BPM_DIVIDER:
+      break;
+    case PATTERN_LENGTH:
+      break;
+    case PATTERN_SHIFT:
+      break;
+    case SWING:
+      break;
+    case MIDI_SEND_DELTA:
+      break;
+      // END NOT CATCHED BY PATTERN_ELEMENT
+      
     case ADSR_AMP_ATTACK:
       amp_attack=checkSevenBitBoundarie(val);
       break;
@@ -387,6 +402,21 @@ int PatternElement::get(int what)
 {
   switch (what)
     {
+      // BEGIN NOT CATCHED BY PATTERN_ELEMENT
+    case BPM:
+      break;
+    case BPM_DIVIDER:
+      break;
+    case PATTERN_LENGTH:
+      break;
+    case PATTERN_SHIFT:
+      break;
+    case SWING:
+      break;
+    case MIDI_SEND_DELTA:
+      break;
+      // END NOT CATCHED BY PATTERN_ELEMENT
+      
     case ADSR_AMP_ATTACK:
       return amp_attack;
       break;
