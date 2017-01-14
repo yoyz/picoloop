@@ -360,11 +360,55 @@ int seq_update_by_step_next=0; // 0 : the UI audio and seq are sync
 int current_swing=50;  
 
 int first_clock=1;
+
+int          nb_tick_before_midi_send_clock;     // number of audio sample between each midi sync clock
+int          nb_tick_before_six_midi_send_clock; // number of audio sample between six  midi sync clock
+int          nb_tick_midi_send_clock;            // counter between each     clock increment by audio sample
+int          nb_tick_midi_send_clock_mulsix;     // counter between each six clock increment by audio sample
+int          midi_tick_number;
+
+
 struct timeval timev_now,timev_prev,timev_lastclock;
 time_t difft=0;
 
 void seq_update_track(int t);
 int handle_key_two_button(int buttonPressed,int buttonKeyRepeat,int repeatInterval,int machineParam,int paramValue,int all);
+
+void processBuffer_updateMidiClock()
+{
+  if (menu_config_midiClockMode==MENU_CONFIG_Y_MIDICLOCK_SYNCOUT)
+    {
+      nb_tick_midi_send_clock++;
+      nb_tick_midi_send_clock_mulsix++;
+
+      // arm a counter to send the six midi sync signal
+      // there is a / 6 and it prevent midi clock skew
+      if (nb_tick_midi_send_clock_mulsix>nb_tick_before_six_midi_send_clock-1)
+       {
+         counter_send_midi_clock_six++;
+
+         // This trick allow to transpose the send of the midi clock
+         // it can be used on a system which buffer too much audio
+         // it is linked to the BPM menu
+         nb_tick_midi_send_clock=-counter_delta_midi_clock*50;
+         nb_tick_midi_send_clock_mulsix=-counter_delta_midi_clock*50;
+
+         midi_tick_number=0;
+         counter_delta_midi_clock=0;   
+       }
+
+      // arm a counter to send a midi sync signal
+      if (midi_tick_number<5 &&
+         nb_tick_midi_send_clock>nb_tick_before_midi_send_clock-1)
+       {
+         counter_send_midi_clock++;
+         nb_tick_midi_send_clock=0;
+         midi_tick_number++;
+       }
+    }
+}
+
+
 
 long difftime(struct timeval & a0, struct timeval & a1)
 {
@@ -478,25 +522,27 @@ void load_pattern();
 
 void refresh_swing()
 {
-
   // Swing
   // 0    => 50/50
   // 64   => 66/66
   // 127  => 75/25
 
-  int  swing_sevenbit=(current_swing*127)/100;
+  int  swing_sevenbit=(current_swing*128)/100;
   int  swing_inv_sevenbit=127-swing_sevenbit;
   int  step=SEQ.getPatternSequencer(0).getStepWithoutDivider();
+  int  nb_sample=-1;
   if (step%2)
     {
-      //printf("odd\n");
-      AE.setNbTickBeforeStepChange((nb_tick_before_step_change*swing_inv_sevenbit)/64);
+      nb_sample=(nb_tick_before_step_change*swing_inv_sevenbit)/64;
     }
   else
     {
-      //printf("even\n");
-     AE.setNbTickBeforeStepChange((nb_tick_before_step_change*swing_sevenbit)/64);
+      nb_sample=(nb_tick_before_step_change*swing_sevenbit)/64;
     }
+  AE.setNbTickBeforeStepChange(nb_sample);
+  nb_tick_before_midi_send_clock=nb_sample/6;
+  nb_tick_before_six_midi_send_clock=nb_sample;
+
 }
 
 void refresh_bpm()
@@ -3593,6 +3639,10 @@ void seq_callback_update_step()
   dirty_graphic=1;
   seq_update_by_step_next=1;
   refresh_bpm();
+  counter_recv_midi_clock=0;
+  counter_recv_midi_clock_six=0;
+
+
 }
 
 
