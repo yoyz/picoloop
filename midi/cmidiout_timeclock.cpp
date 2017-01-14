@@ -100,19 +100,19 @@ int main( void )
 
 
       
-      printf("note off : %d\n",i);
-      message.push_back(0x80+midiChannel);
-      message.push_back(i);
-      message.push_back(0x0);
+      //printf("note off : %d\n",i);
+      //message.push_back(0x80+midiChannel);
+      //message.push_back(i);
+      //message.push_back(0x0);
 
       //message[0] = 0x80+0;
       //message[1] = i;
       //message[2] = 0x00;
       //message.push_back( 3 );
-      midiout->sendMessage( &message );
-      message.clear();
+      //midiout->sendMessage( &message );
+      //message.clear();
       
-      SLEEP( 100 );
+      //SLEEP( 100 );
 
 
     }
