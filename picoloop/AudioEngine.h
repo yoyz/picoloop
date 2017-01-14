@@ -38,8 +38,6 @@ extern int counter_delta_midi_clock;    // delta in sample between picoloop(mast
 extern int   menu_config_midiClockMode;  // 0 internal, 1 midi sync out, 2 midi sync in 
 extern float bpm_current;
                                     // define in PatternPlayer.cpp
-void processBuffer_updateMidiClock();
-
 
 /*
   Purpose : 
@@ -149,6 +147,11 @@ class AudioEngine
   int          tick_right;
   int          nb_tick;
   int          nb_tick_before_step_change;
+  int          nb_tick_before_midi_send_clock;     // number of audio sample between each midi sync clock
+  int          nb_tick_before_six_midi_send_clock; // number of audio sample between six  midi sync clock
+  int          nb_tick_midi_send_clock;            // counter between each     clock increment by audio sample
+  int          nb_tick_midi_send_clock_mulsix;     // counter between each six clock increment by audio sample
+  int          midi_tick_number;
   //Instrument   inst;
   //  SineOscillator S;
   AudioMixer   AM;

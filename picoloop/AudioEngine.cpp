@@ -160,12 +160,10 @@ AudioEngine::AudioEngine() : AM(),
 
   nb_tick=0;
   nb_tick_before_step_change=0;
-  /*
   nb_tick_before_six_midi_send_clock=0;
   nb_tick_before_midi_send_clock=0;
   nb_tick_midi_send_clock=0;
   nb_tick_midi_send_clock_mulsix=0;
-  */
   seqCallback=0;
 
   #ifdef __SDL_AUDIO__
@@ -205,8 +203,8 @@ int AudioEngine::setNbTickBeforeStepChange(int val)
 
   nb_tick_before_step_change=val;
   PS.setNbTickBeforeStepChange(val);
-  //nb_tick_before_midi_send_clock=(val/6);
-  //nb_tick_before_six_midi_send_clock=val;
+  nb_tick_before_midi_send_clock=(val/6);
+  nb_tick_before_six_midi_send_clock=val;
 }
 
 
@@ -219,15 +217,44 @@ void AudioEngine::setupSequencerCallback(void (*ptrfunc)(void))
 // process BUFFER_FRAME sample and call the callback when needed
 void AudioEngine::processBuffer(int len)
 {
-
-  for (int i=0;i<len;i++)
-    processBuffer_updateMidiClock(); // update the midi clock counter
-  
   //for (int i=0;i<BUFFER_FRAME;i++)
   for (int i=0;i<len;i++)
     {
       nb_tick++;
+      if (menu_config_midiClockMode==MENU_CONFIG_Y_MIDICLOCK_SYNCOUT)
+	{
+	  nb_tick_midi_send_clock++;
+	  nb_tick_midi_send_clock_mulsix++;
+
+	  // arm a counter to send the six midi sync signal
+	  // there is a / 6 and it prevent midi clock skew
+	  if (nb_tick_midi_send_clock_mulsix>nb_tick_before_six_midi_send_clock-1)
+	    {
+	      counter_send_midi_clock_six++;
+
+	      // This trick allow to transpose the send of the midi clock
+	      // it can be used on a system which buffer too much audio
+	      // it is linked to the BPM menu
+	      nb_tick_midi_send_clock=-counter_delta_midi_clock*50;
+	      nb_tick_midi_send_clock_mulsix=-counter_delta_midi_clock*50;
+
+	      midi_tick_number=0;
+	      counter_delta_midi_clock=0;
+	    }
       
+	  // arm a counter to send a midi sync signal
+	  if (midi_tick_number<5 &&
+	      nb_tick_midi_send_clock>nb_tick_before_midi_send_clock-1)
+	    {
+	      counter_send_midi_clock++;
+	      nb_tick_midi_send_clock=0;
+	      midi_tick_number++;
+	    }
+	}
+      // end sync out
+
+      
+
       if (
 	  (nb_tick<nb_tick_before_step_change && 
 	   menu_config_midiClockMode!=MENU_CONFIG_Y_MIDICLOCK_SYNCIN
@@ -236,6 +263,9 @@ void AudioEngine::processBuffer(int len)
 	  (counter_recv_midi_clock_six==0 && 
 	   menu_config_midiClockMode==MENU_CONFIG_Y_MIDICLOCK_SYNCIN))
 	{
+	  //buffer_out_left[i]=AM.tick();
+	  //buffer_out_right[i]=buffer_out_left[i];
+	  //buffer_out_right[i]=PS.tick();
 	  if (menu_config_audiopulseclock_out==0)
 	    {
 	      buffer_out_right[i]=AM.tick();
@@ -268,6 +298,8 @@ void AudioEngine::processBuffer(int len)
 	  if (seqCallback)
 	    (*seqCallback)();
           nb_tick=0;
+	  counter_recv_midi_clock=0;
+	  counter_recv_midi_clock_six=0;
 
 	  if (menu_config_audiopulseclock_out==0)
 	    {
