@@ -363,7 +363,51 @@ int first_clock=1;
 struct timeval timev_now,timev_prev,timev_lastclock;
 time_t difft=0;
 
+int          nb_tick_before_midi_send_clock;     // number of audio sample between each midi sync clock
+int          nb_tick_before_six_midi_send_clock; // number of audio sample between six  midi sync clock
+int          nb_tick_midi_send_clock;            // counter between each     clock increment by audio sample
+int          nb_tick_midi_send_clock_mulsix;     // counter between each six clock increment by audio sample
+int          midi_tick_number;
+
+
 void seq_update_track(int t);
+
+// update the counter of clock
+// when counter_send_midi_clock_six>0 a clock will be sent
+// called by AudioEngine::processBuffer
+void processBuffer_updateMidiClock()
+{
+  if (menu_config_midiClockMode==MENU_CONFIG_Y_MIDICLOCK_SYNCOUT)
+    {
+      nb_tick_midi_send_clock++;
+      nb_tick_midi_send_clock_mulsix++;
+      
+      // arm a counter to send the six midi sync signal
+      // there is a / 6 and it prevent midi clock skew
+      if (nb_tick_midi_send_clock_mulsix>nb_tick_before_six_midi_send_clock-1)
+	{
+	  counter_send_midi_clock_six++;
+	  
+	  // This trick allow to transpose the send of the midi clock
+	  // it can be used on a system which buffer too much audio
+	  // it is linked to the BPM menu
+	  nb_tick_midi_send_clock=-counter_delta_midi_clock*50;
+	  nb_tick_midi_send_clock_mulsix=-counter_delta_midi_clock*50;
+	  
+	  midi_tick_number=0;
+	  counter_delta_midi_clock=0;
+	}
+      
+      // arm a counter to send a midi sync signal
+      if (midi_tick_number<5 &&
+	  nb_tick_midi_send_clock>nb_tick_before_midi_send_clock-1)
+	{
+	  counter_send_midi_clock++;
+	  nb_tick_midi_send_clock=0;
+	  midi_tick_number++;
+	}
+    }
+}
 
 long difftime(struct timeval & a0, struct timeval & a1)
 {
@@ -496,6 +540,10 @@ void refresh_swing()
       //printf("even\n");
      AE.setNbTickBeforeStepChange((nb_tick_before_step_change*swing_sevenbit)/64);
     }
+  //nb_tick_before_midi_send_clock=(val/6);
+  //nb_tick_before_six_midi_send_clock=val;
+  nb_tick_before_midi_send_clock=nb_tick_before_step_change/6;
+  nb_tick_before_six_midi_send_clock=nb_tick_before_step_change;
 }
 
 void refresh_bpm()
@@ -3591,6 +3639,9 @@ void seq_callback_update_step()
     }
   dirty_graphic=1;
   seq_update_by_step_next=1;
+  counter_recv_midi_clock=0;
+  counter_recv_midi_clock_six=0;
+
   refresh_bpm();
 }
 
