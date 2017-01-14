@@ -29,7 +29,7 @@ using namespace std;
 #endif
 
 
-void processBuffer_updateMidiClock();
+void processBuffer_updateMidiSendClockCounter();
 extern int counter_send_midi_clock;     // send n clock and decrement the counter each time
 extern int counter_send_midi_clock_six; // send n clock and decrement the counter each time
 extern int counter_recv_midi_clock;     // send n clock and decrement the counter each time

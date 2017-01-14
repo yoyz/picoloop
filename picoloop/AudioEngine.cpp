@@ -218,7 +218,7 @@ void AudioEngine::processBuffer(int len)
   for (int i=0;i<len;i++)
     {
       nb_tick++;
-      processBuffer_updateMidiClock();
+      processBuffer_updateMidiSendClockCounter();
       if (
 	  (nb_tick<nb_tick_before_step_change && 
 	   menu_config_midiClockMode!=MENU_CONFIG_Y_MIDICLOCK_SYNCIN
@@ -250,6 +250,11 @@ void AudioEngine::processBuffer(int len)
 	    }	  
 	}
 
+
+      // If we have play the same 'step' for 'nb_tick_before_step_change' sample
+      //  OR
+      // If we are midi slave and we have received the sixth clock
+      //  we change to the next step
       if (
 	  (nb_tick>=nb_tick_before_step_change &&
 	   menu_config_midiClockMode!=MENU_CONFIG_Y_MIDICLOCK_SYNCIN) 
@@ -257,11 +262,10 @@ void AudioEngine::processBuffer(int len)
 	  (counter_recv_midi_clock_six && 
 	   menu_config_midiClockMode==MENU_CONFIG_Y_MIDICLOCK_SYNCIN))
         {
-          //printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!CALLL\n");                                                                                                                      
-          //PP->seq_callback_update_step();
-	  if (seqCallback)
-	    (*seqCallback)();
+	  (*seqCallback)();	 
           nb_tick=0;
+	  if (counter_recv_midi_clock_six>0)
+	      counter_recv_midi_clock_six--;	  
 
 	  if (menu_config_audiopulseclock_out==0)
 	    {

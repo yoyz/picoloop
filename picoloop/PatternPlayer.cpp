@@ -374,7 +374,7 @@ time_t difft=0;
 void seq_update_track(int t);
 int handle_key_two_button(int buttonPressed,int buttonKeyRepeat,int repeatInterval,int machineParam,int paramValue,int all);
 
-void processBuffer_updateMidiClock()
+void processBuffer_updateMidiSendClockCounter()
 {
   if (menu_config_midiClockMode==MENU_CONFIG_Y_MIDICLOCK_SYNCOUT)
     {
@@ -3639,8 +3639,8 @@ void seq_callback_update_step()
   dirty_graphic=1;
   seq_update_by_step_next=1;
   refresh_bpm();
-  counter_recv_midi_clock=0;
-  counter_recv_midi_clock_six=0;
+  //counter_recv_midi_clock=0;
+  //counter_recv_midi_clock_six=0;
 
 
 }

@@ -86,13 +86,13 @@ void midiincallback( double deltatime, std::vector< unsigned char > *message, vo
       if (counter_recv_midi_clock>5)
 	{
 	  counter_recv_midi_clock_six++;
+	  counter_recv_midi_clock=0;
 	  DPRINTF("*****MIDICLOCK 6 *****");
 	}
       else
 	{
 	  DPRINTF("*****MIDICLOCK   *****");
 	}
-      //printf("0xF8 Timing Clock (Sys Realtime) ");
     }
 
 //if ( nBytes > 0 )
