@@ -136,7 +136,9 @@ int SDL_GUI::initVideo()
 
 #if defined(PSVITA)
   if( SDL_Init( SDL_INIT_VIDEO | SDL_INIT_AUDIO)<0)
-    if ((window = SDL_CreateWindow( "GreenRectangle", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN)) == NULL)
+    return -1;
+  
+  if ((window = SDL_CreateWindow( "GreenRectangle", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN)) == NULL)
       exit(1);  
 #endif
 #if !defined(PSVITA)  
@@ -371,6 +373,7 @@ void SDL_GUI::drawBox(int x, int y, int color)
 
 int SDL_GUI::openTTFFont()
 {
+  DPRINTF("SDL_GUI::openTTFFont\n");
   if( TTF_Init() == -1 )
     {
       return 0;
@@ -392,6 +395,8 @@ int SDL_GUI::openTTFFont()
       return false;
       //exit(1);
     }
+  else
+    DPRINTF("SDL_GUI::openTTFFont font successfully open:0x%08.8X\n",ttf_font);
   return true;  
 }
 
@@ -424,7 +429,7 @@ int SDL_GUI::guiTTFText(int x,int y,const char *txt)
   //textColor.r=pal[7]&0x0000FF;
   //textColor.g=(pal[7]&0x00FF00)>>8;
   //textColor.b=(pal[7]&0xFF0000)>>16;
-
+  SDL_Color colorme = {255, 255, 255};
   textColor.r=(pal[7]&0xFF0000)>>16;
   textColor.g=(pal[7]&0x00FF00)>>8;
   textColor.b=(pal[7]&0x0000FF);
@@ -434,8 +439,9 @@ int SDL_GUI::guiTTFText(int x,int y,const char *txt)
 
   if (message!=NULL)
     SDL_FreeSurface(message);
-	#if   !defined(__FPU__) 
-		message=TTF_RenderText_Solid( ttf_font, txt, textColor );
+	#if   !defined(__FPU__)
+  message=TTF_RenderText_Solid( ttf_font, txt, colorme );
+  //message=TTF_RenderText_Solid( ttf_font, txt, textColor );
 	#endif
 
 	#if   defined(__FPU__) 

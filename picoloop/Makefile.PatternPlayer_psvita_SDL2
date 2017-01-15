@@ -10,6 +10,8 @@ PROJECT_TITLEID := VSDK00001
 
 PROJECT := vita_sample
 CFLAGS   += -I.
+#CXXFLAGS += -DDEBUG_PRINTF -D__SDL20__ -DPSVITA -D__SDL_AUDIO__ -fpermissive -std=c++11 -I. -I$(VITASDK)/arm-vita-eabi/include/ -L$(VITASDK)/arm-vita-eabi/lib -lSDL2 
+#CXXFLAGS +=                -D__SDL20__ -DPSVITA -D__SDL_AUDIO__ -fpermissive -std=c++11 -I. -I$(VITASDK)/arm-vita-eabi/include/ -L$(VITASDK)/arm-vita-eabi/lib -lSDL2 
 CXXFLAGS += -DDEBUG_PRINTF -D__SDL20__ -DPSVITA -D__SDL_AUDIO__ -fpermissive -std=c++11 -I. -I$(VITASDK)/arm-vita-eabi/include/ -L$(VITASDK)/arm-vita-eabi/lib -lSDL2 
 
 #SRC_C :=$(call rwildcard, src/, *.c)

@@ -3943,11 +3943,10 @@ int main(int argc,char **argv)
   int cpu_speed;
   int running=1;
 
-#if defined(PSVITA)
+#if defined(PSVITA) && defined(DEBUGPRINTF)
   psp2shell_init(3333,0);
-  SDL_Delay(100);
+  SDL_Delay(5000);
   psp2shell_print("Start\n");
-  //sceKernelExitProcess(0);
 #endif
   
   UI=&PSUI;
@@ -4013,53 +4012,53 @@ int main(int argc,char **argv)
   config_key_pressed=0;
   config_first_time=1;
   //if (0)
-  //{
-  while (config_loaded!=1)
-    {
+  //  {
+      while (config_loaded!=1)
+	{
 #if defined(PSVITA)
-      psp2shell_print("looping config\n");
+	  DPRINTF("looping config\n");
 #endif
-      display_config();
-      handle_key_config();
-      handle_config();
-      SDL_Delay(1);  
-    }
-  //}
+	  display_config();
+	  handle_key_config();
+	  handle_config();
+	  SDL_Delay(1);  
+	}
+      //}
 #if defined(PSVITA)
-      psp2shell_print("after config\n");
+      DPRINTF("main: after config\n");
 #endif
-
+      
   PR.init();         // Init the     storage bank
   PR.setBank(bank);  // The current  storage bank will be the value of bank the directory/file are here PWD/bank/bank%d/
                      // menu_config_bank allow to choose it at startup
 
   load_pattern();
   
-#if defined(PSVITA)
-  psp2shell_print("after load pattern\n");
-#endif
+
+  DPRINTF("after load pattern\n");
+
 
 
   //sleep(10);
   //AE.setupSequencerCallback(printme);
   refresh_bpm();
   AE.setupSequencerCallback(seq_callback_update_step);
+
+  DPRINTF("main: [openAudio output]");
   AE.openAudio();
 
   //display_board();
 
-  DPRINTF("[openAudio output]");
+
   //exit(0);
 
   //AE.openAudioSdl();
-#if defined(PSVITA)
-      psp2shell_print("before seq\n");
-#endif
-  
+
+
+  DPRINTF("main : before seq\n");
   seq();
-#if defined(PSVITA)
-      psp2shell_print("after seq\n");
-#endif
+  DPRINTF("main : after seq\n");
+
 
   DPRINTF("[closeAudio output]");
   //AE.stopAudioSdl();

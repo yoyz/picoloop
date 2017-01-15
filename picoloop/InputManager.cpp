@@ -181,7 +181,81 @@ int InputManager::handleKey()
   SDL_Event event;
 #if defined(PSVITA)
   SceCtrlData     pad;
-  
+  int keydown=-1;
+  int keypadtotest=0;
+  int keypadtotest_valid=0;
+  sceCtrlPeekBufferPositive(0, &pad, 1);
+
+  keypadtotest=SCE_CTRL_UP;
+  if ((pad.buttons & keypadtotest) && (m_key_state[keypadtotest]==0))
+    { m_key_state[keypadtotest]=1; keypressrelease=1; keydown=1; key=1; keypadtotest_valid=keypadtotest;  }
+  if (!(pad.buttons & keypadtotest) && m_key_state[keypadtotest]==1)
+    { m_key_state[keypadtotest]=0; keypressrelease=1; keydown=0; key=1; keypadtotest_valid=keypadtotest; }
+
+  keypadtotest=SCE_CTRL_DOWN;
+  if ((pad.buttons & keypadtotest) && (m_key_state[keypadtotest]==0))
+    { m_key_state[keypadtotest]=1; keypressrelease=1; keydown=1; key=1; keypadtotest_valid=keypadtotest;  }
+  if (!(pad.buttons & keypadtotest) && m_key_state[keypadtotest]==1)
+    { m_key_state[keypadtotest]=0; keypressrelease=1; keydown=0; key=1; keypadtotest_valid=keypadtotest; }
+
+  keypadtotest=SCE_CTRL_LEFT;
+  if ((pad.buttons & keypadtotest) && (m_key_state[keypadtotest]==0))
+    { m_key_state[keypadtotest]=1; keypressrelease=1; keydown=1; key=1; keypadtotest_valid=keypadtotest;  }
+  if (!(pad.buttons & keypadtotest) && m_key_state[keypadtotest]==1)
+    { m_key_state[keypadtotest]=0; keypressrelease=1; keydown=0; key=1; keypadtotest_valid=keypadtotest; }
+
+  keypadtotest=SCE_CTRL_RIGHT;
+  if ((pad.buttons & keypadtotest) && (m_key_state[keypadtotest]==0))
+    { m_key_state[keypadtotest]=1; keypressrelease=1; keydown=1; key=1; keypadtotest_valid=keypadtotest;  }
+  if (!(pad.buttons & keypadtotest) && m_key_state[keypadtotest]==1)
+    { m_key_state[keypadtotest]=0; keypressrelease=1; keydown=0; key=1; keypadtotest_valid=keypadtotest; }
+
+  keypadtotest=SCE_CTRL_SQUARE;
+  if ((pad.buttons & keypadtotest) && (m_key_state[keypadtotest]==0))
+    { m_key_state[keypadtotest]=1; keypressrelease=1; keydown=1; key=1; keypadtotest_valid=keypadtotest;  }
+  if (!(pad.buttons & keypadtotest) && m_key_state[keypadtotest]==1)
+    { m_key_state[keypadtotest]=0; keypressrelease=1; keydown=0; key=1; keypadtotest_valid=keypadtotest; }
+
+  keypadtotest=SCE_CTRL_CROSS;
+  if ((pad.buttons & keypadtotest) && (m_key_state[keypadtotest]==0))
+    { m_key_state[keypadtotest]=1; keypressrelease=1; keydown=1; key=1; keypadtotest_valid=keypadtotest;  }
+  if (!(pad.buttons & keypadtotest) && m_key_state[keypadtotest]==1)
+    { m_key_state[keypadtotest]=0; keypressrelease=1; keydown=0; key=1; keypadtotest_valid=keypadtotest; }
+
+  keypadtotest=SCE_CTRL_CIRCLE;
+  if ((pad.buttons & keypadtotest) && (m_key_state[keypadtotest]==0))
+    { m_key_state[keypadtotest]=1; keypressrelease=1; keydown=1; key=1; keypadtotest_valid=keypadtotest;  }
+  if (!(pad.buttons & keypadtotest) && m_key_state[keypadtotest]==1)
+    { m_key_state[keypadtotest]=0; keypressrelease=1; keydown=0; key=1; keypadtotest_valid=keypadtotest; }
+
+  keypadtotest=SCE_CTRL_TRIANGLE;
+  if ((pad.buttons & keypadtotest) && (m_key_state[keypadtotest]==0))
+    { m_key_state[keypadtotest]=1; keypressrelease=1; keydown=1; key=1; keypadtotest_valid=keypadtotest;  }
+  if (!(pad.buttons & keypadtotest) && m_key_state[keypadtotest]==1)
+    { m_key_state[keypadtotest]=0; keypressrelease=1; keydown=0; key=1; keypadtotest_valid=keypadtotest; }
+
+  keypadtotest=SCE_CTRL_START;
+  if ((pad.buttons & keypadtotest) && (m_key_state[keypadtotest]==0))
+    { m_key_state[keypadtotest]=1; keypressrelease=1; keydown=1; key=1; keypadtotest_valid=keypadtotest;  }
+  if (!(pad.buttons & keypadtotest) && m_key_state[keypadtotest]==1)
+    { m_key_state[keypadtotest]=0; keypressrelease=1; keydown=0; key=1; keypadtotest_valid=keypadtotest; }
+
+  keypadtotest=SCE_CTRL_SELECT;
+  if ((pad.buttons & keypadtotest) && (m_key_state[keypadtotest]==0))
+    { m_key_state[keypadtotest]=1; keypressrelease=1; keydown=1; key=1; keypadtotest_valid=keypadtotest;  }
+  if (!(pad.buttons & keypadtotest) && m_key_state[keypadtotest]==1)
+    { m_key_state[keypadtotest]=0; keypressrelease=1; keydown=0; key=1; keypadtotest_valid=keypadtotest; }
+
+  if (keypressrelease)
+    {
+      this->updateState(keypadtotest_valid,keydown);
+      last_key=keypadtotest_valid;
+      if (keydown) last_event=KEYPRESSED;
+      else         last_event=KEYRELEASED;
+    }
+  if (key)
+    DPRINTF("event occur on : %d",keypadtotest_valid);
+
 #else  
   if (SDL_PollEvent(&event))
     {     

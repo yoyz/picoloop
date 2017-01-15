@@ -495,7 +495,7 @@ enum {
 #define KEY_REPEAT_INTERVAL_LONG      160
 #define KEY_REPEAT_INTERVAL_LONGEST   160
 
-#define DEFAULTSAMPLES   2048
+#define DEFAULTSAMPLES   128
 
 #define PSP_BUTTON_TRIANGLE 0 // X
 #define PSP_BUTTON_CIRCLE   1 // A
@@ -984,20 +984,23 @@ enum
 #define DEBUGPRINTF 1
 #endif
 
-#if defined(PSVITA)
+#if defined(PSVITA) && defined(DEBUGPRINTF)
 #define DPRINTF(FMT, ARGS...) do { \
     char strdebug[512];							\
     sprintf(strdebug,"%.40s:%.8d [" FMT "]\n", __FUNCTION__, __LINE__, ## ARGS); \
     psp2shell_print(strdebug);						\
   } while (0)
-#else
+#endif
+#if !defined(PSVITA) && defined(DEBUGPRINTF) 
 #define DPRINTF(FMT, ARGS...) do { \
   if (DEBUGPRINTF) \
     fprintf(stderr, "%.40s:%.8d [" FMT "]\n", __FUNCTION__, __LINE__, ## ARGS); \
   } while (0)
 #endif
 
-
+#if !defined(DEBUGPRINTF)
+#define DPRINTF(FMT, ARGS...) do { } while(0)
+#endif
 
 #endif
 
