@@ -482,9 +482,10 @@ enum {
 #endif
 
 #ifdef PSVITA
+#include <psp2/ctrl.h>
 #define SCREEN_MULT     1
-#define SCREEN_WIDTH	480
-#define SCREEN_HEIGHT	272
+#define SCREEN_WIDTH	960
+#define SCREEN_HEIGHT	544
 #define SCREEN_DEPTH	16
 
 #define KEY_REPEAT_INTERVAL_SMALLEST  6
@@ -510,21 +511,21 @@ enum {
 
 
 // BEGIN PSP SDL 
-#define BUTTON_B            PSP_BUTTON_CROSS
-#define BUTTON_A            PSP_BUTTON_CIRCLE
-#define BUTTON_X            PSP_BUTTON_TRIANGLE
-#define BUTTON_Y            PSP_BUTTON_SQUARE
+#define BUTTON_B            SCE_CTRL_CROSS
+#define BUTTON_A            SCE_CTRL_CIRCLE
+#define BUTTON_X            SCE_CTRL_TRIANGLE
+#define BUTTON_Y            SCE_CTRL_SQUARE
 
-#define BUTTON_UP           PSP_BUTTON_UP
-#define BUTTON_DOWN         PSP_BUTTON_DOWN
-#define BUTTON_LEFT         PSP_BUTTON_LEFT
-#define BUTTON_RIGHT        PSP_BUTTON_RIGHT
+#define BUTTON_UP           SCE_CTRL_UP
+#define BUTTON_DOWN         SCE_CTRL_DOWN
+#define BUTTON_LEFT         SCE_CTRL_LEFT
+#define BUTTON_RIGHT        SCE_CTRL_RIGHT
 
-#define BUTTON_SELECT       PSP_BUTTON_SELEC
-#define BUTTON_START        PSP_BUTTON_START
+#define BUTTON_SELECT       SCE_CTRL_SELECT
+#define BUTTON_START        SCE_CTRL_START
 
-#define BUTTON_L            PSP_BUTTON_L
-#define BUTTON_R            PSP_BUTTON_R
+#define BUTTON_L            SCE_CTRL_L1
+#define BUTTON_R            SCE_CTRL_R1
 
 #define KEYPRESSED          SDL_JOYBUTTONDOWN
 #define KEYRELEASED         SDL_JOYBUTTONUP

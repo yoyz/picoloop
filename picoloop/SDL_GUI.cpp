@@ -134,6 +134,12 @@ int SDL_GUI::initVideo()
 {
   fprintf(stderr,"before SDL_Init\n");
 
+#if defined(PSVITA)
+  if( SDL_Init( SDL_INIT_VIDEO)<0)
+    if ((window = SDL_CreateWindow( "GreenRectangle", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN)) == NULL)
+      exit(1);  
+#endif
+#if !defined(PSVITA)  
   if ( SDL_Init(SDL_INIT_VIDEO)<0)
     {
       DPRINTF("Couldn't initialize SDL: %s", SDL_GetError());
@@ -153,7 +159,7 @@ int SDL_GUI::initVideo()
     fprintf(stderr,"Could not create window: %s\n", SDL_GetError());
     return 1;
   }
-
+#endif // not defined PSVITA
   screen=SDL_GetWindowSurface( window );
 }
 
@@ -372,15 +378,19 @@ int SDL_GUI::openTTFFont()
 
   //Open the font
   //ttf_font = TTF_OpenFont("umd0:/font.ttf", 8*SCREEN_MULT ); <= fix issue on PSP
+#if defined(PSVITA)
+  ttf_font = TTF_OpenFont("ux0:/app/VSDK00001/font.ttf", 12);
+#else
   ttf_font = TTF_OpenFont("font.ttf", FONTSIZE*SCREEN_MULT );
-  
+#endif
   //If there was an error in loading the font
   //  DPRINTF("%d\n",ttf_font);
   // exit(0);
   if( ttf_font == NULL || ttf_font==0 )
     {      
       DPRINTF("font not found or is not a font file ttf_font:%d",ttf_font);
-      return false;      
+      return false;
+      //exit(1);
     }
   return true;  
 }

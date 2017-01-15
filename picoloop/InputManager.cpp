@@ -179,6 +179,10 @@ int InputManager::handleKey()
   int key=0;
   int joy=0;
   SDL_Event event;
+#if defined(PSVITA)
+  SceCtrlData     pad;
+  
+#else  
   if (SDL_PollEvent(&event))
     {     
       switch (event.type)
@@ -229,6 +233,7 @@ int InputManager::handleKey()
 	DPRINTF("joy new event:%d %d   \n",event.type,event.jbutton.button);
 
     }
+#endif
   if (keypressrelease==0) //need to update the state to increment keypress
     this->updateStateNoKeyPress();
   return keypressrelease;
