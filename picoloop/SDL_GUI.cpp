@@ -382,7 +382,7 @@ int SDL_GUI::openTTFFont()
   //Open the font
   //ttf_font = TTF_OpenFont("umd0:/font.ttf", 8*SCREEN_MULT ); <= fix issue on PSP
 #if defined(PSVITA)
-  ttf_font = TTF_OpenFont("ux0:/app/VSDK00001/font.ttf", 12);
+  ttf_font = TTF_OpenFont("ux0:/app/PICOLOOP1/font.ttf", 12);
 #else
   ttf_font = TTF_OpenFont("font.ttf", FONTSIZE*SCREEN_MULT );
 #endif

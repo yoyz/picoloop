@@ -5,10 +5,10 @@ CC := arm-vita-eabi-gcc
 CXX := arm-vita-eabi-g++
 STRIP := arm-vita-eabi-strip
 
-PROJECT_TITLE := VitaSDK sample
-PROJECT_TITLEID := VSDK00001
+PROJECT_TITLE   := PicoloopPSVita
+PROJECT_TITLEID := PICOLOOP1
 
-PROJECT := vita_sample
+PROJECT := picoloop_vita
 CFLAGS   += -I.
 #CXXFLAGS += -DDEBUG_PRINTF -D__SDL20__ -DPSVITA -D__SDL_AUDIO__ -fpermissive -std=c++11 -I. -I$(VITASDK)/arm-vita-eabi/include/ -L$(VITASDK)/arm-vita-eabi/lib -lSDL2 
 #CXXFLAGS +=                -D__SDL20__ -DPSVITA -D__SDL_AUDIO__ -fpermissive -std=c++11 -I. -I$(VITASDK)/arm-vita-eabi/include/ -L$(VITASDK)/arm-vita-eabi/lib -lSDL2 
