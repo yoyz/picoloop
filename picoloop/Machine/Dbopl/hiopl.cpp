@@ -1,6 +1,11 @@
 #include "hiopl.h"
 #include <stdint.h>
 #include <assert.h>
+Bit32s CPU_Cycles;
+Bit32s CPU_CycleLeft;
+Bit32s CPU_CycleMax;
+Bitu PIC_Ticks;
+
 
 typedef  unsigned char		uint8;
 //#include "../JuceLibraryCode/JuceHeader.h"

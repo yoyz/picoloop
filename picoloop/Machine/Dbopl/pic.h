@@ -24,6 +24,11 @@
 extern Bit32s CPU_Cycles;
 extern Bit32s CPU_CycleLeft;
 extern Bit32s CPU_CycleMax;
+//Bit32s CPU_Cycles;
+//Bit32s CPU_CycleLeft;
+//Bit32s CPU_CycleMax;
+
+
 
 typedef void (PIC_EOIHandler) (void);
 typedef void (* PIC_EventHandler)(Bitu val);
@@ -35,6 +40,7 @@ typedef void (* PIC_EventHandler)(Bitu val);
 extern Bitu PIC_IRQCheck;
 extern Bitu PIC_IRQActive;
 extern Bitu PIC_Ticks;
+//Bitu PIC_Ticks;
 /*
 static INLINE float PIC_TickIndex(void) {
 	return (CPU_CycleMax-CPU_CycleLeft-CPU_Cycles)/(float)CPU_CycleMax;
