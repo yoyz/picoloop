@@ -1,0 +1,137 @@
+PHONY := all package clean
+rwildcard=$(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
+
+CC := arm-vita-eabi-gcc
+CXX := arm-vita-eabi-g++
+STRIP := arm-vita-eabi-strip
+
+PROJECT_TITLE := VitaSDK sample
+PROJECT_TITLEID := VSDK00001
+
+PROJECT := vita_sample
+CFLAGS   += -I.
+CXXFLAGS += -D__SDL20__ -DPSVITA -D__SDL_AUDIO__ -fpermissive -std=c++11 -I. -I$(VITASDK)/arm-vita-eabi/include/ -L$(VITASDK)/arm-vita-eabi/lib -lSDL2
+
+#SRC_C :=$(call rwildcard, src/, *.c)
+#SRC_CPP :=$(call rwildcard, src/, *.cpp)
+#SRC_CPP :=$(call rwildcard, src/, *.cpp)
+SRC_CPP := PatternPlayer.cpp \
+		      SDL_GUI.cpp              \
+		      SYSTEMPSVITA.cpp	       \
+		      AudioEngine.cpp          \
+		      AudioDriverSDL.cpp   \
+		      Oscillator.cpp           \
+		      OneOscillator.cpp        \
+		      Biquad.cpp               \
+		      AudioMixer.cpp           \
+		      Wave.cpp Track.cpp       \
+		      Machine.cpp              \
+		      MonoMixer.cpp            \
+		      InputManager.cpp         \
+		      Filter.cpp               \
+		      AMSynthLowPassFilter.cpp \
+		      Effect.cpp               \
+		      EffectDelay.cpp          \
+		      EffectDisabled.cpp       \
+		      WaveTableManager.cpp     \
+		      WaveTable.cpp            \
+		      Generator.cpp            \
+		      PatternElement.cpp       \
+		      Pattern.cpp              \
+		      PatternReader.cpp        \
+		      Sequencer.cpp            \
+		      PatternSequencer.cpp     \
+		      SongSequencer.cpp        \
+		      NoteFreq.cpp             \
+		      PitchBend.cpp            \
+		      TweakableKnob.cpp	       \
+		      UserInterface.cpp	       \
+		      MachineCheck.cpp	       \
+		      WaveFileWriter.cpp       \
+		      Machine/Picosynth/PicosynthUserInterface.cpp \
+		      Machine/Picosynth/PicosynthADSR.cpp        \
+		      Machine/Picosynth/PicosynthVCO.cpp         \
+		      Machine/Picosynth/PicosynthMachine.cpp     \
+		      Machine/Picodrum/PicodrumUserInterface.cpp \
+		      Machine/Picodrum/PicodrumVCO.cpp           \
+		      Machine/Picodrum/PicodrumADSR.cpp          \
+		      Machine/Picodrum/PicodrumMachine.cpp       \
+		      Machine/Dbopl/DboplUserInterface.cpp \
+		      Machine/Dbopl/dbopl.cpp                    \
+		      Machine/Dbopl/hiopl.cpp                    \
+		      Machine/Dbopl/DboplMachine.cpp             \
+		      Machine/PBSynth/PBSynthUserInterface.cpp \
+		      Machine/PBSynth/synthengine.cpp            \
+		      Machine/PBSynth/osc.cpp                    \
+		      Machine/PBSynth/lfo.cpp                    \
+		      Machine/PBSynth/filter.cpp                 \
+		      Machine/PBSynth/env.cpp                    \
+		      Machine/PBSynth/echo.cpp                   \
+		      Machine/PBSynth/osctab.cpp                 \
+		      Machine/PBSynth/lfotab.cpp                 \
+		      Machine/PBSynth/envtab.cpp                 \
+		      Machine/PBSynth/coeff.cpp                  \
+		      Machine/PBSynth/PBSynthMachine.cpp         \
+
+
+
+#OBJ_DIRS := $(addprefix out/, $(dir $(SRC_C:src/%.c=%.o))) $(addprefix out/, $(dir $(SRC_CPP:src/%.cpp=%.o)))
+#OBJ_DIRS := $(addprefix out/, $(dir $(SRC_C:./%.c=%.o))) $(addprefix out/, $(dir $(SRC_CPP:./%.cpp=%.o)))
+#OBJ_DIRS := $(addprefix out/, $(dir $(SRC_CPP:./%.cpp=%.o)))
+OBJ_DIRS := out/ out/Machine/Picosynth/ out/Machine/Picodrum out/Machine/Dbopl/ out/Machine/PBSynth
+#OBJS := $(addprefix out/, $(SRC_C:src/%.c=%.o)) $(addprefix out/, $(SRC_CPP:src/%.cpp=%.o))
+#OBJS := $(addprefix out/, $(SRC_C:./%.c=%.o)) $(addprefix out/, $(SRC_CPP:./%.cpp=%.o))
+OBJS := $(addprefix out/, $(SRC_CPP:%.cpp=%.o))
+
+#LIBS := -lSceDisplay_stub -lSceCtrl_stub  -lSceAudio_stub -lSDL2  -lSceSysmodule_stub -lSceGxm_stub -lvita2d
+LIBS := -lSDL2_ttf -lfreetype -lpng -lz -lSDL2 -lSceAudio_stub -lvita2d -lSceGxm_stub -lSceDisplay_stub -lSceCtrl_stub -lSceSysmodule_stub -lSceCommonDialog_stub
+
+
+all: package
+
+package: $(PROJECT).vpk
+
+$(PROJECT).vpk: eboot.bin param.sfo
+	vita-pack-vpk -s param.sfo -b eboot.bin \
+		--add font.ttf=font.ttf  \
+		--add sce_sys/icon0.png=sce_sys/icon0.png \
+		--add sce_sys/livearea/contents/bg.png=sce_sys/livearea/contents/bg.png \
+		--add sce_sys/livearea/contents/startup.png=sce_sys/livearea/contents/startup.png \
+		--add sce_sys/livearea/contents/template.xml=sce_sys/livearea/contents/template.xml \
+	$(PROJECT).vpk
+
+eboot.bin: $(PROJECT).velf
+	vita-make-fself $(PROJECT).velf eboot.bin
+
+param.sfo:
+	vita-mksfoex -s TITLE_ID="$(PROJECT_TITLEID)" "$(PROJECT_TITLE)" param.sfo
+
+$(PROJECT).velf: $(PROJECT).elf
+	$(STRIP) -g $<
+	vita-elf-create $< $@
+
+$(PROJECT).elf: $(OBJS)
+	$(CXX) -Wl,-q -o $@ $^ $(LIBS) 
+
+$(OBJ_DIRS):
+	mkdir -p $@
+
+#out/%.o : src/%.cpp | $(OBJ_DIRS)
+out/%.o : %.cpp | $(OBJ_DIRS)
+	arm-vita-eabi-g++ -c $(CXXFLAGS) -o $@ $<
+
+#out/%.o : src/%.c | $(OBJ_DIRS)
+out/%.o : %.c | $(OBJ_DIRS)
+	arm-vita-eabi-g++ -c $(CFLAGS) -o $@ $<
+
+clean:
+	rm -f $(PROJECT).velf $(PROJECT).elf $(PROJECT).vpk param.sfo eboot.bin $(OBJS)
+	rm -r $(abspath $(OBJ_DIRS))
+
+vpksend: $(PROJECT).vpk
+	curl -T $(PROJECT).vpk ftp://$(PSVITAIP):1337/ux0:/Vpk/
+	@echo "Sent."
+
+send: eboot.bin
+	curl -T eboot.bin      ftp://$(PSVITAIP):1337/ux0:/app/$(PROJECT_TITLEID)/
+	@echo "Sent."

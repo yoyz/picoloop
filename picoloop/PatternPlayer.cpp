@@ -48,6 +48,16 @@ using namespace std;
 #include "Machine/MidiOutSystem/MidiOutUserInterface.h"
 #endif
 
+#ifdef PSVITA
+#include <psp2/kernel/processmgr.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
+#include <psp2/ctrl.h>
+#include <stdio.h>
+#include <psp2/display.h>
+#include <psp2/kernel/processmgr.h>
+#include <stdio.h>
+#endif
 
 #ifdef PSP
 #include <pspkernel.h>

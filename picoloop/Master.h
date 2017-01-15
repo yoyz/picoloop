@@ -429,6 +429,8 @@ enum {
 #endif
 
 
+
+
 #ifdef PSP
 #define SCREEN_MULT     1
 #define SCREEN_WIDTH	480
@@ -478,6 +480,59 @@ enum {
 #define KEYRELEASED         SDL_JOYBUTTONUP
 // BEGIN PSP SDL
 #endif
+
+#ifdef PSVITA
+#define SCREEN_MULT     1
+#define SCREEN_WIDTH	480
+#define SCREEN_HEIGHT	272
+#define SCREEN_DEPTH	16
+
+#define KEY_REPEAT_INTERVAL_SMALLEST  6
+#define KEY_REPEAT_INTERVAL_SMALL     6
+#define KEY_REPEAT_INTERVAL_MIDDLE    6
+#define KEY_REPEAT_INTERVAL_LONG      160
+#define KEY_REPEAT_INTERVAL_LONGEST   160
+
+#define DEFAULTSAMPLES   2048
+
+#define PSP_BUTTON_TRIANGLE 0 // X
+#define PSP_BUTTON_CIRCLE   1 // A
+#define PSP_BUTTON_CROSS    2 // B
+#define PSP_BUTTON_SQUARE   3 // Y
+#define PSP_BUTTON_L        4
+#define PSP_BUTTON_R        5
+#define PSP_BUTTON_DOWN     6
+#define PSP_BUTTON_LEFT     7
+#define PSP_BUTTON_UP       8
+#define PSP_BUTTON_RIGHT    9
+#define PSP_BUTTON_SELEC    10
+#define PSP_BUTTON_START    11
+
+
+// BEGIN PSP SDL 
+#define BUTTON_B            PSP_BUTTON_CROSS
+#define BUTTON_A            PSP_BUTTON_CIRCLE
+#define BUTTON_X            PSP_BUTTON_TRIANGLE
+#define BUTTON_Y            PSP_BUTTON_SQUARE
+
+#define BUTTON_UP           PSP_BUTTON_UP
+#define BUTTON_DOWN         PSP_BUTTON_DOWN
+#define BUTTON_LEFT         PSP_BUTTON_LEFT
+#define BUTTON_RIGHT        PSP_BUTTON_RIGHT
+
+#define BUTTON_SELECT       PSP_BUTTON_SELEC
+#define BUTTON_START        PSP_BUTTON_START
+
+#define BUTTON_L            PSP_BUTTON_L
+#define BUTTON_R            PSP_BUTTON_R
+
+#define KEYPRESSED          SDL_JOYBUTTONDOWN
+#define KEYRELEASED         SDL_JOYBUTTONUP
+// BEGIN PSP SDL
+#endif
+
+
+
 
 
 #ifdef GP2X
