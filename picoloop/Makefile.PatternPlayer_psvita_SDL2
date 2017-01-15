@@ -10,7 +10,7 @@ PROJECT_TITLEID := VSDK00001
 
 PROJECT := vita_sample
 CFLAGS   += -I.
-CXXFLAGS += -D__SDL20__ -DPSVITA -D__SDL_AUDIO__ -fpermissive -std=c++11 -I. -I$(VITASDK)/arm-vita-eabi/include/ -L$(VITASDK)/arm-vita-eabi/lib -lSDL2
+CXXFLAGS += -DDEBUG_PRINTF -D__SDL20__ -DPSVITA -D__SDL_AUDIO__ -fpermissive -std=c++11 -I. -I$(VITASDK)/arm-vita-eabi/include/ -L$(VITASDK)/arm-vita-eabi/lib -lSDL2 
 
 #SRC_C :=$(call rwildcard, src/, *.c)
 #SRC_CPP :=$(call rwildcard, src/, *.cpp)
@@ -84,7 +84,7 @@ OBJ_DIRS := out/ out/Machine/Picosynth/ out/Machine/Picodrum out/Machine/Dbopl/ 
 OBJS := $(addprefix out/, $(SRC_CPP:%.cpp=%.o))
 
 #LIBS := -lSceDisplay_stub -lSceCtrl_stub  -lSceAudio_stub -lSDL2  -lSceSysmodule_stub -lSceGxm_stub -lvita2d
-LIBS := -lSDL2_ttf -lfreetype -lpng -lz -lSDL2 -lSceAudio_stub -lvita2d -lSceGxm_stub -lSceDisplay_stub -lSceCtrl_stub -lSceSysmodule_stub -lSceCommonDialog_stub
+LIBS := -L. -lSDL2_ttf -lfreetype -lpng -lz -lSDL2 -lSceAudio_stub -lvita2d -lSceGxm_stub -lSceDisplay_stub -lSceCtrl_stub -lSceSysmodule_stub -lSceCommonDialog_stub -lpsp2shell -lSceNet_stub -lSceNetCtl_stub -lSceLibKernel_stub -lScePower_stub -lSceAppMgr_stub -lSceSysmodule_stub
 
 
 all: package

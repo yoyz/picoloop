@@ -135,7 +135,7 @@ int SDL_GUI::initVideo()
   fprintf(stderr,"before SDL_Init\n");
 
 #if defined(PSVITA)
-  if( SDL_Init( SDL_INIT_VIDEO)<0)
+  if( SDL_Init( SDL_INIT_VIDEO | SDL_INIT_AUDIO)<0)
     if ((window = SDL_CreateWindow( "GreenRectangle", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN)) == NULL)
       exit(1);  
 #endif

@@ -57,6 +57,7 @@ using namespace std;
 #include <psp2/display.h>
 #include <psp2/kernel/processmgr.h>
 #include <stdio.h>
+#include "psp2shell.h"
 #endif
 
 #ifdef PSP
@@ -3942,9 +3943,18 @@ int main(int argc,char **argv)
   int cpu_speed;
   int running=1;
 
+#if defined(PSVITA)
+  psp2shell_init(3333,0);
+  SDL_Delay(100);
+  psp2shell_print("Start\n");
+  //sceKernelExitProcess(0);
+#endif
+  
   UI=&PSUI;
   //UI->handle_key(1,2);
 
+
+  
 #ifdef __RTMIDI__
   MidiOutSystem & MOS=MidiOutSystem::getInstance();
   MidiInSystem  & MIS=MidiInSystem::getInstance();
@@ -3994,7 +4004,7 @@ int main(int argc,char **argv)
   //SDL_InitSubSystem(SDL_INIT_AUDIO);
   //handle_key(); 
  //  SDL_EnableKeyRepeat(500,500);
-  SG.openBMPFont();
+  //SG.openBMPFont();
   if (SG.openTTFFont()==false) {DPRINTF("ttf font error"); exit(1); }
   SG.loadingScreen();
   SDL_Delay(1000);
@@ -4002,14 +4012,22 @@ int main(int argc,char **argv)
   config_loaded=0;
   config_key_pressed=0;
   config_first_time=1;
+  //if (0)
+  //{
   while (config_loaded!=1)
     {
+#if defined(PSVITA)
+      psp2shell_print("looping config\n");
+#endif
       display_config();
       handle_key_config();
       handle_config();
       SDL_Delay(1);  
     }
-    
+  //}
+#if defined(PSVITA)
+      psp2shell_print("after config\n");
+#endif
 
   PR.init();         // Init the     storage bank
   PR.setBank(bank);  // The current  storage bank will be the value of bank the directory/file are here PWD/bank/bank%d/
@@ -4017,6 +4035,9 @@ int main(int argc,char **argv)
 
   load_pattern();
   
+#if defined(PSVITA)
+  psp2shell_print("after load pattern\n");
+#endif
 
 
   //sleep(10);
@@ -4031,8 +4052,14 @@ int main(int argc,char **argv)
   //exit(0);
 
   //AE.openAudioSdl();
+#if defined(PSVITA)
+      psp2shell_print("before seq\n");
+#endif
   
   seq();
+#if defined(PSVITA)
+      psp2shell_print("after seq\n");
+#endif
 
   DPRINTF("[closeAudio output]");
   //AE.stopAudioSdl();
@@ -4050,6 +4077,8 @@ int main(int argc,char **argv)
 #ifdef PSP
   sceKernelExitGame();	
 #endif
-
+#if defined(PSVITA)
+  sceKernelExitProcess(0);
+#endif
 }
 
