@@ -203,7 +203,8 @@ void SDL_GUI::clearScreen()
   extern int32_t * pal;
   DPRINTF("SDL_GUI::clearScreen()");
   //SDL_FillRect(screen,NULL, 0x000000);
-  SDL_FillRect(screen,NULL, pal[8]);
+  SDL_FillRect(screen,NULL, SDL_MapRGB(screen->format, (pal[8]&0xFF0000)>>16,(pal[8]&0x00FF00)>>8,(pal[8]&0x0000FF)>>0));
+	//SDL_FillRect(screen,NULL, pal[8]);
 }
 #endif
 
