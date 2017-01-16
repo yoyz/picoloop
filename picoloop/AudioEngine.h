@@ -24,9 +24,15 @@ using namespace std;
 #include "AudioDriverSDL.h"
 #endif
 
+#ifdef   __PSVITA_AUDIO__
+#include "AudioDriverPSVita.h"
+#endif
+
+
 #ifdef   __RTAUDIO__
 #include "AudioDriverRTAudio.h"
 #endif
+
 
 
 void processBuffer_updateMidiSendClockCounter();

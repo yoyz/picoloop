@@ -1,7 +1,7 @@
 #include "AudioEngine.h"
 
 extern int menu_config_audiopulseclock_out;
-
+void psvitaaudiothread(SceSize argc, void *argp);
 
 PulseSync::PulseSync()
 {
@@ -166,6 +166,12 @@ AudioEngine::AudioEngine() : AM(),
   //nb_tick_midi_send_clock_mulsix=0;
   seqCallback=0;
 
+  #ifdef __PSVITA_AUDIO__
+  AD.sdlAudioSpecWanted->callback=psvitaaudiothread;
+  AD.sdlAudioSpecWanted->userdata=this;
+
+  #endif
+  
   #ifdef __SDL_AUDIO__
   AD.sdlAudioSpecWanted->callback=sdlcallback;
   AD.sdlAudioSpecWanted->userdata=this;
@@ -393,6 +399,27 @@ void AudioEngine::callback(void *unused, Uint8 *stream, int len)
     callback_called++;
 }
 
+//void psvitacallback(void *unused, Uint8 *stream, int len)
+void psvitaaudiothread(SceSize argc, void *argp)
+{
+  void * unused;
+  void * stream;
+  int    len;
+  int i;
+  while (1)
+    {
+      i++;
+      //((AudioEngine*)unused)->callback(unused,stream,len);
+      //((AudioEngine*)argp[0])->callback(*(void*)argp[0],*(Uint8*)argp[1],*(int)argp[2]);      
+    }
+}
+/*
+void psvitacallback(void *unused, Uint8 *stream, int len)
+{
+  ((AudioEngine*)unused)->callback(unused,buf2,2048);
+  sceAudioOutOutput(0, buf);  
+}
+*/
 void sdlcallback(void *unused, Uint8 *stream, int len)
 {
   ((AudioEngine*)unused)->callback(unused,stream,len);
