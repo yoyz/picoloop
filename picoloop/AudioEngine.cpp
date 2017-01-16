@@ -410,7 +410,8 @@ void psvitaaudiothread(SceSize argc, void *argp)
     {
       i++;
       //((AudioEngine*)unused)->callback(unused,stream,len);
-      //((AudioEngine*)argp[0])->callback(*(void*)argp[0],*(Uint8*)argp[1],*(int)argp[2]);      
+      //((AudioEngine*)argp[0])->callback(*(void*)argp[0],*(Uint8*)argp[1],*(int)argp[2]);
+        psp2shell_print("thread\n");
     }
 }
 /*
