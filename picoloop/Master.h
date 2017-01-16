@@ -484,31 +484,18 @@ enum {
 #ifdef PSVITA
 #include <psp2/ctrl.h>
 #include "psp2shell.h"
-#define SCREEN_MULT     1
+#define SCREEN_MULT     2
 #define SCREEN_WIDTH	960
 #define SCREEN_HEIGHT	544
 #define SCREEN_DEPTH	16
 
-#define KEY_REPEAT_INTERVAL_SMALLEST  6
-#define KEY_REPEAT_INTERVAL_SMALL     6
-#define KEY_REPEAT_INTERVAL_MIDDLE    6
-#define KEY_REPEAT_INTERVAL_LONG      160
-#define KEY_REPEAT_INTERVAL_LONGEST   160
+#define KEY_REPEAT_INTERVAL_SMALLEST  1
+#define KEY_REPEAT_INTERVAL_SMALL     1
+#define KEY_REPEAT_INTERVAL_MIDDLE    1
+#define KEY_REPEAT_INTERVAL_LONG      20
+#define KEY_REPEAT_INTERVAL_LONGEST   20
 
 #define DEFAULTSAMPLES   128
-
-#define PSP_BUTTON_TRIANGLE 0 // X
-#define PSP_BUTTON_CIRCLE   1 // A
-#define PSP_BUTTON_CROSS    2 // B
-#define PSP_BUTTON_SQUARE   3 // Y
-#define PSP_BUTTON_L        4
-#define PSP_BUTTON_R        5
-#define PSP_BUTTON_DOWN     6
-#define PSP_BUTTON_LEFT     7
-#define PSP_BUTTON_UP       8
-#define PSP_BUTTON_RIGHT    9
-#define PSP_BUTTON_SELEC    10
-#define PSP_BUTTON_START    11
 
 
 // BEGIN PSP SDL 
