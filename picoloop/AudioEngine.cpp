@@ -169,7 +169,7 @@ AudioEngine::AudioEngine() : AM(),
   seqCallback=0;
 
   #ifdef __PSVITA_AUDIO__
-  AD.sdlAudioSpecWanted->callback=psvitaaudiothread;
+  //AD.sdlAudioSpecWanted->callback=psvitaaudiothread;
   //AD.sdlAudioSpecWanted->userdata=this;
   AD.userdata=this;
   //  DPRINTF("AudioDriver::AudioDriver() this:0x%08.8X",this);
@@ -408,16 +408,47 @@ void AudioEngine::callback(void *unused, Uint8 *stream, int len)
 }
 
 #if defined(PSVITA)
-void psvitaaudiothread(SceSize argc, void *argp)
+
+void psvitaaudiogeneratethread(SceSize argc, void *argp)
+{
+  void ** argp_deref = (void **)argp;
+  AudioEngine * AE           = argp_deref[0];
+  Uint8       * audio_buffer0= argp_deref[1];
+  Uint8       * audio_buffer1= argp_deref[2];
+  int         * buffer_used_by_card = argp_deref[3];
+  int           len          = argp_deref[4];
+  int i;
+  
+  while(1)
+    {
+      while (*buffer_used_by_card==0)
+	SDL_Delay(1);
+      AE->callback(AE,audio_buffer0,len);
+      while (*buffer_used_by_card==1)
+	SDL_Delay(1);
+      AE->callback(AE,audio_buffer1,len);
+      /*
+      if(*buffer_used_by_card==0)
+      AE->callback(AE,audio_buffer1,len);
+      if(*buffer_used_by_card==1)
+	AE->callback(AE,audio_buffer0,len);
+      */
+      //i++;      
+    }
+}
+
+void psvitaaudiopushthread(SceSize argc, void *argp)
 {
   void * unused;
   void * stream;
   int i;
   void ** argp_deref = (void **)argp;
   AudioEngine * AE           = argp_deref[0];
-  Uint8       * audio_buffer = argp_deref[1];
-  int           len          = argp_deref[2];
-  int        sce_port        = argp_deref[3];
+  Uint8       * audio_buffer0= argp_deref[1];
+  Uint8       * audio_buffer1= argp_deref[2];
+  int         * buffer_used_by_card = argp_deref[3];
+  int           len          = argp_deref[4];
+  int        sce_port        = argp_deref[5];
   DPRINTF("psvitaaudiothread(argc:%d argp[0]:0x%08.8X argp[1]:0x%08.8X argp[2]:0x%08.8X,argp[3]:0x%08.8X)\n",argc,argp_deref[0], argp_deref[1], argp_deref[2],argp_deref[3]);
   while (1)
     {
@@ -425,9 +456,13 @@ void psvitaaudiothread(SceSize argc, void *argp)
       i++;
 
       if (i==0)
-	DPRINTF("audiothread AE:0x%08.8X AM:0x%08.8X", AE, AE->AM);
-      AE->callback(AE,audio_buffer,len);
-      sceAudioOutOutput(sce_port, audio_buffer);
+	DPRINTF("audiothread AE:0x%08.8X AM:0x%08.8X", AE);
+      //AE->callback(AE,audio_buffer,len);
+      
+      *buffer_used_by_card=0;
+      sceAudioOutOutput(sce_port, audio_buffer0);
+      *buffer_used_by_card=1;
+      sceAudioOutOutput(sce_port, audio_buffer1);
     }
 }
 #endif

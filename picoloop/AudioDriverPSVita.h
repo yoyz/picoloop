@@ -7,7 +7,8 @@
 #include <psp2/audioout.h>
 
 //void psvitacallback(void *unused, Uint8 *stream, int len);
-void psvitaaudiothread(SceSize argc, void *argp);
+void psvitaaudiopushthread(SceSize argc, void *argp);
+void psvitaaudiogeneratethread(SceSize argc, void *argp);
 
 class AudioDriver
 {
@@ -29,14 +30,18 @@ class AudioDriver
 
  public:
   SDL_AudioSpec * sdlAudioSpecWanted;
-  SceUID thid;
+  SceUID thid_generateBuffer;
+  SceUID thid_pushToAudioCard;
   int sce_size;
   int sce_freq;
   int sce_mode;
   int sce_vol;
   int sce_port;
-  Sint16 * audio_buffer;
-  void   ** argp;
+  Sint16 * audio_buffer0;
+  Sint16 * audio_buffer1;
+  int    * buffer_used_by_card;
+  void   ** argp_push;
+  void   ** argp_generate;
   void   *  userdata;
 };
 

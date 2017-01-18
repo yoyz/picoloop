@@ -6,8 +6,10 @@
 AudioDriver::AudioDriver()
 {
   sdlAudioSpecWanted   = (SDL_AudioSpec *) malloc(sizeof(SDL_AudioSpec));
-  audio_buffer         = (Sint16 *) malloc(sizeof(Sint16)*8192);  
-
+  audio_buffer0         = (Sint16 *) malloc(sizeof(Sint16)*8192);
+  audio_buffer1         = (Sint16 *) malloc(sizeof(Sint16)*8192);  
+  buffer_used_by_card   = malloc(sizeof(int));
+  
   sdlAudioSpecWanted->freq = DEFAULTFREQ;
   sdlAudioSpecWanted->format = AUDIO_S16SYS;
   sdlAudioSpecWanted->channels = 2;    /* 1 = mono, 2 = stereo */
@@ -70,14 +72,29 @@ int my_thread(SceSize args, void *argp)
 int AudioDriver::startAudio()
 {
   int i;
-  argp=malloc(sizeof(void**)*5);
+  argp_push     = malloc(sizeof(void**)*5);
+  argp_generate = malloc(sizeof(void**)*5);
 
-  argp[0]=this->userdata;
-  argp[1]=audio_buffer;
-  argp[2]=2048;
-  argp[3]=sce_port;
-  DPRINTF("AudioDriverPSVita Before starting thread (argp[0]:0x%08.8X argp[1]:0x%08.8X argp[2]:0x%08.8X,argp[3]:0x%08.8X)\n",argp[0], argp[1], argp[2],argp[3]);
-  sceKernelStartThread(thid,24,argp);
+  argp_generate[0]=this->userdata;
+  argp_generate[1]=audio_buffer0;
+  argp_generate[2]=audio_buffer1;
+  argp_generate[3]=buffer_used_by_card;
+  argp_generate[4]=2048;
+  
+  sceKernelStartThread(thid_generateBuffer,24,argp_generate);
+  
+  argp_push[0]=this->userdata;
+  argp_push[1]=audio_buffer0;
+  argp_push[2]=audio_buffer1;
+  argp_push[3]=buffer_used_by_card;
+  
+  argp_push[4]=2048;
+  argp_push[5]=sce_port;
+
+  *buffer_used_by_card=0;
+  
+  DPRINTF("AudioDriverPSVita Before starting thread (argp_push[0]:0x%08.8X argp_push[1]:0x%08.8X argp_push[2]:0x%08.8X,argp_push[3]:0x%08.8X,argp_push[4]:0x%08.8X,argp_push[5]:0x%08.8X)\n",argp_push[0], argp_push[1], argp_push[2],argp_push[3],argp_push[4],argp_push[5]);
+  sceKernelStartThread(thid_pushToAudioCard,24,argp_push);
 
 }
 
@@ -97,7 +114,8 @@ int AudioDriver::openAudio()
   sceAudioOutSetConfig(sce_port, sce_size, sce_freqs[sce_freq], sce_mode);
 
   DPRINTF("PSVITA Before creating thread\n");
-  thid = sceKernelCreateThread("audio_thread", psvitaaudiothread, 0x10000100, 0x10000, 0, 0, NULL);
+  thid_pushToAudioCard = sceKernelCreateThread("audio_push_thread",    psvitaaudiopushthread, 0x10000100, 0x10000, 0, 0, NULL);
+  thid_generateBuffer = sceKernelCreateThread("audio_generate_thread", psvitaaudiogeneratethread, 0x10000100, 0x10000, 0, 0, NULL);
   DPRINTF("PSVITA After creating thread\n");    
 }
 
