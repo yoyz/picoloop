@@ -16,7 +16,8 @@ AudioDriver::AudioDriver()
   sdlAudioSpecWanted->samples = BUFFER_FRAME;  /* Good low-latency value for callback */
   sce_size = 2048;
   sce_freq = 8;
-  sce_mode = SCE_AUDIO_OUT_MODE_MONO;
+  //sce_mode = SCE_AUDIO_OUT_MODE_MONO;
+  sce_mode = SCE_AUDIO_OUT_MODE_STEREO;
   sce_vol  = SCE_AUDIO_VOLUME_0DB;
   sce_port;
 

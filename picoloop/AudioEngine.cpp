@@ -423,10 +423,10 @@ void psvitaaudiogeneratethread(SceSize argc, void *argp)
     {
       while (*buffer_used_by_card==0)
 	SDL_Delay(1);
-      AE->callback(AE,audio_buffer0,len);
+      AE->callback(AE,audio_buffer0,2048);
       while (*buffer_used_by_card==1)
 	SDL_Delay(1);
-      AE->callback(AE,audio_buffer1,len);
+      AE->callback(AE,audio_buffer1,2048);
       /*
       if(*buffer_used_by_card==0)
       AE->callback(AE,audio_buffer1,len);
