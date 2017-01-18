@@ -1,6 +1,6 @@
-# PICOLOOP 0.75 README #
+# PICOLOOP 0.76 README #
 
-Manual and tutorial for PC/PSP/Pocketchip can be fetch here : https://github.com/farvardin/picoloop-manual
+Manual and tutorial for PC/PSP/PSVita/Pocketchip can be fetch here : https://github.com/farvardin/picoloop-manual
 
 
 ## Overview ##
@@ -411,13 +411,15 @@ In this case you need a prx and an elf file.
 Changelog
 =========
 
-V0.75abcde: 
+V0.76a
+- first port on psvita thanks to #henkaku team
+
+V0.75abcdef: 
 
 - remove a lot of duplicate code in XXXUserInterface, because it was really needed
 - a add the resid engine 
 - b export DUMP_AUDIO=1 now export a wav file
 - c add SDL2.0 compatibility and keep SDL1.2 as default because it works
-
 
 V0.74acd:
 
