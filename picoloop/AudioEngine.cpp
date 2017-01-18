@@ -170,13 +170,14 @@ AudioEngine::AudioEngine() : AM(),
 
   #ifdef __PSVITA_AUDIO__
   AD.sdlAudioSpecWanted->callback=psvitaaudiothread;
-  AD.sdlAudioSpecWanted->userdata=this;
+  //AD.sdlAudioSpecWanted->userdata=this;
+  AD.userdata=this;
   //  DPRINTF("AudioDriver::AudioDriver() this:0x%08.8X",this);
-
   #endif
   
   #ifdef __SDL_AUDIO__
   AD.sdlAudioSpecWanted->callback=sdlcallback;
+  //AD.sdlAudioSpecWanted->userdata=this;
   AD.sdlAudioSpecWanted->userdata=this;
   #endif
 
@@ -355,11 +356,15 @@ int AudioEngine::getTickRight()
 void AudioEngine::callback(void *unused, Uint8 *stream, int len)
 {
   //  printf("AudioEngine::calback() begin nBufferFrame=%d nbCallback=%d\n",nBufferFrames,nbCallback);
-
-  int     buffer_size;
+  //DPRINTF("AudioEngine::callback() AE:0x%08.8X ", this);
+  int     buffer_size=0;
 
   //Workaround a linux sdl 1.2 audio bug 
   //                   sdl seem to have a bug on this...
+  #ifdef __PSVITA_AUDIO__
+  buffer_size=len;
+  #endif
+  
   #ifdef __SDL_AUDIO__
   buffer_size=AD.getBufferFrame();
   #ifdef PSP
@@ -407,39 +412,26 @@ void psvitaaudiothread(SceSize argc, void *argp)
 {
   void * unused;
   void * stream;
-  int    len;
   int i;
   void ** argp_deref = (void **)argp;
+  AudioEngine * AE           = argp_deref[0];
+  Uint8       * audio_buffer = argp_deref[1];
+  int           len          = argp_deref[2];
+  int        sce_port        = argp_deref[3];
   DPRINTF("psvitaaudiothread(argc:%d argp[0]:0x%08.8X argp[1]:0x%08.8X argp[2]:0x%08.8X,argp[3]:0x%08.8X)\n",argc,argp_deref[0], argp_deref[1], argp_deref[2],argp_deref[3]);
   while (1)
     {
       int a;
       i++;
-      //((AudioEngine*)unused)->callback(unused,stream,len);
-      //((AudioEngine*)argp[0])->callback(*(void*)argp[0],*(Uint8*)argp[1],*(int)argp[2]);
-      if (i==100)
-	psp2shell_print("thread\n");
-      //((AudioEngine*)argp_deref[0])->callback(*(void*)argp_deref[0],*(Uint8*)argp_deref[1],*(int)argp_deref[2]);
-      //((AudioEngine*)argp_deref[0])->callback(argp_deref[0],argp_deref[1],argp_deref[2]);
-      
-      //if (i==110)
-      //((AudioEngine*)argp_deref[0])->processBuffer(1024);
-      a=((AudioEngine*)argp_deref[0])->AM.tick();
-      //((AudioEngine*)argp_deref[0])->processBuffer(4);
 
-      // THIS ONE IS OK
-      //sceAudioOutOutput((int)argp_deref[3], (Uint8*)argp_deref[1]);  
-      
+      if (i==0)
+	DPRINTF("audiothread AE:0x%08.8X AM:0x%08.8X", AE, AE->AM);
+      AE->callback(AE,audio_buffer,len);
+      sceAudioOutOutput(sce_port, audio_buffer);
     }
 }
 #endif
-/*
-void psvitacallback(void *unused, Uint8 *stream, int len)
-{
-((AudioEngine*)unused)->callback(unused,buf2,2048);
-  sceAudioOutOutput(0, buf);  
-}
-*/
+
 void sdlcallback(void *unused, Uint8 *stream, int len)
 {
   ((AudioEngine*)unused)->callback(unused,stream,len);

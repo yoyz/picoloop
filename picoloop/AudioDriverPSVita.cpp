@@ -8,19 +8,14 @@ AudioDriver::AudioDriver()
   sdlAudioSpecWanted   = (SDL_AudioSpec *) malloc(sizeof(SDL_AudioSpec));
   audio_buffer         = (Sint16 *) malloc(sizeof(Sint16)*8192);  
 
-  //sdlAudioSpecWanted->freq = 48000;
-  //sdlAudioSpecWanted->freq = 44100;
   sdlAudioSpecWanted->freq = DEFAULTFREQ;
   sdlAudioSpecWanted->format = AUDIO_S16SYS;
   sdlAudioSpecWanted->channels = 2;    /* 1 = mono, 2 = stereo */
   sdlAudioSpecWanted->samples = BUFFER_FRAME;  /* Good low-latency value for callback */
-  //sdlAudioSpecWanted->callback = fakesdlcallback;
-  //sdlAudioSpecWanted->userdata = this;
-
   sce_size = 2048;
   sce_freq = 8;
   sce_mode = SCE_AUDIO_OUT_MODE_MONO;
-  sce_vol = SCE_AUDIO_VOLUME_0DB;
+  sce_vol  = SCE_AUDIO_VOLUME_0DB;
   sce_port;
 
 }
@@ -74,14 +69,10 @@ int my_thread(SceSize args, void *argp)
 
 int AudioDriver::startAudio()
 {
-  //SDL_PauseAudio(0);
-  //sceKernelStartThread(thid,0,NULL);
-  //void * args[3] = { sdlAudioSpecWanted->userdata=this, audio_buffer, BUFFER_FRAME };
-  //sceKernelStartThread(thid,3,args);
+  int i;
   argp=malloc(sizeof(void**)*5);
 
-  int i;
-  argp[0]=sdlAudioSpecWanted->userdata=this;
+  argp[0]=this->userdata;
   argp[1]=audio_buffer;
   argp[2]=2048;
   argp[3]=sce_port;

@@ -37,6 +37,7 @@ class AudioDriver
   int sce_port;
   Sint16 * audio_buffer;
   void   ** argp;
+  void   *  userdata;
 };
 
 #endif
