@@ -65,7 +65,8 @@ int PatternReader::saveSong(SongSequencer & SS)
   unsigned char line[MAX_SONG_LENGHT_BY_PROJECT];
   int i;
   int j;
-  sprintf(filename,"bank/bank%d/song.pic",bank);
+  //sprintf(filename,"bank/bank%d/song.pic",bank);
+  sprintf(filename,"%s/bank/bank%d/song.pic",GETPICOLOOPUSERSTORAGE(),bank);
   fd=fopen(filename,"w");
   if (fd==0)
     {
@@ -88,7 +89,7 @@ int PatternReader::loadSong(SongSequencer & SS)
   unsigned char line[MAX_SONG_LENGHT_BY_PROJECT]={0};
   int i;
   int j;
-  sprintf(filename,"bank/bank%d/song.pic",bank);
+  sprintf(filename,"%s/bank/bank%d/song.pic",GETPICOLOOPUSERSTORAGE(),bank);
   fd=fopen(filename,"r");
   if (fd==0)
     {
@@ -114,7 +115,8 @@ int PatternReader::loadSong(SongSequencer & SS)
 bool PatternReader::PatternRemove(int PatternNumber,int TrackNumber)
 {
   char filename[1024];
-  sprintf(filename,"bank/bank%d/dataP%dT%d.pic",bank,PatternNumber,TrackNumber);
+  //sprintf(filename,"bank/bank%d/dataP%dT%d.pic",bank,PatternNumber,TrackNumber);
+  sprintf(filename,"%s/bank/bank%d/dataP%dT%d.pic",GETPICOLOOPUSERSTORAGE(),bank,PatternNumber,TrackNumber);
   if (unlink(filename)==0)
     {
       loadedData[PatternNumber][TrackNumber]=DATA_DOES_NOT_EXIST_ON_STORAGE;
@@ -146,7 +148,8 @@ bool PatternReader::PatternDataExist(int PatternNumber,int TrackNumber)
 
   //line=(char*)malloc(1024);
   //fd=fopen(fn.c_str(),"r+");
-  sprintf(filename,"bank/bank%d/dataP%dT%d.pic",bank,PatternNumber,TrackNumber);
+  //sprintf(filename,"bank/bank%d/dataP%dT%d.pic",bank,PatternNumber,TrackNumber);
+  sprintf(filename,"%s/bank/bank%d/dataP%dT%d.pic",GETPICOLOOPUSERSTORAGE(),bank,PatternNumber,TrackNumber);
   fd=fopen(filename,"r+");
   if (fd==0)
     {
@@ -296,7 +299,8 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
       return true;
     }
 
-  sprintf(filename,"bank/bank%d/dataP%dT%d.pic",bank,PatternNumber,TrackNumber);
+  //sprintf(filename,"bank/bank%d/dataP%dT%d.pic",bank,PatternNumber,TrackNumber);
+  sprintf(filename,"%s/bank/bank%d/dataP%dT%d.pic",GETPICOLOOPUSERSTORAGE(),bank,PatternNumber,TrackNumber);
 
 
   //check if file name can be open
@@ -709,21 +713,21 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
   mode_t mode;
 
   int sizeoflinemax=1024;
-  //mode=0666;
-  //mode=S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP|S_IWGRP|S_IWGRP|S_IROTH|S_IWOTH;
 
-  //mode=0755;
+  // Create the path to the storage if it does not exist
+  // Should be good^Wbetter if I check if it exist before launching bunch of syscall
+  // Without any check...
+  sprintf(path,    GETPICOLOOPUSERSTORAGE());
+  MKDIR(path);
   
-  sprintf(path,    "bank");
-  //mkdir(path,mode);
+  sprintf(path,    "%s/%s",GETPICOLOOPUSERSTORAGE(),"bank");
   MKDIR(path);
 
-  sprintf(path,    "bank/bank%d",bank);
-  //mkdir(path,mode);
+  sprintf(path,    "%s/bank/bank%d",GETPICOLOOPUSERSTORAGE(),bank);
   MKDIR(path);
 
-  sprintf(filename,"bank/bank%d/dataP%dT%d.pic",bank,PatternNumber,TrackNumber);
-
+  sprintf(filename,"%s/bank/bank%d/dataP%dT%d.pic",GETPICOLOOPUSERSTORAGE(),bank,PatternNumber,TrackNumber);
+  //return 0;
   //  printf("SIZE:%d\n",P.getSize());
   //  exit(1);
 

@@ -14,6 +14,8 @@ CFLAGS   += -I.
 #CXXFLAGS +=                -D__SDL20__ -DPSVITA -D__SDL_AUDIO__ -fpermissive -std=c++11 -I. -I$(VITASDK)/arm-vita-eabi/include/ -L$(VITASDK)/arm-vita-eabi/lib -lSDL2 
 #CXXFLAGS += -DDEBUG_PRINTF -D__SDL20__ -DPSVITA -D__SDL_AUDIO__ -fpermissive -std=c++11 -I. -I$(VITASDK)/arm-vita-eabi/include/ -L$(VITASDK)/arm-vita-eabi/lib -lSDL2
 #CXXFLAGS += -DDEBUG_PRINTF -D__SDL20__ -DPSVITA -D__PSVITA_AUDIO__ -fpermissive -std=c++11 -I. -I$(VITASDK)/arm-vita-eabi/include/ -L$(VITASDK)/arm-vita-eabi/lib -lSDL2 -Wpointer-arith
+#CXXFLAGS += -O2 -D__SDL20__ -DPSVITA -D__PSVITA_AUDIO__ -fpermissive -std=c++11 -I. -I$(VITASDK)/arm-vita-eabi/include/ -L$(VITASDK)/arm-vita-eabi/lib -lSDL2 -Wpointer-arith
+#CXXFLAGS += -O2 -DDEBUG_PRINTF -D__SDL20__ -DPSVITA -D__PSVITA_AUDIO__ -fpermissive -std=c++11 -I. -I$(VITASDK)/arm-vita-eabi/include/ -L$(VITASDK)/arm-vita-eabi/lib -lSDL2 -Wpointer-arith
 CXXFLAGS += -O2 -D__SDL20__ -DPSVITA -D__PSVITA_AUDIO__ -fpermissive -std=c++11 -I. -I$(VITASDK)/arm-vita-eabi/include/ -L$(VITASDK)/arm-vita-eabi/lib -lSDL2 -Wpointer-arith
 
 #SRC_C :=$(call rwildcard, src/, *.c)

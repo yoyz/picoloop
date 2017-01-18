@@ -1,1 +1,4 @@
-int MKDIR(const char *pathname);
+int    MKDIR(const char *pathname);
+char * GETHOME();
+char * GETPICOLOOPUSERSTORAGE();
+char * GETPICOLOOPSYSTEMSTORAGE();

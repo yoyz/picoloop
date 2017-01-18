@@ -3943,7 +3943,7 @@ int main(int argc,char **argv)
   int cpu_speed;
   int running=1;
 
-#if defined(PSVITA) && defined(DEBUGPRINTF)
+#if defined(PSVITA) && defined(DEBUG_PRINTF)
   psp2shell_init(3333,0);
   SDL_Delay(5000);
   psp2shell_print("Start\n");

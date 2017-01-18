@@ -331,7 +331,6 @@ enum {
 
 
 #ifdef LINUX_RASPI1
-
 //#define __FPU__         0
 
 #define SCREEN_WIDTH	320
