@@ -78,9 +78,15 @@ int AudioDriver::startAudio()
   //sceKernelStartThread(thid,0,NULL);
   //void * args[3] = { sdlAudioSpecWanted->userdata=this, audio_buffer, BUFFER_FRAME };
   //sceKernelStartThread(thid,3,args);
+  argp=malloc(sizeof(void**)*5);
 
-  void * args[3] = { sdlAudioSpecWanted->userdata=this, audio_buffer, BUFFER_FRAME };
-  sceKernelStartThread(thid,sizeof(args),args);
+  int i;
+  argp[0]=sdlAudioSpecWanted->userdata=this;
+  argp[1]=audio_buffer;
+  argp[2]=2048;
+  argp[3]=sce_port;
+  DPRINTF("AudioDriverPSVita Before starting thread (argp[0]:0x%08.8X argp[1]:0x%08.8X argp[2]:0x%08.8X,argp[3]:0x%08.8X)\n",argp[0], argp[1], argp[2],argp[3]);
+  sceKernelStartThread(thid,24,argp);
 
 }
 

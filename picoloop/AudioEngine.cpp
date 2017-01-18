@@ -1,7 +1,9 @@
 #include "AudioEngine.h"
 
 extern int menu_config_audiopulseclock_out;
+#if defined(PSVITA)
 void psvitaaudiothread(SceSize argc, void *argp);
+#endif
 
 PulseSync::PulseSync()
 {
@@ -169,6 +171,7 @@ AudioEngine::AudioEngine() : AM(),
   #ifdef __PSVITA_AUDIO__
   AD.sdlAudioSpecWanted->callback=psvitaaudiothread;
   AD.sdlAudioSpecWanted->userdata=this;
+  //  DPRINTF("AudioDriver::AudioDriver() this:0x%08.8X",this);
 
   #endif
   
@@ -399,25 +402,41 @@ void AudioEngine::callback(void *unused, Uint8 *stream, int len)
     callback_called++;
 }
 
-//void psvitacallback(void *unused, Uint8 *stream, int len)
+#if defined(PSVITA)
 void psvitaaudiothread(SceSize argc, void *argp)
 {
   void * unused;
   void * stream;
   int    len;
   int i;
+  void ** argp_deref = (void **)argp;
+  DPRINTF("psvitaaudiothread(argc:%d argp[0]:0x%08.8X argp[1]:0x%08.8X argp[2]:0x%08.8X,argp[3]:0x%08.8X)\n",argc,argp_deref[0], argp_deref[1], argp_deref[2],argp_deref[3]);
   while (1)
     {
+      int a;
       i++;
       //((AudioEngine*)unused)->callback(unused,stream,len);
       //((AudioEngine*)argp[0])->callback(*(void*)argp[0],*(Uint8*)argp[1],*(int)argp[2]);
-        psp2shell_print("thread\n");
+      if (i==100)
+	psp2shell_print("thread\n");
+      //((AudioEngine*)argp_deref[0])->callback(*(void*)argp_deref[0],*(Uint8*)argp_deref[1],*(int)argp_deref[2]);
+      //((AudioEngine*)argp_deref[0])->callback(argp_deref[0],argp_deref[1],argp_deref[2]);
+      
+      //if (i==110)
+      //((AudioEngine*)argp_deref[0])->processBuffer(1024);
+      a=((AudioEngine*)argp_deref[0])->AM.tick();
+      //((AudioEngine*)argp_deref[0])->processBuffer(4);
+
+      // THIS ONE IS OK
+      //sceAudioOutOutput((int)argp_deref[3], (Uint8*)argp_deref[1]);  
+      
     }
 }
+#endif
 /*
 void psvitacallback(void *unused, Uint8 *stream, int len)
 {
-  ((AudioEngine*)unused)->callback(unused,buf2,2048);
+((AudioEngine*)unused)->callback(unused,buf2,2048);
   sceAudioOutOutput(0, buf);  
 }
 */
