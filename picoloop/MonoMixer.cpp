@@ -22,16 +22,8 @@ MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(),                              
 {
   DPRINTF("MonoMixer::MonoMixer()");  
   amplitude=127;
-  //  M=NULL;
-  //M=&PM;
-  //DPRINTF("MonoMixer::MonoMixer()  PM=0x%08.8X\n",PM);
-  //DPRINTF("MonoMixer::MonoMixer()  M=0x%08.8X\n",M);
-  //M=&OPLM;
   machine_type=0;
   M=&PS;
-
-
-  //FX=&FXDelay;
 
   fx_depth=125;
   fx_speed=90;
@@ -64,9 +56,6 @@ void MonoMixer::init()
   SS.init();
 #endif
 
-  //FX=&FXDelay;
-  FX=&FXDelay;
-  FX=&FXDisabled;
   FX=&FXDelay;
 
   FX->init();
@@ -79,29 +68,8 @@ void MonoMixer::init()
   FXDelay.setDepth(fx_depth);
   FXDelay.setSpeed(fx_speed);
 
+  this->setMachineType(machine_type);
   
-
-  if (machine_type==SYNTH_PICOSYNTH)
-    M=&PS;
-  if (machine_type==SYNTH_OPL2)
-    M=&OPLM;
-  if (machine_type==SYNTH_PICODRUM)
-    M=&PD;
-  if (machine_type==SYNTH_PBSYNTH)
-    M=&PBS;
-#if defined(__FPU__)
-  if (machine_type==SYNTH_CURSYNTH)
-    M=&CS;
-  if (machine_type==SYNTH_OPEN303)
-    M=&O303;
-  if (machine_type==SYNTH_TWYTCHSYNTH)
-    M=&TW;
-#endif
-#if defined(__RTMIDI__)
-  if (machine_type==SYNTH_MIDIOUT)
-    M=&MIDIOUTM;
-#endif
-
   if (buffer16==NULL)
     buffer16=(Sint16*)malloc(sizeof(Sint16)*SAMMONOMIXER);
   if (buffer32==NULL)
@@ -163,6 +131,7 @@ void MonoMixer::setMachineType(int type)
     default:
       DPRINTF("void MonoMixer::setMachineType(%d)",type);
       DPRINTF("ERROR : This machine does not exist : %d",type);
+      fprintf(stderr,"MonoMixer exit\n");
       exit(1);
       break;
     }
@@ -203,63 +172,40 @@ Effect * MonoMixer::getEffect()
 Sint16 MonoMixer::tick()
 {
   int debug=0;
-  //  /*
   Sint32 res32=0;
   Sint16 tick=0;
   Sint16 res16=0;
   int    i=0;
-  //tick=M->tick();
-  //tick=FX.process(M->tick());
-  //tick=FXDelay.process(M->tick());
 
+  // See GOTCHA below, I need to 
   if (index+1<SAMMONOMIXER)
     {
       index++;
       return buffer16[index];
     }
-
+  // Fill with Machine audio
   for (i=0;i<SAMMONOMIXER;i++)
     {
-      buffer32[i]=0;
       buffer32[i]=M->tick();
     }
-
+  // Send To FX
   for (i=0;i<SAMMONOMIXER;i++)
     buffer32[i]=FX->process(buffer32[i]);
 
-
+  // Amplify it we are a mixer 
+  // Clip it it is a 32 bit, so no problem to clip it
   for (i=0;i<SAMMONOMIXER;i++)
     {
       buffer32[i]=(buffer32[i]*amplitude) >> 4;
       if (buffer32[i]>32000) buffer32[i]=32000;
       if (buffer32[i]<-32000) buffer32[i]=-32000;
     }
+  // convert it from 32 to 16 bit
   for (i=0;i<SAMMONOMIXER;i++)
     buffer16[i]=(Sint16)buffer32[i];
 
+  // GOTCHA : Here I set index to 0 and I return buffer16[0]
   index=0;
   return buffer16[index];
   
-  //tick=FX->process(M->tick());
-  //res32=tick*amplitude;
-  //  res32=tick*127;
-  //res32=res32/127;
-  
-  //res32=res32>>4;
-
-  //if (res32>32000)  res32=32000-(res32>>6);
-  //if (res32<-32000) res32=-32000+(res32>>6);
-
-  //if (res32>32000)  res32=32000;
-  //if (res32<-32000) res32=-32000;
-
-  if (res32>32000)  res32=32000-(res32-32000);
-  if (res32<-32000) res32=-32000-(res32+32000);
-
-  //  return M->tick();
-  res16=res32;
-  //if (0) DPRINTF("amplitude:%d tick:%d res32:%d res16:%d\n",amplitude,tick,res32,res16);
-  return res16;
-  //*/
-  //return M->tick();
 }
