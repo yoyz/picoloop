@@ -538,10 +538,10 @@ void refresh_swing()
   // 64   => 66/66
   // 127  => 75/25
 
-  int  swing_sevenbit=(current_swing*128)/100;
-  int  swing_inv_sevenbit=127-swing_sevenbit;
-  int  step=SEQ.getPatternSequencer(0).getStepWithoutDivider();
-  int  nb_sample=-1;
+  long long swing_sevenbit=(current_swing*128)/100;
+  long long swing_inv_sevenbit=128-swing_sevenbit;
+  long long step=SEQ.getPatternSequencer(0).getStepWithoutDivider();
+  long long nb_sample=-1;
   if (step%2)
     {
       nb_sample=(nb_tick_before_step_change*swing_inv_sevenbit)/64;
@@ -559,10 +559,11 @@ void refresh_swing()
 void refresh_bpm()
 {
   float nb_tick_before_step_change_f;
-  //nb_cb_ch_step=(60*DEFAULTFREQ)/(BUFFER_FRAME*4*bpm_current);
-  nb_tick_before_step_change_f=(60*DEFAULTFREQ)/(bpm_current*4);
-  clock_interval=60000000000/(bpm_current*24);
-  //nb_tick_before_step_change=(60*DEFAULTFREQ)/(bpm_current*4);
+  float clock_interval_f;
+  // (60.0*DEFAULT_FREQ)/(bpm_current*4.0)
+  //=(15.0*DEFAULT_FREQ)/(bpm_current)
+  //nb_tick_before_step_change_f=(60.0*DEFAULTFREQ)/(bpm_current*4.0);
+  nb_tick_before_step_change_f=(15.0*DEFAULTFREQ)/bpm_current;
   nb_tick_before_step_change=nb_tick_before_step_change_f;
   refresh_swing();
 }
