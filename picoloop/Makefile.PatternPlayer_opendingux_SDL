@@ -9,7 +9,7 @@ CFLAGS=-c -O3 -DLINUX -D__SDL_AUDIO__ -DOPENDINGUX -I. -I/opt/opendingux-toolcha
 
 LDFLAGS=-L/opt/opendingux-toolchain/usr/lib/ -lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread 
 
-#SOURCES=Machine.cpp Track.cpp AudioMixer.cpp AudioEngine.cpp PatternElement.cpp Pattern.cpp PatternPlayer.cpp PatternReader.cpp Oscillator.cpp SineOscillator.cpp SawOscillator.cpp  FuzzyPulseOscillator.cpp  TriangleOscillator.cpp MonoMixer.cpp ADSR.cpp SDL_GUI.cpp InputManager.cpp VCO.cpp Sequencer.cpp PulseOscillator.cpp WaveTableSineOscillator.cpp NoiseOscillator.cpp Biquad.cpp PatternSequencer.cpp AudioDriverSDL.cpp 
+#SOURCES=Machine.cpp  AudioMixer.cpp AudioEngine.cpp PatternElement.cpp Pattern.cpp PatternPlayer.cpp PatternReader.cpp Oscillator.cpp SineOscillator.cpp SawOscillator.cpp  FuzzyPulseOscillator.cpp  TriangleOscillator.cpp MonoMixer.cpp ADSR.cpp SDL_GUI.cpp InputManager.cpp VCO.cpp Sequencer.cpp PulseOscillator.cpp WaveTableSineOscillator.cpp NoiseOscillator.cpp Biquad.cpp PatternSequencer.cpp AudioDriverSDL.cpp 
 
 SOURCES=PatternPlayer.cpp \
 		      SDL_GUI.cpp              \
@@ -22,7 +22,7 @@ SOURCES=PatternPlayer.cpp \
 		      OneOscillator.cpp        \
 		      Biquad.cpp               \
 		      AudioMixer.cpp           \
-		      Wave.cpp Track.cpp       \
+		      Wave.cpp        \
 		      Machine.cpp              \
 		      MonoMixer.cpp            \
 		      InputManager.cpp         \

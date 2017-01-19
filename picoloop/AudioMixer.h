@@ -1,6 +1,6 @@
 using namespace std;
 
-#include "Track.h"
+#include "MonoMixer.h"
 //#include <SDL/SDL_types.h>
 #include <vector>
 #include "Master.h"
@@ -13,7 +13,7 @@ class AudioMixer
  public:
   AudioMixer();
   ~AudioMixer();
-  Track & getTrack(int numTrack);
+  MonoMixer * getMonoMixer(int numTrack);
   Sint16 twoChannel(Sint16 a,Sint16 b);
   Sint16  tick();
   void    setAudioVolume(int v);
@@ -22,7 +22,7 @@ class AudioMixer
  private:
   //Track T0;
   //Track T1;
-  vector <Track> T;
+  vector <MonoMixer> MM;
   int volume;
 };
 

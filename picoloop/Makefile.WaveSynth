@@ -5,9 +5,9 @@ LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf -lasound -lpthread -lpulse -lpulse-simple -lja
 
 OBJTOLINK=RtAudio.o RtMidi.o
 
-SOURCES=WaveSynth.cpp SDL_GUI.cpp AudioEngine.cpp AudioDriverRTAudio.cpp Instrument.cpp Synth.cpp Oscillator.cpp TriangleOscillator.cpp FuzzyPulseOscillator.cpp SineOscillator.cpp SawOscillator.cpp NoiseOscillator.cpp OneOscillator.cpp WaveTableSineOscillator.cpp Biquad.cpp AudioMixer.cpp  Wave.cpp Track.cpp Machine.cpp MonoMixer.cpp ADSR.cpp PatternElement.cpp VCO.cpp PulseOscillator.cpp InputManager.cpp PicosynthMachine.cpp dbopl/dbopl.cpp dbopl/hiopl.cpp DboplMachine.cpp PicodrumMachine.cpp Filter.cpp AMSynthLowPassFilter.cpp  Effect.cpp EffectDelay.cpp WaveTableManager.cpp WaveTable.cpp Generator.cpp 
+SOURCES=WaveSynth.cpp SDL_GUI.cpp AudioEngine.cpp AudioDriverRTAudio.cpp Instrument.cpp Synth.cpp Oscillator.cpp TriangleOscillator.cpp FuzzyPulseOscillator.cpp SineOscillator.cpp SawOscillator.cpp NoiseOscillator.cpp OneOscillator.cpp WaveTableSineOscillator.cpp Biquad.cpp AudioMixer.cpp  Wave.cpp  Machine.cpp MonoMixer.cpp ADSR.cpp PatternElement.cpp VCO.cpp PulseOscillator.cpp InputManager.cpp PicosynthMachine.cpp dbopl/dbopl.cpp dbopl/hiopl.cpp DboplMachine.cpp PicodrumMachine.cpp Filter.cpp AMSynthLowPassFilter.cpp  Effect.cpp EffectDelay.cpp WaveTableManager.cpp WaveTable.cpp Generator.cpp 
 
-SOURCES=WaveSynth.cpp SDL_GUI.cpp AudioEngine.cpp AudioDriverRTAudio.cpp Instrument.cpp Synth.cpp Oscillator.cpp OneOscillator.cpp Biquad.cpp AudioMixer.cpp  Wave.cpp Track.cpp Machine.cpp MonoMixer.cpp ADSR.cpp PatternElement.cpp VCO.cpp InputManager.cpp PicosynthMachine.cpp dbopl/dbopl.cpp dbopl/hiopl.cpp DboplMachine.cpp PicodrumMachine.cpp Filter.cpp AMSynthLowPassFilter.cpp  Effect.cpp EffectDelay.cpp WaveTableManager.cpp WaveTable.cpp Generator.cpp 
+SOURCES=WaveSynth.cpp SDL_GUI.cpp AudioEngine.cpp AudioDriverRTAudio.cpp Instrument.cpp Synth.cpp Oscillator.cpp OneOscillator.cpp Biquad.cpp AudioMixer.cpp  Wave.cpp  Machine.cpp MonoMixer.cpp ADSR.cpp PatternElement.cpp VCO.cpp InputManager.cpp PicosynthMachine.cpp dbopl/dbopl.cpp dbopl/hiopl.cpp DboplMachine.cpp PicodrumMachine.cpp Filter.cpp AMSynthLowPassFilter.cpp  Effect.cpp EffectDelay.cpp WaveTableManager.cpp WaveTable.cpp Generator.cpp 
 
 SOURCES=WaveSynth.cpp            \
 		      SDL_GUI.cpp              \
@@ -20,7 +20,7 @@ SOURCES=WaveSynth.cpp            \
 		      OneOscillator.cpp        \
 		      Biquad.cpp               \
 		      AudioMixer.cpp           \
-		      Wave.cpp Track.cpp       \
+		      Wave.cpp        \
 		      Machine.cpp              \
 		      MonoMixer.cpp            \
 		      InputManager.cpp         \

@@ -22,9 +22,9 @@ LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf -L/opt/open2x/lib/ -lfreetype -lz
 
 #OBJTOLINK=RtAudio.o
 
-#SOURCES=Wave.cpp Synth.cpp Instrument.cpp Machine.cpp Track.cpp AudioMixer.cpp AudioEngine.cpp PatternElement.cpp Pattern.cpp PatternPlayer.cpp PatternReader.cpp Oscillator.cpp SineOscillator.cpp SawOscillator.cpp  FuzzyPulseOscillator.cpp PulseOscillator.cpp  TriangleOscillator.cpp MonoMixer.cpp ADSR.cpp SDL_GUI.cpp VCO.cpp Sequencer.cpp InputManager.cpp WaveTableSineOscillator.cpp NoiseOscillator.cpp OneOscillator.cpp Biquad.cpp PatternSequencer.cpp AudioDriverSDL.cpp
+#SOURCES=Wave.cpp Synth.cpp Instrument.cpp Machine.cpp  AudioMixer.cpp AudioEngine.cpp PatternElement.cpp Pattern.cpp PatternPlayer.cpp PatternReader.cpp Oscillator.cpp SineOscillator.cpp SawOscillator.cpp  FuzzyPulseOscillator.cpp PulseOscillator.cpp  TriangleOscillator.cpp MonoMixer.cpp ADSR.cpp SDL_GUI.cpp VCO.cpp Sequencer.cpp InputManager.cpp WaveTableSineOscillator.cpp NoiseOscillator.cpp OneOscillator.cpp Biquad.cpp PatternSequencer.cpp AudioDriverSDL.cpp
 
-#SOURCES=PatternPlayer.cpp  SYSTEMLINUX.cpp Machine.cpp PatternSequencer.cpp Effect.cpp WaveTable.cpp AudioDriverSDL.cpp EffectDelay.cpp AMSynthLowPassFilter.cpp InputManager.cpp Generator.cpp PitchBend.cpp 		      TweakableKnob.cpp	       NoteFreq.cpp WaveTableManager.cpp Sequencer.cpp Oscillator.cpp OneOscillator.cpp SongSequencer.cpp Filter.cpp Synth.cpp Biquad.cpp Track.cpp Pattern.cpp MonoMixer.cpp SDL_GUI.cpp AudioEngine.cpp PatternElement.cpp AudioMixer.cpp Instrument.cpp PatternReader.cpp Wave.cpp Machine/Picodrum/PicodrumADSR.cpp  Machine/Picodrum/PicodrumMachine.cpp  Machine/Picodrum/PicodrumVCO.cpp Machine/Picosynth/PicosynthADSR.cpp  Machine/Picosynth/PicosynthMachine.cpp  Machine/Picosynth/PicosynthVCO.cpp Machine/Dbopl/DboplMachine.cpp  Machine/Dbopl/dbopl.cpp  Machine/Dbopl/hiopl.cpp
+#SOURCES=PatternPlayer.cpp  SYSTEMLINUX.cpp Machine.cpp PatternSequencer.cpp Effect.cpp WaveTable.cpp AudioDriverSDL.cpp EffectDelay.cpp AMSynthLowPassFilter.cpp InputManager.cpp Generator.cpp PitchBend.cpp 		      TweakableKnob.cpp	       NoteFreq.cpp WaveTableManager.cpp Sequencer.cpp Oscillator.cpp OneOscillator.cpp SongSequencer.cpp Filter.cpp Synth.cpp Biquad.cpp  Pattern.cpp MonoMixer.cpp SDL_GUI.cpp AudioEngine.cpp PatternElement.cpp AudioMixer.cpp Instrument.cpp PatternReader.cpp Wave.cpp Machine/Picodrum/PicodrumADSR.cpp  Machine/Picodrum/PicodrumMachine.cpp  Machine/Picodrum/PicodrumVCO.cpp Machine/Picosynth/PicosynthADSR.cpp  Machine/Picosynth/PicosynthMachine.cpp  Machine/Picosynth/PicosynthVCO.cpp Machine/Dbopl/DboplMachine.cpp  Machine/Dbopl/dbopl.cpp  Machine/Dbopl/hiopl.cpp
 
 SOURCES=PatternPlayer.cpp \
 		      SDL_GUI.cpp              \
@@ -37,7 +37,7 @@ SOURCES=PatternPlayer.cpp \
 		      OneOscillator.cpp        \
 		      Biquad.cpp               \
 		      AudioMixer.cpp           \
-		      Wave.cpp Track.cpp       \
+		      Wave.cpp        \
 		      Machine.cpp              \
 		      MonoMixer.cpp            \
 		      InputManager.cpp         \

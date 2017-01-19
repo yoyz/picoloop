@@ -28,7 +28,7 @@ SOURCES=PatternPlayer.cpp \
 		      OneOscillator.cpp        \
 		      Biquad.cpp               \
 		      AudioMixer.cpp           \
-		      Wave.cpp Track.cpp       \
+		      Wave.cpp			\
 		      Machine.cpp              \
 		      MonoMixer.cpp            \
 		      InputManager.cpp         \

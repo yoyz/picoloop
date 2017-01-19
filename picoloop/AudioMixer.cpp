@@ -1,7 +1,7 @@
 #include "AudioMixer.h"
 
 //AudioMixer::AudioMixer() : T0(), T1()
-AudioMixer::AudioMixer() : T(TRACK_MAX)
+AudioMixer::AudioMixer() : MM(TRACK_MAX)
 {
   DPRINTF("AudioMixer::AudioMixer()\n");  
   volume=64;
@@ -13,15 +13,10 @@ AudioMixer::~AudioMixer()
 }
 
 
-Track & AudioMixer::getTrack(int numTrack)
+MonoMixer * AudioMixer::getMonoMixer(int numMonoMixer)
 {
-  return T[numTrack];
-  /*
-  if (numTrack==0)
-    return T0;
-  else
-    return T1;
-  */
+  //MonoMixer * MMtmp=MM[numTrack];
+  return &MM[numMonoMixer];
 }
 
 
@@ -69,7 +64,7 @@ Sint16 AudioMixer::tick()
 
 
   for (i=0;i<TRACK_MAX;i++)
-    val=val+T[i].tick();
+    val=val+MM[i].tick();
   //Sint16 inttick=T.tick();
   //Sint32 sint32tick=(T0.tick()/2)+(T1.tick()/2);
   //Sint32 sint32tick=this->twoChannel(T[0].tick(),T[1].tick());

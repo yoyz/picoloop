@@ -1,7 +1,7 @@
 CC=g++
 CFLAGS=-c -DLINUX -I. -LSDL/lib -g
 LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf RtAudio.o
-SOURCES=AudioMixer.cpp Track.cpp Machine.cpp Oscillator.cpp SineOscillator.cpp Wave.cpp Synth.cpp Instrument.cpp AudioEngine.cpp PatternElement.cpp Pattern.cpp WaveTest2.cpp 
+SOURCES=AudioMixer.cpp  Machine.cpp Oscillator.cpp SineOscillator.cpp Wave.cpp Synth.cpp Instrument.cpp AudioEngine.cpp PatternElement.cpp Pattern.cpp WaveTest2.cpp 
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=WaveTest2
 

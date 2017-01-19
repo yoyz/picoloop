@@ -3680,7 +3680,7 @@ int seq()
   for (t=0;t<TRACK_MAX;t++)
     {
 
-      MM[t]=AE.getAudioMixer().getTrack(t).getMonoMixer();
+      MM[t]=AE.getAudioMixer().getMonoMixer(t);
       MM[t]->init();
       MM[t]->setAmplitude(0);  // set the amplitude to 0 to avoid trashing speakers
 

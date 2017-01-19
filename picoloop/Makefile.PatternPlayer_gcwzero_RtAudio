@@ -12,7 +12,7 @@ CFLAGS=-c -O3 -DLINUX -D__RTAUDIO__ -DOPENDINGUX -I. -I/opt/opendingux-toolchain
 CFLAGS=-c -O3 -DLINUX -D__RTAUDIO__ -DOPENDINGUX -I. -Iopt/gcw0-toolchain/usr/include/ -Lopt/gcw0-toolchain/usr/lib -lSDL -lSDL_ttf -fpermissive -DFIXED -fno-rtti -fomit-frame-pointer -ffunction-sections -ffast-math -fsingle-precision-constant -G0
 
 LDFLAGS=-Lopt/gcw0-toolchain/usr/lib -lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread  RtAudio.o -DFIXED 
-#SOURCES=Machine.cpp Track.cpp AudioMixer.cpp AudioEngine.cpp PatternElement.cpp Pattern.cpp PatternPlayer.cpp PatternReader.cpp Oscillator.cpp  MonoMixer.cpp ADSR.cpp SDL_GUI.cpp InputManager.cpp VCO.cpp Sequencer.cpp OneOscillator.cpp Biquad.cpp PatternSequencer.cpp AudioDriverRTAudio.cpp PicosynthMachine.cpp  PicodrumMachine.cpp dbopl/dbopl.cpp dbopl/hiopl.cpp DboplMachine.cpp Filter.cpp AMSynthLowPassFilter.cpp  Effect.cpp EffectDelay.cpp SongSequencer.cpp WaveTableManager.cpp WaveTable.cpp Generator.cpp 
+#SOURCES=Machine.cpp  AudioMixer.cpp AudioEngine.cpp PatternElement.cpp Pattern.cpp PatternPlayer.cpp PatternReader.cpp Oscillator.cpp  MonoMixer.cpp ADSR.cpp SDL_GUI.cpp InputManager.cpp VCO.cpp Sequencer.cpp OneOscillator.cpp Biquad.cpp PatternSequencer.cpp AudioDriverRTAudio.cpp PicosynthMachine.cpp  PicodrumMachine.cpp dbopl/dbopl.cpp dbopl/hiopl.cpp DboplMachine.cpp Filter.cpp AMSynthLowPassFilter.cpp  Effect.cpp EffectDelay.cpp SongSequencer.cpp WaveTableManager.cpp WaveTable.cpp Generator.cpp 
 
 
 SOURCES=PatternPlayer.cpp \
@@ -26,7 +26,7 @@ SOURCES=PatternPlayer.cpp \
 		      OneOscillator.cpp        \
 		      Biquad.cpp               \
 		      AudioMixer.cpp           \
-		      Wave.cpp Track.cpp       \
+		      Wave.cpp        \
 		      Machine.cpp              \
 		      MonoMixer.cpp            \
 		      InputManager.cpp         \

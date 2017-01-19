@@ -34,10 +34,10 @@ LDFLAGS=-lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread -lpulse -lpulse-simple -lja
 OBJTOLINK=RtAudio.o
 OBJTOLINK=RtAudio.o RtMidi.o
 
-SOURCES=Machine.cpp Track.cpp AudioMixer.cpp AudioEngine.cpp PatternElement.cpp Pattern.cpp PatternPlayer.cpp PatternReader.cpp Oscillator.cpp OneOscillator.cpp MonoMixer.cpp ADSR.cpp SDL_GUI.cpp VCO.cpp Sequencer.cpp InputManager.cpp Biquad.cpp PatternSequencer.cpp AudioDriverRTAudio.cpp PicosynthMachine.cpp  PicodrumMachine.cpp dbopl/dbopl.cpp dbopl/hiopl.cpp DboplMachine.cpp Filter.cpp AMSynthLowPassFilter.cpp Effect.cpp EffectDelay.cpp SongSequencer.cpp WaveTableManager.cpp WaveTable.cpp Generator.cpp 
+SOURCES=Machine.cpp  AudioMixer.cpp AudioEngine.cpp PatternElement.cpp Pattern.cpp PatternPlayer.cpp PatternReader.cpp Oscillator.cpp OneOscillator.cpp MonoMixer.cpp ADSR.cpp SDL_GUI.cpp VCO.cpp Sequencer.cpp InputManager.cpp Biquad.cpp PatternSequencer.cpp AudioDriverRTAudio.cpp PicosynthMachine.cpp  PicodrumMachine.cpp dbopl/dbopl.cpp dbopl/hiopl.cpp DboplMachine.cpp Filter.cpp AMSynthLowPassFilter.cpp Effect.cpp EffectDelay.cpp SongSequencer.cpp WaveTableManager.cpp WaveTable.cpp Generator.cpp 
 
 
-#Machine.cpp Track.cpp AudioMixer.cpp AudioEngine.cpp PatternElement.cpp Pattern.cpp PatternPlayer.cpp PatternReader.cpp Oscillator.cpp OneOscillator.cpp MonoMixer.cpp ADSR.cpp SDL_GUI.cpp VCO.cpp Sequencer.cpp InputManager.cpp Biquad.cpp PatternSequencer.cpp AudioDriverRTAudio.cpp PicosynthMachine.cpp  PicodrumMachine.cpp dbopl/dbopl.cpp dbopl/hiopl.cpp DboplMachine.cpp Filter.cpp AMSynthLowPassFilter.cpp Effect.cpp EffectDelay.cpp SongSequencer.cpp WaveTableManager.cpp WaveTable.cpp Generator.cpp 
+#Machine.cpp  AudioMixer.cpp AudioEngine.cpp PatternElement.cpp Pattern.cpp PatternPlayer.cpp PatternReader.cpp Oscillator.cpp OneOscillator.cpp MonoMixer.cpp ADSR.cpp SDL_GUI.cpp VCO.cpp Sequencer.cpp InputManager.cpp Biquad.cpp PatternSequencer.cpp AudioDriverRTAudio.cpp PicosynthMachine.cpp  PicodrumMachine.cpp dbopl/dbopl.cpp dbopl/hiopl.cpp DboplMachine.cpp Filter.cpp AMSynthLowPassFilter.cpp Effect.cpp EffectDelay.cpp SongSequencer.cpp WaveTableManager.cpp WaveTable.cpp Generator.cpp 
 
 # 		      Synth.cpp                \
 #		      Instrument.cpp           \
@@ -51,7 +51,7 @@ SOURCES=PatternPlayer.cpp \
 		      OneOscillator.cpp        \
 		      Biquad.cpp               \
 		      AudioMixer.cpp           \
-		      Wave.cpp Track.cpp       \
+		      Wave.cpp        \
 		      Machine.cpp              \
 		      MonoMixer.cpp            \
 		      InputManager.cpp         \

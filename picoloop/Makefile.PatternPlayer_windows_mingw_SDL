@@ -36,7 +36,7 @@ SOURCES=PatternPlayer.cpp			\
 			OneOscillator.cpp	\
 			Biquad.cpp		\
 			AudioMixer.cpp		\
-			Wave.cpp Track.cpp	\
+			Wave.cpp 	\
 			Machine.cpp		\
 			MonoMixer.cpp		\
 			InputManager.cpp	\
@@ -192,7 +192,7 @@ SOURCES=PatternPlayer.cpp			\
 
 #OBJTOLINK=RtAudio.o
 
-#SOURCES=Machine.cpp Track.cpp AudioMixer.cpp AudioEngine.cpp PatternElement.cpp Pattern.cpp PatternPlayer.cpp PatternReader.cpp Oscillator.cpp SineOscillator.cpp SawOscillator.cpp  FuzzyPulseOscillator.cpp PulseOscillator.cpp  TriangleOscillator.cpp WaveTableSineOscillator.cpp NoiseOscillator.cpp OneOscillator.cpp MonoMixer.cpp ADSR.cpp SDL_GUI.cpp VCO.cpp Sequencer.cpp InputManager.cpp Biquad.cpp PatternSequencer.cpp  AudioDriverSDL.cpp PicosynthMachine.cpp  PicodrumMachine.cpp dbopl/dbopl.cpp dbopl/hiopl.cpp DboplMachine.cpp Filter.cpp AMSynthLowPassFilter.cpp Effect.cpp EffectDelay.cpp
+#SOURCES=Machine.cpp  AudioMixer.cpp AudioEngine.cpp PatternElement.cpp Pattern.cpp PatternPlayer.cpp PatternReader.cpp Oscillator.cpp SineOscillator.cpp SawOscillator.cpp  FuzzyPulseOscillator.cpp PulseOscillator.cpp  TriangleOscillator.cpp WaveTableSineOscillator.cpp NoiseOscillator.cpp OneOscillator.cpp MonoMixer.cpp ADSR.cpp SDL_GUI.cpp VCO.cpp Sequencer.cpp InputManager.cpp Biquad.cpp PatternSequencer.cpp  AudioDriverSDL.cpp PicosynthMachine.cpp  PicodrumMachine.cpp dbopl/dbopl.cpp dbopl/hiopl.cpp DboplMachine.cpp Filter.cpp AMSynthLowPassFilter.cpp Effect.cpp EffectDelay.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=PatternPlayer_SDL.exe
 
