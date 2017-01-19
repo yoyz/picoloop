@@ -1,3 +1,0 @@
-LIBRARY			VOPM
-DESCRIPTION		'virtual OPM Plugin for VstPC'
-EXPORTS			main=VSTPluginMain
