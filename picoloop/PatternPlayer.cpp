@@ -1727,7 +1727,7 @@ void display_board_text_global()
   if (menu_cursor==GLOBALMENU_BPM)
     {
       if (menu_sub==MENU_PAGE0_SUB0) sprintf(str_line2,  "BPM %.1f ",bpm_current);
-      if (menu_sub==MENU_PAGE0_SUB1) sprintf(str_line2,  "SWING %d",bpm_current,current_swing);
+      if (menu_sub==MENU_PAGE0_SUB1) sprintf(str_line2,  "SWING %d",current_swing);
       if (menu_sub==MENU_PAGE0_SUB2) sprintf(str_line2,  "MIDI DELTA SEND %d",delta_midi_clock);
     }
 
@@ -3094,20 +3094,18 @@ void seq_update_multiple_time_by_step()
   if (TK.get(BPM)!=0)
     {
       float bpm_diff=TK.get(BPM);
-      bpm_diff=bpm_diff/10;
-      //save the bpm in the 
-      //change the number of time AudioEngine need to be trigged
-      //to effectively change pattern step
+      // bpm can be change by -0.1,0.1 or -1.0,1.0
+      bpm_diff=bpm_diff/10; 
+
      DPRINTF("Recalculate BPM");
-     bpm_current=P[cty].getBPM();
+     //bpm_current=P[cty].getBPM();
       for(t=0;t<TRACK_MAX;t++)	    
 	P[t].setBPM(bpm_current+bpm_diff);
       
       //bpm_current=bpm_current+TK.get(BPM);
       bpm_current=bpm_current+bpm_diff;
       TK.set(BPM,0);
-      refresh_bpm();
-      
+      refresh_bpm();      
     }
 
 
