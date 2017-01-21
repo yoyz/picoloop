@@ -1856,7 +1856,7 @@ void sub_handle_invert_trig()
     }  
 }
 
-void handle_key_patternlenght()
+void handle_key_patternlength()
 {
   mapii keyState=IE.keyState();
   mapii keyRepeat=IE.keyRepeat();
@@ -1955,7 +1955,9 @@ void handle_key_menu()
       )
     {
       IE.clearLastKeyEvent();
-      mmc_stop=1;      
+      IE.clearStateAndRepeat();
+      mmc_stop=1;
+      DPRINTF("MMC-STOP:%d MMC_START:%d",mmc_stop,mmc_start);
     }
 
     // We restart the sequencer START in [BPM] menu
@@ -1967,7 +1969,9 @@ void handle_key_menu()
         keyState[BUTTON_A]    ))
     {
       IE.clearLastKeyEvent();
-      mmc_start=1;      
+      IE.clearStateAndRepeat();
+      mmc_start=1;
+      DPRINTF("MMC-STOP:%d MMC_START:%d",mmc_stop,mmc_start);
     }
 
   // We force the sequencer START in [BPM] menu
@@ -1979,6 +1983,7 @@ void handle_key_menu()
     {
       IE.clearLastKeyEvent();
       mmc_start=1;
+      DPRINTF("MMC-STOP:%d MMC_START:%d",mmc_stop,mmc_start);
     }
 
   
@@ -2805,7 +2810,28 @@ void refresh_pecursor()
   
 }
 
+void handle_key_change_volume()
+{
+  mapii keyState=IE.keyState();
+  mapii keyRepeat=IE.keyRepeat();
 
+  if (keyState[BUTTON_SELECT] && keyState[BUTTON_DOWN])
+    if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALLEST==0)
+      {
+	AudioMixer & am=AE.getAudioMixer();
+	am.setAudioVolume(am.getAudioVolume()-1);
+	IE.clearLastKeyEvent();
+	return;
+      }
+  if (keyState[BUTTON_SELECT] && keyState[BUTTON_UP])
+    if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALLEST==0)
+      {
+	AudioMixer & am=AE.getAudioMixer();
+	am.setAudioVolume(am.getAudioVolume()+1);
+	IE.clearLastKeyEvent();
+	return;
+      }  
+}
 
 
 void handle_key()
@@ -2826,27 +2852,6 @@ void handle_key()
   lastEvent=IE.lastEvent();
   lastKey=IE.lastKey();
 
-
-  //#ifdef OPENDINGUX
-  if (keyState[BUTTON_SELECT] && keyState[BUTTON_DOWN])
-    if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALLEST==0)
-      {
-	AudioMixer & am=AE.getAudioMixer();
-	am.setAudioVolume(am.getAudioVolume()-1);
-	IE.clearLastKeyEvent();
-	return;
-      }
-  if (keyState[BUTTON_SELECT] && keyState[BUTTON_UP])
-    if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALLEST==0)
-      {
-	AudioMixer & am=AE.getAudioMixer();
-	am.setAudioVolume(am.getAudioVolume()+1);
-	IE.clearLastKeyEvent();
-	return;
-      }
-  //  #endif
-
-
   if (IE.shouldExit())
     quit=1;
     //exit(0);
@@ -2855,8 +2860,8 @@ void handle_key()
   //printf("%d %d %d\n",lastKey,lastEvent,lastKey==&& BUTTON_START && lastEvent==KEYRELEASED);
   // DPRINTF("lastevent=%d\n",lastEvent);
 
-  
-  handle_key_patternlenght();
+  handle_key_change_volume();
+  handle_key_patternlength();
   handle_key_menu();
   handle_key_sixteenbox();
 
@@ -2883,8 +2888,6 @@ void handle_key()
   if (menu_cursor==GLOBALMENU_MAC)  handle_key_mac();
   if (menu_cursor==GLOBALMENU_FX)   handle_key_fx();
   if (menu_cursor==GLOBALMENU_BPM)  handle_key_bpm();
-  
- 
 }
 
 void seq_update_tweakable_knob_one(int machineParam)
