@@ -324,6 +324,8 @@ int bank=0;
 int bank_inc=0;
 int bank_to_load=0;
 
+int playing_with_menu_sub=0;  // (B+LEFT) or (B+RIGHT) & menu!=MENU_OFF allow to change sub_menu
+int playing_with_mmc=0;       // Used to restart the sequencer in [BPM] menu
 
 /*
   Variable use in the "configuration menu"
@@ -1940,10 +1942,6 @@ void handle_key_menu()
   int last_menu=0xffff;
   int last_menu_cursor=0xffff;
   int menu_switching=0;         // when 1 we will switch from one menu to one another
-
-  lastEvent=IE.lastEvent();
-  lastKey=IE.lastKey();
-
   
   // We stop the sequencer A+B in [BPM] menu
   if (menu             != MENU_OFF       &&
@@ -1961,6 +1959,7 @@ void handle_key_menu()
     }
 
     // We restart the sequencer START in [BPM] menu
+  /*
   if (menu             != MENU_OFF       &&
       menu_cursor      == GLOBALMENU_BPM &&
       sequencer_playing==0               &&
@@ -1973,14 +1972,16 @@ void handle_key_menu()
       mmc_start=1;
       DPRINTF("MMC-STOP:%d MMC_START:%d",mmc_stop,mmc_start);
     }
+  */
 
-  // We force the sequencer START in [BPM] menu
+  // We force the sequencer A+START in [BPM] menu
   if (menu             != MENU_OFF       &&
       menu_cursor      == GLOBALMENU_BPM &&
       (keyState[BUTTON_START]  &&
        keyState[BUTTON_A]    )
       )
     {
+      IE.clearStateAndRepeat();
       IE.clearLastKeyEvent();
       mmc_start=1;
       DPRINTF("MMC-STOP:%d MMC_START:%d",mmc_stop,mmc_start);
@@ -2050,19 +2051,27 @@ void handle_key_menu()
      DPRINTF("[gmenu : %d cmenu : %d]",menu,menu_cursor);
     }
 
-  //We enter the LS Menu so we had to sync the cursor with SEQ 
+  //We enter a menu : ENV/NOTE/VCO etc...
+  // 
   if (lastKey      ==  BUTTON_B       && 
-      lastEvent    ==  KEYRELEASED    &&
+      lastEvent    ==  KEYRELEASED    &&      
       (menu        ==  MENU_ON_PAGE1  ||
        menu        ==  MENU_ON_PAGE2))
     {
-      last_menu        = menu;
-      menu=MENU_OFF;
-      menu_switching=1;
-      loadsave_cursor.y=SEQ.getCurrentTrackY();
-      dirty_graphic=1;
-      IE.clearLastKeyEvent();
-     DPRINTF("[gmenu : %d cmenu : %d]",menu,menu_cursor);
+      DPRINTF("[gmenu : %d cmenu : %d]",menu,menu_cursor);
+      // helper_change_sub_menu could() modify "playing_with_menu_sub"
+      if (playing_with_menu_sub==0)
+	{
+	  last_menu        = menu;
+	  menu=MENU_OFF;
+	  menu_switching=1;
+	  loadsave_cursor.y=SEQ.getCurrentTrackY();
+	  dirty_graphic=1;
+	  IE.clearLastKeyEvent();
+	  DPRINTF("[gmenu : %d cmenu : %d]",menu,menu_cursor);
+	}
+      else // set back the playing_with_menu_sub to it's default value 0
+	playing_with_menu_sub=0;
     }
 
 
@@ -2260,7 +2269,7 @@ void handle_key_sixteenbox()
 	}
     }
 }
-
+// called by The Machine/XXX/XXXUserInterface.cpp
 void helper_change_sub_menu(int nb_menu)
 {
   mapii keyState=IE.keyState();
@@ -2268,22 +2277,47 @@ void helper_change_sub_menu(int nb_menu)
   int    lastEvent=IE.lastEvent();
   int    lastKey=IE.lastKey();
 
-  if (lastKey     ==  BUTTON_START  && 
-      lastEvent   ==  KEYRELEASED    )
+  // change sub menu without START B+RIGHT | B+LEFT
+  if (keyState[BUTTON_B]                   &&
+      keyState[BUTTON_RIGHT]               &&
+      keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_LONGEST==1 &&
+      menu!=MENU_OFF
+      )
     {
-      if (menu_ad_dirty_keyboard==0)
-	{
-	  if (menu_sub+1 <= nb_menu)
-	    menu_sub++;
-	  else
-	    menu_sub=0;
-	  dirty_graphic=1;
-	}
-      menu_ad_dirty_keyboard=0;
+      if (menu_sub+1 <= nb_menu)
+	menu_sub++;
+      else
+	menu_sub=0;
+      playing_with_menu_sub=1;
       IE.clearLastKeyEvent();
-      DPRINTF("[sub menu env : %d]",menu_sub);
+    }
+    // change sub menu without START B+RIGHT | B+LEFT
+  if (keyState[BUTTON_B]                   &&
+      keyState[BUTTON_LEFT]                &&
+      keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_LONGEST==1 &&
+      menu!=MENU_OFF
+      )
+    {
+      if (menu_sub-1 < 0)
+	menu_sub=nb_menu;
+      else
+	menu_sub--;
+      playing_with_menu_sub=1;
+      IE.clearLastKeyEvent();
     }
 
+  // change sub menu with START
+  if (lastKey     ==  BUTTON_START  && 
+      lastEvent   ==  KEYRELEASED    )
+    {     
+      if (menu_sub+1 <= nb_menu)
+	menu_sub++;
+      else
+	menu_sub=0;
+      dirty_graphic=1;
+      IE.clearLastKeyEvent();
+      DPRINTF("[sub menu env : %d]",menu_sub);
+    }     
 }
 
 
@@ -2460,7 +2494,7 @@ void handle_key_bpm()
 			       MIDI_SEND_DELTA,
 			       1,10);
 
-
+  // allw to change sub menu between BPM, BPM_DIVIDER/SWING, MIDI_SEND_DELTA
   helper_change_sub_menu(MENU_PAGE0_SUB2);
 }
 
@@ -2840,25 +2874,9 @@ void handle_key()
 
   mapii keyState=IE.keyState();
   mapii keyRepeat=IE.keyRepeat();
-  int    lastEvent=IE.lastEvent();
-  int    lastKey=IE.lastKey();
-
-  int  cty=SEQ.getCurrentTrackY();
   
-
-
-  keyState=IE.keyState();
-  keyRepeat=IE.keyRepeat();
-  lastEvent=IE.lastEvent();
-  lastKey=IE.lastKey();
-
   if (IE.shouldExit())
     quit=1;
-    //exit(0);
-  
-  //if (start_key==2) 
-  //printf("%d %d %d\n",lastKey,lastEvent,lastKey==&& BUTTON_START && lastEvent==KEYRELEASED);
-  // DPRINTF("lastevent=%d\n",lastEvent);
 
   handle_key_change_volume();
   handle_key_patternlength();
@@ -2866,21 +2884,18 @@ void handle_key()
   handle_key_sixteenbox();
 
 
-  //refresh_pecursor();
-
-
   if (menu_cursor==GLOBALMENU_AD)   
-    { handle_key_amp_env(); } //handle_key_submenu_ad(); }
+    { handle_key_amp_env();  }
   if (menu_cursor==GLOBALMENU_NOTE) 
-    { handle_key_note();                             }
+    { handle_key_note();     }
   if (menu_cursor==GLOBALMENU_OSC)  
-    { handle_key_osc();                              }
+    { handle_key_osc();      }
   if (menu_cursor==GLOBALMENU_VCO)  
-    { handle_key_vco(); } //handle_key_submenu_vco();    }
+    { handle_key_vco();      }
   if (menu_cursor==GLOBALMENU_LFO)  
-    { handle_key_lfo(); } //handle_key_submenu_lfo();    }
+    { handle_key_lfo();      }
   if (menu_cursor==GLOBALMENU_FLTR) 
-    { handle_key_fltr(); } //handle_key_submenu_fltr();  }
+    { handle_key_fltr();     }
 
   if (menu_cursor==GLOBALMENU_LS)   handle_key_load_save();
   if (menu_cursor==GLOBALMENU_BANK) handle_key_bank();
