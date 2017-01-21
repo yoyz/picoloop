@@ -1955,6 +1955,7 @@ void handle_key_menu()
       IE.clearLastKeyEvent();
       IE.clearStateAndRepeat();
       mmc_stop=1;
+      playing_with_mmc=1;
       DPRINTF("MMC-STOP:%d MMC_START:%d",mmc_stop,mmc_start);
     }
 
@@ -1984,6 +1985,7 @@ void handle_key_menu()
       IE.clearStateAndRepeat();
       IE.clearLastKeyEvent();
       mmc_start=1;
+      playing_with_mmc=1;
       DPRINTF("MMC-STOP:%d MMC_START:%d",mmc_stop,mmc_start);
     }
 
@@ -2060,7 +2062,8 @@ void handle_key_menu()
     {
       DPRINTF("[gmenu : %d cmenu : %d]",menu,menu_cursor);
       // helper_change_sub_menu could() modify "playing_with_menu_sub"
-      if (playing_with_menu_sub==0)
+      if (playing_with_menu_sub==0 &&
+	  playing_with_mmc==0)
 	{
 	  last_menu        = menu;
 	  menu=MENU_OFF;
@@ -2071,7 +2074,10 @@ void handle_key_menu()
 	  DPRINTF("[gmenu : %d cmenu : %d]",menu,menu_cursor);
 	}
       else // set back the playing_with_menu_sub to it's default value 0
-	playing_with_menu_sub=0;
+	{
+	  playing_with_menu_sub=0;
+	  playing_with_mmc=0;
+	}
     }
 
 
@@ -2462,11 +2468,17 @@ void handle_key_lfo()
 
 void handle_key_psh()
 {
-  helper_handle_key_two_button(GLOBALMENU_PSH,0,KEY_REPEAT_INTERVAL_LONG,
+  helper_handle_key_two_button(GLOBALMENU_PSH,MENU_PAGE0_SUB0,KEY_REPEAT_INTERVAL_LONG,
 			       PATTERN_SHIFT,
 			       PATTERN_LENGTH,
 			       1,16);
-  
+
+  helper_handle_key_two_button(GLOBALMENU_PSH,MENU_PAGE0_SUB1,KEY_REPEAT_INTERVAL_LONG,
+			       PATTERN_LENGTH,
+			       PATTERN_LENGTH,
+			       1,4);
+
+  helper_change_sub_menu(MENU_PAGE0_SUB1);
 }
 
 
