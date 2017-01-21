@@ -35,6 +35,7 @@ public:
   int    shouldExit();
   int    updateState(int symbol,int state);
   int    updateStateNoKeyPress();
+  void   clearStateAndRepeat();
   void   printState();
   int    lastKey();
   int    lastEvent(); 

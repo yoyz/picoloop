@@ -166,7 +166,27 @@ void InputManager::clearLastKeyEvent()
   last_event=0;
   last_key=0;
 }
+#ifdef __SDL12__
+void InputManager::clearStateAndRepeat()
+{
+  int i;
+  for (i=0;i<MAX_KEY;i++)
+    {
+      m_key_state[i]=0;  
+      m_key_repeat[i]=0;
+    }
+}
+#endif
+#ifdef __SDL20__
+void InputManager::clearStateAndRepeat()
+{
+    for(mapii::iterator it = m_key_state.begin(); it != m_key_state.end(); ++it) 
+      m_key_state[it->first]=0;
 
+    for(mapii::iterator it = m_key_repeat.begin(); it != m_key_repeat.end(); ++it) 
+      m_key_repeat[it->first]=0;
+}
+#endif
 /*
   int handleKey()
   return 
