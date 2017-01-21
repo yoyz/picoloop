@@ -335,6 +335,9 @@ int InputManager::handleKey()
     }
 #endif
   if (keypressrelease==0) //need to update the state to increment keypress
-    this->updateStateNoKeyPress();
+    {
+      this->updateStateNoKeyPress();
+      this->clearLastKeyEvent();
+    }
   return keypressrelease;
 }
