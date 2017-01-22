@@ -356,7 +356,7 @@ void PicodrumUserInterface::display_board_lfo()
   // LFOPITCH
 
   if (menu_cursor==GLOBALMENU_LFO &&
-      menu_lfo   ==MENU_PAGE0_SUB0)
+      menu_sub   ==MENU_PAGE0_SUB0)
     {
       display_board_two_param(LFO1_DEPTH,LFO1_FREQ);
     }
