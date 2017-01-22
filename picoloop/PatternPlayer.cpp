@@ -347,11 +347,11 @@ int menu=MENU_ON_PAGE1;             // menu mode
 int menu_note=ENABLE;
 int menu_sub=0;
 /* BEGIN this next one should be removed */
-int menu_ad=MENU_AD_AMP_ATTACK_RELEASE;
-int menu_osc=MENU_OSC_OSC1OSC2;
-int menu_vco=MENU_VCO_OSCMIX_PHASE;
-int menu_lfo=MENU_LFO_LFOPITCH;
-int menu_fltr=MENU_FLTR_CUTOFF_RESONANCE;
+// int menu_ad=MENU_AD_AMP_ATTACK_RELEASE;
+// int menu_osc=MENU_OSC_OSC1OSC2;
+// int menu_vco=MENU_VCO_OSCMIX_PHASE;
+// int menu_lfo=MENU_LFO_LFOPITCH;
+// int menu_fltr=MENU_FLTR_CUTOFF_RESONANCE;
 /* END this next one should be removed */
 
 int menu_fx=MENU_FX_DEPTH_SPEED;
@@ -2149,12 +2149,12 @@ void handle_key_menu()
     {
      DPRINTF("Switching back to all default menu");
       menu_note=ENABLE;
-      menu_ad=0;
-      menu_osc=0;
-      menu_vco=0;
-      menu_lfo=0;
-      menu_fltr=0;
-      menu_fx=0;
+      // menu_ad=0;
+      // menu_osc=0;
+      // menu_vco=0;
+      // menu_lfo=0;
+      // menu_fltr=0;
+      // menu_fx=0;
     }
 
 
