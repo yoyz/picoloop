@@ -3685,7 +3685,7 @@ void seq_callback_update_step()
 
 }
 
-
+// Here is the while (1) { loop } of the application
 int seq()
 {
   AudioMixer & am=AE.getAudioMixer();
@@ -3701,7 +3701,6 @@ int seq()
   int          last_nbcb;   // number of occurence of AudioEngine callback before changing step
   am.setAudioVolume(DEFAULT_VOLUME);
 
-
   dirty_graphic=1;
 
  DPRINTF("Now in PatternPlayer::seq()");
@@ -3713,7 +3712,6 @@ int seq()
       MM[t]=AE.getAudioMixer().getMonoMixer(t);
       MM[t]->init();
       MM[t]->setAmplitude(0);  // set the amplitude to 0 to avoid trashing speakers
-
       
       M[t]=MM[t]->getInput();                             
       M[t]->init();
@@ -3767,36 +3765,23 @@ int seq()
   
   DPRINTF("openAudio start streaming");
   AE.startAudio();
-  //AE.startAudioSdl();
 
-
-
-  //AE.startAudio();
   seq_update_by_step_next=1;
   seq_update_by_step();  
   while (true)
     {
-      //dirty_graphic=1;
-      //SDL_LockAudio();
-      //display_board();
-      
-      //SDL_UnlockAudio();
-      //seq_update_by_step_next=1;
       cty=SEQ.getCurrentTrackY();
       ctx=SEQ.getCurrentTrackX();
-
+#ifdef __SDL_AUDIO__
       SDL_LockAudio();
       handle_key();
       SDL_UnlockAudio();
+#else
+      handle_key();
+#endif
 
-      //printf("sleeping %dms\n",delay);
       SDL_Delay(delay);  
-
-      // A/D, Note, VCO, BPM, more handling...
-      // apply the modification done by the user on the gui
-
-      //deactivate midi on 
-      //seq_send_midiclock();
+      
       seq_update_multiple_time_by_step();
 
       
@@ -3963,35 +3948,19 @@ void wtg()
 
 }
 
-
-
-
-int main(int argc,char **argv)
+void init_vita_debug()
 {
-  int i;
-  int cpu_speed;
-  int running=1;
-
 #if defined(PSVITA) && defined(DEBUG_PRINTF)
   psp2shell_init(3333,0);
   SDL_Delay(5000);
   psp2shell_print("Start\n");
 #endif
-  
-  UI=&PSUI;
-  //UI->handle_key(1,2);
+}
 
-
-  
-#ifdef __RTMIDI__
-  MidiOutSystem & MOS=MidiOutSystem::getInstance();
-  MidiInSystem  & MIS=MidiInSystem::getInstance();
-  MOS.init();
-  MIS.init();  
-#endif
-
-
-
+void init_psp()
+{
+  int cpu_speed;
+  int running=1;
 #ifdef PSP
   running = isRunning();
   setupExitCallback();
@@ -4000,113 +3969,106 @@ int main(int argc,char **argv)
   //cpu_speed=333;
   //scePowerSetCpuClockFrequency(cpu_speed);
   //scePowerSetClockFrequency(333, 333, 166);
-  //scePowerSetClockFrequency(233, 233, 133);
-  //scePowerSetClockFrequency(300, 300, 150);
   scePowerSetClockFrequency(266, 266, 133);
   cpu_speed=scePowerGetCpuClockFrequencyInt();
  DPRINTF("NEW PSP CPU SPEED:%d",cpu_speed);
 #else
-  running=1; // if we are not on psp, running should be 1  
+ running=1; // if we are not on psp, running should be 1  
 #endif
+}
 
+void finish_psp()
+{
+#ifdef PSP
+  sceKernelExitGame();	
+#endif
+}
 
-  wtg();
-  //  exit(0);
-  //NF.init();
+void finish_vita()
+{
+#if defined(PSVITA)
+  sceKernelExitProcess(0);
+#endif 
+}
 
-  NoteFreq & NF = NoteFreq::getInstance();
-  NF.init();
-  TK.init();
+void init_midi()
+{
+#ifdef __RTMIDI__
+  MidiOutSystem & MOS=MidiOutSystem::getInstance();
+  MidiInSystem  & MIS=MidiInSystem::getInstance();
+  MOS.init();
+  MIS.init();  
+#endif
+}
 
-  IE.init();
-  IE.printState();
-  //IE.handle_key();
-  //IE.init();
-  //IE.printState();
-  //exit(0);
-  //for (i=0;i<TRACK_MAX;i++)
-  //noteOffTrigger[i]=0;
-
-  DPRINTF("[openVideo output]");
-  SG.initVideo();
-  //SDL_InitSubSystem(SDL_INIT_AUDIO);
-  //handle_key(); 
- //  SDL_EnableKeyRepeat(500,500);
-  //SG.openBMPFont();
-  if (SG.openTTFFont()==false) {DPRINTF("ttf font error"); exit(1); }
-  SG.loadingScreen();
-  SDL_Delay(1000);
-
+void init_and_load_config()
+{
   config_loaded=0;
   config_key_pressed=0;
   config_first_time=1;
-  //if (0)
-  //  {
-      while (config_loaded!=1)
+  while (config_loaded!=1)
 	{
-#if defined(PSVITA)
-	  DPRINTF("looping config\n");
-#endif
 	  display_config();
 	  handle_key_config();
 	  handle_config();
 	  SDL_Delay(1);  
 	}
-      //}
-#if defined(PSVITA)
-      DPRINTF("main: after config\n");
-#endif
+}
+
+int main(int argc,char **argv)
+{
+  int i;
+
+  UI=&PSUI;          // The UI is set as default on PicoSynthUI
+    
+  init_vita_debug(); // used only on psvita
+  init_psp();        // used only on psp
+  init_midi();       // used when we have midi in/out
+
+  wtg();             // Generate the Waveform use by picoSynth/PicoDrum
+
+  NoteFreq & NF = NoteFreq::getInstance();
+  NF.init();      // init the NoteFrequency
+  TK.init();      // init the Tweakable Knob
+  IE.init();      // init the Input Manager
+  IE.printState();
+
+  DPRINTF("[openVideo output]");
+  SG.initVideo();  // Init the video outpout
+  //SG.openBMPFont();
+  if (SG.openTTFFont()==false) {DPRINTF("ttf font error"); exit(1); }
+  SG.loadingScreen();
+  SDL_Delay(1000);
+
+  init_and_load_config();
       
   PR.init();         // Init the     storage bank
   PR.setBank(bank);  // The current  storage bank will be the value of bank the directory/file are here PWD/bank/bank%d/
                      // menu_config_bank allow to choose it at startup
 
-  load_pattern();
+  load_pattern();    // load the pattern of the bank 
   
 
   DPRINTF("after load pattern\n");
 
-
-
-  //sleep(10);
-  //AE.setupSequencerCallback(printme);
   refresh_bpm();
   AE.setupSequencerCallback(seq_callback_update_step);
 
   DPRINTF("main: [openAudio output]");
   AE.openAudio();
 
-  //display_board();
-
-
-  //exit(0);
-
-  //AE.openAudioSdl();
-
-
   DPRINTF("main : before seq\n");
-  seq();
+  seq();        // Launch the sequencer which will stream audio
   DPRINTF("main : after seq\n");
 
-
   DPRINTF("[closeAudio output]");
-  //AE.stopAudioSdl();
   AE.stopAudio();
   AE.closeAudio();
   
-  //AE.closeAudioSdl();
-
   DPRINTF("[closeVideo output]");
   SG.closeVideo();
-  //sleep(10);
-  //PE.print();
- DPRINTF("Exiting PatternPlayer");
-
-#ifdef PSP
-  sceKernelExitGame();	
-#endif
-#if defined(PSVITA)
-  sceKernelExitProcess(0);
-#endif
+  DPRINTF("Exiting PatternPlayer");
+  finish_psp();
+  finish_vita();
 }
 
