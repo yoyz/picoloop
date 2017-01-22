@@ -343,7 +343,7 @@ int   menu_config_y=0;              // current selected item in menu_config
  */
 
 int menu_cursor=GLOBALMENU_AD;      // index int the menu
-int menu=MENU_ON_PAGE1;             // menu mode
+int menu=MENU_ON_PAGE1;             // menu MENU_ON_PAGE1,MENU_ON_PAGE2,MENU_OFF
 int menu_note=ENABLE;
 int menu_sub=0;
 /* BEGIN this next one should be removed */
@@ -3662,27 +3662,10 @@ void seq_callback_update_step()
 
 }
 
-// Here is the while (1) { loop } of the application
-int seq()
+void init_monomixer_and_machine()
 {
-  AudioMixer & am=AE.getAudioMixer();
-  int          cty=SEQ.getCurrentTrackY();
-  int          ctx=SEQ.getCurrentTrackX();
-  int          step=SEQ.getPatternSequencer(cty).getStep();
-  int          oldstep=0;
-  int          i=0;
-  int          delay=1;
   int          t=0;
-  int          running=1;
-  int          nbcb;        // current nb audio callback 
-  int          last_nbcb;   // number of occurence of AudioEngine callback before changing step
-  am.setAudioVolume(DEFAULT_VOLUME);
-
-  dirty_graphic=1;
-
- DPRINTF("Now in PatternPlayer::seq()");
-
-  // Initialize 
+  int          i=0;
   for (t=0;t<TRACK_MAX;t++)
     {
 
@@ -3697,19 +3680,18 @@ int seq()
       SEQ.getPatternSequencer(t).setBPMDivider(P[t].getBPMDivider());
       init_cursor_display_offset_cursor_max_pos(t);
     }
-
   // startup all track 
-  // dump 64 sample without using each
+  // dump 64 sample without using each 64 sample
+  // to avoir some trash
   for (t=0;t<TRACK_MAX;t++)
     {
       for (i=0;i<64;i++)
 	MM[t]->tick();
     }
-  // Init all track to the current step, step0 in this particular case 
-  for (i=0;i<TRACK_MAX;i++)
-    seq_update_track(i);
+}
 
-  refresh_pecursor();
+void init_and_setup_midi()
+{
 
 #ifdef __RTMIDI__
 
@@ -3739,13 +3721,42 @@ int seq()
     }
 
 #endif
+}
+
+// Here is the while (1) { loop } of the application
+int seq()
+{
+  AudioMixer & am=AE.getAudioMixer();
+  int          cty=SEQ.getCurrentTrackY();
+  int          ctx=SEQ.getCurrentTrackX();
+  int          step=SEQ.getPatternSequencer(cty).getStep();
+  int          oldstep=0;
+  int          i=0;
+  int          delay=1;
+  int          t=0;
+  int          running=1;
+  int          nbcb;        // current nb audio callback 
+  int          last_nbcb;   // number of occurence of AudioEngine callback before changing step
+  am.setAudioVolume(DEFAULT_VOLUME);
+
+  dirty_graphic=1;
+
+  DPRINTF("PatternPlayer::seq()");
+
+  init_monomixer_and_machine();
+  // Init all track to the current step, step0 in this particular case 
+  for (i=0;i<TRACK_MAX;i++)
+    seq_update_track(i);
+
+  refresh_pecursor();
+  init_and_setup_midi();
   
   DPRINTF("openAudio start streaming");
   AE.startAudio();
 
   seq_update_by_step_next=1;
   seq_update_by_step();  
-  while (true)
+  while (quit!=1 || running==1)
     {
       cty=SEQ.getCurrentTrackY();
       ctx=SEQ.getCurrentTrackX();
@@ -3756,7 +3767,7 @@ int seq()
 #else
       handle_key();
 #endif
-
+      // We give the processor to other thread to avoid spinning
       SDL_Delay(delay);  
       
       seq_update_multiple_time_by_step();
@@ -3771,36 +3782,31 @@ int seq()
       if (MOS.msgSize())
        	MOS.flushMsg();
 #endif
+
       // if user want to quit via handle_key
       if (quit ||
 	  running<=0)
 	{
-	 DPRINTF("user want to quit");
+	  DPRINTF("user want to quit");
 	  return(0);
 	}
-      
-      //display graphic if something has change : handle_key 
-      //if (dirty_graphic)
-      //display_board();
 
+      // Number of audio callback, it is related to performance
       nbcb=AE.getNbCallback();
-
       if (nbcb>last_nbcb)
-	{
-	  last_nbcb=nbcb;
-	}
-
+	last_nbcb=nbcb;
 
       if (dirty_graphic)
 	{
-	  //SDL_LockAudio();
-	  //sceKernelDcacheWritebackAll(); 
 	  refresh_pecursor();
 	  display_board();
-	  
+#ifdef __SDL_AUDIO__	  
 	  SDL_LockAudio();
 	  SG.refresh();
 	  SDL_UnlockAudio();
+#else
+	  SG.refresh();
+#endif
 	  dirty_graphic=0;
 	}
 
@@ -3814,13 +3820,9 @@ int seq()
 	}
 
       // change step in the pattern
-      //if (nbcb-last_nbcb_ch_step>nb_cb_ch_step)
       if (seq_update_by_step_next)
 	{	 
-	  //last_nbcb_ch_step=nbcb;
 	  seq_update_by_step();
-	  // deactivate midi clock on main thread
-	  //seq_send_midiclock_six();
 	  seq_update_by_step_next=0;
 	}
     }
