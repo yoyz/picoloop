@@ -1932,18 +1932,14 @@ void handle_key_patternlength()
 }
 
 
-void handle_key_menu()
+void handle_key_stop_start_sequencer()
 {
   mapii keyState=IE.keyState();
   mapii keyRepeat=IE.keyRepeat();
   int    lastEvent=IE.lastEvent();
   int    lastKey=IE.lastKey();
 
-  int last_menu=0xffff;
-  int last_menu_cursor=0xffff;
-  int menu_switching=0;         // when 1 we will switch from one menu to one another
-  
-  // We stop the sequencer A+B in [BPM] menu
+    // We stop the sequencer A+B in [BPM] menu
   if (menu             != MENU_OFF       &&
       menu_cursor      == GLOBALMENU_BPM &&
       sequencer_playing==1               &&
@@ -1959,23 +1955,7 @@ void handle_key_menu()
       DPRINTF("MMC-STOP:%d MMC_START:%d",mmc_stop,mmc_start);
     }
 
-    // We restart the sequencer START in [BPM] menu
-  /*
-  if (menu             != MENU_OFF       &&
-      menu_cursor      == GLOBALMENU_BPM &&
-      sequencer_playing==0               &&
-      (keyState[BUTTON_START])  &&
-      !(keyState[BUTTON_B]      &&
-        keyState[BUTTON_A]    ))
-    {
-      IE.clearLastKeyEvent();
-      IE.clearStateAndRepeat();
-      mmc_start=1;
-      DPRINTF("MMC-STOP:%d MMC_START:%d",mmc_stop,mmc_start);
-    }
-  */
-
-  // We force the sequencer A+START in [BPM] menu
+    // We force the sequencer A+START in [BPM] menu
   if (menu             != MENU_OFF       &&
       menu_cursor      == GLOBALMENU_BPM &&
       (keyState[BUTTON_START]  &&
@@ -1989,8 +1969,20 @@ void handle_key_menu()
       DPRINTF("MMC-STOP:%d MMC_START:%d",mmc_stop,mmc_start);
     }
 
-  
+}
 
+
+void handle_key_menu()
+{
+  mapii keyState=IE.keyState();
+  mapii keyRepeat=IE.keyRepeat();
+  int    lastEvent=IE.lastEvent();
+  int    lastKey=IE.lastKey();
+
+  int last_menu=0xffff;
+  int last_menu_cursor=0xffff;
+  int menu_switching=0;         // when 1 we will switch from one menu to one another
+  
   // Enter and cycle thru menu pages
   if (lastKey   ==  BUTTON_SELECT && 
       lastEvent ==  KEYRELEASED)
@@ -2028,31 +2020,11 @@ void handle_key_menu()
 	  break;
 
 	}
-      
-      // We exit the LS Menu so we had to 
-      // sync SEQ.Y with the cursor in the load save screen
-      // save the song to a file if song_need_saving==1
-      if (last_menu        == MENU_OFF &&
-	  menu             != MENU_OFF &&
-	  menu_cursor      == GLOBALMENU_LS)
-	{
-	  SEQ.setCurrentTrackY(loadsave_cursor.y);
-
-	  // Only save song if the song structure is modified
-	  if (song_need_saving!=0)
-	    {
-	  DPRINTF("SAVING SONG TO FILE song_need_saving:%d",song_need_saving);
-	  PR.saveSong(SEQ.getSongSequencer());
-	  song_need_saving=0;
-
-	   }
-	}
-      //printf("HERE IAMn");
       dirty_graphic=1;
       IE.clearLastKeyEvent();
-     DPRINTF("[gmenu : %d cmenu : %d]",menu,menu_cursor);
+      DPRINTF("[gmenu : %d cmenu : %d]",menu,menu_cursor);
     }
-
+  
   //We enter a menu : ENV/NOTE/VCO etc...
   // 
   if (lastKey      ==  BUTTON_B       && 
@@ -2061,6 +2033,8 @@ void handle_key_menu()
        menu        ==  MENU_ON_PAGE2))
     {
       DPRINTF("[gmenu : %d cmenu : %d]",menu,menu_cursor);
+      // enter a menu only if mmc was not trig AND
+      //                   we are not curently changing the submenu
       // helper_change_sub_menu could() modify "playing_with_menu_sub"
       if (playing_with_menu_sub==0 &&
 	  playing_with_mmc==0)
@@ -2879,7 +2853,8 @@ void handle_key_change_volume()
       }  
 }
 
-
+// handle_key call the IE.handleKey() which will read keyboard and keypad
+// it then call the appropriate function depending on the menu
 void handle_key()
 {
   IE.handleKey();
@@ -2890,9 +2865,11 @@ void handle_key()
   if (IE.shouldExit())
     quit=1;
 
-  handle_key_change_volume();
-  handle_key_patternlength();
-  handle_key_menu();
+  // this handler are allways call
+  handle_key_change_volume();        // SELECT+UP/DOWN change volume
+  handle_key_patternlength();        // L|R change the view from 0-15,16-31...
+  handle_key_stop_start_sequencer(); // you want to stop/start the sequencer
+  handle_key_menu();                 // you want to change the menu ?
   handle_key_sixteenbox();
 
 
@@ -3825,6 +3802,15 @@ int seq()
 	  SG.refresh();
 	  SDL_UnlockAudio();
 	  dirty_graphic=0;
+	}
+
+      // We are not in the L/S menu and song was modified
+      // we flush it
+      if (song_need_saving &&
+	  menu             != MENU_OFF)
+	{
+	  PR.saveSong(SEQ.getSongSequencer());
+	  song_need_saving=0;	      
 	}
 
       // change step in the pattern
