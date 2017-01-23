@@ -13,7 +13,7 @@
 #endif
 
 
-#define PICOLOOP_VERSION "0.76a"
+#define PICOLOOP_VERSION "0.76b"
 //#define INTERNAL_BUFFER_SIZE 128*1024   
 #define INTERNAL_BUFFER_SIZE 16*1024   
 //#define DEFAULTFREQ      44100
