@@ -626,7 +626,8 @@ void display_board_trig()
   if (step/16==pattern_display_offset[cty]/16)
     SG.drawBoxNumber(step-pattern_display_offset[cty],pal[STEP_COLOR]);  
 
-  for (i=0;i<16;i++)
+  //for (i=0;i<16;i++)
+    for (i=0;i<pattern_cursor_max_pos[cty];i++)
     {	  
       // Draw trigged box trig color   
       if (P[cty].getPatternElement(i+pattern_display_offset[cty]).get(NOTE_ON))
@@ -653,7 +654,8 @@ void display_board_two_param(int machineParam1,int machineParam2)
 
   display_board_trig();
 
-  for (i=0;i<16;i++)
+  //for (i=0;i<16;i++)
+  for (i=0;i<pattern_cursor_max_pos[cty];i++)
     {	  // Draw trigged box trig color   
       if (P[cty].getPatternElement(i+pattern_display_offset[cty]).get(NOTE_ON))
 	{
@@ -681,7 +683,8 @@ void display_board_one_param_text(int machineParam1)
 
   display_board_trig();
 
-  for (i=0;i<16;i++)
+  //for (i=0;i<16;i++)
+  for (i=0;i<pattern_cursor_max_pos[cty];i++)
     {	  
       // Draw trigged box trig color   
       PET=P[cty].getPatternElement(i+pattern_display_offset[cty]);
@@ -724,7 +727,8 @@ void display_board_two_param_text(int machineParam1,int machineParam2)
 
   display_board_trig();
 
-  for (i=0;i<16;i++)
+  //for (i=0;i<16;i++)
+    for (i=0;i<pattern_cursor_max_pos[cty];i++)
     {	  // Draw text on Trigged step
       if (P[cty].getPatternElement(i+pattern_display_offset[cty]).get(NOTE_ON))
 	{
@@ -777,7 +781,8 @@ void display_board_two_param_number(int machineParam1,int machineParam2)
 
   display_board_trig();
 
-  for (i=0;i<16;i++)
+  //for (i=0;i<16;i++)
+  for (i=0;i<pattern_cursor_max_pos[cty];i++)
     {	  // Draw text on Trigged step
       if (P[cty].getPatternElement(i+pattern_display_offset[cty]).get(NOTE_ON))
 	{
@@ -819,7 +824,8 @@ void display_board_one_param_number(int machineParam1)
 
   display_board_trig();
 
-  for (i=0;i<16;i++)
+  //for (i=0;i<16;i++)
+  for (i=0;i<pattern_cursor_max_pos[cty];i++)
     {	  // Draw text on Trigged step
       if (P[cty].getPatternElement(i+pattern_display_offset[cty]).get(NOTE_ON))
 	{
@@ -863,7 +869,8 @@ void display_board_one_and_two_param_text(int machineParam1,int machineParam2)
   
   display_board_trig();
 
-  for (i=0;i<16;i++)
+  //for (i=0;i<16;i++)
+  for (i=0;i<pattern_cursor_max_pos[cty];i++)
     {	  // Draw trigged box trig color   
       j=i+pattern_display_offset[cty];
       if (P[cty].getPatternElement(j).get(NOTE_ON))
@@ -1734,6 +1741,14 @@ void display_board_text_global()
       if (menu_sub==MENU_PAGE0_SUB2) sprintf(str_line2,  "MIDI DELTA SEND %d",delta_midi_clock);
     }
 
+    if (menu_cursor==GLOBALMENU_PSH)
+    {
+      if (menu_sub==MENU_PAGE0_SUB0) sprintf(str_line2,  "PLEN16/PLEN1 : %d",SEQ.getPatternSequencer(cty).getPatternLength());
+      if (menu_sub==MENU_PAGE0_SUB1) sprintf(str_line2,  "  PSH4/PSH1  ");
+      //if (menu_sub==MENU_PAGE0_SUB1) sprintf(str_line2,  "SWING %d",current_swing);
+      //if (menu_sub==MENU_PAGE0_SUB2) sprintf(str_line2,  "MIDI DELTA SEND %d",delta_midi_clock);
+    }
+
 
 
   if (menu_cursor==GLOBALMENU_LS   && menu==MENU_ON_PAGE2 ) sprintf(str_menu,"[L/S] BANK  PSH   MAC   FX    BPM    ");
@@ -2443,16 +2458,28 @@ void handle_key_lfo()
 
 void handle_key_psh()
 {
+    helper_handle_key_two_button(GLOBALMENU_PSH,MENU_PAGE0_SUB0,KEY_REPEAT_INTERVAL_LONG,
+			       PATTERN_LENGTH,
+			       PATTERN_LENGTH,
+			       1,16);
+
+    helper_handle_key_two_button(GLOBALMENU_PSH,MENU_PAGE0_SUB1,KEY_REPEAT_INTERVAL_LONG,
+				 PATTERN_SHIFT,
+				 PATTERN_SHIFT,
+				 1,4);
+
+
+  /*
   helper_handle_key_two_button(GLOBALMENU_PSH,MENU_PAGE0_SUB0,KEY_REPEAT_INTERVAL_LONG,
 			       PATTERN_SHIFT,
 			       PATTERN_LENGTH,
 			       1,16);
-
+  
   helper_handle_key_two_button(GLOBALMENU_PSH,MENU_PAGE0_SUB1,KEY_REPEAT_INTERVAL_LONG,
 			       PATTERN_LENGTH,
 			       PATTERN_LENGTH,
 			       1,4);
-
+  */
   helper_change_sub_menu(MENU_PAGE0_SUB1);
 }
 
