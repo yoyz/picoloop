@@ -627,7 +627,7 @@ void display_board_trig()
     SG.drawBoxNumber(step-pattern_display_offset[cty],pal[STEP_COLOR]);  
 
   //for (i=0;i<16;i++)
-    for (i=0;i<pattern_cursor_max_pos[cty];i++)
+    for (i=0;i<pattern_cursor_max_pos[cty]+1;i++)
     {	  
       // Draw trigged box trig color   
       if (P[cty].getPatternElement(i+pattern_display_offset[cty]).get(NOTE_ON))
@@ -655,7 +655,7 @@ void display_board_two_param(int machineParam1,int machineParam2)
   display_board_trig();
 
   //for (i=0;i<16;i++)
-  for (i=0;i<pattern_cursor_max_pos[cty];i++)
+  for (i=0;i<pattern_cursor_max_pos[cty]+1;i++)
     {	  // Draw trigged box trig color   
       if (P[cty].getPatternElement(i+pattern_display_offset[cty]).get(NOTE_ON))
 	{
@@ -684,7 +684,7 @@ void display_board_one_param_text(int machineParam1)
   display_board_trig();
 
   //for (i=0;i<16;i++)
-  for (i=0;i<pattern_cursor_max_pos[cty];i++)
+  for (i=0;i<pattern_cursor_max_pos[cty]+1;i++)
     {	  
       // Draw trigged box trig color   
       PET=P[cty].getPatternElement(i+pattern_display_offset[cty]);
@@ -728,7 +728,7 @@ void display_board_two_param_text(int machineParam1,int machineParam2)
   display_board_trig();
 
   //for (i=0;i<16;i++)
-    for (i=0;i<pattern_cursor_max_pos[cty];i++)
+    for (i=0;i<pattern_cursor_max_pos[cty]+1;i++)
     {	  // Draw text on Trigged step
       if (P[cty].getPatternElement(i+pattern_display_offset[cty]).get(NOTE_ON))
 	{
@@ -782,7 +782,7 @@ void display_board_two_param_number(int machineParam1,int machineParam2)
   display_board_trig();
 
   //for (i=0;i<16;i++)
-  for (i=0;i<pattern_cursor_max_pos[cty];i++)
+  for (i=0;i<pattern_cursor_max_pos[cty]+1;i++)
     {	  // Draw text on Trigged step
       if (P[cty].getPatternElement(i+pattern_display_offset[cty]).get(NOTE_ON))
 	{
@@ -825,7 +825,7 @@ void display_board_one_param_number(int machineParam1)
   display_board_trig();
 
   //for (i=0;i<16;i++)
-  for (i=0;i<pattern_cursor_max_pos[cty];i++)
+  for (i=0;i<pattern_cursor_max_pos[cty]+1;i++)
     {	  // Draw text on Trigged step
       if (P[cty].getPatternElement(i+pattern_display_offset[cty]).get(NOTE_ON))
 	{
@@ -870,7 +870,7 @@ void display_board_one_and_two_param_text(int machineParam1,int machineParam2)
   display_board_trig();
 
   //for (i=0;i<16;i++)
-  for (i=0;i<pattern_cursor_max_pos[cty];i++)
+  for (i=0;i<pattern_cursor_max_pos[cty]+1;i++)
     {	  // Draw trigged box trig color   
       j=i+pattern_display_offset[cty];
       if (P[cty].getPatternElement(j).get(NOTE_ON))
@@ -925,11 +925,52 @@ void display_board_amp_env()
 {
   UI->display_board(GLOBALMENU_AD);
 }
-
+/*
 void display_board_note()
 {
   UI->display_board(GLOBALMENU_NOTE);
 }
+*/
+void display_board_note()
+{
+  int  i;
+  int  j;
+  int  cty=SEQ.getCurrentTrackY();
+  int  step=SEQ.getPatternSequencer(cty).getStep();
+
+  NoteFreq & NF = NoteFreq::getInstance();
+
+  display_board_trig();
+
+
+  // Note C3 
+  if (menu_note==ENABLE)
+    {	  
+      //for (i=0;i<16;i++)
+      for (i=0;i<pattern_cursor_max_pos[cty]+1;i++)
+	{
+	  j=i+pattern_display_offset[cty];
+	  
+	  if (P[cty].getPatternElement(j).get(NOTE_ON))
+	    SG.drawTTFTextNumberFirstLine(i,NF.getNoteCharStar(P[cty].getPatternElement(j).get(NOTE1)));
+	}
+    }
+  // Note Cursor
+  if (menu_note==DISABLE)      
+    {
+      for (i=0;i<pattern_cursor_max_pos[cty]+1;i++)
+	{
+	  j=i+pattern_display_offset[cty];
+	  
+	  if (P[cty].getPatternElement(j).get(NOTE_ON))
+	    SG.smallBoxNumber(i,
+			      (P[cty].getPatternElement(j).get(NOTE1)%12-1)*10,
+			      (128-(P[cty].getPatternElement(j).get(NOTE1)/12)*10),
+			      SMALLBOX_COLOR);
+	}
+    }
+}
+
 
 void display_board_vco()
 {
@@ -983,7 +1024,8 @@ void display_board_bpm()
 
   if (menu_cursor==GLOBALMENU_BPM)
     {
-      display_board_trig();
+      //display_board_trig();
+      display_board_note();
     }
   
 }
@@ -998,19 +1040,10 @@ void display_board_psh()
   
   // need to display something, so why not ?
   
-  if (menu!=MENU_OFF && 
-      menu_cursor==GLOBALMENU_PSH
-      )
+  if (menu_cursor==GLOBALMENU_PSH)
     {
-      display_board_trig();
+      display_board_note();
     }                  
-  if (menu==MENU_OFF && 
-      menu_cursor==GLOBALMENU_PSH
-      )
-    {
-      display_board_trig();
-    }                  
-  
 }
 
 
@@ -1029,7 +1062,8 @@ void display_board_mac()
 
     if (menu_cursor==GLOBALMENU_MAC)
     {
-      for (i=0;i<16;i++)
+      //for (i=0;i<16;i++)
+      for (i=0;i<pattern_cursor_max_pos[cty]+1;i++)
 	{
 	  j=i+pattern_display_offset[cty];
 	  if (P[cty].getPatternElement(j).get(NOTE_ON))
@@ -1644,7 +1678,8 @@ void display_board_load_save()
       menu_cursor==GLOBALMENU_LS
       )
     {
-      display_board_trig();
+      display_board_note();
+      //display_board_trig();
     }                  
 }
 
