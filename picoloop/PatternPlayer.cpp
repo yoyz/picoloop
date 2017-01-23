@@ -981,6 +981,57 @@ void display_board_bpm()
   
 }
 
+void display_board_psh()
+{
+  int x,y;
+  int  i;
+  int  cty=SEQ.getCurrentTrackY();
+  int  step=SEQ.getPatternSequencer(cty).getStep();
+
+  
+  // need to display something, so why not ?
+  
+  if (menu!=MENU_OFF && 
+      menu_cursor==GLOBALMENU_PSH
+      )
+    {
+      display_board_trig();
+    }                  
+  if (menu==MENU_OFF && 
+      menu_cursor==GLOBALMENU_PSH
+      )
+    {
+      display_board_trig();
+    }                  
+  
+}
+
+
+
+
+
+void display_board_mac()
+{
+  int  i;
+  int  j;
+  int  cty=SEQ.getCurrentTrackY();
+  int  step=SEQ.getPatternSequencer(cty).getStep();
+
+  display_board_trig();
+
+
+    if (menu_cursor==GLOBALMENU_MAC)
+    {
+      for (i=0;i<16;i++)
+	{
+	  j=i+pattern_display_offset[cty];
+	  if (P[cty].getPatternElement(j).get(NOTE_ON))
+	    {
+	      SG.drawTTFTextNumberFirstLine(i, P[cty].getPatternElement(j).getMachineTypeCharStar());
+	    }
+	}
+    }
+}
 
 void display_config()
 {
@@ -1592,57 +1643,7 @@ void display_board_load_save()
 
 
 
-void display_board_psh()
-{
-  int x,y;
-  int  i;
-  int  cty=SEQ.getCurrentTrackY();
-  int  step=SEQ.getPatternSequencer(cty).getStep();
 
-  
-  // need to display something, so why not ?
-  
-  if (menu!=MENU_OFF && 
-      menu_cursor==GLOBALMENU_PSH
-      )
-    {
-      display_board_trig();
-    }                  
-  if (menu==MENU_OFF && 
-      menu_cursor==GLOBALMENU_PSH
-      )
-    {
-      display_board_trig();
-    }                  
-  
-}
-
-
-
-
-
-void display_board_mac()
-{
-  int  i;
-  int  j;
-  int  cty=SEQ.getCurrentTrackY();
-  int  step=SEQ.getPatternSequencer(cty).getStep();
-
-  display_board_trig();
-
-
-    if (menu_cursor==GLOBALMENU_MAC)
-    {
-      for (i=0;i<16;i++)
-	{
-	  j=i+pattern_display_offset[cty];
-	  if (P[cty].getPatternElement(j).get(NOTE_ON))
-	    {
-	      SG.drawTTFTextNumberFirstLine(i, P[cty].getPatternElement(j).getMachineTypeCharStar());
-	    }
-	}
-    }
-}
 // navigation bar allow user to navigate between 16 step in the 128 available
 // call from display_board
 void display_board_navigation_bar()
