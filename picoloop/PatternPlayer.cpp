@@ -2156,7 +2156,8 @@ void handle_key_menu()
 	 DPRINTF("key right");            
 	}
       
-      if(keyState[BUTTON_UP])
+      if(keyState[BUTTON_UP] &&
+	 !keyState[BUTTON_SELECT])
 	{
 	  if (keyRepeat[BUTTON_UP]    == 1 || 
 	      keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONG == 0)
@@ -2176,7 +2177,8 @@ void handle_key_menu()
 	  dirty_graphic=1;
 	}
 
-      if(keyState[BUTTON_DOWN])
+      if(keyState[BUTTON_DOWN] &&
+	 !keyState[BUTTON_SELECT])
 	{
 	  if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%64==0)
 	    {
