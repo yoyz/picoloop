@@ -418,6 +418,7 @@ V0.76ab
 - b : STOP the sequencer with A+B in BPM and START the sequencer wih A+START in BPM
 - b : fix ps vita LTRIGGER and RTRIGGER
 - b : fix the SELECT+UP/Down to change volume, but not change the track
+- b : MAX_PATTERN_BY_PROJECT update to 128 for all platform, but not PSP, opendingux, gp2x
 
 V0.75abcdef: 
 
