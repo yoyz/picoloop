@@ -3074,6 +3074,10 @@ void seq_update_multiple_time_by_step()
       int i;
       int j;
 
+      // prevent negative size for example
+      if (dest_plen<2)
+	dest_plen=cur_plen;
+
       // duplicate the 16 first step into : 
       // 16-31
       // 32-47
@@ -3097,6 +3101,8 @@ void seq_update_multiple_time_by_step()
       pattern_cursor_max_pos[cty]=dest_plen-1-pattern_display_offset[cty];
       if (pattern_cursor_max_pos[cty]>15)
 	pattern_cursor_max_pos[cty]=15;
+      if (pattern_cursor_max_pos[cty]<cursor)
+	cursor=pattern_cursor_max_pos[cty];
       DPRINTF("*********************pattern_cursor_max_pos:%d",pattern_cursor_max_pos[cty]);
     }
 
@@ -3119,7 +3125,7 @@ void seq_update_multiple_time_by_step()
     {       
       PatternElement Pe;
       int time=TK.getAll(PATTERN_SHIFT)+TK.get(PATTERN_SHIFT);
-
+      printf("time:%d\n",time);
       if (TK.getAll(PATTERN_SHIFT)>0 ||
 	  TK.get(PATTERN_SHIFT)>0)
 	{
@@ -3143,34 +3149,6 @@ void seq_update_multiple_time_by_step()
 	  i++;
 	  P[cty].getPatternElement(pattern_cursor_max_pos[cty]+pattern_display_offset[cty])=Pe;
 	}
-
-      
-
-      /* OLD METHOD
-      if (TK.getAll(PATTERN_SHIFT)<0 ||
-	  TK.get(PATTERN_SHIFT)<0)
-	{
-	  Pe=P[cty].getPatternElement(0);
-	  for (i=0;i<15;i++)
-	    {	    
-	      P[cty].getPatternElement(i)=P[cty].getPatternElement(i+1);	    
-	    }
-	  i++;
-	  P[cty].getPatternElement(15)=Pe;	    
-	}
-
-      if (TK.getAll(PATTERN_SHIFT)>0 ||
-	  TK.get(PATTERN_SHIFT)>0)
-	{
-	  Pe=P[cty].getPatternElement(15);
-	  for (i=15;i>0;i--)
-	    {	    
-	      P[cty].getPatternElement(i)=P[cty].getPatternElement(i-1);	    
-	    }
-	  i--;
-	  P[cty].getPatternElement(0)=Pe;	    
-	}
-      */
       TK.setAll(PATTERN_SHIFT,0);
       TK.set(PATTERN_SHIFT,0);
       dirty_graphic=1;
