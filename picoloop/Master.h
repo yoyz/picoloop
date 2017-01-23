@@ -511,8 +511,8 @@ enum {
 #define BUTTON_SELECT       SCE_CTRL_SELECT
 #define BUTTON_START        SCE_CTRL_START
 
-#define BUTTON_L            SCE_CTRL_L1
-#define BUTTON_R            SCE_CTRL_R1
+#define BUTTON_L            SCE_CTRL_LTRIGGER
+#define BUTTON_R            SCE_CTRL_RTRIGGER
 
 #define KEYPRESSED          SDL_JOYBUTTONDOWN
 #define KEYRELEASED         SDL_JOYBUTTONUP
