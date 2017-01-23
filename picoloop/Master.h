@@ -39,7 +39,6 @@
 
 //#define MAX_PATTERN_BY_PROJECT 256
 //#define MAX_PATTERN_BY_PROJECT 16
-#define MAX_PATTERN_BY_PROJECT 32
 #define MAX_SONG_LENGHT_BY_PROJECT 1024
 #define MAX_BANK 256
 #define TRACK_MAX 4
@@ -233,6 +232,7 @@ enum {
 
 
 #ifdef OPENDINGUX
+#define MAX_PATTERN_BY_PROJECT 32
 #define SCREEN_WIDTH	320
 #define SCREEN_HEIGHT	240
 #define SCREEN_DEPTH	16
@@ -273,7 +273,7 @@ enum {
 #endif
 
 #ifdef PC_DESKTOP
-
+#define MAX_PATTERN_BY_PROJECT 128
 #define __FPU__         1
 
 #define SCREEN_WIDTH	320
@@ -331,6 +331,7 @@ enum {
 
 
 #ifdef LINUX_RASPI1
+#define MAX_PATTERN_BY_PROJECT 128
 //#define __FPU__         0
 
 #define SCREEN_WIDTH	320
@@ -381,7 +382,7 @@ enum {
 
 
 #ifdef LINUX_POCKETCHIP
-
+#define MAX_PATTERN_BY_PROJECT 128
 //#define __FPU__         0
 
 #define SCREEN_WIDTH	480
@@ -431,6 +432,7 @@ enum {
 
 
 #ifdef PSP
+#define MAX_PATTERN_BY_PROJECT 32
 #define SCREEN_MULT     1
 #define SCREEN_WIDTH	480
 #define SCREEN_HEIGHT	272
@@ -481,6 +483,7 @@ enum {
 #endif
 
 #ifdef PSVITA
+#define MAX_PATTERN_BY_PROJECT 128
 #include <psp2/ctrl.h>
 #include "psp2shell.h"
 #define SCREEN_MULT     2
@@ -524,6 +527,7 @@ enum {
 
 
 #ifdef GP2X
+#define MAX_PATTERN_BY_PROJECT 32
 #define SCREEN_WIDTH	320
 #define SCREEN_HEIGHT	240
 #define SCREEN_DEPTH	16
