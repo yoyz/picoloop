@@ -411,8 +411,13 @@ In this case you need a prx and an elf file.
 Changelog
 =========
 
-V0.76a
-- first port on psvita thanks to #henkaku team
+V0.76ab
+- a : first port on psvita thanks to #henkaku team
+- b : re add polyrithmic in PSH, 
+- b : fix bpm speed ( slightly higher )
+- b : STOP the sequencer with A+B in BPM and START the sequencer wih A+START in BPM
+- b : fix ps vita LTRIGGER and RTRIGGER
+- b : fix the SELECT+UP/Down to change volume, but not change the track
 
 V0.75abcdef: 
 
