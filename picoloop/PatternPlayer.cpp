@@ -3083,7 +3083,35 @@ void seq_update_multiple_time_by_step()
       TK.get(PATTERN_SHIFT)!=0)
     {       
       PatternElement Pe;
+      int time=TK.getAll(PATTERN_SHIFT)+TK.get(PATTERN_SHIFT);
 
+      if (TK.getAll(PATTERN_SHIFT)>0 ||
+	  TK.get(PATTERN_SHIFT)>0)
+	{
+	  Pe=P[cty].getPatternElement(pattern_cursor_max_pos[cty]);
+	  for (i=pattern_cursor_max_pos[cty];i>0;i--)
+	    {	    
+	      P[cty].getPatternElement(i)=P[cty].getPatternElement(i-1);	    
+	    }
+	  i--;
+	  P[cty].getPatternElement(0)=Pe;	    
+	}
+      
+      if (TK.getAll(PATTERN_SHIFT)<0 ||
+	  TK.get(PATTERN_SHIFT)<0)
+	{
+	  Pe=P[cty].getPatternElement(0);
+	  for (i=0;i<pattern_cursor_max_pos[cty];i++)
+	    {
+	      P[cty].getPatternElement(i)=P[cty].getPatternElement(i+1);	    
+	    }
+	  i++;
+	  P[cty].getPatternElement(pattern_cursor_max_pos[cty])=Pe;
+	}
+
+      
+
+      /* OLD METHOD
       if (TK.getAll(PATTERN_SHIFT)<0 ||
 	  TK.get(PATTERN_SHIFT)<0)
 	{
@@ -3107,7 +3135,7 @@ void seq_update_multiple_time_by_step()
 	  i--;
 	  P[cty].getPatternElement(0)=Pe;	    
 	}
-
+      */
       TK.setAll(PATTERN_SHIFT,0);
       TK.set(PATTERN_SHIFT,0);
       dirty_graphic=1;
