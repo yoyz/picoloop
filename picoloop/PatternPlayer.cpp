@@ -3088,25 +3088,25 @@ void seq_update_multiple_time_by_step()
       if (TK.getAll(PATTERN_SHIFT)>0 ||
 	  TK.get(PATTERN_SHIFT)>0)
 	{
-	  Pe=P[cty].getPatternElement(pattern_cursor_max_pos[cty]);
+	  Pe=P[cty].getPatternElement(pattern_cursor_max_pos[cty]+pattern_display_offset[cty]);
 	  for (i=pattern_cursor_max_pos[cty];i>0;i--)
 	    {	    
-	      P[cty].getPatternElement(i)=P[cty].getPatternElement(i-1);	    
+	      P[cty].getPatternElement(i+pattern_display_offset[cty])=P[cty].getPatternElement(i-1+pattern_display_offset[cty]);	    
 	    }
 	  i--;
-	  P[cty].getPatternElement(0)=Pe;	    
+	  P[cty].getPatternElement(0+pattern_display_offset[cty])=Pe;	    
 	}
       
       if (TK.getAll(PATTERN_SHIFT)<0 ||
 	  TK.get(PATTERN_SHIFT)<0)
 	{
-	  Pe=P[cty].getPatternElement(0);
+	  Pe=P[cty].getPatternElement(0+pattern_display_offset[cty]);
 	  for (i=0;i<pattern_cursor_max_pos[cty];i++)
 	    {
-	      P[cty].getPatternElement(i)=P[cty].getPatternElement(i+1);	    
+	      P[cty].getPatternElement(i+pattern_display_offset[cty])=P[cty].getPatternElement(i+1+pattern_display_offset[cty]);	    
 	    }
 	  i++;
-	  P[cty].getPatternElement(pattern_cursor_max_pos[cty])=Pe;
+	  P[cty].getPatternElement(pattern_cursor_max_pos[cty]+pattern_display_offset[cty])=Pe;
 	}
 
       
