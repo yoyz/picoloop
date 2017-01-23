@@ -10,18 +10,17 @@ Each track has a synthengine which can be a Virtual Analog, a Drum Synth, a FM s
 Each of the step can be edited on the 4 tracks.
 So for example, you can set a C4 note on step 0, nothing on step 1 and 2, then a D+5 on step 3 until the step 15.</p>
 
-<p>A pattern of 16 steps is played repeatedly while these notes can be edited in various respects like volume, pitch, filter, lfo etc.
+<p>A pattern of 16 steps is played repeatedly while these notes can be edited in various respects like volume, pitch, filter, lfo etc. 
 All parameters are set step-wise, so you can make huge variation of sound on the same pattern.
-Each channel&rsquo;s patterns can be saved to file slots and are then available for new combinations.
+Each channel's patterns can be saved to file slots and are then available for new combinations. 
 Finally, saved patterns can be arranged in a song structure.</p>
 
-<p>Besides the song editor and manual loading of patterns, there are 3 different ways to modify each channel&rsquo;s patterns so that they form longer structures:</p>
+<p>Besides the song editor and manual loading of patterns, there are 3 different ways to modify each channel's patterns so that they form longer structures:                                       </p>
 
 <ul>
-<li>&frac12;, &frac14; or 1/8 speed</li>
+<li>1/2, 1/4 or 1/8 speed                                                               </li>
 <li>Different pattern lengths by track</li>
 </ul>
-
 
 <p>Picoloop is targeted for linux/SDL compatible system.
 It uses SDL     to render graphics.
@@ -42,7 +41,7 @@ All notes in the sequencer can be edited simultaneously.</p>
 <h3>The menu mode</h3>
 
 <p>The menu mode changes the selected textual menu at the bottom of the screen.
-This allows you to choose what kind of parameter you want to change, for example, the NOTE, the OSC, the Filter&hellip;
+This allows you to choose what kind of parameter you want to change, for example, the NOTE, the OSC, the Filter...
 In menu mode, when you press left/right, it changes the textual menu in the bottom of the screen</p>
 
 <pre><code>&lt;/&gt;             move backward/forward in the menu
@@ -87,71 +86,57 @@ Each synth engine has different kind of parameter.</p>
 <li>FLTR : the filter parameter.</li>
 </ol>
 
-
 <p>Here is the global overview of the most common parameters you will find by synth engine.</p>
 
 <ul>
-<li><p>A/R :</p>
+<li><p>A/R : </p>
 
 <ul>
-<li>Amp Enveloppe
+<li>Amp Enveloppe 
+<ul>
+<li>Attack/Release     Amp /  FM operator1   </li>
+<li>Decay/Sustain      Amp /  FM operator1   </li>
+</ul></li>
+<li>Filter Enveloppe <br />
+<ul>
+<li>Attack/Release Filter  /  FM Operator2       </li>
+<li>Decay/Sustain  Filter  /  FM Operator2       </li>
+</ul></li>
+<li>Trig/Amplification
+<ul>
+<li>trig time/Volume                                                                    </li>
+</ul></li>
+</ul></li>
+<li><p>Note : </p>
 
 <ul>
-<li>Attack/Release     Amp /  FM operator1</li>
-<li>Decay/Sustain      Amp /  FM operator1</li>
-</ul>
-</li>
-<li>Filter Enveloppe
+<li>Choose note with "C3" "C4" "D2"                                                          </li>
+<li>Choose note with "dot"                                                                   </li>
+</ul></li>
+<li><p>OSC : </p>
 
 <ul>
-<li>Attack/Release Filter  /  FM Operator2</li>
-<li>Decay/Sustain  Filter  /  FM Operator2</li>
-</ul>
-</li>
-<li> Trig/Amplification
+<li>Choose the two OSC shape of the synth, the drumsynth, the FM synth                             </li>
+</ul></li>
+<li><p>VCO : </p>
 
 <ul>
-<li> trig time/Volume</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>Note :</p>
+<li>VCO mix in synth mode, OP1mult/OP2mult in FM mode                                        </li>
+<li>OP1amp/OP2amp in FM mode                                                                 </li>
+</ul></li>
+<li><p>LFO : </p>
 
 <ul>
-<li>Choose note with &ldquo;C3&rdquo; &ldquo;C4&rdquo; &ldquo;D2&rdquo;</li>
-<li>Choose note with &ldquo;dot&rdquo;</li>
-</ul>
-</li>
-<li><p>OSC :</p>
-
-<ul>
-<li>Choose the two OSC shape of the synth, the drumsynth, the FM synth</li>
-</ul>
-</li>
-<li><p>VCO :</p>
-
-<ul>
-<li>VCO mix in synth mode, OP1mult/OP2mult in FM mode</li>
-<li>OP1amp/OP2amp in FM mode</li>
-</ul>
-</li>
-<li><p>LFO :</p>
-
-<ul>
-<li>depth/speed in psynth and drumsynth mode</li>
-<li>pitchbenddepth/pitchbendspeed in psynth mode</li>
-</ul>
-</li>
-<li><p>FLTR :</p>
+<li>depth/speed in psynth and drumsynth mode </li>
+<li>pitchbenddepth/pitchbendspeed in psynth mode </li>
+</ul></li>
+<li><p>FLTR : </p>
 
 <ul>
 <li>Cutoff/Resonance</li>
 <li>algo/mode ( lp/bp/hp )</li>
+</ul></li>
 </ul>
-</li>
-</ul>
-
 
 <h4>menu 2</h4>
 
@@ -166,10 +151,9 @@ Each synth engine has different kind of parameter.</p>
 <li>BPM   change the BPM and swing of the 4 track and the step diviser of the current track</li>
 </ol>
 
-
 <h5>L/S menu</h5>
 
-<p>The top menu shows the tracks and patterns.
+<p>The top menu shows the tracks and patterns. 
 - Save your current track by selecting an empty slow, then B+down.
 - Save your current pattern (group of 4 tracks) by selecting a column, then A+down.
 - Load a track with A+up (it will replace your current working track).
@@ -177,7 +161,7 @@ Each synth engine has different kind of parameter.</p>
 
 <p>You can clone a track by loading it into memory, then saving it to another track.</p>
 
-<p>The menu below (song position) allows you to order your tracks. You can enter it with Start key.
+<p>The menu below (song position) allows you to order your tracks. You can enter it with Start key. 
 - Define Loop start position with A+up
 - Define Loop end position with A+down
 - Change the values with B+up and B+down.</p>
@@ -192,27 +176,26 @@ Each synth engine has different kind of parameter.</p>
 <li>Navigate into the new steps (move the position by -16 or +16) with the LEFT and RIGHT SHOULDER (or TAB and BACKSPACE on PC)</li>
 </ul>
 
-
 <h2>What you need to know</h2>
 
 <p>Every pattern is stored in the bank/bankXXX/file so if you backup this directory you should be fine.</p>
 
 <p>You can write pattern on OpenDingux and push it on your laptop, unfortunately, it could sound little different.
 The OpenDingux a320 lack FPU so every thing is done in fixed point.
-On PC and PSP it&rsquo;s done in floating point&hellip;</p>
+On PC and PSP it's done in floating point...</p>
 
-<p>You won&rsquo;t be able to push pattern from PC to PSP/Opendingux, it could work but it depend if the Machine is available on the PSP.
+<p>You won't be able to push pattern from PC to PSP/Opendingux, it could work but it depend if the Machine is available on the PSP.
 Today ( picoloop 0.75c ) only Picosynth, Picodrum, DBopl and PBSynth are available on slower platform : PSP, opendingux.</p>
 
 <p>The combo Select+UP, Select+Down allow you to raise or decrease the internal volume of the apps</p>
 
 <p>If you plug on Windows/Linux a midi cable you can use it with midi sync in or midi sync out.
-The MMC message ( &ldquo;play&rdquo;, &ldquo;stop&rdquo; ) are received by picoloop, but it doesn&rsquo;t transmit this kind of message.
-It understand the &ldquo;stop&rdquo; and &ldquo;play&rdquo; MMC message.</p>
+The MMC message ( "play", "stop" ) are received by picoloop, but it doesn't transmit this kind of message.
+It understand the "stop" and "play" MMC message. </p>
 
 <p>You can use midi delay to fine tune the sync between midi hardware and picoloop software.</p>
 
-<p>The MDA Drum synth works with file patch &ldquo;.ds&rdquo; file.
+<p>The MDA Drum synth works with file patch ".ds" file.
 So if you have a laptop with a harddrive which is not an ssd, you should work with a PSU and not the battery to
 avoid disk spinning down. The automatic disk shutdown will block audio for 10ms and it became really audible.
 Will be fixed in a latter version.</p>
@@ -227,7 +210,7 @@ On most platform in 2016, you will need this kind of package.</p>
  - libpthread*  =&gt; pthread for multiple thread
  - g++          =&gt; I use the g++ 4.7.2  
  - make         =&gt; I use the make 3.81
- - libjack-dev  =&gt; I use jack 2.0, and the jack dependency is needed today 
+ - libjack-dev  =&gt; I use jack 2.0, and the jack dependency is needed today
 </code></pre>
 
 <h4>LASTEST SOURCE</h4>
@@ -241,7 +224,7 @@ But, you should then switch to a tag.</p>
 
 <p>Tag are safier.
 And today, there is a known issue, the build of PatternPlayer need two build.
-The issue come from the &ldquo;mkdir&rdquo; which is launch after the other command, so every thing seem to fail on the first make&hellip;
+The issue come from the "mkdir" which is launch after the other command, so every thing seem to fail on the first make...
 Unfortunately I have not fixed this issue because you fall into this issue only when cloning the software from the repo.</p>
 
 <h4>COMPILATION FOR DEBIAN</h4>
@@ -273,7 +256,7 @@ Unfortunately I have not fixed this issue because you fall into this issue only 
 <h4>COMPILATION FOR RASPBERRYPI1</h4>
 
 <p>You have to build it directly on the raspberry.
-If you have a raspberry 2 or 3, you should go to the &ldquo;debian&rdquo; section.
+If you have a raspberry 2 or 3, you should go to the "debian" section.
 This build type is a light version like the opendingux one.</p>
 
 <pre><code> # cd      picoloop
@@ -281,7 +264,7 @@ This build type is a light version like the opendingux one.</p>
  # make -f Makefile.PatternPlayer_raspi1_RtAudio    clean
  # make -f Makefile.RtAudio_raspi1                  
  # make -f Makefile.PatternPlayer_raspi1_RtAudio    
- # make -f Makefile.PatternPlayer_raspi1_RtAudio    
+ # make -f Makefile.PatternPlayer_raspi1_RtAudio
 </code></pre>
 
 <h4>COMPILATION FOR OPENDINGUX</h4>
@@ -301,8 +284,8 @@ you can fetch fetch it there : http://www.treewalker.org/opendingux/</p>
 <h4>COMPILATION FOR GP2X</h4>
 
 <p>On debian you need the /opt/open2x/ directory.
-you can fetch it there : http://wiki.gp2x.org/articles/i/n/s/Installing_the_Open2x_toolchain.html
-I don&rsquo;t have build it month ago, so at your own risk.</p>
+you can fetch it there : http://wiki.gp2x.org/articles/i/n/s/Installing<em>the</em>Open2x_toolchain.html
+I don't have build it month ago, so at your own risk.</p>
 
 <pre><code> # cd      picoloop
  # make -j 64 -f Makefile.RtAudio_opendingux               clean
@@ -317,7 +300,7 @@ I don&rsquo;t have build it month ago, so at your own risk.</p>
 
 <p>On debian, you need the mingw32 package.
 Picoloop provide the header and binary for SDL 1.2 on windows.
-So here it is a &ldquo;cross build&rdquo; you build on linux for windows.</p>
+So here it is a "cross build" you build on linux for windows.</p>
 
 <pre><code> # cd         picoloop
  # make       -f Makefile.RtAudio_windows                              clean
@@ -326,7 +309,7 @@ So here it is a &ldquo;cross build&rdquo; you build on linux for windows.</p>
  # make       -f Makefile.RtAudio_windows                              
  # make       -f Makefile.RtMidi_windows                               
  # make       -f Makefile.PatternPlayer_windows_mingw_RtAudio 
- # make       -f Makefile.PatternPlayer_windows_mingw_RtAudio 
+ # make       -f Makefile.PatternPlayer_windows_mingw_RtAudio
 </code></pre>
 
 <h4>COMPILATION FOR PSP</h4>
@@ -338,7 +321,7 @@ All can be fetched here : https://github.com/pspdev</p>
  # source ~/local/pspdev/env_build
  # make -f Makefile.PatternPlayer_psp_SDL        clean
  # make -f Makefile.PatternPlayer_psp_SDL 
- # make -f Makefile.PatternPlayer_psp_SDL 
+ # make -f Makefile.PatternPlayer_psp_SDL
 </code></pre>
 
 <h1>LAUNCHING</h1>
@@ -385,7 +368,7 @@ All can be fetched here : https://github.com/pspdev</p>
 <h1>USAGE</h1>
 
 <p>file named dataP&lt;%d>T&lt;%d>.pic store information about saved pattern.
-This file will be created when you store file in the &ldquo;L/S&rdquo; menu.</p>
+This file will be created when you store file in the "L/S" menu.</p>
 
 <h1>DEBUG</h1>
 
@@ -396,11 +379,11 @@ This file will be created when you store file in the &ldquo;L/S&rdquo; menu.</p>
 <p>You need your psp gcc compiler, the library and psplinkusb.</p>
 
 <p>1) Launch psplink on the psp this is an EBOOT.PBP.
-2) as root, launch usbhostfs_pc ( you need to be root to access the psp by usb and you need to be in the somewhere/psplinkusb/usbhostfs_pc/ folder ).
+2) as root, launch usbhostfs<em>pc ( you need to be root to access the psp by usb and you need to be in the somewhere/psplinkusb/usbhostfs</em>pc/ folder ).
 You should see it is connected.</p>
 
-<p>3) In another terminal launch pspsh.  Try to &lsquo;ls -l&rsquo;, to see if all is ok.
-Copy the prx file in the usbhostfs_pc directory, you should see it with &lsquo;ls -l&rsquo;</p>
+<p>3) In another terminal launch pspsh.  Try to 'ls -l', to see if all is ok.
+Copy the prx file in the usbhostfs_pc directory, you should see it with 'ls -l'</p>
 
 <p>If you want to launch PatternPlayer.prx, launch it with pspsh : ./PatternPlayer.prx
 In this case, you need the prx file ( not an elf or EBOOT.PBP ).</p>
@@ -410,7 +393,7 @@ In this case, you need the prx file ( not an elf or EBOOT.PBP ).</p>
 <pre><code>     host0:/&gt; debug PatternPlayer.prx
 </code></pre>
 
-<p>In another window :</p>
+<p>In another window : </p>
 
 <pre><code>     $ psp-gdb ./PatternPlayer.elf
  (gdb) target remote localhost:10001
@@ -421,38 +404,40 @@ In this case, you need the prx file ( not an elf or EBOOT.PBP ).</p>
 
 <h1>Changelog</h1>
 
-<p>V0.76a
-- first port on psvita thanks to #henkaku team</p>
+<p>V0.76ab
+- a : first port on psvita thanks to #henkaku team
+- b : re add polyrithmic in PSH, 
+- b : fix bpm speed ( slightly higher )
+- b : STOP the sequencer with A+B in BPM and START the sequencer wih A+START in BPM
+- b : fix ps vita LTRIGGER and RTRIGGER
+- b : fix the SELECT+UP/Down to change volume, but not change the track</p>
 
-<p>V0.75abcdef:</p>
+<p>V0.75abcdef: </p>
 
 <ul>
 <li>remove a lot of duplicate code in XXXUserInterface, because it was really needed</li>
-<li>a add the resid engine</li>
+<li>a add the resid engine </li>
 <li>b export DUMP_AUDIO=1 now export a wav file</li>
 <li>c add SDL2.0 compatibility and keep SDL1.2 as default because it works</li>
 </ul>
 
-
 <p>V0.74acd:</p>
 
 <ul>
-<li>add pocketchip platform, which is a &ldquo;kind of variant&rdquo; of raspberry pi 1, thank to garvalf from chipmusic.org</li>
-<li>fix a PatternElement.cpp issue related to a value not initialized</li>
-<li>shift track to the left and to the write in the song &ldquo;orderlist&rdquo;</li>
+<li>add pocketchip platform, which is a "kind of variant" of raspberry pi 1, thank to garvalf from chipmusic.org</li>
+<li>fix a PatternElement.cpp issue related to a value not initialized </li>
+<li>shift track to the left and to the write in the song "orderlist"</li>
 <li>fix a bug with the note tuning which appear from 0.71 to 0.74</li>
 </ul>
-
 
 <p>V0.73 :</p>
 
 <ul>
-<li>add a midi delta option in the [BPM] menu to move the sync signal in time, it is a kind of &ldquo;midi delay&rdquo; but doesn&rsquo;t work exactly the same way</li>
-<li>add a &lsquo;osc scale&rsquo; which allow to change oscillator one or oscillator two pitch to make basic chord with two note</li>
+<li>add a midi delta option in the [BPM] menu to move the sync signal in time, it is a kind of "midi delay" but doesn't work exactly the same way</li>
+<li>add a 'osc scale' which allow to change oscillator one or oscillator two pitch to make basic chord with two note</li>
 <li>rework a bit BPSynth on opendingoo to allow to remove some bad FixedPoint behaviour</li>
 <li>fix first buffer audio generation of pbsynth which lead to an audio glitch</li>
 </ul>
-
 
 <p>V0.71 :</p>
 
@@ -460,14 +445,12 @@ In this case, you need the prx file ( not an elf or EBOOT.PBP ).</p>
 <li>improve realtime of mda drum synth, now quite useable, but need to be improved</li>
 </ul>
 
-
 <p>V0.70 :</p>
 
 <ul>
 <li>add a readme.html in the repo</li>
 <li>fix some glitch on the screen from 320x240 to 640x480</li>
 </ul>
-
 
 <p>V0.69 :</p>
 
@@ -477,4 +460,3 @@ In this case, you need the prx file ( not an elf or EBOOT.PBP ).</p>
 <li>midi on windows add issue with latency</li>
 <li>windows can run MDADrumSynth, still with issue with the latency</li>
 </ul>
-
