@@ -2667,12 +2667,12 @@ void handle_key_load_save()
 	  if (keyState[BUTTON_RIGHT])
 	    if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_LONG==0) 
 	      { loadsave_cursor.x++;  dirty_graphic=1;}
-	  
-	  if (keyState[BUTTON_UP])
+	  // move cursor, warning select+up is increase volume
+	  if (keyState[BUTTON_UP] && keyState[BUTTON_SELECT]==0)
 	    if (keyRepeat[BUTTON_UP]==1    || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONG==0)    
 	      { loadsave_cursor.y--;  dirty_graphic=1;}
-	  
-	  if (keyState[BUTTON_DOWN])
+	  // move cursor, warning select+down is decrease volume
+	  if (keyState[BUTTON_DOWN] && keyState[BUTTON_SELECT]==0)
 	    if (keyRepeat[BUTTON_DOWN]==1  || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONG==0)  
 	      { loadsave_cursor.y++;  dirty_graphic=1;}
 	  
@@ -2701,12 +2701,12 @@ void handle_key_load_save()
 	  if (keyState[BUTTON_RIGHT])
 	    if (keyRepeat[BUTTON_RIGHT]==1 || keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_LONG==0) 
 	      { song_cursor.x++;  dirty_graphic=1;}
-	  
-	  if (keyState[BUTTON_UP])
+	  // move cursor, warning select+up is increase volume
+	  if (keyState[BUTTON_UP]  && keyState[BUTTON_SELECT]==0)
 	    if (keyRepeat[BUTTON_UP]==1    || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONG==0)    
 	      { song_cursor.y--;  dirty_graphic=1;}
-	  
-	  if (keyState[BUTTON_DOWN])
+	  // move cursor, warning select+down is decrease volume
+	  if (keyState[BUTTON_DOWN] && keyState[BUTTON_SELECT]==0)
 	    if (keyRepeat[BUTTON_DOWN]==1  || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONG==0)  
 	      { song_cursor.y++;  dirty_graphic=1;}
 	  
