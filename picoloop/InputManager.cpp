@@ -267,6 +267,19 @@ int InputManager::handleKey()
   if (!(pad.buttons & keypadtotest) && m_key_state[keypadtotest]==1)
     { m_key_state[keypadtotest]=0; keypressrelease=1; keydown=0; key=1; keypadtotest_valid=keypadtotest; }
 
+  keypadtotest=SCE_CTRL_LTRIGGER;
+  if ((pad.buttons & keypadtotest) && (m_key_state[keypadtotest]==0))
+    { m_key_state[keypadtotest]=1; keypressrelease=1; keydown=1; key=1; keypadtotest_valid=keypadtotest;  }
+  if (!(pad.buttons & keypadtotest) && m_key_state[keypadtotest]==1)
+    { m_key_state[keypadtotest]=0; keypressrelease=1; keydown=0; key=1; keypadtotest_valid=keypadtotest; }
+
+    keypadtotest=SCE_CTRL_RTRIGGER;
+  if ((pad.buttons & keypadtotest) && (m_key_state[keypadtotest]==0))
+    { m_key_state[keypadtotest]=1; keypressrelease=1; keydown=1; key=1; keypadtotest_valid=keypadtotest;  }
+  if (!(pad.buttons & keypadtotest) && m_key_state[keypadtotest]==1)
+    { m_key_state[keypadtotest]=0; keypressrelease=1; keydown=0; key=1; keypadtotest_valid=keypadtotest; }
+
+  
   if (keypressrelease)
     {
       this->updateState(keypadtotest_valid,keydown);
