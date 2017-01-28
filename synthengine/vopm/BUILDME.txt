@@ -1,2 +1,0 @@
-g++ -c OPM.cpp OPMdrv.cpp op.cpp lfo.cpp  ; g++ -c test.cpp  -o test.o ;           g++ OPM.o OPMdrv.o op.o lfo.o test.o      -o test
-g++ -c OPM.cpp OPMdrv.cpp op.cpp lfo.cpp  ; g++ -c test-load.cpp  -o test-load.o ; g++ OPM.o OPMdrv.o op.o lfo.o test-load.o -o test-load
