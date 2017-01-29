@@ -7,6 +7,7 @@
 
 int main(int argc, char **argv)
 {
+  int i;
   DEBSystem DEB;
   DEB.Boot(argc,argv);
   //DEBSystem::Boot
@@ -22,12 +23,26 @@ int main(int argc, char **argv)
   
   SampleInstrument SI;
   SamplePool       SP;
+  int * buffer=(int*)malloc(sizeof(int)*1024);
+  
 
   printf("\n",SP.GetNameListSize());
   printf("<<<<%d>>>>>\n",SP.GetNameListSize());
   SP.Load();
   printf("<<<<%d>>>>>\n",SP.GetNameListSize());
   //SP.loadSample(
-  //SI.AssignSample(0);
+  SI.Init();
+  SI.AssignSample(1);
+  
+  printf("<<<<SP SOURCE:%d>>>>>\n",SP.GetSource(0));
+  printf("<<<<SP SAMPLEINDEX:%d>>>>>\n",SI.GetSampleIndex());
+
+  SI.Start(0,64,true);
+  SI.Render(0,buffer,1024,true);
+  for(i=0;i<128;i++)
+    {
+      printf("%d\t",buffer[i]);
+    }
+
   
 }
