@@ -135,10 +135,13 @@ SampleInstrument::~SampleInstrument() {
 bool SampleInstrument::Init() {
 
 	SamplePool *pool=SamplePool::GetInstance() ;
+
     Variable *vSample=FindVariable(SIP_SAMPLE) ;
 	NAssert(vSample) ;
 	int index=vSample->GetInt() ;
 	source_=(index>=0)?pool->GetSource(index):0 ;
+
+	source_=pool->GetSource(0) ;
 	tableState_.Reset() ;
 	return false ;
 }
@@ -210,7 +213,8 @@ bool SampleInstrument::Start(int channel,unsigned char midinote,bool cleanstart)
 	 }*/
 	 rp->reverse_=false ;
 
-     float driverRate=float(Audio::GetInstance()->GetSampleRate()) ;
+	 //float driverRate=float(Audio::GetInstance()->GetSampleRate()) ;
+	 float driverRate=44100.0;
      
 	 switch (loopmode) {
 		 case SILM_ONESHOT:
