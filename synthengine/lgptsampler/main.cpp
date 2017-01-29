@@ -22,27 +22,34 @@ int main(int argc, char **argv)
   //Path logPath("bin:lgpt.log");
   
   SampleInstrument SI;
-  SamplePool       SP;
+  //SamplePool       SP;
+  SamplePool * SP=SamplePool::GetInstance();
   int * buffer=(int*)malloc(sizeof(int)*1024);
   
 
-  printf("\n",SP.GetNameListSize());
-  printf("<<<<%d>>>>>\n",SP.GetNameListSize());
-  SP.Load();
-  printf("<<<<%d>>>>>\n",SP.GetNameListSize());
-  //SP.loadSample(
+  printf("<<<<SP->GetNameListSize()=%d>>>>>\n",SP->GetNameListSize());
+  SP->Load();
+  printf("SP->Load()\n");
+  printf("<<<<SP.GetNameListSize()=%d>>>>>\n",SP->GetNameListSize());
+  for (i=0;i<SP->GetNameListSize();i++)
+    {
+      char ** tab_str=SP->GetNameList();
+      printf("%s\n",tab_str[i]);
+    }
   SI.Init();
-  SI.AssignSample(1);
+  SI.AssignSample(0);
   
-  printf("<<<<SP SOURCE:%d>>>>>\n",SP.GetSource(0));
-  printf("<<<<SP SAMPLEINDEX:%d>>>>>\n",SI.GetSampleIndex());
+  printf("<<<<SP->GetSource(0)=%d>>>>>\n",SP->GetSource(0));
+  printf("<<<<SP->GetSource(1)=%d>>>>>\n",SP->GetSource(1));
+  printf("<<<<SI.GetSampleIndex()=%d>>>>>\n",SI.GetSampleIndex());
 
   SI.Start(0,64,true);
   SI.Render(0,buffer,1024,true);
-  for(i=0;i<128;i++)
+  for(i=0;i<1024;i++)
     {
       printf("%d\t",buffer[i]);
     }
+  printf("\n");
 
   
 }
