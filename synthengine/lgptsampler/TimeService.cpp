@@ -42,5 +42,5 @@ Time TimeService::GetTime() {
 } ;
 
 void TimeService::Sleep(int msecs) {
-	SDL_Delay(msecs) ;
+	//SDL_Delay(msecs) ;
 } ;
