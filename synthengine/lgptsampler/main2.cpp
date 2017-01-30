@@ -7,7 +7,7 @@
 
 int main(int argc, char **argv)
 {
-  int i;
+  int i,j;
   FILE    * FD; 
   DEBSystem DEB;
   DEB.Boot(argc,argv);
@@ -29,7 +29,8 @@ int main(int argc, char **argv)
   SampleInstrument SI;
   SamplePool * SP=SamplePool::GetInstance();
   //SP->Init();
-  int * buffer=(int*)malloc(sizeof(int)*1024);
+  //int * buffer=(int*)malloc(sizeof(int)*1024);
+  fixed * buffer=(fixed*)malloc(sizeof(fixed)*1024);
   
 
   printf("<<<<SP->GetNameListSize()=%d>>>>>\n",SP->GetNameListSize());
@@ -52,15 +53,22 @@ int main(int argc, char **argv)
     
   SI.Start(0,64,true);
   //SI.Render(0,buffer,1024,true);
-  SI.Render(0,buffer,512,true);
-
-  fwrite(buffer,sizeof(int),1024,FD);
-
+  for (j=0;j<64;j++)
+    {
+      if (j==32)
+	  SI.Start(0,72,true);
+      SI.Render(0,buffer,512,true);
+      for (i=0;i<1024;i++)
+	buffer[i]=fp2i(buffer[i]);
+      fwrite(buffer,sizeof(int16_t),1024,FD);
+  /*
   for(i=0;i<1024;i++)
     {
       printf("%d\t",buffer[i]);
     }
-  printf("\n");
+  */
+  //printf("\n");
+    }
   free(buffer);
   SP->Reset();
   fclose(FD);
