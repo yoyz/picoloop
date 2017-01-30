@@ -6,7 +6,7 @@ int main()
   mopo::mopo_float 	* out_buffer_f;
   Sint16 			* out_buffer_i;
   
-  int n_frames=256;
+  int n_frames=1024;
   int i;
   int j;
   int k;
@@ -18,9 +18,20 @@ int main()
   mopo::CursynthEngine CS;
   //CS.setBufferSize(8192);
   
-  CS.setBufferSize(1024);
+  CS.setBufferSize(n_frames);
   CS.setSampleRate(44100);
-  CS.noteOn(40,1.0);
+  CS.noteOn(50,1.0);
+  CS.getControls().at("volume")->set(0.1);
+  CS.getControls().at("osc 2 transpose")->set(0); 
+  CS.getControls().at("osc 2 tune")->set(0); 
+
+
+  CS.getControls().at("amp attack")->set(1);
+  CS.getControls().at("amp decay")->set(1);
+  CS.getControls().at("amp sustain")->set(0.4);
+  CS.getControls().at("amp release")->set(2);
+
+
   //CS.processAudio((mopo::mopo_float*)out_buffer, n_frames);
   FD=fopen("audioout","w+");
   
@@ -28,14 +39,16 @@ int main()
   for (j=0;j<16*1024;j++)
     {
       CS.process();
+      CS.getControls().at("cutoff")->set(28+j%128);
+
       for (i=0;i<n_frames;i++)
 	{
 	  //printf("%f\t",CS.output()->buffer[i]);
 	  out_buffer_f[i]=CS.output()->buffer[i];
-	  out_buffer_f[i]=out_buffer_f[i]*16384;
+	  out_buffer_f[i]=out_buffer_f[i]*8192;
 	  out_buffer_i[i]=out_buffer_f[i];
 	}
-      //fwrite(out_buffer_i,sizeof(Sint16),256,FD);
+      fwrite(out_buffer_i,sizeof(Sint16),n_frames,FD);
     }
-  //fclose(FD);
+  fclose(FD);
 }
