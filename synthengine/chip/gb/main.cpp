@@ -62,7 +62,7 @@ int main()
 
 
 
-  F=fopen("audioout","w+");
+  //F=fopen("audioout","w+");
   i=0;
   for (i=0;i<NUM;i++)
     {
@@ -85,13 +85,13 @@ int main()
       //      for (k=0;k<SIZEONE;k=k+96)              
       //	fwrite(buf+k,sizeof(  uint_least32_t ),1,F);
 
-      if (i==100)
+      if (i==40)
 	{
 	  psg.set_nr10(0); // NR10 FF10 -PPP NSSS    Sweep period, negate, shift
-	  psg.set_nr11(0); // NR11 FF11 DDLL LLLL    Duty, Length load (64-L)
+	  psg.set_nr11(190); // NR11 FF11 DDLL LLLL    Duty, Length load (64-L)
 	  psg.set_nr12(164); // NR12 FF12 VVVV APPP    Starting volume, Envelope add mode, period
-      	  psg.set_nr13(44); // NR13 FF13 FFFF FFFF    Frequency LSB
-	  psg.set_nr14(128);
+      	  psg.set_nr13(64); // NR13 FF13 FFFF FFFF    Frequency LSB
+	  psg.set_nr14(128+16);
 	}
 
     }
@@ -102,6 +102,6 @@ int main()
 
       //printf("%.4d ",buf[i]);
   //    }
-    fclose(F);
+//    fclose(F);
   
 }

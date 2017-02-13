@@ -150,12 +150,12 @@ unsigned PSG::fillBuffer() {
 	}
 	
 	rsum = sum;
-        //FILE * F;
-        //F=fopen("audioout","a+");
-        //int k=0;
-        //for (k=0;k<bufferPos;k=k+96)
-	//fwrite(buffer+k,sizeof(  uint_least32_t ),1,F);
-        //fclose(F);	
+        FILE * F;
+        F=fopen("audioout","a+");
+        int k=0;
+        for (k=0;k<bufferPos;k=k+96)
+	fwrite(buffer+k,sizeof(  uint_least32_t ),1,F);
+        fclose(F);	
 	return bufferPos;
 }
 
