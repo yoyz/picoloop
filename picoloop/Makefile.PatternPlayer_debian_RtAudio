@@ -29,7 +29,7 @@ OBJTOLINK=RtAudio.o RtMidi.o
 OBJTOLINK=
 
 
-SOURCES=		
+SOURCES=		\
 		      	RtAudio.cpp		\
 		      	RtMidi.cpp		\
 			AudioDriverRTAudio.cpp   \
