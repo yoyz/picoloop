@@ -50,7 +50,7 @@ class SIDSynthMachine : public Machine
   Sint16              * buffer_i;
   int                   index;
 
-  SID                 * sid;
+  SIDCHIP             * sid;
   //int                   freq;
   float                 freq;
   int                   keyon;
