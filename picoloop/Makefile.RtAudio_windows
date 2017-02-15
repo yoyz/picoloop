@@ -1,5 +1,6 @@
 CC=i586-mingw32msvc-g++
 CC=i686-w64-mingw32-g++-win32
+CC=i686-w64-mingw32-g++
 CFLAGS=-c -DLINUX -I. -LSDL/lib -g
 CFLAGS=-O3 -Wall -I.. -DHAVE_GETTIMEOFDAY -D__LINUX_ALSA__ 
 CFLAGS=-D__WINDOWS_DS__ -Idx/include/ -Ldx/lib  -static-libgcc
