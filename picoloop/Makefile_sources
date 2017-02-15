@@ -1,0 +1,61 @@
+SOURCES_PICOLOOP:=PatternPlayer.cpp \
+		      SDL_GUI.cpp              \
+		      AudioEngine.cpp          \
+		      Oscillator.cpp           \
+		      OneOscillator.cpp        \
+		      Biquad.cpp               \
+		      AudioMixer.cpp           \
+		      Wave.cpp			\
+		      Machine.cpp              \
+		      MonoMixer.cpp            \
+		      InputManager.cpp         \
+		      Filter.cpp               \
+		      AMSynthLowPassFilter.cpp \
+		      Effect.cpp               \
+		      EffectDelay.cpp          \
+		      EffectDisabled.cpp       \
+		      WaveTableManager.cpp     \
+		      WaveTable.cpp            \
+		      Generator.cpp            \
+		      PatternElement.cpp       \
+		      Pattern.cpp              \
+		      PatternReader.cpp        \
+		      Sequencer.cpp            \
+		      PatternSequencer.cpp     \
+		      SongSequencer.cpp        \
+		      NoteFreq.cpp             \
+		      PitchBend.cpp            \
+		      TweakableKnob.cpp	       \
+		      UserInterface.cpp	       \
+		      MachineCheck.cpp	       \
+		      WaveFileWriter.cpp       \
+
+SOURCES_PICOSYNTH:=Machine/Picosynth/PicosynthUserInterface.cpp \
+		      Machine/Picosynth/PicosynthADSR.cpp        \
+		      Machine/Picosynth/PicosynthVCO.cpp         \
+		      Machine/Picosynth/PicosynthMachine.cpp     \
+
+SOURCES_PICODRUM:=Machine/Picodrum/PicodrumUserInterface.cpp \
+		      Machine/Picodrum/PicodrumVCO.cpp           \
+		      Machine/Picodrum/PicodrumADSR.cpp          \
+		      Machine/Picodrum/PicodrumMachine.cpp       \
+
+SOURCES_DBOPL:= Machine/Dbopl/DboplUserInterface.cpp \
+		      Machine/Dbopl/dbopl.cpp                    \
+		      Machine/Dbopl/hiopl.cpp                    \
+		      Machine/Dbopl/DboplMachine.cpp             \
+
+SOURCES_PBSYNTH:= Machine/PBSynth/PBSynthUserInterface.cpp \
+		      Machine/PBSynth/synthengine.cpp            \
+		      Machine/PBSynth/osc.cpp                    \
+		      Machine/PBSynth/lfo.cpp                    \
+		      Machine/PBSynth/filter.cpp                 \
+		      Machine/PBSynth/env.cpp                    \
+		      Machine/PBSynth/echo.cpp                   \
+		      Machine/PBSynth/osctab.cpp                 \
+		      Machine/PBSynth/lfotab.cpp                 \
+		      Machine/PBSynth/envtab.cpp                 \
+		      Machine/PBSynth/coeff.cpp                  \
+		      Machine/PBSynth/PBSynthMachine.cpp         \
+
+
