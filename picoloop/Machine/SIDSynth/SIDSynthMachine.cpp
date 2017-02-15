@@ -109,7 +109,7 @@ void SIDSynthMachine::init()
   //HO(44100);
   if (buffer_f==0)
     {
-      sid=new SID();
+      sid=new SIDCHIP();
       //SE=new SynthEngine(SAM,100);
       buffer_f = (float*)malloc(sizeof(float)*SAM);
     }
