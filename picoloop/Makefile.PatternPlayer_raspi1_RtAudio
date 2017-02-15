@@ -1,4 +1,4 @@
-
+include Makefile_sources
 
 CC=/usr/bin/arm-linux-gnueabi-g++-5 
 CC=g++
@@ -7,77 +7,23 @@ CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINU
 CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINUX_RASPI1 -ggdb -DFIXED                         -fpermissive -D__VOLCASYNC__
 
 CFLAGS_SDLVERS=-D__SDL12__
-CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINUX_RASPI1 -ggdb -DFIXED ${CFLAGS_SDLVERS} -DDEBUG_PRINTF                        -fpermissive
+CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINUX_RASPI1 -D__LINUX_ALSA__ -ggdb -DFIXED ${CFLAGS_SDLVERS} -DDEBUG_PRINTF                        -fpermissive
 LDFLAGS=-Lraspian/lib/ -lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread
 
 
 OBJTOLINK=RtAudio.o
 OBJTOLINK=RtAudio.o RtMidi.o
 OBJTOLINK=RtAudio.o
+OBJTOLINK=
 
-#		      Instrument.cpp           \
-#		      Synth.cpp                \
-
-
-SOURCES=PatternPlayer.cpp \
-		      SDL_GUI.cpp              \
-		      SYSTEMLINUX.cpp	       \
-		      AudioEngine.cpp          \
-		      AudioDriverRTAudio.cpp   \
-		      Oscillator.cpp           \
-		      OneOscillator.cpp        \
-		      Biquad.cpp               \
-		      AudioMixer.cpp           \
-		      Wave.cpp			\
-		      Machine.cpp              \
-		      MonoMixer.cpp            \
-		      InputManager.cpp         \
-		      Filter.cpp               \
-		      AMSynthLowPassFilter.cpp \
-		      Effect.cpp               \
-		      EffectDelay.cpp          \
-		      EffectDisabled.cpp       \
-		      WaveTableManager.cpp     \
-		      WaveTable.cpp            \
-		      Generator.cpp            \
-		      PatternElement.cpp       \
-		      Pattern.cpp              \
-		      PatternReader.cpp        \
-		      Sequencer.cpp            \
-		      PatternSequencer.cpp     \
-		      SongSequencer.cpp        \
-		      NoteFreq.cpp             \
-		      PitchBend.cpp            \
-		      TweakableKnob.cpp	       \
-		      UserInterface.cpp	       \
-		      MachineCheck.cpp	       \
-		      WaveFileWriter.cpp       \
-		      Machine/Picosynth/PicosynthUserInterface.cpp \
-		      Machine/Picosynth/PicosynthADSR.cpp        \
-		      Machine/Picosynth/PicosynthVCO.cpp         \
-		      Machine/Picosynth/PicosynthMachine.cpp     \
-		      Machine/Picodrum/PicodrumUserInterface.cpp \
-		      Machine/Picodrum/PicodrumVCO.cpp           \
-		      Machine/Picodrum/PicodrumADSR.cpp          \
-		      Machine/Picodrum/PicodrumMachine.cpp       \
-		      Machine/Dbopl/DboplUserInterface.cpp \
-		      Machine/Dbopl/dbopl.cpp                    \
-		      Machine/Dbopl/hiopl.cpp                    \
-		      Machine/Dbopl/DboplMachine.cpp             \
-		      Machine/PBSynth/PBSynthUserInterface.cpp \
-		      Machine/PBSynth/synthengine.cpp            \
-		      Machine/PBSynth/osc.cpp                    \
-		      Machine/PBSynth/lfo.cpp                    \
-		      Machine/PBSynth/filter.cpp                 \
-		      Machine/PBSynth/env.cpp                    \
-		      Machine/PBSynth/echo.cpp                   \
-		      Machine/PBSynth/osctab.cpp                 \
-		      Machine/PBSynth/lfotab.cpp                 \
-		      Machine/PBSynth/envtab.cpp                 \
-		      Machine/PBSynth/coeff.cpp                  \
-		      Machine/PBSynth/PBSynthMachine.cpp         \
-
-
+SOURCES=	$(SOURCES_PICOLOOP)	\
+		RtAudio.cpp		\
+		AudioDriverRTAudio.cpp   \
+		SYSTEMLINUX.cpp	       \
+		$(SOURCES_PICOSYNTH) 	\
+		$(SOURCES_PICODRUM) 	\
+		$(SOURCES_DBOPL) 	\
+		$(SOURCES_PBSYNTH)
 
 
 
@@ -91,30 +37,18 @@ OBJTOLINKINOBJDIR  = $(addprefix $(OBJDIR)/,$(OBJTOLINK))
 
 EXECUTABLE=PatternPlayer_raspi1_Rtaudio
 
-#all: DIRTOCREATE $(DEPENDENCY) $(SOURCES) $(EXECUTABLE)
-
-all: DIRTOCREATE $(DEPENDENCYINOBJDIR) $(SOURCES) $(EXECUTABLE) 
-
-DIRTOCREATE:
-	-mkdir -p $(OBJDIR)/Machine
-	-mkdir -p $(OBJDIR)/Machine/Picosynth
-	-mkdir -p $(OBJDIR)/Machine/Picodrum
-	-mkdir -p $(OBJDIR)/Machine/Dbopl	
-	-mkdir -p $(OBJDIR)/Machine/PBSynth
-	-mkdir -p $(OBJDIR)/Machine/Cursynth
-	-mkdir -p $(OBJDIR)/Machine/Open303
-	-mkdir -p $(OBJDIR)/Machine/Twytch
-	-mkdir -p $(OBJDIR)/Machine/MidiOutSystem
-	-mkdir -p $(OBJDIR)/Machine/MDADrum
+all: $(DEPENDENCYINOBJDIR) $(SOURCES) $(EXECUTABLE) 
 
 $(EXECUTABLE): $(DEPENDENCYINOBJDIR) $(OBJECTSINOBJDIR)
 	$(CC) $(OBJTOLINKINOBJDIR)  $(OBJECTSINOBJDIR) -o $@ $(LDFLAGS)
 
 # the .d file contain the dependency
 $(OBJDIR)/%.d : %.cpp %.h
+	@[ -d `dirname $@` ] || mkdir -p `dirname $@`
 	$(CC) ${CFLAGS_SDLVERS}  -I. -MM $< -o $@
 
 $(OBJDIR)/%.o : %.cpp 
+	@[ -d `dirname $@` ] || mkdir -p `dirname $@`
 	$(CC) $(CFLAGS) $< -o $@
 
 
@@ -125,10 +59,12 @@ $(OBJDIR)/%.o : %.cpp
 
 # SYSTEMLINUX.d does have a .h which is SYSTEM.h, so it need a tweaks
 $(OBJDIR)/SYSTEMLINUX.d:SYSTEMLINUX.cpp 
+	[ -d `dirname $@` ] || mkdir -p `dirname $@`
 	$(CC) ${CFLAGS_SDLVERS}  -I. -MM $< -o $@ 
 
 # PatternPlayer.d does have a .h which is system.h
 PatternPlayer.d:PatternPlayer.cpp
+	[ -d `dirname $@` ] || mkdir -p `dirname $@`
 	$(CC) ${CFLAGS_SDLVERS}  -std=c++11 -I. -MM $< -o $@ 
 
 
@@ -137,6 +73,4 @@ clean:
 	-rm -f $(DEPENDENCYINOBJDIR)
 	-rm -f $(EXECUTABLE)
 	-rm -f $(DEPENDENCY)
-
-
 
