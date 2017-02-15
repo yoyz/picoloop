@@ -1,3 +1,4 @@
+include Makefile_sources
 PHONY := all package clean
 rwildcard=$(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
 
@@ -21,63 +22,14 @@ CXXFLAGS += -O2 -D__SDL20__ -DPSVITA -D__PSVITA_AUDIO__ -fpermissive -std=c++11 
 #SRC_C :=$(call rwildcard, src/, *.c)
 #SRC_CPP :=$(call rwildcard, src/, *.cpp)
 #SRC_CPP :=$(call rwildcard, src/, *.cpp)
-SRC_CPP := PatternPlayer.cpp \
-		      SDL_GUI.cpp              \
+SRC_CPP := \
 		      SYSTEMPSVITA.cpp	       \
-		      AudioEngine.cpp          \
 		      AudioDriverPSVita.cpp   \
-		      Oscillator.cpp           \
-		      OneOscillator.cpp        \
-		      Biquad.cpp               \
-		      AudioMixer.cpp           \
-		      Wave.cpp			\
-		      Machine.cpp              \
-		      MonoMixer.cpp            \
-		      InputManager.cpp         \
-		      Filter.cpp               \
-		      AMSynthLowPassFilter.cpp \
-		      Effect.cpp               \
-		      EffectDelay.cpp          \
-		      EffectDisabled.cpp       \
-		      WaveTableManager.cpp     \
-		      WaveTable.cpp            \
-		      Generator.cpp            \
-		      PatternElement.cpp       \
-		      Pattern.cpp              \
-		      PatternReader.cpp        \
-		      Sequencer.cpp            \
-		      PatternSequencer.cpp     \
-		      SongSequencer.cpp        \
-		      NoteFreq.cpp             \
-		      PitchBend.cpp            \
-		      TweakableKnob.cpp	       \
-		      UserInterface.cpp	       \
-		      MachineCheck.cpp	       \
-		      WaveFileWriter.cpp       \
-		      Machine/Picosynth/PicosynthUserInterface.cpp \
-		      Machine/Picosynth/PicosynthADSR.cpp        \
-		      Machine/Picosynth/PicosynthVCO.cpp         \
-		      Machine/Picosynth/PicosynthMachine.cpp     \
-		      Machine/Picodrum/PicodrumUserInterface.cpp \
-		      Machine/Picodrum/PicodrumVCO.cpp           \
-		      Machine/Picodrum/PicodrumADSR.cpp          \
-		      Machine/Picodrum/PicodrumMachine.cpp       \
-		      Machine/Dbopl/DboplUserInterface.cpp \
-		      Machine/Dbopl/dbopl.cpp                    \
-		      Machine/Dbopl/hiopl.cpp                    \
-		      Machine/Dbopl/DboplMachine.cpp             \
-		      Machine/PBSynth/PBSynthUserInterface.cpp \
-		      Machine/PBSynth/synthengine.cpp            \
-		      Machine/PBSynth/osc.cpp                    \
-		      Machine/PBSynth/lfo.cpp                    \
-		      Machine/PBSynth/filter.cpp                 \
-		      Machine/PBSynth/env.cpp                    \
-		      Machine/PBSynth/echo.cpp                   \
-		      Machine/PBSynth/osctab.cpp                 \
-		      Machine/PBSynth/lfotab.cpp                 \
-		      Machine/PBSynth/envtab.cpp                 \
-		      Machine/PBSynth/coeff.cpp                  \
-		      Machine/PBSynth/PBSynthMachine.cpp         \
+		$(SOURCES_PICOLOOP)	\
+		$(SOURCES_PICOSYNTH) 	\
+		$(SOURCES_PICODRUM) 	\
+		$(SOURCES_DBOPL) 	\
+		$(SOURCES_PBSYNTH)
 
 
 
