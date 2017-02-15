@@ -1,3 +1,4 @@
+include Makefile_sources
 CC=g++
 CC=/opt/opendingux-toolchain/usr/bin/mipsel-linux-g++
 
@@ -5,67 +6,23 @@ CFLAGS=-c -DLINUX -I. -LSDL/lib -ggdb -pg
 LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf -lpthread  RtAudio.o
 
 CFLAGS=-c -DLINUX -I. -LSDL/lib
-CFLAGS=-c -O3 -DLINUX -D__SDL_AUDIO__ -DOPENDINGUX -I. -I/opt/opendingux-toolchain/usr/include/ -L/opt/opendingux-toolchain/usr/lib/ -lSDL -lSDL_ttf -fpermissive
+CFLAGS=-c -O3 -DLINUX -D__SDL_AUDIO__ -DOPENDINGUX -I. -I/opt/opendingux-toolchain/usr/include/ -L/opt/opendingux-toolchain/usr/lib/ -lSDL -lSDL_ttf -fpermissive 
 
+CFLAGS_SDLVERS=-D__SDL12__
 LDFLAGS=-L/opt/opendingux-toolchain/usr/lib/ -lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread 
 
 #SOURCES=Machine.cpp  AudioMixer.cpp AudioEngine.cpp PatternElement.cpp Pattern.cpp PatternPlayer.cpp PatternReader.cpp Oscillator.cpp SineOscillator.cpp SawOscillator.cpp  FuzzyPulseOscillator.cpp  TriangleOscillator.cpp MonoMixer.cpp ADSR.cpp SDL_GUI.cpp InputManager.cpp VCO.cpp Sequencer.cpp PulseOscillator.cpp WaveTableSineOscillator.cpp NoiseOscillator.cpp Biquad.cpp PatternSequencer.cpp AudioDriverSDL.cpp 
 
-SOURCES=PatternPlayer.cpp \
-		      SDL_GUI.cpp              \
-		      SYSTEMLINUX.cpp          \
-		      AudioEngine.cpp          \
-		      AudioDriverSDL.cpp       \
-		      Instrument.cpp           \
-		      Synth.cpp                \
-		      Oscillator.cpp           \
-		      OneOscillator.cpp        \
-		      Biquad.cpp               \
-		      AudioMixer.cpp           \
-		      Wave.cpp        \
-		      Machine.cpp              \
-		      MonoMixer.cpp            \
-		      InputManager.cpp         \
-		      Filter.cpp               \
-		      AMSynthLowPassFilter.cpp \
-		      Effect.cpp               \
-		      EffectDelay.cpp          \
-		      EffectDisabled.cpp       \
-		      WaveTableManager.cpp     \
-		      WaveTable.cpp            \
-		      Generator.cpp            \
-		      PatternElement.cpp       \
-		      Pattern.cpp              \
-		      PatternReader.cpp        \
-		      Sequencer.cpp            \
-		      PatternSequencer.cpp     \
-		      SongSequencer.cpp        \
-		      NoteFreq.cpp             \
-		      PitchBend.cpp            \
-		      TweakableKnob.cpp        \
-		      MachineCheck.cpp	       \
-                      WaveFileWriter.cpp       \
-		      Machine/Picosynth/PicosynthADSR.cpp        \
-		      Machine/Picosynth/PicosynthVCO.cpp         \
-		      Machine/Picosynth/PicosynthMachine.cpp     \
-		      Machine/Picodrum/PicodrumVCO.cpp           \
-		      Machine/Picodrum/PicodrumADSR.cpp          \
-		      Machine/Picodrum/PicodrumMachine.cpp       \
-		      Machine/Dbopl/dbopl.cpp                    \
-		      Machine/Dbopl/hiopl.cpp                    \
-		      Machine/Dbopl/DboplMachine.cpp             \
-		      Machine/PBSynth/PBSynthUserInterface.cpp   \
-		      Machine/PBSynth/synthengine.cpp            \
-		      Machine/PBSynth/osc.cpp                    \
-		      Machine/PBSynth/lfo.cpp                    \
-		      Machine/PBSynth/filter.cpp                 \
-		      Machine/PBSynth/env.cpp                    \
-		      Machine/PBSynth/echo.cpp                   \
-		      Machine/PBSynth/osctab.cpp                 \
-		      Machine/PBSynth/lfotab.cpp                 \
-		      Machine/PBSynth/envtab.cpp                 \
-		      Machine/PBSynth/coeff.cpp                  \
-		      Machine/PBSynth/PBSynthMachine.cpp         \
+SOURCES= \
+		AudioDriverSDL.cpp       \
+		SYSTEMLINUX.cpp	       \
+		$(SOURCES_PICOLOOP)	\
+		$(SOURCES_PICOSYNTH) 	\
+		$(SOURCES_PICODRUM) 	\
+		$(SOURCES_DBOPL) 	\
+		$(SOURCES_PBSYNTH)
+
+
 
 
 
@@ -81,7 +38,7 @@ $(EXECUTABLE): $(OBJECTS)
 
 
 %.o : %.cpp 
-	$(CC) $(CFLAGS) $< -o $@
+	$(CC) $(CFLAGS_SDLVERS) $(CFLAGS) $< -o $@
 
 # include all the dependency .d file into the makefile 
 # it allow to match change in .h file
@@ -89,16 +46,16 @@ include ${DEPENDENCY}
 
 # the .d file contain the dependency
 %.d : %.cpp %.h
-	$(CC) -I. -MM $< -o $@
+	$(CC) $(CFLAGS_SDLVERS) -I. -MM $< -o $@
 
 
 # SYSTEMLINUX.d does have a .h which is SYSTEM.h, so it need a tweaks
 SYSTEMLINUX.d:SYSTEMLINUX.cpp 
-	$(CC) -I. -MM $< -o $@ 
+	$(CC) $(CFLAGS_SDLVERS) -I. -MM $< -o $@ 
 
 # systemlinux.d does have a .h which is system.h
 PatternPlayer.d:PatternPlayer.cpp
-	$(CC) -I. -MM $< -o $@ 
+	$(CC) $(CFLAGS_SDLVERS) -I. -MM $< -o $@ 
 
 
 
