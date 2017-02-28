@@ -411,7 +411,7 @@ In this case you need a prx and an elf file.
 Changelog
 =========
 
-V0.76ab
+V0.76abc
 - a : first port on psvita thanks to #henkaku team
 - b : re add polyrithmic in PSH, 
 - b : fix bpm speed ( slightly higher )
@@ -419,6 +419,7 @@ V0.76ab
 - b : fix ps vita LTRIGGER and RTRIGGER
 - b : fix the SELECT+UP/Down to change volume, but not change the track
 - b : MAX_PATTERN_BY_PROJECT update to 128 for all platform, but not PSP, opendingux, gp2x
+- c : introduce a SELECT+RIGHT|LEFT to speed up reduce the tempo on the main menu a little like elektron box
 
 V0.75abcdef: 
 
