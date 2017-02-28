@@ -1310,9 +1310,9 @@ void handle_key_config()
       // AudioPulseClock output
       if (menu_config_y==MENU_CONFIG_Y_AUDIOPULSECLOCKOUT)
 	{
-	  menu_config_audiopulseclock_out++;
-	  if (menu_config_audiopulseclock_out>2)
-	    menu_config_audiopulseclock_out=0;
+	  menu_config_audiopulseclock_out--;
+	  if (menu_config_audiopulseclock_out<0)
+	    menu_config_audiopulseclock_out=2;
 	}
 
       // audio output
