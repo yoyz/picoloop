@@ -247,6 +247,10 @@ int config_loaded=0;
 float bpm_current=120.0;  // current value for the four ( TRACK_MAX ) tracks
 int   bpm_lock=1;         // if (bpm_lock) can not change bpm by load
 
+int   bpm_sync_need_refresh=0; // 0 default trig a refresh of bpm
+int   bpm_sync_manual=0;       // 0 default mode, 1 we are trying to sync manually
+float bpm_sync_inc=0;          // use to inc/dec a bit the bpm so -1.2<bpm_sync<1.2 SELECT+LEFT|RIGHT
+float bpm_current_sync_saved=0;   // use to store the bpm_current whenbpm_sync_manual == 1
 
 //int nbcb=0;             // current nb audio callback 
 //int last_nbcb=0;        // number of occurence of AudioEngine callback before changing step
@@ -544,14 +548,27 @@ void refresh_swing()
   long long swing_inv_sevenbit=128-swing_sevenbit;
   long long step=SEQ.getPatternSequencer(0).getStepWithoutDivider();
   long long nb_sample=-1;
+  long long nb_sample_even;
+  long long nb_sample_odd;
+
+  // Try to calculate even and odd number of sample for each step without loosing one sample
+  // we may lose one sample easily with int/long number with * / arithmetic operator
+  // for example : 15*44100/120=5512.5 which is 5512 in int
+  nb_sample_even=(nb_tick_before_step_change*swing_sevenbit)/64;
+  if (swing_sevenbit==64)
+    nb_sample_odd=nb_sample_even;
+  if (swing_sevenbit>64)
+    nb_sample_odd=nb_tick_before_step_change-(nb_sample_even-nb_tick_before_step_change);
+  if (swing_sevenbit<64)
+    nb_sample_odd=nb_tick_before_step_change+(nb_tick_before_step_change-nb_sample_even);
+
+  //nb_sample_odd=nb_tick_before_step_change-nb_sample_even;
+  
   if (step%2)
-    {
-      nb_sample=(nb_tick_before_step_change*swing_inv_sevenbit)/64;
-    }
+    nb_sample=nb_sample_even;
   else
-    {
-      nb_sample=(nb_tick_before_step_change*swing_sevenbit)/64;
-    }
+    nb_sample=nb_sample_odd;
+  
   AE.setNbTickBeforeStepChange(nb_sample);
   nb_tick_before_midi_send_clock=nb_sample/6;
   nb_tick_before_six_midi_send_clock=nb_sample;
@@ -562,12 +579,20 @@ void refresh_bpm()
 {
   float nb_tick_before_step_change_f;
   float clock_interval_f;
-  // (60.0*DEFAULT_FREQ)/(bpm_current*4.0)
-  //=(15.0*DEFAULT_FREQ)/(bpm_current)
   //nb_tick_before_step_change_f=(60.0*DEFAULTFREQ)/(bpm_current*4.0);
+  // seem to be not needed, it's me that does not
+  // understand how LGPT calculate tempo
+#ifndef LGPTTEMPO   
   nb_tick_before_step_change_f=(15.0*DEFAULTFREQ)/bpm_current;
   nb_tick_before_step_change=nb_tick_before_step_change_f;
+#else
+  nb_tick_before_step_change_f=(15.0*DEFAULTFREQ)/bpm_current;
+  nb_tick_before_step_change=nb_tick_before_step_change_f;
+  nb_tick_before_step_change=nb_tick_before_step_change/6;
+  nb_tick_before_step_change=nb_tick_before_step_change*6;
+#endif
   refresh_swing();
+  //printf("%d %f\n",nb_tick_before_step_change,nb_tick_before_step_change_f);
 }
 
 
@@ -2118,7 +2143,8 @@ void handle_key_menu()
 	keyState[BUTTON_START]))
       )      
     {
-      if(keyState[BUTTON_LEFT]) 
+      if(keyState[BUTTON_LEFT]&&
+	 !keyState[BUTTON_SELECT])
 	{
 	  if (keyRepeat[BUTTON_LEFT]    == 1 || 
 	      keyRepeat[BUTTON_LEFT]%64 == 0)
@@ -2137,7 +2163,8 @@ void handle_key_menu()
 	 DPRINTF("key left");            
 	}      
       
-      if(keyState[BUTTON_RIGHT])
+      if(keyState[BUTTON_RIGHT] &&
+	 !keyState[BUTTON_SELECT])
 	{
 	  if (keyRepeat[BUTTON_RIGHT]    == 1 || 
 	      keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_LONG == 0)
@@ -2155,6 +2182,62 @@ void handle_key_menu()
 	 DPRINTF("\t\t[menu_cursor:%d]",menu_cursor);
 	 DPRINTF("key right");            
 	}
+
+
+      // MANUAL TEMPO SYNC SELECT+LEFT SELECT+RIGHT
+      if(keyState[BUTTON_RIGHT] &&
+	 keyState[BUTTON_SELECT])
+	{
+	  if (keyRepeat[BUTTON_RIGHT]    == 1 || 
+	      keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_LONG == 0)
+	    {
+	      // store the bpm in a safe place
+	      if (bpm_sync_manual==0)
+		{ bpm_sync_manual=1; bpm_current_sync_saved=bpm_current; }
+	      bpm_sync_inc+=0.1;
+	      if (bpm_sync_inc>1.2)
+		bpm_sync_inc=1.2;
+	      bpm_current=bpm_current_sync_saved+bpm_sync_inc;
+	      bpm_sync_need_refresh=1;
+	    }
+	  DPRINTF("[key select+right ]");
+	  dirty_graphic=1;
+	}
+
+      if(keyState[BUTTON_LEFT] &&
+	 keyState[BUTTON_SELECT])
+	{
+	  if (keyRepeat[BUTTON_LEFT]    == 1 || 
+	      keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_LONG == 0)
+	    {
+	      // store the bpm in a safe place
+	      if (bpm_sync_manual==0)
+		{ bpm_sync_manual=1; bpm_current_sync_saved=bpm_current; }
+	      bpm_sync_inc-=0.1;
+	      if (bpm_sync_inc<-1.2)
+		bpm_sync_inc=-1.2;
+	      bpm_current=bpm_current_sync_saved+bpm_sync_inc;
+	      bpm_sync_need_refresh=1;
+	    }
+	  DPRINTF("[key select+left ]");
+	  dirty_graphic=1;
+	}
+      // Reset manual tempo sync
+      if (lastKey     ==  BUTTON_SELECT  && 
+	  lastEvent   ==  KEYRELEASED    )
+	{
+	  if (bpm_sync_manual==1)
+	    {
+	      bpm_sync_manual=0;
+	      bpm_sync_inc=0;
+	      bpm_current=bpm_current_sync_saved;
+	      bpm_sync_need_refresh=1;
+	    }
+	  IE.clearLastKeyEvent();
+	}
+
+
+
       
       if(keyState[BUTTON_UP] &&
 	 !keyState[BUTTON_SELECT])
@@ -2238,12 +2321,12 @@ void handle_key_sixteenbox()
        ) &&
       !keyState[BUTTON_B]                   &&
       !keyState[BUTTON_A]                   &&
-      !keyState[BUTTON_START]               
+      !keyState[BUTTON_START]               &&
+      !keyState[BUTTON_SELECT]
       )
     {                 
 
-      if(keyState[BUTTON_UP] && 
-	 !keyState[BUTTON_B])
+      if(keyState[BUTTON_UP])
 	{
 	  if (keyRepeat[BUTTON_UP]   ==1 || 
 	      keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_LONG==0)	    
@@ -2261,8 +2344,7 @@ void handle_key_sixteenbox()
 	  dirty_graphic=1;
 	}
       
-      if(keyState[BUTTON_DOWN] && 
-	 !keyState[BUTTON_B])
+      if(keyState[BUTTON_DOWN])
 	{
 	  if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_LONG==0)
 	    cursor=( cursor+4 ) %16;
@@ -2276,8 +2358,7 @@ void handle_key_sixteenbox()
 
 
       // move cursor to the left
-      if(keyState[BUTTON_LEFT] && 
-	 !keyState[BUTTON_B])
+      if(keyState[BUTTON_LEFT])
 	{
 	  if (keyRepeat[BUTTON_LEFT]==1 || 
 	      keyRepeat[BUTTON_LEFT]%KEY_REPEAT_INTERVAL_LONG==0)
@@ -2289,8 +2370,7 @@ void handle_key_sixteenbox()
 	  dirty_graphic=1;
 	}
       
-      if (keyState[BUTTON_RIGHT] && 
-	  !keyState[BUTTON_B])
+      if (keyState[BUTTON_RIGHT])
 	{
 	  if (keyRepeat[BUTTON_RIGHT]   ==1 || 
 	      keyRepeat[BUTTON_RIGHT]%KEY_REPEAT_INTERVAL_LONG==0)
@@ -3192,6 +3272,12 @@ void seq_update_multiple_time_by_step()
       counter_delta_midi_clock += TK.get(MIDI_SEND_DELTA);
       delta_midi_clock         += TK.get(MIDI_SEND_DELTA);
       TK.set(MIDI_SEND_DELTA,0);
+    }
+
+  
+  if (bpm_sync_need_refresh)
+    {
+      refresh_bpm();
     }
   
   if (TK.get(SWING)!=0)
