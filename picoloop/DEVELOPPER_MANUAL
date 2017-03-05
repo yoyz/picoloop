@@ -10,3 +10,75 @@ mapii {aka std::map<int, int>}
 The Key is the SDL_KEYCODE, the value is 0 or 1           for keyState
 The Key is the SDL_KEYCODE, the value is 0 to really high for keyRepeat
 
+AudioEngine
+===========
+
+it create an audioDriverXXX for the platform, for example :
+- RtAudio on Linux or windows, SDL is also available for this platform
+- PSVita  for the psvita
+
+Most of the time I will try to stick on RtAudio, but if I can not use it,
+I will create an external AudioDriver.
+For Android, there should be one...
+
+It is called by PatternPlayer which will use it to start/stop the audio.
+The audio callback is in AudioEngine.
+This callback generate a buffer of for example 2048 sample which will be fed to
+the sound card.
+It use AudioMixer to get sample, which call MonoMixer, which call the SynthEngine in Machine
+directory.
+
+
+Master.h
+========
+
+This is the main header which contain the defined needed by all platform
+
+
+PatternPlayer
+=============
+
+The "main", and where all stuff of the application should be if it is not a class.
+For example, there is lots of global variable defined.
+
+
+PatternReader
+=============
+
+is also a PatternWriter...
+Use to load/store pattern, which are text file.
+
+
+MachineCheck
+============
+
+Weird name, but it is use to switch to the next/previous SynthEngine.
+Every platform has PicoSynth, PicoDrum, PBSynth, DBOpl because they don't consume much cpu.
+Cursynth is not available on all platform.
+This class allow to change the SynthEngine and avoid #ifdef in the main code.
+
+
+WaveTableManager
+================
+
+Singleton class, to store a bunch of wavetable.
+A wavetable is really small buffer which contain a saw, triangle, rectangle waveform.
+
+WaveTable
+=========
+
+One wavetable, so a basic structure which allow to save a waveTable.
+
+Generator
+=========
+
+Simple code which generate a basic waveform which will be stored in a wavetable object.
+
+
+UserInterface
+=============
+
+It is the skeleton of the function which will be available for the SynthEngine UI.
+
+
+
