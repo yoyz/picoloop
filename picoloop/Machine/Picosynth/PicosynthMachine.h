@@ -46,7 +46,8 @@ class PicosynthMachine : public Machine
   Sint16                last_sample;
 
   Sint16              * tanh_table;
-
+  Sint16              * buffer;
+  Sint16                index;
   int                   note;
   int                   osc1_scale;
   int                   osc2_scale;

@@ -1,6 +1,7 @@
 #include "Master.h"
 #include "PicosynthMachine.h"
 
+#define SAM 64
 
 PicosynthMachine::PicosynthMachine() : adsr_amp(), adsr_fltr(), vco(), filter(), one_osc()
 {
@@ -46,6 +47,12 @@ PicosynthVCO & PicosynthMachine::getVCO()
 void PicosynthMachine::init()
 {
 
+  if (buffer==0)
+    {     
+      buffer = (Sint16*)malloc(sizeof(Sint16)*SAM);
+    }
+  index=0; // use by this->tick()
+  
   //bq.reset();
   adsr_amp.init();
   adsr_fltr.init();
@@ -325,6 +332,7 @@ void PicosynthMachine::reset()
 
 Sint16 PicosynthMachine::tick()
 {
+  int i=0;
   float  f_in;
   float  f_out;
 
@@ -339,35 +347,49 @@ Sint16 PicosynthMachine::tick()
   Sint32 tmp1;
   Sint32 tmp2;
   Sint32 tmp3;
-  Sint16 index;
+
 
   Sint32 cutoff_tmp;
   Sint32 resonance_tmp;
   int    num=8192;
-  int    i;
   
-  //num=1024;
 
-  if (trig_time_mode)
+  if (index>=SAM | index<0)
+    index=0;
+  
+  if (index==0)
     {
-      if (trig_time_duration_sample<sample_num)
+      i=0;
+      while (i<SAM)
 	{
-	  this->setI(NOTE_ON,0);
-	  trig_time_mode=0;
-	  //DPRINTF("\t\t\t\t\t\tDONE\n");
+	  if (trig_time_mode)
+	    {
+	      if (trig_time_duration_sample<sample_num)
+		{
+		  this->setI(NOTE_ON,0);
+		  trig_time_mode=0;
+		}
+	    }
+	      
+	  s_in=adsr_amp.tick();
+	  s_in=s_in/6;
+	  buffer[i]=s_in;
+	  i++;
 	}
-
+      i=0;
+      while (i<SAM)
+	{
+	  buffer[i]=filter.process(buffer[i]);
+	  i++;
+	}    
     }
-      
-
-  s_in=adsr_amp.tick();
-  s_in=s_in/6;
- 
-  s_out=filter.process(s_in);      
-    
+  
+  s_out=buffer[index];
+  
+  index++;
   sample_num++;
-  last_sample=s_out;
-
+  
   return s_out;
-
+  
 }
+  
