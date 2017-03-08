@@ -87,25 +87,9 @@ void Oscillator::setFreq(int freq)
 
   if (freq>0)
     {
-      //tmp=freq*table_size*65535;
-      //tmp=((freq*(wtshift))/44100)*(16384);
-      //tmp=(freq*((wtshift))*WAVETABLE_SIZE)/(44100);
-      //tmp=(freq*((wtshift))*WAVETABLE_SIZE)/(44100);
-      //tmp=((freq*WAVETABLE_SIZE)/44100)*wtshift;
       tmp=(WAVETABLE_SIZE*wtshift/DEFAULTFREQ)*freq;
-      //tmp=tmp/44100;
-      //offset_next_index=(freq*table_size*65535)/44100;
       offset_next_index=tmp;
-      // offset_next_index=tmp+ph*wtshift;
-      // if ((offset_next_index>>shift)>=table_size)
-      // 	offset_next_index=offset_next_index-(table_size<<shift);
-
-
-      //DPRINTF("freq:%d table_size:%d offset_next_index:%d tmp:%d\n",freq,table_size,offset_next_index,tmp);
-      //printf("freq:%d table_size:%d offset_next_index:%d tmp:%d\n",freq,table_size,offset_next_index,tmp);
     }
-
-  //DPRINTF("offset_next_index:%d\n",offset_next_index);
 }
 
 
@@ -144,18 +128,6 @@ Sint16 Oscillator::tick()
   if ((index>>shift)>=table_size)
     {
       index=index-(table_size<<shift);
-
-      /*
-	Should be useless now
-       */
-      //if ((index>>shift)>=table_size)
-      //{
-      //index=0;
-      //}
-
-      //      if ((index>>16)>table_size)
-      //index=0;
-      //DPRINTF("offset_next_index.tick.offset_next_index:%d\n",offset_next_index);
     }
   return table[index>>shift];
 }
