@@ -1,31 +1,11 @@
 #include "PicodrumVCO.h"
 
 
-PicodrumVCO::PicodrumVCO() : sineOsc1(), 
-			     sineOsc2(), 
-			     sawOsc1(), 
-			     sawOsc2(), 
-			     pulseOsc1(), 
-			     pulseOsc2(), 
-			     triangleOsc1(), 
-			     triangleOsc2(),
-			     smsineOsc1(), 
-			     smsineOsc2(), 
-			     smsawOsc1(), 
-			     smsawOsc2(), 
-			     smpulseOsc1(), 
-			     smpulseOsc2(), 
-			     smtriangleOsc1(), 
-			     smtriangleOsc2(),
-			     lfsrnoiseOsc1(), 
-			     lfsrnoiseOsc2(), 
-			     noiseOsc1(), 
-			     noiseOsc2(), 
-			     sineLfoOsc1(), 
-			     sawLfoOsc1(),
+PicodrumVCO::PicodrumVCO() : osc1(), 
+			     osc2(), 
+			     lfoOsc1(),
 			     pb(),
 			     tanh_table(new Sint16[1024])   
-			     //, noiseosc()
 {
   DPRINTF("PicodrumVCO::PicodrumVCO()");
   float fi;
@@ -34,6 +14,7 @@ PicodrumVCO::PicodrumVCO() : sineOsc1(),
 
   s1=NULL;
   s2=NULL;
+  lfo1=NULL;
   vcomix=64;
 
   lfo_counter=0;
@@ -68,69 +49,27 @@ void PicodrumVCO::init()
 {
   DPRINTF("PicodrumVCO::init() begin s1:=0x%08.8X s2:=0x%08.8X",s1,s2);
 
-
   lfo_depth=0;
   lfo_depth_shift=20;
 
   lfo_speed=0;
 
+  osc1.setWaveForm(PICO_WAVETABLE_SINE);
+  osc2.setWaveForm(PICO_WAVETABLE_SINE);
+  lfoOsc1.setWaveForm(PICO_WAVETABLE_SAW);
 
-
-  sineOsc1.setWaveForm(PICO_WAVETABLE_SINE);
-  sineOsc2.setWaveForm(PICO_WAVETABLE_SINE);
-
-  sawOsc1.setWaveForm(PICO_WAVETABLE_SAW);
-  sawOsc2.setWaveForm(PICO_WAVETABLE_SAW);
-
-  pulseOsc1.setWaveForm(PICO_WAVETABLE_PULSE);
-  pulseOsc2.setWaveForm(PICO_WAVETABLE_PULSE);
-
-  triangleOsc1.setWaveForm(PICO_WAVETABLE_TRGL);
-  triangleOsc2.setWaveForm(PICO_WAVETABLE_TRGL);
-
-  // waveTableSineOsc1.setWaveForm(PICO_WAVETABLE_SINE);
-  // waveTableSineOsc2.setWaveForm(PICO_WAVETABLE_SINE);
-
-  noiseOsc1.setWaveForm(PICO_WAVETABLE_NOISE);
-  noiseOsc2.setWaveForm(PICO_WAVETABLE_NOISE);
-
-  sineLfoOsc1.setWaveForm(PICO_WAVETABLE_SINE);
-  sawLfoOsc1.setWaveForm(PICO_WAVETABLE_SAW);
-
-
-  smsineOsc1.setWaveForm(PICO_WAVETABLE_SMSINE);
-  smsineOsc2.setWaveForm(PICO_WAVETABLE_SMSINE);
-
-  smsawOsc1.setWaveForm(PICO_WAVETABLE_SMSAW);
-  smsawOsc2.setWaveForm(PICO_WAVETABLE_SMSAW);
-
-  smpulseOsc1.setWaveForm(PICO_WAVETABLE_SMPULSE);
-  smpulseOsc2.setWaveForm(PICO_WAVETABLE_SMPULSE);
-
-  smtriangleOsc1.setWaveForm(PICO_WAVETABLE_SMTRGL);
-  smtriangleOsc2.setWaveForm(PICO_WAVETABLE_SMTRGL);
-
-  lfsrnoiseOsc1.setWaveForm( PICO_WAVETABLE_LFSRNOISE);
-  lfsrnoiseOsc2.setWaveForm(PICO_WAVETABLE_LFSRNOISE);
-
-
-  //lfo1=&sineLfoOsc1;
-  lfo1=&sawLfoOsc1;
-
-  lfo1->setFreq(0);
-  lfo1->setAmplitude(32);
-
-  //  s1 = &sineosc;
-  s1 = &pulseOsc1;
-  s2 = &sawOsc2;
-
+  s1 = &osc1;
   s1->setFreq(0);
   s1->setAmplitude(32);
-  //  s2 = &pulseosc;
+
+  s2 = &osc2;
   s2->setFreq(0);
   s2->setAmplitude(32);
 
-
+  lfo1=&lfoOsc1;
+  lfo1->setFreq(0);
+  lfo1->setAmplitude(32);
+  
   DPRINTF("PicodrumVCO::init() end s1:=0x%08.8X s2:=0x%08.8X",s1,s2);
 }
 
@@ -160,8 +99,6 @@ void PicodrumVCO::setPicodrumVCOPhase(int ph)
 {
   phase=this->checkSevenBitBoundarie(ph);
   s1->setPhase(phase);
-  //s2->setPhase(phase);
-  //fgfgfgs2->setPhase(phase);
 }
 
 void PicodrumVCO::setLfoType(int val)
@@ -177,33 +114,11 @@ void PicodrumVCO::setOscillator(int oscillator_number,int oscillator_type)
 
   if (oscillator_number %2==0)
     {
-      if (oscillator_type%PICO_WAVETABLE_SIZE==PICO_WAVETABLE_SINE)      s1=&sineOsc1;
-      if (oscillator_type%PICO_WAVETABLE_SIZE==PICO_WAVETABLE_SAW)       s1=&sawOsc1;
-      if (oscillator_type%PICO_WAVETABLE_SIZE==PICO_WAVETABLE_PULSE)     s1=&pulseOsc1;
-      if (oscillator_type%PICO_WAVETABLE_SIZE==PICO_WAVETABLE_TRGL)      s1=&triangleOsc1;
-      if (oscillator_type%PICO_WAVETABLE_SIZE==PICO_WAVETABLE_SMSINE)    s1=&smsineOsc1;
-      if (oscillator_type%PICO_WAVETABLE_SIZE==PICO_WAVETABLE_SMSAW)     s1=&smsawOsc1;
-      if (oscillator_type%PICO_WAVETABLE_SIZE==PICO_WAVETABLE_SMPULSE)   s1=&smpulseOsc1;
-      if (oscillator_type%PICO_WAVETABLE_SIZE==PICO_WAVETABLE_SMTRGL)    s1=&smtriangleOsc1;
-
-      if (oscillator_type%PICO_WAVETABLE_SIZE==PICO_WAVETABLE_NOISE)     s1=&noiseOsc1;
-      if (oscillator_type%PICO_WAVETABLE_SIZE==PICO_WAVETABLE_LFSRNOISE) s1=&lfsrnoiseOsc1;
-
+      	s1->setWaveForm(oscillator_type%PICO_WAVETABLE_SIZE);
     }
   if (oscillator_number %2==1)
     {
-
-      if (oscillator_type%PICO_WAVETABLE_SIZE==PICO_WAVETABLE_SINE)      s2=&sineOsc2;
-      if (oscillator_type%PICO_WAVETABLE_SIZE==PICO_WAVETABLE_SAW)       s2=&sawOsc2;
-      if (oscillator_type%PICO_WAVETABLE_SIZE==PICO_WAVETABLE_PULSE)     s2=&pulseOsc2;
-      if (oscillator_type%PICO_WAVETABLE_SIZE==PICO_WAVETABLE_TRGL)      s2=&triangleOsc2;
-      if (oscillator_type%PICO_WAVETABLE_SIZE==PICO_WAVETABLE_SMSINE)    s2=&smsineOsc2;
-      if (oscillator_type%PICO_WAVETABLE_SIZE==PICO_WAVETABLE_SMSAW)     s2=&smsawOsc2;
-      if (oscillator_type%PICO_WAVETABLE_SIZE==PICO_WAVETABLE_SMPULSE)   s2=&smpulseOsc2;
-      if (oscillator_type%PICO_WAVETABLE_SIZE==PICO_WAVETABLE_SMTRGL)    s2=&smtriangleOsc2;
-
-      if (oscillator_type%PICO_WAVETABLE_SIZE==PICO_WAVETABLE_NOISE)     s2=&noiseOsc2;
-      if (oscillator_type%PICO_WAVETABLE_SIZE==PICO_WAVETABLE_LFSRNOISE) s2=&lfsrnoiseOsc2;
+      	s2->setWaveForm(oscillator_type%PICO_WAVETABLE_SIZE);
     }
 
 
@@ -310,28 +225,8 @@ void PicodrumVCO::setNoteDetune(int nt,int dt)
   pb.setNote(note);
 
   DPRINTF("freqOsc1:%d",freqOsc1);
-  /*
-  s1->setSynthFreq(sfreq);
-  s2->setSynthFreq(sfreq);
-  */
-  //s1->setFreq(freqOsc1);
-  //s2->setFreq(freqOsc2);
-  //  s2->setFreq(sfreq*3);
 }
 
-
-
-/*
-void PicodrumVCO::setSynthFreq(float sfreq)
-{
-
-  freqOsc1=sfreq;
-  freqOsc2=sfreq;
-  s1->setFreq(freqOsc1);
-  s2->setFreq(freqOsc2);
-  //  s2->setFreq(sfreq*3);
-}
-*/
 
 
 
@@ -402,49 +297,3 @@ Sint16 PicodrumVCO::tick()
 
   return s;
 }
-
-// Sint16 PicodrumVCO::tick()
-// {
-//   Sint32 sa;
-//   Sint32 sb;
-//   Sint32 sc;
-//   Sint32 sinput1;
-//   Sint32 sinput2;
-//   Sint16 s;
-//   int    tmp=0;
-//   if (vcomix==0) vcomix=1;
-//   if (s1==NULL)
-//     { 
-//       DPRINTF("[s1 is NULL]\n"); 
-//       //  exit(1); 
-//     } 
-
-//   if (lfo_speed && lfo_depth)
-//     {
-//       s1->setFreq(lfo_speed);
-//       sinput1=s1->tick();
-//       s2->setFreq(freqOsc1+abs(sinput1/((128-lfo_depth)*2)));
-//       sinput2=s2->tick();
-//       //sc=sinput2;
-//       sc=sinput2>>1;
-//     }
-//   else
-//     {
-//       sinput1=s1->tick();
-//       sa=(sinput1*((128-vcomix)));
-//       sinput2=s2->tick();
-//       sb=(sinput2*((vcomix)));
-//       //sc=(sa+sb)>>8;
-//       sc=(sa+sb)>>9;
-//     }
-
-
-//   if (sc> 32000) sc= 32000;
-//   if (sc<-32000) sc=-32000;
-
-
-
-//   s=sc;
-
-//   return s;
-// }
