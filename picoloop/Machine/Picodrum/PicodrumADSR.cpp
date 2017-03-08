@@ -14,7 +14,7 @@ enum
 
 #define SHIFT_TRIG 8  // for drum
 
-PicodrumADSR::PicodrumADSR() : tanh_table(new Sint16[128])
+PicodrumADSR::PicodrumADSR()
 {
   float fi;
   int   ii;
@@ -50,16 +50,6 @@ PicodrumADSR::PicodrumADSR() : tanh_table(new Sint16[128])
 
   current_segment=PicodrumADSR_INIT;
   noteOn_value=0;
-
-  for (i=0;i<256;i++)
-    {
-      fi=i;
-      fi=tanh(fi/128);
-      fi=fi*1024;
-      ii=fi;
-      tanh_table[i/2]=ii;
-      //DPRINTF("tanh[%d]=%d",i,tanh_table[i/2]);
-    }
 }
 
 PicodrumADSR::~PicodrumADSR()
