@@ -4,8 +4,7 @@
 PicodrumVCO::PicodrumVCO() : osc1(), 
 			     osc2(), 
 			     lfoOsc1(),
-			     pb(),
-			     tanh_table(new Sint16[1024])   
+			     pb()
 {
   DPRINTF("PicodrumVCO::PicodrumVCO()");
   float fi;
@@ -34,15 +33,6 @@ PicodrumVCO::PicodrumVCO() : osc1(),
   lfo_type=0;
   phase=0;
 
-  for (i=0;i<1024;i++)
-    {
-      fi=i;
-      fi=tanh(fi/1024);
-      fi=fi*1024;
-      ii=fi;
-      tanh_table[i]=ii;
-      //DPRINTF("tanh[%d]=%d\n",i,tanh_table[i]);
-    }
 }
 
 void PicodrumVCO::init()
@@ -264,7 +254,6 @@ Sint16 PicodrumVCO::tick()
 	  //s2->setFreq(freqOsc1+abs(sinput1/((128-lfo_depth)*2)));
 	  //s2->setNoteDetune(note*128+detune+abs(sinput1/((128-lfo_depth)*1)));
 	  s2->setNoteDetune(note*128+detune+abs(sinput1/((128-lfo_depth)*1)));
-	  //s2->setNoteDetune(note*128+detune+abs((sinput1*tanh_table[lfo_depth*8])/1024));
 	}
       sinput2=s2->tick();
       //sc=sinput2;
