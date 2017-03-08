@@ -48,8 +48,10 @@ class PicodrumMachine : public Machine
   int                   osc1_type;
   int                   osc2_type;
 
-  int                   phase; 
+  int                   phase;
 
+  Sint16              * buffer_picodrum;
+  int                   index;
 };
 
 #endif
