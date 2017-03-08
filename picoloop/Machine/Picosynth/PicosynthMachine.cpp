@@ -2,18 +2,12 @@
 #include "PicosynthMachine.h"
 
 
-PicosynthMachine::PicosynthMachine() : adsr_amp(), adsr_fltr(), vco(), filter(), one_osc(), tanh_table(new Sint16[256])
+PicosynthMachine::PicosynthMachine() : adsr_amp(), adsr_fltr(), vco(), filter(), one_osc()
 {
   float fi;
   int   i;
 
   DPRINTF("PicosynthMachine::PicosynthMachine()\n");  
-  for (i=0;i<256;i++)
-    {
-      fi=i;
-      fi=tanh(fi/128);
-      tanh_table[i]=fi*1024;
-    }
   cutoff=125;
   resonance=10;
   note=0;
