@@ -51,6 +51,11 @@ class Oscillator
   int    sample_num_index;
   int    table_fill;
   int    table_size;
+  int    freq;
+  int    note;
+  int    detune;
+  int    notedetune;
+  
   Sint32 offset_next_index; // index=index+(this->getFreq()*table_size)/44100;
                             // index=index+(offset_next)
                             // offset_next=(this->getFreq()*table_size)/44100;
