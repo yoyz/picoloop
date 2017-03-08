@@ -75,53 +75,13 @@ public:
   SawOscillator           sawLfoOsc1;
   */
 
-  Oscillator          sineOsc1;
-  Oscillator          sineOsc2;
-
-  Oscillator           sawOsc1;
-  Oscillator           sawOsc2;
-
-  Oscillator         pulseOsc1;
-  Oscillator         pulseOsc2;
-
-  Oscillator      triangleOsc1;
-  Oscillator      triangleOsc2;
+  Oscillator          osc1;
+  Oscillator          osc2;
+  Oscillator          oscLfo1;
 
 
-  Oscillator        smsineOsc1;
-  Oscillator        smsineOsc2;
-
-  Oscillator         smsawOsc1;
-  Oscillator         smsawOsc2;
-
-  Oscillator       smpulseOsc1;
-  Oscillator       smpulseOsc2;
-
-  Oscillator    smtriangleOsc1;
-  Oscillator    smtriangleOsc2;
-
-  
-  //Oscillator waveTableSineOsc1;
-  //Oscillator waveTableSineOsc2;
-
-  Oscillator         noiseOsc1;
-  Oscillator         noiseOsc2;
-
-  Oscillator         lfsrnoiseOsc1;
-  Oscillator         lfsrnoiseOsc2;
-
-  Oscillator          sineLfoOsc1;
-  Oscillator           sawLfoOsc1;
-
-
-  //  FuzzyPulseOscillator    fuzzyPulseOsc1;
-  //  FuzzyPulseOscillator    fuzzyPulseOsc2;
-
-
-  //NoiseOscillator       noiseosc;
-  Oscillator            * s1;
-  Oscillator            * s2;
-
+  Oscillator            * s1; 
+  Oscillator            * s2; 
   Oscillator            * lfo1;
   PitchBend               pb;
 
