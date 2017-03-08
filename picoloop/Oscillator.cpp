@@ -49,28 +49,32 @@ int Oscillator::getFreq()
   return frequency;
 }
 
-void Oscillator::setNoteDetune(int note,int detune)
+void Oscillator::setNoteDetune(int nt,int dt)
 {
+  note=nt;
+  detune=dt;
   NoteFreq & NF = NoteFreq::getInstance();
   offset_next_index=NF.getWTJumpDetune(note,detune);
   //DPRINTF("note:%d detune:%d offset_next_index:%d\n",note,detune,offset_next_index);
 }
 
 
-void Oscillator::setNoteDetune(int notedetune)
+void Oscillator::setNoteDetune(int ntdt)
 {
+  notedetune=ntdt;
   NoteFreq & NF = NoteFreq::getInstance();
   offset_next_index=NF.getWTJumpDetune(notedetune);
   //DPRINTF("note:%d detune:%d offset_next_index:%d\n",note,detune,offset_next_index);
 }
 
 
-void Oscillator::setFreq(int freq)
+void Oscillator::setFreq(int frq)
 {
   Sint32 tmp;
   int    shift=8;
   int    wtshift=1<<shift;
 
+  frq=freq;
   //return;
 
   if (freq==frequency)
@@ -128,6 +132,10 @@ Sint16 Oscillator::tick()
   if ((index>>shift)>=table_size)
     {
       index=index-(table_size<<shift);
+      // seem to be the case at picoloop at start
+      // so I bugfix it here, not the right way it's not the root cause
+      if ((index>>shift)>=table_size)
+	index=0;
     }
   return table[index>>shift];
 }
