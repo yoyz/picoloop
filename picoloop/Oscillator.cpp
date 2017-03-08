@@ -74,7 +74,7 @@ void Oscillator::setFreq(int frq)
   int    shift=8;
   int    wtshift=1<<shift;
 
-  frq=freq;
+  freq=frq;
   //return;
 
   if (freq==frequency)
