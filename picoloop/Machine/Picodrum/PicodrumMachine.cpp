@@ -1,6 +1,6 @@
 #include "PicodrumMachine.h"
 
-
+#define SAM 64
 
 PicodrumMachine::PicodrumMachine() : adsr_amp(), vco(), filter()
 {
@@ -12,6 +12,8 @@ PicodrumMachine::PicodrumMachine() : adsr_amp(), vco(), filter()
   resonance=10;
   note=0;
   detune=0;
+  buffer_picodrum=0;
+  index=0;
 }
 
 
@@ -30,6 +32,12 @@ PicodrumMachine::~PicodrumMachine()
 
 void PicodrumMachine::init()
 {
+  if (buffer_picodrum==0)
+    {     
+      buffer_picodrum = (Sint16*)malloc(sizeof(Sint16)*SAM);
+    }
+  index=0; // use by this->tick()
+  
   adsr_amp.init();
 
   adsr_amp.setInput(&vco); 
@@ -283,13 +291,35 @@ Sint16 PicodrumMachine::tick()
   float  f_out;
   Sint16 s_in;
   Sint16 s_out;
+  int        i;
 
+  // there is something wrong here, need to debug it
+  return filter.process(adsr_amp.tick());
+  //return adsr_amp.tick();
+  if (index>=SAM | index<0)
+    index=0;
 
-  s_in=adsr_amp.tick();
-  s_in=s_in;
-
-
-  s_out=filter.process(s_in);
+  if (index==0)
+    {
+      i=0;
+      while (i<SAM)
+	{	  
+	  buffer_picodrum[i]=adsr_amp.tick();
+	  i++;
+	  printf("i:%d\n");
+	}
+      i=0;
+      
+      while (i<SAM)
+	{
+	  buffer_picodrum[i]=filter.process(buffer_picodrum[i]);
+	  i++;
+	}
+    }
+    
+  s_out=buffer_picodrum[index];
+  
+  index++;
+  sample_num++;
   return s_out;
-
 }
