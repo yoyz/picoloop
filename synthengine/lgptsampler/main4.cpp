@@ -1,39 +1,22 @@
 #include "SampleInstrument.h"
 #include "SamplePool.h"
-//#include "FileSystem.h"
-//#include "UnixFileSystem.h"
-#include <libgen.h>
 #include "DEBSystem.h"
 
 int main(int argc, char **argv)
 {
   int i,j;
   FILE    * FD; 
+
   DEBSystem DEB;
-  DEB.Boot(argc,argv);
-  //DEBSystem::Boot
-  //char buff[1024];
-  //strcpy(buff,".");
-  //Path::SetAlias("bin",dirname(buff)) ;
-  //Path::SetAlias("root","bin:..") ;
-  Path::SetAlias("samples","samples") ;
-  //FileSystem::Install(new UnixFileSystem()) ;
-  //Path::SetAlias("bin",dirname(buff)) ;
-  //Path::SetAlias("root","bin:..") ;
-  //Path logPath("bin:lgpt.log");
-  
-  //SampleInstrument SI;
-  
-  //SamplePool       SP;
-  //SampleInstrument * SI=SampleInstrument::GetInstance();
   SampleInstrument SI;
   SamplePool * SP=SamplePool::GetInstance();
-  //SP->Init();
-  //int * buffer=(int*)malloc(sizeof(int)*1024);
+  DEB.Boot(argc,argv);
+
+  Path::SetAlias("samples","samples") ;
+
   fixed * buffer=(fixed*)malloc(sizeof(fixed)*1024);
   int16_t * buffer16=(int16_t*)malloc(sizeof(int16_t)*1024);
-  //typedef char MY_TYPE;
-  //MY_TYPE *buffer8 = (MY_TYPE *) buffer;
+
   
   printf("<<<<SP->GetNameListSize()=%d>>>>>\n",SP->GetNameListSize());
   SP->Load();

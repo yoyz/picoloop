@@ -4,14 +4,9 @@
 int DEBSystem::MainLoop() {
 } ;
 
-void DEBSystem::Boot(int argc,char **argv) {
-
-  //SDL_putenv((char *)"SDL_VIDEO_X11_WMCLASS=LittleGPTracker") ;
-
-	// Install System
+void DEBSystem::Boot(int argc,char **argv) 
+{
 	System::Install(new DEBSystem()) ;
-
-	// Install FileSystem
 	FileSystem::Install(new UnixFileSystem()) ;
 
   // Install aliases
@@ -34,20 +29,7 @@ void DEBSystem::Boot(int argc,char **argv) {
 
 	Path logPath("bin:lgpt.log");
 	Path::SetAlias("root","bin:..") ;
-	//Path logPath("bin:lgpt.log");
-	
-  //FileLogger *fileLogger=new FileLogger(logPath);
-  //if(fileLogger->Init().Succeeded())
-  //  {
-  //    Trace::GetInstance()->SetLogger(*fileLogger);    
-  //  }
-  //#endif
-
-  // Process arguments
-
 	Config::GetInstance()->ProcessArguments(argc,argv) ;
-
-	//TimerService::GetInstance()->Install(new SDLTimerService()) ;
 
 	// See if jack available
 	 {
@@ -58,11 +40,6 @@ void DEBSystem::Boot(int argc,char **argv) {
 		//Audio::Install(new RTAudioStub(hints)) ;
 		//MidiService::Install(new RTMidiService()) ;
 	}
-
-	// Install Threads
-
-	 //SysProcessFactory::Install(new UnixProcessFactory()) ;
-
 } ;
 
 void DEBSystem::Shutdown() {
