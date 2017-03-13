@@ -5,6 +5,7 @@ Config::Config()
 {
 	Path path("bin:config.xml") ;
 	Trace::Log("CONFIG","Got config path=%s",path.GetPath().c_str()) ;
+	/*
 	TiXmlDocument *document=new TiXmlDocument(path.GetPath());
 	bool loadOkay = document->LoadFile();
 
@@ -52,6 +53,7 @@ Config::Config()
 		Trace::Log("CONFIG","No (bad?) config.xml") ;
 	}
  	delete(document) ;
+	*/
 }
 
 

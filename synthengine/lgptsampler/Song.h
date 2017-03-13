@@ -18,8 +18,8 @@ public:
 	Song() ;
 	~Song() ;
 
-	virtual void SaveContent(TiXmlNode *node) ;
-	virtual void RestoreContent(TiXmlElement *element);
+//	virtual void SaveContent(TiXmlNode *node) ;
+//	virtual void RestoreContent(TiXmlElement *element);
 
 	unsigned char *data_ ;
 	Chain *chain_ ;

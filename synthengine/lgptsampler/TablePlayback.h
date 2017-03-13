@@ -4,6 +4,7 @@
 #include "Table.h"
 #include "Song.h"
 #include "Groove.h"
+#include <string.h> //memcpy
 
 class I_Instrument ;
 

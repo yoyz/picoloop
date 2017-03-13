@@ -4,7 +4,7 @@
 Persistent::Persistent(const char *nodeName):SubService(MAKE_FOURCC('S','V','P','S')) {
 	nodeName_=nodeName ;
 } ;
-
+/*
 void Persistent::Save(TiXmlNode *node) {
 	TiXmlElement master(nodeName_) ;
 	TiXmlNode *first=node->InsertEndChild(master) ;
@@ -18,3 +18,4 @@ bool Persistent::Restore(TiXmlElement *element) {
 	}
 	return false ;
 } ;
+*/

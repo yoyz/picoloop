@@ -41,15 +41,17 @@ void Groove::GetChannelData(int channel,int *groove,int *position) {
 		*groove=c.groove_ ;
 		*position=c.position_ ;
 } ;
-
+/*
 void Groove::SaveContent(TiXmlNode *node) {
 	 saveHexBuffer(node,"DATA",(unsigned char *)data_,16*MAX_GROOVES) ;
 } ;
-
+*/
+/*
  void Groove::RestoreContent(TiXmlElement *element) {
  	TiXmlElement *current=element->FirstChildElement() ;
 	restoreHexBuffer(current,(unsigned char*)data_) ;
 }
+*/
 // Trigger grooves so we go to the next step
 
 void Groove::Trigger() {
