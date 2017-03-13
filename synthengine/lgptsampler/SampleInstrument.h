@@ -6,7 +6,8 @@
 #include "SRPUpdaters.h"
 
 #include "SoundSource.h"
-#include "Song.h" 
+#include "lgpt.h"
+//#include "Song.h" 
 #include "Observable.h"
 #include "Types.h"
 #include "WatchedVariable.h"
