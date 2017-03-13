@@ -34,8 +34,8 @@ public:
 	void SetUsed(int table) ;	
 	int GetNext() ;
 	int Clone(int table) ;
-	virtual void SaveContent(TiXmlNode *node) ;
-	virtual void RestoreContent(TiXmlElement *element);
+//	virtual void SaveContent(TiXmlNode *node) ;
+//	virtual void RestoreContent(TiXmlElement *element);
 
 private:
 	Table table_[TABLE_COUNT] ;

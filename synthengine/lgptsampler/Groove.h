@@ -5,7 +5,8 @@
 #include "T_Singleton.h"
 #include "Persistent.h"
 #include "Song.h"
-#include "HexBuffers.h"
+#include <string.h>
+//#include "HexBuffers.h"
 
 #define MAX_GROOVES 0x20
 #define NO_GROOVE_DATA 0xFF
@@ -29,8 +30,8 @@ public:
 	bool UpdateGroove(ChannelGroove &g,bool reverse) ;
 	void GetChannelData(int channel,int *groove,int *position) ;
 	unsigned char *GetGrooveData(int groove) ;
-	virtual void SaveContent(TiXmlNode *node) ;
-	virtual void RestoreContent(TiXmlElement *element);
+	//virtual void SaveContent(TiXmlNode *node) ;
+	//virtual void RestoreContent(TiXmlElement *element);
 	
 private:
 	ChannelGroove channelGroove_[SONG_CHANNEL_COUNT] ; 

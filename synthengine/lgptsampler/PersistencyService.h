@@ -3,7 +3,7 @@
 
 #include "Service.h"
 #include "T_Singleton.h"
- #include "tinyxml.h"
+// #include "tinyxml.h"
 
 class PersistencyService: public Service,public T_Singleton<PersistencyService> {
 public:
@@ -12,10 +12,11 @@ public:
 	bool Load() ;
 } ;
 
-class PersistencyDocument: public TiXmlDocument {
+//class PersistencyDocument: public TiXmlDocument {
+class PersistencyDocument {
 public:
-	PersistencyDocument(const char *filename):TiXmlDocument(filename) { version_=0 ;} ;
-	PersistencyDocument(const std::string& filename):TiXmlDocument(filename) { version_=0 ;} ;
+	//PersistencyDocument(const char *filename):TiXmlDocument(filename) { version_=0 ;} ;
+	//PersistencyDocument(const std::string& filename):TiXmlDocument(filename) { version_=0 ;} ;
 	int version_ ;
 } ;
 #endif

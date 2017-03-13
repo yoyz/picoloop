@@ -4,7 +4,9 @@
 #include "T_Singleton.h"
 #include "VariableContainer.h"
 #include "Trace.h"
-#include "tinyxml.h"
+#include <string.h>
+#include "FileSystem.h"
+//#include "tinyxml.h"
 
 class Config: public T_Singleton<Config>,public VariableContainer {
 public:
