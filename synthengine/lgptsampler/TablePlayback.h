@@ -1,8 +1,9 @@
 #ifndef _TABLE_PLAYBACK_H_
 #define _TABLE_PLAYBACK_H_
 
+#include "lgpt.h"
 #include "Table.h"
-#include "Song.h"
+//#include "Song.h"
 #include "Groove.h"
 #include <string.h> //memcpy
 

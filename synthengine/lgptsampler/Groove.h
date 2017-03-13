@@ -4,7 +4,8 @@
 
 #include "T_Singleton.h"
 #include "Persistent.h"
-#include "Song.h"
+//#include "Song.h"
+#include "lgpt.h"
 #include <string.h>
 //#include "HexBuffers.h"
 

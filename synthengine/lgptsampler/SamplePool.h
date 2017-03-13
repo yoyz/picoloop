@@ -4,7 +4,8 @@
 
 #include "T_Singleton.h"
 #include "WavFile.h"
-#include "Song.h"
+//#include "Song.h"
+#include "lgpt.h"
 #include "Observable.h"
 
 #define MAX_PIG_SAMPLES MAX_SAMPLEINSTRUMENT_COUNT
