@@ -809,6 +809,7 @@ const char * PatternElement::getMachineTypeCharStar()
   static const char * str_midiout     = "MDIOUT";
   static const char * str_mdadrum     = "MDRUM";
   static const char * str_sidsynth    = "SID    ";
+  static const char * str_lgptsampler = "LGPT   ";
 
   switch (machine_type)
     {
@@ -821,7 +822,8 @@ const char * PatternElement::getMachineTypeCharStar()
     case SYNTH_TWYTCHSYNTH:return str_twytchsynth; break; 
     case SYNTH_MIDIOUT:    return str_midiout;     break; 
     case SYNTH_MDADRUM:    return str_mdadrum;     break;
-    case SYNTH_SIDSYNTH:   return str_sidsynth;    break; 
+    case SYNTH_SIDSYNTH:   return str_sidsynth;    break;
+    case SYNTH_LGPTSAMPLER: return str_lgptsampler; break; 
     }
   return str_null;
 }

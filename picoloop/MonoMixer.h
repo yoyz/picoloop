@@ -5,6 +5,7 @@ using namespace std;
 #include "Machine/Picodrum/PicodrumMachine.h"
 #include "Machine/Dbopl/DboplMachine.h"
 #include "Machine/PBSynth/PBSynthMachine.h"
+#include "Machine/Lgptsampler/LgptsamplerMachine.h"
 #ifdef __FPU__
 #include "Machine/Cursynth/CursynthMachine.h"
 #include "Machine/Open303/Open303Machine.h"
@@ -44,6 +45,7 @@ class MonoMixer
   PicodrumMachine       PD;
   dboplMachine          OPLM;
   PBSynthMachine        PBS;
+  LgptsamplerMachine    LGPTSMPL;
 
 #ifdef __FPU__
   CursynthMachine       CS;
