@@ -151,7 +151,10 @@ void LgptsamplerMachine::setI(int what,int val)
 
   if (what==NOTE_ON && val==1) 
     {
-      SI.Start(0,72,true);
+      //SI.Start(0,72,true);
+      SI.Start(0,note,true);
+      SI.ProcessCommand(0,MAKE_FOURCC('F','C','U','T'),cutoff);
+      SI.ProcessCommand(0,MAKE_FOURCC('F','R','E','S'),resonance);
       // this->getPicodrumVCO().setNoteDetune(note+noteShift,detune);
       // this->getADSRAmp().reset();
       // this->getPicodrumVCO().reset();
@@ -187,20 +190,12 @@ void LgptsamplerMachine::setI(int what,int val)
   // if (what==ADSR_ENV0_RELEASE)   this->getADSRAmp().setRelease(val);
 
 
+  
+   if (what==FILTER1_CUTOFF)      
+     cutoff=val;
 
-  // if (what==FILTER1_CUTOFF)      
-  //   { 
-  //     cutoff=val;
-  //     filter.setCutoff(cutoff);
-  //     this->getADSRAmp().reset();
-
-  // }
-  // if (what==FILTER1_RESONANCE)         
-  //   { 
-  //     resonance=val;
-  //     filter.setResonance(resonance);
-  //     this->getADSRAmp().reset();
-  //   }
+   if (what==FILTER1_RESONANCE)         
+     resonance=val;
 
   // if (what==FILTER1_TYPE)     filter.setFilterType(val);
   // if (what==FILTER1_ALGO)     filter.setFilterAlgo(val);
