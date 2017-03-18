@@ -71,12 +71,16 @@ void LgptsamplerMachine::init()
   //DEBSystem DEB;
   //SampleInstrument SI;
   SamplePool * SP=SamplePool::GetInstance();
+  SyncMaster * SM=SyncMaster::GetInstance();
   int argc;
   char ** argv;
   DEB.Boot(argc,argv);
 
-  Path::SetAlias("samples","samples") ;
-  SP->Load();
+  //Path::SetAlias("samples","samples") ;
+  //SP->Load();
+  SP->loadSample("samples/70_SUREG_B.wav");
+  SP->loadSample("samples/808-cowbell.wav");
+  SM->SetTempo(120);
   SI.Init();
   SI.AssignSample(0);
   /*
@@ -152,9 +156,17 @@ void LgptsamplerMachine::setI(int what,int val)
   if (what==NOTE_ON && val==1) 
     {
       //SI.Start(0,72,true);
+      SI.AssignSample(osc1_type%2);
       SI.Start(0,note,true);
-      SI.ProcessCommand(0,MAKE_FOURCC('F','C','U','T'),cutoff);
-      SI.ProcessCommand(0,MAKE_FOURCC('F','R','E','S'),resonance);
+      
+      SI.ProcessCommand(0,SIP_FILTCUTOFF,0x0000+cutoff);
+      SI.ProcessCommand(0,MAKE_FOURCC('F','R','E','S'),0x0000+resonance);
+      // SI.ProcessCommand(0,MAKE_FOURCC('L','S','T','A'),lfo1_freq);
+      // SI.ProcessCommand(0,MAKE_FOURCC('L','L','E','N'),lfo1_depth);
+      // SI.ProcessCommand(0,MAKE_FOURCC('L','M','O','D'),osc1_type%4);
+      // SI.ProcessCommand(0,MAKE_FOURCC('S','T','R','T'),pb_freq);
+      // SI.ProcessCommand(0,MAKE_FOURCC('E','N','D','_'),pb_depth);
+
       // this->getPicodrumVCO().setNoteDetune(note+noteShift,detune);
       // this->getADSRAmp().reset();
       // this->getPicodrumVCO().reset();
@@ -169,7 +181,8 @@ void LgptsamplerMachine::setI(int what,int val)
   if (what==NOTE1)           note=val;
 
   //if (what==OSC1_FREQ)           this->getPicodrumVCO().setSynthFreq(val);
-  // if (what==OSC1_TYPE)           { this->getPicodrumVCO().setOscillator(0,val); osc1_type=val; }
+  if (what==OSC1_TYPE)           osc1_type=val;
+  if (what==OSC2_TYPE)           osc2_type=val;
   // if (what==OSC2_TYPE)           { this->getPicodrumVCO().setOscillator(1,val); osc2_type=val; }
 
   // if (what==OSC12_MIX)           this->getPicodrumVCO().setPicodrumVCOMix(val);
@@ -183,7 +196,10 @@ void LgptsamplerMachine::setI(int what,int val)
   // if (what==OSC1_PHASE)          { phase=val; this->getPicodrumVCO().setPicodrumVCOPhase(val); }
 
 
-  // //if (what==LFO1_FREQ)           this->getPicodrumVCO().setLfoSpeed(val);
+  if (what==LFO1_FREQ)           lfo1_freq=val;
+  if (what==LFO1_DEPTH)          lfo1_depth=val;
+  if (what==PITCHBEND_DEPTH)     pb_depth=val;
+  if (what==PITCHBEND_SPEED)     pb_freq=val;
 
 
   // if (what==ADSR_ENV0_ATTACK)    this->getADSRAmp().setAttack(val);

@@ -32,9 +32,10 @@ public:
 	int ImportSample(Path &path) ;
 	void PurgeSample(int i) ;
 	const char *GetSampleLib() ;
-protected:
+	//protected:
 	bool loadSample(const char * path) ;
 	bool loadSoundFont(const char *path);
+ protected:
 	int count_ ;
 	char* names_[MAX_PIG_SAMPLES] ;
 	SoundSource *wav_[MAX_PIG_SAMPLES] ;
