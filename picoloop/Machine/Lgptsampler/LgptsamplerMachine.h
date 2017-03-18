@@ -4,6 +4,7 @@ using namespace std;
 #include "SampleInstrument.h"
 #include "SamplePool.h"
 #include "DEBSystem.h"
+#include "SyncMaster.h"
 #include "lgptfixed.h"
 #ifndef __LGPTSAMPLERMACHINE____
 #define __LGPTSAMPLERMACHINE____
@@ -61,6 +62,13 @@ class LgptsamplerMachine : public Machine
   int                   index;
   int                   afterinit;
 
+  int                   lfo1_freq;
+  int                   lfo1_depth;
+  int                   pb_freq;
+  int                   pb_depth;
+
+  int bla;
+  int bla2;
 };
 
 #endif
