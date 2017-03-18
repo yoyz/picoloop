@@ -14,6 +14,7 @@ int MachineCheck::machineExist(int machineType)
   if (machineType==SYNTH_OPL2)        return 1;
   if (machineType==SYNTH_PICODRUM)    return 1;
   if (machineType==SYNTH_PBSYNTH)     return 1;
+  if (machineType==SYNTH_LGPTSAMPLER) return 1;
 #if    defined(__FPU__)
   if (machineType==SYNTH_CURSYNTH)    return 1;
   if (machineType==SYNTH_OPEN303)     return 1;

@@ -32,6 +32,7 @@ using namespace std;
 #include "Machine/Picodrum/PicodrumUserInterface.h"
 #include "Machine/Dbopl/DboplUserInterface.h"
 #include "Machine/PBSynth/PBSynthUserInterface.h"
+#include "Machine/Lgptsampler/LgptsamplerUserInterface.h"
 
 #ifdef __FPU__
 #include "Machine/Cursynth/CursynthUserInterface.h"
@@ -147,6 +148,7 @@ PicosynthUserInterface   PSUI;
 PicodrumUserInterface    PDUI;
 DboplUserInterface       DBUI;
 PBSynthUserInterface     PBUI;
+LgptsamplerUserInterface LGUI;
 
 #ifdef __FPU__
 CursynthUserInterface    CSUI;
@@ -2936,6 +2938,7 @@ void refresh_pecursor_ui(int i)
   if (machine_type==SYNTH_PICODRUM)     { UI=&PDUI; return ;   }
   if (machine_type==SYNTH_OPL2    )     { UI=&DBUI; return ;   }
   if (machine_type==SYNTH_PBSYNTH)      { UI=&PBUI; return ;   }
+  if (machine_type==SYNTH_LGPTSAMPLER)  { UI=&LGUI; return ;   }
 #ifdef __FPU__
   if (machine_type==SYNTH_CURSYNTH)     { UI=&CSUI;   return ; }
   if (machine_type==SYNTH_OPEN303)      { UI=&O303UI; return ; }
@@ -2947,7 +2950,8 @@ void refresh_pecursor_ui(int i)
   if (machine_type==SYNTH_MIDIOUT)      { UI=&MIDIUI; return ; }
 #endif
   
-  DPRINTF("refresh_pecursor_ui(%d)\nmachine_type=%d\nexit(%d)\nNO UI found\n",i,machine_type,exit_code);
+  //DPRINTF("refresh_pecursor_ui(%d)\nmachine_type=%d\nexit(%d)\nNO UI found\n",i,machine_type,exit_code);
+  fprintf(stderr,"refresh_pecursor_ui(%d)\nmachine_type=%d\nexit(%d)\nNO UI found\n",i,machine_type,exit_code);
   exit(8);
 }
 

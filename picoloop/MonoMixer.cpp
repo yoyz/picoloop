@@ -2,19 +2,19 @@
 
 
 #if   defined(__FPU__) && defined(__RTMIDI__)
-MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(), CS(), O303(), TW(), MD(), SS(), MIDIOUTM(), FXDelay(), FXDisabled()
+MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(), CS(), O303(), TW(), MD(), SS(), LGPTSMPL(), MIDIOUTM(), FXDelay(), FXDisabled()
 #endif
 
 #if   defined(__FPU__) && !defined(__RTMIDI__)
-MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(), CS(), O303(), TW(), MD(), SS(),             FXDelay(), FXDisabled()
+MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(), CS(), O303(), TW(), MD(), SS(), LGPTSMPL(),            FXDelay(), FXDisabled()
 #endif
 
 #if   !defined(__FPU__) && defined(__RTMIDI__)
-MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(),                           MIDIOUTM(), FXDelay(), FXDisabled()
+MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(), LGPTSMPL(),                          MIDIOUTM(), FXDelay(), FXDisabled()
 #endif
 
 #if  !defined(__FPU__) && !defined(__RTMIDI__)
-MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(),                                     FXDelay(), FXDisabled()
+MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(), LGPTSMPL(),                                    FXDelay(), FXDisabled()
 #endif
 
 #define SAMMONOMIXER 32
@@ -47,7 +47,8 @@ void MonoMixer::init()
   PD.init();
   OPLM.init();
   PBS.init();
-
+  LGPTSMPL.init();
+  
 #if defined(__FPU__)
   CS.init();
   O303.init();
@@ -104,6 +105,11 @@ void MonoMixer::setMachineType(int type)
     case SYNTH_PBSYNTH:
       M=&PBS;
       break;
+
+    case SYNTH_LGPTSAMPLER:
+      M=&LGPTSMPL;
+      break;
+      
 #if defined(__FPU__)
     case SYNTH_CURSYNTH:
       M=&CS;

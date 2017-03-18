@@ -606,17 +606,18 @@ enum
 #define SYNTH_MIDIOUT      7
 #define SYNTH_MDADRUM      8
 #define SYNTH_SIDSYNTH     9
+#define SYNTH_LGPTSAMPLER  10
 
 #if    defined(__FPU__) && defined(__RTMIDI__)
-#define SYNTH_SIZE 10
+#define SYNTH_SIZE 11
 #endif
 
 #if    defined(__FPU__) && !defined(__RTMIDI__)
-#define SYNTH_SIZE 8
+#define SYNTH_SIZE 9
 #endif
 
 #if   !defined(__FPU__) && !defined(__RTMIDI__)
-#define SYNTH_SIZE 4
+#define SYNTH_SIZE 5
 #endif
 
 
