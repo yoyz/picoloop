@@ -16,6 +16,16 @@ Machine::~Machine()
   DPRINTF("Machine::~Machine()");
 }
 
+void Machine::setChannelNumber(int c)
+{
+  //printf("void Machine::setChannelNumber(%d)\n",c);
+  channel=c;
+}
+
+int Machine::getChannelNumber()
+{
+  return channel;
+}
 
 void Machine::setI(int what,int val)
 {
@@ -30,7 +40,7 @@ void Machine::setF(int what,float val)
 
 int Machine::getI(int what)
 {
-  
+  return -1;
 }
 
 

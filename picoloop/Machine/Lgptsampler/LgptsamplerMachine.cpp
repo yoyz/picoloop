@@ -16,6 +16,8 @@ LgptsamplerMachine::LgptsamplerMachine()
   buffer=0;
   buffer16=0;
   index=0;
+
+  channel=-1;
 }
 
 
@@ -78,8 +80,32 @@ void LgptsamplerMachine::init()
 
   //Path::SetAlias("samples","samples") ;
   //SP->Load();
-  SP->loadSample("samples/70_SUREG_B.wav");
-  SP->loadSample("samples/808-cowbell.wav");
+  //SP->loadSample("samples/70_SUREG_B.wav");
+  //SP->loadSample("samples/808-cowbell.wav");
+  SP->loadSample("samples/SwaneeC4.wav");
+  SP->loadSample("samples/Steel1C4.wav");
+  SP->loadSample("samples/OohhC5.wav");
+  SP->loadSample("samples/SymTomHi.wav");
+  SP->loadSample("samples/Fishs.wav");
+  SP->loadSample("samples/BrsSect4C3.wav");
+  SP->loadSample("samples/DirtGtrC4.wav");
+  SP->loadSample("samples/FlteC4.wav");
+  SP->loadSample("samples/Snare.wav");
+  SP->loadSample("samples/Orch5C4.wav");
+  SP->loadSample("samples/BD1.wav");
+  SP->loadSample("samples/WhistC3.wav");
+  SP->loadSample("samples/PianoHiA4.wav");
+  SP->loadSample("samples/Ssnre.wav");
+  SP->loadSample("samples/MufBassC2.wav");
+  SP->loadSample("samples/VoxC5.wav");
+  SP->loadSample("samples/OpClHat.wav");
+  SP->loadSample("samples/Pang.wav");
+  SP->loadSample("samples/SaxzC4.wav");
+  SP->loadSample("samples/VlnTrem2C4.wav");
+  SP->loadSample("samples/MDWeeeeeC4.wav");
+  SP->loadSample("samples/Eerr1C4.wav");
+  SP->loadSample("samples/HHClosed.wav");
+
   SM->SetTempo(120);
   SI.Init();
   SI.AssignSample(0);
@@ -93,8 +119,22 @@ void LgptsamplerMachine::init()
     }
   */
 
-  afterinit=1;
+  channel=-1;
+  afterinit=1;  
 }
+
+void LgptsamplerMachine::setChannelNumber(int c)
+{
+  //printf("void LgptsamplerMachine::setChannelNumber(%d)\n",c);
+  channel=c;
+}
+
+int LgptsamplerMachine::getChannelNumber()
+{
+  return channel;
+}
+
+
 
 int LgptsamplerMachine::checkI(int what,int val)
 {
@@ -156,11 +196,11 @@ void LgptsamplerMachine::setI(int what,int val)
   if (what==NOTE_ON && val==1) 
     {
       //SI.Start(0,72,true);
-      SI.AssignSample(osc1_type%2);
-      SI.Start(0,note,true);
+      SI.AssignSample(osc1_type%22);
+      SI.Start(channel,note,true);
       
-      SI.ProcessCommand(0,SIP_FILTCUTOFF,0x0000+cutoff);
-      SI.ProcessCommand(0,MAKE_FOURCC('F','R','E','S'),0x0000+resonance);
+      SI.ProcessCommand(channel,SIP_FILTCUTOFF,0x0000+cutoff);
+      SI.ProcessCommand(channel,MAKE_FOURCC('F','R','E','S'),0x0000+resonance);
       // SI.ProcessCommand(0,MAKE_FOURCC('L','S','T','A'),lfo1_freq);
       // SI.ProcessCommand(0,MAKE_FOURCC('L','L','E','N'),lfo1_depth);
       // SI.ProcessCommand(0,MAKE_FOURCC('L','M','O','D'),osc1_type%4);
@@ -346,7 +386,7 @@ Sint16 LgptsamplerMachine::tick()
 
   if (index==0)
     {
-      SI.Render(0,buffer,SAM/2,true);
+      SI.Render(channel,buffer,SAM/2,true);
       i=0;
       for (i=0;i<SAM;i++)
 	buffer[i]=fp2i(buffer[i]);

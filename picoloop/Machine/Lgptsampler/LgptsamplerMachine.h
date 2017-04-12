@@ -15,6 +15,9 @@ class LgptsamplerMachine : public Machine
   LgptsamplerMachine();
   ~LgptsamplerMachine();
 
+  void setChannelNumber(int c);
+  int  getChannelNumber();
+  
   void init();
   void reset();
   Sint16  tick();
@@ -31,12 +34,16 @@ class LgptsamplerMachine : public Machine
   DEBSystem DEB;
   SampleInstrument SI;
 
+  int channel;
+  
  protected:
   
   //PicodrumADSR   & getADSRAmp();
   //  PicodrumVCO    & getPicodrumVCO();
   //  Biquad & getBiquad();
 
+
+  
   int                   cutoff;
   int                   resonance;
 

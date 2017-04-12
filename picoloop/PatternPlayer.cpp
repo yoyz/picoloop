@@ -3832,6 +3832,7 @@ void init_monomixer_and_machine()
 
       MM[t]=AE.getAudioMixer().getMonoMixer(t);
       MM[t]->init();
+      MM[t]->setMonoMixerChannelNumber(t);
       MM[t]->setAmplitude(0);  // set the amplitude to 0 to avoid trashing speakers
       
       M[t]=MM[t]->getInput();                             
