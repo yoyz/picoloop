@@ -1,4 +1,4 @@
-using namespace std;
+//using namespace std;
 
 #include "Machine.h"
 #include "Machine/Picosynth/PicosynthMachine.h"
@@ -34,12 +34,15 @@ class MonoMixer
   void        setMachineType(int type);
   void        setAmplitude(int amp);
   //  void        setInput(Machine * M);
+  void        setMonoMixerChannelNumber(int c);
+  int         getMonoMixerChannelNumber();
   Machine *   getInput();
   Effect  *   getEffect();
   Sint16      tick();
 
  private:
-
+  int                   channel;
+  
   Machine              *M;
   PicosynthMachine      PS;
   PicodrumMachine       PD;

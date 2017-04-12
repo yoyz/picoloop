@@ -31,6 +31,8 @@ MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(), LGPTSMPL(),                  
   index=0;
   buffer16=NULL;
   buffer32=NULL;
+
+  channel=-1; // not set 
 }
 
 MonoMixer::~MonoMixer()
@@ -80,8 +82,18 @@ void MonoMixer::init()
       buffer16[i]=0;
       buffer32[i]=0;
     }
+
+  channel=-1; // not set
 }
 
+void MonoMixer::setMonoMixerChannelNumber(int c)
+{
+  channel=c;
+}
+int MonoMixer::getMonoMixerChannelNumber()
+{
+  return channel;
+}
 
 void MonoMixer::setMachineType(int type)
 {
@@ -141,6 +153,7 @@ void MonoMixer::setMachineType(int type)
       exit(1);
       break;
     }
+  M->setChannelNumber(channel);
 }
 
 void MonoMixer::setAmplitude(int amp)

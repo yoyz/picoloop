@@ -212,6 +212,7 @@ void SDL_GUI::clearScreen()
 
 int SDL_GUI::closeVideo()
 {
+  return 0;
   //SDL_Quit();
 }
 
@@ -392,7 +393,7 @@ int SDL_GUI::openTTFFont()
   // exit(0);
   if( ttf_font == NULL || ttf_font==0 )
     {      
-      DPRINTF("font not found or is not a font file ttf_font:%d",ttf_font);
+      DPRINTF("font not found or is not a font file ttf_font:0x%08.8X",(TTF_Font*)ttf_font);
       return false;
       //exit(1);
     }

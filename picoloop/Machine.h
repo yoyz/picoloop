@@ -173,6 +173,8 @@ class Machine
   Machine();
   ~Machine();
 
+  int channel;
+  
   virtual void setI(int what,int val);
   virtual void setF(int what,float val);
   virtual int  getI(int what);
@@ -181,6 +183,10 @@ class Machine
   virtual void reset();
   virtual Sint16 tick();
 
+  virtual void setChannelNumber(int c);
+  virtual int  getChannelNumber();
+  
+  
   virtual int  checkI(int what,int val);
   virtual int  checkITwoVal(int what,int val1,int val2);
   virtual const char * getMachineParamCharStar(int machineParam,int paramValue);
