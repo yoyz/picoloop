@@ -12,7 +12,6 @@ LgptsamplerMachine::LgptsamplerMachine()
   resonance=10;
   note=0;
   detune=0;
-  //buffer_lgpt=0;
   buffer=0;
   buffer16=0;
   index=0;
@@ -27,45 +26,19 @@ LgptsamplerMachine::~LgptsamplerMachine()
   DPRINTF("LgptsamplerMachine::~LgptsamplerMachine()\n");
 }
 
-// PicodrumVCO & LgptsamplerMachine::getPicodrumVCO()
-// {
-//   return vco;
-// }
-
 
 
 void LgptsamplerMachine::init()
 {
-  //if (buffer_lgpt==0)
-  //{     
-      //buffer_lgpt = (Sint16*)malloc(sizeof(Sint16)*SAM);
-  //}
-  printf("lgpt init\n");
+
+  DPRINTF("LgptsamplerMachine::init() : 0x%08.8X",this);
   if (buffer==0)
     buffer=(lgptfixed*)malloc(sizeof(fixed)*1024);
   if (buffer16==0)
     buffer16=(int16_t*)malloc(sizeof(int16_t)*1024);
   index=0; // use by this->tick()
 
-
-  //printf("buffer   : 0x%08.8X\n",buffer);
-  //printf("buffer16 : 0x%08.8X\n",buffer16);
-  
-  // adsr_amp.init();
-
-  // adsr_amp.setInput(&vco); 
-
-  // filter.init();
   sample_num=0;
-
-
-  //this->reset();
-  // this->getADSRAmp().init();
-
-  // this->getPicodrumVCO().init();
-  // this->getPicodrumVCO().setNoteDetune(0,0);      
-  //this->getPicodrumVCO().setSynthFreq(0);      
-  //this->getADSRAmp().setNoteADSR(0);
 
   note=0;
   detune=0;
@@ -76,12 +49,13 @@ void LgptsamplerMachine::init()
   SyncMaster * SM=SyncMaster::GetInstance();
   int argc;
   char ** argv;
-  DEB.Boot(argc,argv);
+  //DEB.Boot(argc,argv);
 
   //Path::SetAlias("samples","samples") ;
   //SP->Load();
   //SP->loadSample("samples/70_SUREG_B.wav");
   //SP->loadSample("samples/808-cowbell.wav");
+  /*
   SP->loadSample("samples/SwaneeC4.wav");
   SP->loadSample("samples/Steel1C4.wav");
   SP->loadSample("samples/OohhC5.wav");
@@ -105,27 +79,41 @@ void LgptsamplerMachine::init()
   SP->loadSample("samples/MDWeeeeeC4.wav");
   SP->loadSample("samples/Eerr1C4.wav");
   SP->loadSample("samples/HHClosed.wav");
-
+  */
+  /*
+  SP->loadSample(0,"samples/SwaneeC4.wav");
+  SP->loadSample(1,"samples/Steel1C4.wav");
+  SP->loadSample(2,"samples/OohhC5.wav");
+  SP->loadSample(3,"samples/SymTomHi.wav");
+  SP->loadSample(4,"samples/Fishs.wav");
+  SP->loadSample(5,"samples/BrsSect4C3.wav");
+  SP->loadSample(6,"samples/DirtGtrC4.wav");
+  SP->loadSample(7,"samples/FlteC4.wav");
+  SP->loadSample(8,"samples/Snare.wav");
+  SP->loadSample(9,"samples/Orch5C4.wav");
+  SP->loadSample(10,"samples/BD1.wav");
+  SP->loadSample(11,"samples/WhistC3.wav");
+  SP->loadSample(12,"samples/PianoHiA4.wav");
+  SP->loadSample(13,"samples/Ssnre.wav");
+  SP->loadSample(14,"samples/MufBassC2.wav");
+  SP->loadSample(15,"samples/VoxC5.wav");
+  SP->loadSample(16,"samples/OpClHat.wav");
+  SP->loadSample(17,"samples/Pang.wav");
+  SP->loadSample(18,"samples/SaxzC4.wav");
+  SP->loadSample(19,"samples/VlnTrem2C4.wav");
+  SP->loadSample(20,"samples/MDWeeeeeC4.wav");
+  SP->loadSample(21,"samples/Eerr1C4.wav");
+  SP->loadSample(22,"samples/HHClosed.wav");
+  */
   SM->SetTempo(120);
   SI.Init();
   SI.AssignSample(0);
-  /*
-  printf("<<<<SP.GetNameListSize()=%d>>>>>\n",SP->GetNameListSize());
-  int i;
-  for (i=0;i<SP->GetNameListSize();i++)
-    {
-      char ** tab_str=SP->GetNameList();
-      printf("%s\n",tab_str[i]);
-    }
-  */
-
   channel=-1;
   afterinit=1;  
 }
 
 void LgptsamplerMachine::setChannelNumber(int c)
 {
-  //printf("void LgptsamplerMachine::setChannelNumber(%d)\n",c);
   channel=c;
 }
 
@@ -177,7 +165,6 @@ int LgptsamplerMachine::checkI(int what,int val)
 int LgptsamplerMachine::getI(int what)
 {
 
-  //if (what==NOTE_ON) return this->getADSRAmp().getNoteOn();
 }
 
 void LgptsamplerMachine::setF(int what,float val)
@@ -223,62 +210,19 @@ void LgptsamplerMachine::setI(int what,int val)
   //if (what==OSC1_FREQ)           this->getPicodrumVCO().setSynthFreq(val);
   if (what==OSC1_TYPE)           osc1_type=val;
   if (what==OSC2_TYPE)           osc2_type=val;
-  // if (what==OSC2_TYPE)           { this->getPicodrumVCO().setOscillator(1,val); osc2_type=val; }
-
-  // if (what==OSC12_MIX)           this->getPicodrumVCO().setPicodrumVCOMix(val);
-
-  // if (what==LFO1_DEPTH)          this->getPicodrumVCO().setLfoDepth(val);
-  // if (what==LFO_TYPE)            this->getPicodrumVCO().setLfoType(val);
-
-  // if (what==PITCHBEND_DEPTH)     this->getPicodrumVCO().setPitchBendDepth(val);
-  // if (what==PITCHBEND_SPEED)     this->getPicodrumVCO().setPitchBendSpeed(val);
-
-  // if (what==OSC1_PHASE)          { phase=val; this->getPicodrumVCO().setPicodrumVCOPhase(val); }
-
-
   if (what==LFO1_FREQ)           lfo1_freq=val;
   if (what==LFO1_DEPTH)          lfo1_depth=val;
   if (what==PITCHBEND_DEPTH)     pb_depth=val;
   if (what==PITCHBEND_SPEED)     pb_freq=val;
 
-
-  // if (what==ADSR_ENV0_ATTACK)    this->getADSRAmp().setAttack(val);
-  // if (what==ADSR_ENV0_RELEASE)   this->getADSRAmp().setRelease(val);
-
-
-  
    if (what==FILTER1_CUTOFF)      
      cutoff=val;
 
    if (what==FILTER1_RESONANCE)         
      resonance=val;
-
-  // if (what==FILTER1_TYPE)     filter.setFilterType(val);
-  // if (what==FILTER1_ALGO)     filter.setFilterAlgo(val);
-
-  
 }
 
 
-// PicodrumADSR & LgptsamplerMachine::getADSRAmp()
-// {
-//   return adsr_amp;
-// }
-
-
-
-
-// PicodrumVCO & LgptsamplerMachine::getPicodrumVCO()
-// {
-//   //  DPRINTF("LgptsamplerMachine::getPicodrumVCO() this=0x%08.8X\n",this);
-//   //  return vco_pointer;
-//   return vco;
-// }
-
-//Biquad & LgptsamplerMachine::getBiquad()
-//{
-//  return bq;
-//}
 
 const char * LgptsamplerMachine::getMachineParamCharStar(int machineParam,int paramValue)
 {
@@ -364,9 +308,6 @@ void LgptsamplerMachine::reset()
 {
   sample_num=0;
   last_sample=0;
-  // this->getADSRAmp().reset();
-  // this->getPicodrumVCO().reset();
-  //adsr_amp.reset();
 }
 
 
@@ -378,9 +319,6 @@ Sint16 LgptsamplerMachine::tick()
   Sint16 s_out;
   int        i;
 
-  // there is something wrong here, need to debug it
-  //  return filter.process(adsr_amp.tick());
-  //return adsr_amp.tick();
   if (index>=SAM | index<0)
     index=0;
 
@@ -389,22 +327,13 @@ Sint16 LgptsamplerMachine::tick()
       SI.Render(channel,buffer,SAM/2,true);
       i=0;
       for (i=0;i<SAM;i++)
-	buffer[i]=fp2i(buffer[i]);
+	buffer[i]=(fp2i(buffer[i])>>2);
       
       for (i=0;i<SAM;i++)
 	buffer16[i]=buffer[i];
     }
-   
-  //     while (i<SAM)
-  // 	{
-  // 	  buffer_picodrum[i]=filter.process(buffer_picodrum[i]);
-  // 	  i++;
-  // 	}
-  //   }
-    
   s_out=buffer16[index];
   
   index++;
-  // sample_num++;
   return s_out;
 }

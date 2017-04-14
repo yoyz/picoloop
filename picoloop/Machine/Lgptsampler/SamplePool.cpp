@@ -41,7 +41,7 @@ void SamplePool::Reset() {
 	} ;
 	//SoundFontManager::GetInstance()->Reset() ;
 } ;
-
+/*
 void SamplePool::Load() {
 
 	Path sampleDir("samples:");
@@ -99,7 +99,7 @@ void SamplePool::Load() {
 		rest-- ;
 	} ;
 } ;
-
+*/
 SoundSource *SamplePool::GetSource(int i) {
 	return wav_[i] ;
 } ;
@@ -112,6 +112,31 @@ int SamplePool::GetNameListSize() {
 	return count_ ;
 } ;
 
+bool SamplePool::loadSample(int index,const char *path)
+{
+  if (count_==MAX_PIG_SAMPLES) return false ;
+  Path sPath(path) ;
+  Status::Set("Loading %s",sPath.GetName().c_str()) ;
+  Path wavPath(path) ;
+  WavFile *wave=WavFile::Open(path) ;
+  if (wave)
+    {
+      wav_[index]=wave ;
+      const std::string name=wavPath.GetName() ;
+      names_[count_]=(char*)SYS_MALLOC(name.length()+1) ;
+      strcpy(names_[count_],name.c_str()) ;
+      count_++ ;
+      wave->GetBuffer(0,wave->GetSize(-1)) ;
+      wave->Close() ;
+      return true ;
+    }
+  else
+    {
+      Trace::Error("Failed to load samples %s",wavPath.GetName().c_str()) ;
+      return false ;
+    }
+}
+/*
 bool SamplePool::loadSample(const char *path) {
 
 	if (count_==MAX_PIG_SAMPLES) return false ;
@@ -135,9 +160,9 @@ bool SamplePool::loadSample(const char *path) {
 		return false ;
  	}
 }
-
+*/
 #define IMPORT_CHUNK_SIZE 1000
-
+/*
 int SamplePool::ImportSample(Path &path) {
 
 	if (count_==MAX_PIG_SAMPLES) return -1 ;
@@ -192,7 +217,8 @@ int SamplePool::ImportSample(Path &path) {
 	NotifyObservers(&ev) ;
 	return status?(count_-1):-1 ;
 };
-
+*/
+/*
 void SamplePool::PurgeSample(int i) {
 
 	// construct the path of the sample to delete
@@ -225,7 +251,9 @@ void SamplePool::PurgeSample(int i) {
 	ev.type_=SPET_DELETE ;
 	NotifyObservers(&ev) ;
 } ;
-
+*/
+/*
 bool SamplePool::loadSoundFont(const char *path) {
 	return false;
 } ;
+*/
