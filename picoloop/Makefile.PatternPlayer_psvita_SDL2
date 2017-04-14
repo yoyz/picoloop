@@ -17,7 +17,7 @@ CFLAGS   += -I.
 #CXXFLAGS += -DDEBUG_PRINTF -D__SDL20__ -DPSVITA -D__PSVITA_AUDIO__ -fpermissive -std=c++11 -I. -I$(VITASDK)/arm-vita-eabi/include/ -L$(VITASDK)/arm-vita-eabi/lib -lSDL2 -Wpointer-arith
 #CXXFLAGS += -O2 -D__SDL20__ -DPSVITA -D__PSVITA_AUDIO__ -fpermissive -std=c++11 -I. -I$(VITASDK)/arm-vita-eabi/include/ -L$(VITASDK)/arm-vita-eabi/lib -lSDL2 -Wpointer-arith
 #CXXFLAGS += -O2 -DDEBUG_PRINTF -D__SDL20__ -DPSVITA -D__PSVITA_AUDIO__ -fpermissive -std=c++11 -I. -I$(VITASDK)/arm-vita-eabi/include/ -L$(VITASDK)/arm-vita-eabi/lib -lSDL2 -Wpointer-arith
-CXXFLAGS += -O2 -D__SDL20__ -DPSVITA -D__PSVITA_AUDIO__ -fpermissive -std=c++11 -I. -I$(VITASDK)/arm-vita-eabi/include/ -L$(VITASDK)/arm-vita-eabi/lib -lSDL2 -Wpointer-arith
+CXXFLAGS += -std=c++98 -O2 -D__SDL20__ -DPSVITA -D__PSVITA_AUDIO__ -fpermissive -std=c++11 -I. -I$(VITASDK)/arm-vita-eabi/include/ -L$(VITASDK)/arm-vita-eabi/lib -lSDL2 -Wpointer-arith 
 
 #SRC_C :=$(call rwildcard, src/, *.c)
 #SRC_CPP :=$(call rwildcard, src/, *.cpp)
@@ -29,14 +29,17 @@ SRC_CPP := \
 		$(SOURCES_PICOSYNTH) 	\
 		$(SOURCES_PICODRUM) 	\
 		$(SOURCES_DBOPL) 	\
-		$(SOURCES_PBSYNTH)
+		$(SOURCES_PBSYNTH)	\
+		$(SOURCES_LGPTSAMPLERSYNTH) 
+
 
 
 
 #OBJ_DIRS := $(addprefix out/, $(dir $(SRC_C:src/%.c=%.o))) $(addprefix out/, $(dir $(SRC_CPP:src/%.cpp=%.o)))
 #OBJ_DIRS := $(addprefix out/, $(dir $(SRC_C:./%.c=%.o))) $(addprefix out/, $(dir $(SRC_CPP:./%.cpp=%.o)))
 #OBJ_DIRS := $(addprefix out/, $(dir $(SRC_CPP:./%.cpp=%.o)))
-OBJ_DIRS := out/ out/Machine/Picosynth/ out/Machine/Picodrum out/Machine/Dbopl/ out/Machine/PBSynth
+OBJ_DIRS := out/ out/Machine/Picosynth/ out/Machine/Picodrum out/Machine/Dbopl/ out/Machine/PBSynth out/Machine/Lgptsampler
+
 #OBJS := $(addprefix out/, $(SRC_C:src/%.c=%.o)) $(addprefix out/, $(SRC_CPP:src/%.cpp=%.o))
 #OBJS := $(addprefix out/, $(SRC_C:./%.c=%.o)) $(addprefix out/, $(SRC_CPP:./%.cpp=%.o))
 OBJS := $(addprefix out/, $(SRC_CPP:%.cpp=%.o))

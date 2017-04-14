@@ -133,7 +133,7 @@ long UnixFile::Tell() {
 } ;
 void UnixFile::Close() {
 	fflush(file_) ;
-	fsync(fileno(file_)) ;
+	//fsync(fileno(file_)) ;
 	fclose(file_) ;
 } ;
 

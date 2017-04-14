@@ -101,7 +101,7 @@ private:
        bool dirty_ ;
 	   TableSaveState tableState_ ;
 
-	   static char lastMidiNote_[SONG_CHANNEL_COUNT] ;
+	   static int lastMidiNote_[SONG_CHANNEL_COUNT] ;
 	   static lgptfixed lastSample_[SONG_CHANNEL_COUNT][2] ;
 	   static lgptfixed feedback_[SONG_CHANNEL_COUNT][FB_BUFFER_LENGTH*2] ;
 
