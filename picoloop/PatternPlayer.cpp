@@ -49,6 +49,11 @@ using namespace std;
 #include "Machine/MidiOutSystem/MidiOutUserInterface.h"
 #endif
 
+
+// Define the header used by LGPT Sampler
+#include "Machine/Lgptsampler/DEBSystem.h"
+
+
 #ifdef PSVITA
 #include <psp2/kernel/processmgr.h>
 #include <SDL2/SDL.h>
@@ -161,6 +166,12 @@ SIDSynthUserInterface    SSUI;
 #ifdef __RTMIDI__
 MidiOutUserInterface MIDIUI;
 #endif
+
+// Begin used only by LGPT Sampler
+DEBSystem DEB;
+int argc;
+char ** argv;
+// End used only by LGPT Sampler
 
 //UI.handle_key(1,1);
 //UI.a=1;
@@ -4165,6 +4176,22 @@ void init_and_load_config()
 	}
 }
 
+void init_lgpt_samplepool()
+{  
+  SamplePool * SP=SamplePool::GetInstance();
+  SyncMaster * SM=SyncMaster::GetInstance();
+  char pathtosample[128];
+  int i;
+  DEB.Boot(argc,argv);
+  for (i=0;i<127;i++)
+    {
+      sprintf(pathtosample,"samples/%d.wav",i);
+      SP->loadSample(i,pathtosample);
+      //SP->loadSample(i,"samples/0.wav");
+      //SP->loadSample(1,"samples/1.wav");
+    }
+}
+
 int main(int argc,char **argv)
 {
   int i;
@@ -4176,7 +4203,8 @@ int main(int argc,char **argv)
   init_midi();       // used when we have midi in/out
 
   wtg();             // Generate the Waveform use by picoSynth/PicoDrum
-
+  init_lgpt_samplepool();
+  
   NoteFreq & NF = NoteFreq::getInstance();
   NF.init();      // init the NoteFrequency
   TK.init();      // init the Tweakable Knob

@@ -22,19 +22,20 @@ struct SamplePoolEvent: public I_ObservableData {
 
 class SamplePool: public T_Singleton<SamplePool>,public Observable {
 public:
-	void Load() ;
+      //void Load() ;
 	SamplePool() ;
 	void Reset() ;
 	~SamplePool() ;
 	SoundSource *GetSource(int i) ;
 	char **GetNameList() ;
 	int GetNameListSize();
-	int ImportSample(Path &path) ;
-	void PurgeSample(int i) ;
+	//int ImportSample(Path &path) ;
+	//void PurgeSample(int i) ;
 	const char *GetSampleLib() ;
 	//protected:
-	bool loadSample(const char * path) ;
-	bool loadSoundFont(const char *path);
+	//bool loadSample(const char * path) ;
+	//bool loadSoundFont(const char *path);
+	bool loadSample(int index,const char * path) ;
  protected:
 	int count_ ;
 	char* names_[MAX_PIG_SAMPLES] ;
