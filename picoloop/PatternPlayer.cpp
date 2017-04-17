@@ -94,8 +94,8 @@ char padb='b';
 
 PSP_MODULE_INFO("PatternPlayer", PSP_MODULE_USER, VERS, REVS);
 PSP_MAIN_THREAD_ATTR(PSP_THREAD_ATTR_USER|THREAD_ATTR_VFPU);
-//PSP_HEAP_SIZE_KB(-2048) ;
-PSP_HEAP_SIZE_KB(-4096) ;
+PSP_HEAP_SIZE_KB(-2048) ;
+//PSP_HEAP_SIZE_KB(-4096) ;
 #endif // PSP
 
 
@@ -4178,15 +4178,20 @@ void init_and_load_config()
 }
 
 void init_lgpt_samplepool()
-{  
+{
   SamplePool * SP=SamplePool::GetInstance();
   SyncMaster * SM=SyncMaster::GetInstance();
   char pathtosample[128];
   int i;
+
   DEB.Boot(argc,argv);
   for (i=0;i<127;i++)
     {
+#if defined(PSVITA)
+      sprintf(pathtosample,"ux0:/app/PICOLOOP1/samples/%d.wav",i);
+#else
       sprintf(pathtosample,"samples/%d.wav",i);
+#endif
       SP->loadSample(i,pathtosample);
       //SP->loadSample(i,"samples/0.wav");
       //SP->loadSample(1,"samples/1.wav");

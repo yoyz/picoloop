@@ -47,13 +47,14 @@ int SamplePool::GetNameListSize() {
 bool SamplePool::loadSample(int index,const char *path)
 {
   if (count_==MAX_PIG_SAMPLES) return false ;
-  Path sPath(path) ;
-  Path wavPath(path) ;
+  //Path sPath(path) ;
+  //Path wavPath(path) ;
   WavFile *wave=WavFile::Open(path) ;
   if (wave)
     {
       wav_[index]=wave ;
-      const std::string name=wavPath.GetName() ;
+      //const std::string name=wavPath.GetName() ;
+      const std::string name=std::string(path);
       names_[count_]=(char*)malloc(sizeof(char)*name.length()+1) ;
       strcpy(names_[count_],name.c_str()) ;
       count_++ ;
@@ -63,7 +64,8 @@ bool SamplePool::loadSample(int index,const char *path)
     }
   else
     {
-      printf("Failed to load samples %s",wavPath.GetName().c_str());
+      //printf("Failed to load samples %s",wavPath.GetName().c_str());
+      printf("Failed to load samples %s",path);
       return false ;
     }
 }

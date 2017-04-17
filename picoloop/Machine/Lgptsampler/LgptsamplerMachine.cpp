@@ -30,7 +30,8 @@ LgptsamplerMachine::~LgptsamplerMachine()
 
 void LgptsamplerMachine::init()
 {
-
+  //return 0;
+  //return;
   DPRINTF("LgptsamplerMachine::init() : 0x%08.8X",this);
   if (buffer==0)
     buffer=(lgptfixed*)malloc(sizeof(fixed)*1024);
@@ -330,6 +331,7 @@ void LgptsamplerMachine::reset()
 
 Sint16 LgptsamplerMachine::tick()
 {
+  //  return 0;
   float  f_in;
   float  f_out;
   Sint16 s_in;

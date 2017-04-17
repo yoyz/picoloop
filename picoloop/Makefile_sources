@@ -194,7 +194,6 @@ SOURCES_LGPTSAMPLERSYNTH := 	Machine/Lgptsampler/SampleInstrument.cpp	\
 				Machine/Lgptsampler/VariableContainer.cpp	\
 				Machine/Lgptsampler/Filters.cpp			\
 				Machine/Lgptsampler/SRPUpdaters.cpp		\
-				Machine/Lgptsampler/FileSystem.cpp		\
 				Machine/Lgptsampler/Trace.cpp			\
 				Machine/Lgptsampler/Config.cpp			\
 				Machine/Lgptsampler/wildcard.cpp		\
@@ -206,10 +205,11 @@ SOURCES_LGPTSAMPLERSYNTH := 	Machine/Lgptsampler/SampleInstrument.cpp	\
 				Machine/Lgptsampler/ServiceRegistry.cpp		\
 				Machine/Lgptsampler/char.cpp			\
 				Machine/Lgptsampler/SubService.cpp		\
-				Machine/Lgptsampler/UnixFileSystem.cpp		\
 				Machine/Lgptsampler/Result.cpp			\
 				Machine/Lgptsampler/DEBSystem.cpp		\
 				Machine/Lgptsampler/Logger.cpp			\
 				Machine/Lgptsampler/LgptsamplerMachine.cpp	\
 				Machine/Lgptsampler/LgptsamplerUserInterface.cpp			
 
+				#//Machine/Lgptsampler/FileSystem.cpp		\
+				#//Machine/Lgptsampler/UnixFileSystem.cpp		\
