@@ -36,7 +36,7 @@ int Swap32 (int from)
 }
 
 
-WavFile::WavFile(I_File *file) {
+WavFile::WavFile(const char *path) {
   /*
 	if (initChunkSize_) {
 		const char *size=Config::GetInstance()->GetValue("SAMPLELOADCHUNKSIZE") ;
@@ -46,45 +46,36 @@ WavFile::WavFile(I_File *file) {
 		initChunkSize_=false;
 	}
   */
+  file=fopen(path,"r");	
   bufferChunkSize_=4096;
 	samples_=0 ;
 	size_=0 ;
 	readBuffer_=0 ;
 	readBufferSize_=0 ;
 	sampleBufferSize_=0 ;
-	file_=file ;
+	//file_=file ;
 } ;
 
 WavFile::~WavFile() {
-	if (file_) {
-		file_->Close() ;
-		delete file_ ;
+  //if (file_) {
+  if (file) {
+	  fclose(file);
+	  //file_->Close() ;
+	  //	delete file_ ;
 	}
-	free(samples_);
-	free(readBuffer_);
-	//SAFE_FREE(samples_) ;
-	//SAFE_FREE(readBuffer_) ;
+	SAFE_FREE(samples_) ;
+	SAFE_FREE(readBuffer_) ;
 } ;
 
 WavFile *WavFile::Open(const char *path) {
 
-    // open file
-
-	FileSystem *fs=FileSystem::GetInstance() ;
-	I_File *file=fs->Open(path,"r") ;
-	
-	if (!file) return 0 ;
-
-	WavFile *wav=new WavFile(file) ;
-
-        
-        // Get data
-        
-/*        file->Seek(0,SEEK_SET) ;
-        file->Read(fileBuffer,filesize,1) ;
-        uchar *ptr=fileBuffer ;*/
-        
-//Trace::Dump("Loading sample from %s",path) ;
+  // double check we can open the file
+  FILE * ftmp;
+  ftmp=fopen(path,"r");	
+  if (!ftmp) return 0 ;
+  else
+    fclose(ftmp);
+  WavFile *wav=new WavFile(path) ;
 
 	long position=0 ;
 
@@ -261,8 +252,10 @@ long WavFile::readBlock(long start,long size) {
   } 
   else 
   {
-  	file_->Seek(start,SEEK_SET) ;
-    file_->Read(readBuffer_,size,1) ;
+    fseek(file,start,SEEK_SET);
+    fread(readBuffer_,size,1,file);
+    //file_->Seek(start,SEEK_SET) ;
+    //file_->Read(readBuffer_,size,1) ;
   }
 	return size ;
 } ;
@@ -332,8 +325,9 @@ bool WavFile::GetBuffer(long start,long size) {
 } ;
 
 void WavFile::Close() {
-	file_->Close() ;
-	SAFE_DELETE(file_) ;
+  //file_->Close() ;
+  fclose(file);
+  //SAFE_DELETE(file_) ;
 	SAFE_FREE(readBuffer_) ;
 	readBufferSize_=0 ;
 } ;

@@ -20,12 +20,18 @@ public: // Override in implementation
 
 } ;
 
-#define SYS_MEMSET(a,b,c) { System* system=System::GetInstance() ; system->Memset(a,b,c) ;  }
-#define SYS_MEMCPY(a,b,c) {  System* system=System::GetInstance() ; system->Memcpy(a,b,c) ; }
-#define SYS_MALLOC(size) (System::GetInstance()->Malloc(size))
-#define SYS_FREE(ptr) (System::GetInstance()->Free(ptr))
+//#define SYS_MEMSET(a,b,c) { System* system=System::GetInstance() ; system->Memset(a,b,c) ;  }
+//#define SYS_MEMCPY(a,b,c) {  System* system=System::GetInstance() ; system->Memcpy(a,b,c) ; }
+//#define SYS_MALLOC(size) (System::GetInstance()->Malloc(size))
+//#define SYS_FREE(ptr) (System::GetInstance()->Free(ptr))
+//#define SAFE_FREE(ptr) if (ptr) { SYS_FREE(ptr); ptr=0 ; }
+#define SYS_MEMSET(a,b,c) (memset(a,b,c))
+#define SYS_MEMCPY(a,b,c) (memcpy(a,b,c))
+#define SYS_MALLOC(size)  (malloc(size))
+#define SYS_FREE(ptr)     (free(ptr))
+#define SAFE_DELETE(ptr)  if (ptr)  { delete ptr ; ptr=0 ; }
+#define SAFE_FREE(ptr)    if (ptr)  { free(ptr)  ; ptr=0 ; }
 
-#define SAFE_DELETE(ptr) if (ptr)  { delete ptr ; ptr=0 ; }
-#define SAFE_FREE(ptr) if (ptr) { SYS_FREE(ptr); ptr=0 ; }
+
 
 #endif
