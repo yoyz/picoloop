@@ -446,7 +446,8 @@ bool SampleInstrument::Render(int channel,lgptfixed *buffer,int size,bool update
 		 
 		 // clear the lgptfixed point buffer
 
-		 SYS_MEMSET(buffer,0,size*2*sizeof(lgptfixed)) ;
+		 //SYS_MEMSET(buffer,0,size*2*sizeof(lgptfixed)) ;
+		 memset(buffer,0,size*2*sizeof(lgptfixed));
 
 
 		 bool hasUpdaters=!(rp->activeUpdaters_.empty()) ;
@@ -1377,5 +1378,6 @@ bool SampleInstrument::IsMulti() {
 void SampleInstrument::EnableDownsamplingLegacy()
 {
   useDirtyDownsampling_ = true;
-  Trace::Log("CONFIG","Enabling downsampling legacy");
+  //Trace::Log("CONFIG","Enabling downsampling legacy");
+  printf("CONFIG","Enabling downsampling legacy\n");
 }

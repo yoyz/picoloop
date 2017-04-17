@@ -31,7 +31,7 @@ public:
 	int GetNameListSize();
 	//int ImportSample(Path &path) ;
 	//void PurgeSample(int i) ;
-	const char *GetSampleLib() ;
+	//const char *GetSampleLib() ;
 	//protected:
 	//bool loadSample(const char * path) ;
 	//bool loadSoundFont(const char *path);

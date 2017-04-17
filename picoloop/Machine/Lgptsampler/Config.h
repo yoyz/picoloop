@@ -13,7 +13,7 @@ public:
 	Config() ;
 	~Config() ;
 	const char *GetValue(const char *key) ;
-	void ProcessArguments(int argc,char **argv) ;
+	//void ProcessArguments(int argc,char **argv) ;
 } ;
 
 #endif

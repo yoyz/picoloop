@@ -3,8 +3,8 @@
 
 Config::Config() 
 {
-	Path path("bin:config.xml") ;
-	Trace::Log("CONFIG","Got config path=%s",path.GetPath().c_str()) ;
+  //Path path("bin:config.xml") ;
+	//Trace::Log("CONFIG","Got config path=%s",path.GetPath().c_str()) ;
 	/*
 	TiXmlDocument *document=new TiXmlDocument(path.GetPath());
 	bool loadOkay = document->LoadFile();
@@ -68,16 +68,19 @@ Config::~Config()
 
 const char *Config::GetValue(const char *key) 
 {
+  /*
 	Variable *v=FindVariable(key) ;
 	if (v) {
-		Trace::Log("CONFIG","Got value for %s=%s",key,v->GetString()) ;
+	  //Trace::Log("CONFIG","Got value for %s=%s",key,v->GetString()) ;
+	  printf("CONFIG","Got value for %s=%s",key,v->GetString());
 	}
 	return v?v->GetString():0 ;
+  */
 } ;
 
 
 //------------------------------------------------------------------------------
-
+/*
 void Config::ProcessArguments(int argc,char **argv) 
 {
 	for (int i=1;i<argc;i++) {
@@ -96,6 +99,6 @@ void Config::ProcessArguments(int argc,char **argv)
 		}
 	}
 } ;
-
+*/
 
 //------------------------------------------------------------------------------
