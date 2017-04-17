@@ -37,6 +37,7 @@ int Swap32 (int from)
 
 
 WavFile::WavFile(I_File *file) {
+  /*
 	if (initChunkSize_) {
 		const char *size=Config::GetInstance()->GetValue("SAMPLELOADCHUNKSIZE") ;
 		if (size) {
@@ -44,6 +45,8 @@ WavFile::WavFile(I_File *file) {
 		}
 		initChunkSize_=false;
 	}
+  */
+  bufferChunkSize_=4096;
 	samples_=0 ;
 	size_=0 ;
 	readBuffer_=0 ;
@@ -57,8 +60,10 @@ WavFile::~WavFile() {
 		file_->Close() ;
 		delete file_ ;
 	}
-	SAFE_FREE(samples_) ;
-	SAFE_FREE(readBuffer_) ;
+	free(samples_);
+	free(readBuffer_);
+	//SAFE_FREE(samples_) ;
+	//SAFE_FREE(readBuffer_) ;
 } ;
 
 WavFile *WavFile::Open(const char *path) {

@@ -23,25 +23,27 @@ void DEBSystem::Boot(int argc,char **argv)
 		strcpy(buff,".");
 	}
 	//Path::SetAlias("bin",dirname(buff)) ;
-	Path::SetAlias("bin","bin") ;
+	//Path::SetAlias("bin","bin") ;
 
-	Path::SetAlias("root","bin:..") ;
+	//Path::SetAlias("root","bin:..") ;
 
 	Trace::GetInstance()->SetLogger(*(new StdOutLogger()));
 
-	Path logPath("bin:lgpt.log");
-	Path::SetAlias("root","bin:..") ;
-	Config::GetInstance()->ProcessArguments(argc,argv) ;
-
+	//Path logPath("bin:lgpt.log");
+	//Path::SetAlias("root","bin:..") ;
+	//Config::GetInstance()->ProcessArguments(argc,argv) ;
+	/*
 	// See if jack available
 	 {
-		Trace::Debug("Audio","Jack not found.. using default audio driver") ;
+	   //Trace::Debug("Audio","Jack not found.. using default audio driver") ;
+	   printf("Audio","Jack not found.. using default audio driver");
 		AudioSettings hints ;
 		hints.bufferSize_= 256 ;
 		hints.preBufferCount_=2 ;
 		//Audio::Install(new RTAudioStub(hints)) ;
 		//MidiService::Install(new RTMidiService()) ;
 	}
+	*/
 } ;
 
 void DEBSystem::Shutdown() {
