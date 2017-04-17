@@ -7,7 +7,7 @@ int DEBSystem::MainLoop() {
 void DEBSystem::Boot(int argc,char **argv) 
 {
 	System::Install(new DEBSystem()) ;
-	FileSystem::Install(new UnixFileSystem()) ;
+	//FileSystem::Install(new UnixFileSystem()) ;
 
   // Install aliases
 
