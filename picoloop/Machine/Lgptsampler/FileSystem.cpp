@@ -37,7 +37,7 @@ Path &Path::operator=(const Path &other) {
 } ;
 
 Path::~Path() {
-	SYS_FREE (path_) ;
+  SYS_FREE (path_) ;
 };
 
 std::string Path::GetPath() const

@@ -2,15 +2,17 @@
 #ifndef _WAV_FILE_H_
 #define _WAV_FILE_H_
 
-#include "FileSystem.h"
+//#include "FileSystem.h"
 #include "SoundSource.h"
-
+#include <stdio.h>
 class WavFile:public SoundSource {
 
 protected: // Factory - see Load method
-	WavFile(I_File *file) ;
+  //WavFile(I_File *file) ;
+  WavFile(const char *) ;
 public:
 	virtual ~WavFile() ;
+	//static WavFile *Open(const char *) ;
 	static WavFile *Open(const char *) ;
 	virtual void *GetSampleBuffer(int note) ;
 	virtual int GetSize(int note) ;
@@ -24,7 +26,8 @@ public:
 protected:
 	long readBlock(long position,long count) ;
 private:
-	I_File *file_ ;  // File
+	//I_File *file_ ;  // File
+	FILE * file;
 	void *readBuffer_ ; // Temp read buffer
 	int readBufferSize_; // Read buffer size
 	short *samples_ ; // sample buffer size (16 bits)
