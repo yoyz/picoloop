@@ -31,8 +31,8 @@ class LgptsamplerMachine : public Machine
   const char * getMachineParamCharStar(int machineParam,int paramValue);
 
 
-  DEBSystem DEB;
-  SampleInstrument SI;
+  //DEBSystem DEB;
+  SampleInstrument * SI;
 
   int channel;
   

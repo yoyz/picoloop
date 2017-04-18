@@ -8,7 +8,7 @@ CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINU
 
 CFLAGS_SDLVERS=-D__SDL12__
 CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINUX_RASPI1 -D__LINUX_ALSA__ -D__LINUX_PULSE__ -ggdb -DFIXED ${CFLAGS_SDLVERS} -DDEBUG_PRINTF                        -fpermissive -Wall
-CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINUX_RASPI1 -D__LINUX_ALSA__ -D__LINUX_PULSE__ -ggdb -DFIXED ${CFLAGS_SDLVERS} -DDEBUG_PRINTF                        -fpermissive
+CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINUX_RASPI1 -D__LINUX_ALSA__ -D__LINUX_PULSE__ -ggdb -DFIXED ${CFLAGS_SDLVERS} -DDEBUGPRINTF                        -fpermissive
 LDFLAGS=-Lraspian/lib/ -lasound -lpulse  -lpulse-simple -lSDL -lSDL_gfx -lSDL_ttf -lpthread
 
 
