@@ -39,6 +39,8 @@ void LgptsamplerMachine::init()
     buffer16=(int16_t*)malloc(sizeof(int16_t)*1024);
   index=0; // use by this->tick()
 
+
+  
   sample_num=0;
 
   note=0;
@@ -107,8 +109,11 @@ void LgptsamplerMachine::init()
   SP->loadSample(22,"samples/HHClosed.wav");
   */
   SM->SetTempo(120);
-  SI.Init();
-  SI.AssignSample(0);
+  SI=new SampleInstrument();
+  SI->Init();
+  SI->AssignSample(0);
+  //SI.Init();
+  //SI.AssignSample(0);
   channel=-1;
   afterinit=1;  
 }
@@ -184,11 +189,19 @@ void LgptsamplerMachine::setI(int what,int val)
   if (what==NOTE_ON && val==1) 
     {
       //SI.Start(0,72,true);
+      /*
       SI.AssignSample(osc1_type%22);
       SI.Start(channel,note,true);
       
       SI.ProcessCommand(channel,SIP_FILTCUTOFF,0x0000+cutoff);
       SI.ProcessCommand(channel,MAKE_FOURCC('F','R','E','S'),0x0000+resonance);
+      */
+      SI->AssignSample(osc1_type%22);
+      SI->Start(channel,note,true);
+      
+      SI->ProcessCommand(channel,SIP_FILTCUTOFF,0x0000+cutoff);
+      SI->ProcessCommand(channel,MAKE_FOURCC('F','R','E','S'),0x0000+resonance);
+
       // SI.ProcessCommand(0,MAKE_FOURCC('L','S','T','A'),lfo1_freq);
       // SI.ProcessCommand(0,MAKE_FOURCC('L','L','E','N'),lfo1_depth);
       // SI.ProcessCommand(0,MAKE_FOURCC('L','M','O','D'),osc1_type%4);
@@ -343,7 +356,8 @@ Sint16 LgptsamplerMachine::tick()
 
   if (index==0)
     {
-      SI.Render(channel,buffer,SAM/2,true);
+      //SI.Render(channel,buffer,SAM/2,true);
+      SI->Render(channel,buffer,SAM/2,true);
       i=0;
       for (i=0;i<SAM;i++)
 	buffer[i]=(fp2i(buffer[i])>>2);

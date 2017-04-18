@@ -141,12 +141,14 @@ bool SampleInstrument::Init() {
 	SamplePool *pool=SamplePool::GetInstance() ;
 
     Variable *vSample=FindVariable(SIP_SAMPLE) ;
+
 	NAssert(vSample) ;
 	int index=vSample->GetInt() ;
 	source_=(index>=0)?pool->GetSource(index):0 ;
 
 	source_=pool->GetSource(0) ;
 	tableState_.Reset() ;
+
 	return false ;
 }
 

@@ -411,6 +411,10 @@ In this case you need a prx and an elf file.
 Changelog
 =========
 
+V0.77ab
+- a : introduce lgptsampler for vita and raspberry pi
+- b : introduce lgptsampler for windows, stuck on psp
+
 V0.76abc
 - a : first port on psvita thanks to #henkaku team
 - b : re add polyrithmic in PSH, 

@@ -49,6 +49,7 @@ using namespace std;
 #include "Machine/MidiOutSystem/MidiOutUserInterface.h"
 #endif
 
+#include "SYSTEM.h"
 
 // Define the header used by LGPT Sampler
 #include "Machine/Lgptsampler/DEBSystem.h"
@@ -3857,11 +3858,16 @@ void init_monomixer_and_machine()
   // startup all track 
   // dump 64 sample without using each 64 sample
   // to avoir some trash
+
   for (t=0;t<TRACK_MAX;t++)
     {
+      DPRINTF("DUMPING 64 sample from track:%d",t);
       for (i=0;i<64;i++)
-	MM[t]->tick();
+	{
+	  MM[t]->tick();
+	}
     }
+  
 }
 
 void init_and_setup_midi()

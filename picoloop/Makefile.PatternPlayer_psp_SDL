@@ -107,7 +107,7 @@ PSP_FW_VERSION = 500
 INCDIR		=
 CFLAGS		= -O3  -G0 -Wall  -I${PSPDEV}/psp/include/ -L${PSPDEV}/psp/lib -D__SDL_AUDIO__ -DPSP -DFIXED -g -ggdb 
 CFLAGS		= -O3  -G0 -Wall  -I${PSPDEV}/psp/include/ -L${PSPDEV}/psp/lib -D__SDL_AUDIO__ -D__SDL12__ -DPSP  -g -ggdb -DLGPT_TEMPO -fpermissive
-CFLAGS		= -O3  -G0 -Wall  -I${PSPDEV}/psp/include/ -L${PSPDEV}/psp/lib -D__SDL_AUDIO__ -D__SDL12__ -DPSP  -g -ggdb              -fpermissive 
+CFLAGS		= -O3  -G0 -Wall  -I${PSPDEV}/psp/include/ -L${PSPDEV}/psp/lib -D__SDL_AUDIO__ -D__SDL12__ -DPSP  -g -ggdb              -fpermissive  -DDEBUGPRINTF
 CXXFLAGS	= $(CFLAGS) -fno-exceptions -fno-rtti
 ASFLAGS	        = $(CFLAGS)
 
