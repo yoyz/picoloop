@@ -66,36 +66,7 @@ OBJS=PatternPlayer.o \
 		      Machine/PBSynth/envtab.o                 \
 		      Machine/PBSynth/coeff.o                  \
 		      Machine/PBSynth/PBSynthMachine.o         \
-			Machine/Lgptsampler/SampleInstrument.o	\
-			Machine/Lgptsampler/SyncMaster.o		\
-			Machine/Lgptsampler/SamplePool.o		\
-			Machine/Lgptsampler/SampleVariable.o	\
-			Machine/Lgptsampler/Observable.o		\
-			Machine/Lgptsampler/Variable.o		\
-			Machine/Lgptsampler/WatchedVariable.o		\
-			Machine/Lgptsampler/TablePlayback.o		\
-			Machine/Lgptsampler/VariableContainer.o	\
-			Machine/Lgptsampler/Filters.o			\
-			Machine/Lgptsampler/SRPUpdaters.o		\
-			Machine/Lgptsampler/FileSystem.o		\
-			Machine/Lgptsampler/Trace.o			\
-			Machine/Lgptsampler/Config.o			\
-			Machine/Lgptsampler/wildcard.o		\
-			Machine/Lgptsampler/Status.o			\
-			Machine/Lgptsampler/WavFile.o			\
-			Machine/Lgptsampler/Groove.o			\
-			Machine/Lgptsampler/Persistent.o		\
-			Machine/Lgptsampler/TimeService.o		\
-			Machine/Lgptsampler/ServiceRegistry.o		\
-			Machine/Lgptsampler/char.o			\
-			Machine/Lgptsampler/SubService.o		\
-			Machine/Lgptsampler/UnixFileSystem.o		\
-			Machine/Lgptsampler/Result.o			\
-			Machine/Lgptsampler/DEBSystem.o		\
-			Machine/Lgptsampler/Logger.o			\
-			Machine/Lgptsampler/LgptsamplerMachine.o	\
-			Machine/Lgptsampler/LgptsamplerUserInterface.o			\
-		      psp_callback.o                           
+					      psp_callback.o                           
 
 
 

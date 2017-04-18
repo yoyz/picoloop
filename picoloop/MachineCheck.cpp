@@ -14,15 +14,16 @@ int MachineCheck::machineExist(int machineType)
   if (machineType==SYNTH_OPL2)        return 1;
   if (machineType==SYNTH_PICODRUM)    return 1;
   if (machineType==SYNTH_PBSYNTH)     return 1;
-  if (machineType==SYNTH_LGPTSAMPLER) return 1;
-#if    defined(__FPU__)
+#if    defined(__VECTORFPU__)
   if (machineType==SYNTH_CURSYNTH)    return 1;
   if (machineType==SYNTH_OPEN303)     return 1;
   if (machineType==SYNTH_TWYTCHSYNTH) return 1;
   if (machineType==SYNTH_MDADRUM)     return 1;
   if (machineType==SYNTH_SIDSYNTH)    return 1;
 #endif
-
+#if    defined(__RAM512MIB__)
+  if (machineType==SYNTH_LGPTSAMPLER) return 1;
+#endif
 #if    defined(__RTMIDI__)
   if (machineType==SYNTH_MIDIOUT)     return 1;
 #endif

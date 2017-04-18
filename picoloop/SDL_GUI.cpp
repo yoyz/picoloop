@@ -441,12 +441,12 @@ int SDL_GUI::guiTTFText(int x,int y,const char *txt)
 
   if (message!=NULL)
     SDL_FreeSurface(message);
-	#if   !defined(__FPU__)
+	#if   !defined(__VECTORFPU__)
   message=TTF_RenderText_Solid( ttf_font, txt, colorme );
   //message=TTF_RenderText_Solid( ttf_font, txt, textColor );
 	#endif
 
-	#if   defined(__FPU__) 
+	#if   defined(__VECTORFPU__) 
 		message = TTF_RenderText_Blended( ttf_font, txt, textColor );
 	#endif
   //apply_surface( 0, 0, background, screen );

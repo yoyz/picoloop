@@ -5,8 +5,10 @@
 #include "Machine/Picodrum/PicodrumMachine.h"
 #include "Machine/Dbopl/DboplMachine.h"
 #include "Machine/PBSynth/PBSynthMachine.h"
+#ifdef __RAM512MIB__
 #include "Machine/Lgptsampler/LgptsamplerMachine.h"
-#ifdef __FPU__
+#endif
+#ifdef __VECTORFPU__
 #include "Machine/Cursynth/CursynthMachine.h"
 #include "Machine/Open303/Open303Machine.h"
 #include "Machine/Twytch/TwytchsynthMachine.h"
@@ -48,9 +50,10 @@ class MonoMixer
   PicodrumMachine       PD;
   dboplMachine          OPLM;
   PBSynthMachine        PBS;
+#ifdef __RAM512MIB__
   LgptsamplerMachine    LGPTSMPL;
-
-#ifdef __FPU__
+#endif
+#ifdef __VECTORFPU__
   CursynthMachine       CS;
   Open303Machine        O303;
   TwytchsynthMachine    TW;
