@@ -1,20 +1,27 @@
 #include "MonoMixer.h"
 
-
-#if   defined(__FPU__) && defined(__RTMIDI__)
+//PCDESKTOP
+#if   defined(__VECTORFPU__) && defined(__RTMIDI__) && defined(__RAM512MIB__)
 MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(), CS(), O303(), TW(), MD(), SS(), LGPTSMPL(), MIDIOUTM(), FXDelay(), FXDisabled()
 #endif
-
-#if   defined(__FPU__) && !defined(__RTMIDI__)
+			
+#if   defined(__VECTORFPU__) && !defined(__RTMIDI__) && defined(__RAM512MIB__)
 MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(), CS(), O303(), TW(), MD(), SS(), LGPTSMPL(),            FXDelay(), FXDisabled()
 #endif
 
-#if   !defined(__FPU__) && defined(__RTMIDI__)
-MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(), LGPTSMPL(),                          MIDIOUTM(), FXDelay(), FXDisabled()
+#if   !defined(__VECTORFPU__) && defined(__RTMIDI__) && !defined(__RAM512MIB__)
+MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(),                          MIDIOUTM(), FXDelay(), FXDisabled()
 #endif
 
-#if  !defined(__FPU__) && !defined(__RTMIDI__)
-MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(), LGPTSMPL(),                                    FXDelay(), FXDisabled()
+//PSVITA, POCKETCHIP
+#if  !defined(__VECTORFPU__) && !defined(__RTMIDI__) && defined(__RAM512MIB__)
+MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(),                                  LGPTSMPL(),          FXDelay(), FXDisabled()
+#endif
+
+			
+//  OPENDINGUX, GP2X, PSP
+#if  !defined(__VECTORFPU__) && !defined(__RTMIDI__) && !defined(__RAM512MIB__)
+MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(),                         FXDelay(), FXDisabled()
 #endif
 
 #define SAMMONOMIXER 32
@@ -49,9 +56,11 @@ void MonoMixer::init()
   PD.init();
   OPLM.init();
   PBS.init();
+#if defined(__RAM512MIB__)
   LGPTSMPL.init();
-  
-#if defined(__FPU__)
+#endif
+
+#if defined(__VECTORFPU__)
   CS.init();
   O303.init();
   TW.init();
@@ -118,11 +127,12 @@ void MonoMixer::setMachineType(int type)
       M=&PBS;
       break;
 
+#if defined(__RAM512MIB__)     
     case SYNTH_LGPTSAMPLER:
       M=&LGPTSMPL;
       break;
-      
-#if defined(__FPU__)
+#endif      
+#if defined(__VECTORFPU__)
     case SYNTH_CURSYNTH:
       M=&CS;
       break;

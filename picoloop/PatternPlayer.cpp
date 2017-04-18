@@ -32,9 +32,11 @@ using namespace std;
 #include "Machine/Picodrum/PicodrumUserInterface.h"
 #include "Machine/Dbopl/DboplUserInterface.h"
 #include "Machine/PBSynth/PBSynthUserInterface.h"
+#ifdef __RAM512MIB__
 #include "Machine/Lgptsampler/LgptsamplerUserInterface.h"
+#endif
 
-#ifdef __FPU__
+#if defined(__VECTORFPU__)
 #include "Machine/Cursynth/CursynthUserInterface.h"
 #include "Machine/Open303/Open303UserInterface.h"
 #include "Machine/Twytch/TwytchsynthUserInterface.h"
@@ -43,7 +45,7 @@ using namespace std;
 #endif
 
 
-#ifdef __RTMIDI__
+#if defined(__RTMIDI__)
 #include "MidiOutSystem.h"
 #include "MidiInSystem.h"
 #include "Machine/MidiOutSystem/MidiOutUserInterface.h"
@@ -51,9 +53,10 @@ using namespace std;
 
 #include "SYSTEM.h"
 
+#ifdef __RAM512MIB__
 // Define the header used by LGPT Sampler
 #include "Machine/Lgptsampler/DEBSystem.h"
-
+#endif
 
 #ifdef PSVITA
 #include <psp2/kernel/processmgr.h>
@@ -110,7 +113,7 @@ PSP_HEAP_SIZE_KB(-2048) ;
 #define MENU_CONFIG_Y_MIDISYNCINOUT      6
 
 
-#ifdef __RTMIDI__
+#if defined(__RTMIDI__)
 #define MENU_CONFIG_Y_MAX           6
 #else
 #define MENU_CONFIG_Y_MAX           3
@@ -155,9 +158,12 @@ PicosynthUserInterface   PSUI;
 PicodrumUserInterface    PDUI;
 DboplUserInterface       DBUI;
 PBSynthUserInterface     PBUI;
-LgptsamplerUserInterface LGUI;
 
-#ifdef __FPU__
+#if defined(__RAM512MIB__)
+LgptsamplerUserInterface LGUI;
+#endif
+
+#ifdef __VECTORFPU__
 CursynthUserInterface    CSUI;
 Open303UserInterface     O303UI;
 TwytchsynthUserInterface TWUI;
@@ -169,11 +175,13 @@ SIDSynthUserInterface    SSUI;
 MidiOutUserInterface MIDIUI;
 #endif
 
+#ifdef __RAM512MIB__
 // Begin used only by LGPT Sampler
 DEBSystem DEB;
 int argc;
 char ** argv;
 // End used only by LGPT Sampler
+#endif
 
 //UI.handle_key(1,1);
 //UI.a=1;
@@ -2951,8 +2959,10 @@ void refresh_pecursor_ui(int i)
   if (machine_type==SYNTH_PICODRUM)     { UI=&PDUI; return ;   }
   if (machine_type==SYNTH_OPL2    )     { UI=&DBUI; return ;   }
   if (machine_type==SYNTH_PBSYNTH)      { UI=&PBUI; return ;   }
+#ifdef __RAM512MIB__
   if (machine_type==SYNTH_LGPTSAMPLER)  { UI=&LGUI; return ;   }
-#ifdef __FPU__
+#endif
+#ifdef __VECTORFPU__
   if (machine_type==SYNTH_CURSYNTH)     { UI=&CSUI;   return ; }
   if (machine_type==SYNTH_OPEN303)      { UI=&O303UI; return ; }
   if (machine_type==SYNTH_TWYTCHSYNTH)  { UI=&TWUI;   return ; }
@@ -4185,6 +4195,7 @@ void init_and_load_config()
 
 void init_lgpt_samplepool()
 {
+#if defined(__RAM512MIB__)
   SamplePool * SP=SamplePool::GetInstance();
   SyncMaster * SM=SyncMaster::GetInstance();
   char pathtosample[128];
@@ -4202,6 +4213,7 @@ void init_lgpt_samplepool()
       //SP->loadSample(i,"samples/0.wav");
       //SP->loadSample(1,"samples/1.wav");
     }
+#endif
 }
 
 int main(int argc,char **argv)
@@ -4215,8 +4227,9 @@ int main(int argc,char **argv)
   init_midi();       // used when we have midi in/out
 
   wtg();             // Generate the Waveform use by picoSynth/PicoDrum
+
   init_lgpt_samplepool();
-  
+
   NoteFreq & NF = NoteFreq::getInstance();
   NF.init();      // init the NoteFrequency
   TK.init();      // init the Tweakable Knob

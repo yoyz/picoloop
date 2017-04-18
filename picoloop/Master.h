@@ -232,6 +232,9 @@ enum {
 
 
 #ifdef OPENDINGUX
+//#define __FPU__         1
+//#define __RAM512MIB__   1
+//#define __RTMIDI__      1
 #define MAX_PATTERN_BY_PROJECT 32
 #define SCREEN_WIDTH	320
 #define SCREEN_HEIGHT	240
@@ -274,8 +277,9 @@ enum {
 
 #ifdef PC_DESKTOP
 #define MAX_PATTERN_BY_PROJECT 128
-#define __FPU__         1
-
+#define __VECTORFPU__   1
+#define __RAM512MIB__   1
+#define __RTMIDI__      1
 #define SCREEN_WIDTH	320
 #define SCREEN_HEIGHT	240
 #define SCREEN_DEPTH	16
@@ -331,8 +335,11 @@ enum {
 
 
 #ifdef LINUX_RASPI1
+//#define __FPU__         1
+#define __RAM512MIB__   1
+//#define __RTMIDI__      1
+
 #define MAX_PATTERN_BY_PROJECT 128
-//#define __FPU__         0
 
 #define SCREEN_WIDTH	320
 #define SCREEN_HEIGHT	240
@@ -382,8 +389,11 @@ enum {
 
 
 #ifdef LINUX_POCKETCHIP
+//#define __FPU__         1
+#define __RAM512MIB__   1
+//#define __RTMIDI__      1
+
 #define MAX_PATTERN_BY_PROJECT 128
-//#define __FPU__         0
 
 #define SCREEN_WIDTH	480
 #define SCREEN_HEIGHT	272
@@ -432,6 +442,10 @@ enum {
 
 
 #ifdef PSP
+//#define __FPU__         1
+//#define __RAM512MIB__   1
+//#define __RTMIDI__      1
+
 #define MAX_PATTERN_BY_PROJECT 32
 #define SCREEN_MULT     1
 #define SCREEN_WIDTH	480
@@ -483,6 +497,10 @@ enum {
 #endif
 
 #ifdef PSVITA
+//#define __FPU__         1
+#define __RAM512MIB__   1
+//#define __RTMIDI__      1
+
 #define MAX_PATTERN_BY_PROJECT 128
 #include <psp2/ctrl.h>
 #include "psp2shell.h"
@@ -527,6 +545,10 @@ enum {
 
 
 #ifdef GP2X
+//#define __FPU__         1
+//#define __RAM512MIB__   1
+//#define __RTMIDI__      1
+
 #define MAX_PATTERN_BY_PROJECT 32
 #define SCREEN_WIDTH	320
 #define SCREEN_HEIGHT	240
@@ -608,28 +630,45 @@ enum
 #define SYNTH_SIDSYNTH     9
 #define SYNTH_LGPTSAMPLER  10
 
-#if    defined(__FPU__) && defined(__RTMIDI__)
+
+// PC_DESKTOP
+// picosynth,picodrum,opl2,pbsynth
+// cursynth,open303,twytch,mdadrum,sidsynth
+// midiout
+// lgpt
+#if    defined(__VECTORFPU__) && defined(__RTMIDI__) && defined(__RAM512MIB__)
 #define SYNTH_SIZE 11
 #endif
 
-#if    defined(__FPU__) && !defined(__RTMIDI__)
+// PC_DESKTOP without MIDIOUT
+// picosynth,picodrum,opl2,pbsynth
+// cursynth,open303,twytch,mdadrum,sidsynth
+// lgpt
+#if    defined(__VECTORFPU__) && !defined(__RTMIDI__) && defined(__RAM512MIB__)
+#define SYNTH_SIZE 10
+#endif
+
+// PC_DESKTOP without : ( SYTNH_MIDIOUT, SYNTH_LGPTSAMPLER)
+// picosynth,picodrum,opl2,pbsynth
+// cursynth,open303,twytch,mdadrum,sidsynth
+#if    defined(__VECTORFPU__) && !defined(__RTMIDI__) && !defined(__RAM512MIB__)
 #define SYNTH_SIZE 9
 #endif
 
-#if   !defined(__FPU__) && !defined(__RTMIDI__)
+//PSVITA, LINUXPOCKETCHIP
+// picosynth,picodrum,opl2,pbsynth,
+// lgptsampler
+#if    !defined(__VECTORFPU__) && !defined(__RTMIDI__) && defined(__RAM512MIB__)
 #define SYNTH_SIZE 5
 #endif
 
+// OPENDINGUX PSP GP2X
+// picosynth,picodrum,opl2,pbsynth
+#if   !defined(__VECTORFPU__) && !defined(__RTMIDI__) && !defined(__RAM512MIB__)
+#define SYNTH_SIZE 4
+#endif
 
 
-/* enum  */
-/*   { */
-/*     SYNTH_PICOSYNTH, */
-/*     SYNTH_OPL2, */
-/*     SYNTH_PICODRUM, */
-/*     SYNTH_PBSYNTH, */
-/*     SYNTH_CURSYNTH, */
-/*   }; */
 
 enum 
   {
