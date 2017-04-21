@@ -31,7 +31,11 @@ dboplMachine::dboplMachine() : filter(), 	     sineLfoOsc1()
 
 dboplMachine::~dboplMachine()
 {
-  DPRINTF("dboplMachine::~dboplMachine()\n");  
+  DPRINTF("dboplMachine::~dboplMachine()\n");
+  if (HO)
+    delete(HO);
+  if (buffer)
+    free(buffer);
 }
 
 

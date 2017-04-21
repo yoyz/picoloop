@@ -21,6 +21,8 @@ PicodrumMachine::PicodrumMachine() : adsr_amp(), vco(), filter()
 PicodrumMachine::~PicodrumMachine()
 {
   DPRINTF("PicodrumMachine::~PicodrumMachine()\n");
+  if (buffer_picodrum)
+    free(buffer_picodrum);
 }
 
 // PicodrumVCO & PicodrumMachine::getPicodrumVCO()

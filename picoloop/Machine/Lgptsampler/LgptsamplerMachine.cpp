@@ -24,6 +24,12 @@ LgptsamplerMachine::LgptsamplerMachine()
 LgptsamplerMachine::~LgptsamplerMachine()
 {
   DPRINTF("LgptsamplerMachine::~LgptsamplerMachine()\n");
+  if (buffer)
+    free(buffer);
+  if (buffer16)
+    free(buffer16);
+  if (SI)
+    delete(SI);
 }
 
 

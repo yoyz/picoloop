@@ -30,8 +30,8 @@ EffectDelay::EffectDelay()
 
 EffectDelay::~EffectDelay()
 {
-  //  if (buffer)
-  //    free(buffer);
+  if (buffer)
+    free(buffer);
 }
 
 void EffectDelay::init()
