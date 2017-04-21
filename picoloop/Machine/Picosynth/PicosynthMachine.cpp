@@ -16,6 +16,7 @@ PicosynthMachine::PicosynthMachine() : adsr_amp(), adsr_fltr(), vco(), filter(),
   trig_time_mode=0;
   trig_time_duration=0;
   trig_time_duration_sample=0;
+  buffer=0;
 }
 
 
@@ -355,7 +356,7 @@ Sint16 PicosynthMachine::tick()
   Sint32 resonance_tmp;
   int    num=8192;
   
-
+//printf("index:%d buffer:%d\n",index,buffer);
   if (index>=SAM | index<0)
     index=0;
   
