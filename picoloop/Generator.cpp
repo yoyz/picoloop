@@ -11,6 +11,8 @@ Generator::Generator() : table(new Sint16[WAVETABLE_SIZE]),
 
 Generator::~Generator()
 {
+  delete(table);
+  delete(feedback);
 }
 
 Sint16 Generator::feedFeedBack(Sint16 input)

@@ -44,7 +44,11 @@ MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(),                         FXDel
 
 MonoMixer::~MonoMixer()
 {
-  DPRINTF("MonoMixer::~MonoMixer()");  
+  DPRINTF("MonoMixer::~MonoMixer()");
+  if (buffer16)
+    free(buffer16);
+  if (buffer32)
+    free(buffer32);
 }
 
 

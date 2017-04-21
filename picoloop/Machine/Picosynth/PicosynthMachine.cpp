@@ -23,6 +23,8 @@ PicosynthMachine::PicosynthMachine() : adsr_amp(), adsr_fltr(), vco(), filter(),
 PicosynthMachine::~PicosynthMachine()
 {
   DPRINTF("PicosynthMachine::~PicosynthMachine()\n");
+  if (buffer)
+    free(buffer);
 }
 
 PicosynthADSR & PicosynthMachine::getADSRAmp()

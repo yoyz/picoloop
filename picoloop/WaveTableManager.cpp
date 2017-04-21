@@ -9,7 +9,12 @@ WaveTableManager::WaveTableManager() : wtvector()
 
 WaveTableManager::~WaveTableManager()
 {
-
+  //wtvector.clear();
+  int i;
+  for (i=0;i<wtvector.size();i++)
+    if (wtvector[i])
+      delete wtvector[i];
+  wtvector.clear();
 }
 
 

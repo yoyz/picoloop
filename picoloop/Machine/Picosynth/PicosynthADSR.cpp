@@ -64,7 +64,9 @@ PicosynthADSR::PicosynthADSR() : tanh_table(new Sint16[1024])
 
 PicosynthADSR::~PicosynthADSR()
 {
-
+  if (tanh_table)
+    delete(tanh_table);
+    //free(tanh_table);
 }
 
 void PicosynthADSR::init()
