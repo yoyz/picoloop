@@ -86,9 +86,9 @@ using namespace std;
 */
 char pada='a';
 char padb='b';
-//char padc='c';
-//char padd='d';
-//char pade='e';
+char padc='c';
+char padd='d';
+char pade='e';
 //char padf='f';
 
 #define VERS    1 //Talk about this
@@ -3874,6 +3874,7 @@ void init_monomixer_and_machine()
       DPRINTF("DUMPING 64 sample from track:%d",t);
       for (i=0;i<64;i++)
 	{
+	  //printf("MM[t]=%d\n",MM[t]);
 	  MM[t]->tick();
 	}
     }
