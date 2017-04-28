@@ -2,7 +2,7 @@
 #define __MASTER____
 
 #if !defined(__SDL20__) && !defined(__SDL12__)
-#error "SDL1.2 or SDL2.0 are mandatory, you should put -D__SDL12 or -D__SDL20__ in the CFLAGS"
+#error "SDL1.2 or SDL2.0 are mandatory, you should put -D__SDL12__ or -D__SDL20__ in the CFLAGS"
 #endif
 
 #ifdef   __SDL12__
