@@ -1,12 +1,29 @@
+include Makefile_sources
 CC=g++
-
-CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -D__RTMIDI__ -DLINUX_POCKETCHIP -ggdb -DFIXED                         -fpermissive 
+CFLAGS_SDLVERS=-D__SDL12__
+# DON'T USE -std=c++98 it compile bad code
+# DON'T USE -D__LINUX_PULSE__ and don't LINK WITH -lpulse  -lpulse-simple
+CFLAGS= -c -std=c++11  -O3 ${CFLAGS_SDLVERS} -D__LINUX__ -DLINUX -I. -LSDL/lib -D__LINUX_ALSA__  -D__RTAUDIO__ -D__RTMIDI__ -DLINUX_POCKETCHIP -ggdb -DFIXED                         -fpermissive -DDEBUGPRINTF
+CFLAGS= -c -std=c++11  -O3 ${CFLAGS_SDLVERS} -D__LINUX__ -DLINUX -I. -LSDL/lib -D__LINUX_ALSA__  -D__RTAUDIO__ -DLINUX_POCKETCHIP -ggdb -DFIXED                         -fpermissive
+LDFLAGS= -lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread
 LDFLAGS= -lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread
 
 
-OBJTOLINK=RtAudio.o RtMidi.o
+#OBJTOLINK=RtAudio.o RtMidi.o
 
-SOURCES=PatternPlayer.cpp \
+SOURCES=	$(SOURCES_PICOLOOP)	\
+		RtAudio.cpp		\
+		AudioDriverRTAudio.cpp   \
+		SYSTEMLINUX.cpp	       \
+		$(SOURCES_PICOSYNTH) 	\
+		$(SOURCES_PICODRUM) 	\
+		$(SOURCES_DBOPL) 	\
+		$(SOURCES_PBSYNTH)	\
+		$(SOURCES_LGPTSAMPLERSYNTH)  \
+#		$(SOURCES_MIDIOUT)
+
+
+#SOURCES=PatternPlayer.cpp \
 		      SDL_GUI.cpp              \
 		      SYSTEMLINUX.cpp	       \
 		      AudioEngine.cpp          \
@@ -106,9 +123,11 @@ $(EXECUTABLE): $(DEPENDENCYINOBJDIR) $(OBJECTSINOBJDIR)
 
 # the .d file contain the dependency
 $(OBJDIR)/%.d : %.cpp %.h
-	$(CC) -I. -MM $< -o $@
+	@[ -d `dirname $@` ] || mkdir -p `dirname $@`
+	$(CC) $(CFLAGS_SDLVERS) -I. -MM $< -o $@
 
 $(OBJDIR)/%.o : %.cpp 
+	@[ -d `dirname $@` ] || mkdir -p `dirname $@`
 	$(CC) $(CFLAGS) $< -o $@
 
 
@@ -119,11 +138,13 @@ $(OBJDIR)/%.o : %.cpp
 
 # SYSTEMLINUX.d does have a .h which is SYSTEM.h, so it need a tweaks
 $(OBJDIR)/SYSTEMLINUX.d:SYSTEMLINUX.cpp 
-	$(CC) -I. -MM $< -o $@ 
+	@[ -d `dirname $@` ] || mkdir -p `dirname $@`
+	$(CC) $(CFLAGS_SDLVERS) -I. -MM $< -o $@ 
 
 # PatternPlayer.d does have a .h which is system.h
 PatternPlayer.d:PatternPlayer.cpp
-	$(CC) -std=c++11 -I. -MM $< -o $@ 
+	@[ -d `dirname $@` ] || mkdir -p `dirname $@`
+	$(CC) $(CFLAGS_SDLVERS) -std=c++98 -I. -MM $< -o $@ 
 
 
 clean:
