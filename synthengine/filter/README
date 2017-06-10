@@ -1,0 +1,5 @@
+Filter test
+===========
+
+./build.sh  ; ./test ; aplay -f cd audioout_2 ; 
+rm *.o test audioout_2
