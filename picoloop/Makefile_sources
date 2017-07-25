@@ -1,5 +1,4 @@
-SOURCES_PICOLOOP := PatternPlayer.cpp \
-		      SDL_GUI.cpp              \
+SOURCES_PICODEP :=      SDL_GUI.cpp              \
 		      AudioEngine.cpp          \
 		      Oscillator.cpp           \
 		      OneOscillator.cpp        \
@@ -30,23 +29,29 @@ SOURCES_PICOLOOP := PatternPlayer.cpp \
 		      MachineCheck.cpp	       \
 		      WaveFileWriter.cpp       \
 
-SOURCES_PICOSYNTH := Machine/Picosynth/PicosynthUserInterface.cpp \
-		      Machine/Picosynth/PicosynthADSR.cpp        \
+
+SOURCES_PICOLOOP := PatternPlayer.cpp \
+		${SOURCES_PICODEP}
+
+
+SOURCES_PICOSYNTHUI := Machine/Picosynth/PicosynthUserInterface.cpp
+SOURCES_PICOSYNTH :=  Machine/Picosynth/PicosynthADSR.cpp        \
 		      Machine/Picosynth/PicosynthVCO.cpp         \
 		      Machine/Picosynth/PicosynthMachine.cpp     \
 
-SOURCES_PICODRUM := Machine/Picodrum/PicodrumUserInterface.cpp \
-		      Machine/Picodrum/PicodrumVCO.cpp           \
+SOURCES_PICODRUMUI := Machine/Picodrum/PicodrumUserInterface.cpp 
+SOURCES_PICODRUM :=   Machine/Picodrum/PicodrumVCO.cpp           \
 		      Machine/Picodrum/PicodrumADSR.cpp          \
 		      Machine/Picodrum/PicodrumMachine.cpp       \
 
-SOURCES_DBOPL := Machine/Dbopl/DboplUserInterface.cpp \
+SOURCES_DBOPLUI := Machine/Dbopl/DboplUserInterface.cpp 
+SOURCES_DBOPL := \
 		      Machine/Dbopl/dbopl.cpp                    \
 		      Machine/Dbopl/hiopl.cpp                    \
 		      Machine/Dbopl/DboplMachine.cpp             \
 
-SOURCES_PBSYNTH := Machine/PBSynth/PBSynthUserInterface.cpp \
-		      Machine/PBSynth/synthengine.cpp            \
+SOURCES_PBSYNTHUI := Machine/PBSynth/PBSynthUserInterface.cpp 
+SOURCES_PBSYNTH := Machine/PBSynth/synthengine.cpp            \
 		      Machine/PBSynth/osc.cpp                    \
 		      Machine/PBSynth/lfo.cpp                    \
 		      Machine/PBSynth/filter.cpp                 \
@@ -58,8 +63,8 @@ SOURCES_PBSYNTH := Machine/PBSynth/PBSynthUserInterface.cpp \
 		      Machine/PBSynth/coeff.cpp                  \
 		      Machine/PBSynth/PBSynthMachine.cpp         \
 
-SOURCES_CURSYNTH := Machine/Cursynth/CursynthUserInterface.cpp \
-		      Machine/Cursynth/processor_router.cpp	 \
+SOURCES_CURSYNTHUI := Machine/Cursynth/CursynthUserInterface.cpp 
+SOURCES_CURSYNTH := Machine/Cursynth/processor_router.cpp	 \
 		      Machine/Cursynth/processor.cpp		 \
 		      Machine/Cursynth/oscillator.cpp		 \
 		      Machine/Cursynth/operators.cpp		 \
@@ -82,9 +87,9 @@ SOURCES_CURSYNTH := Machine/Cursynth/CursynthUserInterface.cpp \
 		      Machine/Cursynth/send_receive.cpp		 \
 		      Machine/Cursynth/CursynthMachine.cpp	 \
 
-SOURCES_OPEN303 := Machine/Open303/Open303Machine.cpp	 \
-		      Machine/Open303/rosic_Open303.cpp		 \
-		      Machine/Open303/Open303UserInterface.cpp	 \
+SOURCES_OPEN303UI := Machine/Open303/Open303UserInterface.cpp	 
+SOURCES_OPEN303 := Machine/Open303/rosic_Open303.cpp		 \
+		      Machine/Open303/Open303Machine.cpp	 \
 		      Machine/Open303/rosic_MidiNoteEvent.cpp	 \
 		      Machine/Open303/rosic_AcidSequencer.cpp	 \
 		      Machine/Open303/rosic_Complex.cpp		 \
@@ -104,8 +109,8 @@ SOURCES_OPEN303 := Machine/Open303/Open303Machine.cpp	 \
 		      Machine/Open303/rosic_EllipticQuarterBandFilter.cpp\
 		      Machine/Open303/rosic_RealFunctions.cpp		\
 
+SOURCES_TWYTCHUI :=   Machine/Twytch/TwytchsynthUserInterface.cpp	
 SOURCES_TWYTCH := Machine/Twytch/TwytchsynthMachine.cpp		\
-		      Machine/Twytch/TwytchsynthUserInterface.cpp	\
 		      Machine/Twytch/twytch_alias.cpp				\
 		      Machine/Twytch/twytch_arpeggiator.cpp			\
 		      Machine/Twytch/twytch_bypass_router.cpp			\
@@ -155,16 +160,18 @@ SOURCES_TWYTCH := Machine/Twytch/TwytchsynthMachine.cpp		\
 		      Machine/Twytch/twytch_portamento_slope.cpp		\
 		      Machine/Twytch/twytch_dc_filter.cpp			\
 
-SOURCES_MIDIOUT := Machine/MidiOutSystem/MidiOutUserInterface.cpp            \
-		      Machine/MidiOutSystem/MidiOutMachine.cpp                  \
+SOURCES_MIDIOUTUI := Machine/MidiOutSystem/MidiOutUserInterface.cpp            
+SOURCES_MIDIOUT := Machine/MidiOutSystem/MidiOutMachine.cpp                  \
 
+
+SOURCES_MDADRUMUI :=  Machine/MDADrum/MDADrumUserInterface.cpp			
 
 SOURCES_MDADRUM := Machine/MDADrum/MDADrumMachine.cpp			\
-		      Machine/MDADrum/MDADrumUserInterface.cpp			\
 		      Machine/MDADrum/drumsynth_oop5.cpp			\
 		      Machine/MDADrum/profport.cpp				\
 
 
+SOURCES_SIDSYNTHUI :=    Machine/SIDSynth/SIDSynthUserInterface.cpp
 SOURCES_SIDSYNTH := Machine/SIDSynth/sid.cpp					\
 		      Machine/SIDSynth/wave.cpp					\
 		      Machine/SIDSynth/sidfilter.cpp				\
@@ -181,8 +188,8 @@ SOURCES_SIDSYNTH := Machine/SIDSynth/sid.cpp					\
 		      Machine/SIDSynth/wave6581_PS_.cpp				\
 		      Machine/SIDSynth/wave6581_PST.cpp				\
 		      Machine/SIDSynth/SIDSynthMachine.cpp			\
-		      Machine/SIDSynth/SIDSynthUserInterface.cpp
 
+SOURCES_LGPTSAMPLERSYNTHUI := 	Machine/Lgptsampler/LgptsamplerUserInterface.cpp
 SOURCES_LGPTSAMPLERSYNTH := 	Machine/Lgptsampler/SampleInstrument.cpp	\
 				Machine/Lgptsampler/SyncMaster.cpp		\
 				Machine/Lgptsampler/SamplePool.cpp		\
@@ -209,7 +216,6 @@ SOURCES_LGPTSAMPLERSYNTH := 	Machine/Lgptsampler/SampleInstrument.cpp	\
 				Machine/Lgptsampler/DEBSystem.cpp		\
 				Machine/Lgptsampler/Logger.cpp			\
 				Machine/Lgptsampler/LgptsamplerMachine.cpp	\
-				Machine/Lgptsampler/LgptsamplerUserInterface.cpp			
 
 				#//Machine/Lgptsampler/FileSystem.cpp		\
 				#//Machine/Lgptsampler/UnixFileSystem.cpp		\
