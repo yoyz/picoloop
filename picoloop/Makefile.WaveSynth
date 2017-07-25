@@ -1,164 +1,45 @@
+include Makefile_sources
+
 CC=g++
+CFLAGS_SDLVERS=-D__SDL12__    
+
 CFLAGS=-c -O1 -DLINUX -D__RTAUDIO__ -DLINUX_DESKTOP -I. -LSDL/lib -g -fpermissive 
-CFLAGS=-c -O3 -D__LINUX__ -DLINUX  -DPC_DESKTOP -std=c++11 -DLINUX -D__RTAUDIO__  -I. -LSDL/lib -g -fpermissive 
+CFLAGS=-c -O3 -D__LINUX__ -DLINUX  -DPC_DESKTOP -std=c++11 -DLINUX -D__RTAUDIO__  -I. -LSDL/lib -g -fpermissive  -D__SDL12__
+CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -D__LINUX_ALSA__ -I. -LSDL/lib -D__RTAUDIO__ -D __RTMIDI__ -DPC_DESKTOP -ggdb  ${CFLAGS_SDLVERS}                 -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive
+
 LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf -lasound -lpthread -lpulse -lpulse-simple -ljack
 
+
 OBJTOLINK=RtAudio.o RtMidi.o
+OBJTOLINK=
 
 SOURCES=WaveSynth.cpp SDL_GUI.cpp AudioEngine.cpp AudioDriverRTAudio.cpp Instrument.cpp Synth.cpp Oscillator.cpp TriangleOscillator.cpp FuzzyPulseOscillator.cpp SineOscillator.cpp SawOscillator.cpp NoiseOscillator.cpp OneOscillator.cpp WaveTableSineOscillator.cpp Biquad.cpp AudioMixer.cpp  Wave.cpp  Machine.cpp MonoMixer.cpp ADSR.cpp PatternElement.cpp VCO.cpp PulseOscillator.cpp InputManager.cpp PicosynthMachine.cpp dbopl/dbopl.cpp dbopl/hiopl.cpp DboplMachine.cpp PicodrumMachine.cpp Filter.cpp AMSynthLowPassFilter.cpp  Effect.cpp EffectDelay.cpp WaveTableManager.cpp WaveTable.cpp Generator.cpp 
 
 SOURCES=WaveSynth.cpp SDL_GUI.cpp AudioEngine.cpp AudioDriverRTAudio.cpp Instrument.cpp Synth.cpp Oscillator.cpp OneOscillator.cpp Biquad.cpp AudioMixer.cpp  Wave.cpp  Machine.cpp MonoMixer.cpp ADSR.cpp PatternElement.cpp VCO.cpp InputManager.cpp PicosynthMachine.cpp dbopl/dbopl.cpp dbopl/hiopl.cpp DboplMachine.cpp PicodrumMachine.cpp Filter.cpp AMSynthLowPassFilter.cpp  Effect.cpp EffectDelay.cpp WaveTableManager.cpp WaveTable.cpp Generator.cpp 
 
+
+		      #Synth.cpp                \
+
 SOURCES=WaveSynth.cpp            \
-		      SDL_GUI.cpp              \
-		      SYSTEMLINUX.cpp	       \
-		      AudioEngine.cpp          \
-		      AudioDriverRTAudio.cpp   \
-		      Instrument.cpp           \
-		      Synth.cpp                \
-		      Oscillator.cpp           \
-		      OneOscillator.cpp        \
-		      Biquad.cpp               \
-		      AudioMixer.cpp           \
-		      Wave.cpp        \
-		      Machine.cpp              \
-		      MonoMixer.cpp            \
-		      InputManager.cpp         \
-		      Filter.cpp               \
-		      AMSynthLowPassFilter.cpp \
-		      Effect.cpp               \
-		      EffectDelay.cpp          \
-		      EffectDisabled.cpp       \
-		      WaveTableManager.cpp     \
-		      WaveTable.cpp            \
-		      Generator.cpp            \
-		      PatternElement.cpp       \
-		      Sequencer.cpp            \
-		      PatternSequencer.cpp     \
-		      SongSequencer.cpp        \
-		      NoteFreq.cpp             \
-		      PitchBend.cpp            \
-		      TweakableKnob.cpp	\
-		      SysMutex.cpp \
-		      MidiOutSystem.cpp	       \
-		      MidiInSystem.cpp \
-		      MachineCheck.cpp \
-		      Machine/Picosynth/PicosynthADSR.cpp        \
-		      Machine/Picosynth/PicosynthVCO.cpp         \
-		      Machine/Picosynth/PicosynthMachine.cpp     \
-		      Machine/Picodrum/PicodrumVCO.cpp           \
-		      Machine/Picodrum/PicodrumADSR.cpp          \
-		      Machine/Picodrum/PicodrumMachine.cpp       \
-		      Machine/Dbopl/dbopl.cpp                    \
-		      Machine/Dbopl/hiopl.cpp                    \
-		      Machine/Dbopl/DboplMachine.cpp             \
-		      Machine/PBSynth/synthengine.cpp            \
-		      Machine/PBSynth/osc.cpp                    \
-		      Machine/PBSynth/lfo.cpp                    \
-		      Machine/PBSynth/filter.cpp                 \
-		      Machine/PBSynth/env.cpp                    \
-		      Machine/PBSynth/echo.cpp                   \
-		      Machine/PBSynth/osctab.cpp                 \
-		      Machine/PBSynth/lfotab.cpp                 \
-		      Machine/PBSynth/envtab.cpp                 \
-		      Machine/PBSynth/coeff.cpp                  \
-		      Machine/PBSynth/PBSynthMachine.cpp         \
-		      Machine/Cursynth/processor_router.cpp	 \
-		      Machine/Cursynth/processor.cpp		 \
-		      Machine/Cursynth/oscillator.cpp		 \
-		      Machine/Cursynth/operators.cpp		 \
-		      Machine/Cursynth/mono_panner.cpp		 \
-		      Machine/Cursynth/midi_lookup.cpp		 \
-		      Machine/Cursynth/linear_slope.cpp		 \
-		      Machine/Cursynth/filter.cpp		 \
-		      Machine/Cursynth/feedback.cpp		 \
-		      Machine/Cursynth/envelope.cpp		 \
-		      Machine/Cursynth/delay.cpp		 \
-		      Machine/Cursynth/cursynth_strings.cpp	 \
-		      Machine/Cursynth/cursynth_engine.cpp	 \
-		      Machine/Cursynth/wave.cpp			 \
-		      Machine/Cursynth/voice_handler.cpp	 \
-		      Machine/Cursynth/value.cpp		 \
-		      Machine/Cursynth/trigger_operators.cpp	 \
-		      Machine/Cursynth/step_generator.cpp	 \
-		      Machine/Cursynth/smooth_value.cpp		 \
-		      Machine/Cursynth/smooth_filter.cpp	 \
-		      Machine/Cursynth/send_receive.cpp		 \
-		      Machine/Cursynth/CursynthMachine.cpp	 \
-		      Machine/Open303/Open303Machine.cpp         \
-		      Machine/Open303/rosic_Open303.cpp          \
-		      Machine/Open303/rosic_MidiNoteEvent.cpp    \
-		      Machine/Open303/rosic_AcidSequencer.cpp    \
-		      Machine/Open303/rosic_Complex.cpp          \
-		      Machine/Open303/rosic_AcidPattern.cpp      \
-		      Machine/Open303/rosic_BlendOscillator.cpp  \
-		      Machine/Open303/rosic_OnePoleFilter.cpp    \
-		      Machine/Open303/rosic_NumberManipulations.cpp	\
-		      Machine/Open303/rosic_NumberManipulations.cpp     \
-		      Machine/Open303/rosic_FourierTransformerRadix2.cpp\
-		      Machine/Open303/rosic_DecayEnvelope.cpp   \
-		      Machine/Open303/rosic_MipMappedWaveTable.cpp      \
-		      Machine/Open303/rosic_BiquadFilter.cpp            \
-		      Machine/Open303/GlobalFunctions.cpp               \
-		      Machine/Open303/rosic_AnalogEnvelope.cpp          \
-		      Machine/Open303/rosic_TeeBeeFilter.cpp            \
-		      Machine/Open303/rosic_LeakyIntegrator.cpp         \
-		      Machine/Open303/rosic_FunctionTemplates.cpp       \
-		      Machine/Open303/rosic_EllipticQuarterBandFilter.cpp\
-		      Machine/Open303/rosic_RealFunctions.cpp           \
-		      Machine/Twytch/TwytchsynthMachine.cpp		\
-		      Machine/Twytch/twytch_alias.cpp				\
-		      Machine/Twytch/twytch_arpeggiator.cpp			\
-		      Machine/Twytch/twytch_bypass_router.cpp			\
-		      Machine/Twytch/twytch_bit_crush.cpp			\
-		      Machine/Twytch/twytch_fixed_point_oscillator.cpp		\
-		      Machine/Twytch/twytch_filter.cpp				\
-		      Machine/Twytch/twytch_feedback.cpp			\
-		      Machine/Twytch/twytch_envelope.cpp			\
-		      Machine/Twytch/twytch_distortion.cpp			\
-		      Machine/Twytch/twytch_delay.cpp				\
-		      Machine/Twytch/twytch_helm_lfo.cpp			\
-		      Machine/Twytch/twytch_helm_engine.cpp			\
-		      Machine/Twytch/twytch_helm_common.cpp			\
-		      Machine/Twytch/twytch_formant_manager.cpp			\
-		      Machine/Twytch/twytch_fixed_point_wave.cpp		\
-		      Machine/Twytch/twytch_helm_voice_handler.cpp		\
-		      Machine/Twytch/twytch_helm_oscillators.cpp		\
-		      Machine/Twytch/twytch_helm_module.cpp			\
-		      Machine/Twytch/twytch_operators.cpp			\
-		      Machine/Twytch/twytch_noise_oscillator.cpp		\
-		      Machine/Twytch/twytch_mono_panner.cpp			\
-		      Machine/Twytch/twytch_midi_lookup.cpp			\
-		      Machine/Twytch/twytch_memory.cpp				\
-		      Machine/Twytch/twytch_magnitude_lookup.cpp		\
-		      Machine/Twytch/twytch_linear_slope.cpp			\
-		      Machine/Twytch/twytch_processor_router.cpp		\
-		      Machine/Twytch/twytch_processor.cpp			\
-		      Machine/Twytch/twytch_phaser.cpp				\
-		      Machine/Twytch/twytch_oscillator.cpp			\
-		      Machine/Twytch/twytch_reverb_comb.cpp			\
-		      Machine/Twytch/twytch_reverb_all_pass.cpp			\
-		      Machine/Twytch/twytch_reverb.cpp				\
-		      Machine/Twytch/twytch_resonance_lookup.cpp		\
-		      Machine/Twytch/twytch_resonance_cancel.cpp		\
-		      Machine/Twytch/twytch_value.cpp				\
-		      Machine/Twytch/twytch_trigger_operators.cpp		\
-		      Machine/Twytch/twytch_switch.cpp				\
-		      Machine/Twytch/twytch_stutter.cpp				\
-		      Machine/Twytch/twytch_step_generator.cpp			\
-		      Machine/Twytch/twytch_smooth_value.cpp			\
-		      Machine/Twytch/twytch_smooth_filter.cpp			\
-		      Machine/Twytch/twytch_simple_delay.cpp			\
-		      Machine/Twytch/twytch_wave.cpp				\
-		      Machine/Twytch/twytch_voice_handler.cpp			\
-		      Machine/Twytch/twytch_detune_lookup.cpp \
-		      Machine/Twytch/twytch_sample_decay_lookup.cpp \
-		      Machine/Twytch/twytch_portamento_slope.cpp \
-		      Machine/Twytch/twytch_dc_filter.cpp \
-		      Machine/MidiOutSystem/MidiOutMachine.cpp                  \
-		      Machine/MDADrum/MDADrumMachine.cpp			\
-		      Machine/MDADrum/drumsynth_oop5.cpp				\
-		      Machine/MDADrum/profport.cpp				
+			RtAudio.cpp             \
+			RtMidi.cpp              \
+			AudioDriverRTAudio.cpp   \
+			SYSTEMLINUX.cpp        \
+			SysMutex.cpp           \
+			MidiOutSystem.cpp              \
+			MidiInSystem.cpp               \
+			$(SOURCES_PICODEP)	\
+			$(SOURCES_PICOSYNTH) \
+			$(SOURCES_PICODRUM) \
+			$(SOURCES_DBOPL) \
+			$(SOURCES_PBSYNTH) \
+			$(SOURCES_CURSYNTH) \
+			$(SOURCES_OPEN303) \
+			$(SOURCES_TWYTCH) \
+			$(SOURCES_MIDIOUT) \
+			$(SOURCES_MDADRUM) \
+			$(SOURCES_SIDSYNTH) \
+			$(SOURCES_LGPTSAMPLERSYNTH) 
 
 
 
@@ -168,7 +49,7 @@ SOURCES=WaveSynth.cpp            \
 		      
 
 
-OBJDIR             =     debianrtaudio
+OBJDIR             =     wavesynthrtaudio
 OBJECTS            =   $(SOURCES:.cpp=.o)
 DEPENDENCY         =   $(SOURCES:.cpp=.d)
 
@@ -193,13 +74,15 @@ DIRTOCREATE:
 	-mkdir -p $(OBJDIR)/Machine/Twytch
 	-mkdir -p $(OBJDIR)/Machine/MidiOutSystem
 	-mkdir -p $(OBJDIR)/Machine/MDADrum
+	-mkdir -p $(OBJDIR)/Machine/SIDSynth
+	-mkdir -p $(OBJDIR)/Machine/Lgptsampler
 
 $(EXECUTABLE): $(DEPENDENCYINOBJDIR) $(OBJECTSINOBJDIR)
 	$(CC) $(OBJTOLINKINOBJDIR)  $(OBJECTSINOBJDIR) -o $@ $(LDFLAGS)
 
 # the .d file contain the dependency
 $(OBJDIR)/%.d : %.cpp %.h
-	$(CC) -I. -MM $< -o $@
+	$(CC) $(CFLAGS_SDLVERS) -I. -MM $< -o $@
 
 $(OBJDIR)/%.o : %.cpp 
 	$(CC) $(CFLAGS) $< -o $@
@@ -216,7 +99,7 @@ $(OBJDIR)/SYSTEMLINUX.d:SYSTEMLINUX.cpp
 
 # PatternPlayer.d does have a .h which is system.h
 $(OBJDIR)/WaveSynth.d:WaveSynth.cpp
-	$(CC) -std=c++11 -I. -MM $< -o $@ 
+	$(CC) $(CFLAGS_SDLVERS) -std=c++11 -I. -MM $< -o $@ 
 
 
 clean:

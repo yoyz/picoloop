@@ -44,6 +44,7 @@ int counter_recv_midi_clock_six=0;  // recv n clock and decrement the counter ea
 int counter_delta_midi_clock=0;
 int delta_midi_clock=0;
 
+int mmc_start=1;                    // we have received a mmc stop
 int mmc_stop=0;
 
 
@@ -109,15 +110,21 @@ int    noteValue=0;
 
 //PatternElement PE;
 
+void processBuffer_updateMidiSendClockCounter() {}
+void donothing() {}
+
 void openaudio()
 {
   int t;
+  AE.setupSequencerCallback(donothing);
   AE.setNbTickBeforeStepChange(1000);
+  AE.setAudioOutput(0);
   AE.openAudio();
   for (t=0;t<TRACK_MAX;t++)
     {
       AE.getAudioMixer().setAudioVolume(128);
-      MM[t]=AE.getAudioMixer().getTrack(t).getMonoMixer();      
+      //MM[t]=AE.getAudioMixer().getTrack(t).getMonoMixer();
+      MM[t]=AE.getAudioMixer().getMonoMixer(t);      
       MM[t]->init();
       MM[t]->setAmplitude(128);
       //MM[t]->setMachineType(0);
@@ -154,12 +161,16 @@ void init_video()
 void handle_key()
 {
 
-  bool * keyState;
-  int  * keyRepeat;
+  //bool * keyState;
+  //int  * keyRepeat;
   int    lastEvent;
   int    lastKey;
   int t;
 
+  mapii keyState=IE.keyState();
+  mapii keyRepeat=IE.keyRepeat();
+
+  
   IE.handleKey();
 
   keyState=IE.keyState();
@@ -1046,7 +1057,7 @@ int main(int argc,char ** argv)
 
   openaudio();
   init_video();
-
+  IE.init();
   
   /* Main loop */
   quit = 0;
