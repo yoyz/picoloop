@@ -711,7 +711,7 @@ void display_board_trig()
 	  
 	  // Display the sequencer position on top of the trig
 	  if (i+pattern_display_offset[cty]==step)
-	    SG.drawBoxNumber(step,pal[STEP_COLOR]);  
+	    SG.drawBoxNumber(step-pattern_display_offset[cty],pal[STEP_COLOR]);  
 	}
     }  
 }
@@ -1905,36 +1905,12 @@ void display_board_text_global()
 
 }
 
-
-void display_board()
+void display_board_colored_box()
 {
   int  i;
   int start,rstart,end,rend;
-  char str_up[64];
-  char str_down[64];
-  char str_divider[64];
-  char str_submenu[64];
-
-  int  right_x_display_offset=      200*SCREEN_MULT;
-  int  right_y_display_offset_line1=20*SCREEN_MULT;
-  int  right_y_display_offset_line2=40*SCREEN_MULT;
-  int  right_y_display_offset_line3=60*SCREEN_MULT;
-  int  right_y_display_offset_line4=80*SCREEN_MULT;
-
-  int  menu_x_display_offset=       10*SCREEN_MULT;
-  int  menu_y_display_offset=      200*SCREEN_MULT;
-  //int  
-
   int  cty=SEQ.getCurrentTrackY();
-  int  stepdiv=SEQ.getPatternSequencer(cty).getBPMDivider();
-  dirty_graphic=0;
-
-  SG.clearScreen();
-  display_board_navigation_bar();
-  display_board_text_global();
-  UI->display_board_text();
-
-
+  
   // Draw step which will be playable
   // from step 0 to step 15 or 0 to step 12 for example
   start=pattern_display_offset[cty]; // 0,16,32...
@@ -1952,7 +1928,19 @@ void display_board()
       DPRINTF("DBOARD2:%d PDO:%d",i,pattern_display_offset[cty]);
       SG.drawBoxNumber(i-pattern_display_offset[cty],pal[DISABLEDBOX_COLOR]);
     }
- 
+
+}
+
+
+void display_board()
+{
+  dirty_graphic=0;
+  
+  SG.clearScreen();                 // remove all 
+  display_board_navigation_bar();   // show begin/current/end step 0, 16, 32
+  display_board_text_global();      
+  UI->display_board_text();
+  display_board_colored_box();      // display the box 0..15, or less
      
 
   if (menu_cursor==GLOBALMENU_AD)   display_board_amp_env();
@@ -1968,8 +1956,6 @@ void display_board()
   if (menu_cursor==GLOBALMENU_MAC)  display_board_mac();
   if (menu_cursor==GLOBALMENU_FX)   display_board_fx();
   if (menu_cursor==GLOBALMENU_BPM)  display_board_bpm();
-
-
 }
 
 
