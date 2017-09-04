@@ -40,7 +40,7 @@ void LgptsamplerMachine::init()
   //return;
   DPRINTF("LgptsamplerMachine::init() : 0x%08.8X",this);
   if (buffer==0)
-    buffer=(lgptfixed*)malloc(sizeof(fixed)*1024);
+    buffer=(lgptfixed*)malloc(sizeof(lgptfixed)*1024);
   if (buffer16==0)
     buffer16=(int16_t*)malloc(sizeof(int16_t)*1024);
   index=0; // use by this->tick()
