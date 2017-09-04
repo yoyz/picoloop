@@ -32,8 +32,8 @@ void InputManager::init()
   quit=0;
   escape=0;
 #ifdef __SDL12__
-  m_key_state=malloc(sizeof(int)*MAX_KEY);
-  m_key_repeat=malloc(sizeof(int)*MAX_KEY);
+  m_key_state=(mapii)malloc(sizeof(int)*MAX_KEY);
+  m_key_repeat=(mapii)malloc(sizeof(int)*MAX_KEY);
 
   for (i=0;i<MAX_KEY;i++)
     m_key_state[i]=0;
