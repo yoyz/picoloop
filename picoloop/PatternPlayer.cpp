@@ -102,6 +102,10 @@ PSP_HEAP_SIZE_KB(-2048) ;
 //PSP_HEAP_SIZE_KB(-4096) ;
 #endif // PSP
 
+#if defined(__LINUX__)
+#include <execinfo.h>
+#include <signal.h>
+#endif
 
 
 #define MENU_CONFIG_Y_PALETTE            0
@@ -413,6 +417,24 @@ time_t difft=0;
 
 void seq_update_track(int t);
 int handle_key_two_button(int buttonPressed,int buttonKeyRepeat,int repeatInterval,int machineParam,int paramValue,int all);
+
+
+#if defined(__LINUX__)
+void handler(int sig)
+{
+  void *array[10];
+  size_t size;
+
+  // get void*'s for all entries on the stack
+  size = backtrace(array, 10);
+
+  // print out all the frames to stderr
+  fprintf(stderr, "Error: signal %d:\n", sig);
+  backtrace_symbols_fd(array, size, STDERR_FILENO);
+  exit(1);
+}
+#endif
+
 
 void processBuffer_updateMidiSendClockCounter()
 {
@@ -1887,6 +1909,7 @@ void display_board_text_global()
 void display_board()
 {
   int  i;
+  int start,rstart,end,rend;
   char str_up[64];
   char str_down[64];
   char str_divider[64];
@@ -1911,11 +1934,25 @@ void display_board()
   display_board_text_global();
   UI->display_board_text();
 
-  for (i=pattern_display_offset[cty];i<SEQ.getPatternSequencer(cty).getPatternLength();i++)
-    { SG.drawBoxNumber(i-pattern_display_offset[cty],pal[ENABLEDBOX_COLOR]); }
 
-  for (i=i;i<pattern_display_offset[cty]+16;i++)
-    { SG.drawBoxNumber(i-pattern_display_offset[cty],pal[DISABLEDBOX_COLOR]); }
+  // Draw step which will be playable
+  // from step 0 to step 15 or 0 to step 12 for example
+  start=pattern_display_offset[cty]; // 0,16,32...
+  end=SEQ.getPatternSequencer(cty).getPatternLength(); // 16,18,32...
+  if (end-start > 15) end=start+16;
+  for (i=start;i<end;i++)
+    {
+      DPRINTF("DBOARD1:%d PDO:%d",i,pattern_display_offset[cty]);
+      SG.drawBoxNumber(i-pattern_display_offset[cty],pal[ENABLEDBOX_COLOR]); }
+
+  // draw step in DISABLED color if
+  // for example if the sequencer is only 12 step, the 4 last step are disabled
+  for (i=i;i<pattern_display_offset[cty]+16;i++)   
+    {
+      DPRINTF("DBOARD2:%d PDO:%d",i,pattern_display_offset[cty]);
+      SG.drawBoxNumber(i-pattern_display_offset[cty],pal[DISABLEDBOX_COLOR]);
+    }
+ 
      
 
   if (menu_cursor==GLOBALMENU_AD)   display_board_amp_env();
@@ -3212,6 +3249,8 @@ void seq_update_multiple_time_by_step()
 	pattern_cursor_max_pos[cty]=15;
       if (pattern_cursor_max_pos[cty]<cursor)
 	cursor=pattern_cursor_max_pos[cty];
+      if (pattern_display_offset[cty] > SEQ.getPatternSequencer(cty).getPatternLength())
+	pattern_display_offset[cty]=0;
       DPRINTF("*********************pattern_cursor_max_pos:%d",pattern_cursor_max_pos[cty]);
     }
 
@@ -4219,6 +4258,12 @@ void init_lgpt_samplepool()
 int main(int argc,char **argv)
 {
   int i;
+
+#if defined(__LINUX__)
+  signal(SIGSEGV, handler);   // install our handler
+  signal(SIGABRT, handler);
+#endif
+  
 
   UI=&PSUI;          // The UI is set as default on PicoSynthUI
     

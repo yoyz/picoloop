@@ -1,4 +1,5 @@
 #include "SDL_GUI.h"
+#include <assert.h>     /* assert */
 
 SDL_GUI::SDL_GUI()
 {
@@ -506,11 +507,16 @@ void SDL_GUI::smallBoxNumber(int n,int x,int y,Uint32 c)
 }
 
 
-
+/*
+  n: box number from 0 to 15
+  c: color
+ */
 void SDL_GUI::drawBoxNumber(int n, Uint32 c)
 {
   //sg.box(boxOffset+(0*boxSize),   boxOffset,boxSize,boxSize,0xAECD15);
-
+  // DPRINTF("drawBoxNumber: %d %d",n,c);
+  // assert(n>=0);
+  // assert(n<=15);
   switch (n)
     {
     case 0:  this->fullBox((boxOffset+(0*boxSize) +0)*SCREEN_MULT,(boxOffset+(0*boxSize)+ 0)*SCREEN_MULT,boxSize*SCREEN_MULT,boxSize*SCREEN_MULT,c); break;
