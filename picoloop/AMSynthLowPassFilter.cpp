@@ -59,30 +59,23 @@ void AMSynthLowPassFilter::calc(float fc, float res)
 
 }
 
-void
-AMSynthLowPassFilter::process_samples(float *buffer, int numSamples)
+void AMSynthLowPassFilter::process_samples(int32_t *buffer, int numSamples)
 {
-  for (int i=0; i<numSamples; i++) {
-    x = buffer[i];
-    
-    // first 2nd-order unit
-    y = ( a0*x ) + d1;
-    d1 = d2 + ( (a1)*x ) + ( (b1)*y );
-    d2 = ( (a2)*x ) + ( (b2)*y );
-    x=y;
-    // and the second
-    
-    y = ( a0*x ) + d3;
-    d3 = d4 + ( a1*x ) + ( b1*y );
-    d4 = ( a2*x ) + ( b2*y );
-    
-    buffer[i] = (float) y;
-  }
+  int i;
+  for (i=0;i<numSamples;i++)
+    buffer[i]=this->process_one_sample_i(buffer[i]);
+}
+
+void AMSynthLowPassFilter::process_samples(float *buffer, int numSamples)
+{
+  for (int i=0; i<numSamples; i++) 
+    {
+      buffer[i]=this->process_one_sample(buffer[i]);
+    }
 }
 
 
-float
-AMSynthLowPassFilter::process_one_sample(float buffer)
+float AMSynthLowPassFilter::process_one_sample(float buffer)
 {
     x = buffer;
     
@@ -114,6 +107,18 @@ AMSynthLowPassFilter::process_one_sample(float buffer)
 
 
 //int AMSynthLowPassFilter::process_one_sample(int buffer)
+
+inline int32_t AMSynthLowPassFilter::process_one_sample_i(int32_t buffer)
+{
+  return this->process_one_sample(buffer);
+}
+
+inline float AMSynthLowPassFilter::process_one_sample_f(float buffer)
+{
+  return this->process_one_sample(buffer);
+}
+
+
 int32_t AMSynthLowPassFilter::process_one_sample(int32_t buffer)
 {
     i_x = buffer;

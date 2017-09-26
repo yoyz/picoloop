@@ -4,7 +4,7 @@
 
 #include "T_Singleton.h"
 #include <stdarg.h>
-
+#include <stdio.h>
 class Trace: public T_Singleton<Trace>  {
 public:
 

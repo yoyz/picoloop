@@ -52,7 +52,8 @@ void PicosynthMachine::init()
 
   if (buffer==0)
     {     
-      buffer = (Sint16*)malloc(sizeof(Sint16)*SAM);
+      //buffer = (Sint16*)malloc(sizeof(Sint16)*SAM);
+      buffer = (int32_t*)malloc(sizeof(int32_t)*SAM);
     }
   index=0; // use by this->tick()
   
@@ -379,12 +380,15 @@ Sint32 PicosynthMachine::tick()
 	  buffer[i]=s_in;
 	  i++;
 	}
+      /*
       i=0;
       while (i<SAM)
 	{
 	  buffer[i]=filter.process_one_sample(buffer[i]);
 	  i++;
 	}    
+      */
+      filter.process_samples(buffer,SAM);
     }
   
   s_out=buffer[index];

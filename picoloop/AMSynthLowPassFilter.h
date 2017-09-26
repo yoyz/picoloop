@@ -36,8 +36,13 @@ public:
 
 	void calc(float fc, float res);
 	void	process_samples(float*, int);
+	void	process_samples(int*, int);
 	float	process_one_sample(float);
 	int32_t	process_one_sample(int32_t);
+
+	float	process_one_sample_f(float);
+	int32_t	process_one_sample_i(int32_t);
+
 	//int	process_one_sample(int);
 private:
 	float rate;
