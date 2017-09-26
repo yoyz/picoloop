@@ -11,6 +11,7 @@ PitchBend::PitchBend()
   sample_num=0;
   div=1;
   speed_calc=1;
+  depth_pos=0;
 }
 
 PitchBend::~PitchBend()
