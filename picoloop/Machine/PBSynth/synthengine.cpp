@@ -11,37 +11,37 @@ SynthEngine::SynthEngine(int samplesPerTick, long max_delaylen) {
   granu_counter = samplesPerTick;
   this->samplesPerTick = samplesPerTick;
 
-	// base = 3;
+  base = 3;
 
-	// granu_counter = samplesPerTick;
-	// this->samplesPerTick = samplesPerTick;
-
-	// echo = new Echo(max_delaylen);
-	// lfos[0] = new LFO(samplesPerTick);
-	// lfos[1] = new LFO(samplesPerTick);
-	// envelopes[0] = new Envelope(samplesPerTick);
-	// envelopes[1] = new Envelope(samplesPerTick);
-	// oscillators[0] = new PBSynthOscillator();
-	// oscillators[1] = new PBSynthOscillator();
-	// filters[0] = new PBSynthFilter();
-	// filters[1] = new PBSynthFilter();
-
-	// reset();
-
+  granu_counter = samplesPerTick;
+  this->samplesPerTick = samplesPerTick;
+  
+  echo = new Echo(max_delaylen);
+  lfos[0] = new LFO(samplesPerTick);
+  lfos[1] = new LFO(samplesPerTick);
+  envelopes[0] = new Envelope(samplesPerTick);
+  envelopes[1] = new Envelope(samplesPerTick);
+  oscillators[0] = new PBSynthOscillator();
+  oscillators[1] = new PBSynthOscillator();
+  filters[0] = new PBSynthFilter();
+  filters[1] = new PBSynthFilter();
+  
+  reset();
+  
 
 }
 
 SynthEngine::~SynthEngine() {
 
-   // delete lfos[0];
-   // delete lfos[1];
-   // delete envelopes[0];
-   // delete envelopes[1];
-   // delete oscillators[0];
-   // delete oscillators[1];
-   // delete filters[0];
-   // delete filters[1];
-   // delete echo;
+  delete lfos[0];
+  delete lfos[1];
+  delete envelopes[0];
+  delete envelopes[1];
+  delete oscillators[0];
+  delete oscillators[1];
+  delete filters[0];
+  delete filters[1];
+  delete echo;
 }
 
 void SynthEngine::init()
