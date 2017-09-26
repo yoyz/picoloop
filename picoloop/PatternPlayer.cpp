@@ -1918,14 +1918,14 @@ void display_board_colored_box()
   if (end-start > 15) end=start+16;
   for (i=start;i<end;i++)
     {
-      DPRINTF("DBOARD1:%d PDO:%d",i,pattern_display_offset[cty]);
+      //DPRINTF("DBOARD1:%d PDO:%d",i,pattern_display_offset[cty]);
       SG.drawBoxNumber(i-pattern_display_offset[cty],pal[ENABLEDBOX_COLOR]); }
 
   // draw step in DISABLED color if
   // for example if the sequencer is only 12 step, the 4 last step are disabled
   for (i=i;i<pattern_display_offset[cty]+16;i++)   
     {
-      DPRINTF("DBOARD2:%d PDO:%d",i,pattern_display_offset[cty]);
+      //DPRINTF("DBOARD2:%d PDO:%d",i,pattern_display_offset[cty]);
       SG.drawBoxNumber(i-pattern_display_offset[cty],pal[DISABLEDBOX_COLOR]);
     }
 
