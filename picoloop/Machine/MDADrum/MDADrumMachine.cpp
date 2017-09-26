@@ -2223,6 +2223,7 @@ Sint32 MDADrumMachine::tick()
   Sint16 s_out=0;
   Sint16 sum=0;
   Sint16 ret=0;
+  char   patch_cstr[1024];
 
   if (index>=SAM | 
       index<0)
@@ -2242,7 +2243,9 @@ Sint32 MDADrumMachine::tick()
       dsoop.init();
       dsoop.set_tune(1.0+(float)freq/6.8);
       dsoop.set_time(param_time);
-      dsoop.load_patch(path.c_str());
+      strncpy(patch_cstr,path.c_str(),1024); // CLANG
+      //dsoop.load_patch(path.c_str());
+      dsoop.load_patch(patch_cstr);
       
       need_note_on=0;
       note_on=1;
