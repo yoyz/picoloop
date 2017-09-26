@@ -202,7 +202,7 @@ Effect * MonoMixer::getEffect()
 }
 
 
-Sint16 MonoMixer::tick()
+void MonoMixer::process()
 {
   int debug=0;
   Sint32 res32=0;
@@ -210,20 +210,16 @@ Sint16 MonoMixer::tick()
   Sint16 res16=0;
   int    i=0;
 
-  // See GOTCHA below, I need to 
-  if (index+1<SAMMONOMIXER)
-    {
-      index++;
-      return buffer16[index];
-    }
   // Fill with Machine audio
   for (i=0;i<SAMMONOMIXER;i++)
     {
       buffer32[i]=M->tick();
     }
-  // Send To FX
-  for (i=0;i<SAMMONOMIXER;i++)
-    buffer32[i]=FX->process(buffer32[i]);
+  //  // Send To FX
+  // for (i=0;i<SAMMONOMIXER;i++)
+  //   buffer32[i]=FX->process_one_sample(buffer32[i]);
+
+  FX->process(buffer32,SAMMONOMIXER);
 
   // Amplify it we are a mixer 
   // Clip it it is a 32 bit, so no problem to clip it
@@ -238,7 +234,18 @@ Sint16 MonoMixer::tick()
     buffer16[i]=(Sint16)buffer32[i];
 
   // GOTCHA : Here I set index to 0 and I return buffer16[0]
-  index=0;
+  index=0;  
+}
+
+Sint16 MonoMixer::tick()
+{
+
+  if (index+1<SAMMONOMIXER)
+    {
+      index++;
+      return buffer16[index];
+    }
+  this->process();
   return buffer16[index];
   
 }
