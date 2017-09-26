@@ -19,7 +19,9 @@ OneOscillator::~OneOscillator()
 {
   DPRINTF("OneOscillator::~OneOscillator() 0x%08.8X",table);
   if (table)
-    delete(table);
+    delete[] table;
+    //delete(table);
+    
   //if (table!=NULL)
     //&& index!=0)
     //free(table);

@@ -223,7 +223,7 @@ void Hiopl::_milliHertzToFnum(unsigned int milliHertz,
 }
 
 Hiopl::~Hiopl() {
-	delete Buf32;
+	delete[] Buf32;
 	delete adlib;
 };
 

@@ -26,6 +26,7 @@ PicosynthMachine::~PicosynthMachine()
   DPRINTF("PicosynthMachine::~PicosynthMachine()\n");
   if (buffer)
     free(buffer);
+  //delete(one_osc);
 }
 
 PicosynthADSR & PicosynthMachine::getADSRAmp()

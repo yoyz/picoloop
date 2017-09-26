@@ -73,9 +73,10 @@ void PBSynthOscillator::processTriangle(mfloat *in, mfloat *out, int n, int owri
 
 void PBSynthOscillator::processSawtooth(mfloat *in, mfloat *out, int n, int owrite) {
 	
-	int i;
-	mfloat lsawInc;
-	mfloat loval, lamp;
+	int i=0;
+	mfloat lsawInc=0;
+	mfloat loval=0;
+	mfloat lamp=0;
 	
 	loval = oval;
 	lamp = parameters.amp;
@@ -200,7 +201,7 @@ void PBSynthOscillator::reset() {
 	sqp = 1.0f;
 	sqc = 0;
 	parameters.pulsewidth = 0.0f;
-	//parameters.detune = 0;
+	parameters.detune = 0;
 	setAmp(1.0f);
 	setWave(OSC_SAWTOOTH);
 	setPulseWidth(0.0f);
