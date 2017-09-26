@@ -748,7 +748,7 @@ void display_board_one_param_text(int machineParam1)
   int  size_of_zero=5;
   char line1[size_of_zero+1];
 
-  char * line1_to_process;
+  const char * line1_to_process;
   int    line1_size;
 
   display_board_trig();
@@ -765,7 +765,7 @@ void display_board_one_param_text(int machineParam1)
 	  strcpy(line1,space);
 	  line1_to_process=SAM->getMachineParamCharStar(machineParam1,PET.get(machineParam1));
 	  line1_size=strlen(line1_to_process);
-
+	  
 	  if (line1_size>size_of_zero)
 	    strncpy(line1,line1_to_process,size_of_zero);
 	  else
@@ -784,14 +784,14 @@ void display_board_two_param_text(int machineParam1,int machineParam2)
   int  cty=SEQ.getCurrentTrackY();
   int  step=SEQ.getPatternSequencer(cty).getStep();
 
-  const char * space="    ";
+  const char * space="     ";
 
   int  size_of_zero=5;
   char line1[size_of_zero+1];
   char line2[size_of_zero+1];
 
-  char * line1_to_process;
-  char * line2_to_process;
+  const char * line1_to_process;
+  const char * line2_to_process;
   int    line1_size;
   int    line2_size;
 
@@ -802,23 +802,25 @@ void display_board_two_param_text(int machineParam1,int machineParam2)
     {	  // Draw text on Trigged step
       if (P[cty].getPatternElement(i+pattern_display_offset[cty]).get(NOTE_ON))
 	{
+	  strcpy(line1,space);	  
+	  strcpy(line2,space);	  
 	  update_SAMM(cty,i+pattern_display_offset[cty]);
 	  strcpy(line1,space);
 	  line1_to_process=SAM->getMachineParamCharStar(machineParam1,P[cty].getPatternElement(i+pattern_display_offset[cty]).get(machineParam1));
 	  line2_to_process=SAM->getMachineParamCharStar(machineParam2,P[cty].getPatternElement(i+pattern_display_offset[cty]).get(machineParam2));
-
+	  
 	  line1_size=strlen(line1_to_process);
 	  line2_size=strlen(line2_to_process);
-
+	  
 	  if (line1_size>size_of_zero)
 	    strncpy(line1,line1_to_process,size_of_zero);
 	  else
 	    strcpy(line1,line1_to_process);
-
+	  
 	  if (line2_size>size_of_zero)
 	    strncpy(line2,line2_to_process,size_of_zero);
 	  else
-	    strcpy(line2,line2_to_process);
+	    strcpy(line2,line2_to_process);	  
 
 	  SG.drawTTFTextNumberFirstLine( i,line1);	  
 	  SG.drawTTFTextNumberSecondLine(i,line2);
@@ -923,12 +925,13 @@ void display_board_one_and_two_param_text(int machineParam1,int machineParam2)
   int  cty=SEQ.getCurrentTrackY();
   int  step=SEQ.getPatternSequencer(cty).getStep();
 
+  const char * space="     ";
   int    size_of_zero=5;
   char   line1[128];
   char   line2[128];
 
-  char * line1_to_process;
-  char * line2_to_process;
+  const char * line1_to_process;
+  const char * line2_to_process;
   int    line1_size;
   int    line2_size;
 
@@ -946,7 +949,7 @@ void display_board_one_and_two_param_text(int machineParam1,int machineParam2)
       if (P[cty].getPatternElement(j).get(NOTE_ON))
 	{
 	  update_SAMM(cty,j);
-
+	  
 	  line1_to_process=SAM->getMachineParamCharStar(machineParam1,
 							P[cty].getPatternElement(j).get(machineParam1));
       
