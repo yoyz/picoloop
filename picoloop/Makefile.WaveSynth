@@ -3,6 +3,7 @@ include Makefile_sources
 CC=clang++
 CC=clang++
 CC=g++
+CC=clang++
 CFLAGS_SDLVERS=-D__SDL12__    
 
 CFLAGS=-c -O1 -DLINUX -D__RTAUDIO__ -DLINUX_DESKTOP -I. -LSDL/lib -g -fpermissive 
