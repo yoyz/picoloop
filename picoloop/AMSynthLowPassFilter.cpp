@@ -60,7 +60,7 @@ void AMSynthLowPassFilter::calc(float fc, float res)
 }
 
 void
-AMSynthLowPassFilter::ProcessSamples	(float *buffer, int numSamples)
+AMSynthLowPassFilter::process_samples(float *buffer, int numSamples)
 {
   for (int i=0; i<numSamples; i++) {
     x = buffer[i];
@@ -82,7 +82,7 @@ AMSynthLowPassFilter::ProcessSamples	(float *buffer, int numSamples)
 
 
 float
-AMSynthLowPassFilter::ProcessSample	(float buffer)
+AMSynthLowPassFilter::process_one_sample(float buffer)
 {
     x = buffer;
     
@@ -113,8 +113,8 @@ AMSynthLowPassFilter::ProcessSample	(float buffer)
 }
 
 
-int 
-AMSynthLowPassFilter::ProcessSample	(int buffer)
+//int AMSynthLowPassFilter::process_one_sample(int buffer)
+int32_t AMSynthLowPassFilter::process_one_sample(int32_t buffer)
 {
     i_x = buffer;
     i_x = i_x << AM_SHIFT;

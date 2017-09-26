@@ -32,10 +32,13 @@
 #ifndef   M_PI
 #define   M_PI      3.1415926535897932384626433832795
 #endif
-#define    DECAL 32768
 //#define    DECAL 16777216
 //#define      DECAL 2147483648
-#define      SHIFT 15
+/* #define      SHIFT 15 */
+/* #define      DECAL 32768 */
+
+#define      SHIFT 16
+#define      DECAL 65536
                
 
 #ifndef Biquad_h
@@ -65,8 +68,8 @@ public:
     void setFc(float Fc);
     void setPeakGain(float peakGainDB);
     void setBiquad(int type, float Fc, float Q, float peakGain);
-    float   process(float in);
-    int16_t process(int16_t in);
+    float   process_one_sample(float in);
+    int16_t process_one_sample(int16_t in);
     Sint16  tick();
     void    setInput(Oscillator * vcoosc);
     void calcBiquad(void);
@@ -88,7 +91,7 @@ protected:
 };
 
 
-inline float Biquad::process(float in) {
+inline float Biquad::process_one_sample(float in) {
     float out = in * a0 + z1;
     z1 = in * a1 + z2 - b1 * out;
     z2 = in * a2 - b2 * out;
@@ -96,7 +99,7 @@ inline float Biquad::process(float in) {
 }
 
 
-inline int16_t Biquad::process(int16_t in) 
+inline int16_t Biquad::process_one_sample(int16_t in) 
 //Sint16 Biquad::tick(Sint16 in) 
 {
   int64_t i_in=0;

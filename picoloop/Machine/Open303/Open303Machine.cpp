@@ -342,7 +342,7 @@ void Open303Machine::reset()
 
 
 
-Sint16 Open303Machine::tick()
+Sint32 Open303Machine::tick()
 {
   double    f_in;
   Sint16 s_out;

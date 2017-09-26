@@ -14,7 +14,7 @@ class MidiOutMachine : public Machine
 
   void init();
   void reset();
-  Sint16  tick();
+  Sint32  tick();
 
   void setI(int what,int val);
   void setF(int what,float val);

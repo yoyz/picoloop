@@ -408,11 +408,12 @@ void dboplMachine::setI(int what,int val)
   
 }
 
-Sint16 dboplMachine::tick()
+Sint32 dboplMachine::tick()
 {
   Sint16 s_in;
   Sint16 s_out;
   Sint32 modulated_freq;
+  int i;
   //int    modulated_freq=0;
 
   if (index>=SAM | 
@@ -444,6 +445,8 @@ Sint16 dboplMachine::tick()
 	  //HO->SetFrequency(1,freq,false);
 	}
       HO->Generate(SAM,buffer);
+      for (i=0;i<SAM;i++)
+	buffer[i]=filter.process_one_sample(buffer[i]);
     }
 
 
@@ -459,14 +462,7 @@ Sint16 dboplMachine::tick()
 
     }
 
-
-
-
-
-
-
-  s_in=buffer[index];
-  s_out=filter.process(s_in);
+  s_out=buffer[index];
 
   index++;
   sample_num++;

@@ -181,7 +181,7 @@ class Machine
 
   virtual void init();
   virtual void reset();
-  virtual Sint16 tick();
+  virtual Sint32 tick();
 
   virtual void setChannelNumber(int c);
   virtual int  getChannelNumber();

@@ -287,7 +287,7 @@ void PicodrumMachine::reset()
 }
 
 
-Sint16 PicodrumMachine::tick()
+Sint32 PicodrumMachine::tick()
 {
   float  f_in;
   float  f_out;
@@ -296,7 +296,7 @@ Sint16 PicodrumMachine::tick()
   int        i;
 
   // there is something wrong here, need to debug it
-  return filter.process(adsr_amp.tick());
+  return filter.process_one_sample(adsr_amp.tick());
   //return adsr_amp.tick();
   if (index>=SAM | index<0)
     index=0;
@@ -314,7 +314,7 @@ Sint16 PicodrumMachine::tick()
       
       while (i<SAM)
 	{
-	  buffer_picodrum[i]=filter.process(buffer_picodrum[i]);
+	  buffer_picodrum[i]=filter.process_one_sample(buffer_picodrum[i]);
 	  i++;
 	}
     }

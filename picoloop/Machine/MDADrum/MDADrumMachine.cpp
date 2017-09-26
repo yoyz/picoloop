@@ -2216,7 +2216,7 @@ void MDADrumMachine::setI(int what,int val)
 }
 
 
-Sint16 MDADrumMachine::tick()
+Sint32 MDADrumMachine::tick()
 {
   int       i=0;
   Sint16 s_in=0;
@@ -2263,7 +2263,8 @@ Sint16 MDADrumMachine::tick()
 	  // printf("\n");
 	}
       s_in=buffer[index]/8;
-      s_out=filter.process(s_in);
+      //s_out=filter.process(s_in);
+      s_out=filter.process_one_sample(s_in);
        	//return buffer[++index]/4;
       // else
       //  	note_on=0;
