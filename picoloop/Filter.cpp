@@ -91,98 +91,104 @@ int16_t Filter::process(int16_t in)
 }
 */
 
-int16_t Filter::process_one_sample(int16_t in)
-{
-  //return this->process_amsynth(in);
 
-  
+
+
+void Filter::process_samples(float * in, int nb_sample)
+{
+  if (filterAlgo==FILTER_ALGO_NOFILTER) return;
+  if (filterAlgo==FILTER_ALGO_BIQUAD)   
+    { 
+      this->process_biquad_need_calc();
+      return bq.process_samples(in,nb_sample);
+    }
+  if (filterAlgo==FILTER_ALGO_AMSYNTH)  
+    {
+      this->process_amsynth_need_calc();
+      return lp.process_samples(in,nb_sample);
+    }
+}
+
+void Filter::process_samples(int32_t * in, int nb_sample)
+{
+  if (filterAlgo==FILTER_ALGO_NOFILTER) return;
+  if (filterAlgo==FILTER_ALGO_BIQUAD)   
+    { 
+      this->process_biquad_need_calc();
+      return bq.process_samples(in,nb_sample);
+    }
+  if (filterAlgo==FILTER_ALGO_AMSYNTH)  
+    {
+      this->process_amsynth_need_calc();
+      return lp.process_samples(in,nb_sample);
+    }
+}
+
+
+
+int16_t Filter::process_one_sample(int16_t in)
+{ 
   if (filterAlgo==FILTER_ALGO_NOFILTER)
     return in;
   if (filterAlgo==FILTER_ALGO_BIQUAD)
     return this->process_biquad_one_sample(in);
   if (filterAlgo==FILTER_ALGO_AMSYNTH)
-    return this->process_amsynth_one_sample(in);
-  
-    
+    return this->process_amsynth_one_sample(in);   
 }
 
 
-int16_t Filter::process_biquad_one_sample(int16_t in)
+inline void Filter::process_biquad_need_calc()
 {
-  //float f_in[0];
-  float f_in;
-  float f_out;
-  int16_t  out;
-  float f_val_cutoff=cutoff;
-  float f_val_resonance=resonance;
-
-  f_in=in;
   if (needCalc)
     {
-      //needCalc=1;
-      //bq.setType(filterType);
-      //bq.setBiquad(filterType, (f_val_cutoff/256), (f_val_resonance/8)+0.005, 0.0;)
+      float f_val_cutoff=cutoff;
+      float f_val_resonance=resonance;
       bq.setBiquad(filterType,
 		   (f_val_cutoff/256)*(f_val_cutoff/256),
 		   (f_val_resonance/8)+0.005, 0.0);
-      bq.calcBiquad(); 
-      
+      bq.calcBiquad();       
       needCalc=0;      
-      //lp.SetSampleRate(44100);
-      //lp.reset();
-      //lp.calc(100,0.8);
-      //lp.calc(cutoff*256,resonance/128);
     }
-  return bq.process_one_sample(in);
-  //lp.ProcessSamples(f_in,1,f_val_cutoff/127,f_val_resonance/127);
+}
 
-  //lp.ProcessSample(f_in);
-   //f_out=f_in;
-  //out=f_out;
-  //return out;
+int16_t Filter::process_biquad_one_sample(int16_t in)
+{
+  float f_in;
+  float f_out;
+  int16_t  out;
+
+  f_in=in;
+  this->process_biquad_need_calc();
+  return bq.process_one_sample(in);
 }
 
 
 
+inline void Filter::process_amsynth_need_calc()
+{
+  if (needCalc)
+    {
+      float f_val_cutoff=cutoff;
+      float f_val_resonance=resonance;
+      needCalc=0;      
+      lp.SetSampleRate(44100);
+      lp.reset();
+      lp.calc(((f_val_cutoff/128)*(f_val_cutoff/128))*64*128,f_val_resonance/160);
+    }
+}
 
 int16_t Filter::process_amsynth_one_sample(int16_t in)
 {
-  //float f_in[0];
   float    f_in;
   float    f_out;
-
-  int      i_in;
+  int32_t  i_in;
   int      i_out;
-
-  float    f_val_cutoff=cutoff;
-  float    f_val_resonance=resonance;
   int16_t    out;
 
-  //f_in[0]=in;
   f_in=in;
   i_in=in;
-  if (needCalc)
-    {
-      //needCalc=1;
-      //bq.setBiquad(0, (f_val_cutoff/256), (f_val_resonance/8)+0.005, 0.0);
-      //bq.calcBiquad(); 
-      
-      needCalc=0;      
-      //lp.SetSampleRate(4100);
-      lp.SetSampleRate(44100);
-      lp.reset();
-      //lp.calc(f_val_cutoff*256,f_val_resonance/128);
-      //lp.calc(f_val_cutoff*32,f_val_resonance/160);
-      lp.calc(((f_val_cutoff/128)*(f_val_cutoff/128))*64*128,f_val_resonance/160);
-    }
-  //return bq.process(in);
-  //lp.ProcessSamples(f_in,1,f_val_cutoff/127,f_val_resonance/127);
-
-  //f_out=lp.ProcessSample(f_in);
+  this->process_amsynth_need_calc();
   i_out=lp.process_one_sample(i_in);
-  //DPRINTF("f_in:%.8f f_out:%.8f\n",f_in,f_out);
-  //lp.ProcessSamples(f_in,1);
-  //f_out=f_in[0];
   out=f_out;
   out=i_out;
   

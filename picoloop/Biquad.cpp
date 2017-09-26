@@ -201,19 +201,19 @@ void Biquad::calcBiquad(void) {
     }
     
 
-    i_a0=a0             * DECAL;
-    i_a1=a1             * DECAL;
-    i_a2=a2             * DECAL;
+    i_a0=a0             * BQ_DECAL;
+    i_a1=a1             * BQ_DECAL;
+    i_a2=a2             * BQ_DECAL;
 
-    i_b1=b1             * DECAL;
-    i_b2=b2             * DECAL;
+    i_b1=b1             * BQ_DECAL;
+    i_b2=b2             * BQ_DECAL;
 
-    i_z1=z1             * DECAL;
-    i_z2=z2             * DECAL;
+    i_z1=z1             * BQ_DECAL;
+    i_z2=z2             * BQ_DECAL;
 
-    i_Fc=Fc             * DECAL;
-    i_Q=Q               * DECAL;
-    i_peakGain=peakGain * DECAL;
+    i_Fc=Fc             * BQ_DECAL;
+    i_Q=Q               * BQ_DECAL;
+    i_peakGain=peakGain * BQ_DECAL;
 
 
 
@@ -222,5 +222,98 @@ void Biquad::calcBiquad(void) {
 
 
     return;
+}
+
+float Biquad::process_one_sample(float in) {
+    float out = in * a0 + z1;
+    z1 = in * a1 + z2 - b1 * out;
+    z2 = in * a2 - b2 * out;
+    return out;
+}
+
+
+int32_t Biquad::process_one_sample(int32_t in) 
+//Sint16 Biquad::tick(Sint16 in) 
+{
+
+  int64_t i_in=0;
+  int64_t i_out=0;
+  int64_t i_out_tmp=0;
+  //int16_t out=0;
+  int32_t out;
+  
+
+  //if (in==0) return 0;
+
+  i_in=in;
+  i_in=i_in<<BQ_SHIFT;
+  
+  /*
+  Biquads come in several forms. 
+  The most obvious, a direct implementation of the 
+  second order difference equation 
+  (y[n] = a0*x[n] + a1*x[n-1] + a2*x[n-2] - b1*y[n-1] - b2*y[n-2]) 
+  called direct form I:
+
+  from http://www.earlevel.com/main/2003/02/28/biquads/
+   */
+
+  // SIMPLE FORM
+  /*
+  i_out=(( i_a0*i_in )>>SHIFT ) + (( i_a1*i_z1 ) >>SHIFT)+ (( i_a2*i_z2 )>>SHIFT)- (( i_b1*i_z1) >> SHIFT) -(( i_b2*i_z2) >> SHIFT);
+  i_z1=i_z2;
+  i_in=i_z1;
+  */
+
+  // SECOND FORM
+  i_out = (( i_in * i_a0 ) >> BQ_SHIFT ) + i_z1;
+
+  i_z1  = (( i_in * i_a1 ) >> BQ_SHIFT ) + i_z2 - (( i_b1 * i_out ) >> BQ_SHIFT );
+  i_z2  = (( i_in * i_a2 ) >> BQ_SHIFT ) -        (( i_b2 * i_out ) >> BQ_SHIFT );
+
+
+  //  i_z1  = i_in / i_a1   + i_z2    - i_b1 / i_out;
+  //  i_z2  = i_in / i_a2             - i_b2 / i_out;
+
+  //  i_z1 = ( ( i_in / i_a1 ) << SHIFT ) + i_z2 - ( ( i_b1 / i_out_tmp ) << SHIFT);
+  //  i_z2 = ( ( i_in / i_a2 ) << SHIFT )        - ( ( i_b2 / i_out_tmp ) << SHIFT); 
+  
+
+  
+  //  printf("i_in:%d i_out:%d\n",i_in,i_out);
+  //i_out=i_out;
+  i_out=i_out >> BQ_SHIFT;
+  out=i_out;
+
+  //printf("X(%d)=%d ",in,out);
+  return out;
+}
+
+float Biquad::process_one_sample_f(float in)
+{
+  return this->process_one_sample(in);
+}
+
+int32_t Biquad::process_one_sample_i(int32_t in)
+{
+  return this->process_one_sample(in);
+}
+
+void Biquad::process_samples(float   * in, int nbsamples)
+{
+  //printf("blo");
+  int i;
+  for (i=0;i<nbsamples;i++)
+    in[i]=this->process_one_sample_f(in[i]);
+}
+
+void Biquad::process_samples(int32_t   * in, int nbsamples)
+{
+  //printf("bla:%d",nbsamples);
+  //printf("i:%d",in[0]);
+  int i;
+  for (i=0;i<nbsamples;i++)
+    in[i]=process_one_sample_i(in[i]);
+  //printf("o:%d",in[0]);
 }
 

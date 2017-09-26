@@ -44,8 +44,9 @@ void Trace::VLog(const char* category,  const char *fmt, const va_list& args)
   sprintf(buffer, "[%s] ",category);
   
   char *ptr = buffer+strlen(buffer);
-  
-  vsprintf(ptr,fmt,args ); 
+  //CLANG disable log for lgpt
+  //vsprintf(ptr,fmt,args ); 
+  //vsnprintf(ptr,4096,fmt,args ); 
   GetInstance()->AddLine(buffer) ;
   
 }

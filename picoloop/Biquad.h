@@ -37,12 +37,14 @@
 /* #define      SHIFT 15 */
 /* #define      DECAL 32768 */
 
-#define      SHIFT 16
-#define      DECAL 65536
                
 
 #ifndef Biquad_h
 #define Biquad_h
+
+#define      BQ_SHIFT 16
+#define      BQ_DECAL 65536
+
 
 enum {
     bq_type_lowpass = 0,
@@ -68,8 +70,17 @@ public:
     void setFc(float Fc);
     void setPeakGain(float peakGainDB);
     void setBiquad(int type, float Fc, float Q, float peakGain);
+
     float   process_one_sample(float in);
-    int16_t process_one_sample(int16_t in);
+    int32_t process_one_sample(int32_t in);
+
+    float   process_one_sample_f(float in);
+    int32_t process_one_sample_i(int32_t in);
+
+
+    void   process_samples(float   * in, int nbsamples);
+    void   process_samples(int32_t * in, int nbsamples);
+
     Sint16  tick();
     void    setInput(Oscillator * vcoosc);
     void calcBiquad(void);
@@ -90,69 +101,6 @@ protected:
 
 };
 
-
-inline float Biquad::process_one_sample(float in) {
-    float out = in * a0 + z1;
-    z1 = in * a1 + z2 - b1 * out;
-    z2 = in * a2 - b2 * out;
-    return out;
-}
-
-
-inline int16_t Biquad::process_one_sample(int16_t in) 
-//Sint16 Biquad::tick(Sint16 in) 
-{
-  int64_t i_in=0;
-  int64_t i_out=0;
-  int64_t i_out_tmp=0;
-  int16_t out=0;
-  
-
-  //if (in==0) return 0;
-
-  i_in=in;
-  i_in=i_in<<SHIFT;
-  
-  /*
-  Biquads come in several forms. 
-  The most obvious, a direct implementation of the 
-  second order difference equation 
-  (y[n] = a0*x[n] + a1*x[n-1] + a2*x[n-2] - b1*y[n-1] - b2*y[n-2]) 
-  called direct form I:
-
-  from http://www.earlevel.com/main/2003/02/28/biquads/
-   */
-
-  // SIMPLE FORM
-  /*
-  i_out=(( i_a0*i_in )>>SHIFT ) + (( i_a1*i_z1 ) >>SHIFT)+ (( i_a2*i_z2 )>>SHIFT)- (( i_b1*i_z1) >> SHIFT) -(( i_b2*i_z2) >> SHIFT);
-  i_z1=i_z2;
-  i_in=i_z1;
-  */
-
-  // SECOND FORM
-  i_out = (( i_in * i_a0 ) >> SHIFT ) + i_z1;
-
-  i_z1  = (( i_in * i_a1 ) >> SHIFT ) + i_z2 - (( i_b1 * i_out ) >> SHIFT );
-  i_z2  = (( i_in * i_a2 ) >> SHIFT ) -        (( i_b2 * i_out ) >> SHIFT );
-
-
-  //  i_z1  = i_in / i_a1   + i_z2    - i_b1 / i_out;
-  //  i_z2  = i_in / i_a2             - i_b2 / i_out;
-
-  //  i_z1 = ( ( i_in / i_a1 ) << SHIFT ) + i_z2 - ( ( i_b1 / i_out_tmp ) << SHIFT);
-  //  i_z2 = ( ( i_in / i_a2 ) << SHIFT )        - ( ( i_b2 / i_out_tmp ) << SHIFT); 
-  
-
-  
-  //  printf("i_in:%d i_out:%d\n",i_in,i_out);
-  //i_out=i_out;
-  i_out=i_out >> SHIFT;
-  out=i_out;
-
-
-  return out;
-}
 
 
 #endif // Biquad_h

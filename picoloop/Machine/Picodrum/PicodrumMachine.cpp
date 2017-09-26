@@ -35,9 +35,7 @@ PicodrumMachine::~PicodrumMachine()
 void PicodrumMachine::init()
 {
   if (buffer_picodrum==0)
-    {     
-      buffer_picodrum = (Sint16*)malloc(sizeof(Sint16)*SAM);
-    }
+    buffer_picodrum = (int32_t*)malloc(sizeof(int32_t)*SAM);
   index=0; // use by this->tick()
   
   adsr_amp.init();
@@ -296,7 +294,7 @@ Sint32 PicodrumMachine::tick()
   int        i;
 
   // there is something wrong here, need to debug it
-  return filter.process_one_sample(adsr_amp.tick());
+  // return filter.process_one_sample(adsr_amp.tick());
   //return adsr_amp.tick();
   if (index>=SAM | index<0)
     index=0;
@@ -308,15 +306,17 @@ Sint32 PicodrumMachine::tick()
 	{	  
 	  buffer_picodrum[i]=adsr_amp.tick();
 	  i++;
-	  printf("i:%d\n");
+	  //printf("i:%d\n");
 	}
-      i=0;
-      
+      /*
+      i=0;      
       while (i<SAM)
 	{
 	  buffer_picodrum[i]=filter.process_one_sample(buffer_picodrum[i]);
 	  i++;
 	}
+      */
+      filter.process_samples(buffer_picodrum,SAM);
     }
     
   s_out=buffer_picodrum[index];

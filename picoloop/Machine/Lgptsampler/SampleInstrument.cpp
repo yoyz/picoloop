@@ -762,7 +762,9 @@ bool SampleInstrument::Render(int channel,lgptfixed *buffer,int size,bool update
         {
 	        if (useDirtyDownsampling_)
 	        {
-	          i1 =(short *)(((unsigned int)input)&dsMask);
+	          //i1 =(short *)(((unsigned int)input)&dsMask);
+		  //FIX CLANG: I do not use useDirtyDownsampling_
+		  i1=(short *)input;
 	        }
           else
 	        {

@@ -50,7 +50,8 @@ class PicodrumMachine : public Machine
 
   int                   phase;
 
-  Sint16              * buffer_picodrum;
+  //Sint16              * buffer_picodrum;
+  int32_t              * buffer_picodrum;
   int                   index;
 };
 
