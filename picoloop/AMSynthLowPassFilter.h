@@ -6,10 +6,17 @@
 #ifndef _AMSYNTHLOWPASSFILTER_H
 #define _AMSYNTHLOWPASSFILTER_H
 
-#define    AM_DECAL 32768
+
 //#define    DECAL 16777216
 //#define      DECAL 2147483648
+
+/*
 #define      AM_SHIFT 15
+#define      AM_DECAL 32768
+*/
+#define      AM_SHIFT 16
+#define      AM_DECAL 65536
+
 
 
 /**
@@ -28,9 +35,10 @@ public:
 	void reset();
 
 	void calc(float fc, float res);
-	void	ProcessSamples	(float*, int);
-	float	ProcessSample	(float);
-	int	ProcessSample	(int);
+	void	process_samples(float*, int);
+	float	process_one_sample(float);
+	int32_t	process_one_sample(int32_t);
+	//int	process_one_sample(int);
 private:
 	float rate;
 	float nyquist;
@@ -45,6 +53,11 @@ private:
 	int64_t   i_a0, i_a1, i_a2, i_b1, i_b2;
 	int64_t   i_d1, i_d2, i_d3, i_d4;
 	int64_t   i_x,i_y;
+	/*
+	int32_t   i_a0, i_a1, i_a2, i_b1, i_b2;
+	int32_t   i_d1, i_d2, i_d3, i_d4; 
+	int32_t   i_x,i_y; 
+	*/
 };
 
 #endif

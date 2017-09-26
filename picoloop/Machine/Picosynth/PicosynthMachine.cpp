@@ -333,7 +333,7 @@ void PicosynthMachine::reset()
 }
 
 
-Sint16 PicosynthMachine::tick()
+Sint32 PicosynthMachine::tick()
 {
   int i=0;
   float  f_in;
@@ -382,7 +382,7 @@ Sint16 PicosynthMachine::tick()
       i=0;
       while (i<SAM)
 	{
-	  buffer[i]=filter.process(buffer[i]);
+	  buffer[i]=filter.process_one_sample(buffer[i]);
 	  i++;
 	}    
     }

@@ -396,7 +396,7 @@ void CursynthMachine::reset()
 }
 
 
-Sint16 CursynthMachine::tick()
+Sint32 CursynthMachine::tick()
 {
   float  f_in;
   float  f_out;

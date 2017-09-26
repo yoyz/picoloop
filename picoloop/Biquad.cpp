@@ -215,6 +215,8 @@ void Biquad::calcBiquad(void) {
     i_Q=Q               * DECAL;
     i_peakGain=peakGain * DECAL;
 
+
+
     //printf("<<< %f %f %f    %f %f    %f %f  %f %f %f>>>\n",a0,a1,a2,b1,b2,z1,z2,Fc,Q,peakGain);
     //    printf("[[[ %d %d %d    %d %d    %d %d  %d %d %d]]]\n",i_a0,i_a1,i_a2,i_b1,i_b2,i_z1,i_z2,i_Fc,i_Q,i_peakGain);
 

@@ -468,7 +468,7 @@ void SIDSynthMachine::setI(int what,int val)
     if (what==FILTER1_RESONANCE)         resonance=val;
 }
 
-Sint16 SIDSynthMachine::tick()
+Sint32 SIDSynthMachine::tick()
 {
   Sint16 s_in;
   Sint32 s_in32;

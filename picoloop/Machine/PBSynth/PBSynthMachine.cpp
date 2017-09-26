@@ -327,7 +327,7 @@ void PBSynthMachine::setI(int what,int val)
 
 }
 
-Sint16 PBSynthMachine::tick()
+Sint32 PBSynthMachine::tick()
 {
   Sint16 s_in;
   Sint32 s_in32;

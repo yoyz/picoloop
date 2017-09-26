@@ -348,7 +348,7 @@ void LgptsamplerMachine::reset()
 }
 
 
-Sint16 LgptsamplerMachine::tick()
+Sint32 LgptsamplerMachine::tick()
 {
   //  return 0;
   float  f_in;

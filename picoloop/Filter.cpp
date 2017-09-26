@@ -91,7 +91,7 @@ int16_t Filter::process(int16_t in)
 }
 */
 
-int16_t Filter::process(int16_t in)
+int16_t Filter::process_one_sample(int16_t in)
 {
   //return this->process_amsynth(in);
 
@@ -99,15 +99,15 @@ int16_t Filter::process(int16_t in)
   if (filterAlgo==FILTER_ALGO_NOFILTER)
     return in;
   if (filterAlgo==FILTER_ALGO_BIQUAD)
-    return this->process_biquad(in);
+    return this->process_biquad_one_sample(in);
   if (filterAlgo==FILTER_ALGO_AMSYNTH)
-    return this->process_amsynth(in);
+    return this->process_amsynth_one_sample(in);
   
     
 }
 
 
-int16_t Filter::process_biquad(int16_t in)
+int16_t Filter::process_biquad_one_sample(int16_t in)
 {
   //float f_in[0];
   float f_in;
@@ -133,7 +133,7 @@ int16_t Filter::process_biquad(int16_t in)
       //lp.calc(100,0.8);
       //lp.calc(cutoff*256,resonance/128);
     }
-  return bq.process(in);
+  return bq.process_one_sample(in);
   //lp.ProcessSamples(f_in,1,f_val_cutoff/127,f_val_resonance/127);
 
   //lp.ProcessSample(f_in);
@@ -145,7 +145,7 @@ int16_t Filter::process_biquad(int16_t in)
 
 
 
-int16_t Filter::process_amsynth(int16_t in)
+int16_t Filter::process_amsynth_one_sample(int16_t in)
 {
   //float f_in[0];
   float    f_in;
@@ -179,7 +179,7 @@ int16_t Filter::process_amsynth(int16_t in)
   //lp.ProcessSamples(f_in,1,f_val_cutoff/127,f_val_resonance/127);
 
   //f_out=lp.ProcessSample(f_in);
-  i_out=lp.ProcessSample(i_in);
+  i_out=lp.process_one_sample(i_in);
   //DPRINTF("f_in:%.8f f_out:%.8f\n",f_in,f_out);
   //lp.ProcessSamples(f_in,1);
   //f_out=f_in[0];

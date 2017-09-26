@@ -26,12 +26,12 @@ class Filter
   void    setFilterAlgo(int val);
   
 
-  int16_t process(int16_t in);
+  int16_t process_one_sample(int16_t in);
 
  protected:
 
-  int16_t process_biquad(int16_t in);
-  int16_t process_amsynth(int16_t in);
+  int16_t process_biquad_one_sample(int16_t in);
+  int16_t process_amsynth_one_sample(int16_t in);
 
   int cutoff;
   int resonance;
