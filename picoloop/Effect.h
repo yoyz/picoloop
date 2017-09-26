@@ -19,7 +19,9 @@ class Effect
   virtual void setDepth(int val);
   virtual void setSpeed(int val);
 
-  virtual int16_t process(int16_t in);
+  virtual int32_t process_one_sample(int32_t in);
+
+  virtual void process(int32_t  * in,int nbsample);
 
  protected:
   //EffectDelay     FXDelay;

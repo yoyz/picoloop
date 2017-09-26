@@ -20,10 +20,11 @@ class EffectDelay : public Effect
   void setDepth(int val);
   void setSpeed(int val);
 
-  int16_t process(int16_t in);
+  void    process(int32_t * in, int nbsample);
+  int32_t process_one_sample(int32_t in);
 
  protected:
-  int16_t * buffer;
+  int32_t * buffer;
   int   index;       // Position in buffer for the next Write
   int   indexOffset; // Index for Read
   int   indexCurrent;

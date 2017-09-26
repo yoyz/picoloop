@@ -49,7 +49,7 @@ void EffectDelay::init()
   if (buffer==0)
   {
     DPRINTF("EffectDelay::init() after malloc buffer=%x.8",buffer);
-    buffer=(int16_t*)malloc(sizeof(int16_t)*FX_SIZE);
+    buffer=(int32_t*)malloc(sizeof(int32_t)*FX_SIZE);
     for (i=0;i<FX_SIZE;i++)
       {
 	buffer[i]=0;
@@ -144,9 +144,14 @@ int16_t EffectDelay::process(int16_t in)
 */
 
 
+void EffectDelay::process(int32_t * in, int nbsample)
+{
+  int i;
+  for (i=0;i<nbsample;i++)
+    in[i]=this->process_one_sample(in[i]);
+}
 
-
-int16_t EffectDelay::process(int16_t in)
+inline int32_t EffectDelay::process_one_sample(int32_t in)
 {
   //int out=buffer[indexOffset]+buffer[index]/depth;
   //int 

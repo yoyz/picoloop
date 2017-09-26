@@ -40,6 +40,7 @@ class MonoMixer
   int         getMonoMixerChannelNumber();
   Machine *   getInput();
   Effect  *   getEffect();
+  void        process();
   Sint16      tick();
 
  private:
