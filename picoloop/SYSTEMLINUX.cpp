@@ -31,7 +31,7 @@ char * GETPICOLOOPUSERSTORAGE()
 char * GETHOME()
 {
   static char homedir[MAXHOMEPATH];
-  sprintf(homedir, MAXHOMEPATH, "%s", getenv("HOME"));
+  snprintf(homedir, MAXHOMEPATH, "%s", getenv("HOME"));
   return homedir;
 }
 
