@@ -415,7 +415,7 @@ void drumsynth::load_patch(char *dsfile)
 
   /* if(wave!=NULL) free(wave); */
   /* wave = (short *)malloc(2 * Length + 1280); //wave memory buffer */
-  if(wave==NULL) {busy=0; return 3;}
+  if(wave==NULL) {busy=0; return;}
   wavewords = 0;
   prepare=1;
 }
