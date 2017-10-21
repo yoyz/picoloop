@@ -9,7 +9,7 @@ TwytchsynthMachine::TwytchsynthMachine()
 {
   float fi;
   int   i;
-  DPRINTF("TwytchsynthMachine::TwytchsynthMachine()\n");  
+  DPRINTF("TwytchsynthMachine::TwytchsynthMachine()");  
   note_on=0;
   buffer_i=0;
   buffer_f=0;
@@ -64,7 +64,7 @@ TwytchsynthMachine::TwytchsynthMachine()
 
 TwytchsynthMachine::~TwytchsynthMachine()
 {
-  DPRINTF("TwytchsynthMachine::~TwytchsynthMachine()\n");
+  DPRINTF("TwytchsynthMachine::~TwytchsynthMachine()");
 }
 
 

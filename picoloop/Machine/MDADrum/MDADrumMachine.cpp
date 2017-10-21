@@ -64,7 +64,7 @@
 
 MDADrumMachine::MDADrumMachine() : filter(), dsoop()
 {
-  DPRINTF("MDADrumMachine::MDADrumMachine()\n");  
+  DPRINTF("MDADrumMachine::MDADrumMachine()");  
   buffer=0;
   cutoff=125;
   resonance=10;
@@ -86,7 +86,7 @@ MDADrumMachine::MDADrumMachine() : filter(), dsoop()
 
 MDADrumMachine::~MDADrumMachine()
 {
-  DPRINTF("MDADrumMachine::~MDADrumMachine()\n");  
+  DPRINTF("MDADrumMachine::~MDADrumMachine()");  
 }
 
 

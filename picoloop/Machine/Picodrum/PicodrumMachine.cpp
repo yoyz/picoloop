@@ -7,7 +7,7 @@ PicodrumMachine::PicodrumMachine() : adsr_amp(), vco(), filter()
   float fi;
   int   i;
 
-  DPRINTF("PicodrumMachine::PicodrumMachine()\n");  
+  DPRINTF("PicodrumMachine::PicodrumMachine()");  
   cutoff=125;
   resonance=10;
   note=0;
@@ -20,7 +20,7 @@ PicodrumMachine::PicodrumMachine() : adsr_amp(), vco(), filter()
 
 PicodrumMachine::~PicodrumMachine()
 {
-  DPRINTF("PicodrumMachine::~PicodrumMachine()\n");
+  DPRINTF("PicodrumMachine::~PicodrumMachine()");
   if (buffer_picodrum)
     free(buffer_picodrum);
 }

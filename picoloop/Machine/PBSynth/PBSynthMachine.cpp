@@ -4,7 +4,7 @@
 
 PBSynthMachine::PBSynthMachine()
 {
-  DPRINTF("PBSynthMachine::PBSynthMachine()\n");  
+  DPRINTF("PBSynthMachine::PBSynthMachine()");  
   buffer_f=0;
   buffer_i=0;
   cutoff=125;
@@ -24,7 +24,7 @@ PBSynthMachine::PBSynthMachine()
 
 PBSynthMachine::~PBSynthMachine()
 {
-  DPRINTF("PBSynthMachine::~PBSynthMachine()\n");  
+  DPRINTF("PBSynthMachine::~PBSynthMachine()");  
   if (buffer_f)
     free(buffer_f);
   if (buffer_i)
