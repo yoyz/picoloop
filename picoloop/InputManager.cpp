@@ -47,12 +47,12 @@ void InputManager::printState()
 {
   int symbol;
   
-  symbol=SDLK_ESCAPE;  DPRINTF("%d[%d %d]\n",symbol,m_key_state[symbol],m_key_repeat[symbol]);
-  symbol=SDLK_RETURN;  DPRINTF("%d[%d %d]\n",symbol,m_key_state[symbol],m_key_repeat[symbol]);
-  symbol=SDLK_LEFT;    DPRINTF("%d[%d %d]\n",symbol,m_key_state[symbol],m_key_repeat[symbol]);
-  symbol=SDLK_RIGHT;   DPRINTF("%d[%d %d]\n",symbol,m_key_state[symbol],m_key_repeat[symbol]);
-  symbol=SDLK_UP;      DPRINTF("%d[%d %d]\n",symbol,m_key_state[symbol],m_key_repeat[symbol]);
-  symbol=SDLK_DOWN;    DPRINTF("%d[%d %d]\n",symbol,m_key_state[symbol],m_key_repeat[symbol]);
+  symbol=SDLK_ESCAPE;  DPRINTF("%d[%d %d]",symbol,m_key_state[symbol],m_key_repeat[symbol]);
+  symbol=SDLK_RETURN;  DPRINTF("%d[%d %d]",symbol,m_key_state[symbol],m_key_repeat[symbol]);
+  symbol=SDLK_LEFT;    DPRINTF("%d[%d %d]",symbol,m_key_state[symbol],m_key_repeat[symbol]);
+  symbol=SDLK_RIGHT;   DPRINTF("%d[%d %d]",symbol,m_key_state[symbol],m_key_repeat[symbol]);
+  symbol=SDLK_UP;      DPRINTF("%d[%d %d]",symbol,m_key_state[symbol],m_key_repeat[symbol]);
+  symbol=SDLK_DOWN;    DPRINTF("%d[%d %d]",symbol,m_key_state[symbol],m_key_repeat[symbol]);
 
 }
 
@@ -341,9 +341,9 @@ int InputManager::handleKey()
 
 	}
       if (key)
-	DPRINTF("key new event:%d %d %s\n",event.type,event.key.keysym.sym,SDL_GetKeyName(event.key.keysym.sym));
+	DPRINTF("key new event:%d %d %s",event.type,event.key.keysym.sym,SDL_GetKeyName(event.key.keysym.sym));
       if (joy)
-	DPRINTF("joy new event:%d %d   \n",event.type,event.jbutton.button);
+	DPRINTF("joy new event:%d %d   ",event.type,event.jbutton.button);
 
     }
 #endif
