@@ -11,7 +11,7 @@
 
 dboplMachine::dboplMachine() : filter(), 	     sineLfoOsc1()
 {
-  DPRINTF("dboplMachine::dboplMachine()\n");  
+  DPRINTF("dboplMachine::dboplMachine()");  
   buffer=0;
   cutoff=125;
   resonance=10;
@@ -32,7 +32,7 @@ dboplMachine::dboplMachine() : filter(), 	     sineLfoOsc1()
 
 dboplMachine::~dboplMachine()
 {
-  DPRINTF("dboplMachine::~dboplMachine()\n");
+  DPRINTF("dboplMachine::~dboplMachine()");
   if (HO)
     delete(HO);
   if (buffer)

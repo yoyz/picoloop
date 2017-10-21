@@ -7,7 +7,7 @@ LgptsamplerMachine::LgptsamplerMachine()
   float fi;
   int   i;
 
-  DPRINTF("LgptsamplerMachine::LgptsamplerMachine()\n");  
+  DPRINTF("LgptsamplerMachine::LgptsamplerMachine()");  
   cutoff=125;
   resonance=10;
   note=0;
@@ -23,7 +23,7 @@ LgptsamplerMachine::LgptsamplerMachine()
 
 LgptsamplerMachine::~LgptsamplerMachine()
 {
-  DPRINTF("LgptsamplerMachine::~LgptsamplerMachine()\n");
+  DPRINTF("LgptsamplerMachine::~LgptsamplerMachine()");
   if (buffer)
     free(buffer);
   if (buffer16)

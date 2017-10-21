@@ -8,7 +8,7 @@ PicosynthMachine::PicosynthMachine() : adsr_amp(), adsr_fltr(), vco(), filter(),
   float fi;
   int   i;
 
-  DPRINTF("PicosynthMachine::PicosynthMachine()\n");  
+  DPRINTF("PicosynthMachine::PicosynthMachine()");  
   cutoff=125;
   resonance=10;
   note=0;
@@ -23,7 +23,7 @@ PicosynthMachine::PicosynthMachine() : adsr_amp(), adsr_fltr(), vco(), filter(),
 
 PicosynthMachine::~PicosynthMachine()
 {
-  DPRINTF("PicosynthMachine::~PicosynthMachine()\n");
+  DPRINTF("PicosynthMachine::~PicosynthMachine()");
   if (buffer)
     free(buffer);
   //delete(one_osc);

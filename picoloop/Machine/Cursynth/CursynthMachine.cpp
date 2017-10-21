@@ -8,7 +8,7 @@ CursynthMachine::CursynthMachine()
 {
   float fi;
   int   i;
-  DPRINTF("CursynthMachine::CursynthMachine()\n");  
+  DPRINTF("CursynthMachine::CursynthMachine()");  
   note_on=0;
   buffer_i=0;
   buffer_f=0;
@@ -19,7 +19,7 @@ CursynthMachine::CursynthMachine()
 
 CursynthMachine::~CursynthMachine()
 {
-  DPRINTF("CursynthMachine::~CursynthMachine()\n");
+  DPRINTF("CursynthMachine::~CursynthMachine()");
 }
 
 
