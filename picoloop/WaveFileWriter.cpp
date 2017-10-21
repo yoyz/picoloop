@@ -10,6 +10,9 @@ WaveFileWriter::WaveFileWriter()
   isOpen=0;
   fwrite_byte_counter=0;
 }
+WaveFileWriter::~WaveFileWriter()
+{
+}
 
 void WaveFileWriter::setName(std::string fn)
 {
