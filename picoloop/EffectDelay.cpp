@@ -1,8 +1,10 @@
 #include "EffectDelay.h"
 #include "Master.h"
+#include <assert.h>   
 //#define FX_SIZE 1024*256
 //#define FX_SIZE 1024*512
-#define FX_SIZE DEFAULTFREQ*8
+//#define FX_SIZE DEFAULTFREQ*8
+#define FX_SIZE DEFAULTFREQ
 //#define FX_SIZE 1024*128
 //#define FX_SIZE 1024*128
 
@@ -153,6 +155,8 @@ void EffectDelay::process(int32_t * in, int nbsample)
 
 inline int32_t EffectDelay::process_one_sample(int32_t in)
 {
+  //assert(indexCurrent>=0);
+  //assert(indexCurrent<=FX_SIZE);
   //int out=buffer[indexOffset]+buffer[index]/depth;
   //int 
   //int out;
