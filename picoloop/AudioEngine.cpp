@@ -115,7 +115,8 @@ int   rtcallback(
 AudioEngine::AudioEngine() : AM(),
 			     AD(),
 			     buffer_out_left(  new Sint16[INTERNAL_BUFFER_SIZE]),
-			     buffer_out_right( new Sint16[INTERNAL_BUFFER_SIZE])
+			     buffer_out_right( new Sint16[INTERNAL_BUFFER_SIZE]),
+			     WFW()
 
 			     //buffer_out( new Sint16[BUFFER_FRAME])
 {
@@ -142,6 +143,7 @@ AudioEngine::AudioEngine() : AM(),
       else
 	dump_audio=0;
     }
+  
   
   for (i=0;i<INTERNAL_BUFFER_SIZE;i++)
     buffer_out_right[i]=0;
