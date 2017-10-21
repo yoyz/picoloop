@@ -25,7 +25,8 @@ void AudioDriver::setAudioOutput(int deviceNumber)
 
 char * AudioDriver::getAudioOutputName(int deviceNumber)
 {
-  static const char * audioOutputName="SDL";
+  //static const char * audioOutputName="SDL";
+  static char * audioOutputName="SDL";
   return audioOutputName;
 }
 
