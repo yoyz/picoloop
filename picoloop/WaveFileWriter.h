@@ -95,6 +95,7 @@ class WaveFileWriter
 {
 public:
   WaveFileWriter();
+  ~WaveFileWriter();
   void setName(std::string fileName);
   void setNbChannel(int nbChannel);
   void setBitRate(int bitPerSample);
