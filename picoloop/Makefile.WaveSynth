@@ -4,6 +4,9 @@ CC=clang++
 CC=clang++
 CC=g++
 CC=clang++
+CC=g++
+CC=clang++
+CC=g++
 CFLAGS_SDLVERS=-D__SDL12__    
 
 CFLAGS=-c -O1 -DLINUX -D__RTAUDIO__ -DLINUX_DESKTOP -I. -LSDL/lib -g -fpermissive 
@@ -11,8 +14,12 @@ CFLAGS=-c -O3 -D__LINUX__ -DLINUX  -DPC_DESKTOP -std=c++11 -DLINUX -D__RTAUDIO__
 CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -D__LINUX_ALSA__ -I. -LSDL/lib -D__RTAUDIO__ -D __RTMIDI__ -DPC_DESKTOP -ggdb  ${CFLAGS_SDLVERS}                 -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive
 CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -D__LINUX_ALSA__ -I. -LSDL/lib -D__RTAUDIO__ -D __RTMIDI__ -DLINUX_RASPI1 -ggdb  ${CFLAGS_SDLVERS}                 -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive
 CFLAGS= -c -std=c++11 -O1 -D__LINUX__ -DLINUX -D__LINUX_ALSA__ -I. -LSDL/lib -D__RTAUDIO__  -DLINUX_RASPI1 -ggdb  ${CFLAGS_SDLVERS}                 -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive
+CFLAGS= -c -std=c++11 -O1 -D__LINUX__ -DLINUX -D__LINUX_PULSE__ -I. -LSDL/lib -D__RTAUDIO__  -DLINUX_RASPI1 -ggdb  ${CFLAGS_SDLVERS}                 -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive
+CFLAGS= -c -std=c++11 -O1 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__SDL_AUDIO__  -DLINUX_RASPI1 -ggdb  ${CFLAGS_SDLVERS}                 -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive
+CFLAGS= -c -std=c++11 -O1 -D__LINUX__ -DLINUX -D__LINUX_PULSE__ -I. -LSDL/lib -D__RTAUDIO__  -DLINUX_RASPI1 -ggdb  ${CFLAGS_SDLVERS}                 -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive -DNDEBUG
 
 LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf -lasound -lpthread -lpulse -lpulse-simple -ljack
+LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf -lasound -lpthread -lpulse -lpulse-simple 
 
 
 OBJTOLINK=RtAudio.o RtMidi.o
@@ -24,6 +31,10 @@ SOURCES=WaveSynth.cpp SDL_GUI.cpp AudioEngine.cpp AudioDriverRTAudio.cpp Instrum
 
 
 		      #Synth.cpp                \
+
+			#AudioDriverRTAudio.cpp   \
+
+			#AudioDriverSDL.cpp   \
 
 SOURCES=WaveSynth.cpp            \
 			RtAudio.cpp             \
