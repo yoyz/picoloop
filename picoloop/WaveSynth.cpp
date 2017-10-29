@@ -1,7 +1,7 @@
 using namespace std;
 
-#include <SDL/SDL.h>
-#include <SDL/SDL_audio.h>
+//#include <SDL/SDL.h>
+//#include <SDL/SDL_audio.h>
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -170,7 +170,6 @@ void handle_key()
   mapii keyState=IE.keyState();
   mapii keyRepeat=IE.keyRepeat();
 
-  
   IE.handleKey();
 
   keyState=IE.keyState();
@@ -903,11 +902,12 @@ void prepare_vector_buffer()
     }
 }
 
+#ifdef __SDL20__
 void draw_screen()
 {
   SDL_Rect rect;
   short color;
-
+  //return;
   // rect.x rect.y rect.w rect.h
   // int x the x location of the rectangle's upper left corner
   // int y the y location of the rectangle's upper left corner
@@ -916,9 +916,9 @@ void draw_screen()
 
   //Blank screen
   //SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 0, 0, 0));               
-  if (screen==NULL)
-    screen=SDL_GetVideoSurface();
 
+  screen=SG.screen;
+  
   SDL_FillRect(screen,NULL, 0x000000);
 
   for (int i = 0; i < SCREEN_WIDTH-1 ; i++)
@@ -936,20 +936,72 @@ void draw_screen()
 	  rect.y=((SCREEN_HEIGHT/2));
 	  rect.h=vector_buffer[i]*-1;	  
 	}
-
+      
       // Create a vertical colored line
       color=vector_buffer[i];
       SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, color, 0, 128));      
     }
   
-  SDL_Flip(screen);
+  //SDL_Flip(screen);
+  SG.refresh();
+  SDL_Delay(1);
+  redraw=false;  
+
+}
+#endif
+
+#ifdef __SDL12__
+void draw_screen()
+{
+  SDL_Rect rect;
+  short color;
+  return;
+  // rect.x rect.y rect.w rect.h
+  // int x the x location of the rectangle's upper left corner
+  // int y the y location of the rectangle's upper left corner
+  // int w the width of the rectangle
+  // int h the height of the rectangle
+
+  //Blank screen
+  //SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 0, 0, 0));               
+
+if (screen==NULL)
+  screen=SDL_GetVideoSurface();
+  
+  SDL_FillRect(screen,NULL, 0x000000);
+
+  for (int i = 0; i < SCREEN_WIDTH-1 ; i++)
+    {
+      rect.x = i;
+      rect.w = 1;
+
+      if (vector_buffer[i]>0)
+	{
+	  rect.y=((SCREEN_HEIGHT/2)-vector_buffer[i]);
+	  rect.h=vector_buffer[i];
+	}
+      else
+	{
+	  rect.y=((SCREEN_HEIGHT/2));
+	  rect.h=vector_buffer[i]*-1;	  
+	}
+      
+      // Create a vertical colored line
+      color=vector_buffer[i];
+      SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, color, 0, 128));      
+    }
+  
+  //SDL_Flip(screen);
   SDL_Delay(1);
   redraw=false;  
 }
+#endif
+
+
 
 void wtg()
 {
-
+  
   Generator G;
   WaveTableManager & WTM = WaveTableManager::getInstance();
   WaveTable* WT;
@@ -1055,19 +1107,25 @@ int main(int argc,char ** argv)
   //filename=argv[1];
   //load_raw(argv[1]);
 
-  openaudio();
-  init_video();
+  //openaudio();
+  //init_video();
   IE.init();
+  IE.printState();
+SG.initVideo();
   
   /* Main loop */
   quit = 0;
+
   while(!quit)
     {
       prepare_vector_buffer();
       draw_screen();
       handle_key();
-    }
-
+      //quit=1;
+    }  
+  DPRINTF("[closeVideo output]");
+  //SG.closeVideo();
+  
   return 0;
 }
 
