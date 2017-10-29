@@ -5,7 +5,7 @@ wget https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-2.0.14.tar.gz
 DEST=/home/yoyz/local/SDL2-clang/
 tar xzvf SDL2-2.0.7.tar.gz 
 cd SDL2-2.0.7/
-configure CC=clang --prefix /home/yoyz/local/SDL2-clang
+configure CC=clang --prefix $DEST
 make
 make install
 cd ..
