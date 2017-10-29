@@ -7,7 +7,12 @@ CC=clang++
 CC=g++
 CC=clang++
 CC=g++
+CC=clang++
 CFLAGS_SDLVERS=-D__SDL12__    
+CFLAGS_SDLVERS=-D__SDL20__    
+
+CFLAGS_HELPER=-I/home/yoyz/local/SDL2-clang/include/
+LDFLAGS_HELPER=-L/home/yoyz/local/SDL2-clang/lib
 
 CFLAGS=-c -O1 -DLINUX -D__RTAUDIO__ -DLINUX_DESKTOP -I. -LSDL/lib -g -fpermissive 
 CFLAGS=-c -O3 -D__LINUX__ -DLINUX  -DPC_DESKTOP -std=c++11 -DLINUX -D__RTAUDIO__  -I. -LSDL/lib -g -fpermissive  -D__SDL12__
@@ -17,9 +22,11 @@ CFLAGS= -c -std=c++11 -O1 -D__LINUX__ -DLINUX -D__LINUX_ALSA__ -I. -LSDL/lib -D_
 CFLAGS= -c -std=c++11 -O1 -D__LINUX__ -DLINUX -D__LINUX_PULSE__ -I. -LSDL/lib -D__RTAUDIO__  -DLINUX_RASPI1 -ggdb  ${CFLAGS_SDLVERS}                 -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive
 CFLAGS= -c -std=c++11 -O1 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__SDL_AUDIO__  -DLINUX_RASPI1 -ggdb  ${CFLAGS_SDLVERS}                 -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive
 CFLAGS= -c -std=c++11 -O1 -D__LINUX__ -DLINUX -D__LINUX_PULSE__ -I. -LSDL/lib -D__RTAUDIO__  -DLINUX_RASPI1 -ggdb  ${CFLAGS_SDLVERS}                 -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive -DNDEBUG
+CFLAGS= -c -std=c++11 -O1 -D__LINUX__ -DLINUX -D__LINUX_PULSE__ -I. -I/home/yoyz/local/SDL2-clang/include/ -L/home/yoyz/local/SDL2-clang/lib  -D__RTAUDIO__  -DLINUX_RASPI1 -ggdb  ${CFLAGS_SDLVERS}                 -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive -DNDEBUG
 
 LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf -lasound -lpthread -lpulse -lpulse-simple -ljack
 LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf -lasound -lpthread -lpulse -lpulse-simple 
+LDFLAGS=${LDFLAGS_HELPER} -lSDL2 -lSDL2_ttf -lasound -lpthread -lpulse -lpulse-simple 
 
 
 OBJTOLINK=RtAudio.o RtMidi.o
@@ -35,6 +42,8 @@ SOURCES=WaveSynth.cpp SDL_GUI.cpp AudioEngine.cpp AudioDriverRTAudio.cpp Instrum
 			#AudioDriverRTAudio.cpp   \
 
 			#AudioDriverSDL.cpp   \
+
+			#SysMutex.cpp			\
 
 SOURCES=WaveSynth.cpp            \
 			RtAudio.cpp             \
@@ -99,10 +108,10 @@ $(EXECUTABLE): $(DEPENDENCYINOBJDIR) $(OBJECTSINOBJDIR)
 
 # the .d file contain the dependency
 $(OBJDIR)/%.d : %.cpp %.h
-	$(CC) $(CFLAGS_SDLVERS) -I. -MM $< -o $@
+	$(CC) $(CFLAGS_SDLVERS) $(CFLAGS_HELPER) -I. -MM $< -o $@
 
 $(OBJDIR)/%.o : %.cpp 
-	$(CC) $(CFLAGS) $< -o $@
+	$(CC) $(CFLAGS) $(CFLAGS_HELPER) $< -o $@
 
 
 # include all the dependency .d file into the makefile 
@@ -116,7 +125,7 @@ $(OBJDIR)/SYSTEMLINUX.d:SYSTEMLINUX.cpp
 
 # PatternPlayer.d does have a .h which is system.h
 $(OBJDIR)/WaveSynth.d:WaveSynth.cpp
-	$(CC) $(CFLAGS_SDLVERS) -std=c++11 -I. -MM $< -o $@ 
+	$(CC) $(CFLAGS_SDLVERS) $(CFLAGS_HELPER)  -std=c++11 -I. -MM $< -o $@ 
 
 
 clean:
