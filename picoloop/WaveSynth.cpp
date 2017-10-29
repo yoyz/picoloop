@@ -955,7 +955,7 @@ void draw_screen()
 {
   SDL_Rect rect;
   short color;
-  return;
+//return;
   // rect.x rect.y rect.w rect.h
   // int x the x location of the rectangle's upper left corner
   // int y the y location of the rectangle's upper left corner
@@ -991,7 +991,7 @@ if (screen==NULL)
       SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, color, 0, 128));      
     }
   
-  //SDL_Flip(screen);
+  SDL_Flip(screen);
   SDL_Delay(1);
   redraw=false;  
 }
@@ -1107,11 +1107,11 @@ int main(int argc,char ** argv)
   //filename=argv[1];
   //load_raw(argv[1]);
 
-  //openaudio();
+  openaudio();
   //init_video();
   IE.init();
   IE.printState();
-SG.initVideo();
+  SG.initVideo();
   
   /* Main loop */
   quit = 0;
