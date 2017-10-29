@@ -50,7 +50,7 @@ public:
   int    last_event;           // the last event : SDL_KEYUP || SDL_KEYDOWN  || 0 if event cleared 
   int    quit;
   int    escape;
-
+                                 // With SDL1.2
   mapii    m_key_state;          // [ 0,1, 0, 1,0,0....] key is press or not
   mapii    m_key_repeat;         // [ 0,12,0,32,0,0....] number of time handleKey is called 
 };
