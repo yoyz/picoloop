@@ -86,9 +86,14 @@ class SDL_GUI
 
   void apply_surface( int x, int y, SDL_Surface* source, SDL_Surface* destination, SDL_Rect* clip = NULL );
 
+#ifdef __SDL20__
+  SDL_Window * window;
+#endif
+  SDL_Surface * screen;
+
+
  private:  
   SDL_Surface * loadBMP(const char * fn);
-  SDL_Surface * screen;
   SDL_Surface * bmp_font;
 
   TTF_Font    * ttf_font;
@@ -98,9 +103,6 @@ class SDL_GUI
   int boxSize;
   int boxOffset;
 
-#ifdef __SDL20__
-  SDL_Window * window;
-#endif
 
 };
 
