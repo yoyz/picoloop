@@ -164,9 +164,12 @@ int SDL_GUI::initVideo()
   }
 #endif // not defined PSVITA
   screen=SDL_GetWindowSurface( window );
+  return 0;
 }
 
 #endif
+
+
 
 
 #ifdef __SDL12__
