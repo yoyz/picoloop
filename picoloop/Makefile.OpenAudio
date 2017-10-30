@@ -1,0 +1,117 @@
+include Makefile_sources
+
+CC=clang++
+CC=clang++
+CC=g++
+CC=clang++
+CC=g++
+CC=clang++
+CC=g++
+CC=clang++
+CC=g++
+CC=clang++
+CFLAGS_SDLVERS=-D__SDL12__    
+CFLAGS_SDLVERS=-D__SDL20__    
+CFLAGS_SDLVERS=-D__SDL12__    
+
+CFLAGS_HELPER=-I/home/yoyz/local/SDL2-clang/include/
+LDFLAGS_HELPER=-L/home/yoyz/local/SDL2-clang/lib
+CFLAGS_HELPER=
+LDFLAGS_HELPER=
+
+
+CFLAGS=-c -O1 -DLINUX -D__RTAUDIO__ -DLINUX_DESKTOP -I. -LSDL/lib -g -fpermissive 
+CFLAGS=-c -O3 -D__LINUX__ -DLINUX  -DPC_DESKTOP -std=c++11 -DLINUX -D__RTAUDIO__  -I. -LSDL/lib -g -fpermissive  -D__SDL12__
+CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -D__LINUX_ALSA__ -I. -LSDL/lib -D__RTAUDIO__ -D __RTMIDI__ -DPC_DESKTOP -ggdb  ${CFLAGS_SDLVERS}                 -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive
+CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -D__LINUX_ALSA__ -I. -LSDL/lib -D__RTAUDIO__ -D __RTMIDI__ -DLINUX_RASPI1 -ggdb  ${CFLAGS_SDLVERS}                 -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive
+CFLAGS= -c -std=c++11 -O1 -D__LINUX__ -DLINUX -D__LINUX_ALSA__ -I. -LSDL/lib -D__RTAUDIO__  -DLINUX_RASPI1 -ggdb  ${CFLAGS_SDLVERS}                 -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive
+CFLAGS= -c -std=c++11 -O1 -D__LINUX__ -DLINUX -D__LINUX_PULSE__ -I. -LSDL/lib -D__RTAUDIO__  -DLINUX_RASPI1 -ggdb  ${CFLAGS_SDLVERS}                 -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive
+CFLAGS= -c -std=c++11 -O1 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__SDL_AUDIO__  -DLINUX_RASPI1 -ggdb  ${CFLAGS_SDLVERS}                 -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive
+CFLAGS= -c -std=c++11 -O1 -D__LINUX__ -DLINUX -D__LINUX_PULSE__ -I. -LSDL/lib -D__RTAUDIO__  -DLINUX_RASPI1 -ggdb  ${CFLAGS_SDLVERS}                 -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive -DNDEBUG
+CFLAGS= -c -std=c++11 -O1 -D__LINUX__ -DLINUX -D__LINUX_PULSE__ -I. ${CFLAGS_HELPER} ${LDFLAGS_HELPER}  -D__RTAUDIO__  -DLINUX_RASPI1 -ggdb  ${CFLAGS_SDLVERS}                 -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive -DNDEBUG
+
+LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf -lasound -lpthread -lpulse -lpulse-simple -ljack
+LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf -lasound -lpthread -lpulse -lpulse-simple 
+LDFLAGS=${LDFLAGS_HELPER} -lSDL2 -lSDL2_ttf -lasound -lpthread -lpulse -lpulse-simple 
+LDFLAGS=${LDFLAGS_HELPER} -lSDL -lSDL_ttf -lasound -lpthread -lpulse -lpulse-simple 
+
+
+OBJTOLINK=RtAudio.o RtMidi.o
+OBJTOLINK=
+
+
+SOURCES=OpenAudio.cpp            \
+			RtAudio.cpp             \
+			RtMidi.cpp              \
+			AudioEngine.cpp		\
+			WaveFileWriter.cpp	\
+			AudioDriverRTAudio.cpp   
+
+
+
+
+
+		      
+
+
+OBJDIR             =     openaudiortaudio
+OBJECTS            =   $(SOURCES:.cpp=.o)
+DEPENDENCY         =   $(SOURCES:.cpp=.d)
+
+DEPENDENCYINOBJDIR = $(addprefix $(OBJDIR)/,$(DEPENDENCY))
+OBJECTSINOBJDIR    = $(addprefix $(OBJDIR)/,$(OBJECTS))
+OBJTOLINKINOBJDIR  = $(addprefix $(OBJDIR)/,$(OBJTOLINK))
+
+EXECUTABLE=OpenAudio
+
+#all: DIRTOCREATE $(DEPENDENCY) $(SOURCES) $(EXECUTABLE)
+
+all: DIRTOCREATE $(DEPENDENCYINOBJDIR) $(SOURCES) $(EXECUTABLE) 
+
+DIRTOCREATE:
+	-mkdir -p $(OBJDIR)/Machine
+	-mkdir -p $(OBJDIR)/Machine/Picosynth
+	-mkdir -p $(OBJDIR)/Machine/Picodrum
+	-mkdir -p $(OBJDIR)/Machine/Dbopl	
+	-mkdir -p $(OBJDIR)/Machine/PBSynth
+	-mkdir -p $(OBJDIR)/Machine/Cursynth
+	-mkdir -p $(OBJDIR)/Machine/Open303
+	-mkdir -p $(OBJDIR)/Machine/Twytch
+	-mkdir -p $(OBJDIR)/Machine/MidiOutSystem
+	-mkdir -p $(OBJDIR)/Machine/MDADrum
+	-mkdir -p $(OBJDIR)/Machine/SIDSynth
+	-mkdir -p $(OBJDIR)/Machine/Lgptsampler
+
+$(EXECUTABLE): $(DEPENDENCYINOBJDIR) $(OBJECTSINOBJDIR)
+	$(CC) $(OBJTOLINKINOBJDIR)  $(OBJECTSINOBJDIR) -o $@ $(LDFLAGS)
+
+# the .d file contain the dependency
+$(OBJDIR)/%.d : %.cpp %.h
+	$(CC) $(CFLAGS_SDLVERS) $(CFLAGS_HELPER) -I. -MM $< -o $@
+
+$(OBJDIR)/%.o : %.cpp 
+	$(CC) $(CFLAGS) $(CFLAGS_HELPER) $< -o $@
+
+
+# include all the dependency .d file into the makefile 
+# it allow to match change in .h file
+-include $(DEPENDENCYINOBJDIR)
+
+
+# SYSTEMLINUX.d does have a .h which is SYSTEM.h, so it need a tweaks
+$(OBJDIR)/SYSTEMLINUX.d:SYSTEMLINUX.cpp 
+	$(CC) -I. -MM $< -o $@ 
+
+# PatternPlayer.d does have a .h which is system.h
+$(OBJDIR)/OpenAudio.d:OpenAudio.cpp
+	$(CC) $(CFLAGS_SDLVERS) $(CFLAGS_HELPER)  -std=c++11 -I. -MM $< -o $@ 
+
+
+clean:
+	-rm -f $(OBJECTSINOBJDIR)
+	-rm -f $(DEPENDENCYINOBJDIR)
+	-rm -f $(EXECUTABLE)
+	-rm -f $(DEPENDENCY)
+
+
+
