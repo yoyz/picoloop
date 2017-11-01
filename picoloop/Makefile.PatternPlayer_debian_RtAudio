@@ -1,5 +1,7 @@
 include Makefile_sources
 CC=g++
+CC=clang++
+CC=g++
 
 CFLAGS=-c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb -ffast-math
 CFLAGS=-c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb  -pg
