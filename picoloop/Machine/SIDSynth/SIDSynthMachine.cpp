@@ -121,7 +121,7 @@ void SIDSynthMachine::init()
   DPRINTF("buffer_f:0x%08.8X\n",buffer_f);
   DPRINTF("buffer_i:0x%08.8X\n",buffer_i);
 
-  sid_note_frqs=malloc(sizeof(double)*128);
+  sid_note_frqs=(double*)malloc(sizeof(double)*128);
   for(i=0; i<128; i++) 
     {
       sid_note_frqs[i]=440.0*pow(2,((double)i-69.0)/12.0);

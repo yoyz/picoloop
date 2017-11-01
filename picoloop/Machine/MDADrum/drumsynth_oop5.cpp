@@ -124,7 +124,14 @@ void drumsynth::getEnv(int env, LPCTSTR sec, LPCTSTR key, LPCTSTR ini)
 {
   char en[256], s[8];
   int i=0, o=0, ep=0;
-  GetPrivateProfileString(sec, key, "0,0 100,0", en, sizeof(en), ini);
+  char sec_table[256];
+  char key_table[256];
+  char ini_table[256];
+  strncpy(sec_table,sec,256);
+  strncpy(key_table,key,256);
+  strncpy(ini_table,ini,256);
+  //GetPrivateProfileString(sec, key, "0,0 100,0", en, sizeof(en), ini);
+  GetPrivateProfileString(sec_table, key_table, "0,0 100,0", en, sizeof(en), ini_table);
   en[256]=0; //be safe!
     
   while(en[i]!=0)
@@ -238,7 +245,7 @@ void drumsynth::set_time(float t)
 }
 
  
-void drumsynth::load_patch(char *dsfile)
+int drumsynth::load_patch(char *dsfile)
 {
   // init();
   // if(wavemode==0) //semi-real-time adjustments if working in memory!!
@@ -415,7 +422,7 @@ void drumsynth::load_patch(char *dsfile)
 
   /* if(wave!=NULL) free(wave); */
   /* wave = (short *)malloc(2 * Length + 1280); //wave memory buffer */
-  if(wave==NULL) {busy=0; return;}
+  if(wave==NULL) {busy=0; return 1;}
   wavewords = 0;
   prepare=1;
 }

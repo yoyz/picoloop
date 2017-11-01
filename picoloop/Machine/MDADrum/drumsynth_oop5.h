@@ -104,7 +104,7 @@ class drumsynth
   void set_tune(float t);
   void set_time(float t);
     
-  void load_patch(char *dsfile);
+  int load_patch(char *dsfile);
   int LongestEnv(void);
   float LoudestEnv(void);
   void UpdateEnv(int e, long t);
