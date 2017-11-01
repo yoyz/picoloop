@@ -146,6 +146,7 @@ int CursynthMachine::checkI(int what,int val)
 int CursynthMachine::getI(int what)
 {
   if (what==NOTE_ON) return note_on;
+  return 0;
 }
 
 void CursynthMachine::setF(int what,float val)

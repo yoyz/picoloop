@@ -274,6 +274,7 @@ int SIDSynthMachine::checkI(int what,int val)
 int SIDSynthMachine::getI(int what)
 {
   if (what==NOTE_ON) return keyon;
+  return 0;
 }
 
 void SIDSynthMachine::setF(int what,float val)

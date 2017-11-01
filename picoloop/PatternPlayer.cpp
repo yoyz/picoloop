@@ -515,6 +515,7 @@ int thread_seq_send_midiclock( void * data)
 
       SDL_Delay(1);  
     }
+  return 0;
 }
 #endif
 
@@ -4046,6 +4047,7 @@ int seq()
 	  seq_update_by_step_next=0;
 	}
     }
+  return 0;
 }
 
 void load_pattern()

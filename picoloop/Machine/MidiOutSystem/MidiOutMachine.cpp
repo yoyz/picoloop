@@ -139,6 +139,7 @@ int MidiOutMachine::checkI(int what,int val)
 int MidiOutMachine::getI(int what)
 {
   // if (what==NOTE_ON) return this->getADSRAmp().getNoteOn();
+  return 0;
 }
 
 void MidiOutMachine::setF(int what,float val)
