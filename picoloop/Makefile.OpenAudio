@@ -9,7 +9,7 @@ CC=clang++
 CC=g++
 CC=clang++
 CC=g++
-CC=clang++
+
 CFLAGS_SDLVERS=-D__SDL12__    
 CFLAGS_SDLVERS=-D__SDL20__    
 CFLAGS_SDLVERS=-D__SDL12__    
@@ -44,8 +44,29 @@ SOURCES=OpenAudio.cpp            \
 			RtAudio.cpp             \
 			RtMidi.cpp              \
 			AudioEngine.cpp		\
+			AudioMixer.cpp		\
 			WaveFileWriter.cpp	\
-			AudioDriverRTAudio.cpp   
+			MonoMixer.cpp		\
+			AudioDriverRTAudio.cpp	\
+			Machine.cpp		\
+			Oscillator.cpp		\
+			OneOscillator.cpp	\
+			Filter.cpp		\
+			AMSynthLowPassFilter.cpp\
+			Biquad.cpp		\
+			NoteFreq.cpp		\
+			PitchBend.cpp		\
+			EffectDelay.cpp		\
+			WaveTableManager.cpp	\
+			WaveTable.cpp		\
+			EffectDisabled.cpp	\
+			Effect.cpp		\
+			$(SOURCES_PICOSYNTH) 	\
+			$(SOURCES_PICODRUM) 	\
+			$(SOURCES_DBOPL) 	\
+			$(SOURCES_PBSYNTH) 	\
+			$(SOURCES_LGPTSAMPLERSYNTH) 
+
 
 
 
