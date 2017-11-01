@@ -133,7 +133,8 @@ int16_t Filter::process_one_sample(int16_t in)
   if (filterAlgo==FILTER_ALGO_BIQUAD)
     return this->process_biquad_one_sample(in);
   if (filterAlgo==FILTER_ALGO_AMSYNTH)
-    return this->process_amsynth_one_sample(in);   
+    return this->process_amsynth_one_sample(in);
+  return 0;
 }
 
 

@@ -2574,6 +2574,7 @@ int handle_key_two_button(int buttonPressed,int buttonKeyRepeat,int repeatInterv
 	if (all==1)
 	  { TK.setAll(machineParam,paramValue); dirty_graphic=1; }
       }
+  return 0;
 }
 
 
@@ -3643,7 +3644,7 @@ int seq_update_by_step()
 
   if (debug)
    DPRINTF("STEP:%d",step);	  
-  
+  return 0;
 }
 
 

@@ -39,6 +39,7 @@ int Wave::loadWave(char * filename)
       printf("Unable to convert sound: %s\n", SDL_GetError());
       return 1;
     }
+  return 0;
 }
 
 Uint32 Wave::getLength()

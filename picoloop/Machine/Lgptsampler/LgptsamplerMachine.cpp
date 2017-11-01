@@ -176,7 +176,7 @@ int LgptsamplerMachine::checkI(int what,int val)
 
 int LgptsamplerMachine::getI(int what)
 {
-
+  return 0;
 }
 
 void LgptsamplerMachine::setF(int what,float val)

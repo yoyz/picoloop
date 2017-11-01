@@ -122,11 +122,13 @@ bool MidiInSystem::init()
     exit( EXIT_FAILURE );
   }
   iamOpen=0;
+  return false;
 }
 
 bool MidiInSystem::setupcallback()
 {
   rtmidiin->setCallback( &midiincallback );
+  return false;
 }
 
 

@@ -43,6 +43,7 @@ int SongSequencer::incStep()
   step++;
   if (step>loopStepB)
     step=loopStepA;
+  return 0;
 }
 
 int SongSequencer::getStep()
@@ -54,6 +55,7 @@ int SongSequencer::setStep(int s)
 {
   loopStepA=s;
   step=s;
+  return 0;
 }
 
 int SongSequencer::setLoopPoint(int loop)
@@ -63,6 +65,7 @@ int SongSequencer::setLoopPoint(int loop)
 
   loopStepA=step;
   loopStepB=loop;
+  return 0;
 }
 
 int SongSequencer::getLoopA()

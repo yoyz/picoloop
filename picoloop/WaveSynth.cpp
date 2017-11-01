@@ -5,7 +5,7 @@ using namespace std;
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-
+#include "Master.h"
 #include "AudioEngine.h"
 #include "MonoMixer.h" 
 #include "InputManager.h"

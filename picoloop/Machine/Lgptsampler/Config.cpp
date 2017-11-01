@@ -76,6 +76,8 @@ const char *Config::GetValue(const char *key)
 	}
 	return v?v->GetString():0 ;
   */
+  const char * bla="Config::GetValue(const char *key)";
+  return bla;
 } ;
 
 

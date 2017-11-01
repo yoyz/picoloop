@@ -141,6 +141,7 @@ int PicodrumADSR::setSegment(int segment)
       segment==PicodrumADSR_FINISH   
       )
     current_segment=segment;
+  return 0;
 }
 
 void PicodrumADSR::setInput(Oscillator * vcoosc)
@@ -306,5 +307,6 @@ Sint16 PicodrumADSR::tick_trig()
       return s_in/((cr_div_woalias/4)+1);
       //return s_in/((cr_div/4)+1);
     }
+  return 0;
 }
 

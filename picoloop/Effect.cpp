@@ -40,6 +40,7 @@ void Effect::setSpeed(int val)
 int32_t Effect::process_one_sample(int32_t in)
 {  
   //return FXDelay.process(in);
+  return 0;
 }
 
 void Effect::process(int32_t  * in,int nbsample)

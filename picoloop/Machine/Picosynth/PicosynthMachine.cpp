@@ -146,6 +146,7 @@ int PicosynthMachine::checkI(int what,int val)
 int PicosynthMachine::getI(int what)
 {
   if (what==NOTE_ON) return this->getADSRAmp().getNoteOn();
+  return 0;
 }
 
 void PicosynthMachine::setF(int what,float val)

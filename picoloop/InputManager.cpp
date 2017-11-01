@@ -75,6 +75,7 @@ int InputManager::updateStateNoKeyPress()
   for (i=0;i<MAX_KEY;i++)
     if (m_key_state[i])
       m_key_repeat[i]=m_key_repeat[i]+1;
+  return 0;
 }
 #endif
 
@@ -113,6 +114,7 @@ int InputManager::updateState(int symbol,int state)
     for (i=0;i<MAX_KEY;i++)
       if (m_key_state[i])
 	m_key_repeat[i]=m_key_repeat[i]+1;
+  return 0;
 }
 #endif
 

@@ -165,6 +165,7 @@ int PicosynthADSR::setSegment(int segment)
       segment==PicosynthADSR_FINISH   
       )
     current_segment=segment;
+  return 0;
 }
 
 void PicosynthADSR::setInput(Oscillator * vcoosc)
