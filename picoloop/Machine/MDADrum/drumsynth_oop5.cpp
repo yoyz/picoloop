@@ -425,6 +425,7 @@ int drumsynth::load_patch(char *dsfile)
   if(wave==NULL) {busy=0; return 1;}
   wavewords = 0;
   prepare=1;
+  return 0;
 }
 
 int drumsynth::generate(short * buffer,int len)

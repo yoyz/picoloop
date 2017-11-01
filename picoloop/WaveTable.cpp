@@ -44,6 +44,7 @@ int WaveTable::freeMemory()
       free(buffer);
       buffer=NULL;
     }
+  return 0;
 }
 
 int WaveTable::setSize(int bufferSize)

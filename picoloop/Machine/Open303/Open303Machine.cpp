@@ -107,6 +107,7 @@ int Open303Machine::checkI(int what,int val)
 int Open303Machine::getI(int what)
 {
   if (what==NOTE_ON) return note_on;
+  return 0;
 }
 
 void Open303Machine::setF(int what,float val)

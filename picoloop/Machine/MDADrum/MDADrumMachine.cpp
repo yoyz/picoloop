@@ -2158,6 +2158,7 @@ int MDADrumMachine::checkI(int what,int val)
 int MDADrumMachine::getI(int what)
 {
   if (what==NOTE_ON) return keyon;
+  return 0;
 }
 
 void MDADrumMachine::setF(int what,float val)
