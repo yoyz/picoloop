@@ -350,7 +350,7 @@ void Generator::one()
 
   for (i=0;i<table_size;i++)
     {
-      table[i]=1<<bitdepth-1;
+      table[i]=1<<(bitdepth-1);
     }  
 }
 

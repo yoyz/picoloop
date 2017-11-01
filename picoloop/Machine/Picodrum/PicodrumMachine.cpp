@@ -101,6 +101,7 @@ int PicodrumMachine::getI(int what)
 {
 
   if (what==NOTE_ON) return this->getADSRAmp().getNoteOn();
+  return 0;
 }
 
 void PicodrumMachine::setF(int what,float val)

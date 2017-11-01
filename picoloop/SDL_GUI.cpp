@@ -455,6 +455,7 @@ int SDL_GUI::guiTTFText(int x,int y,const char *txt)
 	#endif
   //apply_surface( 0, 0, background, screen );
   this->apply_surface( x, y, message, screen,clip);
+  return 0;
 }
 
 

@@ -9,6 +9,7 @@ CC=clang++
 CC=g++
 CC=clang++
 CC=g++
+CC=clang++
 
 CFLAGS_SDLVERS=-D__SDL12__    
 CFLAGS_SDLVERS=-D__SDL20__    
@@ -44,8 +45,11 @@ SOURCES=OpenAudio.cpp            \
 			RtAudio.cpp             \
 			RtMidi.cpp              \
 			AudioEngine.cpp		\
-			AudioMixer.cpp		\
+			AudioMixerFake.cpp	\
 			WaveFileWriter.cpp	\
+			AudioDriverRTAudio.cpp	\
+
+BLA=			WaveFileWriter.cpp	\
 			MonoMixer.cpp		\
 			AudioDriverRTAudio.cpp	\
 			Machine.cpp		\

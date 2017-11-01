@@ -190,6 +190,7 @@ int PBSynthMachine::checkI(int what,int val)
 int PBSynthMachine::getI(int what)
 {
   if (what==NOTE_ON) return keyon;
+  return 0;
 }
 
 void PBSynthMachine::setF(int what,float val)

@@ -48,6 +48,7 @@ PatternElement & Pattern::getPatternElement(int patternElementNumber)
 bool Pattern::setPatternElement(int PatternElementNumber,PatternElement PEin)
 {
   pevector[PatternElementNumber]=PEin;
+  return false;
 }
 
 void Pattern::setSize(int s)

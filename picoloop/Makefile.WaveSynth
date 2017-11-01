@@ -9,6 +9,7 @@ CC=clang++
 CC=g++
 CC=clang++
 CC=g++
+CC=clang++
 CFLAGS_SDLVERS=-D__SDL12__    
 CFLAGS_SDLVERS=-D__SDL20__    
 CFLAGS_SDLVERS=-D__SDL12__    

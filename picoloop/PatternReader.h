@@ -11,7 +11,7 @@ using namespace std;
 #include "Pattern.h"
 #include "SongSequencer.h"
 #include "Machine.h"
-
+#include "Master.h"
 #define DATA_LOADED_FROM_STORAGE         3
 #define DATA_EXIST_ON_STORAGE            2
 #define DATA_DOES_NOT_EXIST_ON_STORAGE   1

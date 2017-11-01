@@ -2,7 +2,7 @@ using namespace std;
 
 #ifndef __PATTERNSEQUENCER__
 #define __PATTERNSEQUENCER__
-
+#include "Master.h"
 class PatternSequencer
 {
  public:

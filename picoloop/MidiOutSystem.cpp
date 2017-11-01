@@ -36,6 +36,7 @@ bool MidiOutSystem::init()
     exit( EXIT_FAILURE );
   }
   iamOpen=0;
+  return false; // I will need to "double check" this return type...
 }
 
 bool MidiOutSystem::checkChannel(int channel)
@@ -109,7 +110,7 @@ int MidiOutSystem::msgSize()
 
 void MidiOutSystem::flushMsg()
 {
-  printf("*****************FLUSH:%d\n",message.size());
+  printf("*****************FLUSH:%lu\n",message.size());
   mtx.Lock();
   if (message.size())
     {

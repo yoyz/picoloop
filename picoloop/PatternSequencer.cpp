@@ -41,6 +41,8 @@ int PatternSequencer::getStep()
     return (step/4)%PatternLength;
   if (BPMDivider==8)
     return (step/8)%PatternLength;
+  DPRINTF("Mal formed int PatternSequencer::getStep()\n");  
+  return 0;
 }
 
 void PatternSequencer::setPatternLength(int pl)

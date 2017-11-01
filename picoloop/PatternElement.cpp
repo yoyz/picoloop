@@ -655,13 +655,13 @@ int PatternElement::get(int what)
 
 
     default:
-      DPRINTF("PatternElement::get(%d,%d)",what);
+      DPRINTF("PatternElement::get(%d)",what);
       DPRINTF("==============================>case default : exit\n");
       exit(1);
 
     }
   
-  //return 1;
+  return 0;
 }
 
 

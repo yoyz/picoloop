@@ -242,6 +242,7 @@ int dboplMachine::checkI(int what,int val)
 int dboplMachine::getI(int what)
 {
   if (what==NOTE_ON) return keyon;
+  return 0;
 }
 
 void dboplMachine::setF(int what,float val)

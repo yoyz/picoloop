@@ -2,6 +2,7 @@
 #include "DEBSystem.h"
 
 int DEBSystem::MainLoop() {
+  return 0;
 } ;
 
 void DEBSystem::Boot(int argc,char **argv) 

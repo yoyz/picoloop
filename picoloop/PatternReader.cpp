@@ -81,6 +81,7 @@ int PatternReader::saveSong(SongSequencer & SS)
       fwrite(line,sizeof(unsigned char),sizeof(unsigned char)*MAX_SONG_LENGHT_BY_PROJECT,fd);
     }
   fclose(fd);
+  return 0;
 }
 
 int PatternReader::loadSong(SongSequencer & SS)
@@ -110,6 +111,7 @@ int PatternReader::loadSong(SongSequencer & SS)
       //fwrite(line,sizeof(char),sizeof(char)*MAX_PATTERN_BY_PROJECT,fd);
     }
   fclose(fd);
+  return 0;
 }
 
 bool PatternReader::PatternRemove(int PatternNumber,int TrackNumber)
@@ -199,6 +201,7 @@ bool PatternReader::writePatternDataLine(int PatternNumber,int TrackNumber, Patt
       sprintf(line+strlen(line),"%d ",P.getPatternElement(i).get(machineParam));
     }
   sprintf(line+strlen(line),"\n");
+  return false;
 }
 
 
@@ -1083,6 +1086,7 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
   loadedData[PatternNumber][TrackNumber]=DATA_LOADED_FROM_STORAGE;
   twoDPVector[PatternNumber][TrackNumber]=P;
       ///}
+  return false;
 }
 
 
@@ -1295,7 +1299,7 @@ const char * PatternReader::getParameterCharStar(int param)
     case KEYTRACK:           return keytrack;                 break;
 
     
-    default:                 printf("PatternReader::getParameterCharStar(%d) not found => exit\n"); exit(1); break;
+    default:                 DPRINTF("PatternReader::getParameterCharStar(%d) not found => exit\n",param); exit(1); break;
     }
   return ret;
 }

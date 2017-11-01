@@ -27,11 +27,13 @@ void AudioDriver::setAudioOutput(int deviceNumber)
 int AudioDriver::startAudio()
 {
   dac.startStream();
+  return 0;
 }
 
 int AudioDriver::stopAudio()
 {
   dac.stopStream();
+  return 0;
 }
 
 char * AudioDriver::getAudioOutputName(int deviceNumber)
@@ -88,8 +90,6 @@ int AudioDriver::openAudio()
 	
       }
     return 0;
-
-
 }
 
 
@@ -101,4 +101,5 @@ int AudioDriver::closeAudio()
   //#endif
   //SDL_CloseAudio();
   //  SDL_QuitSubSystem(SDL_INIT_AUDIO);
+  return 0;
 }

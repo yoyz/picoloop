@@ -40,6 +40,7 @@ int MKDIR(const char *pathname)
   mode_t mode;
   mode=0755; 
   mkdir(pathname,mode);
+  return 0;
 }
 
 #endif

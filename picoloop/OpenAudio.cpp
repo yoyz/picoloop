@@ -45,6 +45,10 @@ void openaudio()
   AE.startAudio();
 }
 
+void closeaudio()
+{
+  AE.stopAudio();
+}
 
 int main(int argc,char ** argv)
 {	  

@@ -4,6 +4,7 @@ CC=/usr/bin/arm-linux-gnueabi-g++-5
 CC=g++
 CC=clang++
 CC=g++
+CC=clang++
 
 CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINUX_RASPI1 -ggdb                   -DDEBUGPRINTF -fpermissive
 CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINUX_RASPI1 -ggdb -DFIXED                         -fpermissive -D__VOLCASYNC__
