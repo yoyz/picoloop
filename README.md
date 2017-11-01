@@ -1,4 +1,4 @@
-# PICOLOOP 0.76 README #
+# PICOLOOP 0.77 README #
 
 Manual and tutorial for PC/PSP/PSVita/Pocketchip can be fetch here : https://github.com/farvardin/picoloop-manual
 
@@ -414,6 +414,7 @@ Changelog
 V0.77ab
 - a : introduce lgptsampler for vita and raspberry pi
 - b : introduce lgptsampler for windows, stuck on psp
+- c : fix the crash on clang++, need to fix all int myfunc() { } without return 0; in the bracket...
 
 V0.76abc
 - a : first port on psvita thanks to #henkaku team
