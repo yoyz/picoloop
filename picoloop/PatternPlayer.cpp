@@ -28,9 +28,11 @@ using namespace std;
 #include "TweakableKnob.h"
 #include "MachineCheck.h"
 #include "UserInterface.h"
+#if !defined(__PBSYNTHONLY__)
 #include "Machine/Picosynth/PicosynthUserInterface.h"
 #include "Machine/Picodrum/PicodrumUserInterface.h"
 #include "Machine/Dbopl/DboplUserInterface.h"
+#endif
 #include "Machine/PBSynth/PBSynthUserInterface.h"
 #ifdef __RAM512MIB__
 #include "Machine/Lgptsampler/LgptsamplerUserInterface.h"
@@ -86,9 +88,9 @@ using namespace std;
 */
 char pada='a';
 char padb='b';
-char padc='c';
-char padd='d';
-char pade='e';
+//char padc='c';
+//char padd='d';
+//char pade='e';
 //char padf='f';
 
 #define VERS    1 //Talk about this
@@ -102,7 +104,7 @@ PSP_HEAP_SIZE_KB(-2048) ;
 //PSP_HEAP_SIZE_KB(-4096) ;
 #endif // PSP
 
-#if defined(__LINUX__)
+#if defined(__LINUX__) && !defined(OPENDINGUX)
 #include <execinfo.h>
 #include <signal.h>
 #endif
@@ -158,9 +160,11 @@ public:
 
 
 UserInterface * UI;
+#if !defined(__PBSYNTHONLY__)
 PicosynthUserInterface   PSUI;
 PicodrumUserInterface    PDUI;
 DboplUserInterface       DBUI;
+#endif
 PBSynthUserInterface     PBUI;
 
 #if defined(__RAM512MIB__)
@@ -419,7 +423,7 @@ void seq_update_track(int t);
 int handle_key_two_button(int buttonPressed,int buttonKeyRepeat,int repeatInterval,int machineParam,int paramValue,int all);
 
 
-#if defined(__LINUX__)
+#if defined(__LINUX__) && !defined(OPENDINGUX)
 void handler(int sig)
 {
   void *array[10];
@@ -575,7 +579,13 @@ void refresh_pecursor_ui(int i);
 // SAMM is an AudioMixer which give access to a "Machine" pointer
 void update_SAMM(int trackNumber,int stepNumber)
 {
-  SAMM.setMachineType(P[trackNumber].getPatternElement(stepNumber).get(MACHINE_TYPE));	  
+  int machine_type=P[trackNumber].getPatternElement(stepNumber).get(MACHINE_TYPE);
+  if (!MC.machineExist(machine_type))
+    {
+      machine_type=MC.getNext(machine_type);
+      P[trackNumber].getPatternElement(stepNumber).set(MACHINE_TYPE,machine_type);
+    }
+  SAMM.setMachineType(machine_type);	  
   refresh_pecursor_ui(stepNumber);
   SAM=SAMM.getInput();
 }
@@ -2981,11 +2991,19 @@ void refresh_pecursor_ui(int i)
   int exit_code=8;
   PECursor=P[cty].getPatternElement(i);  
   machine_type=PECursor.get(MACHINE_TYPE);
-
+  
+  if (!MC.machineExist(machine_type))
+    {
+      machine_type=MC.getNext(machine_type);
+      P[cty].getPatternElement(i).set(MACHINE_TYPE,machine_type);
+    }
+  
   DPRINTF("refresh_pecursor_ui(%d),machine_type=%d",i,machine_type);
+#if !defined(__PBSYNTHONLY__)
   if (machine_type==SYNTH_PICOSYNTH)    { UI=&PSUI; return ;   }
   if (machine_type==SYNTH_PICODRUM)     { UI=&PDUI; return ;   }
   if (machine_type==SYNTH_OPL2    )     { UI=&DBUI; return ;   }
+#endif  
   if (machine_type==SYNTH_PBSYNTH)      { UI=&PBUI; return ;   }
 #ifdef __RAM512MIB__
   if (machine_type==SYNTH_LGPTSAMPLER)  { UI=&LGUI; return ;   }
@@ -3656,6 +3674,7 @@ void seq_update_track(int t)
   //int  cty=SEQ.getCurrentTrackY();
   //int  ctx=SEQ.getCurrentTrackX();
   //int  step=SEQ.getPatternSequencer(cty).getStep();
+  int machine_type;
   int  step=SEQ.getPatternSequencer(t).getStep();
 
   // Handle only modification of on next step value 
@@ -3665,6 +3684,12 @@ void seq_update_track(int t)
   //{
   if (P[t].getPatternElement(step).get(NOTE_ON)!=0)
 	{
+	  machine_type=P[t].getPatternElement(step).get(MACHINE_TYPE);
+	  if (!MC.machineExist(machine_type))
+	    {
+	      machine_type=MC.getNext(machine_type);
+	      P[t].getPatternElement(step).set(MACHINE_TYPE,machine_type);
+	    }
 	  MM[t]->setAmplitude(P[t].getPatternElement(step).get(AMP));
 	  MM[t]->setMachineType(P[t].getPatternElement(step).get(MACHINE_TYPE));
 	  M[t]  = MM[t]->getInput();
@@ -4251,13 +4276,17 @@ int main(int argc,char **argv)
 {
   int i;
 
-#if defined(__LINUX__)
+#if defined(__LINUX__) && !defined(OPENDINGUX)
   signal(SIGSEGV, handler);   // install our handler
   signal(SIGABRT, handler);
 #endif
   
-
+#if !defined(__PBSYNTHONLY__)
   UI=&PSUI;          // The UI is set as default on PicoSynthUI
+#endif
+#if defined(__PBSYNTHONLY__)
+  UI=&PBUI;
+#endif
     
   init_vita_debug(); // used only on psvita
   init_psp();        // used only on psp

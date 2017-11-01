@@ -1,37 +1,50 @@
 #include "MonoMixer.h"
 
 //PCDESKTOP
-#if   defined(__VECTORFPU__) && defined(__RTMIDI__) && defined(__RAM512MIB__)
+#if   defined(__VECTORFPU__) && defined(__RTMIDI__) && defined(__RAM512MIB__) && !defined(__PBSYNTHONLY__)
 MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(), CS(), O303(), TW(), MD(), SS(), LGPTSMPL(), MIDIOUTM(), FXDelay(), FXDisabled()
 #endif
 			
-#if   defined(__VECTORFPU__) && !defined(__RTMIDI__) && defined(__RAM512MIB__)
+#if   defined(__VECTORFPU__) && !defined(__RTMIDI__) && defined(__RAM512MIB__) && !defined(__PBSYNTHONLY__)
 MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(), CS(), O303(), TW(), MD(), SS(), LGPTSMPL(),            FXDelay(), FXDisabled()
 #endif
 
-#if   !defined(__VECTORFPU__) && defined(__RTMIDI__) && !defined(__RAM512MIB__)
+#if   !defined(__VECTORFPU__) && defined(__RTMIDI__) && !defined(__RAM512MIB__) && !defined(__PBSYNTHONLY__)
 MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(),                          MIDIOUTM(), FXDelay(), FXDisabled()
 #endif
 
 //PSVITA, POCKETCHIP
-#if  !defined(__VECTORFPU__) && !defined(__RTMIDI__) && defined(__RAM512MIB__)
+#if  !defined(__VECTORFPU__) && !defined(__RTMIDI__) && defined(__RAM512MIB__) && !defined(__PBSYNTHONLY__)
 MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(),                                  LGPTSMPL(),          FXDelay(), FXDisabled()
 #endif
 
 			
 //  OPENDINGUX, GP2X, PSP
-#if  !defined(__VECTORFPU__) && !defined(__RTMIDI__) && !defined(__RAM512MIB__)
+#if  !defined(__VECTORFPU__) && !defined(__RTMIDI__) && !defined(__RAM512MIB__) && !defined(__PBSYNTHONLY__)
 MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(),                         FXDelay(), FXDisabled()
 #endif
 
+//  LINUX TEST
+#if  defined(__PBSYNTHONLY__)
+MonoMixer::MonoMixer(): PBS(),                         FXDelay(), FXDisabled()
+#endif
+
+
+			
 #define SAMMONOMIXER 32
 
 {
   DPRINTF("MonoMixer::MonoMixer()");  
   amplitude=127;
-  machine_type=0;
-  M=&PS;
 
+#if !defined(__PBSYNTHONLY__)
+  M=&PS;
+  machine_type=0;
+#endif
+#if defined(__PBSYNTHONLY__)
+  M=&PBS;
+  machine_type=3;
+#endif
   fx_depth=125;
   fx_speed=90;
 
@@ -55,11 +68,14 @@ MonoMixer::~MonoMixer()
 void MonoMixer::init()
 {
   int i=0;
+  PBS.init();
   
+#if !defined(__PBSYNTHONLY__)
   PS.init();
   PD.init();
   OPLM.init();
-  PBS.init();
+#endif
+
 #if defined(__RAM512MIB__)
   LGPTSMPL.init();
 #endif
@@ -114,7 +130,12 @@ void MonoMixer::setMachineType(int type)
   machine_type=type;
 
   switch (type)
-    {
+    {      
+    case SYNTH_PBSYNTH:
+      M=&PBS;
+      break;
+
+#if !defined(__PBSYNTHONLY__)
     case SYNTH_PICOSYNTH:
       M=&PS;
       break;
@@ -126,10 +147,7 @@ void MonoMixer::setMachineType(int type)
     case SYNTH_PICODRUM:
       M=&PD;
       break;
-
-    case SYNTH_PBSYNTH:
-      M=&PBS;
-      break;
+#endif
 
 #if defined(__RAM512MIB__)     
     case SYNTH_LGPTSAMPLER:

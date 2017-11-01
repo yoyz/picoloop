@@ -1,10 +1,15 @@
 //using namespace std;
 
 #include "Machine.h"
+
+#include "Machine/PBSynth/PBSynthMachine.h"
+
+#if !defined(__PBSYNTHONLY__)
 #include "Machine/Picosynth/PicosynthMachine.h"
 #include "Machine/Picodrum/PicodrumMachine.h"
 #include "Machine/Dbopl/DboplMachine.h"
-#include "Machine/PBSynth/PBSynthMachine.h"
+#endif
+
 #ifdef __RAM512MIB__
 #include "Machine/Lgptsampler/LgptsamplerMachine.h"
 #endif
@@ -47,10 +52,14 @@ class MonoMixer
   int                   channel;
   
   Machine              *M;
+  PBSynthMachine        PBS;
+
+#if !defined(__PBSYNTHONLY__)
   PicosynthMachine      PS;
   PicodrumMachine       PD;
   dboplMachine          OPLM;
-  PBSynthMachine        PBS;
+#endif
+  
 #ifdef __RAM512MIB__
   LgptsamplerMachine    LGPTSMPL;
 #endif

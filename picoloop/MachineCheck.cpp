@@ -10,9 +10,11 @@ MachineCheck::~MachineCheck()
 
 int MachineCheck::machineExist(int machineType)
 {
+#if !defined(__PBSYNTHONLY__)
   if (machineType==SYNTH_PICOSYNTH)   return 1;
   if (machineType==SYNTH_OPL2)        return 1;
   if (machineType==SYNTH_PICODRUM)    return 1;
+#endif
   if (machineType==SYNTH_PBSYNTH)     return 1;
 #if    defined(__VECTORFPU__)
   if (machineType==SYNTH_CURSYNTH)    return 1;
@@ -52,9 +54,11 @@ int MachineCheck::getNext(int machineType)
 	  return i;
 	}
     }
+  if (machineExist(machineType)) return i;
   printf("exit(3) MachineCheck->getNext(%d)\n",machineType);
   printf("exit(3) MACHINE NOTE FOUND\n");
   exit(3);
+  return -1;
 }
 
 int MachineCheck::getPrevious(int machineType)

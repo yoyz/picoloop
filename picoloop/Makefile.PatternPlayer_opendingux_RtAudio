@@ -22,13 +22,19 @@ SOURCES=$(SOURCES_PICOLOOP)	\
 		RtAudio.cpp		\
 		AudioDriverRTAudio.cpp   \
 		SYSTEMLINUX.cpp	       \
-		$(SOURCES_PICOSYNTH) 	\
-		$(SOURCES_PICODRUM) 	\
-		$(SOURCES_DBOPL) 	\
-		$(SOURCES_PBSYNTH)
+		$(SOURCES_PICOSYNTH) 		\
+		$(SOURCES_PICOSYNTHUI) 		\
+		$(SOURCES_PICODRUM) 		\
+		$(SOURCES_PICODRUMUI) 		\
+		$(SOURCES_DBOPL) 		\
+		$(SOURCES_DBOPLUI) 		\
+		$(SOURCES_PBSYNTH)		\
+		$(SOURCES_PBSYNTHUI) 		\
+		$(SOURCES_LGPTSAMPLERSYNTH) 	\
+		$(SOURCES_LGPTSAMPLERSYNTHUI)  
 
 
-OBJDIR             =     opendinguxrtaudio
+OBJDIR             =   opendinguxrtaudio
 OBJECTS            =   $(SOURCES:.cpp=.o)
 DEPENDENCY         =   $(SOURCES:.cpp=.d)
 
@@ -36,41 +42,37 @@ DEPENDENCYINOBJDIR = $(addprefix $(OBJDIR)/,$(DEPENDENCY))
 OBJECTSINOBJDIR    = $(addprefix $(OBJDIR)/,$(OBJECTS))
 OBJTOLINKINOBJDIR  = $(addprefix $(OBJDIR)/,$(OBJTOLINK))
 
+EXECUTABLE=PatternPlayer_opendingux_Rtaudio
 
-EXECUTABLE=PatternPlayer.dge
-
-all: DIRTOCREATE $(DEPENDENCYINOBJDIR) $(SOURCES) $(EXECUTABLE) 
-
-DIRTOCREATE:
-	-mkdir -p $(OBJDIR)/Machine
-	-mkdir -p $(OBJDIR)/Machine/Picosynth
-	-mkdir -p $(OBJDIR)/Machine/Picodrum
-	-mkdir -p $(OBJDIR)/Machine/Dbopl	
-	-mkdir -p $(OBJDIR)/Machine/PBSynth
-
+all: $(DEPENDENCYINOBJDIR) $(SOURCES) $(EXECUTABLE) 
 
 $(EXECUTABLE): $(DEPENDENCYINOBJDIR) $(OBJECTSINOBJDIR)
 	$(CC) $(OBJTOLINKINOBJDIR)  $(OBJECTSINOBJDIR) -o $@ $(LDFLAGS)
 
 # the .d file contain the dependency
 $(OBJDIR)/%.d : %.cpp %.h
-	$(CC) ${CFLAGS_SDLVERS} -I. -MM $< -o $@
+	@[ -d `dirname $@` ] || mkdir -p `dirname $@`
+	$(CC) ${CFLAGS_SDLVERS}  -I. -MM $< -o $@
 
 $(OBJDIR)/%.o : %.cpp 
+	@[ -d `dirname $@` ] || mkdir -p `dirname $@`
 	$(CC) $(CFLAGS) $< -o $@
+
 
 # include all the dependency .d file into the makefile 
 # it allow to match change in .h file
 -include $(DEPENDENCYINOBJDIR)
 
+
 # SYSTEMLINUX.d does have a .h which is SYSTEM.h, so it need a tweaks
 $(OBJDIR)/SYSTEMLINUX.d:SYSTEMLINUX.cpp 
-	$(CC) ${CFLAGS_SDLVERS} -I. -MM $< -o $@ 
-
+	[ -d `dirname $@` ] || mkdir -p `dirname $@`
+	$(CC) ${CFLAGS_SDLVERS}  -I. -MM $< -o $@ 
 
 # PatternPlayer.d does have a .h which is system.h
 PatternPlayer.d:PatternPlayer.cpp
-	$(CC) ${CFLAGS_SDLVERS} -std=c++11 -I. -MM $< -o $@ 
+	[ -d `dirname $@` ] || mkdir -p `dirname $@`
+	$(CC) ${CFLAGS_SDLVERS}  -std=c++11 -I. -MM $< -o $@ 
 
 
 clean:
@@ -78,3 +80,4 @@ clean:
 	-rm -f $(DEPENDENCYINOBJDIR)
 	-rm -f $(EXECUTABLE)
 	-rm -f $(DEPENDENCY)
+

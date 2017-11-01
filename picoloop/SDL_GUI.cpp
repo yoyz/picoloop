@@ -84,6 +84,12 @@ int SDL_GUI::initVideo()
 			    SCREEN_DEPTH,			
 			    SDL_HWSURFACE|SDL_DOUBLEBUF);
   #endif
+  #ifdef LINUX_PBSYNTHONLY
+  screen = SDL_SetVideoMode(SCREEN_WIDTH*SCREEN_MULT, 
+			    SCREEN_HEIGHT*SCREEN_MULT, 
+			    SCREEN_DEPTH,			
+			    SDL_HWSURFACE|SDL_DOUBLEBUF);
+  #endif
 
   #ifdef LINUX_POCKETCHIP
   screen = SDL_SetVideoMode(SCREEN_WIDTH*SCREEN_MULT, 

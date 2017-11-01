@@ -3,6 +3,7 @@ using namespace std;
 
 #include "Master.h"
 #include "InputManager.h"
+#include "AudioEngine.h"
 #include "SDL_GUI.h"
 #include "Pattern.h"
 #include "Machine.h"

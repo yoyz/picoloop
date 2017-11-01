@@ -1,0 +1,88 @@
+include Makefile_sources
+
+CC=/usr/bin/arm-linux-gnueabi-g++-5 
+CC=g++
+CC=clang++
+CC=g++
+CC=clang++
+
+CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINUX_RASPI1 -ggdb                   -DDEBUGPRINTF -fpermissive
+CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINUX_RASPI1 -ggdb -DFIXED                         -fpermissive -D__VOLCASYNC__
+
+CFLAGS_SDLVERS=-D__SDL12__
+CFLAGS_SDLVERS=-D__SDL20__
+CFLAGS_SDLVERS=-D__SDL12__
+LDFLAGS_SDLVERS=-lSDL2          -lSDL2_ttf
+LDFLAGS_SDLVERS=-lSDL -lSDL_gfx -lSDL_ttf
+
+CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINUX_RASPI1 -D__LINUX_ALSA__ -D__LINUX_PULSE__ -ggdb -DFIXED ${CFLAGS_SDLVERS} -DDEBUG_PRINTF                        -fpermissive -Wall
+CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINUX_RASPI1 -D__LINUX_ALSA__ -D__LINUX_PULSE__ -ggdb -DFIXED ${CFLAGS_SDLVERS} -DDEBUGPRINTF                        -fpermissive -Werror=return-type
+CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINUX_PBSYNTHONLY -D__LINUX_ALSA__ -D__LINUX_PULSE__ -ggdb -DFIXED ${CFLAGS_SDLVERS} -DDEBUGPRINTF                        -Werror=return-type
+LDFLAGS=-Lraspian/lib/ -lasound -lpulse  -lpulse-simple -lSDL -lSDL_gfx -lSDL_ttf -lpthread
+LDFLAGS=-Lraspian/lib/ -lasound -lpulse  -lpulse-simple -lSDL2          -lSDL2_ttf -lpthread
+LDFLAGS=-Lraspian/lib/ -lasound -lpulse  -lpulse-simple -lSDL -lSDL_gfx -lSDL_ttf -lpthread
+LDFLAGS=-Lraspian/lib/ -lasound -lpulse  -lpulse-simple -lSDL2          -lSDL2_ttf -lpthread
+LDFLAGS=-Lraspian/lib/ -lasound -lpulse  -lpulse-simple ${LDFLAGS_SDLVERS} -lpthread
+
+
+OBJTOLINK=RtAudio.o
+OBJTOLINK=RtAudio.o RtMidi.o
+OBJTOLINK=RtAudio.o
+OBJTOLINK=
+
+SOURCES=	$(SOURCES_PICOLOOP)		\
+		RtAudio.cpp			\
+		AudioDriverRTAudio.cpp   	\
+		SYSTEMLINUX.cpp	      	 	\
+		$(SOURCES_PBSYNTH)		\
+		$(SOURCES_PBSYNTHUI) 		\
+
+
+
+OBJDIR             =     pbsynthonly
+OBJECTS            =   $(SOURCES:.cpp=.o)
+DEPENDENCY         =   $(SOURCES:.cpp=.d)
+
+DEPENDENCYINOBJDIR = $(addprefix $(OBJDIR)/,$(DEPENDENCY))
+OBJECTSINOBJDIR    = $(addprefix $(OBJDIR)/,$(OBJECTS))
+OBJTOLINKINOBJDIR  = $(addprefix $(OBJDIR)/,$(OBJTOLINK))
+
+EXECUTABLE=PatternPlayer_pbsynthonly_Rtaudio
+
+all: $(DEPENDENCYINOBJDIR) $(SOURCES) $(EXECUTABLE) 
+
+$(EXECUTABLE): $(DEPENDENCYINOBJDIR) $(OBJECTSINOBJDIR)
+	$(CC) $(OBJTOLINKINOBJDIR)  $(OBJECTSINOBJDIR) -o $@ $(LDFLAGS)
+
+# the .d file contain the dependency
+$(OBJDIR)/%.d : %.cpp %.h
+	@[ -d `dirname $@` ] || mkdir -p `dirname $@`
+	$(CC) ${CFLAGS_SDLVERS}  -I. -MM $< -o $@
+
+$(OBJDIR)/%.o : %.cpp 
+	@[ -d `dirname $@` ] || mkdir -p `dirname $@`
+	$(CC) $(CFLAGS) $< -o $@
+
+
+# include all the dependency .d file into the makefile 
+# it allow to match change in .h file
+-include $(DEPENDENCYINOBJDIR)
+
+
+# SYSTEMLINUX.d does have a .h which is SYSTEM.h, so it need a tweaks
+$(OBJDIR)/SYSTEMLINUX.d:SYSTEMLINUX.cpp 
+	[ -d `dirname $@` ] || mkdir -p `dirname $@`
+	$(CC) ${CFLAGS_SDLVERS}  -I. -MM $< -o $@ 
+
+# PatternPlayer.d does have a .h which is system.h
+PatternPlayer.d:PatternPlayer.cpp
+	[ -d `dirname $@` ] || mkdir -p `dirname $@`
+	$(CC) ${CFLAGS_SDLVERS}  -std=c++11 -I. -MM $< -o $@ 
+
+
+clean:
+	-rm -f $(OBJECTSINOBJDIR)
+	-rm -f $(DEPENDENCYINOBJDIR)
+	-rm -f $(EXECUTABLE)
+	-rm -f $(DEPENDENCY)
+

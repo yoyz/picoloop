@@ -19,6 +19,7 @@
 //#define DEFAULTFREQ      44100
 #define DEFAULTFREQ      44100
 #define DEFAULTBITRATE   16
+#define PORTED_MACHINE   11
 //#define DEFAULTSAMPLES   512
 //#define DEFAULTSAMPLES   1024
 //#define DEFAULTSAMPLES   128
@@ -388,6 +389,61 @@ enum {
 #endif
 
 
+#ifdef LINUX_PBSYNTHONLY
+//#define __FPU__         1
+//#define __RAM512MIB__   0
+//#define __RTMIDI__      1
+#define  __PBSYNTHONLY__ 1
+//int machine_tab[PORTED_MACHINE]={0,0,0};
+#define MAX_PATTERN_BY_PROJECT 128
+
+#define SCREEN_WIDTH	320
+#define SCREEN_HEIGHT	240
+#define SCREEN_DEPTH	16
+#define SCREEN_MULT     2
+// BEGIN DINGOO A320 SDL use by linux too
+
+//#define DEFAULTSAMPLES   2048
+
+// Fine tuning 2048 for MIDI_DELAY_IN_SAMPLE and 512 for DEFAULTSAMPLES
+#define MIDI_DELAY_IN_SAMPLE 2048
+#define DEFAULTSAMPLES   2048 // Raspberry 1 can not handle 512 sample
+
+/* #define MIDI_DELAY_IN_SAMPLE 8192 */
+/* #define DEFAULTSAMPLES   2048 */
+
+
+#define KEY_REPEAT_INTERVAL_SMALLEST  4
+#define KEY_REPEAT_INTERVAL_SMALL     8
+#define KEY_REPEAT_INTERVAL_MIDDLE    32
+#define KEY_REPEAT_INTERVAL_LONG      64
+#define KEY_REPEAT_INTERVAL_LONGEST   128
+
+
+
+#define BUTTON_B            SDLK_LALT
+#define BUTTON_A            SDLK_LCTRL
+#define BUTTON_X            SDLK_SPACE
+#define BUTTON_Y            SDLK_LSHIFT
+
+#define BUTTON_UP           SDLK_UP
+#define BUTTON_DOWN         SDLK_DOWN
+#define BUTTON_LEFT         SDLK_LEFT
+#define BUTTON_RIGHT        SDLK_RIGHT
+
+#define BUTTON_SELECT       SDLK_ESCAPE
+#define BUTTON_START        SDLK_RETURN
+
+#define BUTTON_L            SDLK_TAB
+#define BUTTON_R            SDLK_BACKSPACE
+
+#define KEYPRESSED          SDL_KEYDOWN
+#define KEYRELEASED         SDL_KEYUP
+
+#endif
+
+
+
 #ifdef LINUX_POCKETCHIP
 //#define __FPU__         1
 #define __RAM512MIB__   1
@@ -630,43 +686,6 @@ enum
 #define SYNTH_SIDSYNTH     9
 #define SYNTH_LGPTSAMPLER  10
 
-
-// PC_DESKTOP
-// picosynth,picodrum,opl2,pbsynth
-// cursynth,open303,twytch,mdadrum,sidsynth
-// midiout
-// lgpt
-#if    defined(__VECTORFPU__) && defined(__RTMIDI__) && defined(__RAM512MIB__)
-#define SYNTH_SIZE 11
-#endif
-
-// PC_DESKTOP without MIDIOUT
-// picosynth,picodrum,opl2,pbsynth
-// cursynth,open303,twytch,mdadrum,sidsynth
-// lgpt
-#if    defined(__VECTORFPU__) && !defined(__RTMIDI__) && defined(__RAM512MIB__)
-#define SYNTH_SIZE 10
-#endif
-
-// PC_DESKTOP without : ( SYTNH_MIDIOUT, SYNTH_LGPTSAMPLER)
-// picosynth,picodrum,opl2,pbsynth
-// cursynth,open303,twytch,mdadrum,sidsynth
-#if    defined(__VECTORFPU__) && !defined(__RTMIDI__) && !defined(__RAM512MIB__)
-#define SYNTH_SIZE 9
-#endif
-
-//PSVITA, LINUXPOCKETCHIP
-// picosynth,picodrum,opl2,pbsynth,
-// lgptsampler
-#if    !defined(__VECTORFPU__) && !defined(__RTMIDI__) && defined(__RAM512MIB__)
-#define SYNTH_SIZE 5
-#endif
-
-// OPENDINGUX PSP GP2X
-// picosynth,picodrum,opl2,pbsynth
-#if   !defined(__VECTORFPU__) && !defined(__RTMIDI__) && !defined(__RAM512MIB__)
-#define SYNTH_SIZE 4
-#endif
 
 
 
@@ -1005,6 +1024,51 @@ enum
 #define LINE62       62*8*SCREEN_MULT
 #define LINE63       63*8*SCREEN_MULT
 #define LINE64       64*8*SCREEN_MULT
+
+
+// PC_DESKTOP
+// picosynth,picodrum,opl2,pbsynth
+// cursynth,open303,twytch,mdadrum,sidsynth
+// midiout
+// lgpt
+#if    defined(__VECTORFPU__) && defined(__RTMIDI__) && defined(__RAM512MIB__) && !defined(__PBSYNTHONLY__)
+#define SYNTH_SIZE 11
+#endif
+
+// PC_DESKTOP without MIDIOUT
+// picosynth,picodrum,opl2,pbsynth
+// cursynth,open303,twytch,mdadrum,sidsynth
+// lgpt
+#if    defined(__VECTORFPU__) && !defined(__RTMIDI__) && defined(__RAM512MIB__)&& !defined(__PBSYNTHONLY__)
+#define SYNTH_SIZE 10
+#endif
+
+// PC_DESKTOP without : ( SYTNH_MIDIOUT, SYNTH_LGPTSAMPLER)
+// picosynth,picodrum,opl2,pbsynth
+// cursynth,open303,twytch,mdadrum,sidsynth
+#if    defined(__VECTORFPU__) && !defined(__RTMIDI__) && !defined(__RAM512MIB__) && !defined(__PBSYNTHONLY__)
+#define SYNTH_SIZE 9
+#endif
+
+//PSVITA, LINUXPOCKETCHIP
+// picosynth,picodrum,opl2,pbsynth,
+// lgptsampler
+#if    !defined(__VECTORFPU__) && !defined(__RTMIDI__) && defined(__RAM512MIB__) && !defined(__PBSYNTHONLY__)
+#define SYNTH_SIZE 5
+#endif
+
+// OPENDINGUX PSP GP2X
+// picosynth,picodrum,opl2,pbsynth
+#if   !defined(__VECTORFPU__) && !defined(__RTMIDI__) && !defined(__RAM512MIB__) && !defined(__PBSYNTHONLY__)
+#define SYNTH_SIZE 4
+#endif
+
+// LINUX
+// pbsynth
+#if   !defined(__VECTORFPU__) && !defined(__RTMIDI__) && !defined(__RAM512MIB__) && defined(__PBSYNTHONLY__)
+#define SYNTH_SIZE 1
+#endif
+
 
 
 
