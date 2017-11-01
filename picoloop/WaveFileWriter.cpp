@@ -65,6 +65,7 @@ int WaveFileWriter::createEmptyWaveFile()
 
   fwrite(&waveHeader,sizeof(WHWFW),1,fileToWrite);
   fflush(fileToWrite);
+  return 0;
 }
 
 void WaveFileWriter::fillBuffer(void * buff,int nbSample)
@@ -85,5 +86,5 @@ int WaveFileWriter::closeAndUpdate()
 
   fwrite(&waveHeader,sizeof(WHWFW),1,fileToWrite);
   fclose(fileToWrite);
-
+  return 0;
 }
