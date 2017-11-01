@@ -54,6 +54,7 @@ int PulseSync::setNbTickBeforeStepChange(int val)
 
   stepdec2=tick_height_high/(nb_tick_before_step_change_real/3);
   //tick_length_high=nb_tick_before_step_change_real/2;
+  return 0;
 }
 
 int PulseSync::tick() // volca
@@ -214,6 +215,7 @@ int AudioEngine::setNbTickBeforeStepChange(int val)
 {
   nb_tick_before_step_change=val;
   PS.setNbTickBeforeStepChange(val);
+  return 0;
 }
 
 
@@ -498,6 +500,7 @@ int rtcallback(
   //return 1;
   //SDL_PauseAudio(0);
    AD.startAudio();
+   return 0;
 }
 
 // enable audio callback
@@ -510,7 +513,7 @@ int rtcallback(
 int AudioEngine::stopAudio()
 {
   //  dac.stopStream();
-
+  return 0;
 }
 
 
@@ -521,11 +524,13 @@ int AudioEngine::stopAudioSdl()
   //return 1;
   //SDL_PauseAudio(1);
   AD.stopAudio();
+  return 0;
 }
 
 int AudioEngine::openAudio()
 {
   AD.openAudio();
+  return 0;
 }
 
 int AudioEngine::closeDumpAudioFile()
@@ -541,6 +546,7 @@ int AudioEngine::closeAudio()
   //dac.closeStream();  
   AD.closeAudio();
   closeDumpAudioFile();
+  return 0;
 }
 
 int AudioEngine::closeAudioSdl()
@@ -548,4 +554,5 @@ int AudioEngine::closeAudioSdl()
   //SDL_LockAudio();
   //SDL_CloseAudio();
   //SDL_QuitSubSystem(SDL_INIT_AUDIO);
+  return 0;
 }
