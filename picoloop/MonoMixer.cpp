@@ -335,3 +335,9 @@ Fixed MonoMixer::tick_fixed()
   return s_out;
   
 }
+
+Fixed * MonoMixer::tick_fixed_buffer()
+{
+  this->process_fixed();
+  return bufferfix;
+}

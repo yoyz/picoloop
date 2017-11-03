@@ -25,6 +25,8 @@ class AudioMixer
   vector <MonoMixer> MM;
   int volume;
   Fixed volumeFixed;
+  Fixed * buffer_fix;
+  int index;
 };
 
 

@@ -1,5 +1,5 @@
 #include "AudioMixer.h"
-
+#define SAM 32
 //AudioMixer::AudioMixer() : T0(), T1()
 AudioMixer::AudioMixer() : MM(TRACK_MAX)
 {
@@ -87,7 +87,7 @@ Sint16 AudioMixer::tick()
   return sint16tick;
 }
 */
-
+/*
 Sint16 AudioMixer::tick()
 {
   Sint32 val=0;
@@ -114,4 +114,43 @@ Sint16 AudioMixer::tick()
   //  return S.tick();
   //return inttick;
   return sint16tick;
+}
+*/
+
+Sint16 AudioMixer::tick()
+{
+  Sint32 val=0;
+  Sint16 sint16tick;
+  int i,j;
+  Fixed * tmp;
+  Fixed * tmpX;
+  Fixed a,b;
+  if(buffer_fix==NULL)
+    buffer_fix=(Fixed*)malloc(sizeof(Fixed)*SAM);
+  
+  if (index<=0 |
+      index>=SAM)
+    {
+      index=0;
+      // put 0 in the buffer
+      for (j=0;j<SAM;j++)
+	buffer_fix[j]=0;
+
+      // add the audio track with +
+      for (i=0;i<TRACK_MAX;i++)
+	{
+	  tmp=MM[i].tick_fixed_buffer();
+	  for (j=0;j<SAM;j++)
+	    buffer_fix[j]=buffer_fix[j]+tmp[j];
+	}
+      // raise the volume
+      for (j=0;j<SAM;j++)
+	buffer_fix[j]=buffer_fix[j]*Fixed(1280);
+    }
+  val=buffer_fix[index];
+  index++;
+
+  sint16tick=val;
+  return sint16tick;
+
 }

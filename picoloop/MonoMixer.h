@@ -49,7 +49,7 @@ class MonoMixer
   void        process_fixed(); 
   Sint16      tick();
   Fixed       tick_fixed();
-
+  Fixed *     tick_fixed_buffer();
  private:
   int                   channel;
   
