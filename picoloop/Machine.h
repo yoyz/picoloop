@@ -184,6 +184,7 @@ class Machine
   virtual void reset();
   virtual Sint32 tick();
   virtual Fixed tick_fixed();
+  virtual Fixed * tick_fixed_buffer();
 
   virtual void setChannelNumber(int c);
   virtual int  getChannelNumber();

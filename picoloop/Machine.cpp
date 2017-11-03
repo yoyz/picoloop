@@ -65,9 +65,17 @@ Sint32 Machine::tick()
 Fixed Machine::tick_fixed()
 {
   Fixed a=0;
-  DPRINTF("Machine::tick()");
+  DPRINTF("Machine::tick_fixed()");
   return a;
 }
+
+Fixed * Machine::tick_fixed_buffer()
+{
+  Fixed * a=NULL;
+  DPRINTF("Machine::tick_fixed_buffer()");
+  return a;
+}
+
 
 
 int Machine::checkI(int what,int val)

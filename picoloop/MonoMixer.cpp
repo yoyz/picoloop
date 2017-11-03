@@ -341,3 +341,10 @@ Fixed * MonoMixer::tick_fixed_buffer()
   this->process_fixed();
   return bufferfix;
 }
+
+/*
+Fixed * MonoMixer::tick_fixed_buffer()
+{  
+  return M->tick_fixed_buffer();
+}
+*/

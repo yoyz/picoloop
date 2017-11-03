@@ -431,3 +431,26 @@ Fixed PBSynthMachine::tick_fixed()
   return s_out_fix;
 }
 
+Fixed * PBSynthMachine::tick_fixed_buffer()
+{
+  int i;
+  SE->process(buffer_f,SAM);
+  for(i=0;i<SAM;i++)
+    {
+      //Sint32 b=buffer_f[i]*1024;
+      //buffer_fix[i]=b;
+      buffer_fix[i]=Fixed(buffer_f[i]);
+      if (trig_time_mode)
+	{
+	  if (trig_time_duration_sample<sample_num)
+	    {
+	      this->setI(NOTE_ON,0);
+	      trig_time_mode=0;
+	    }
+	}
+      sample_num++;
+    }
+  return buffer_fix;
+}
+
+

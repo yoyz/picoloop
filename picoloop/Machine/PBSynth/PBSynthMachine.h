@@ -22,6 +22,7 @@ class PBSynthMachine : public Machine
   void reset();
   Sint32  tick();
   Fixed  tick_fixed();
+  Fixed  * tick_fixed_buffer();
 
   void setI(int what,int   val);
   void setF(int what,float val);
