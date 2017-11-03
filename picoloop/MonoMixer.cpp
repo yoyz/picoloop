@@ -51,6 +51,7 @@ MonoMixer::MonoMixer(): PBS(),                         FXDelay(), FXDisabled()
   index=0;
   buffer16=NULL;
   buffer32=NULL;
+  bufferfix=NULL;
 
   channel=-1; // not set 
 }
@@ -106,10 +107,13 @@ void MonoMixer::init()
     buffer16=(Sint16*)malloc(sizeof(Sint16)*SAMMONOMIXER);
   if (buffer32==NULL)
     buffer32=(Sint32*)malloc(sizeof(Sint32)*SAMMONOMIXER);
+    if (bufferfix==NULL)
+      bufferfix=(Fixed*)malloc(sizeof(Fixed)*SAMMONOMIXER);
   for (i=0;i<SAMMONOMIXER;i++)
     {
       buffer16[i]=0;
       buffer32[i]=0;
+      bufferfix[i]=0;
     }
 
   channel=-1; // not set
@@ -195,7 +199,7 @@ void MonoMixer::setAmplitude(int amp)
   if (amp<=0)             { amplitude=0;   }
   if (amp>0   && amp<127) { amplitude=amp; }
   DPRINTF("MonoMixer::setAmplitude(amplitude=%d)",amplitude);
-
+  amplitudeFixed=Fixed(amplitude)/Fixed(127);
   //M->setAmplitude(amp);
   amplitude=amp;
 }
@@ -267,13 +271,23 @@ void MonoMixer::process_fixed()
   // Fill with Machine audio
   for (i=0;i<SAMMONOMIXER;i++)
     {
-      buffer32[i]=M->tick_fixed();
+      //buffer32[i]=M->tick_fixed();
+      //bufferfix[i]=M->tick_fixed()*Fixed(1280);
+      //bufferfix[i]=M->tick_fixed()*Fixed(10)*Fixed(amplitude);
+      bufferfix[i]=M->tick_fixed()*amplitudeFixed;
     }
+
+  for (i=0;i<SAMMONOMIXER;i++)
+    {
+      //bufferfix[i]=bufferfix[i]*Fixed(1280);
+    }
+  index=0;
+  return;
   //  // Send To FX
   // for (i=0;i<SAMMONOMIXER;i++)
   //   buffer32[i]=FX->process_one_sample(buffer32[i]);
 
-  FX->process(buffer32,SAMMONOMIXER);
+  //FX->process(buffer32,SAMMONOMIXER);
 
   // Amplify it we are a mixer 
   // Clip it it is a 32 bit, so no problem to clip it
@@ -311,11 +325,13 @@ Fixed MonoMixer::tick_fixed()
   if (index+1<SAMMONOMIXER)
     {
       index++;
-      s_out=buffer16[index];
+      //s_out=buffer16[index];
+      s_out=bufferfix[index];
       return s_out;
     }
   this->process_fixed();
-  s_out=buffer16[index];
+  //s_out=buffer16[index];
+  s_out=bufferfix[index];
   return s_out;
   
 }

@@ -82,6 +82,7 @@ class MonoMixer
   EffectDisabled        FXDisabled;
 
   Sint16                amplitude;
+  Fixed                 amplitudeFixed;
   int                   machine_type;
 
   int                   fx_depth;
@@ -90,6 +91,7 @@ class MonoMixer
   int                   index;
   Sint16                * buffer16;
   Sint32                * buffer32;
+  Fixed                 * bufferfix;
 };
 
 

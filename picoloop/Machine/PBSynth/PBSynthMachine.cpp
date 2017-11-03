@@ -403,7 +403,8 @@ Fixed PBSynthMachine::tick_fixed()
        	  //buffer[i]=buffer[i]*2048;
 	  //buffer_i[i]=buffer_f[i]*1536;
 	  buffer_i[i]=buffer_f[i]*1280;
-	  buffer_fix[i]=buffer_i[i];
+	  //buffer_fix[i]=Fixed(buffer_f[i]*1280);
+	  buffer_fix[i]=Fixed(buffer_f[i]);
        	}
     }
 
