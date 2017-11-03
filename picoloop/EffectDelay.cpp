@@ -19,14 +19,15 @@ EffectDelay::EffectDelay()
   buffer=0;
   index=0;
   indexOffset=0;
+  last_index_poleon=0;
+  indexCurrent=0;
+  
   sample_num=0;
   buffer=NULL;
   //for (i=0;i<FX_SIZE;i++)
   //buffer[i]=0;
   pole=0;
   old_pole=0;
-  last_index_poleon=0;
-  indexCurrent=0;
   slowit=0;
 }
 
@@ -43,6 +44,9 @@ void EffectDelay::init()
   int i;
   index=0;
   indexOffset=0;
+  last_index_poleon=0;
+  indexCurrent=0;
+
   sample_num=0;
 
 
@@ -193,11 +197,11 @@ inline int32_t EffectDelay::process_one_sample(int32_t in)
   indexOffset++;
 
 
-  if (index>FX_SIZE)
+  if (index>=FX_SIZE)
     index=0;
-  if (indexOffset>FX_SIZE)
+  if (indexOffset>=FX_SIZE)
     indexOffset=0;
-  if (indexCurrent>FX_SIZE)
+  if (indexCurrent>=FX_SIZE)
     indexCurrent=0;
 
   return out;
