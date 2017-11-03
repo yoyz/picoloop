@@ -352,8 +352,6 @@ Sint32 PBSynthMachine::tick()
       SE->process(buffer_f,SAM);
       for(i=0;i<SAM;i++)
        	{
-       	  //buffer[i]=buffer[i]*2048;
-	  //buffer_i[i]=buffer_f[i]*1536;
 	  buffer_i[i]=buffer_f[i]*1280;
        	}
     }
@@ -365,7 +363,6 @@ Sint32 PBSynthMachine::tick()
 	{
 	  this->setI(NOTE_ON,0);
 	  trig_time_mode=0;
-	  //DPRINTF("\t\t\t\t\t\tDONE\n");
 	}
 
     }
@@ -394,20 +391,14 @@ Fixed PBSynthMachine::tick_fixed()
       index<0)
     index=0;
 
-
   if ( index==0 )
     {
       SE->process(buffer_f,SAM);
       for(i=0;i<SAM;i++)
        	{
-       	  //buffer[i]=buffer[i]*2048;
-	  //buffer_i[i]=buffer_f[i]*1536;
-	  buffer_i[i]=buffer_f[i]*1280;
-	  //buffer_fix[i]=Fixed(buffer_f[i]*1280);
 	  buffer_fix[i]=Fixed(buffer_f[i]);
        	}
     }
-
 
   if (trig_time_mode)
     {
@@ -415,15 +406,10 @@ Fixed PBSynthMachine::tick_fixed()
 	{
 	  this->setI(NOTE_ON,0);
 	  trig_time_mode=0;
-	  //DPRINTF("\t\t\t\t\t\tDONE\n");
 	}
-
     }
-  s_in32=buffer_i[index];
+
   s_out_fix=buffer_fix[index];
-  if (s_in32>32000)  s_in32=32000;
-  if (s_in32<-32000) s_in32=-32000;
-  s_out=s_in32;
 
   index++;
   sample_num++;
