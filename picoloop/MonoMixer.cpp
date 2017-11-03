@@ -237,9 +237,6 @@ void MonoMixer::process()
     {
       buffer32[i]=M->tick();
     }
-  //  // Send To FX
-  // for (i=0;i<SAMMONOMIXER;i++)
-  //   buffer32[i]=FX->process_one_sample(buffer32[i]);
 
   FX->process(buffer32,SAMMONOMIXER);
 
@@ -280,7 +277,6 @@ void MonoMixer::process_fixed()
 
 Sint16 MonoMixer::tick()
 {
-
   if (index+1<SAMMONOMIXER)
     {
       index++;
