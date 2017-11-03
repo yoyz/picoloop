@@ -1,6 +1,7 @@
 using namespace std;
 #include <stdio.h>
 #include "Master.h"
+#include "fixed.h"
 #define ADSR_ENV0_ATTACK    0 
 #define ADSR_ENV0_DECAY     1  
 #define ADSR_ENV0_SUSTAIN   2  
@@ -182,6 +183,7 @@ class Machine
   virtual void init();
   virtual void reset();
   virtual Sint32 tick();
+  virtual Fixed tick_fixed();
 
   virtual void setChannelNumber(int c);
   virtual int  getChannelNumber();

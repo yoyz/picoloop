@@ -1,7 +1,7 @@
 //using namespace std;
 
 #include "Machine.h"
-
+#include "fixed.h"
 #include "Machine/PBSynth/PBSynthMachine.h"
 
 #if !defined(__PBSYNTHONLY__)
@@ -46,7 +46,9 @@ class MonoMixer
   Machine *   getInput();
   Effect  *   getEffect();
   void        process();
+  void        process_fixed(); 
   Sint16      tick();
+  Fixed       tick_fixed();
 
  private:
   int                   channel;

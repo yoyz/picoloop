@@ -5,7 +5,7 @@
 #include "fixed.h"
 //#include <SDL/SDL.h>
 #include "../../NoteFreq.h"
-
+#include "../../fixed.h"
 
 
 
@@ -21,6 +21,7 @@ class PBSynthMachine : public Machine
   void init();
   void reset();
   Sint32  tick();
+  Fixed  tick_fixed();
 
   void setI(int what,int   val);
   void setF(int what,float val);
@@ -48,6 +49,7 @@ class PBSynthMachine : public Machine
   Sint16              * tanh_table;
   mfloat              * buffer_f;
   Sint16              * buffer_i;
+  Fixed               * buffer_fix;
   int                   index;
 
   //int                   freq;

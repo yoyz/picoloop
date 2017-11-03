@@ -47,7 +47,10 @@ void AudioMixer::setAudioVolume(int v)
 {
   if (v>=0 &&
       v<=127)
-    volume=v;
+    {
+      volume=v;
+      volumeFixed=Fixed(Fixed(v)/Fixed(127));
+    }
   DPRINTF("AudioVolume:%d\n",volume);
 }
 
@@ -55,7 +58,7 @@ int AudioMixer::getAudioVolume()
 {
   return volume;
 }
-
+/*
 Sint16 AudioMixer::tick()
 {
   Sint32 val=0;
@@ -64,7 +67,7 @@ Sint16 AudioMixer::tick()
 
 
   for (i=0;i<TRACK_MAX;i++)
-    val=val+MM[i].tick();
+    val=val+Sint32(MM[i].tick_fixed());
   //Sint16 inttick=T.tick();
   //Sint32 sint32tick=(T0.tick()/2)+(T1.tick()/2);
   //Sint32 sint32tick=this->twoChannel(T[0].tick(),T[1].tick());
@@ -83,5 +86,32 @@ Sint16 AudioMixer::tick()
   //return inttick;
   return sint16tick;
 }
+*/
+
+Sint16 AudioMixer::tick()
+{
+  Sint32 val=0;
+  Sint16 sint16tick;
+  int i;
 
 
+  for (i=0;i<TRACK_MAX;i++)
+    val=val+Sint32(MM[i].tick_fixed());
+  //Sint16 inttick=T.tick();
+  //Sint32 sint32tick=(T0.tick()/2)+(T1.tick()/2);
+  //Sint32 sint32tick=this->twoChannel(T[0].tick(),T[1].tick());
+  val=(val*volume)>>7;
+  
+  //  sint16tick=sint32tick;
+
+  if (val>32000)  val=32000-(val-32000);
+  if (val<-32000) val=-32000-(val+32000);
+
+  //if (val>32000)  val=32000;
+  //if (val<-32000) val=-32000;
+  sint16tick=val;
+  //  DPRINTF("%d\n",inttick);
+  //  return S.tick();
+  //return inttick;
+  return sint16tick;
+}

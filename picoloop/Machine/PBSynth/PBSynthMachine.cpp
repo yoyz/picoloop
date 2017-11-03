@@ -48,6 +48,10 @@ void PBSynthMachine::init()
     {
       buffer_i = (Sint16*)malloc(sizeof(Sint16)*SAM);
     }
+  if (buffer_fix==0)
+    {
+      buffer_fix = (Fixed*)malloc(sizeof(Fixed)*SAM);
+    }
 
   DPRINTF("buffer_f:0x%08.8X\n",buffer_f);
   DPRINTF("buffer_i:0x%08.8X\n",buffer_i);
@@ -55,6 +59,7 @@ void PBSynthMachine::init()
     {
       buffer_f[i]=0;
       buffer_i[i]=0;
+      buffer_fix[i]=0;
     }
   sample_num=0;
   index=0;
@@ -373,5 +378,55 @@ Sint32 PBSynthMachine::tick()
   sample_num++;
 
   return s_out;
+}
+
+Fixed PBSynthMachine::tick_fixed()
+{
+  Sint16 s_in;
+  Sint32 s_in32;
+  Sint16 s_out;
+  int    modulated_freq;
+  int i;
+  float buf_f;
+  Fixed s_out_fix;
+
+  if (index>=SAM | 
+      index<0)
+    index=0;
+
+
+  if ( index==0 )
+    {
+      SE->process(buffer_f,SAM);
+      for(i=0;i<SAM;i++)
+       	{
+       	  //buffer[i]=buffer[i]*2048;
+	  //buffer_i[i]=buffer_f[i]*1536;
+	  buffer_i[i]=buffer_f[i]*1280;
+	  buffer_fix[i]=buffer_i[i];
+       	}
+    }
+
+
+  if (trig_time_mode)
+    {
+      if (trig_time_duration_sample<sample_num)
+	{
+	  this->setI(NOTE_ON,0);
+	  trig_time_mode=0;
+	  //DPRINTF("\t\t\t\t\t\tDONE\n");
+	}
+
+    }
+  s_in32=buffer_i[index];
+  s_out_fix=buffer_fix[index];
+  if (s_in32>32000)  s_in32=32000;
+  if (s_in32<-32000) s_in32=-32000;
+  s_out=s_in32;
+
+  index++;
+  sample_num++;
+
+  return s_out_fix;
 }
 

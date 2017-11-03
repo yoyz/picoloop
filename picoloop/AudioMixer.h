@@ -24,6 +24,7 @@ class AudioMixer
   //Track T1;
   vector <MonoMixer> MM;
   int volume;
+  Fixed volumeFixed;
 };
 
 

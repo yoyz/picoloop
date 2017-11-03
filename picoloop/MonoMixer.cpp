@@ -255,6 +255,43 @@ void MonoMixer::process()
   index=0;  
 }
 
+
+void MonoMixer::process_fixed()
+{
+  int debug=0;
+  Sint32 res32=0;
+  Sint16 tick=0;
+  Sint16 res16=0;
+  int    i=0;
+
+  // Fill with Machine audio
+  for (i=0;i<SAMMONOMIXER;i++)
+    {
+      buffer32[i]=M->tick_fixed();
+    }
+  //  // Send To FX
+  // for (i=0;i<SAMMONOMIXER;i++)
+  //   buffer32[i]=FX->process_one_sample(buffer32[i]);
+
+  FX->process(buffer32,SAMMONOMIXER);
+
+  // Amplify it we are a mixer 
+  // Clip it it is a 32 bit, so no problem to clip it
+  for (i=0;i<SAMMONOMIXER;i++)
+    {
+      buffer32[i]=(buffer32[i]*amplitude) >> 4;
+      if (buffer32[i]>32000) buffer32[i]=32000;
+      if (buffer32[i]<-32000) buffer32[i]=-32000;
+    }
+  // convert it from 32 to 16 bit
+  for (i=0;i<SAMMONOMIXER;i++)
+    buffer16[i]=(Sint16)buffer32[i];
+
+  // GOTCHA : Here I set index to 0 and I return buffer16[0]
+  index=0;  
+}
+
+
 Sint16 MonoMixer::tick()
 {
 
@@ -265,5 +302,20 @@ Sint16 MonoMixer::tick()
     }
   this->process();
   return buffer16[index];
+  
+}
+
+Fixed MonoMixer::tick_fixed()
+{
+  Fixed s_out;
+  if (index+1<SAMMONOMIXER)
+    {
+      index++;
+      s_out=buffer16[index];
+      return s_out;
+    }
+  this->process_fixed();
+  s_out=buffer16[index];
+  return s_out;
   
 }
