@@ -58,7 +58,7 @@ int AudioMixer::getAudioVolume()
 {
   return volume;
 }
-/*
+
 Sint16 AudioMixer::tick()
 {
   Sint32 val=0;
@@ -67,7 +67,7 @@ Sint16 AudioMixer::tick()
 
 
   for (i=0;i<TRACK_MAX;i++)
-    val=val+Sint32(MM[i].tick_fixed());
+    val=val+Sint32(MM[i].tick());
   //Sint16 inttick=T.tick();
   //Sint32 sint32tick=(T0.tick()/2)+(T1.tick()/2);
   //Sint32 sint32tick=this->twoChannel(T[0].tick(),T[1].tick());
@@ -86,7 +86,7 @@ Sint16 AudioMixer::tick()
   //return inttick;
   return sint16tick;
 }
-*/
+
 /*
 Sint16 AudioMixer::tick()
 {
@@ -117,6 +117,7 @@ Sint16 AudioMixer::tick()
 }
 */
 
+/*
 Sint16 AudioMixer::tick()
 {
   Sint32 val=0;
@@ -154,3 +155,4 @@ Sint16 AudioMixer::tick()
   return sint16tick;
 
 }
+*/
