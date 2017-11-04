@@ -40,7 +40,7 @@ void NoteFreq::init()
   for (i=0;i<109;i++)
     wtjTable[i]=(Sint32*)malloc(sizeof(Sint32)*128);
 
-  for (i=1;i<109;i++)
+  for (i=0;i<109;i++)
     for (j=0;j<128;j++)
       {
 	freq=this->getFNoteFreq(i);
