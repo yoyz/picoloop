@@ -36,7 +36,7 @@ void NoteFreq::init()
   if (wtjTable!=0)
     return;
 
-  wtjTable=(Sint32**)malloc(sizeof(Sint32**)*128);
+  wtjTable=(Sint32**)malloc(sizeof(Sint32*)*109);
   for (i=0;i<109;i++)
     wtjTable[i]=(Sint32*)malloc(sizeof(Sint32)*128);
 
@@ -45,32 +45,12 @@ void NoteFreq::init()
       {
 	freq=this->getFNoteFreq(i);
 
-	/*
-	wtjump_freq=(freq*WAVETABLE_SIZE)/44100;	
-	wtjump_detune=(((this->getFNoteFreq(i+1)*(j)))-((this->getFNoteFreq(i-1)*(128-j))))/(128*12);
-	wtjTable[i][j]=wtjump_freq+wtjump_detune;
-	*/
 	wtjump_freq=(freq*WAVETABLE_SIZE*(wtshift))/DEFAULTFREQ;	
-	//wtjump_detune=(((this->getFNoteFreq(i+1)*(j))*65535)-((this->getFNoteFreq(i-1)*(128-j))*65535))/8192;
-	//wtjump_detune=(((((this->getFNoteFreq(i+12)*(j))*65535))/44100)-((((this->getFNoteFreq(i-12)*(128-j))*65535))/44100));
-	//wtjump_detune_1=(((this->getFNoteFreq(i+1)*65535)/44100)*16384)*j;
-	//wtjump_detune_2=(((this->getFNoteFreq(i-1)*65535)/44100)*16384)*(128-j);
-
 	wtjump_detune_1=(((this->getFNoteFreq(i+1)*((WAVETABLE_SIZE*(wtshift))/DEFAULTFREQ))))*j;
 	wtjump_detune_2=(((this->getFNoteFreq(i-1)*((WAVETABLE_SIZE*(wtshift))/DEFAULTFREQ))))*(128-j);
-
-	//wtjump_detune=(wtjump_detune_1-wtjump_detune_2)*512;
-	//wtjump_detune=(wtjump_detune_1-wtjump_detune_2)/512;
 	wtjump_detune=(wtjump_detune_1-wtjump_detune_2)/4096;
-	  
-
-	//-((((this->getFNoteFreq(i-12)*(128-j))*65535))/44100));
 	wtjTable[i][j]=wtjump_freq+wtjump_detune;
-
-
-	//printf("wtjTable[%d][%d]=%d freq:%f wtjump_freq:%f wtjump_detune:%f\n",i,j,wtjTable[i][j],freq,wtjump_freq,wtjump_detune);
       }
-  //exit(0);
 }
 
 float NoteFreq::getFNoteFreq(int note)
@@ -242,10 +222,6 @@ int NoteFreq::getWTJumpDetune(int note,int detune)
   if (dt>127)
     dt=127;
 
-
-  //f_note=this->getFNoteFreq(note);
-  //f_detune=this->getFNoteFreq(note
-  //wt=(f_note*WAVETABLE_SIZE)/DEFAULTFREQ;
   return wtjTable[nt][dt];
 }
 
@@ -259,11 +235,6 @@ int NoteFreq::getWTJumpDetune(int notedetune)
 
   hi=notedetune>>7;
   lo=notedetune-((notedetune>>7)<<7);
-  //if (hi>119) hi=119;
-  //if (hi<0)   hi=0;
-  //if (lo>127) lo=127;
-  //if (lo<0)   lo=0;
-
   return wtjTable[hi][lo];
 }
 
