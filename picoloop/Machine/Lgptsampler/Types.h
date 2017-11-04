@@ -17,7 +17,7 @@ typedef unsigned short ushort ;
 typedef unsigned int uint ;
 typedef unsigned char uchar ;
 
-#define MIN(a,b) ((a)<(b)?(a):(b))
-#define MAX(a,b) ((a)<(b)?(a):(b))
+#define LGPT_MIN(a,b) ((a)<(b)?(a):(b))
+#define LGPT_MAX(a,b) ((a)<(b)?(a):(b))
 
 #endif

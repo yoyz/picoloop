@@ -82,8 +82,8 @@ int drumsynth::LongestEnv(void)
     eon = e - 1; if(eon>2) eon=eon-1;
     p = 0;
     while (envpts[e][0][p + 1] >= 0.f) p++; 
-    envData[e][MAX] = envpts[e][0][p] * timestretch;
-    if(chkOn[eon]==1) if(envData[e][MAX]>l) l=envData[e][MAX];
+    envData[e][MDA_MAX] = envpts[e][0][p] * timestretch;
+    if(chkOn[eon]==1) if(envData[e][MDA_MAX]>l) l=envData[e][MDA_MAX];
   }
   //l *= timestretch;
 
@@ -152,7 +152,7 @@ void drumsynth::getEnv(int env, LPCTSTR sec, LPCTSTR key, LPCTSTR ini)
   if(sscanf(s, "%f", &envpts[env][1][ep])==0) envpts[env][1][ep] = 0.f;
   envpts[env][0][ep + 1] = -1;
 
-  envData[env][MAX] = envpts[env][0][ep];
+  envData[env][MDA_MAX] = envpts[env][0][ep];
 }
 
 
@@ -327,9 +327,9 @@ int drumsynth::load_patch(char *dsfile)
   if(TDroopRate>0.f)
   {
     TDroopRate = (float)pow(10.0f, (TDroopRate - 20.0f) / 30.0f);
-    TDroopRate = TDroopRate * -4.f / envData[1][MAX];
+    TDroopRate = TDroopRate * -4.f / envData[1][MDA_MAX];
     TDroop = 1;
-    F2 = F1+((F2-F1)/(1.f-(float)exp(TDroopRate * envData[1][MAX])));
+    F2 = F1+((F2-F1)/(1.f-(float)exp(TDroopRate * envData[1][MDA_MAX])));
     ddF = F1 - F2;
   }
   else ddF = F2-F1;
@@ -478,7 +478,7 @@ int drumsynth::generate(short * buffer,int len)
         TT = a * x[0] + b * x[1] + c * x[2] + d * TT;
         DF[t - tpos] = TT * g * envData[2][ENV];
       }
-      if(t>=envData[2][MAX]) NON=0;
+      if(t>=envData[2][MDA_MAX]) NON=0;
     }
     else for(j=0; j<len; j++) DF[j]=0.f;
     
@@ -493,7 +493,7 @@ int drumsynth::generate(short * buffer,int len)
       else
       {
         for(t=tpos; t<=tplus; t++)
-          phi[t - tpos] = F1 + (t / envData[1][MAX]) * ddF;
+          phi[t - tpos] = F1 + (t / envData[1][MDA_MAX]) * ddF;
       }  
       for(t=tpos; t<=tplus; t++)
       {
@@ -504,7 +504,7 @@ int drumsynth::generate(short * buffer,int len)
         Tphi = Tphi + phi[totmp];
         DF[totmp] += TL * envData[1][ENV] * (float)sin(fmod(Tphi,TwoPi));//overflow?
       }
-      if(t>=envData[1][MAX]) TON=0;
+      if(t>=envData[1][MDA_MAX]) TON=0;
     }
     else for(j=0; j<len; j++) phi[j]=F2; //for overtone sync
     
@@ -520,7 +520,7 @@ int drumsynth::generate(short * buffer,int len)
         botmp = t - tpos;
         DF[botmp] = DF[botmp] + (float)cos(fmod(BPhi,TwoPi)) * envData[5][ENV] * BL;
       }
-      if(t>=envData[5][MAX]) BON=0;
+      if(t>=envData[5][MDA_MAX]) BON=0;
     }
 
     if(BON2==1) //noise band 2
@@ -535,7 +535,7 @@ int drumsynth::generate(short * buffer,int len)
         botmp = t - tpos;
         DF[botmp] = DF[botmp] + (float)cos(fmod(BPhi2,TwoPi)) * envData[6][ENV] * BL2;
       }
-      if(t>=envData[6][MAX]) BON2=0;
+      if(t>=envData[6][MDA_MAX]) BON2=0;
     }
 
     for (t=tpos; t<=tplus; t++)
@@ -546,7 +546,7 @@ int drumsynth::generate(short * buffer,int len)
           envData[3][ENV] = envData[3][ENV] + envData[3][dENV];
         else
         {
-          if(t>=envData[3][MAX]) //wait for OT2
+          if(t>=envData[3][MDA_MAX]) //wait for OT2
           {
             envData[3][ENV] = 0; 
             envData[3][dENV] = 0; 
@@ -559,7 +559,7 @@ int drumsynth::generate(short * buffer,int len)
           envData[4][ENV] = envData[4][ENV] + envData[4][dENV];
         else
         {
-          if(t>=envData[4][MAX]) //wait for OT1
+          if(t>=envData[4][MDA_MAX]) //wait for OT1
           {
             envData[4][ENV] = 0;
             envData[4][dENV] = 0;
