@@ -12,6 +12,10 @@ Echo::Echo(long bufLength) {
 	//for (i = 0; i < bufLength; i++)
 	// buffer[i] = 0;
 	bufferLength = bufLength;
+	position=0;
+	parameters.echoLength=0;
+	parameters.level=0;
+	parameters.feedback=0;
 	//bufferLength = bufLength;
 	//reset();
 }
@@ -26,17 +30,16 @@ void Echo::init()
   int i;
   buffer = (mfloat*)malloc(bufferLength * sizeof(mfloat));
    
-  for (i = 0; i < bufferLength; i++)
-    buffer[i] = 0;
-  reset();;
+  for (i = 0; i < bufferLength; i++)  buffer[i] = 0;
+  reset();
 }
 
-void Echo::clearBuffer() {
+void Echo::clearBuffer()
+{
 	
-	long i;
-
-	for (i = 0; i < getBufferLength(); i++)
-		buffer[i] = 0;
+  long i;
+  
+  for (i = 0; i < getBufferLength(); i++) buffer[i] = 0;
 }
 
 long Echo::getBufferLength() {
@@ -94,7 +97,8 @@ void Echo::process(mfloat *in, mfloat *out, int n) {
 	if ((parameters.echoLength - position) <= n)
 	for (i = 0; i < n; i++) {
 		
-		mfloat now, delayed;
+	        mfloat now;
+	        mfloat delayed;
 		mfloat s;
 		
 		now = in[i];
