@@ -24,7 +24,7 @@ void display_board_trig();
 
 void PBSynthUserInterface::handle_key(int menu)
 {
-  DPRINTF("PBSynthUserInterface::handle_key(%d,%d)\n",menu);
+  DPRINTF("PBSynthUserInterface::handle_key(%d)\n",menu);
   if (menu==GLOBALMENU_AD) 
     this->handle_key_amp_env();
   if (menu==GLOBALMENU_NOTE) 
