@@ -75,15 +75,15 @@ public:
   SawOscillator           sawLfoOsc1;
   */
 
-  Oscillator          osc1;
-  Oscillator          osc2;
-  Oscillator          oscLfo1;
+  Oscillator          * osc1;
+  Oscillator          * osc2;
+  Oscillator          * oscLfo1;
 
 
   Oscillator            * s1; 
   Oscillator            * s2; 
   Oscillator            * lfo1;
-  PitchBend               pb;
+  PitchBend             *  pb;
 
   int freqOsc1;
   int freqOsc2;

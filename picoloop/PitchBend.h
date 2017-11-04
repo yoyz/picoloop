@@ -12,6 +12,8 @@ class PitchBend
   PitchBend();
   ~PitchBend();
 
+  void init();
+  
   void setDepth(int d);
   void setSpeed(int s);
   void setNote(int  n);

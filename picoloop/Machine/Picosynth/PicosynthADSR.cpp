@@ -13,12 +13,9 @@ enum
   };
 
 #define SHIFT_NOTE 8  // for synth
-
-PicosynthADSR::PicosynthADSR() : tanh_table(new Sint16[1024])
+  //: tanh_table(new Sint16[1024])
+PicosynthADSR::PicosynthADSR()
 {
-  float fi;
-  int   ii;
-  int   i;
 
   DPRINTF("PicosynthADSR::PicosynthADSR()");
 
@@ -52,7 +49,24 @@ PicosynthADSR::PicosynthADSR() : tanh_table(new Sint16[1024])
 
   current_segment=PicosynthADSR_INIT;
   noteOn_value=0;
+  tanh_table=NULL;
+}
 
+PicosynthADSR::~PicosynthADSR()
+{
+  if (tanh_table)
+    //delete[] tanh_table;
+    free(tanh_table);
+}
+
+void PicosynthADSR::init()
+{
+  DPRINTF("PicosynthADSR::init()");
+  float fi;
+  int   ii;
+  int   i;
+
+  if (tanh_table==NULL) tanh_table=(Sint16*)malloc(sizeof(Sint16)*1024);
   for (i=0;i<1024;i++)
     {
       fi=i;
@@ -60,21 +74,7 @@ PicosynthADSR::PicosynthADSR() : tanh_table(new Sint16[1024])
       fi=fi*1024;
       ii=fi;
       tanh_table[i]=ii;
-      //DPRINTF("tanh[%d]=%d",i,tanh_table[i]);
-    }
-}
-
-PicosynthADSR::~PicosynthADSR()
-{
-  if (tanh_table)
-    delete[] tanh_table;
-    //free(tanh_table);
-}
-
-void PicosynthADSR::init()
-{
-  DPRINTF("PicosynthADSR::init()");
-
+    }  
   adsr_note=0;
 
   attack=32;

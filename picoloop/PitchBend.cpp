@@ -18,7 +18,18 @@ PitchBend::~PitchBend()
 {
 
 }
-
+void PitchBend::init()
+{
+  depth=0;
+  speed=0; 
+  note=0;
+  formula1=0;
+  formula2=0;
+  sample_num=0;
+  div=1;
+  speed_calc=1;
+  depth_pos=0;
+}
 
 
 void PitchBend::setDepth(int d)

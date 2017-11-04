@@ -1,10 +1,11 @@
 #include "PicosynthVCO.h"
 
 
-PicosynthVCO::PicosynthVCO() : osc1(),
-			       osc2(),
-			       oscLfo1(),
-			       pb()
+// PicosynthVCO::PicosynthVCO() : osc1(),
+// 			       osc2(),
+// 			       oscLfo1(),
+// 			       pb()
+PicosynthVCO::PicosynthVCO()
 {
   DPRINTF("PicosynthVCO::PicosynthVCO()");
   s1=NULL;
@@ -37,8 +38,17 @@ PicosynthVCO::PicosynthVCO() : osc1(),
 void PicosynthVCO::init()
 {
   DPRINTF("PicosynthVCO::init() begin s1:=0x%08.8X s2:=0x%08.8X",s1,s2);
+  osc1=new Oscillator();
+  osc2=new Oscillator();
+  oscLfo1=new Oscillator();
 
-
+  pb=new PitchBend();
+  pb->init();
+  
+  osc1->init();
+  osc2->init();
+  oscLfo1->init();
+  
   lfo_depth=0;
   lfo_depth_shift=20;
   vcomix=64;
@@ -46,29 +56,26 @@ void PicosynthVCO::init()
 
   pb_depth=0;
   pb_speed=0;
-  osc1.init();
-  osc2.init();
-  oscLfo1.init();
   
-  osc1.setWaveForm(PICO_WAVETABLE_SAW);
-  osc2.setWaveForm(PICO_WAVETABLE_SAW);
-  oscLfo1.setWaveForm(PICO_WAVETABLE_SINE);
+  osc1->setWaveForm(PICO_WAVETABLE_SAW);
+  osc2->setWaveForm(PICO_WAVETABLE_SAW);
+  oscLfo1->setWaveForm(PICO_WAVETABLE_SINE);
 
-  lfo1=&oscLfo1;
-  lfo1->reset();
-  lfo1->setFreq(0);
-  lfo1->setAmplitude(32);
 
-  s1 = &osc1;
+  s1 = osc1;
   s1->reset();
   s1->setFreq(0);
   s1->setAmplitude(32);
 
-  s2 = &osc2;
+  s2 = osc2;
   s2->reset();
   s2->setFreq(0);
   s2->setAmplitude(32);
 
+  lfo1=oscLfo1;
+  lfo1->reset();
+  lfo1->setFreq(0);
+  lfo1->setAmplitude(32);
 
   DPRINTF("PicosynthVCO::init() end s1:=0x%08.8X s2:=0x%08.8X",s1,s2);
 }
@@ -176,14 +183,14 @@ void PicosynthVCO::setLfoSpeed(int val)
 void PicosynthVCO::setPitchBendDepth(int val)
 {
   pb_depth=val;
-  pb.setDepth(val);  
+  pb->setDepth(val);  
 }
 
 void PicosynthVCO::setPitchBendSpeed(int val)
 {
   //pb.setDepth(lfo_depth);  
   pb_speed=val;
-  pb.setSpeed(pb_speed);
+  pb->setSpeed(pb_speed);
 }
 
 
@@ -195,7 +202,7 @@ void PicosynthVCO::reset()
   s1->reset();
   s2->reset();
   s2->setPhase(phase);
-  pb.reset();
+  pb->reset();
   lfo1->reset();
   
   //this->setLfoDepth(0);
@@ -226,7 +233,7 @@ void PicosynthVCO::setNoteDetune(int nt1,int nt2,int dt)
   freqOsc2=NF.getINoteFreq(nt2);
   note=nt1;
 
-  pb.setNote(note); 
+  pb->setNote(note); 
 }
 
 
@@ -276,7 +283,7 @@ Sint16 PicosynthVCO::tick()
   
   if (lfo_type==1)
     {  
-      pbtick=pb.tickNoteDetune();
+      pbtick=pb->tickNoteDetune();
       s1->setFreq(pbtick);
       s2->setFreq(pbtick);
     }
