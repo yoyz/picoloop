@@ -53,11 +53,9 @@ void MonoMixer::init()
   machine_type=3;
 #endif
 
-
-#if defined(__PBSYNTHONLY__)
+  
   PBS   = new PBSynthMachine();
   PBS->init();
-#endif
   
 #if !defined(__PBSYNTHONLY__)
   PS   = new PicosynthMachine();
@@ -79,7 +77,7 @@ void MonoMixer::init()
   O303   = new Open303Machine();
   TW     = new TwytchsynthMachine();
   MD     = new MDADrumMachine();
-  SS     = new Sidsynthmachine();
+  SS     = new SIDSynthMachine();
   
   CS->init();
   O303->init();
@@ -89,8 +87,8 @@ void MonoMixer::init()
 #endif
 
 #if defined(__RTMIDI__)
-  MIDIOUT = new MidiOutMachine();
-  MIDIOUT->init();
+  MIDIOUTM = new MidiOutMachine();
+  MIDIOUTM->init();
 #endif
 
   FXDelay= new EffectDelay();
