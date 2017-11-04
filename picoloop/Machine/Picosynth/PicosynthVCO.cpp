@@ -41,25 +41,31 @@ void PicosynthVCO::init()
 
   lfo_depth=0;
   lfo_depth_shift=20;
-
+  vcomix=64;
   lfo_speed=0;
 
   pb_depth=0;
   pb_speed=0;
-
+  osc1.init();
+  osc2.init();
+  oscLfo1.init();
+  
   osc1.setWaveForm(PICO_WAVETABLE_SAW);
   osc2.setWaveForm(PICO_WAVETABLE_SAW);
   oscLfo1.setWaveForm(PICO_WAVETABLE_SINE);
 
   lfo1=&oscLfo1;
+  lfo1->reset();
   lfo1->setFreq(0);
   lfo1->setAmplitude(32);
 
   s1 = &osc1;
+  s1->reset();
   s1->setFreq(0);
   s1->setAmplitude(32);
 
   s2 = &osc2;
+  s2->reset();
   s2->setFreq(0);
   s2->setAmplitude(32);
 
@@ -241,7 +247,7 @@ Sint16 PicosynthVCO::tick()
   if (s1==NULL)
     { 
       DPRINTF("[s1 is NULL]"); 
-      //  exit(1); 
+      exit(1); 
     } 
   
   if (lfo_type==0)
