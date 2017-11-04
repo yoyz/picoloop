@@ -10,7 +10,7 @@ CFLAGS=-c -DLINUX -I. -LSDL/lib
 CFLAGS=-c -O3 -DLINUX -D__RTAUDIO__ -DOPENDINGUX -I. -I/opt/opendingux-toolchain/usr/include/ -L/opt/opendingux-toolchain/usr/lib/ -lSDL -lSDL_ttf -fpermissive -DFIXED -fno-rtti -fomit-frame-pointer -ffunction-sections -ffast-math -fsingle-precision-constant -G0
 
 CFLAGS_SDLVERS=-D__SDL12__
-CFLAGS=-c -O3 ${CFLAGS_SDLVERS} -DLINUX -D__RTAUDIO__ -D__LINUX_ALSA__ -DOPENDINGUX -I. -I/opt/opendingux-toolchain/usr/include/ -L/opt/opendingux-toolchain/usr/lib/ -lSDL -lSDL_ttf -fpermissive -DFIXED -fno-rtti -fomit-frame-pointer -ffunction-sections -ffast-math -fsingle-precision-constant -G0  
+CFLAGS=-c -O3 ${CFLAGS_SDLVERS} -DLINUX -D__RTAUDIO__ -D__LINUX_ALSA__ -DOPENDINGUX -I. -I/opt/opendingux-toolchain/usr/include/ -L/opt/opendingux-toolchain/usr/lib/ -lSDL -lSDL_ttf -fpermissive -DFIXED -fno-rtti -fomit-frame-pointer -ffunction-sections -ffast-math -fsingle-precision-constant -G0  -DEBUGPRINTF -ggdb
 #-DDEBUGPRINTF
 
 LDFLAGS=-L/opt/opendingux-toolchain/usr/lib/ -lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread  -DFIXED
@@ -30,8 +30,6 @@ SOURCES=$(SOURCES_PICOLOOP)	\
 		$(SOURCES_DBOPLUI) 		\
 		$(SOURCES_PBSYNTH)		\
 		$(SOURCES_PBSYNTHUI) 		\
-		$(SOURCES_LGPTSAMPLERSYNTH) 	\
-		$(SOURCES_LGPTSAMPLERSYNTHUI)  
 
 
 OBJDIR             =   opendinguxrtaudio

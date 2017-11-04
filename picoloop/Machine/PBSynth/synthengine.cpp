@@ -13,9 +13,9 @@ SynthEngine::SynthEngine(int samplesPerTick, long max_delaylen) {
 
   base = 3;
 
-  granu_counter = samplesPerTick;
-  this->samplesPerTick = samplesPerTick;
-  
+  //granu_counter = samplesPerTick;
+  //this->samplesPerTick = samplesPerTick;
+  /*
   echo = new Echo(max_delaylen);
   lfos[0] = new LFO(samplesPerTick);
   lfos[1] = new LFO(samplesPerTick);
@@ -27,7 +27,7 @@ SynthEngine::SynthEngine(int samplesPerTick, long max_delaylen) {
   filters[1] = new PBSynthFilter();
   
   reset();
-  
+  */
 
 }
 
@@ -49,8 +49,8 @@ void SynthEngine::init()
   base = 3;
   
   granu_counter = samplesPerTick;
-  this->samplesPerTick = samplesPerTick;
-  
+  //this->samplesPerTick = samplesPerTick;
+
   echo = new Echo(mdl);
   lfos[0] = new LFO(samplesPerTick);
   lfos[1] = new LFO(samplesPerTick);
@@ -60,7 +60,7 @@ void SynthEngine::init()
   oscillators[1] = new PBSynthOscillator();
   filters[0] = new PBSynthFilter();
   filters[1] = new PBSynthFilter();
-  
+
   echo->init();
 
   reset();

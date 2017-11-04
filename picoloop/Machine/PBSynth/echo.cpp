@@ -7,13 +7,13 @@ Echo::Echo(long bufLength) {
 	
 	long i;
 		
-	buffer = (mfloat*)malloc(bufLength * sizeof(mfloat));
+	//buffer = (mfloat*)malloc(bufLength * sizeof(mfloat));
 	
-	for (i = 0; i < bufLength; i++)
-	  buffer[i] = 0;
-		
+	//for (i = 0; i < bufLength; i++)
+	// buffer[i] = 0;
 	bufferLength = bufLength;
-	reset();
+	//bufferLength = bufLength;
+	//reset();
 }
 
 Echo::~Echo() {

@@ -48,10 +48,10 @@ void PBSynthMachine::init()
     {
       buffer_i = (Sint16*)malloc(sizeof(Sint16)*SAM);
     }
-  if (buffer_fix==0)
-    {
-      buffer_fix = (Fixed*)malloc(sizeof(Fixed)*SAM);
-    }
+  // if (buffer_fix==0)
+  //   {
+  //     buffer_fix = (Fixed*)malloc(sizeof(Fixed)*SAM);
+  //   }
 
   DPRINTF("buffer_f:0x%08.8X\n",buffer_f);
   DPRINTF("buffer_i:0x%08.8X\n",buffer_i);
@@ -59,7 +59,7 @@ void PBSynthMachine::init()
     {
       buffer_f[i]=0;
       buffer_i[i]=0;
-      buffer_fix[i]=0;
+      //buffer_fix[i]=0;
     }
   sample_num=0;
   index=0;

@@ -26,7 +26,7 @@ dboplMachine::dboplMachine() : filter(), 	     sineLfoOsc1()
   trig_time_duration_sample=0;
 
   //HO(4096)
-  HO=new Hiopl(4096);
+  //HO=new Hiopl(4096);
 }
 
 
@@ -49,7 +49,7 @@ void dboplMachine::init()
   if (buffer==0)
     {
       //HO=new Hiopl(44100);
-      //HO=new Hiopl(4096);
+      HO=new Hiopl(4096);
       buffer = (Sint16*)malloc(sizeof(Sint16)*SAM*8);
     }
 
