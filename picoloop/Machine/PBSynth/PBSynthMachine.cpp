@@ -19,6 +19,9 @@ PBSynthMachine::PBSynthMachine()
   trig_time_duration=0;
   trig_time_duration_sample=0;
   SE=NULL;
+  buffer_f=NULL;
+  buffer_i=NULL;
+  buffer_fix=NULL;
 }
 
 
