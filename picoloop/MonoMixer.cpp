@@ -1,4 +1,5 @@
 #include "MonoMixer.h"
+#define SAM 32
 
 //PCDESKTOP
 #if   defined(__VECTORFPU__) && defined(__RTMIDI__) && defined(__RAM512MIB__) && !defined(__PBSYNTHONLY__)
@@ -31,7 +32,6 @@ MonoMixer::MonoMixer(): PBS(),                         FXDelay(), FXDisabled()
 
 
 			
-#define SAMMONOMIXER 32
 
 {
   DPRINTF("MonoMixer::MonoMixer()");  
@@ -103,13 +103,14 @@ void MonoMixer::init()
 
   this->setMachineType(machine_type);
   
-  if (buffer16==NULL)
-    buffer16=(Sint16*)malloc(sizeof(Sint16)*SAMMONOMIXER);
-  if (buffer32==NULL)
-    buffer32=(Sint32*)malloc(sizeof(Sint32)*SAMMONOMIXER);
-    if (bufferfix==NULL)
-      bufferfix=(Fixed*)malloc(sizeof(Fixed)*SAMMONOMIXER);
-  for (i=0;i<SAMMONOMIXER;i++)
+  if (buffer16==NULL)  buffer16=(Sint16*)malloc(sizeof(Sint16)*SAM);
+  if (buffer16==NULL)  { printf("OOM MM::init()\n"); exit(1); }
+  if (buffer32==NULL)  buffer32=(Sint32*)malloc(sizeof(Sint32)*SAM);
+  if (buffer32==NULL)  { printf("OOM MM::init()\n"); exit(1); }
+  if (bufferfix==NULL) bufferfix=(Fixed*)malloc(sizeof(Fixed)*SAM);
+  if (bufferfix==NULL) { printf("OOM MM::init()\n"); exit(1); }
+    
+  for (i=0;i<SAM;i++)
     {
       buffer16[i]=0;
       buffer32[i]=0;
@@ -233,23 +234,23 @@ void MonoMixer::process()
   int    i=0;
 
   // Fill with Machine audio
-  for (i=0;i<SAMMONOMIXER;i++)
+  for (i=0;i<SAM;i++)
     {
       buffer32[i]=M->tick();
     }
 
-  FX->process(buffer32,SAMMONOMIXER);
+  FX->process(buffer32,SAM);
 
   // Amplify it we are a mixer 
   // Clip it it is a 32 bit, so no problem to clip it
-  for (i=0;i<SAMMONOMIXER;i++)
+  for (i=0;i<SAM;i++)
     {
       buffer32[i]=(buffer32[i]*amplitude) >> 4;
       if (buffer32[i]>32000) buffer32[i]=32000;
       if (buffer32[i]<-32000) buffer32[i]=-32000;
     }
   // convert it from 32 to 16 bit
-  for (i=0;i<SAMMONOMIXER;i++)
+  for (i=0;i<SAM;i++)
     buffer16[i]=(Sint16)buffer32[i];
 
   // GOTCHA : Here I set index to 0 and I return buffer16[0]
@@ -266,7 +267,7 @@ void MonoMixer::process_fixed()
   int    i=0;
 
   // Fill with Machine audio
-  for (i=0;i<SAMMONOMIXER;i++)
+  for (i=0;i<SAM;i++)
     {
       bufferfix[i]=M->tick_fixed()*amplitudeFixed;
     }
@@ -277,7 +278,7 @@ void MonoMixer::process_fixed()
 
 Sint16 MonoMixer::tick()
 {
-  if (index+1<SAMMONOMIXER)
+  if (index+1<SAM)
     {
       index++;
       return buffer16[index];
@@ -290,7 +291,7 @@ Sint16 MonoMixer::tick()
 Fixed MonoMixer::tick_fixed()
 {
   Fixed s_out;
-  if (index+1<SAMMONOMIXER)
+  if (index+1<SAM)
     {
       index++;
       s_out=bufferfix[index];
