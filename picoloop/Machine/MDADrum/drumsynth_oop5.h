@@ -59,7 +59,7 @@ Declare Function ds2buf Lib "ds2wav.dll" (ByVal samples As Long, buffer As Integ
 
 #define Fs      44100
 #define TwoPi   6.2831853f
-#define MAX     0
+#define MDA_MAX     0
 #define ENV     1
 #define PNT     2 
 #define dENV    3
