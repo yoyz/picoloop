@@ -43,7 +43,9 @@ PicosynthADSR::PicosynthADSR() : tanh_table(new Sint16[1024])
   cd_segment=0;
   cr_segment=0;
 
-
+  pole=0;
+  old_pole=0;
+  
   ca_next_segment=0;
   cd_next_segment=0;
   cr_next_segment=0;
@@ -98,6 +100,9 @@ void PicosynthADSR::init()
 
   current_segment=PicosynthADSR_INIT;
   noteOn_value=0;
+
+  pole=0;
+  old_pole=0;
 }
 
 void PicosynthADSR::setNoteADSR(int mode)
