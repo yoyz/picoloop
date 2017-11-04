@@ -18,63 +18,50 @@ PBSynthMachine::PBSynthMachine()
   trig_time_mode=0;
   trig_time_duration=0;
   trig_time_duration_sample=0;
-
+  SE=NULL;
 }
 
 
 PBSynthMachine::~PBSynthMachine()
 {
   DPRINTF("PBSynthMachine::~PBSynthMachine()");  
-  if (buffer_f)
-    free(buffer_f);
-  if (buffer_i)
-    free(buffer_i);
+  if (buffer_f)    free(buffer_f);
+  if (buffer_i)    free(buffer_i);
 
 }
 
 
 void PBSynthMachine::init()
 {
-  DPRINTF("PBSynthMachine::init()\n");  
+  DPRINTF("PBSynthMachine::init()");  
   int i;
+  if (SE==NULL) SE=new SynthEngine(SAM,100);  
+  if (buffer_f==NULL)    buffer_f = (mfloat*)malloc(sizeof(mfloat)*SAM);
+  if (buffer_i==NULL)    buffer_i = (Sint16*)malloc(sizeof(Sint16)*SAM);
+  if (buffer_fix==NULL)  buffer_fix = (Fixed*)malloc(sizeof(Fixed)*SAM);
 
-  //HO(44100);
-  if (buffer_f==0)
-    {
-      SE=new SynthEngine(SAM,100);
-      buffer_f = (mfloat*)malloc(sizeof(mfloat)*SAM);
-    }
-  if (buffer_i==0)
-    {
-      buffer_i = (Sint16*)malloc(sizeof(Sint16)*SAM);
-    }
-  // if (buffer_fix==0)
-  //   {
-  //     buffer_fix = (Fixed*)malloc(sizeof(Fixed)*SAM);
-  //   }
+  DPRINTF("buffer_f:0x%08.8X",buffer_f);
+  DPRINTF("buffer_i:0x%08.8X",buffer_i);
+  DPRINTF("buffer_fix:0x%08.8X",buffer_fix);
+  for (i=0;i<SAM;i++)  buffer_f[i]=0;
+  for (i=0;i<SAM;i++)  buffer_i[i]=0;
+  for (i=0;i<SAM;i++)  buffer_fix[i]=0;
 
-  DPRINTF("buffer_f:0x%08.8X\n",buffer_f);
-  DPRINTF("buffer_i:0x%08.8X\n",buffer_i);
-  for (i=0;i<SAM;i++)
-    {
-      buffer_f[i]=0;
-      buffer_i[i]=0;
-      //buffer_fix[i]=0;
-    }
   sample_num=0;
   index=0;
   freq=110.0;
   keyon=0;
 
   SE->init();
+  SE->reset();
   SE->setPBSynthFilter24dB(1);
-  SE->process(buffer_f,SAM);
-  SE->process(buffer_f,SAM);
-  SE->process(buffer_f,SAM);
-  SE->process(buffer_f,SAM);
+  // SE->process(buffer_f,SAM);
+  // SE->process(buffer_f,SAM);
+  // SE->process(buffer_f,SAM);
+  // SE->process(buffer_f,SAM);
   //SE.getPBSynthOscillator(0)->setWave(0);
   //SE.getPBSynthOscillator(1)->setWave(0);
-  //SE.reset();
+
 }
 
 const char * PBSynthMachine::getMachineParamCharStar(int machineParam,int paramValue)
