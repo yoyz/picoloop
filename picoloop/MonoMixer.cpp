@@ -1,50 +1,10 @@
 #include "MonoMixer.h"
 #define SAM 32
-
-//PCDESKTOP
-#if   defined(__VECTORFPU__) && defined(__RTMIDI__) && defined(__RAM512MIB__) && !defined(__PBSYNTHONLY__)
-MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(), CS(), O303(), TW(), MD(), SS(), LGPTSMPL(), MIDIOUTM(), FXDelay(), FXDisabled()
-#endif
 			
-#if   defined(__VECTORFPU__) && !defined(__RTMIDI__) && defined(__RAM512MIB__) && !defined(__PBSYNTHONLY__)
-MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(), CS(), O303(), TW(), MD(), SS(), LGPTSMPL(),            FXDelay(), FXDisabled()
-#endif
-
-#if   !defined(__VECTORFPU__) && defined(__RTMIDI__) && !defined(__RAM512MIB__) && !defined(__PBSYNTHONLY__)
-MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(),                          MIDIOUTM(), FXDelay(), FXDisabled()
-#endif
-
-//PSVITA, POCKETCHIP
-#if  !defined(__VECTORFPU__) && !defined(__RTMIDI__) && defined(__RAM512MIB__) && !defined(__PBSYNTHONLY__)
-MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(),                                  LGPTSMPL(),          FXDelay(), FXDisabled()
-#endif
-
-			
-//  OPENDINGUX, GP2X, PSP
-#if  !defined(__VECTORFPU__) && !defined(__RTMIDI__) && !defined(__RAM512MIB__) && !defined(__PBSYNTHONLY__)
-MonoMixer::MonoMixer(): PD(), PS(), OPLM(), PBS(),                         FXDelay(), FXDisabled()
-#endif
-
-//  LINUX TEST
-#if  defined(__PBSYNTHONLY__)
-MonoMixer::MonoMixer(): PBS(),                         FXDelay(), FXDisabled()
-#endif
-
-
-			
-
+MonoMixer::MonoMixer()
 {
   DPRINTF("MonoMixer::MonoMixer()");  
   amplitude=127;
-
-#if !defined(__PBSYNTHONLY__)
-  M=&PS;
-  machine_type=0;
-#endif
-#if defined(__PBSYNTHONLY__)
-  M=&PBS;
-  machine_type=3;
-#endif
   fx_depth=125;
   fx_speed=90;
 
@@ -53,7 +13,14 @@ MonoMixer::MonoMixer(): PBS(),                         FXDelay(), FXDisabled()
   buffer32=NULL;
   bufferfix=NULL;
 
-  channel=-1; // not set 
+  channel=-1; // not set
+#if !defined(__PBSYNTHONLY__)
+  machine_type=0;
+#endif
+#if defined(__PBSYNTHONLY__)
+  machine_type=3;
+#endif
+
 }
 
 MonoMixer::~MonoMixer()
@@ -69,37 +36,76 @@ MonoMixer::~MonoMixer()
 void MonoMixer::init()
 {
   int i=0;
-  PBS.init();
+  amplitude=127;
+  fx_depth=125;
+  fx_speed=90;
+
+  index=0;
+  buffer16=NULL;
+  buffer32=NULL;
+  bufferfix=NULL;
+
+  channel=-1; // not set 
+#if !defined(__PBSYNTHONLY__)
+  machine_type=0;
+#endif
+#if defined(__PBSYNTHONLY__)
+  machine_type=3;
+#endif
+
+
+#if defined(__PBSYNTHONLY__)
+  PBS   = new PBSynthMachine();
+  PBS->init();
+#endif
   
 #if !defined(__PBSYNTHONLY__)
-  PS.init();
-  PD.init();
-  OPLM.init();
+  PS   = new PicosynthMachine();
+  PD   = new PicodrumMachine();
+  OPLM = new dboplMachine();
+  
+  PS->init();
+  PD->init(); 
+  OPLM->init();
 #endif
 
 #if defined(__RAM512MIB__)
-  LGPTSMPL.init();
+  LGPTSMPL = new LgptsamplerMachine();
+  LGPTSMPL->init();
 #endif
 
 #if defined(__VECTORFPU__)
-  CS.init();
-  O303.init();
-  TW.init();
-  MD.init();
-  SS.init();
+  CS     = new CursynthMachine();
+  O303   = new Open303Machine();
+  TW     = new TwytchsynthMachine();
+  MD     = new MDADrumMachine();
+  SS     = new Sidsynthmachine();
+  
+  CS->init();
+  O303->init();
+  TW->init();
+  MD->init();
+  SS->init();
 #endif
 
-  FX=&FXDelay;
+#if defined(__RTMIDI__)
+  MIDIOUT = new MidiOutMachine();
+  MIDIOUT->init();
+#endif
+
+  FXDelay= new EffectDelay();
+  
+  FX=FXDelay;
 
   FX->init();
   FX->setDepth(fx_depth);
   FX->setSpeed(fx_speed);
   
-  FXDelay.init();
-  FXDelay.reset();
+  FXDelay->init();
+  FXDelay->reset();
   
-  FXDelay.setDepth(fx_depth);
-  FXDelay.setSpeed(fx_speed);
+  FXDelay->setDepth(fx_depth);
+  FXDelay->setSpeed(fx_speed);
 
   this->setMachineType(machine_type);
   
@@ -137,49 +143,49 @@ void MonoMixer::setMachineType(int type)
   switch (type)
     {      
     case SYNTH_PBSYNTH:
-      M=&PBS;
+      M=PBS;
       break;
 
 #if !defined(__PBSYNTHONLY__)
     case SYNTH_PICOSYNTH:
-      M=&PS;
+      M=PS;
       break;
 
     case SYNTH_OPL2:
-      M=&OPLM;
+      M=OPLM;
       break;
 
     case SYNTH_PICODRUM:
-      M=&PD;
+      M=PD;
       break;
 #endif
 
 #if defined(__RAM512MIB__)     
     case SYNTH_LGPTSAMPLER:
-      M=&LGPTSMPL;
+      M=LGPTSMPL;
       break;
 #endif      
 #if defined(__VECTORFPU__)
     case SYNTH_CURSYNTH:
-      M=&CS;
+      M=CS;
       break;
     case SYNTH_OPEN303:
-      M=&O303;
+      M=O303;
       break;
     case SYNTH_TWYTCHSYNTH:
-      M=&TW;
+      M=TW;
       break;
     case SYNTH_MDADRUM:
-      M=&MD;
+      M=MD;
       break;
     case SYNTH_SIDSYNTH:
-      M=&SS;
+      M=SS;
       break;
 #endif
 
 #if defined(__RTMIDI__)
     case SYNTH_MIDIOUT:
-      M=&MIDIOUTM;
+      M=MIDIOUTM;
       break;      
 #endif
 
@@ -239,7 +245,12 @@ void MonoMixer::process()
       buffer32[i]=M->tick();
     }
 
-  FX->process(buffer32,SAM);
+    for (i=0;i<SAM;i++)
+    {
+      //buffer32[i]=M->tick();
+      buffer32[i]=FX->process_one_sample(buffer32[i]);
+    }
+  //FX->process(buffer32,SAM);
 
   // Amplify it we are a mixer 
   // Clip it it is a 32 bit, so no problem to clip it

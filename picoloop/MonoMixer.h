@@ -54,32 +54,32 @@ class MonoMixer
   int                   channel;
   
   Machine              *M;
-  PBSynthMachine        PBS;
+  PBSynthMachine       * PBS;
 
 #if !defined(__PBSYNTHONLY__)
-  PicosynthMachine      PS;
-  PicodrumMachine       PD;
-  dboplMachine          OPLM;
+  PicosynthMachine     * PS;
+  PicodrumMachine      * PD;
+  dboplMachine         * OPLM;
 #endif
   
 #ifdef __RAM512MIB__
-  LgptsamplerMachine    LGPTSMPL;
+  LgptsamplerMachine   * LGPTSMPL;
 #endif
 #ifdef __VECTORFPU__
-  CursynthMachine       CS;
-  Open303Machine        O303;
-  TwytchsynthMachine    TW;
-  MDADrumMachine        MD;
-  SIDSynthMachine       SS;
+  CursynthMachine      * CS;
+  Open303Machine       * O303;
+  TwytchsynthMachine   * TW;
+  MDADrumMachine       * MD;
+  SIDSynthMachine      * SS;
 #endif
 
 #ifdef __RTMIDI__
-  MidiOutMachine        MIDIOUTM;
+  MidiOutMachine       * MIDIOUTM;
 #endif
 
-  Effect                *FX;
-  EffectDelay           FXDelay;
-  EffectDisabled        FXDisabled;
+  Effect                * FX;
+  EffectDelay           * FXDelay;
+  EffectDisabled        * FXDisabled;
 
   Sint16                amplitude;
   Fixed                 amplitudeFixed;
