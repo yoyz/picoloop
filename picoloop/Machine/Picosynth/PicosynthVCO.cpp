@@ -11,20 +11,22 @@ PicosynthVCO::PicosynthVCO()
   s1=NULL;
   s2=NULL;
   lfo1=NULL;
+  pb=NULL;
+  
   vcomix=64;
 
   lfo_counter=0;
   lfo_refresh=2;
-
   lfo_depth=0;
   lfo_depth_shift=20;
-
   lfo_speed=0;
-
+  lfo_type=0;
+  
   pb_depth=0;
   pb_speed=0;
 
-
+  phase=0;
+  
   freqOsc1=0;
   freqOsc2=0;
   
@@ -32,7 +34,7 @@ PicosynthVCO::PicosynthVCO()
   detune=64;
 
 
-  lfo_type=0;
+
 }
 
 void PicosynthVCO::init()
@@ -51,11 +53,15 @@ void PicosynthVCO::init()
   
   lfo_depth=0;
   lfo_depth_shift=20;
-  vcomix=64;
   lfo_speed=0;
-
+  lfo_counter=0;  
+  lfo_refresh=2;
+  lfo_type=0;
+  
+  vcomix=64;
   pb_depth=0;
   pb_speed=0;
+  phase=0;
   
   osc1->setWaveForm(PICO_WAVETABLE_SAW);
   osc2->setWaveForm(PICO_WAVETABLE_SAW);

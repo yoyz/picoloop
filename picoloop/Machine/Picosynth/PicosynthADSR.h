@@ -10,7 +10,7 @@
 #ifndef __PicosynthADSR__
 #define __PicosynthADSR__
 
-class PicosynthADSR : public Oscillator
+class PicosynthADSR
 {
  public:
   PicosynthADSR();

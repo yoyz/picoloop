@@ -14,7 +14,7 @@
 //#include "WaveTableSineOscillator.h"
 //#include "NoiseOscillator.h"
 
-class PicosynthVCO : public Oscillator
+class PicosynthVCO
 {
 public:
   PicosynthVCO();
@@ -91,27 +91,24 @@ public:
   int                   note;
   int                   detune;
 
-  int current;
+  //int current;
   int vcomix;
   int phase;
 
   int lfo_depth;
   int lfo_depth_shift;
-
   int lfo_speed;
-
   int lfo_refresh;
   int lfo_counter;
-    
+  int lfo_type;    
 
   //int lfo_speed;
 
   int pb_depth;
   int pb_speed;
 
-  int lfo_type;
 
-  int tmp_i;
+  //int tmp_i;
 };
 
 #endif
