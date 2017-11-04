@@ -35,12 +35,11 @@ class PicosynthMachine : public Machine
   int                   cutoff;
   int                   resonance;
 
-  PicosynthVCO          vco;
-  PicosynthADSR         adsr_amp;
-  PicosynthADSR         adsr_fltr;
-  Filter                filter;
-
-  OneOscillator         one_osc;
+  PicosynthVCO          * vco;
+  PicosynthADSR         * adsr_amp;
+  PicosynthADSR         * adsr_fltr;
+  Filter                * filter;
+  OneOscillator         * one_osc;
 
   Sint32                sample_num;
   Sint16                last_sample;

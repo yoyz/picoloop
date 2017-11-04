@@ -18,7 +18,7 @@ class PicosynthADSR : public Oscillator
   //  void setInput(Oscillator * S);
   void   init();
   //void   setInput(PicosynthVCO * vcoosc);
-  void   setInput(Oscillator * vcoosc);
+  void   setInput(PicosynthVCO * vcoosc);
 
   void   setAttack(int atk);
   void   setDecay(int dc);

@@ -3,7 +3,8 @@
 
 #define SAM 64
 
-PicosynthMachine::PicosynthMachine() : adsr_amp(), adsr_fltr(), vco(), filter(), one_osc()
+//PicosynthMachine::PicosynthMachine() : adsr_amp(), adsr_fltr(), vco(), filter(), one_osc()
+PicosynthMachine::PicosynthMachine() 
 {
   float fi;
   int   i;
@@ -28,7 +29,7 @@ PicosynthMachine::~PicosynthMachine()
     free(buffer);
   //delete(one_osc);
 }
-
+/*
 PicosynthADSR & PicosynthMachine::getADSRAmp()
 {
   return adsr_amp;
@@ -45,12 +46,19 @@ PicosynthVCO & PicosynthMachine::getVCO()
 {
   return vco;
 }
-
+*/
 
 
 void PicosynthMachine::init()
 {
-
+  //: adsr_amp(), adsr_fltr(), vco(), filter(), one_osc()
+  DPRINTF("PicosynthMachine::init()");
+  vco=new PicosynthVCO();
+  adsr_amp=new PicosynthADSR();
+  adsr_fltr=new PicosynthADSR();
+  filter=new Filter();
+  one_osc=new OneOscillator();
+  
   if (buffer==0)
     {     
       //buffer = (Sint16*)malloc(sizeof(Sint16)*SAM);
@@ -59,29 +67,32 @@ void PicosynthMachine::init()
   index=0; // use by this->tick()
   
   //bq.reset();
-  adsr_amp.init();
-  adsr_fltr.init();
+  vco->init();
+  adsr_amp->init();
+  adsr_fltr->init();
 
-  adsr_amp.setInput(&vco); 
-  adsr_fltr.setInput(&one_osc);
+  adsr_amp->setInput(vco); 
+  //adsr_fltr->setInput(one_osc);
 
-  one_osc.setFreq(100);
-  one_osc.init();
-  one_osc.reset();
+  one_osc->setFreq(100);
+  one_osc->init();
+  one_osc->reset();
 
 
-  filter.init();
+  filter->init();
   sample_num=0;
 
   this->reset();
-  this->getADSRAmp().init();
-  this->getADSRFltr().init();
-  this->getVCO().init();
+  //this->getADSRAmp().init();
+  //this->getADSRFltr().init();
+  //this->getVCO().init();
   //this->getVCO().setSynthFreq(0);      
-  this->getVCO().setNoteDetune(0,0,0);      
-  this->getADSRAmp().setNoteADSR(1);
-  this->getADSRFltr().setNoteADSR(1);
-
+  //this->getVCO().setNoteDetune(0,0,0);      
+  //this->getADSRAmp().setNoteADSR(1);
+  //this->getADSRFltr().setNoteADSR(1);
+  vco->setNoteDetune(0,0,0);
+  adsr_amp->setNoteADSR(1);
+  adsr_fltr->setNoteADSR(1);
   note=0;
   detune=64;
 
@@ -145,14 +156,15 @@ int PicosynthMachine::checkI(int what,int val)
 
 int PicosynthMachine::getI(int what)
 {
-  if (what==NOTE_ON) return this->getADSRAmp().getNoteOn();
+  if (what==NOTE_ON) return adsr_amp->getNoteOn();
   return 0;
 }
 
 void PicosynthMachine::setF(int what,float val)
 {
   //if (what==OSC1_FREQ)           this->getVCO().setSynthFreq(val);
-  if (what==LFO1_FREQ)           this->getVCO().setLfoSpeed(val);
+  //if (what==LFO1_FREQ)           this->getVCO().setLfoSpeed(val);
+  if (what==LFO1_FREQ)           vco->setLfoSpeed(val);
 }
 
 void PicosynthMachine::setI(int what,int val)
@@ -165,35 +177,35 @@ void PicosynthMachine::setI(int what,int val)
 
   if (what==NOTE_ON && val==1) 
     { 
-      this->getVCO().setNoteDetune(note+osc1_scale,note+osc2_scale,detune);
-      this->getADSRAmp().reset();
-      this->getADSRFltr().reset();
-      this->getVCO().reset();
-      this->getADSRAmp().setNoteOn(); 
-      this->getADSRFltr().setNoteOn();
+      vco->setNoteDetune(note+osc1_scale,note+osc2_scale,detune);
+      adsr_amp->reset();
+      //this->getADSRFltr().reset();
+      vco->reset();
+      adsr_amp->setNoteOn(); 
+      //this->getADSRFltr().setNoteOn();
     }
   if (what==NOTE_ON && val==0) 
     { 
-      this->getADSRAmp().setNoteOff();
-      this->getADSRFltr().setNoteOff();
+      adsr_amp->setNoteOff();
+      //this->getADSRFltr().setNoteOff();
     }
 
   //if (what==OSC1_NOTE)           this->getVCO().setSynthFreq(val);
   if (what==NOTE1)                 note=val;
 
   //if (what==OSC1_FREQ)           this->getVCO().setSynthFreq(val);
-  if (what==OSC1_TYPE)           { this->getVCO().setOscillator(0,val); osc1_type=val; }
-  if (what==OSC2_TYPE)           { this->getVCO().setOscillator(1,val); osc2_type=val; }
+  if (what==OSC1_TYPE)           { vco->setOscillator(0,val); osc1_type=val; }
+  if (what==OSC2_TYPE)           { vco->setOscillator(1,val); osc2_type=val; }
 
-  if (what==OSC12_MIX)           this->getVCO().setVCOMix(val);
+  if (what==OSC12_MIX)           vco->setVCOMix(val);
   //if (what==OSC1_PHASE)          //this->getVCO().setVCOPhase(val);
   if (what==OSC1_DETUNE)         detune=val;//this->getVCO().setVCOPhase(val);
 
-  if (what==LFO1_DEPTH)          this->getVCO().setLfoDepth(val);
-  if (what==LFO_TYPE)            this->getVCO().setLfoType(val);
+  if (what==LFO1_DEPTH)          vco->setLfoDepth(val);
+  if (what==LFO_TYPE)            vco->setLfoType(val);
 
-  if (what==PITCHBEND_DEPTH)     this->getVCO().setPitchBendDepth(val);
-  if (what==PITCHBEND_SPEED)     this->getVCO().setPitchBendSpeed(val);
+  if (what==PITCHBEND_DEPTH)     vco->setPitchBendDepth(val);
+  if (what==PITCHBEND_SPEED)     vco->setPitchBendSpeed(val);
 
   //if (what==OSC1_AMP)            detune=val;
   //if (what==OSC2_AMP)            //HO->SetAttenuation(1,2,32-(val/4));
@@ -202,36 +214,39 @@ void PicosynthMachine::setI(int what,int val)
 
 
 
-  if (what==ADSR_ENV0_ATTACK)    this->getADSRAmp().setAttack(val);
-  if (what==ADSR_ENV0_DECAY)     this->getADSRAmp().setDecay(val);
-  if (what==ADSR_ENV0_SUSTAIN)   this->getADSRAmp().setSustain(val);
-  if (what==ADSR_ENV0_RELEASE)   this->getADSRAmp().setRelease(val);
-
+  if (what==ADSR_ENV0_ATTACK)    adsr_amp->setAttack(val);
+  if (what==ADSR_ENV0_DECAY)     adsr_amp->setDecay(val);
+  if (what==ADSR_ENV0_SUSTAIN)   adsr_amp->setSustain(val);
+  if (what==ADSR_ENV0_RELEASE)   adsr_amp->setRelease(val);
+  /*
   if (what==ADSR_ENV1_ATTACK)    this->getADSRFltr().setAttack(val);
   if (what==ADSR_ENV1_DECAY)     this->getADSRFltr().setDecay(val);
   if (what==ADSR_ENV1_SUSTAIN)   this->getADSRFltr().setSustain(val);
   if (what==ADSR_ENV1_RELEASE)   this->getADSRFltr().setRelease(val);
-
+  */
 
   if (what==FILTER1_CUTOFF)      
     { 
       cutoff=val;
-      filter.setCutoff(cutoff);
-      this->getADSRAmp().reset();
-      this->getADSRFltr().reset();
+      filter->setCutoff(cutoff);
+      adsr_amp->reset();
+      
+      //this->getADSRAmp().reset();
+      //this->getADSRFltr().reset();
 
 
   }
   if (what==FILTER1_RESONANCE)         
     { 
       resonance=val;
-      filter.setResonance(resonance);
-      this->getADSRAmp().reset();
-      this->getADSRFltr().reset();
+      filter->setResonance(resonance);
+      adsr_amp->reset();
+      //this->getADSRAmp().reset();
+      //this->getADSRFltr().reset();
     }
 
-  if (what==FILTER1_TYPE)     filter.setFilterType(val);
-  if (what==FILTER1_ALGO)     filter.setFilterAlgo(val);
+  if (what==FILTER1_TYPE)     filter->setFilterType(val);
+  if (what==FILTER1_ALGO)     filter->setFilterAlgo(val);
 
   
 }
@@ -377,7 +392,7 @@ Sint32 PicosynthMachine::tick()
 		}
 	    }
 	      
-	  s_in=adsr_amp.tick();
+	  s_in=adsr_amp->tick();
 	  s_in=s_in/6;
 	  buffer[i]=s_in;
 	  i++;
@@ -390,7 +405,7 @@ Sint32 PicosynthMachine::tick()
 	  i++;
 	}    
       */
-      filter.process_samples(buffer,SAM);
+      filter->process_samples(buffer,SAM);
     }
   
   s_out=buffer[index];

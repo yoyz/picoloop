@@ -173,10 +173,11 @@ int PicosynthADSR::setSegment(int segment)
   return 0;
 }
 
-void PicosynthADSR::setInput(Oscillator * vcoosc)
+void PicosynthADSR::setInput(PicosynthVCO * vcoosc)
 {
   DPRINTF("PicosynthADSR::setVCO(0x%08.8X",vcoosc);
-  vco=(PicosynthVCO*)vcoosc;
+  //vco=(PicosynthVCO*)vcoosc;
+  vco=vcoosc;
 }
 
 void PicosynthADSR::setNoteOn()
