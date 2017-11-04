@@ -200,6 +200,8 @@ void PBSynthOscillator::reset() {
 	counter = 0.0f;
 	sqp = 1.0f;
 	sqc = 0;
+	oval=0;
+	sawInc=0;
 	parameters.pulsewidth = 0.0f;
 	parameters.detune = 0;
 	setAmp(1.0f);

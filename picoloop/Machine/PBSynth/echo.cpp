@@ -11,6 +11,7 @@ Echo::Echo(long bufLength) {
 	
 	//for (i = 0; i < bufLength; i++)
 	// buffer[i] = 0;
+	buffer=NULL;
 	bufferLength = bufLength;
 	position=0;
 	parameters.echoLength=0;
@@ -28,6 +29,11 @@ Echo::~Echo() {
 void Echo::init()
 {
   int i;
+  position=0;
+  parameters.echoLength=0;
+  parameters.level=0;
+  parameters.feedback=0;
+  
   buffer = (mfloat*)malloc(bufferLength * sizeof(mfloat));
    
   for (i = 0; i < bufferLength; i++)  buffer[i] = 0;

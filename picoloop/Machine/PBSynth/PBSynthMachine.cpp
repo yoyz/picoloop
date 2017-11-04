@@ -35,7 +35,7 @@ void PBSynthMachine::init()
 {
   DPRINTF("PBSynthMachine::init()");  
   int i;
-  if (SE==NULL) SE=new SynthEngine(SAM,100);  
+  if (SE==NULL)          SE=new SynthEngine(SAM,100);  
   if (buffer_f==NULL)    buffer_f = (mfloat*)malloc(sizeof(mfloat)*SAM);
   if (buffer_i==NULL)    buffer_i = (Sint16*)malloc(sizeof(Sint16)*SAM);
   if (buffer_fix==NULL)  buffer_fix = (Fixed*)malloc(sizeof(Fixed)*SAM);
