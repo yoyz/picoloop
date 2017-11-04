@@ -3920,6 +3920,7 @@ void init_monomixer_and_machine()
       SEQ.getPatternSequencer(t).setBPMDivider(P[t].getBPMDivider());
       init_cursor_display_offset_cursor_max_pos(t);
     }
+  SAMM.init(); // init this one too
   // startup all track 
   // dump 64 sample without using each 64 sample
   // to avoir some trash
