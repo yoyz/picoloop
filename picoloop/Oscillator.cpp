@@ -5,17 +5,17 @@ using namespace std;
 
 Oscillator::Oscillator()
 {
-
   frequency=0;
+  freq=0;
   amplitude=0;
   sample_num=0;
-  sample_num_index=0;
-  last_tick=0;
-  table_size=0;
   offset_next_index=0;
   table_size=WAVETABLE_SIZE;
   index=0;
   ph=0;
+  table=NULL;
+  note=0;
+  detune=0;
   DPRINTF("Oscillator::Oscillator() %d",index);
 }
 
@@ -24,13 +24,27 @@ Oscillator::~Oscillator()
   DPRINTF("Oscillator::~Oscillator() %d",index);
 }
 
+void Oscillator::init()
+{
+  frequency=0;
+  freq=0;
+  amplitude=0;
+  sample_num=0;
+  offset_next_index=0;
+  table_size=WAVETABLE_SIZE;
+  index=0;
+  ph=0;
+  table=NULL;
+  note=0;
+  detune=0;
+
+}
+
 void Oscillator::reset()
 {
-  if (sample_num>0)
-    {
-      sample_num=0;
-    }
   index=0;
+  offset_next_index=0;
+  ph=0;
 }
 
 // phase is from 0 to 127
@@ -121,21 +135,22 @@ Sint16 Oscillator::tick()
 { 
   const int   shift=8;
   const int   wtshift=1<<shift;
-
+  assert(index>=0);
   index=index+offset_next_index;
+  //printf("%d %d \n",index,offset_next_index);
   /*
   // Need to fix this one day
   // The index at start could go outside of the table[XXX], so I need a way to prevent it
   if (index<0) index=0;
   */
-  if (index<0) index=0;
+  //if (index<0) index=0;
   if ((index>>shift)>=table_size)
     {
       index=index-(table_size<<shift);
       // seem to be the case at picoloop at start
       // so I bugfix it here, not the right way it's not the root cause
-      if ((index>>shift)>=table_size)
-	index=0;
+      // if ((index>>shift)>=table_size)
+      // 	index=0;
     }
   return table[index>>shift];
 }
