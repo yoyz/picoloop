@@ -20,9 +20,11 @@ WaveTable::~WaveTable()
 
 int WaveTable::allocMemory()
 {
+  int i;
   if (size>0)
     {
-      buffer=(Sint16*)malloc(sizeof(Sint16)*size);
+      if (buffer==0)
+	buffer=(Sint16*)malloc(sizeof(Sint16)*size);
       if (buffer==0)
 	{
 	  DPRINTF("Error allocating memory");
@@ -34,6 +36,8 @@ int WaveTable::allocMemory()
 	  DPRINTF("WaveTable::allocMemory(), buffer:0x%08.8X",buffer);
 	}
     }
+  for (i=0;i<size;i++) buffer[i]=0;
+    
   return size;
 }
 
