@@ -342,7 +342,6 @@ int pattern_cursor_max_pos[TRACK_MAX]={15};// between 0-15
 //int loadsave_cursor_x=0; // index in the load/save menu
 //int loadsave_cursor_y=0; // index in the load/save menu
 Cursor loadsave_cursor;
-
 Cursor song_cursor;
 
 //int song_cursor_x=0; // index in the song menu
@@ -1544,10 +1543,11 @@ void display_board_load_save()
   int song_cursor_x_divmul_sixteen=song_cursor_x_div_sixteen*16;
 
 
-  char str_bank[32];
-  char str_song1[32];
-  char str_song2[32];
-  char str_song3[32];
+   char str_bank[32]  = {0};
+   char str_song1[32] = {0};
+   char str_song2[32] = {0};
+   char str_song3[32] = {0};
+  
 
   static const char * txt_pattern_modulo_sixteen_slot[] = 
     { 
@@ -1647,26 +1647,27 @@ void display_board_load_save()
       "F0","F1","F2","F3","F4","F5","F6","F7","F8","F9","FA","FB","FC","FD","FE","FF",
     }; 
 
-
+  DPRINTF("display_board_load_save begin");
   if (menu         ==  MENU_OFF        && 
       menu_cursor  ==  GLOBALMENU_LS   && 
       menu_ls      ==  MENU_LS_PATTERN
       )
     {
-     DPRINTF("HIT");
+      DPRINTF("HIT");
       SG.clearScreen();
       
-      sprintf(str_bank, "Bank %d ",bank);
+      sprintf(str_bank, "Bank %d",bank);
       sprintf(str_song1,"SongPosition %d ",SEQ.getSongSequencer().getStep());
       sprintf(str_song2,"LoopA %d ",SEQ.getSongSequencer().getLoopA());
       sprintf(str_song3,"LoopB %d ",SEQ.getSongSequencer().getLoopB());
 
       SG.guiTTFText(COLLUMN03,LINE01, str_bank);
-      SG.guiTTFText(COLLUMN03,LINE02, txt_pattern_modulo_sixteen_slot[loadsave_cursor_x_div_sixteen]);      
+      //SG.guiTTFText(COLLUMN03,LINE02, txt_pattern_modulo_sixteen_slot[loadsave_cursor_x_div_sixteen]);      
 
-      SG.guiTTFText(COLLUMN03,LINE15, str_song1);
-      SG.guiTTFText(COLLUMN03,LINE16, txt_pattern_modulo_sixteen_slot[song_cursor_x_div_sixteen]);
-      
+      // ok
+      SG.guiTTFText(COLLUMN03,LINE15, str_song1);      
+      //SG.guiTTFText(COLLUMN03,LINE16, txt_pattern_modulo_sixteen_slot[song_cursor_x_div_sixteen]);
+      // bad
       SG.guiTTFText(COLLUMN33,LINE16, str_song2);      
       SG.guiTTFText(COLLUMN33,LINE17, str_song3);
 
@@ -1696,10 +1697,6 @@ void display_board_load_save()
       for (x=0;x<16;x++)
 	for (y=0;y<TRACK_MAX;y++)
 	  {
-	    //SG.middleBoxNumberDown(x%16,y,NOTE_COLOR);
-	    //if (SEQ.getSongSequencer().getPatternNumberAtCursorPosition(i))
-	    //SG.middleBoxNumberDown(x%16,y,NOTE_COLOR);
-	    //else
 	    SG.middleBoxNumberDown(x%16,y,pal[STEP_COLOR]);
 	  }
 
@@ -1741,7 +1738,9 @@ void display_board_load_save()
 	   x<(loadsave_cursor_x_divmul_sixteen)+16;
 	   x++)
 	for (y=0;y<TRACK_MAX;y++)
-	  SG.drawTTFTextLoadSaveBoxNumberUp(x%16,y,txt_tab[x]);
+	  {
+	    SG.drawTTFTextLoadSaveBoxNumberUp(x%16,y,txt_tab[x]);
+	  }
       //SG.drawTTFTextLoadSaveBoxNumer(x,y,tmp_txt);
 
       // txt in Song box 
@@ -1764,7 +1763,8 @@ void display_board_load_save()
     {
       display_board_note();
       //display_board_trig();
-    }                  
+    }
+  DPRINTF("display_board_load_save end");
 }
 
 
@@ -4278,7 +4278,10 @@ void init_lgpt_samplepool()
 int main(int argc,char **argv)
 {
   int i;
-
+  loadsave_cursor.x=0;
+  loadsave_cursor.y=0;
+  song_cursor.x=0;
+  song_cursor.y=0;
 #if defined(__LINUX__) && !defined(OPENDINGUX)
   signal(SIGSEGV, handler);   // install our handler
   signal(SIGABRT, handler);
