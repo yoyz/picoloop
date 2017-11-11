@@ -36,7 +36,7 @@ public:
 
 	void calc(float fc, float res);
 	void	process_samples(float*, int);
-	void	process_samples(int*, int);
+	void	process_samples(int32_t*, int);
 	float	process_one_sample(float);
 	int32_t	process_one_sample(int32_t);
 

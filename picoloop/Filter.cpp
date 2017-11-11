@@ -160,7 +160,7 @@ int16_t Filter::process_biquad_one_sample(int16_t in)
 
   f_in=in;
   this->process_biquad_need_calc();
-  return bq.process_one_sample(in);
+  return bq.process_one_sample((int32_t)in);
 }
 
 
