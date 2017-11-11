@@ -4186,9 +4186,11 @@ void wtg()
 void init_vita_debug()
 {
 #if defined(PSVITA) && defined(DEBUG_PRINTF)
-  psp2shell_init(3333,0);
+  //psp2shell_init(3333,0);
+  //psp2shell_init(3333);
   SDL_Delay(5000);
-  psp2shell_print("Start\n");
+  //psp2shell_print("Start\n");
+  sceClibPrintf("Start\n");
 #endif
 }
 

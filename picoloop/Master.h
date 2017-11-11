@@ -560,6 +560,8 @@ enum {
 #define MAX_PATTERN_BY_PROJECT 128
 #include <psp2/ctrl.h>
 #include "psp2shell.h"
+#include "p2s_cmd.h"
+#include <psp2/kernel/clib.h>
 #define SCREEN_MULT     2
 #define SCREEN_WIDTH	960
 #define SCREEN_HEIGHT	544
@@ -1077,7 +1079,7 @@ enum
 #else
 #define DEBUGPRINTF 1
 #endif
-
+/*
 #if defined(PSVITA) && defined(DEBUGPRINTF)
 #define DPRINTF(FMT, ARGS...) do { \
     char strdebug[512];							\
@@ -1085,6 +1087,15 @@ enum
     psp2shell_print(strdebug);						\
   } while (0)
 #endif
+*/
+#if defined(PSVITA) && defined(DEBUGPRINTF)
+#define DPRINTF(FMT, ARGS...) do { \
+    char strdebug[512];							\
+    sprintf(strdebug,"%.40s:%.8d [" FMT "]\n", __FUNCTION__, __LINE__, ## ARGS); \
+    sceClibPrintf(strdebug);						\
+  } while (0)
+#endif
+
 #if !defined(PSVITA) && defined(DEBUGPRINTF) 
 #define DPRINTF(FMT, ARGS...) do { \
   if (DEBUGPRINTF) \

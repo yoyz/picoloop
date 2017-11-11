@@ -18,6 +18,7 @@ CFLAGS   += -I.
 #CXXFLAGS += -O2 -D__SDL20__ -DPSVITA -D__PSVITA_AUDIO__ -fpermissive -std=c++11 -I. -I$(VITASDK)/arm-vita-eabi/include/ -L$(VITASDK)/arm-vita-eabi/lib -lSDL2 -Wpointer-arith
 #CXXFLAGS += -O2 -DDEBUG_PRINTF -D__SDL20__ -DPSVITA -D__PSVITA_AUDIO__ -fpermissive -std=c++11 -I. -I$(VITASDK)/arm-vita-eabi/include/ -L$(VITASDK)/arm-vita-eabi/lib -lSDL2 -Wpointer-arith
 CXXFLAGS += -std=c++98 -O2 -D__SDL20__ -DPSVITA -D__PSVITA_AUDIO__ -fpermissive -std=c++11 -I. -I$(VITASDK)/arm-vita-eabi/include/ -L$(VITASDK)/arm-vita-eabi/lib -lSDL2 -Wpointer-arith 
+CXXFLAGS += -std=c++98 -O2 -D__SDL20__ -DPSVITA -D__PSVITA_AUDIO__ -fpermissive -std=c++11 -I. -I$(VITASDK)/arm-vita-eabi/include/ -L$(VITASDK)/arm-vita-eabi/lib -lSDL2 -Wpointer-arith -DDEBUG_PRINTF
 
 #SRC_C :=$(call rwildcard, src/, *.c)
 #SRC_CPP :=$(call rwildcard, src/, *.cpp)
@@ -27,10 +28,15 @@ SRC_CPP := \
 		      AudioDriverPSVita.cpp   \
 		$(SOURCES_PICOLOOP)	\
 		$(SOURCES_PICOSYNTH) 	\
+		$(SOURCES_PICOSYNTHUI) 	\
 		$(SOURCES_PICODRUM) 	\
+		$(SOURCES_PICODRUMUI) 	\
 		$(SOURCES_DBOPL) 	\
+		$(SOURCES_DBOPLUI) 	\
 		$(SOURCES_PBSYNTH)	\
-		$(SOURCES_LGPTSAMPLERSYNTH) 
+		$(SOURCES_PBSYNTHUI)	\
+		$(SOURCES_LGPTSAMPLERSYNTH) \
+		$(SOURCES_LGPTSAMPLERSYNTHUI) 
 
 
 
