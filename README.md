@@ -404,18 +404,38 @@ In another window :
 In this case you need a prx and an elf file.
 
 
+# DEBUG PS VITA
 
+read https://tai.henkaku.xyz/ you need to go to this website, then use the vita exploit on your ps vita at this url http://henkaku.xyz/go/
+Here your ps vita should have the "beta exploit".
+You need to have psp2shell compiled from https://github.com/yoyz/psp2shell
+it's a from from https://github.com/Cpasjuste/psp2shell but it should be at the right commit level.
+Compiled psp2shell so you have a psp2shell binary
+Compiled the kernel and user module and put it on your ps vita in ux0:/tai
+Then build picoloop for your psvita with -DDEBUG_PRINTF, it should work
+
+grab your core file in the ux0:/data directory, the last core
+
+use vita parse core from here : https://github.com/xyzz/vita-parse-core
+install it as root using the pip as root :
+# pip install -r requirements.txt
+then 
+$ zcat psp2core-1510435186-0x0000092601-eboot.bin.psp2dmp > psp
+$ python /home/peyrardj/build/vita-parse-core/main.py psp picoloop_vita.elf
 
 
 
 Changelog
 =========
 
-V0.77ab
+V0.77abc
 - a : introduce lgptsampler for vita and raspberry pi
 - b : introduce lgptsampler for windows, stuck on psp
 - c : fix the crash on clang++, need to fix all int myfunc() { } without return 0; in the bracket...
+- c : lots of valgrind
 - c : move to RtAudio 4.1.2 to 5.0
+- c : update to lastest psp2shell on vita
+
 
 V0.76abc
 - a : first port on psvita thanks to #henkaku team
