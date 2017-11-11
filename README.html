@@ -412,6 +412,17 @@ Compiled psp2shell so you have a psp2shell binary
 Compiled the kernel and user module and put it on your ps vita in ux0:/tai
 Then build picoloop for your psvita with -DDEBUG_PRINTF, it should work</p>
 
+<p>grab your core file in the ux0:/data directory, the last core</p>
+
+<p>use vita parse core from here : https://github.com/xyzz/vita-parse-core
+install it as root using the pip as root :</p>
+
+<h1>pip install -r requirements.txt</h1>
+
+<p>then 
+$ zcat psp2core-1510435186-0x0000092601-eboot.bin.psp2dmp > psp
+$ python /home/peyrardj/build/vita-parse-core/main.py psp picoloop_vita.elf</p>
+
 <h1>Changelog</h1>
 
 <p>V0.77abc
