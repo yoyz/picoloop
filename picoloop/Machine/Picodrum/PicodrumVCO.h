@@ -4,7 +4,7 @@
 #include "../../Oscillator.h"
 #include "../../PitchBend.h"
 
-class PicodrumVCO : public Oscillator
+class PicodrumVCO 
 {
 public:
   PicodrumVCO();
@@ -39,15 +39,15 @@ public:
 
 
 
-  Oscillator          osc1;
-  Oscillator          osc2;
-  Oscillator          lfoOsc1;
+  Oscillator          * osc1;
+  Oscillator          * osc2;
+  Oscillator          * lfoOsc1;
   
   Oscillator            * s1;
   Oscillator            * s2;
   Oscillator            * lfo1;
   
-  PitchBend               pb;
+  PitchBend             * pb;
 
   float freq;
 

@@ -2,10 +2,10 @@
 
 #define SAM 64
 
-PicodrumMachine::PicodrumMachine() : adsr_amp(), vco(), filter()
+PicodrumMachine::PicodrumMachine() //: adsr_amp(), vco(), filter()
 {
-  float fi;
-  int   i;
+  //float fi;
+  //int   i;
 
   DPRINTF("PicodrumMachine::PicodrumMachine()");  
   cutoff=125;
@@ -25,34 +25,28 @@ PicodrumMachine::~PicodrumMachine()
     free(buffer_picodrum);
 }
 
-// PicodrumVCO & PicodrumMachine::getPicodrumVCO()
-// {
-//   return vco;
-// }
-
 
 
 void PicodrumMachine::init()
 {
+  vco=new PicodrumVCO();
+  adsr_amp=new PicodrumADSR();
+  filter=new Filter(); 
+
   if (buffer_picodrum==0)
     buffer_picodrum = (int32_t*)malloc(sizeof(int32_t)*SAM);
   index=0; // use by this->tick()
-  
-  adsr_amp.init();
 
-  adsr_amp.setInput(&vco); 
+  vco->init();
+  vco->setNoteDetune(0,0);      
+    
+  adsr_amp->init();
+  adsr_amp->setInput(vco); 
 
-  filter.init();
+  filter->init();
   sample_num=0;
 
-
-  //this->reset();
-  this->getADSRAmp().init();
-
-  this->getPicodrumVCO().init();
-  this->getPicodrumVCO().setNoteDetune(0,0);      
-  //this->getPicodrumVCO().setSynthFreq(0);      
-  //this->getADSRAmp().setNoteADSR(0);
+  //adsr_amp->init();
 
   note=0;
   detune=0;
@@ -94,20 +88,21 @@ int PicodrumMachine::checkI(int what,int val)
       return val;
       break;      
     }
+  return 0;
 }
 
 
 int PicodrumMachine::getI(int what)
 {
 
-  if (what==NOTE_ON) return this->getADSRAmp().getNoteOn();
+  if (what==NOTE_ON) return adsr_amp->getNoteOn();
   return 0;
 }
 
 void PicodrumMachine::setF(int what,float val)
 {
   //  if (what==OSC1_FREQ)           this->getPicodrumVCO().setSynthFreq(val);
-  if (what==LFO1_FREQ)           this->getPicodrumVCO().setLfoSpeed(val);
+  if (what==LFO1_FREQ)           vco->setLfoSpeed(val);
 }
 
 
@@ -118,83 +113,62 @@ void PicodrumMachine::setI(int what,int val)
   int noteShift=0;
 
   if (what==NOTE_ON && val==1) 
-    { 
-      this->getPicodrumVCO().setNoteDetune(note+noteShift,detune);
-      this->getADSRAmp().reset();
-      this->getPicodrumVCO().reset();
-      this->getPicodrumVCO().setPicodrumVCOPhase(phase);
-      this->getADSRAmp().setNoteOn(); 
+    {       
+      adsr_amp->reset();
+      vco->reset();
+      vco->setPicodrumVCOPhase(phase);
+      vco->setNoteDetune(note+noteShift,detune);
+      adsr_amp->setNoteOn(); 
     }
   if (what==NOTE_ON && val==0) 
     { 
-      this->getADSRAmp().setNoteOff(); 
+      adsr_amp->setNoteOff(); 
     }
 
-  if (what==NOTE1)           note=val;
+  if (what==NOTE1)               note=val;
+  if (what==OSC1_TYPE)           { vco->setOscillator(0,val); osc1_type=val; }
+  if (what==OSC2_TYPE)           { vco->setOscillator(1,val); osc2_type=val; }
 
-  //if (what==OSC1_FREQ)           this->getPicodrumVCO().setSynthFreq(val);
-  if (what==OSC1_TYPE)           { this->getPicodrumVCO().setOscillator(0,val); osc1_type=val; }
-  if (what==OSC2_TYPE)           { this->getPicodrumVCO().setOscillator(1,val); osc2_type=val; }
+  if (what==OSC12_MIX)           vco->setPicodrumVCOMix(val);
 
-  if (what==OSC12_MIX)           this->getPicodrumVCO().setPicodrumVCOMix(val);
+  if (what==LFO1_DEPTH)          vco->setLfoDepth(val);
+  if (what==LFO_TYPE)            vco->setLfoType(val);
 
-  if (what==LFO1_DEPTH)          this->getPicodrumVCO().setLfoDepth(val);
-  if (what==LFO_TYPE)            this->getPicodrumVCO().setLfoType(val);
+  if (what==PITCHBEND_DEPTH)     vco->setPitchBendDepth(val);
+  if (what==PITCHBEND_SPEED)     vco->setPitchBendSpeed(val);
 
-  if (what==PITCHBEND_DEPTH)     this->getPicodrumVCO().setPitchBendDepth(val);
-  if (what==PITCHBEND_SPEED)     this->getPicodrumVCO().setPitchBendSpeed(val);
-
-  if (what==OSC1_PHASE)          { phase=val; this->getPicodrumVCO().setPicodrumVCOPhase(val); }
+  if (what==OSC1_PHASE)          { phase=val; vco->setPicodrumVCOPhase(val); }
 
 
   //if (what==LFO1_FREQ)           this->getPicodrumVCO().setLfoSpeed(val);
 
 
-  if (what==ADSR_ENV0_ATTACK)    this->getADSRAmp().setAttack(val);
-  if (what==ADSR_ENV0_RELEASE)   this->getADSRAmp().setRelease(val);
+  if (what==ADSR_ENV0_ATTACK)    adsr_amp->setAttack(val);
+  if (what==ADSR_ENV0_RELEASE)   adsr_amp->setRelease(val);
 
 
 
   if (what==FILTER1_CUTOFF)      
     { 
       cutoff=val;
-      filter.setCutoff(cutoff);
-      this->getADSRAmp().reset();
-
+      filter->setCutoff(cutoff);
+      adsr_amp->reset();
   }
+  
   if (what==FILTER1_RESONANCE)         
     { 
       resonance=val;
-      filter.setResonance(resonance);
-      this->getADSRAmp().reset();
+      filter->setResonance(resonance);
+      adsr_amp->reset();
     }
 
-  if (what==FILTER1_TYPE)     filter.setFilterType(val);
-  if (what==FILTER1_ALGO)     filter.setFilterAlgo(val);
+  if (what==FILTER1_TYPE)     filter->setFilterType(val);
+  if (what==FILTER1_ALGO)     filter->setFilterAlgo(val);
 
   
 }
 
 
-PicodrumADSR & PicodrumMachine::getADSRAmp()
-{
-  return adsr_amp;
-}
-
-
-
-
-PicodrumVCO & PicodrumMachine::getPicodrumVCO()
-{
-  //  DPRINTF("PicodrumMachine::getPicodrumVCO() this=0x%08.8X\n",this);
-  //  return vco_pointer;
-  return vco;
-}
-
-//Biquad & PicodrumMachine::getBiquad()
-//{
-//  return bq;
-//}
 
 const char * PicodrumMachine::getMachineParamCharStar(int machineParam,int paramValue)
 {
@@ -280,9 +254,8 @@ void PicodrumMachine::reset()
 {
   sample_num=0;
   last_sample=0;
-  this->getADSRAmp().reset();
-  this->getPicodrumVCO().reset();
-  //adsr_amp.reset();
+  adsr_amp->reset();
+  vco->reset();
 }
 
 
@@ -305,10 +278,12 @@ Sint32 PicodrumMachine::tick()
       i=0;
       while (i<SAM)
 	{	  
-	  buffer_picodrum[i]=adsr_amp.tick();
+	  buffer_picodrum[i]=adsr_amp->tick();
+	  //buffer_picodrum[i]=vco->tick();
 	  i++;
 	  //printf("i:%d\n");
 	}
+      //printf("%d %d %d %d ",buffer_picodrum[0],buffer_picodrum[1],buffer_picodrum[2],buffer_picodrum[3]);
       /*
       i=0;      
       while (i<SAM)
@@ -317,7 +292,7 @@ Sint32 PicodrumMachine::tick()
 	  i++;
 	}
       */
-      filter.process_samples(buffer_picodrum,SAM);
+      filter->process_samples(buffer_picodrum,SAM);
     }
     
   s_out=buffer_picodrum[index];

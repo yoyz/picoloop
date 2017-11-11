@@ -28,16 +28,16 @@ class PicodrumMachine : public Machine
 
  protected:
   
-  PicodrumADSR   & getADSRAmp();
-  PicodrumVCO    & getPicodrumVCO();
-  Biquad & getBiquad();
+  //  PicodrumADSR   & getADSRAmp();
+  //  PicodrumVCO    & getPicodrumVCO();
+  //  Biquad & getBiquad();
 
   int                   cutoff;
   int                   resonance;
 
-  PicodrumVCO           vco;
-  PicodrumADSR          adsr_amp;
-  Filter                filter;
+  PicodrumVCO  *        vco;
+  PicodrumADSR *        adsr_amp;
+  Filter       *        filter;
 
   int                   sample_num;
   Sint16                last_sample;

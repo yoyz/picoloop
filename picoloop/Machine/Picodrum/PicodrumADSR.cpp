@@ -31,7 +31,7 @@ PicodrumADSR::PicodrumADSR()
 
   sample_num=-1;
   //playing=1;
-
+  cadr=0;
   ca=0;
   cd=0;
   cr=0;
@@ -50,6 +50,11 @@ PicodrumADSR::PicodrumADSR()
 
   current_segment=PicodrumADSR_INIT;
   noteOn_value=0;
+  old_s_sin=0;
+
+  old_pole=0;
+  pole=0;
+
 }
 
 PicodrumADSR::~PicodrumADSR()
@@ -85,6 +90,10 @@ void PicodrumADSR::init()
 
   current_segment=PicodrumADSR_INIT;
   noteOn_value=0;
+  old_s_sin=0;
+  s_in=0;
+  old_pole=0;
+  pole=0;
 }
 
 
@@ -144,7 +153,7 @@ int PicodrumADSR::setSegment(int segment)
   return 0;
 }
 
-void PicodrumADSR::setInput(Oscillator * vcoosc)
+void PicodrumADSR::setInput(PicodrumVCO * vcoosc)
 {
   DPRINTF("PicodrumADSR::setVCO(0x%08.8X",vcoosc);
   vco=(PicodrumVCO*)vcoosc;
@@ -262,7 +271,7 @@ Sint16 PicodrumADSR::tick_trig()
 
   old_s_sin=s_in;
   s_in=vco->tick();
-
+  //return s_in;
   // check if we are in the 
   //   1  32000 
   //or the 

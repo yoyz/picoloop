@@ -1,10 +1,10 @@
 #include "PicodrumVCO.h"
 
 
-PicodrumVCO::PicodrumVCO() : osc1(), 
+PicodrumVCO::PicodrumVCO() /* : osc1(), 
 			     osc2(), 
 			     lfoOsc1(),
-			     pb()
+			     pb() */
 {
   DPRINTF("PicodrumVCO::PicodrumVCO()");
   float fi;
@@ -39,24 +39,35 @@ void PicodrumVCO::init()
 {
   DPRINTF("PicodrumVCO::init() begin s1:=0x%08.8X s2:=0x%08.8X",s1,s2);
 
+  osc1=new Oscillator();
+  osc2=new Oscillator();
+  lfoOsc1=new Oscillator();
+  pb=new PitchBend();  
   lfo_depth=0;
   lfo_depth_shift=20;
 
   lfo_speed=0;
 
-  osc1.setWaveForm(PICO_WAVETABLE_SINE);
-  osc2.setWaveForm(PICO_WAVETABLE_SINE);
-  lfoOsc1.setWaveForm(PICO_WAVETABLE_SAW);
+  osc1->init();
+  osc2->init();
+  lfoOsc1->init();
 
-  s1 = &osc1;
+
+  pb->init();
+  
+  osc1->setWaveForm(PICO_WAVETABLE_SINE);
+  osc2->setWaveForm(PICO_WAVETABLE_SINE);
+  lfoOsc1->setWaveForm(PICO_WAVETABLE_SAW);
+
+  s1 = osc1;
   s1->setFreq(0);
   s1->setAmplitude(32);
 
-  s2 = &osc2;
+  s2 = osc2;
   s2->setFreq(0);
   s2->setAmplitude(32);
 
-  lfo1=&lfoOsc1;
+  lfo1=lfoOsc1;
   lfo1->setFreq(0);
   lfo1->setAmplitude(32);
   
@@ -99,21 +110,8 @@ void PicodrumVCO::setLfoType(int val)
 
 void PicodrumVCO::setOscillator(int oscillator_number,int oscillator_type)
 {
-  int s1freq=s1->getFreq();
-  int s2freq=s2->getFreq();
-
-  if (oscillator_number %2==0)
-    {
-      	s1->setWaveForm(oscillator_type%PICO_WAVETABLE_SIZE);
-    }
-  if (oscillator_number %2==1)
-    {
-      	s2->setWaveForm(oscillator_type%PICO_WAVETABLE_SIZE);
-    }
-
-
-  s1->setFreq(s1freq);
-  s2->setFreq(s2freq);
+  if (oscillator_number %2==0) s1->setWaveForm(oscillator_type%PICO_WAVETABLE_SIZE);
+  if (oscillator_number %2==1) s2->setWaveForm(oscillator_type%PICO_WAVETABLE_SIZE);
 }
 
 void PicodrumVCO::setLfoDepth(int val)
@@ -165,14 +163,14 @@ void PicodrumVCO::setLfoSpeed(float val)
 void PicodrumVCO::setPitchBendDepth(int val)
 {
   pb_depth=val;
-  pb.setDepth(val);  
+  pb->setDepth(val);  
 }
 
 void PicodrumVCO::setPitchBendSpeed(int val)
 {
   //pb.setDepth(lfo_depth);  
   pb_speed=val;
-  pb.setSpeed(pb_speed);
+  pb->setSpeed(pb_speed);
 }
 
 
@@ -181,7 +179,7 @@ void PicodrumVCO::reset()
   DPRINTF("PicodrumVCO::reset() this=0x%08.8X",this); // <==== FAILS allways the same this pointers
   s1->reset();
   s2->reset();
-  pb.reset();
+  pb->reset();
   //s2->setPhase(72);
   s1->setPhase(0);
   s2->setPhase(0);
@@ -212,9 +210,12 @@ void PicodrumVCO::setNoteDetune(int nt,int dt)
   //s2->setNoteDetune(note,dt);
   s1->setFreq(freqOsc1);
   s2->setFreq(freqOsc2);
-  pb.setNote(note);
+  //s1->setNoteDetune(nt,64);
+  //s2->setNoteDetune(nt,dt);
 
-  DPRINTF("freqOsc1:%d",freqOsc1);
+  pb->setNote(note);
+
+  DPRINTF("freqOsc1:%d freqOsc2:%d",freqOsc1,freqOsc2);
 }
 
 
@@ -230,13 +231,8 @@ Sint16 PicodrumVCO::tick()
   Sint16 s;
   int    tmp=0;
   Sint32 pbtick;
-
+  //return s1->tick();
   if (vcomix==0) vcomix=1;
-  if (s1==NULL)
-    { 
-      DPRINTF("[s1 is NULL]"); 
-      //  exit(1); 
-    } 
 
   if (lfo_speed && lfo_depth)
     {
@@ -245,7 +241,7 @@ Sint16 PicodrumVCO::tick()
       //s2->setFreq(freqOsc1+abs(sinput1/((128-lfo_depth)*2)));
       if (pb_speed>0)
 	{
-	  pbtick=pb.tickNoteDetune();
+	  pbtick=pb->tickNoteDetune();
 	  s2->setFreq(pbtick+abs(sinput1/((128-lfo_depth)*2)));
 	  //s2->setNoteDetune(note*128+detune+abs(sinput1/((128-lfo_depth)*1)));
 	}
@@ -263,7 +259,7 @@ Sint16 PicodrumVCO::tick()
     {
       if (pb_speed>0)
 	{
-	  pbtick=pb.tickNoteDetune();
+	  pbtick=pb->tickNoteDetune();
 	  s1->setFreq(pbtick);
 	  s2->setFreq(pbtick);
 	}
@@ -280,9 +276,6 @@ Sint16 PicodrumVCO::tick()
   if (sc> 32000) sc= 32000;
   if (sc<-32000) sc=-32000;
 
-
-
-  s=sc;
-
+  s=sc;  
   return s;
 }

@@ -10,7 +10,7 @@
 #ifndef __PicodrumADSR__
 #define __PicodrumADSR__
 
-class PicodrumADSR : public Oscillator
+class PicodrumADSR
 {
  public:
   PicodrumADSR();
@@ -18,7 +18,7 @@ class PicodrumADSR : public Oscillator
   //  void setInput(Oscillator * S);
   void   init();
   //void   setInput(PicodrumVCO * vcoosc);
-  void   setInput(Oscillator * vcoosc);
+  void   setInput(PicodrumVCO * vcoosc);
 
   void   setAttack(int atk);
   void   setDecay(int dc);
