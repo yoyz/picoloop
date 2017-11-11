@@ -1,4 +1,4 @@
-using namespace std;
+//using namespace std;
 #include "Oscillator.h"
 //#include "NoteFreq.h"
 //#include "WaveTableManager.h"
@@ -91,8 +91,8 @@ void Oscillator::setFreq(int frq)
   freq=frq;
   //return;
 
-  if (freq==frequency)
-    return;
+  // if (freq==frequency)
+  //   return;
 
   if (freq <= 0)          
     {
