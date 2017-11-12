@@ -435,6 +435,7 @@ V0.77abc
 - c : lots of valgrind
 - c : move to RtAudio 4.1.2 to 5.0
 - c : update to lastest psp2shell on vita
+- d : fix an insidious graphic bug on vita
 
 
 V0.76abc
