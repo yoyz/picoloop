@@ -423,6 +423,10 @@ install it as root using the pip as root :</p>
 $ zcat psp2core-1510435186-0x0000092601-eboot.bin.psp2dmp > psp
 $ python /home/peyrardj/build/vita-parse-core/main.py psp picoloop_vita.elf</p>
 
+<p>You can also push the eboot.bin binary directly in the good location with this command </p>
+
+<p>psp2shell> put eboot.bin ux0:/app/PICOLOOP1/</p>
+
 <h1>Changelog</h1>
 
 <p>V0.77abc
@@ -432,7 +436,9 @@ $ python /home/peyrardj/build/vita-parse-core/main.py psp picoloop_vita.elf</p>
 - c : lots of valgrind
 - c : move to RtAudio 4.1.2 to 5.0
 - c : update to lastest psp2shell on vita
-- d : fix an insidious graphic bug on vita</p>
+- d : avoid an insidious graphic bug on vita on display<em>graphic</em>loadsave()
+- d : avoid a  weird behaviour in lgpt on vita with resonance which crash the app when it is tweaked
+- d : this version work on opendingux, psvita </p>
 
 <p>V0.76abc
 - a : first port on psvita thanks to #henkaku team
