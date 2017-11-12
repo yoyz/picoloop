@@ -202,11 +202,15 @@ void LgptsamplerMachine::setI(int what,int val)
       SI.ProcessCommand(channel,SIP_FILTCUTOFF,0x0000+cutoff);
       SI.ProcessCommand(channel,MAKE_FOURCC('F','R','E','S'),0x0000+resonance);
       */
+
       SI->AssignSample(osc1_type%22);
       SI->Start(channel,note,true);
-      
+
       SI->ProcessCommand(channel,SIP_FILTCUTOFF,0x0000+cutoff);
-      SI->ProcessCommand(channel,MAKE_FOURCC('F','R','E','S'),0x0000+resonance);
+      //SI->ProcessCommand(channel,SIP_FILTRESO,0x0000+resonance);
+      //return;
+      //return;
+      //SI->ProcessCommand(channel,MAKE_FOURCC('F','R','E','S'),0x0000+resonance);
 
       // SI.ProcessCommand(0,MAKE_FOURCC('L','S','T','A'),lfo1_freq);
       // SI.ProcessCommand(0,MAKE_FOURCC('L','L','E','N'),lfo1_depth);
