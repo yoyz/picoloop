@@ -432,7 +432,7 @@ psp2shell> put eboot.bin ux0:/app/PICOLOOP1/
 Changelog
 =========
 
-V0.77abc
+V0.77abcd
 - a : introduce lgptsampler for vita and raspberry pi
 - b : introduce lgptsampler for windows, stuck on psp
 - c : fix the crash on clang++, need to fix all int myfunc() { } without return 0; in the bracket...
@@ -441,7 +441,7 @@ V0.77abc
 - c : update to lastest psp2shell on vita
 - d : avoid an insidious graphic bug on vita on display_graphic_loadsave()
 - d : avoid a  weird behaviour in lgpt on vita with resonance which crash the app when it is tweaked
-- d : this version work on opendingux, psvita 
+- d : this version work on opendingux, psvita, windows, fail on psp
 
 
 V0.76abc
