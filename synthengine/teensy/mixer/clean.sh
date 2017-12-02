@@ -1,2 +1,2 @@
 #!/bin/bash
-rm *.o *.~ main file
+rm *.o *~ main file
