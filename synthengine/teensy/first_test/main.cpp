@@ -1,6 +1,7 @@
 //#include "dspinst.h"
 #include <stdio.h>
 #include "synth_waveform.h"
+#include "synth_pwm.h"
 #include "AudioStream.h"
 /*
 #define AudioMemory(num) ({					\
@@ -9,6 +10,7 @@
 })
 */
 AudioSynthWaveform asw;
+AudioSynthWaveformPWM pwm;
 
 int main()
 {
@@ -24,12 +26,17 @@ int main()
   asw.frequency(440);
   asw.amplitude(0.75);
   asw.pulseWidth(0.15);
+
+  pwm.frequency(440);
+  pwm.amplitude(0.75);
+    
   FILE * FD = fopen("file","w");
   //for (i=0;i<1000;i++)
   while(1)
     {
       //asw.frequency(i);
       asw.update();
+      //pwm.update();
       //i++;
       //if (i>1000) i=100;
       //blk_rcv=asw.receiveReadOnly();
