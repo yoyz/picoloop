@@ -230,12 +230,7 @@ Unfortunately I have not fixed this issue because you fall into this issue only 
 <h4>COMPILATION FOR DEBIAN</h4>
 
 <pre><code> # cd      picoloop
- # make -f Makefile.RtAudio_debian               clean
- # make -f Makefile.RtMidi_debian                clean
  # make -f Makefile.PatternPlayer_debian_RtAudio clean
- # make -f Makefile.RtAudio_debian
- # make -f Makefile.RtMidi_debian
- # make -f Makefile.PatternPlayer_debian_RtAudio
  # make -f Makefile.PatternPlayer_debian_RtAudio
 </code></pre>
 
@@ -244,12 +239,7 @@ Unfortunately I have not fixed this issue because you fall into this issue only 
 <p>You have to build it on the pocketchip.</p>
 
 <pre><code> # cd      picoloop
- # make -f Makefile.RtAudio_pocketchip               clean
- # make -f Makefile.RtMidi_pocketchip                clean
  # make -f Makefile.PatternPlayer_pocketchip_RtAudio clean
- # make -f Makefile.RtAudio_pocketchip
- # make -f Makefile.RtMidi_pocketchip
- # make -f Makefile.PatternPlayer_pocketchip_RtAudio
  # make -f Makefile.PatternPlayer_pocketchip_RtAudio
 </code></pre>
 
@@ -260,10 +250,7 @@ If you have a raspberry 2 or 3, you should go to the "debian" section.
 This build type is a light version like the opendingux one.</p>
 
 <pre><code> # cd      picoloop
- # make -f Makefile.RtAudio_raspi1                  clean
  # make -f Makefile.PatternPlayer_raspi1_RtAudio    clean
- # make -f Makefile.RtAudio_raspi1                  
- # make -f Makefile.PatternPlayer_raspi1_RtAudio    
  # make -f Makefile.PatternPlayer_raspi1_RtAudio
 </code></pre>
 
@@ -303,12 +290,7 @@ Picoloop provide the header and binary for SDL 1.2 on windows.
 So here it is a "cross build" you build on linux for windows.</p>
 
 <pre><code> # cd         picoloop
- # make       -f Makefile.RtAudio_windows                              clean
- # make       -f Makefile.RtMidi_windows                               clean
  # make       -f Makefile.PatternPlayer_windows_mingw_RtAudio          clean
- # make       -f Makefile.RtAudio_windows                              
- # make       -f Makefile.RtMidi_windows                               
- # make       -f Makefile.PatternPlayer_windows_mingw_RtAudio 
  # make       -f Makefile.PatternPlayer_windows_mingw_RtAudio
 </code></pre>
 
@@ -320,7 +302,6 @@ All can be fetched here : https://github.com/pspdev</p>
 <pre><code> # cd      picoloop
  # source ~/local/pspdev/env_build
  # make -f Makefile.PatternPlayer_psp_SDL        clean
- # make -f Makefile.PatternPlayer_psp_SDL 
  # make -f Makefile.PatternPlayer_psp_SDL
 </code></pre>
 
