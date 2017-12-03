@@ -42,7 +42,7 @@ extern int counter_send_midi_clock_six; // send n clock and decrement the counte
 extern int counter_recv_midi_clock;     // send n clock and decrement the counter each time
 extern int counter_recv_midi_clock_six; // send n clock and decrement the counter each time
 extern int counter_delta_midi_clock;    // delta in sample between picoloop(master) and midi slave
-extern int   menu_config_midiClockMode;  // 0 internal, 1 midi sync out, 2 midi sync in 
+//extern int   menu_config_midiClockMode;  // 0 internal, 1 midi sync out, 2 midi sync in 
 extern float bpm_current;
                                     // define in PatternPlayer.cpp
 
@@ -113,6 +113,7 @@ class AudioEngine
 
   void setupSequencerCallback(void (*ptrfunc)(void));
 
+  void setMidiClockMode(int clockMode);
 
  private:
   int          freq;
@@ -147,7 +148,9 @@ class AudioEngine
   Sint32       fwrite_byte_counter;
 
   char      *  dump_audio_env;
-  WaveFileWriter WFW;          
+  WaveFileWriter WFW;
+
+  int          midiClockMode;
 };
 
 #endif

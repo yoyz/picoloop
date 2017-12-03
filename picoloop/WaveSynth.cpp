@@ -32,7 +32,7 @@ int   menu_config_bank=0;           // will choose the bank to load at startup
 int   menu_config_audioOutput=0;    // audioOutputNumber define in the config menu
 int   menu_config_midiOutput=0;     //  midiOutputNumber define in the config menu
 int   menu_config_midiInput=0;      //  midiInputNumber  define in the config menu
-int   menu_config_midiClockMode=0;  // 0 internal, 1 midi sync out, 2 midi sync in 
+//int   menu_config_midiClockMode=0;  // 0 internal, 1 midi sync out, 2 midi sync in 
 int   menu_config_audiopulseclock_out=0; // 0 no sync, 1 sync left, 2 sync right
 int   menu_config_y=0;              // current selected item in menu_config
 
@@ -117,6 +117,7 @@ void donothing() {}
 void openaudio()
 {
   int t;
+  int i=0;
   AM=new AudioMixer();
   AM->setAudioVolume(128);
   AE.setAudioMixer(AM);
@@ -147,7 +148,7 @@ void openaudio()
   printf("openAudio start streaming\n");
   AE.startAudio();
 
-  int i=0;
+
   for (i=0;i<10;i++)
     printf("[%d]\n",M[0]->tick());
 

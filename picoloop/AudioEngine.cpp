@@ -96,6 +96,13 @@ AudioEngine::AudioEngine() :
   AD.internal_callback=rtcallback;
   AD.userdata=this;
   #endif
+
+  midiClockMode=0;
+}
+
+void AudioEngine::setMidiClockMode(int clockMode)
+{
+  midiClockMode=clockMode;
 }
 
 int AudioEngine::getNumberOfAudioOutputDevice()
@@ -143,11 +150,11 @@ void AudioEngine::processBuffer(int len)
       processBuffer_updateMidiSendClockCounter();
       if (
 	  (nb_tick<nb_tick_before_step_change && 
-	   menu_config_midiClockMode!=MENU_CONFIG_Y_MIDICLOCK_SYNCIN
+	   midiClockMode!=MENU_CONFIG_Y_MIDICLOCK_SYNCIN
 	   )
 	  ||
 	  (counter_recv_midi_clock_six==0 && 
-	   menu_config_midiClockMode==MENU_CONFIG_Y_MIDICLOCK_SYNCIN))
+	   midiClockMode==MENU_CONFIG_Y_MIDICLOCK_SYNCIN))
 	{
 	  //buffer_out_left[i]=AM.tick();
 	  //buffer_out_right[i]=buffer_out_left[i];
@@ -179,10 +186,10 @@ void AudioEngine::processBuffer(int len)
       //  we change to the next step
       if (
 	  (nb_tick>=nb_tick_before_step_change &&
-	   menu_config_midiClockMode!=MENU_CONFIG_Y_MIDICLOCK_SYNCIN) 
+	   midiClockMode!=MENU_CONFIG_Y_MIDICLOCK_SYNCIN) 
 	  ||
 	  (counter_recv_midi_clock_six && 
-	   menu_config_midiClockMode==MENU_CONFIG_Y_MIDICLOCK_SYNCIN))
+	   midiClockMode==MENU_CONFIG_Y_MIDICLOCK_SYNCIN))
         {
 	  (*seqCallback)();	 
           nb_tick=0;
