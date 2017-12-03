@@ -20,6 +20,7 @@ using namespace std;
 
 SDL_GUI        SG;          // used to  initialize video
 AudioEngine    AE;          // used to  init alsa/rtaudio
+AudioMixer   * AM;
 InputManager   IE;          // used to  fetch key
 
 vector <Machine   *>        M(TRACK_MAX);
@@ -116,15 +117,19 @@ void donothing() {}
 void openaudio()
 {
   int t;
+  AM=new AudioMixer();
+  AM->setAudioVolume(128);
+  AE.setAudioMixer(AM);
   AE.setupSequencerCallback(donothing);
   AE.setNbTickBeforeStepChange(1000);
   AE.setAudioOutput(0);
   AE.openAudio();
+  //AE.getAudioMixer().setAudioVolume(128);
   for (t=0;t<TRACK_MAX;t++)
     {
-      AE.getAudioMixer().setAudioVolume(128);
+
       //MM[t]=AE.getAudioMixer().getTrack(t).getMonoMixer();
-      MM[t]=AE.getAudioMixer().getMonoMixer(t);      
+      MM[t]=AE.getAudioMixer()->getMonoMixer(t);      
       MM[t]->init();
       MM[t]->setAmplitude(128);
       //MM[t]->setMachineType(0);
