@@ -1,5 +1,6 @@
 SOURCES_PICODEP :=      SDL_GUI.cpp              \
 		      AudioEngine.cpp          \
+		      PulseSync.cpp		\
 		      Oscillator.cpp           \
 		      OneOscillator.cpp        \
 		      Biquad.cpp               \
