@@ -156,7 +156,7 @@ int SDL_GUI::initVideo()
     }
   fprintf(stderr,"After SDL_Init\n");
   fprintf(stderr,"Before SDL_CreateWindow\n");
-  window = SDL_CreateWindow("Ma fenêtre de jeu",
+  window = SDL_CreateWindow("Picoloop",
                             SDL_WINDOWPOS_UNDEFINED,
                             SDL_WINDOWPOS_UNDEFINED,
                             640, 480,
