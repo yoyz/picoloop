@@ -127,7 +127,8 @@ class AudioStream
 public:
 	AudioStream(unsigned char ninput, audio_block_t **iqueue) :
 		num_inputs(ninput), inputQueue(iqueue) {
-			active = false;
+			active =
+false;
 			destination_list = NULL;
 			for (int i=0; i < num_inputs; i++) {
 				inputQueue[i] = NULL;

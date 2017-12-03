@@ -1,29 +1,48 @@
 //#include "dspinst.h"
 #include <stdio.h>
 #include "synth_waveform.h"
+#include "synth_pwm.h"
 #include "AudioStream.h"
+/*
+#define AudioMemory(num) ({					\
+			 static audio_block_t data[num];	\
+			 AudioStream::initialize_memory(data, num);	\
+})
+*/
+AudioSynthWaveform asw;
+AudioSynthWaveformPWM pwm;
 
 int main()
 {
   int16_t a16;
   int16_t b16;
   int32_t c32;
-  audio_block_t blk[20];  
-  AudioSynthWaveform asw;
+  audio_block_t * blk_rcv;
   int i;
-  for (i=0;i<19;i++)
-    memset(blk[i].data,0,AUDIO_BLOCK_SAMPLES*2);
-  printf("");
-  asw.initialize_memory(blk,20);
-  //AudioMemory(20);
-  //audio_block_t data[64];
-  //AudioStream::initialize_memory(data,64);
-
+  static audio_block_t blklst[20];
+  AudioStream::initialize_memory(blklst, 20);
   asw.begin(WAVEFORM_SAWTOOTH);
+  asw.begin(WAVEFORM_TRIANGLE);
   asw.frequency(440);
-  asw.update();
-  //printf("%d",signed_saturate_rshift(-32,16,1));
-  //blk=asw.receiveReadOnly();
-  //printf("%d",blk->data[0]);
+  asw.amplitude(0.75);
+  asw.pulseWidth(0.15);
+  FILE * FD = fopen("file","w");
+  //for (i=0;i<1000;i++)
+  while(1)
+    {
+      //asw.frequency(i);
+      asw.update();
+      //i++;
+      //if (i>1000) i=100;
+      //blk_rcv=asw.receiveReadOnly();
+      //printf("%d ",blk_rcv->data[0]);
+      printf("%d %d %d %d\n",
+	     blklst[19].data[0],
+	     blklst[19].data[1],
+	     blklst[19].data[2],
+	     blklst[19].data[3]
+	     );
+      fwrite(blklst[19].data,128,1,FD);
+    }
   return 0;
 }
