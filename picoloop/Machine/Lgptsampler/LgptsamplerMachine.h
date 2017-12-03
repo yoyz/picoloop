@@ -1,5 +1,3 @@
-using namespace std;
-
 #include "../../Machine.h"
 #include "SampleInstrument.h"
 #include "SamplePool.h"

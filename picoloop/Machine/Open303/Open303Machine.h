@@ -1,5 +1,3 @@
-using namespace std;
-
 #include "Machine.h"
 #include "rosic_Open303.h"
 #include "NoteFreq.h"

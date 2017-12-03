@@ -20,7 +20,7 @@ class AudioMixer
  private:
   //Track T0;
   //Track T1;
-  vector <MonoMixer> MM;
+  std::vector <MonoMixer> MM;
   int volume;
   Fixed volumeFixed;
   Fixed * buffer_fix;

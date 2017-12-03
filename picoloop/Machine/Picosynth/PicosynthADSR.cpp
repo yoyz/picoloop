@@ -1,5 +1,3 @@
-using namespace std;
-
 #include "PicosynthADSR.h"
 
 enum  

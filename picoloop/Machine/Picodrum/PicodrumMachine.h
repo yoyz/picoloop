@@ -1,5 +1,3 @@
-using namespace std;
-
 #include "../../Machine.h"
 #include "PicodrumVCO.h"
 #include "PicodrumADSR.h"

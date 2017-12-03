@@ -1,16 +1,8 @@
-using namespace std;
-
 #include "../../Machine.h"
 #include "hiopl.h"
-
 #include "../../Filter.h"
-//#include <SDL/SDL.h>
 #include "../../NoteFreq.h"
-//#include "Biquad.h"
-//#include "SineOscillator.h"
-//#include "dbopl/mixer.h"
-//#include "dbopl/dbopl.h"
-//#include "dbopl/dosbox.h"
+
 
 
 

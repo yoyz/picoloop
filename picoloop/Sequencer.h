@@ -32,7 +32,7 @@ class Sequencer
     int         current_track_x; // X Cursor position in the GUI
     int         current_track_y; // Y Cursor position in the GUI
 
-    vector<PatternSequencer> psvector;
+    std::vector<PatternSequencer> psvector;
     SongSequencer SS;
     int         song_mode;        // 0 live mode | 1 song mode
 };

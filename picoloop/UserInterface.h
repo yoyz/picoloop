@@ -16,10 +16,10 @@
 #ifndef __USERINTERFACE____
 #define __USERINTERFACE____
 
-extern vector <Pattern>            P;  
-extern vector <Machine   *>        M;
-extern vector <MonoMixer *>        MM;
-extern vector <Effect    *>        FX;
+extern std::vector <Pattern>            P;  
+extern std::vector <Machine   *>        M;
+extern std::vector <MonoMixer *>        MM;
+extern std::vector <Effect    *>        FX;
 
 extern MonoMixer                   SAMM; // Standalone MonoMixer 
                                   //  used to get   a standalone Machine SAM

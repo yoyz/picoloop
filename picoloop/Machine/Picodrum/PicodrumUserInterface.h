@@ -1,8 +1,4 @@
-using namespace std;
-//#include <stdio.h>
-
 #include "UserInterface.h"
-
 #include "Master.h"
 #include "InputManager.h"
 #include "SDL_GUI.h"
@@ -19,10 +15,10 @@ using namespace std;
 
 
 
-extern vector <Pattern>            P;  
-extern vector <Machine   *>        M;
-extern vector <MonoMixer *>        MM;
-extern vector <Effect    *>        FX;
+extern std::vector <Pattern>            P;  
+extern std::vector <Machine   *>        M;
+extern std::vector <MonoMixer *>        MM;
+extern std::vector <Effect    *>        FX;
 
 extern MonoMixer                   SAMM; // Standalone MonoMixer 
                                   //  used to get   a standalone Machine SAM

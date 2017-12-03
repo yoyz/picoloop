@@ -1,5 +1,3 @@
-//using namespace std;
-
 #include "Machine.h"
 #ifndef __MIDIOUTMACHINE____
 #define __MIDIOUTMACHINE____

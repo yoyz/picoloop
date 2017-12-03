@@ -3,8 +3,6 @@
 #include <math.h>
 #include "../../Wave.h"
 #include "../../AudioEngine.h"
-//#include "Oscillator.h"
-//#include "SineOscillator.h"
 #include "PicosynthVCO.h"
 
 #ifndef __PicosynthADSR__

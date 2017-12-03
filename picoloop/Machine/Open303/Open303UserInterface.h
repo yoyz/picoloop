@@ -1,8 +1,4 @@
-using namespace std;
-//#include <stdio.h>
-
 #include "UserInterface.h"
-
 #include "Master.h"
 #include "InputManager.h"
 #include "SDL_GUI.h"

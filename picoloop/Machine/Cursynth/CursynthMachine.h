@@ -1,5 +1,3 @@
-using namespace std;
-
 #include "Machine.h"
 #include "cursynth_engine.h"
 #include "NoteFreq.h"
