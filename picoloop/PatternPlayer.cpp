@@ -3967,7 +3967,8 @@ void init_and_setup_midi()
       MidiInSystem  & MIS=MidiInSystem::getInstance();
       MIS.setupcallback();
     }
-
+  // AE need to trig the seqCallback when nb_tick>=nb_tick_before_step_change
+  AE->setMidiClockMode(menu_config_midiClockMode);
 #endif
 }
 
