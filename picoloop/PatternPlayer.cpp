@@ -252,6 +252,7 @@ MachineCheck                 MC;  // Allow to switch to the next,previous machin
 
 Sequencer      SEQ;         // used to  store/get information about sequencer 
 AudioEngine    AE;          // used to  init alsa/rtaudio
+AudioMixer   * AM;
 PatternReader  PR;          // used to  read data.pic file
 Pattern        PA;          // used for copy paste Pattern
 PatternElement PE;          // used for copy paste PatternElement
@@ -3056,16 +3057,16 @@ void handle_key_change_volume()
   if (keyState[BUTTON_SELECT] && keyState[BUTTON_DOWN])
     if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALLEST==0)
       {
-	AudioMixer & am=AE.getAudioMixer();
-	am.setAudioVolume(am.getAudioVolume()-1);
+	//AudioMixer & am=AE.getAudioMixer();
+	AM->setAudioVolume(AM->getAudioVolume()-1);
 	IE.clearLastKeyEvent();
 	return;
       }
   if (keyState[BUTTON_SELECT] && keyState[BUTTON_UP])
     if (keyRepeat[BUTTON_UP]==1 || keyRepeat[BUTTON_UP]%KEY_REPEAT_INTERVAL_SMALLEST==0)
       {
-	AudioMixer & am=AE.getAudioMixer();
-	am.setAudioVolume(am.getAudioVolume()+1);
+	//AudioMixer & am=AE.getAudioMixer();
+	AM->setAudioVolume(AM->getAudioVolume()+1);
 	IE.clearLastKeyEvent();
 	return;
       }  
@@ -3163,7 +3164,7 @@ void seq_update_tweakable_knob_all(int machineParam)
 
 void seq_update_multiple_time_by_step()
 {
-  AudioMixer & am=AE.getAudioMixer();
+  //AudioMixer & am=AE.getAudioMixer();
   int          cty=SEQ.getCurrentTrackY();
   int          ctx=SEQ.getCurrentTrackX();
   int          step=SEQ.getPatternSequencer(cty).getStep();
@@ -3907,8 +3908,8 @@ void init_monomixer_and_machine()
   int          i=0;
   for (t=0;t<TRACK_MAX;t++)
     {
-
-      MM[t]=AE.getAudioMixer().getMonoMixer(t);
+      //MM[t]=AE.getAudioMixer().getMonoMixer(t);
+      MM[t]=AM->getMonoMixer(t);
       MM[t]->init();
       MM[t]->setMonoMixerChannelNumber(t);
       MM[t]->setAmplitude(0);  // set the amplitude to 0 to avoid trashing speakers
@@ -3970,10 +3971,24 @@ void init_and_setup_midi()
 #endif
 }
 
+
+void init_audiomixer_and_audioengine()
+{
+  int i;
+  AM=new AudioMixer();
+  AM->setAudioVolume(DEFAULT_VOLUME);
+  AE.setAudioMixer(AM);
+  init_monomixer_and_machine();
+  // Init all track to the current step, step0 in this particular case 
+  for (i=0;i<TRACK_MAX;i++)
+    seq_update_track(i);
+}
+
+
 // Here is the while (1) { loop } of the application
 int seq()
 {
-  AudioMixer & am=AE.getAudioMixer();
+  //AudioMixer * AM=AE.getAudioMixer();
   int          cty=SEQ.getCurrentTrackY();
   int          ctx=SEQ.getCurrentTrackX();
   int          step=SEQ.getPatternSequencer(cty).getStep();
@@ -3984,20 +3999,11 @@ int seq()
   int          running=1;
   int          nbcb;        // current nb audio callback 
   int          last_nbcb;   // number of occurence of AudioEngine callback before changing step
-  am.setAudioVolume(DEFAULT_VOLUME);
 
   dirty_graphic=1;
-
-  DPRINTF("PatternPlayer::seq()");
-
-  init_monomixer_and_machine();
-  // Init all track to the current step, step0 in this particular case 
-  for (i=0;i<TRACK_MAX;i++)
-    seq_update_track(i);
-
   refresh_pecursor();
-  init_and_setup_midi();
-  
+
+  DPRINTF("PatternPlayer::seq()");  
   DPRINTF("openAudio start streaming");
   AE.startAudio();
 
@@ -4332,6 +4338,9 @@ int main(int argc,char **argv)
   DPRINTF("main: [openAudio output]");
   AE.openAudio();
 
+  init_audiomixer_and_audioengine();
+  init_and_setup_midi();
+  
   DPRINTF("main : before seq\n");
   seq();        // Launch the sequencer which will stream audio
   DPRINTF("main : after seq\n");

@@ -2,7 +2,7 @@
 #include "AudioEngine.h"
 
 AudioEngine    AE;          // used to  init alsa/rtaudio
-
+AudioMixer     * AM;
 
 /* begin external dependency not used in waveSynth */
 int   menu_config_bank=0;           // will choose the bank to load at startup
@@ -37,6 +37,8 @@ void donothing() {}
 
 void openaudio()
 {
+  AM=new AudioMixer();
+  AE.setAudioMixer(AM);
   AE.setupSequencerCallback(donothing);
   AE.setNbTickBeforeStepChange(1000);
   AE.setAudioOutput(0);
@@ -47,10 +49,13 @@ void openaudio()
 
 void closeaudio()
 {
+  printf("closeaudio\n");
   AE.stopAudio();
 }
 
 int main(int argc,char ** argv)
 {	  
   openaudio();
+  sleep(1);
+  closeaudio();
 }

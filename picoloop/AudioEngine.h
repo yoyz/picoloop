@@ -1,4 +1,4 @@
-using namespace std;
+
 
 #ifndef __AUDIOENGINE____
 #define __AUDIOENGINE____
@@ -108,7 +108,8 @@ class AudioEngine
   //void setTick(int t);
   int  getTickLeft();
   int  getTickRight();
-  AudioMixer   & getAudioMixer();
+  AudioMixer   * getAudioMixer();
+  void setAudioMixer(AudioMixer * aumix);
   //void callback();
   //  void sdl_callback();
   //void  sdl_audio_callback(void *user_data, Uint8 *audio, int length);
@@ -153,27 +154,19 @@ class AudioEngine
   int          tick_right;
   int          nb_tick;
   int          nb_tick_before_step_change;
-  //Instrument   inst;
-  //  SineOscillator S;
-  AudioMixer   AM;
+  AudioMixer * AM;
   int          nbCallback;
   FILE       * fd;
   int          dump_audio;
   Sint16     * buffer_out_left;
   Sint16     * buffer_out_right;
-  //RtAudio dac;
   int          bufferGenerated;
 
   void       (*seqCallback)(void);
-  //RtAudio::StreamParameters rtAudioOutputParams;
-  //RtAudio::StreamOptions    rtAudioStreamOptions;
   AudioDriver  AD;
   PulseSync    PS;
 
   int          callback_called;
-  //SDL_AudioSpec * sdlAudioSpecWanted;
-  //  SDL_AudioSpec * sdlAudioSpecObtained;
-
   Sint32       fwrite_byte_counter;
 
   char      *  dump_audio_env;

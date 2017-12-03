@@ -113,7 +113,8 @@ int   rtcallback(
 	       void *user_data );
 
 //AudioEngine::AudioEngine() : inst(), AM()
-AudioEngine::AudioEngine() : AM(),
+//: AM(),
+AudioEngine::AudioEngine() : 
 			     AD(),
 			     buffer_out_left(  new Sint16[INTERNAL_BUFFER_SIZE]),
 			     buffer_out_right( new Sint16[INTERNAL_BUFFER_SIZE]),
@@ -246,19 +247,19 @@ void AudioEngine::processBuffer(int len)
 	  //buffer_out_right[i]=PS.tick();
 	  if (menu_config_audiopulseclock_out==0)
 	    {
-	      buffer_out_right[i]=AM.tick();
+	      buffer_out_right[i]=AM->tick();
 	      buffer_out_left[i]=buffer_out_right[i];
 	    }
 	  else
 	    {
 	      if (menu_config_audiopulseclock_out==1) // left
 		{
-		  buffer_out_right[i]=AM.tick();
+		  buffer_out_right[i]=AM->tick();
 		  buffer_out_left[i]=PS.tick();
 		}
 	      if (menu_config_audiopulseclock_out==2) // right
 		{
-		  buffer_out_left[i]=AM.tick();
+		  buffer_out_left[i]=AM->tick();
 		  buffer_out_right[i]=PS.tick();
 		}
 	    }	  
@@ -283,19 +284,19 @@ void AudioEngine::processBuffer(int len)
 
 	  if (menu_config_audiopulseclock_out==0)
 	    {
-	      buffer_out_right[i]=AM.tick();
+	      buffer_out_right[i]=AM->tick();
 	      buffer_out_left[i]=buffer_out_right[i];
 	    }
 	  else
 	    {
 	      if (menu_config_audiopulseclock_out==1) // left
 		{
-		  buffer_out_right[i]=AM.tick();
+		  buffer_out_right[i]=AM->tick();
 		  buffer_out_left[i]=PS.tick();
 		}
 	      if (menu_config_audiopulseclock_out==2) // right
 		{
-		  buffer_out_left[i]=AM.tick();
+		  buffer_out_left[i]=AM->tick();
 		  buffer_out_right[i]=PS.tick();
 		}
 	    }	  
@@ -329,7 +330,13 @@ void AudioEngine::setSynthFreq(int sfreq)
 }
 */
 
-AudioMixer & AudioEngine::getAudioMixer()
+
+void AudioEngine::setAudioMixer(AudioMixer * aumix)
+{
+  AM = aumix;
+}
+
+AudioMixer * AudioEngine::getAudioMixer()
 {
   return AM;
 }
