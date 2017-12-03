@@ -1,5 +1,3 @@
-using namespace std;
-
 #include "MonoMixer.h"
 //#include <SDL/SDL_types.h>
 #include <vector>

@@ -1,7 +1,3 @@
-using namespace std;
-
-//#include "Note.h"
-
 #include <string>
 #include "Master.h"
 #ifndef __PATTERNELEMENT__
@@ -26,7 +22,7 @@ public:
   void   set(int what, int val);
   int    get(int what);
 
-  string getStr();
+  std::string getStr();
   void   print(); 
 private:
   int  checkSevenBitBoundarie(int val);

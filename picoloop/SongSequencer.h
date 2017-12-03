@@ -1,7 +1,3 @@
-using namespace std;
-
-
-
 #include <string>
 #include <vector>
 #include "Master.h"
@@ -28,7 +24,7 @@ public:
 
   //vector <vector <unsigned int> > getSongVector();
 
-  vector <vector <unsigned int> > songVector;
+  std::vector <std::vector <unsigned int> > songVector;
   
 private:
   int                  step;

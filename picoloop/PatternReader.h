@@ -1,5 +1,3 @@
-using namespace std;
-
 #ifndef __PATTERNREADER__
 #define __PATTERNREADER__
 
@@ -30,7 +28,7 @@ class PatternReader
   int  saveSong(SongSequencer & SS);
   int  loadSong(SongSequencer & SS);
 
-  void setFileName(string filename);
+  void setFileName(std::string filename);
   bool PatternRemove(int PatternNumber,int TrackNumber);
   bool PatternDataExist(int PatternNumber,int TrackNumber);
   bool readPatternData(int PatternNumber,int TrackNumber, Pattern & P);
@@ -44,9 +42,9 @@ class PatternReader
  private:
   int    bank;
   FILE * fd;
-  string fn;
-  vector < vector < Pattern > > twoDPVector;
-  vector < vector < int     > > loadedData;
+  std::string fn;
+  std::vector < std::vector < Pattern > > twoDPVector;
+  std::vector < std::vector < int     > > loadedData;
   //vector < vector < int > > savedData;
   
 };

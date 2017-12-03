@@ -1,6 +1,3 @@
-using namespace std;
-
-//#include <SDL/SDL.h>
 #ifdef   __SDL12__               
 #include <SDL/SDL.h>             
 #endif // __SDL12__              

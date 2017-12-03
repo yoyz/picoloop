@@ -1,6 +1,3 @@
-using namespace std;
-
-
 #include "PatternElement.h"
 #include "Pattern.h"
 #include <string>

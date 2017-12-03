@@ -1,5 +1,3 @@
-using namespace std;
-
 #include <vector>
 #include "WaveTable.h"
 #include "Master.h"
@@ -18,7 +16,7 @@ private:
   //WaveTableManager & operator= (const WaveTableManager&) {}
   //WaveTableManager(const WaveTableManager&)              {}
 
-  vector<WaveTable*> wtvector;  
+  std::vector<WaveTable*> wtvector;  
 
   int    size;
 

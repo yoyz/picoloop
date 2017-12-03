@@ -1,5 +1,3 @@
-using namespace std;
-
 #include <string>
 #ifndef __SAMPLE__
 #define __SAMPLE__

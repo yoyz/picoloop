@@ -1,5 +1,3 @@
-using namespace std;
-
 #include <string>
 #include <stdio.h>
 #include "PatternElement.h"
@@ -42,7 +40,7 @@ class Pattern
 
  protected:
 
-  vector<PatternElement> pevector;  
+  std::vector<PatternElement> pevector;  
   int size;
   int leftVolume;
   int rightVolume;

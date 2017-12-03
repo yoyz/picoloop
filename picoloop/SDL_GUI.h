@@ -41,8 +41,6 @@ typedef struct SDL_Window SDL_Window;
 #define   OFFSET_Y_PATTERN_STEP   230
 
 
-using namespace std;
-
 class SDL_GUI
 {
  public:
@@ -72,7 +70,7 @@ class SDL_GUI
 
   int  openBMPFont();
   void guiBMPText(int x, int y, const char *txt);
-  void drawBMPText(int x,int y,string txt);
+  void drawBMPText(int x,int y,std::string txt);
   void drawBMPTextNumber(int n,char *txt);
 
   int  openTTFFont();

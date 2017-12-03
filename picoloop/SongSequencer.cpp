@@ -1,6 +1,6 @@
 #include "SongSequencer.h"
 
-SongSequencer::SongSequencer() : songVector(MAX_SONG_LENGHT_BY_PROJECT,vector <unsigned int>(TRACK_MAX))
+SongSequencer::SongSequencer() : songVector(MAX_SONG_LENGHT_BY_PROJECT,std::vector <unsigned int>(TRACK_MAX))
 {
   int x,y;
   for (x=0;x<MAX_SONG_LENGHT_BY_PROJECT;x++)

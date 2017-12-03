@@ -1,8 +1,6 @@
 #include <stdlib.h>
 #include "Machine.h"
 
-using namespace std;
-
 #ifndef __TWEAKABLEKNOB__
 #define __TWEAKABLEKNOB__
 

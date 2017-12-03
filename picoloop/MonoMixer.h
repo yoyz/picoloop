@@ -1,5 +1,3 @@
-//using namespace std;
-
 #include "Machine.h"
 #include "fixed.h"
 #include "Machine/PBSynth/PBSynthMachine.h"

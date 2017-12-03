@@ -1,4 +1,3 @@
-using namespace std;
 #include <stdio.h>
 
 #include "Master.h"

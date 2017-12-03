@@ -1,5 +1,3 @@
-using namespace std;
-
 #include <string>
 #ifndef __INSTRUMENT__
 #define __INSTRUMENT__
