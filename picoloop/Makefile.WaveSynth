@@ -29,6 +29,7 @@ CFLAGS= -c -std=c++11 -O1 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__SDL_AUDIO__  -DL
 CFLAGS= -c -std=c++11 -O1 -D__LINUX__ -DLINUX -D__LINUX_PULSE__ -I. -LSDL/lib -D__RTAUDIO__  -DLINUX_RASPI1 -ggdb  ${CFLAGS_SDLVERS}                 -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive -DNDEBUG
 CFLAGS= -c -std=c++11 -O1 -D__LINUX__ -DLINUX -D__LINUX_PULSE__ -I. ${CFLAGS_HELPER} ${LDFLAGS_HELPER}  -D__RTAUDIO__  -DLINUX_RASPI1 -ggdb  ${CFLAGS_SDLVERS}                 -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive -DNDEBUG
 CFLAGS= -c -std=c++11 -O1 -D__LINUX__ -DLINUX -D__LINUX_PULSE__ -I. ${CFLAGS_HELPER} ${LDFLAGS_HELPER}  -D__RTAUDIO__  -DLINUX_RASPI1 -ggdb  ${CFLAGS_SDLVERS}                 -DDEBUGPRINTF -DSCREEN_MULT=2  -DNDEBUG -Werror=return-type
+CFLAGS= -c -std=c++11 -O1 -D__LINUX__ -DLINUX -D__LINUX_PULSE__ -I. ${CFLAGS_HELPER} ${LDFLAGS_HELPER}  -D__RTAUDIO__  -DPC_DESKTOP   -ggdb  ${CFLAGS_SDLVERS}                 -DDEBUGPRINTF -DSCREEN_MULT=2  -DNDEBUG -Werror=return-type
 
 LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf -lasound -lpthread -lpulse -lpulse-simple -ljack
 LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf -lasound -lpthread -lpulse -lpulse-simple 
@@ -65,14 +66,13 @@ SOURCES=WaveSynth.cpp            \
 			$(SOURCES_PICODRUM) \
 			$(SOURCES_DBOPL) \
 			$(SOURCES_PBSYNTH) \
-			$(SOURCES_LGPTSAMPLERSYNTH) 
-
-#			$(SOURCES_CURSYNTH) \
-#			$(SOURCES_OPEN303) \
-#			$(SOURCES_TWYTCH) \
-#			$(SOURCES_MIDIOUT) \
-#			$(SOURCES_MDADRUM) \
-#			$(SOURCES_SIDSYNTH) \
+			$(SOURCES_LGPTSAMPLERSYNTH) \
+			$(SOURCES_CURSYNTH) \
+			$(SOURCES_OPEN303) \
+			$(SOURCES_TWYTCH) \
+			$(SOURCES_MIDIOUT) \
+			$(SOURCES_MDADRUM) \
+			$(SOURCES_SIDSYNTH) \
 
 
 
