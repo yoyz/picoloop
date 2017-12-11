@@ -18,6 +18,8 @@ public:
   void   set(int what, int val);
   int    get(int what);
 
+  void   inc(int what);
+  void   dec(int what);
   std::string getStr();
   void   print(); 
 private:

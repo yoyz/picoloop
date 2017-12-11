@@ -119,6 +119,16 @@ void PatternElement::init()
   phaseOsc1=0;
 }
 
+void PatternElement::inc(int what)
+{
+  this->set(what,this->get(what)+1);
+}
+
+void PatternElement::dec(int what)
+{
+  this->set(what,this->get(what)-1);
+}
+
 void PatternElement::set(int what,int val)
 {
   switch (what)
