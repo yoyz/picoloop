@@ -12,11 +12,7 @@ public:
   PatternElement();
   ~PatternElement();
 
-  void   init();
-
-  const char * getMachineTypeCharStar();
-  const char * getNoteCharStar();
-  /* const char * getFMTypeCharStar(); */
+  void   init(); 
 
 
   void   set(int what, int val);

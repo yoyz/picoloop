@@ -18,6 +18,7 @@ using namespace std;
 #include "SDL_GUI.h"
 #include "InputManager.h"
 #include "Machine.h"
+#include "MachineHelper.h"
 #include "Sequencer.h"
 
 #include "Generator.h"
@@ -1140,7 +1141,7 @@ void display_board_mac()
   int  j;
   int  cty=SEQ.getCurrentTrackY();
   int  step=SEQ.getPatternSequencer(cty).getStep();
-
+  int  mt;
   display_board_trig();
 
 
@@ -1152,7 +1153,9 @@ void display_board_mac()
 	  j=i+pattern_display_offset[cty];
 	  if (P[cty].getPatternElement(j).get(NOTE_ON))
 	    {
-	      SG.drawTTFTextNumberFirstLine(i, P[cty].getPatternElement(j).getMachineTypeCharStar());
+	      //SG.drawTTFTextNumberFirstLine(i, P[cty].getPatternElement(j).getMachineTypeCharStar());
+	      mt=P[cty].getPatternElement(j).get(MACHINE_TYPE);
+	      SG.drawTTFTextNumberFirstLine(i, getMachineTypeCharStar(mt));
 	    }
 	}
     }

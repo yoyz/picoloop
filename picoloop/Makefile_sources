@@ -29,6 +29,7 @@ SOURCES_PICODEP :=      SDL_GUI.cpp              \
 		      UserInterface.cpp	       \
 		      MachineCheck.cpp	       \
 		      WaveFileWriter.cpp       \
+			MachineHelper.cpp	
 
 
 SOURCES_PICOLOOP := PatternPlayer.cpp \
