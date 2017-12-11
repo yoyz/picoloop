@@ -377,13 +377,13 @@ void handle_key()
     {
       if (current_op==1)
 	{
-	  PE.dec(ADSR_AMP_ATTACK);
+	  PE.dec(    ADSR_AMP_ATTACK);
 	  val=PE.get(ADSR_AMP_ATTACK);
 	  printf("[x]+[down] => attack_amp:%d\n",val);
 	}
       if (current_op==2)
 	{
-	  PE.dec(ADSR_FLTR_ATTACK);
+	  PE.dec(    ADSR_FLTR_ATTACK);
 	  val=PE.get(ADSR_FLTR_ATTACK);
 	  printf("[x]+[down] => attack_fltr:%d\n",val);
 	}
@@ -399,13 +399,13 @@ void handle_key()
     {
       if (current_op==1)
 	{
-	  PE.inc(ADSR_AMP_ATTACK);
+	  PE.inc(    ADSR_AMP_ATTACK);
 	  val=PE.get(ADSR_AMP_ATTACK);
 	  printf("[x]+[up] => attack_amp:%d\n",val);
 	}
       if (current_op==2)
 	{
-	  PE.inc(ADSR_FLTR_ATTACK);
+	  PE.inc(    ADSR_FLTR_ATTACK);
 	  val=PE.get(ADSR_FLTR_ATTACK);
 	  printf("[x]+[up] => attack_fltr:%d\n",val);
 	}
@@ -420,14 +420,14 @@ void handle_key()
       int val;
       if (current_op==1)
 	{
-	  PE.inc(ADSR_AMP_RELEASE);
+	  PE.inc(    ADSR_AMP_RELEASE);
 	  val=PE.get(ADSR_AMP_RELEASE);
 	  printf("[x]+[right] => release_amp:%d\n",val);
 	}
       if (current_op==2)
 	{
-	  PE.inc(ADSR_AMP_RELEASE);
-	  val=PE.get(ADSR_AMP_RELEASE);	  
+	  PE.inc(    ADSR_FLTR_RELEASE);
+	  val=PE.get(ADSR_FLTR_RELEASE);	  
 	  printf("[x]+[right] => release_fltr:%d\n",val);
 	}
 
@@ -441,13 +441,13 @@ void handle_key()
     {
       if (current_op==1)
 	{
-	  PE.dec(ADSR_AMP_RELEASE);
+	  PE.dec(    ADSR_AMP_RELEASE);
 	  val=PE.get(ADSR_AMP_RELEASE);	  
 	  printf("[x]+[left] => release_amp:%d\n",val);
 	}
       if (current_op==2)
 	{
-	  PE.dec(ADSR_FLTR_RELEASE);
+	  PE.dec(    ADSR_FLTR_RELEASE);
 	  val=PE.get(ADSR_FLTR_RELEASE);	  	  
 	  printf("[x]+[left] => release_fltr:%d\n",val);
 	}
@@ -465,13 +465,13 @@ void handle_key()
     {
       if (current_op==1)
 	{
-	  PE.dec(ADSR_AMP_DECAY);
+	  PE.dec(    ADSR_AMP_DECAY);
 	  val=PE.get(ADSR_AMP_DECAY);	  
 	  printf("[x]+[down] => decay_amp:%d\n",val);
 	}
       if (current_op==2)
 	{
-	  PE.dec(ADSR_FLTR_DECAY);
+	  PE.dec(    ADSR_FLTR_DECAY);
 	  val=PE.get(ADSR_FLTR_DECAY);	  	  
 	  printf("[x]+[down] => decay_fltr:%d\n",val);
 	}
@@ -487,13 +487,13 @@ void handle_key()
     {
       if (current_op==1)
 	{
-	  PE.inc(ADSR_AMP_DECAY);
+	  PE.inc(    ADSR_AMP_DECAY);
 	  val=PE.get(ADSR_AMP_DECAY);	  	  
 	  printf("[x]+[up] => decay_amp:%d\n",val);
 	}
       if (current_op==2)
 	{
-	  PE.inc(ADSR_FLTR_DECAY);
+	  PE.inc(    ADSR_FLTR_DECAY);
 	  val=PE.get(ADSR_FLTR_DECAY);	  	  
 	  printf("[x]+[up] => decay_fltr:%d\n",val);
 	}
@@ -507,13 +507,13 @@ void handle_key()
     {
       if (current_op==1)
 	{
-	  PE.inc(ADSR_AMP_SUSTAIN);
+	  PE.inc(    ADSR_AMP_SUSTAIN);
 	  val=PE.get(ADSR_AMP_SUSTAIN);	  	  
 	  printf("[x]+[right] => sustain_amp:%d\n",val);
 	}
       if (current_op==2)
 	{
-	  PE.inc(ADSR_FLTR_SUSTAIN);
+	  PE.inc(    ADSR_FLTR_SUSTAIN);
 	  val=PE.get(ADSR_FLTR_SUSTAIN);
 	  printf("[x]+[right] => sustain_fltr:%d\n",val);
 	}
@@ -530,13 +530,13 @@ void handle_key()
     {
       if (current_op==1)
 	{
-	  PE.dec(ADSR_AMP_SUSTAIN);
+	  PE.dec(    ADSR_AMP_SUSTAIN);
 	  val=PE.get(ADSR_AMP_SUSTAIN);
 	  printf("[x]+[left] => sustain_amp:%d\n",val);
 	}
       if (current_op==2)
 	{
-	  PE.dec(ADSR_FLTR_SUSTAIN);
+	  PE.dec(    ADSR_FLTR_SUSTAIN);
 	  val=PE.get(ADSR_FLTR_SUSTAIN);
 	  printf("[x]+[left] => sustain_fltr:%d\n",val);
 	}
