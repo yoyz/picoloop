@@ -114,7 +114,7 @@ void openaudio()
       M[t]=MM[t]->getInput();
       M[t]->init();
       FX[t] = MM[t]->getEffect();                             
-      //M[t]->reset();      
+      M[t]->reset();      
       //M[t]->getADSRAmp().init();
       //M[t]->getADSRFltr().init();
       //M[t]->getVCO().init();
