@@ -3393,12 +3393,17 @@ void seq_update_multiple_time_by_step()
 	}
       else // I paste the PE Object here
 	{
+	  int mt;
 	  P[cty].setPatternElement(cursor+pattern_display_offset[cty],PE);
 	  P[cty].getPatternElement(cursor+pattern_display_offset[cty]).set(NOTE_ON,1);
 	  if (P[cty].getPatternElement(cursor+pattern_display_offset[cty]).get(NOTE1)==0)
 	    {
 	      P[cty].getPatternElement(cursor+pattern_display_offset[cty]).set(NOTE1,25); // NOTE1=25 mean => C2
 	    }
+	  // Now I need to set the MachineType on all step to ensure all the step use the same machine!
+	  mt=P[cty].getPatternElement(cursor+pattern_display_offset[cty]).get(MACHINE_TYPE);
+	  for (i=0;i<MAX_STEP_PER_TRACK;i++)
+	    P[cty].getPatternElement(i).set(MACHINE_TYPE,mt);
 	}
       TK.set(INVERT_TRIG,0);
     }
