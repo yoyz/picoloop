@@ -1,7 +1,5 @@
 using namespace std;
 
-//#include <SDL/SDL.h>
-//#include <SDL/SDL_audio.h>
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -14,7 +12,7 @@ using namespace std;
 #include "Generator.h"
 #include "WaveTableManager.h"
 #include "WaveTable.h"
-//#include "PatternElement.h"
+#include "PatternElement.h"
 
 #include "NoteFreq.h"
 
@@ -69,28 +67,6 @@ int quit;
 int current_op=1;
 int current_machine=1;
 
-int waveform_op1=0;
-int waveform_op2=0;
-
-int attack_amp=0;
-int decay_amp=96;
-int sustain_amp=96;
-int release_amp=96;
-
-int attack_fltr=0;
-int decay_fltr=96;
-int sustain_fltr=96;
-int release_fltr=96;
-
-int osc1_detune=64;
-int osc2_detune=64;
-
-
-int vcomix=63;
-int phase=63;
-
-int cutoff=112;
-int resonance=16;
 
 char * filename;
 
@@ -110,6 +86,7 @@ int    noteon=0;
 int    noteValue=0;
 
 //PatternElement PE;
+PatternElement PE;
 
 void processBuffer_updateMidiSendClockCounter() {}
 void donothing() {}
@@ -162,7 +139,78 @@ void init_video()
   SG.initVideo();
 }
 
+void play_note()
+{
+  int t;
+  if (noteon==1 &&
+    //M[t]->getADSRAmp().getNoteOn()==0)
+      M[t]->getI(NOTE_ON)==0)
+    {
+      printf("Trig note on\n");
 
+      for (t=0;t<1;t++)
+	{
+	  MM[t]->setAmplitude(64);
+	  MM[t]->setMachineType(current_machine);
+	  M[t]  = MM[t]->getInput();                             
+	  FX[t] = MM[t]->getEffect();                             
+
+	  FX[t]->setDepth(0);
+	  FX[t]->setSpeed(0);
+	  M[t]->reset();
+	  M[t]->setI(NOTE1,noteValue);
+	
+	  M[t]->setI(OSC12_MIX,         PE.get(OSC12_MIX));
+	  M[t]->setI(OSC1_PHASE,        PE.get(OSC1_PHASE));
+
+	  M[t]->setI(OSC1_TYPE,         PE.get(OSC1_TYPE));
+	  M[t]->setI(OSC2_TYPE,         PE.get(OSC2_TYPE));
+
+	  M[t]->setI(OSC1_DETUNE,       PE.get(OSC1_DETUNE));
+	  M[t]->setI(OSC2_DETUNE,       PE.get(OSC2_DETUNE));
+
+	  M[t]->setI(ADSR_ENV0_ATTACK,  PE.get(ADSR_AMP_ATTACK));
+	  M[t]->setI(ADSR_ENV0_DECAY,   PE.get(ADSR_AMP_DECAY));
+	  M[t]->setI(ADSR_ENV0_SUSTAIN, PE.get(ADSR_AMP_SUSTAIN));
+	  M[t]->setI(ADSR_ENV0_RELEASE, PE.get(ADSR_AMP_RELEASE));
+
+	  M[t]->setI(ADSR_ENV1_ATTACK,  PE.get(ADSR_FLTR_ATTACK));
+	  M[t]->setI(ADSR_ENV1_DECAY,   PE.get(ADSR_FLTR_DECAY));
+	  M[t]->setI(ADSR_ENV1_SUSTAIN, PE.get(ADSR_FLTR_SUSTAIN));
+	  M[t]->setI(ADSR_ENV1_RELEASE, PE.get(ADSR_FLTR_RELEASE));
+
+	  M[t]->setI(FILTER1_CUTOFF,    PE.get(FILTER1_CUTOFF));
+	  M[t]->setI(FILTER1_RESONANCE, PE.get(FILTER1_RESONANCE));
+
+		     
+	  M[t]->setI(LFO1_DEPTH,     0);
+	  M[t]->setI(LFO1_ENV_AMOUNT,0);
+	  M[t]->setF(LFO1_FREQ,      0);
+
+	  M[t]->setI(LFO2_DEPTH,     0);
+	  M[t]->setI(LFO2_ENV_AMOUNT,0);
+	  M[t]->setF(LFO2_FREQ,      0);
+
+
+
+	  M[t]->setI(NOTE_ON,1);
+
+
+	}
+    }
+
+  if (noteon==0)      
+    {
+      for (t=0;t<1;t++)
+	{
+	  if (M[t]->getI(NOTE_ON)==1)
+	    {
+	      printf("Trig note off\n");
+	      M[t]->setI(NOTE_ON,0);
+	    }
+	}
+    }
+}
 
 void handle_key()
 {
@@ -175,7 +223,9 @@ void handle_key()
 
   mapii keyState=IE.keyState();
   mapii keyRepeat=IE.keyRepeat();
-
+  int val;
+  int last;
+  
   IE.handleKey();
 
   keyState=IE.keyState();
@@ -185,17 +235,6 @@ void handle_key()
 
   if (IE.shouldExit())
     quit=1;
-
-  /*
-  if(lastKey == SDLK_UP && lastEvent ==  SDL_KEYUP)
-    {
-    if (divide<=32) divide=32;
-    octave=octave+12;
-    redraw=true;
-    printf("key up octave:%d\n",octave);
-    }
-  */
-
 
   if (keyRepeat[SDLK_F1]%16
       )
@@ -287,17 +326,18 @@ void handle_key()
     {
       if (current_op==1)
 	{
-	  waveform_op1=waveform_op1-1;
-	  if (waveform_op1 <0) waveform_op1=3;
-	  printf("[w]+[left] => waveform_op1:%d\n",waveform_op1);
+	  last=PE.get(OSC1_TYPE);
+	  PE.dec(OSC1_TYPE);
+	  if (PE.get(OSC1_TYPE)==0 && last==0) PE.set(OSC1_TYPE,4);
+	  printf("[w]+[left] => waveform_op1:%d\n",PE.get(OSC1_TYPE));
 	}
       if (current_op==2)
 	{
-	  waveform_op2=waveform_op2-1;
-	  if (waveform_op2 <0) waveform_op2=3;
-	  printf("[w]+[left] => waveform_op2:%d\n",waveform_op2);
+	  last=PE.get(OSC2_TYPE);
+	  PE.dec(OSC2_TYPE);
+	  if (PE.get(OSC2_TYPE)==0 && last==0) PE.set(OSC2_TYPE,4);
+	  printf("[w]+[left] => waveform_op2:%d\n",PE.get(OSC2_TYPE));
 	}
-
       redraw=true;
     }
 
@@ -311,26 +351,22 @@ void handle_key()
     {
       if (current_op==1)
 	{
-	  waveform_op1=waveform_op1+1;
-	  if (waveform_op1 >3) waveform_op1=0;
-	  printf("[w]+[right] => waveform_op1:%d\n",waveform_op1);
+	  last=PE.get(OSC1_TYPE);
+	  PE.inc(OSC1_TYPE);
+	  if (PE.get(OSC1_TYPE)>=3) PE.set(OSC1_TYPE,0);
+	  val=PE.get(OSC1_TYPE);
+	  printf("[w]+[right] => waveform_op1:%d\n",val);
 	}
       if (current_op==2)
 	{
-	  waveform_op2=waveform_op2+1;
-	  if (waveform_op2 >3) waveform_op2=0;
-	  printf("[w]+[right] => waveform_op2:%d\n",waveform_op2);
+	  last=PE.get(OSC2_TYPE);
+	  PE.inc(OSC2_TYPE);
+	  if (PE.get(OSC2_TYPE)>=3) PE.set(OSC2_TYPE,0);
+	  val=PE.get(OSC2_TYPE);
+	  printf("[w]+[right] => waveform_op2:%d\n",val);
 	}
-
       redraw=true;
     }
-
-
-
-
-
-
-
 
   // AMP ENV ATTACK_AMP
   if (keyRepeat[SDLK_x]%16   && 
@@ -341,17 +377,16 @@ void handle_key()
     {
       if (current_op==1)
 	{
-	  attack_amp=attack_amp-1;
-	  if (attack_amp <=1) attack_amp=0;
-	  printf("[x]+[down] => attack_amp:%d\n",attack_amp);
+	  PE.dec(ADSR_AMP_ATTACK);
+	  val=PE.get(ADSR_AMP_ATTACK);
+	  printf("[x]+[down] => attack_amp:%d\n",val);
 	}
       if (current_op==2)
 	{
-	  attack_fltr=attack_fltr-1;
-	  if (attack_fltr <=1) attack_fltr=0;
-	  printf("[x]+[down] => attack_fltr:%d\n",attack_fltr);
+	  PE.dec(ADSR_FLTR_ATTACK);
+	  val=PE.get(ADSR_FLTR_ATTACK);
+	  printf("[x]+[down] => attack_fltr:%d\n",val);
 	}
-
       redraw=true;
 
     }
@@ -364,15 +399,15 @@ void handle_key()
     {
       if (current_op==1)
 	{
-	  attack_amp=attack_amp+1;
-	  if (attack_amp >=127) attack_amp=127;
-	  printf("[x]+[up] => attack_amp:%d\n",attack_amp);
+	  PE.inc(ADSR_AMP_ATTACK);
+	  val=PE.get(ADSR_AMP_ATTACK);
+	  printf("[x]+[up] => attack_amp:%d\n",val);
 	}
       if (current_op==2)
 	{
-	  attack_fltr=attack_fltr+1;
-	  if (attack_fltr >=127) attack_fltr=127;
-	  printf("[x]+[up] => attack_fltr:%d\n",attack_fltr);
+	  PE.inc(ADSR_FLTR_ATTACK);
+	  val=PE.get(ADSR_FLTR_ATTACK);
+	  printf("[x]+[up] => attack_fltr:%d\n",val);
 	}
       redraw=true;
     }
@@ -382,20 +417,21 @@ void handle_key()
       keyRepeat[SDLK_RIGHT]%16 
       )
     {
+      int val;
       if (current_op==1)
 	{
-	  release_amp=release_amp+1;
-	  if (release_amp >=127) release_amp=127;
-	  printf("[x]+[right] => release_amp:%d\n",release_amp);
+	  PE.inc(ADSR_AMP_RELEASE);
+	  val=PE.get(ADSR_AMP_RELEASE);
+	  printf("[x]+[right] => release_amp:%d\n",val);
 	}
       if (current_op==2)
 	{
-	  release_fltr=release_fltr+1;
-	  if (release_fltr >=127) release_fltr=127;
-	  printf("[x]+[right] => release_amp:%d\n",release_fltr);
+	  PE.inc(ADSR_AMP_RELEASE);
+	  val=PE.get(ADSR_AMP_RELEASE);	  
+	  printf("[x]+[right] => release_fltr:%d\n",val);
 	}
 
-	  redraw=true;
+      redraw=true;
     }
 
 
@@ -405,15 +441,15 @@ void handle_key()
     {
       if (current_op==1)
 	{
-	  release_amp=release_amp-1;
-	  if (release_amp <=1) release_amp=1;
-	  printf("[x]+[left] => release_amp:%d\n",release_amp);
+	  PE.dec(ADSR_AMP_RELEASE);
+	  val=PE.get(ADSR_AMP_RELEASE);	  
+	  printf("[x]+[left] => release_amp:%d\n",val);
 	}
       if (current_op==2)
 	{
-	  release_fltr=release_fltr-1;
-	  if (release_fltr <=1) release_fltr=1;
-	  printf("[x]+[left] => release_fltr:%d\n",release_fltr);
+	  PE.dec(ADSR_FLTR_RELEASE);
+	  val=PE.get(ADSR_FLTR_RELEASE);	  	  
+	  printf("[x]+[left] => release_fltr:%d\n",val);
 	}
       redraw=true;
 
@@ -429,15 +465,15 @@ void handle_key()
     {
       if (current_op==1)
 	{
-	  decay_amp=decay_amp-1;
-	  if (decay_amp <=1) decay_amp=0;
-	  printf("[x]+[down] => decay_amp:%d\n",decay_amp);
+	  PE.dec(ADSR_AMP_DECAY);
+	  val=PE.get(ADSR_AMP_DECAY);	  
+	  printf("[x]+[down] => decay_amp:%d\n",val);
 	}
       if (current_op==2)
 	{
-	  decay_fltr=decay_fltr-1;
-	  if (decay_fltr <=1) decay_fltr=0;
-	  printf("[x]+[down] => decay_fltr:%d\n",decay_fltr);
+	  PE.dec(ADSR_FLTR_DECAY);
+	  val=PE.get(ADSR_FLTR_DECAY);	  	  
+	  printf("[x]+[down] => decay_fltr:%d\n",val);
 	}
       redraw=true;
 
@@ -451,39 +487,35 @@ void handle_key()
     {
       if (current_op==1)
 	{
-	  decay_amp=decay_amp+1;
-	  if (decay_amp >=127) decay_amp=127;
-	  printf("[x]+[up] => decay_amp:%d\n",decay_amp);
+	  PE.inc(ADSR_AMP_DECAY);
+	  val=PE.get(ADSR_AMP_DECAY);	  	  
+	  printf("[x]+[up] => decay_amp:%d\n",val);
 	}
       if (current_op==2)
 	{
-	  decay_fltr=decay_fltr+1;
-	  if (decay_fltr >=127) decay_fltr=127;
-	  printf("[x]+[up] => decay_fltr:%d\n",decay_fltr);
+	  PE.inc(ADSR_FLTR_DECAY);
+	  val=PE.get(ADSR_FLTR_DECAY);	  	  
+	  printf("[x]+[up] => decay_fltr:%d\n",val);
 	}
-
       redraw=true;
-
     }
 
   // AMP ENV 
   if (keyRepeat[SDLK_c]%16    && 
       keyRepeat[SDLK_RIGHT]%16 
       )
-      //&& 
-      //lastEvent ==  SDL_KEYDOWN)
     {
       if (current_op==1)
 	{
-	  sustain_amp=sustain_amp+1;
-	  if (sustain_amp >=127) sustain_amp=127;
-	  printf("[x]+[right] => sustain_amp:%d\n",sustain_amp);
+	  PE.inc(ADSR_AMP_SUSTAIN);
+	  val=PE.get(ADSR_AMP_SUSTAIN);	  	  
+	  printf("[x]+[right] => sustain_amp:%d\n",val);
 	}
       if (current_op==2)
 	{
-	  sustain_fltr=sustain_fltr+1;
-	  if (sustain_fltr >=127) sustain_fltr=127;
-	  printf("[x]+[right] => sustain_fltr:%d\n",sustain_fltr);
+	  PE.inc(ADSR_FLTR_SUSTAIN);
+	  val=PE.get(ADSR_FLTR_SUSTAIN);
+	  printf("[x]+[right] => sustain_fltr:%d\n",val);
 	}
 
       redraw=true;
@@ -498,24 +530,20 @@ void handle_key()
     {
       if (current_op==1)
 	{
-	  sustain_amp=sustain_amp-1;
-	  if (sustain_amp <=1) sustain_amp=1;
-	  printf("[x]+[left] => sustain_amp:%d\n",sustain_amp);
+	  PE.dec(ADSR_AMP_SUSTAIN);
+	  val=PE.get(ADSR_AMP_SUSTAIN);
+	  printf("[x]+[left] => sustain_amp:%d\n",val);
 	}
       if (current_op==2)
 	{
-	  sustain_fltr=sustain_fltr-1;
-	  if (sustain_fltr <=1) sustain_fltr=1;
-	  printf("[x]+[left] => sustain_fltr:%d\n",sustain_fltr);
+	  PE.dec(ADSR_FLTR_SUSTAIN);
+	  val=PE.get(ADSR_FLTR_SUSTAIN);
+	  printf("[x]+[left] => sustain_fltr:%d\n",val);
 	}
 
       redraw=true;
 
     }
-
-
-
-
 
   // VCO MIX
   if (keyRepeat[SDLK_b]%64    && 
@@ -524,49 +552,43 @@ void handle_key()
       //lastEvent ==  SDL_KEYDOWN)
       )
     {
-      vcomix=vcomix-1;
-      if (vcomix <=1) vcomix=1;
+      PE.dec(OSC12_MIX);
+      val=PE.get(OSC12_MIX);
+      printf("[v]+[down] => vcomix|FreqMultOp1:%d\n",val);
       redraw=true;
-      printf("[v]+[down] => vcomix|FreqMultOp1:%d\n",vcomix);
     }
 
 
   if (keyRepeat[SDLK_b]%64    && 
       keyRepeat[SDLK_UP]%64   
-      //&& 
-      //lastEvent ==  SDL_KEYDOWN)
       )
     {
-      vcomix=vcomix+1;
-      if (vcomix >=127) vcomix=127;
+      PE.inc(OSC12_MIX);
+      val=PE.get(OSC12_MIX);
+      printf("[v]+[up] => vcomix|FreqMultOp1:%d\n",val);
       redraw=true;
-      printf("[v]+[up] => vcomix|FreqMultOp1:%d\n",vcomix);
     }
 
 
   if (keyRepeat[SDLK_b]%64    && 
       keyRepeat[SDLK_LEFT]%64 
-      //&& 
-      //lastEvent ==  SDL_KEYDOWN)
       )
     {
-      phase=phase-1;
-      if (phase <=1) phase=1;
+      PE.dec(OSC1_PHASE);
+      val=PE.get(OSC1_PHASE);
+      printf("[v]+[left] => phase|FreqMultOp2:%d\n",val);
       redraw=true;
-      printf("[v]+[left] => phase|FreqMultOp2:%d\n",phase);
     }
 
 
   if (keyRepeat[SDLK_b]%64    && 
       keyRepeat[SDLK_RIGHT]%64   
-      //&& 
-      //lastEvent ==  SDL_KEYDOWN)
       )
     {
-      phase=phase+1;
-      if (phase >=127) phase=127;
+      PE.inc(OSC1_PHASE);
+      val=PE.get(OSC1_PHASE);
+      printf("[v]+[right] => phase|FreqMultOp2:%d\n",val);
       redraw=true;
-      printf("[v]+[right] => phase|FreqMultOp2:%d\n",phase);
     }
 
 
@@ -582,57 +604,46 @@ void handle_key()
 
   if (keyRepeat[SDLK_v]%16    && 
       keyRepeat[SDLK_DOWN]%16 
-      //&& 
-      //lastEvent ==  SDL_KEYDOWN)
       )
     {
-      cutoff=cutoff-1;
-      if (cutoff <=1) cutoff=1;
+      PE.dec(FILTER1_CUTOFF);
+      val=PE.get(FILTER1_CUTOFF);
+      printf("[c]+[down] => cutoff:%d\n",val);
       redraw=true;
-      printf("[c]+[down] => cutoff:%d\n",cutoff);
     }
 
 
   if (keyRepeat[SDLK_v]%16    && 
       keyRepeat[SDLK_UP]%16   
-      //&& 
-      //lastEvent ==  SDL_KEYDOWN)
       )
     {
-      cutoff=cutoff+1;
-      if (cutoff >=126) cutoff=126;
+      PE.inc(FILTER1_CUTOFF);
+      val=PE.get(FILTER1_CUTOFF);
+      printf("[c]+[up] => cutoff:%d\n",val);
       redraw=true;
-      printf("[c]+[up] => cutoff:%d\n",cutoff);
     }
 
 
   if (keyRepeat[SDLK_v]%64    && 
       keyRepeat[SDLK_RIGHT]%64 
-      //&& 
-      //lastEvent ==  SDL_KEYDOWN)
       )
     {
-      resonance=resonance+1;
-      if (resonance >=127) resonance=127;
+      PE.inc(FILTER1_RESONANCE);
+      val=PE.get(FILTER1_RESONANCE);      
+      printf("[c]+[right] => resonance:%d\n",val);
       redraw=true;
-      printf("[c]+[right] => resonance:%d\n",resonance);
     }
 
 
   if (keyRepeat[SDLK_v]%64    && 
       keyRepeat[SDLK_LEFT]%64   
-      //&& 
-      //lastEvent ==  SDL_KEYDOWN)
       )
     {
-      resonance=resonance-1;
-      if (resonance <=1) resonance=1;
+      PE.dec(FILTER1_RESONANCE);
+      val=PE.get(FILTER1_RESONANCE);      
+      printf("[c]+[left] => resonance:%d\n",val);
       redraw=true;
-      printf("[c]+[left] => resonance:%d\n",resonance);
     }
-
-
-
 
   //
   // osc1_detune osc2_detune
@@ -641,10 +652,10 @@ void handle_key()
       keyRepeat[SDLK_DOWN]%16 
       )
     {
-      osc1_detune=osc1_detune-1;
-      if (osc1_detune <=0) osc1_detune=0;
+      PE.dec(OSC1_DETUNE);
+      val=PE.get(OSC1_DETUNE);      
+      printf("[n]+[down] => osc1_detune:%d\n",val);
       redraw=true;
-      printf("[n]+[down] => osc1_detune:%d\n",osc1_detune);
     }
 
 
@@ -652,10 +663,10 @@ void handle_key()
       keyRepeat[SDLK_UP]%16   
       )
     {
-      osc1_detune=osc1_detune+1;
-      if (osc1_detune >=126) osc1_detune=126;
+      PE.inc(OSC1_DETUNE);
+      val=PE.get(OSC1_DETUNE);      
+      printf("[n]+[up] => osc1_detune:%d\n",val);
       redraw=true;
-      printf("[n]+[up] => osc1_detune:%d\n",osc1_detune);
     }
 
 
@@ -663,10 +674,10 @@ void handle_key()
       keyRepeat[SDLK_RIGHT]%64 
       )
     {
-      osc2_detune=osc2_detune+1;
-      if (osc2_detune >=127) osc2_detune=127;
+      PE.inc(OSC2_DETUNE);
+      val=PE.get(OSC2_DETUNE);      
+      printf("[n]+[right] => osc2_detune:%d\n",val);
       redraw=true;
-      printf("[n]+[right] => osc2_detune:%d\n",osc2_detune);
     }
 
 
@@ -674,14 +685,11 @@ void handle_key()
       keyRepeat[SDLK_LEFT]%64   
       )
     {
-      osc2_detune=osc2_detune-1;
-      if (osc2_detune <=0) osc2_detune=1;
+      PE.dec(OSC2_DETUNE);
+      val=PE.get(OSC2_DETUNE);      
+      printf("[n]+[left] => osc2_detune:%d\n",val);
       redraw=true;
-      printf("[n]+[left] => osc2_detune:%d\n",osc2_detune);
     }
-
-
-
 
 
   if(lastKey==SDLK_PAGEUP)
@@ -699,17 +707,6 @@ void handle_key()
       redraw=true;
       printf("key pgdown %f\n",zoom);
     }
-
-  //  if (lastKey==SDLK_w) { attack--; printf("attack %d\n",attack); }
-  //  if (lastKey==SDLK_x) { attack++; printf("attack %d\n",attack); }
-
-  //  if (lastKey==SDLK_c) { release--; printf("release %d\n",release); }
-  //  if (lastKey==SDLK_v) { release++; printf("release %d\n",release); }
-
-  //  if (lastKey==SDLK_b) { vcomix--; printf("vco %d\n",vcomix); if (vcomix<=0  ) vcomix=0;   }
-  //  if (lastKey==SDLK_n) { vcomix++; printf("vco %d\n",vcomix); if (vcomix>=127) vcomix=127; }
-
-
   if (lastEvent ==  SDL_KEYDOWN)
     {
       if (lastKey==SDLK_q) { printf("key q\n"); noteValue=0+octave;  noteon=1; }
@@ -754,111 +751,6 @@ void handle_key()
       if (lastKey==SDLK_m) { printf("key m\n"); noteValue=16+octave; noteon=0; }
     }
   IE.clearLastKeyEvent(); 
-
-  //  printf("%%%%%%%%%%%%%%%%%%%%%%%% noteon:%d\n",noteon);
-  
-  //noteon=0;
-
-  if (noteon==1 &&
-    //M[t]->getADSRAmp().getNoteOn()==0)
-      M[t]->getI(NOTE_ON)==0)
-    {
-      printf("Trig note on\n");
-
-      for (t=0;t<1;t++)
-	{
-	  //float   f=PE.getNoteFreq();
-	  //int     i=f;
-	  //float   f_c;
-	  //float   f_r;
-
-	  //f_c=cutoff;
-	  //f_r=resonance;
-
-
-	  //f_c=f_c/256;
-	  //f_r=f_r/8;
-	  
-	  //printf("[Freq:%f]\n",f);
-
-	  MM[t]->setAmplitude(64);
-	  MM[t]->setMachineType(current_machine);
-	  //M[t]  = MM[t]->getInput();                             
-	  //FX[t] = MM[t]->getEffect();                             
-
-	  M[t]  = MM[t]->getInput();                             
-	  FX[t] = MM[t]->getEffect();                             
-
-	  FX[t]->setDepth(0);
-	  FX[t]->setSpeed(0);
-
-	  //MM[t]->setMachineType(1);
-	  //MM[t]->setAmplitude(64);
-	  //M[t]->setF(OSC1_FREQ,f);
-
-	  M[t]->reset();
-	  M[t]->setI(NOTE1,noteValue);
-
-	  M[t]->setI(OSC1_TYPE,2);
-	  M[t]->setI(OSC2_TYPE,2);
-	
-	  M[t]->setI(OSC12_MIX,vcomix);
-	  M[t]->setI(OSC1_PHASE,phase);
-
-	  M[t]->setI(OSC1_TYPE,waveform_op1);
-	  M[t]->setI(OSC2_TYPE,waveform_op2);
-
-	  M[t]->setI(OSC1_DETUNE, osc1_detune);
-	  M[t]->setI(OSC2_DETUNE, osc2_detune);
-
-
-	  M[t]->setI(ADSR_ENV0_ATTACK,attack_amp);
-	  M[t]->setI(ADSR_ENV0_DECAY,decay_amp);
-	  M[t]->setI(ADSR_ENV0_SUSTAIN,sustain_amp);
-	  M[t]->setI(ADSR_ENV0_RELEASE,release_amp);
-
-	  M[t]->setI(ADSR_ENV1_ATTACK,attack_fltr);
-	  M[t]->setI(ADSR_ENV1_ATTACK,decay_fltr);
-	  M[t]->setI(ADSR_ENV1_ATTACK,sustain_fltr);
-	  M[t]->setI(ADSR_ENV1_RELEASE,release_fltr);
-
-	  M[t]->setI(LFO1_DEPTH,     0);
-	  M[t]->setI(LFO1_ENV_AMOUNT,0);
-	  M[t]->setF(LFO1_FREQ,      0);
-
-	  M[t]->setI(LFO2_DEPTH,     0);
-	  M[t]->setI(LFO2_ENV_AMOUNT,0);
-	  M[t]->setF(LFO2_FREQ,      0);
-
-
-	  M[t]->setI(FILTER1_CUTOFF,cutoff);
-	  M[t]->setI(FILTER1_RESONANCE,resonance);
-
-	  M[t]->setI(NOTE_ON,1);
-
-
-	}
-    }
-
-  if (noteon==0)      
-      
-      //&& 
-      //M[t]->getADSR().getNoteOn()==1)
-      //M[t]->set(NOTE_ON,0);
-    {
-      //exit(0);
-      for (t=0;t<1;t++)
-	{
-	  if (M[t]->getI(NOTE_ON)==1)
-	    {
-	      printf("Trig note off\n");
-	      M[t]->setI(NOTE_ON,0);
-	    }
-	}
-    }
-
-  
-  //printf("key pressed sleeping 10ms\n");
   redraw=true;
   SDL_Delay(10);
 }
@@ -1090,6 +982,53 @@ void wtg()
 
 }
 
+void initPE()
+{
+  int waveform_op1=0;
+  int waveform_op2=0;
+  
+  int attack_amp=0;
+  int decay_amp=96;
+  int sustain_amp=96;
+  int release_amp=96;
+  
+  int attack_fltr=0;
+  int decay_fltr=96;
+  int sustain_fltr=96;
+  int release_fltr=96;
+  
+  int osc1_detune=64;
+  int osc2_detune=64;
+    
+  int vcomix=63;
+  int phase=63;
+  
+  int cutoff=112;
+  int resonance=16;
+
+  PE.set(OSC1_TYPE,waveform_op1);
+  PE.set(OSC2_TYPE,waveform_op2);
+  
+  PE.set(ADSR_AMP_ATTACK,attack_amp);
+  PE.set(ADSR_AMP_DECAY,decay_amp);
+  PE.set(ADSR_AMP_SUSTAIN,sustain_amp);
+  PE.set(ADSR_AMP_RELEASE,release_amp);
+
+  PE.set(ADSR_FLTR_ATTACK,attack_fltr);
+  PE.set(ADSR_FLTR_DECAY,decay_fltr);
+  PE.set(ADSR_FLTR_SUSTAIN,sustain_fltr);
+  PE.set(ADSR_FLTR_RELEASE,release_fltr);
+
+  PE.set(OSC1_DETUNE,osc1_detune);
+  PE.set(OSC2_DETUNE,osc2_detune);
+
+  PE.set(OSC12_MIX,vcomix);
+  PE.set(OSC1_PHASE,phase);
+
+  PE.set(FILTER1_CUTOFF,cutoff);
+  PE.set(FILTER1_RESONANCE,resonance);
+}
+
 
 int main(int argc,char ** argv)
 {	  
@@ -1127,6 +1066,7 @@ int main(int argc,char ** argv)
       prepare_vector_buffer();
       draw_screen();
       handle_key();
+      play_note();
       //quit=1;
     }  
   DPRINTF("[closeVideo output]");
