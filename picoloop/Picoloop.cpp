@@ -29,12 +29,14 @@ int main()
   int l=0;
 
   sdls=(SDL_Surface*)malloc(sizeof(int)*8*8);
-
-  if (sg.initVideo()==0)
+  printf("before init\n");
+  if (sg.initVideo()!=0)
     exit(1);
-  //  sg.initTTF();
+  printf("after init\n");
+  //sg.initTTF();
   sg.openBMPFont();
   sg.openTTFFont();
+
   /*
   */
   for (l=0;l<16;l++)

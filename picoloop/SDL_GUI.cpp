@@ -49,7 +49,7 @@ int SDL_GUI::initVideo()
        <0)
     {
       DPRINTF("Couldn't initialize SDL: %s", SDL_GetError());
-      return 0;
+      return -1;
     }
 #endif   
 
@@ -57,7 +57,7 @@ int SDL_GUI::initVideo()
   if ( SDL_Init(SDL_INIT_VIDEO)<0)
     {
       DPRINTF("Couldn't initialize SDL: %s", SDL_GetError());
-      return 0;
+      return -1;
     }
 #endif   
 
@@ -126,12 +126,12 @@ int SDL_GUI::initVideo()
     {
       DPRINTF("Couldn't set video mode: %s", SDL_GetError());
       SDL_Quit();
-      return 0;
+      return -1;
     }
 
   SDL_WM_SetCaption("Picoloop", NULL);
   
-  return 1;
+  return 0;
 }
 #endif // __SDL12__
 
@@ -152,7 +152,7 @@ int SDL_GUI::initVideo()
   if ( SDL_Init(SDL_INIT_VIDEO)<0)
     {
       DPRINTF("Couldn't initialize SDL: %s", SDL_GetError());
-      return 0;
+      return -1;
     }
   fprintf(stderr,"After SDL_Init\n");
   fprintf(stderr,"Before SDL_CreateWindow\n");
@@ -166,7 +166,7 @@ int SDL_GUI::initVideo()
   if (window == NULL) {
     // In the case that the window could not be made...
     fprintf(stderr,"Could not create window: %s\n", SDL_GetError());
-    return 1;
+    return -1;
   }
 #endif // not defined PSVITA
   screen=SDL_GetWindowSurface( window );
