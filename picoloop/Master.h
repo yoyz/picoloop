@@ -495,7 +495,7 @@ enum {
 #endif
 
 
-#ifdef RASPIBOY
+#ifdef LINUX_RASPIBOY
 //#define __FPU__         1
 //#define __RAM512MIB__   1
 //#define __RTMIDI__      1
@@ -520,24 +520,24 @@ enum {
 #define RASPIBOY_BUTTON_Y        3 // Y
 #define RASPIBOY_BUTTON_L        4
 #define RASPIBOY_BUTTON_R        5
-//#define RASPIBOY_BUTTON_DOWN      
-//#define RASPIBOY_BUTTON_LEFT      
-//#define RASPIBOY_BUTTON_UP        
-//#define RASPIBOY_BUTTON_RIGHT     
 #define RASPIBOY_BUTTON_SELECT   8    
 #define RASPIBOY_BUTTON_START    9
+#define RASPIBOY_BUTTON_DOWN     10
+#define RASPIBOY_BUTTON_LEFT     11 
+#define RASPIBOY_BUTTON_UP       12
+#define RASPIBOY_BUTTON_RIGHT    13
 
 
-// BEGIN PSP SDL 
+// BEGIN PSP SDL 1
 #define BUTTON_B            RASPIBOY_BUTTON_B
 #define BUTTON_A            RASPIBOY_BUTTON_A
 #define BUTTON_X            RASPIBOY_BUTTON_X
 #define BUTTON_Y            RASPIBOY_BUTTON_Y
 
-//#define BUTTON_UP           PSP_BUTTON_UP
-//#define BUTTON_DOWN         PSP_BUTTON_DOWN
-//#define BUTTON_LEFT         PSP_BUTTON_LEFT
-//#define BUTTON_RIGHT        PSP_BUTTON_RIGHT
+#define BUTTON_UP           RASPIBOY_BUTTON_UP
+#define BUTTON_DOWN         RASPIBOY_BUTTON_DOWN
+#define BUTTON_LEFT         RASPIBOY_BUTTON_LEFT
+#define BUTTON_RIGHT        RASPIBOY_BUTTON_RIGHT
 
 #define BUTTON_SELECT       RASPIBOY_BUTTON_SELECT
 #define BUTTON_START        RASPIBOY_BUTTON_START
