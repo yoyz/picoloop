@@ -47,11 +47,13 @@ int AudioDriver::getBufferFrame()
 int AudioDriver::startAudio()
 {
   SDL_PauseAudio(0);
+  return 0;
 }
 
 int AudioDriver::stopAudio()
 {
   SDL_PauseAudio(1);
+  return 0;
 }
 
 int AudioDriver::openAudio()
@@ -67,6 +69,7 @@ int AudioDriver::openAudio()
   DPRINTF("SDL format   : %d\n",sdlAudioSpecObtained->format);
   DPRINTF("SDL channels : %d\n",sdlAudioSpecObtained->channels);
   DPRINTF("SDL samples  : %d\n",sdlAudioSpecObtained->samples);
+  return 0;
 }
 
 
@@ -74,4 +77,5 @@ int AudioDriver::closeAudio()
 {
   SDL_CloseAudio();
   //SDL_QuitSubSystem(SDL_INIT_AUDIO);
+  return 0;
 }
