@@ -495,6 +495,61 @@ enum {
 #endif
 
 
+#ifdef RASPIBOY
+//#define __FPU__         1
+//#define __RAM512MIB__   1
+//#define __RTMIDI__      1
+
+#define MAX_PATTERN_BY_PROJECT 32
+#define SCREEN_MULT     1
+#define SCREEN_WIDTH	320
+#define SCREEN_HEIGHT	240
+#define SCREEN_DEPTH	16
+
+#define KEY_REPEAT_INTERVAL_SMALLEST  6
+#define KEY_REPEAT_INTERVAL_SMALL     6
+#define KEY_REPEAT_INTERVAL_MIDDLE    6
+#define KEY_REPEAT_INTERVAL_LONG      160
+#define KEY_REPEAT_INTERVAL_LONGEST   160
+
+#define DEFAULTSAMPLES   2048
+
+#define RASPIBOY_BUTTON_X        0 // X
+#define RASPIBOY_BUTTON_A        1 // A
+#define RASPIBOY_BUTTON_B        2 // B
+#define RASPIBOY_BUTTON_Y        3 // Y
+#define RASPIBOY_BUTTON_L        4
+#define RASPIBOY_BUTTON_R        5
+//#define RASPIBOY_BUTTON_DOWN      
+//#define RASPIBOY_BUTTON_LEFT      
+//#define RASPIBOY_BUTTON_UP        
+//#define RASPIBOY_BUTTON_RIGHT     
+#define RASPIBOY_BUTTON_SELECT   8    
+#define RASPIBOY_BUTTON_START    9
+
+
+// BEGIN PSP SDL 
+#define BUTTON_B            RASPIBOY_BUTTON_B
+#define BUTTON_A            RASPIBOY_BUTTON_A
+#define BUTTON_X            RASPIBOY_BUTTON_X
+#define BUTTON_Y            RASPIBOY_BUTTON_Y
+
+//#define BUTTON_UP           PSP_BUTTON_UP
+//#define BUTTON_DOWN         PSP_BUTTON_DOWN
+//#define BUTTON_LEFT         PSP_BUTTON_LEFT
+//#define BUTTON_RIGHT        PSP_BUTTON_RIGHT
+
+#define BUTTON_SELECT       RASPIBOY_BUTTON_SELECT
+#define BUTTON_START        RASPIBOY_BUTTON_START
+
+#define BUTTON_L            RASPIBOY_BUTTON_L
+#define BUTTON_R            RASPIBOY_BUTTON_R
+
+#define KEYPRESSED          SDL_JOYBUTTONDOWN
+#define KEYRELEASED         SDL_JOYBUTTONUP
+// BEGIN PSP SDL
+#endif
+
 
 
 #ifdef PSP
