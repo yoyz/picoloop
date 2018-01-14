@@ -341,12 +341,40 @@ int InputManager::handleKey()
 	  this->updateState(event.jbutton.button,1);
 	  break;
 
+	
+        case SDL_JOYAXISMOTION:  /* Handle Joystick Motion */
+	  if ( ( event.jaxis.value < -3200 ) || (event.jaxis.value > 3200 ) ) 
+	    {
+	      if( event.jaxis.axis == 0) 
+	        {
+		  /* Left-right movement code goes here */
+	          if ( event.jaxis.value < -3200) this->updateState(BUTTON_LEFT,1);
+	          if ( event.jaxis.value >  3200) this->updateState(BUTTON_RIGHT,1);
+		  keypressrelease=1;
+	        }
+              if( event.jaxis.axis == 1) 
+	        {
+		  /* Up-Down movement code goes here */
+	          if ( event.jaxis.value < -3200) this->updateState(BUTTON_DOWN,1);
+	          if ( event.jaxis.value >  3200) this->updateState(BUTTON_UP,1);
+		  keypressrelease=1;
+                }
+	    }
 	}
+      
       if (key)
 	DPRINTF("key new event:%d %d %s",event.type,event.key.keysym.sym,SDL_GetKeyName(event.key.keysym.sym));
       if (joy)
 	DPRINTF("joy new event:%d %d   ",event.type,event.jbutton.button);
 
+    }
+  if (event.type!=SDL_JOYAXISMOTION && keypressrelease==0)
+    {
+      this->updateState(BUTTON_UP   ,0);
+      this->updateState(BUTTON_DOWN ,0);
+      this->updateState(BUTTON_LEFT ,0);
+      this->updateState(BUTTON_RIGHT,0);
+      keypressrelease=1;
     }
 #endif
   if (keypressrelease==0) //need to update the state to increment keypress
