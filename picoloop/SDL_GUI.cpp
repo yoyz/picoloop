@@ -84,11 +84,11 @@ int SDL_GUI::initVideo()
 			    SCREEN_DEPTH,			
 			    SDL_HWSURFACE|SDL_DOUBLEBUF);
   #endif
-  #ifdef RASPIBOY
+  #ifdef LINUX_RASPIBOY
   screen = SDL_SetVideoMode(SCREEN_WIDTH*SCREEN_MULT, 
 			    SCREEN_HEIGHT*SCREEN_MULT, 
 			    SCREEN_DEPTH,			
-			    SDL_HWSURFACE|SDL_DOUBLEBUF);
+			    SDL_SWSURFACE);
   SDL_Joystick *joystick = NULL;
   SDL_JoystickEventState(SDL_ENABLE);
   joystick = SDL_JoystickOpen(0);
