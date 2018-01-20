@@ -19,7 +19,7 @@
 typedef int * mapii;
 #endif
 #ifdef __SDL20__
-typedef map<int32_t,int32_t> mapii;
+typedef std::map<int32_t,int32_t> mapii;
 #endif
 
 class InputManager
