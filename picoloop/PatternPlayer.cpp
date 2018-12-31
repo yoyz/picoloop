@@ -420,6 +420,10 @@ int          midi_tick_number;
 struct timeval timev_now,timev_prev,timev_lastclock;
 time_t difft=0;
 
+int opendebugprintf=0;
+FILE * fdebugprintf=NULL;
+
+
 void seq_update_track(int t);
 int handle_key_two_button(int buttonPressed,int buttonKeyRepeat,int repeatInterval,int machineParam,int paramValue,int all);
 
@@ -4363,5 +4367,6 @@ int main(int argc,char **argv)
   DPRINTF("Exiting PatternPlayer");
   finish_psp();
   finish_vita();
+  CLOSEDPRINTF();
 }
 

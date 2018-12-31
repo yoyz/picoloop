@@ -1133,6 +1133,8 @@ enum
 #define DEBUGPRINTF 0
 #else
 #define DEBUGPRINTF 1
+extern int opendebugprintf;
+extern FILE * fdebugprintf;
 #endif
 /*
 #if defined(PSVITA) && defined(DEBUGPRINTF)
@@ -1151,16 +1153,33 @@ enum
   } while (0)
 #endif
 
+#if defined(PSVITA) && defined(DEBUGPRINTF)
+#define CLOSEDPRINTF() do { } while(0)
+#endif
+
+#if !defined(PSVITA) && defined(DEBUGPRINTF)
+#define CLOSEDPRINTF() do { fclose(fdebugprintf); } while(0)
+#endif
+
+
 #if !defined(PSVITA) && defined(DEBUGPRINTF) 
-#define DPRINTF(FMT, ARGS...) do { \
-  if (DEBUGPRINTF) \
-    fprintf(stderr, "%.40s:%.8d [" FMT "]\n", __FUNCTION__, __LINE__, ## ARGS); \
+#define DPRINTF(FMT, ARGS...) do {					\
+    if (DEBUGPRINTF)							\
+      if (opendebugprintf==0)						\
+	{ fdebugprintf=fopen("picoloop.log","w"); opendebugprintf=1; }	\
+    if (DEBUGPRINTF)							\
+      {									\
+	fprintf(fdebugprintf, "%.40s:%.8d [" FMT "]\n", __FUNCTION__, __LINE__, ## ARGS); \
+      }									\
   } while (0)
 #endif
+//	fprintf(stderr, "%.40s:%.8d [" FMT "]\n", __FUNCTION__, __LINE__, ## ARGS); \
 
 #if !defined(DEBUGPRINTF)
 #define DPRINTF(FMT, ARGS...) do { } while(0)
 #endif
+
+
 
 #endif
 
