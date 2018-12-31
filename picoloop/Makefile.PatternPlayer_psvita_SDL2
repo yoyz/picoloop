@@ -53,7 +53,7 @@ OBJ_DIRS := out/ out/Machine/Picosynth/ out/Machine/Picodrum out/Machine/Dbopl/ 
 OBJS := $(addprefix out/, $(SRC_CPP:%.cpp=%.o))
 
 #LIBS := -lSceDisplay_stub -lSceCtrl_stub  -lSceAudio_stub -lSDL2  -lSceSysmodule_stub -lSceGxm_stub -lvita2d
-LIBS := -L. -lSDL2_ttf -lfreetype -lpng -lz -lSDL2 -lSceAudio_stub -lvita2d -lSceGxm_stub -lSceDisplay_stub -lSceCtrl_stub -lSceSysmodule_stub -lSceCommonDialog_stub -lpsp2shell -lSceNet_stub -lSceNetCtl_stub -lSceLibKernel_stub -lScePower_stub -lSceAppMgr_stub -lSceSysmodule_stub
+LIBS := -L. -lSDL2_ttf -lfreetype -lpng -lz -lSDL2 -lSceAudio_stub -lvita2d -lSceGxm_stub -lSceDisplay_stub -lSceCtrl_stub -lSceSysmodule_stub -lSceCommonDialog_stub -lpsp2shell -lSceNet_stub -lSceNetCtl_stub -lSceLibKernel_stub -lScePower_stub -lSceAppMgr_stub -lSceSysmodule_stub -lSceTouch_stub -lSceHid_stub
 
 
 all: package

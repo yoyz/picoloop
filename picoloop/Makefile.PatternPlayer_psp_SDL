@@ -42,6 +42,8 @@ OBJS=PatternPlayer.o \
 		      UserInterface.o	       \
 		      MachineCheck.o	       \
 		      WaveFileWriter.o         \
+		      PulseSync.o	       \
+		      MachineHelper.o	       \
 		      Machine/Picosynth/PicosynthUserInterface.o \
 		      Machine/Picosynth/PicosynthADSR.o        \
 		      Machine/Picosynth/PicosynthVCO.o         \
