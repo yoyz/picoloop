@@ -88,6 +88,9 @@ int    noteValue=0;
 //PatternElement PE;
 PatternElement PE;
 
+int opendebugprintf=0;
+FILE * fdebugprintf=NULL;
+
 void processBuffer_updateMidiSendClockCounter() {}
 void donothing() {}
 
