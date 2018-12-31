@@ -147,7 +147,7 @@ int PicosynthMachine::checkI(int what,int val)
     default:
       if (val<0)   return 0;
       if (val>127) return 127;
-      DPRINTF("WARNING: PicosynthMachine::checkI(%d,%d)\n",what,val);
+      DPRINTF("WARNING: PicosynthMachine::checkI(%d,%d)",what,val);
       return val;
       break;      
     }

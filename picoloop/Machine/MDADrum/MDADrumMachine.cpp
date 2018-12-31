@@ -92,7 +92,7 @@ MDADrumMachine::~MDADrumMachine()
 
 void MDADrumMachine::init()
 {
-  DPRINTF("MDADrumMachine::init()\n");  
+  DPRINTF("MDADrumMachine::init()");  
   int i;
 
   filter.init();
@@ -1784,7 +1784,7 @@ static const char * bank_R_B_x_backwd                             = "x_backwd";
   bank_Effects_array[15] = bank_Effects_thunder;    
   
 
-  printf("MDACHECK %d %d %d\n",machineParam,paramValue1,paramValue2);
+  DPRINTF("MDACHECK %d %d %d",machineParam,paramValue1,paramValue2);
 
   switch (machineParam)
     {
@@ -2105,7 +2105,7 @@ int MDADrumMachine::checkITwoVal(int what,int val1,int val2)
     default:
       if (val2<0)   return 0;
       if (val2>127) return 127;
-      DPRINTF("WARNING: MDADrumMachine::checkITwoVal(%d,%d,%d)\n",what,val1,val2);
+      DPRINTF("WARNING: MDADrumMachine::checkITwoVal(%d,%d,%d)",what,val1,val2);
       return val2;
       break;      
     }  
@@ -2148,7 +2148,7 @@ int MDADrumMachine::checkI(int what,int val)
     default:
       if (val<0)   return 0;
       if (val>127) return 127;
-      DPRINTF("WARNING: MDADrumMachine::checkI(%d,%d)\n",what,val);
+      DPRINTF("WARNING: MDADrumMachine::checkI(%d,%d)",what,val);
       return val;
       break;      
     }
@@ -2239,8 +2239,8 @@ Sint32 MDADrumMachine::tick()
       std::string  path=prefix+"/"+bank+"/"+sound+".ds";
       buffer_size=SAM;
       index=0;
-      DPRINTF("MDA buffer_size: %d buffer:0x%08.8X\n",buffer_size,buffer);
-      DPRINTF("MDA path: %s \n",path.c_str());
+      DPRINTF("MDA buffer_size: %d buffer:0x%08.8X",buffer_size,buffer);
+      DPRINTF("MDA path: %s",path.c_str());
       dsoop.init();
       dsoop.set_tune(1.0+(float)freq/6.8);
       dsoop.set_time(param_time);

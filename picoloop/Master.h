@@ -1154,11 +1154,11 @@ extern FILE * fdebugprintf;
 #endif
 
 #if defined(PSVITA) && defined(DEBUGPRINTF)
-#define CLOSEDPRINTF() do { } while(0)
+#define CLOSE_DPRINTF() do { } while(0)
 #endif
 
 #if !defined(PSVITA) && defined(DEBUGPRINTF)
-#define CLOSEDPRINTF() do { fclose(fdebugprintf); } while(0)
+#define CLOSE_DPRINTF() do { fclose(fdebugprintf); } while(0)
 #endif
 
 

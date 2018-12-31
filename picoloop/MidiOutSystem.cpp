@@ -1,3 +1,4 @@
+#include "Master.h"
 #include "MidiOutSystem.h"
 
 
@@ -44,7 +45,7 @@ bool MidiOutSystem::checkChannel(int channel)
   if (channel<0 |
       channel>15)
     {
-      printf("MidiOutSystem::noteOn wrong channel=%d\n",channel);
+      DPRINTF("MidiOutSystem::noteOn wrong channel=%d",channel);
       return false;
     }
   return true;
@@ -110,7 +111,7 @@ int MidiOutSystem::msgSize()
 
 void MidiOutSystem::flushMsg()
 {
-  printf("*****************FLUSH:%lu\n",message.size());
+  DPRINTF("FLUSH:%lu",message.size());
   mtx.Lock();
   if (message.size())
     {
@@ -145,7 +146,8 @@ bool MidiOutSystem::chooseMidiPortDeviceNumber(int deviceNumber)
   tmpPortName = rtmidiout->getPortName(deviceNumber);
 
 
-  std::cout << "  Will try to open midi out port #" << deviceNumber << " [" << tmpPortName << "]\n";
+  //std::cout << "  Will try to open midi out port #" << deviceNumber << " [" << tmpPortName << "]\n";
+  DPRINTF("Will try to open midi out port %d %s",deviceNumber,tmpPortName.c_str());
   if (iamOpen)
     rtmidiout->closePort();
 
@@ -159,33 +161,41 @@ bool MidiOutSystem::chooseMidiPort( std::string portName )
   int portNumber=-1;
   std::string tmpPortName;
 
-  std::cout << "MidiOutSystem::chooseMidiPort(\""<< portName <<"\")\n";
+  DPRINTF("Choose midi out port %s",portName.c_str());
+  //std::cout << "MidiOutSystem::chooseMidiPort(\""<< portName <<"\")\n";
 
   unsigned int i = 0, nPorts = rtmidiout->getPortCount();
-  if ( nPorts == 0 ) {
-    std::cout << "No output ports available!" << std::endl;
-    return false;
+  if ( nPorts == 0 ) 
+    {
+      //std::cout << "No output ports available!" << std::endl;
+      DPRINTF("No output ports available!");
+      return false;
   }
 
-  std::cout << "Displaying All Midi Port\n";
-  for ( i=0; i<nPorts; i++ ) {
-    tmpPortName = rtmidiout->getPortName(i);
-    std::cout << "  Output port #" << i << ": [" << tmpPortName << "]\n";
-  }
-  std::cout << "\n";
+  //std::cout << "Displaying All Midi Port\n";
+  DPRINTF("Displaying All Midi Port");
+  for ( i=0; i<nPorts; i++ ) 
+    {
+      tmpPortName = rtmidiout->getPortName(i);
+      DPRINTF("Output port %d %s",i,tmpPortName.c_str());
+      //std::cout << "  Output port #" << i << ": [" << tmpPortName << "]\n";
+    }
+  //std::cout << "\n";
 
     for ( i=0; i<nPorts; i++ ) {
       tmpPortName = rtmidiout->getPortName(i);
       if (tmpPortName==portName)
 	{
-	  std::cout << "The midi port was found : [" << portName << "]\n";
+	  DPRINTF("The midi port was not found : %s",portName.c_str());
+	  //std::cout << "The midi port was found : [" << portName << "]\n";
 	  portNumber=i;
 	}
     }
 
     if (portNumber!=-1)
       {
-	std::cout << "Opening port : " << portNumber << " [" << portName << "]\n";
+	DPRINTF("Opening midi port %d %s",portNumber,portName.c_str());
+	//std::cout << "Opening port : " << portNumber << " [" << portName << "]\n";
 	if (iamOpen)
 	  rtmidiout->closePort();
 	rtmidiout->openPort( portNumber );

@@ -72,7 +72,7 @@ int freq_high[96]={
 
 SIDSynthMachine::SIDSynthMachine()
 {
-  DPRINTF("SIDSynthMachine::SIDSynthMachine()\n");  
+  DPRINTF("SIDSynthMachine::SIDSynthMachine()");  
   buffer_f=0;
   buffer_i=0;
   cutoff=125;
@@ -92,7 +92,7 @@ SIDSynthMachine::SIDSynthMachine()
 
 SIDSynthMachine::~SIDSynthMachine()
 {
-  DPRINTF("SIDSynthMachine::~SIDSynthMachine()\n");  
+  DPRINTF("SIDSynthMachine::~SIDSynthMachine()");  
   if (buffer_f)
     free(buffer_f);
   if (buffer_i)
@@ -103,7 +103,7 @@ SIDSynthMachine::~SIDSynthMachine()
 
 void SIDSynthMachine::init()
 {
-  DPRINTF("SIDSynthMachine::init()\n");  
+  DPRINTF("SIDSynthMachine::init()");  
   int i;
 
   //HO(44100);
@@ -118,8 +118,8 @@ void SIDSynthMachine::init()
       buffer_i = (Sint16*)malloc(sizeof(Sint16)*SAM);
     }
 
-  DPRINTF("buffer_f:0x%08.8X\n",buffer_f);
-  DPRINTF("buffer_i:0x%08.8X\n",buffer_i);
+  DPRINTF("buffer_f:0x%08.8X",buffer_f);
+  DPRINTF("buffer_i:0x%08.8X",buffer_i);
 
   sid_note_frqs=(double*)malloc(sizeof(double)*128);
   for(i=0; i<128; i++) 
@@ -264,7 +264,7 @@ int SIDSynthMachine::checkI(int what,int val)
     default:
       if (val<0)   return 0;
       if (val>127) return 127;
-      DPRINTF("WARNING: SIDSynthMachine::checkI(%d,%d)\n",what,val);
+      DPRINTF("WARNING: SIDSynthMachine::checkI(%d,%d)",what,val);
       return val;
       break;      
     }

@@ -7,6 +7,8 @@
 #include <string>
 #include "Config.h"
 
+#include "../../Master.h"
+
 #define SAMPLE_LIB "root:samplelib" 
 
 SamplePool::SamplePool() {
@@ -64,8 +66,9 @@ bool SamplePool::loadSample(int index,const char *path)
     }
   else
     {
-      //printf("Failed to load samples %s",wavPath.GetName().c_str());
-      printf("Failed to load samples %s",path);
+//printf("Failed to load samples %s",wavPath.GetName().c_str());
+//printf("Failed to load samples %s",path);
+      DPRINTF("Failed to load samples %s",path);
       return false ;
     }
 }

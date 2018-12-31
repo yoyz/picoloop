@@ -108,11 +108,11 @@ void MonoMixer::init()
   this->setMachineType(machine_type);
   
   if (buffer16==NULL)  buffer16=(Sint16*)malloc(sizeof(Sint16)*SAM);
-  if (buffer16==NULL)  { printf("OOM MM::init()\n"); exit(1); }
+  if (buffer16==NULL)  { DPRINTF("OOM MM::init()"); CLOSE_DPRINTF(); exit(1); }
   if (buffer32==NULL)  buffer32=(Sint32*)malloc(sizeof(Sint32)*SAM);
-  if (buffer32==NULL)  { printf("OOM MM::init()\n"); exit(1); }
+  if (buffer32==NULL)  { DPRINTF("OOM MM::init()"); CLOSE_DPRINTF(); exit(1); }
   if (bufferfix==NULL) bufferfix=(Fixed*)malloc(sizeof(Fixed)*SAM);
-  if (bufferfix==NULL) { printf("OOM MM::init()\n"); exit(1); }
+  if (bufferfix==NULL) { DPRINTF("OOM MM::init()"); CLOSE_DPRINTF(); exit(1); }
     
   for (i=0;i<SAM;i++)
     {

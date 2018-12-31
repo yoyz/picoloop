@@ -149,7 +149,7 @@ int SDL_GUI::initVideo()
 
 int SDL_GUI::initVideo()
 {
-  fprintf(stderr,"before SDL_Init\n");
+  DPRINTF("before SDL_Init");
 
 #if defined(PSVITA)
   if( SDL_Init( SDL_INIT_VIDEO | SDL_INIT_AUDIO)<0)
@@ -164,18 +164,17 @@ int SDL_GUI::initVideo()
       DPRINTF("Couldn't initialize SDL: %s", SDL_GetError());
       return -1;
     }
-  fprintf(stderr,"After SDL_Init\n");
-  fprintf(stderr,"Before SDL_CreateWindow\n");
+  DPRINTF("After SDL_Init");
+  DPRINTF("Before SDL_CreateWindow");
   window = SDL_CreateWindow("Picoloop",
                             SDL_WINDOWPOS_UNDEFINED,
                             SDL_WINDOWPOS_UNDEFINED,
                             640, 480,
                             SDL_WINDOW_SHOWN);
-
-  fprintf(stderr,"After SDL_CreateWindow\n");
+  DPRINTF("After SDL_CreateWindow");
   if (window == NULL) {
     // In the case that the window could not be made...
-    fprintf(stderr,"Could not create window: %s\n", SDL_GetError());
+    DPRINTF("After SDL_CreateWindow %s",SDL_GetError());
     return -1;
   }
 #endif // not defined PSVITA
@@ -395,7 +394,7 @@ void SDL_GUI::drawBox(int x, int y, int color)
 
 int SDL_GUI::openTTFFont()
 {
-  DPRINTF("SDL_GUI::openTTFFont\n");
+  DPRINTF("SDL_GUI::openTTFFont");
   if( TTF_Init() == -1 )
     {
       return 0;
@@ -418,7 +417,7 @@ int SDL_GUI::openTTFFont()
       //exit(1);
     }
   else
-    DPRINTF("SDL_GUI::openTTFFont font successfully open:0x%08.8X\n",ttf_font);
+    DPRINTF("SDL_GUI::openTTFFont font successfully open:0x%08.8X",ttf_font);
   return true;  
 }
 

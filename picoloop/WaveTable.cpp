@@ -62,7 +62,7 @@ int WaveTable::setSize(int bufferSize)
   
   if (buffer!=0)
     {
-      DPRINTF("WARNING: Erasing previous memory\n");
+      DPRINTF("WARNING: Erasing previous memory");
       this->freeMemory();
 
     }

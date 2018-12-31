@@ -3028,7 +3028,9 @@ void refresh_pecursor_ui(int i)
 #endif
   
   //DPRINTF("refresh_pecursor_ui(%d)\nmachine_type=%d\nexit(%d)\nNO UI found\n",i,machine_type,exit_code);
-  fprintf(stderr,"refresh_pecursor_ui(%d)\nmachine_type=%d\nexit(%d)\nNO UI found\n",i,machine_type,exit_code);
+  //fprintf(stderr,"refresh_pecursor_ui(%d)\nmachine_type=%d\nexit(%d)\nNO UI found\n",i,machine_type,exit_code);
+  DPRINTF("refresh_pecursor_ui(%d) machine_type=%d exit(%d) : !!!!! NO UI found !!!!!",i,machine_type,exit_code);
+  CLOSE_DPRINTF();
   exit(8);
 }
 
@@ -3212,7 +3214,7 @@ void seq_update_multiple_time_by_step()
 	}
       TK.set(   MACHINE_TYPE,0);
       TK.setAll(MACHINE_TYPE,0);
-      DPRINTF("currentMachine:%d,nextMachine:%d\n",currentMachine,nextMachine);
+      DPRINTF("currentMachine:%d,nextMachine:%d",currentMachine,nextMachine);
     }
 
 
@@ -3290,7 +3292,8 @@ void seq_update_multiple_time_by_step()
     {       
       PatternElement Pe;
       int time=TK.getAll(PATTERN_SHIFT)+TK.get(PATTERN_SHIFT);
-      printf("time:%d\n",time);
+      //printf("time:%d\n",time);
+      DPRINTF("time:%d",time);
       if (TK.getAll(PATTERN_SHIFT)>0 ||
 	  TK.get(PATTERN_SHIFT)>0)
 	{
@@ -4327,7 +4330,7 @@ int main(int argc,char **argv)
   IE.init();      // init the Input Manager
   IE.printState();
 
-  DPRINTF("[openVideo output]");
+  DPRINTF("openVideo output");
   SG.initVideo();  // Init the video outpout
   //SG.openBMPFont();
   if (SG.openTTFFont()==false) {DPRINTF("ttf font error"); exit(1); }
@@ -4343,30 +4346,30 @@ int main(int argc,char **argv)
   load_pattern();    // load the pattern of the bank 
   
 
-  DPRINTF("after load pattern\n");
+  DPRINTF("after load pattern");
 
   refresh_bpm();
   AE.setupSequencerCallback(seq_callback_update_step);
 
-  DPRINTF("main: [openAudio output]");
+  DPRINTF("openAudio output");
   AE.openAudio();
 
   init_audiomixer_and_audioengine();
   init_and_setup_midi();
   
-  DPRINTF("main : before seq\n");
+  DPRINTF("before seq");
   seq();        // Launch the sequencer which will stream audio
-  DPRINTF("main : after seq\n");
+  DPRINTF("after seq");
 
-  DPRINTF("[closeAudio output]");
+  DPRINTF("closeAudio output");
   AE.stopAudio();
   AE.closeAudio();
   
-  DPRINTF("[closeVideo output]");
+  DPRINTF("closeVideo output");
   SG.closeVideo();
   DPRINTF("Exiting PatternPlayer");
   finish_psp();
   finish_vita();
-  CLOSEDPRINTF();
+  CLOSE_DPRINTF();
 }
 

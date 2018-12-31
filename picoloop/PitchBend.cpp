@@ -85,7 +85,7 @@ void PitchBend::calc()
   div=1;
   //speed_calc=speed*6;
   speed_calc=speed;
-  DPRINTF("###### %d %d %d\n",formula1,formula2,speed);
+  DPRINTF("PitchBench::calc() %d %d %d",formula1,formula2,speed);
 }
 
 

@@ -8,7 +8,7 @@ Open303Machine::Open303Machine()
 {
   float fi;
   int   i;
-  DPRINTF("Open303Machine::Open303Machine()\n");  
+  DPRINTF("Open303Machine::Open303Machine()");  
   note_on=0;
   velocity=5;
   parameter_portamento=32;
@@ -21,7 +21,7 @@ Open303Machine::Open303Machine()
 
 Open303Machine::~Open303Machine()
 {
-  DPRINTF("Open303Machine::~Open303Machine()\n");
+  DPRINTF("Open303Machine::~Open303Machine()");
 }
 
 
@@ -97,7 +97,7 @@ int Open303Machine::checkI(int what,int val)
     default:
       if (val<0)   return 0;
       if (val>127) return 127;
-      DPRINTF("WARNING: Open303Machine::checkI(%d,%d)\n",what,val);
+      DPRINTF("WARNING: Open303Machine::checkI(%d,%d)",what,val);
       return val;
       break;      
     }

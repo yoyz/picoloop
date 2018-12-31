@@ -41,7 +41,7 @@ int MachineCheck::getNext(int machineType)
     {
       if (machineExist(i))
 	{
-	  DPRINTF("getNext(%d)=%d\n",machineType,i);
+	  DPRINTF("getNext(%d)=%d",machineType,i);
 	  return i;
 	}
     }
@@ -50,13 +50,14 @@ int MachineCheck::getNext(int machineType)
     {
       if (machineExist(i))
 	{
-	  DPRINTF("getNext(%d)=%d\n",machineType,i);
+	  DPRINTF("getNext(%d)=%d",machineType,i);
 	  return i;
 	}
     }
   if (machineExist(machineType)) return i;
-  printf("exit(3) MachineCheck->getNext(%d)\n",machineType);
-  printf("exit(3) MACHINE NOTE FOUND\n");
+  DPRINTF("exit(3) MachineCheck->getNext(%d)",machineType);
+  DPRINTF("exit(3) MACHINE NOTE FOUND");
+  CLOSE_DPRINTF();
   exit(3);
   return -1;
 }
@@ -70,7 +71,7 @@ int MachineCheck::getPrevious(int machineType)
     {
       if (machineExist(i))
 	{
-	  DPRINTF("getNext(%d)=%d\n",machineType,i);
+	  DPRINTF("getNext(%d)=%d",machineType,i);
 	  return i;
 	}
     }
@@ -79,12 +80,13 @@ int MachineCheck::getPrevious(int machineType)
     {
       if (machineExist(i))
 	{
-	  DPRINTF("getNext(%d)=%d\n",machineType,i);
+	  DPRINTF("getNext(%d)=%d",machineType,i);
 	  return i;
 	}
     }
 
-  printf("exit(3) MachineCheck->getPrevious(%d)\n",machineType);
-  printf("exit(3) MACHINE NOTE FOUND\n");
+  DPRINTF("exit(3) MachineCheck->getPrevious(%d)",machineType);
+  DPRINTF("exit(3) MACHINE NOTE FOUND");
+  CLOSE_DPRINTF();
   exit(3);
 }

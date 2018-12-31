@@ -47,7 +47,7 @@ void Generator::sine()
   float f;
   Sint16 s;
   Sint16 bitdepth=16-1;
-  DPRINTF("Generator::sine() 0x%08.8X\n",table);
+  DPRINTF("Generator::sine() 0x%08.8X",table);
   for (i=0;i<table_size;i++)
     {
       s=sin((2*3.14159*i*1)/table_size)*(1<<bitdepth-2);
@@ -64,7 +64,7 @@ void Generator::smoothSine()
   Sint16 s1;
   Sint16 s2;
   Sint16 bitdepth=16-1;
-  DPRINTF("Generator::sine() 0x%08.8X\n",table);
+  DPRINTF("Generator::sine() 0x%08.8X",table);
   for (i=0;i<table_size;i++)
     {
       s1=sin((2*3.14159*i*1)/table_size)*(1<<bitdepth-2);
@@ -85,7 +85,7 @@ void Generator::saw()
   Sint16 bitdepth=16;
   Sint16 dec;
 
-  DPRINTF("Generator::saw() 0x%08.8X\n",table);
+  DPRINTF("Generator::saw() 0x%08.8X",table);
   initFeedBack();
   
   s=(1<<(bitdepth-2));
@@ -117,7 +117,7 @@ void Generator::smoothSaw()
   Sint16 bitdepth=16;
   Sint16 dec=(1<<(bitdepth-2))/(table_size/2);
   
-  DPRINTF("Generator::pulse() 0x%08.8X\n",table);
+  DPRINTF("Generator::pulse() 0x%08.8X",table);
 
   //initFeedBack();
   for (i=0;i<table_size;i++)
@@ -149,7 +149,7 @@ void Generator::pulse()
   Sint16 bitdepth=16;
   Sint16 dec=(1<<(bitdepth-2))/(table_size/2);
   
-  DPRINTF("Generator::pulse() 0x%08.8X\n",table);
+  DPRINTF("Generator::pulse() 0x%08.8X",table);
 
   //initFeedBack();
   for (i=0;i<table_size/2;i++)
@@ -186,7 +186,7 @@ void Generator::smoothPulse()
   Sint16 bitdepth=16;
   Sint16 dec=(1<<(bitdepth-2))/(table_size/2);
   
-  DPRINTF("Generator::pulse() 0x%08.8X\n",table);
+  DPRINTF("Generator::pulse() 0x%08.8X",table);
 
   //initFeedBack();
   for (i=0;i<table_size;i++)
@@ -222,7 +222,7 @@ void Generator::triangle()
   Sint16 bitdepth=16;
   Sint16 dec=(1<<(bitdepth-2))/(table_size/4);
 
-  DPRINTF("Generator::triangle() 0x%08.8X\n",table);
+  DPRINTF("Generator::triangle() 0x%08.8X",table);
 
   //table=(Sint16*)malloc(sizeof(Sint16)*table_size);
   for (i=0;i<(table_size*1)/4;i++)
@@ -254,7 +254,7 @@ void Generator::smoothTriangle()
   Sint16 bitdepth=16;
   Sint16 dec=(1<<(bitdepth-2))/(table_size/2);
   
-  DPRINTF("Generator::pulse() 0x%08.8X\n",table);
+  DPRINTF("Generator::pulse() 0x%08.8X",table);
 
   //initFeedBack();
   for (i=0;i<table_size;i++)
@@ -277,7 +277,7 @@ void Generator::noise()
   Sint16 s;
   Sint16 bitdepth=16;
 
-  DPRINTF("Generator::noise() 0x%08.8X\n",table);
+  DPRINTF("Generator::noise() 0x%08.8X",table);
 
   srand(1<<(bitdepth-2));
   for (i=0;i<table_size;i++)
@@ -323,7 +323,7 @@ void Generator::LFSRNoise()
   // mask[14]=0b1000110101011010;
   // mask[15]=0b0001101010110101;
   
-  DPRINTF("Generator::noise() 0x%08.8X\n",table);
+  DPRINTF("Generator::noise() 0x%08.8X",table);
 
   srand(1<<(bitdepth-2));
   for (i=0;i<table_size;i++)
@@ -346,7 +346,7 @@ void Generator::one()
   Sint16 s;
   Sint16 bitdepth=16;
 
-  DPRINTF("Generator::one() 0x%08.8X\n",table);
+  DPRINTF("Generator::one() 0x%08.8X",table);
 
   for (i=0;i<table_size;i++)
     {

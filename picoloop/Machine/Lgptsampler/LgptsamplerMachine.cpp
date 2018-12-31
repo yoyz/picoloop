@@ -167,7 +167,7 @@ int LgptsamplerMachine::checkI(int what,int val)
     default:
       if (val<0)   return 0;
       if (val>127) return 127;
-      DPRINTF("WARNING: LgptsamplerMachine::checkI(%d,%d)\n",what,val);
+      DPRINTF("WARNING: LgptsamplerMachine::checkI(%d,%d)",what,val);
       return val;
       break;      
     }

@@ -6,7 +6,7 @@
 //Effect::Effect() : buffer(new int16_t[1024*256])
 Effect::Effect() //: FXDelay()
 {
-  DPRINTF("Effect::Effect()\n");
+  DPRINTF("Effect::Effect()");
 }
 
 Effect::~Effect()
@@ -16,7 +16,7 @@ Effect::~Effect()
 void Effect::init()
 {
   //DPRINTF("Effect::init() buffer=%x.8\n",buffer);
-  DPRINTF("Effect::init()\n");
+  DPRINTF("Effect::init()");
   //FX=&FXDelay;
   //FXDelay.init();
 }

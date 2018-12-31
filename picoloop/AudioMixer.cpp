@@ -3,13 +3,13 @@
 //AudioMixer::AudioMixer() : T0(), T1()
 AudioMixer::AudioMixer() : MM(TRACK_MAX)
 {
-  DPRINTF("AudioMixer::AudioMixer()\n");  
+  DPRINTF("AudioMixer::AudioMixer()");  
   volume=64;
 }
 
 AudioMixer::~AudioMixer()
 {
-  DPRINTF("AudioMixer::~AudioMixer()\n");  
+  DPRINTF("AudioMixer::~AudioMixer()");  
 }
 
 
@@ -51,7 +51,7 @@ void AudioMixer::setAudioVolume(int v)
       volume=v;
       volumeFixed=Fixed(Fixed(v)/Fixed(127));
     }
-  DPRINTF("AudioVolume:%d\n",volume);
+  DPRINTF("AudioVolume:%d",volume);
 }
 
 int AudioMixer::getAudioVolume()
