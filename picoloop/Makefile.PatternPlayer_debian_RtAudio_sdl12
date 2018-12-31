@@ -23,6 +23,8 @@ CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -D__LINUX_ALSA__ -I. -LSDL/lib -D_
 CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -D__LINUX_ALSA__ -I. -LSDL/lib -D__RTAUDIO__ -D __RTMIDI__ -DPC_DESKTOP -ggdb  ${CFLAGS_SDLVERS}                 -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive -DLGPTTEMPO
 CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -D__LINUX_ALSA__ -I. -LSDL/lib -D__RTAUDIO__ -D __RTMIDI__ -DPC_DESKTOP -ggdb  ${CFLAGS_SDLVERS}                 -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive
 CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -D__LINUX_PULSE__ -I. -LSDL/lib -D__RTAUDIO__ -D __RTMIDI__ -DPC_DESKTOP -ggdb  ${CFLAGS_SDLVERS}                 -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive -Werror=return-type
+CFLAGS= -c -std=c++11 -O3 -D__LINUX__         -D__LINUX_PULSE__ -I. -LSDL/lib -D__RTAUDIO__ -D __RTMIDI__ -DPC_DESKTOP -ggdb  ${CFLAGS_SDLVERS}                 -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive -Werror=return-type
+CFLAGS= -c -std=c++11 -O3 -D__LINUX__         -D__LINUX_PULSE__ -I. -LSDL/lib -D__RTAUDIO__ -D __RTMIDI__ -DPC_DESKTOP -ggdb  ${CFLAGS_SDLVERS}                 -DDEBUGPRINTF -DSCREEN_MULT=2               -Werror=return-type
 
 LDFLAGS=-lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread -pg
 LDFLAGS=-lasound -lSDL           -lSDL_ttf -lpthread -pg
@@ -73,7 +75,7 @@ SOURCES=					\
 
 
 
-OBJDIR             =     debian_Rtaudio_sdl12
+OBJDIR             =     debian_RtAudio_sdl12
 OBJECTS            =   $(SOURCES:.cpp=.o)
 DEPENDENCY         =   $(SOURCES:.cpp=.d)
 

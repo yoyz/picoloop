@@ -16,6 +16,8 @@ CFLAGS= -c -std=c++11 -O3 -DLINUX -I. -LSDL/lib -D__SDL_AUDIO__ -D__RTMIDI__ -DP
 
 CFLAGS_SDLVERS=-D__SDL12__
 CFLAGS= -c -std=c++11 -O3 -DLINUX -I. -LSDL/lib -D__SDL_AUDIO__  -DPC_DESKTOP -ggdb ${CFLAGS_SDLVERS} -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive -Werror=return-type
+CFLAGS= -c -std=c++11 -O3         -I. -LSDL/lib -D__SDL_AUDIO__  -DPC_DESKTOP -ggdb ${CFLAGS_SDLVERS} -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive -Werror=return-type
+CFLAGS= -c -std=c++11 -O3         -I. -LSDL/lib -D__SDL_AUDIO__  -DPC_DESKTOP -ggdb ${CFLAGS_SDLVERS} -DDEBUGPRINTF -DSCREEN_MULT=2               -Werror=return-type
 
 LDFLAGS=-lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread -pg
 LDFLAGS=-lasound -lSDL           -lSDL_ttf -lpthread -pg
