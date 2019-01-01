@@ -87,8 +87,8 @@ using namespace std;
    The EBOOT.BPB binary won't load with an error message at launch
    The error code is weird like this one : 80010002
 */
-char pada='a';
-char padb='b';
+//char pada='a';
+//char padb='b';
 //char padc='c';
 //char padd='d';
 //char pade='e';
