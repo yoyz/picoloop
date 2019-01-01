@@ -1,0 +1,90 @@
+include Makefile_sources
+CC=g++
+#CC=i586-mingw32msvc-g++
+CC=i686-w64-mingw32-g++-win32
+CC=i686-w64-mingw32-g++
+
+#CFLAGS=-c -DLINUX -I. -LSDL/lib -ggdb -pg
+#LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf -lpthread  RtAudio.o  -pg
+#LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf -lpthread  RtAudio.o 
+
+#CFLAGS=-c -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP
+
+CFLAGS=-c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb -ffast-math
+CFLAGS=-c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb  -pg
+CFLAGS=-Wall -c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb  
+#CFLAGS= -c -O1 -D__WIN32__ -I/c/MinGW/include/  -DLINUX -I. -LSDL/lib -D__SDL_AUDIO__ -DLINUX_DESKTOP -ggdb  -fpermissive
+CFLAGS=  -c -std=c++11 -O3 -DWIN32 -D__WIN32__ -I/c/MinGW/include/  -DLINUX -I. -ISDL_windows -D__SDL_AUDIO__ -DLINUX_DESKTOP -ggdb  -fpermissive
+
+CFLAGS_SDLVERS=-D__SDL12__
+CFLAGS=  -c -std=c++11 -O3 -DWIN32 -D__WIN32__ -I/c/MinGW/include/  -I/usr/i686-w64-mingw32/include/ -I. -ISDL_windows ${CFLAGS_SDLVERS}  -D__SDL_AUDIO__ -DPC_DESKTOP -ggdb  -fpermissive
+
+
+LDFLAGS=-lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread -pg
+#LDFLAGS=-L. -lmingw32 -lSDLmain -lSDL -lSDL_ttf
+LDFLAGS=-L. -lSDL -lSDL_ttf 
+LDFLAGS=-L. -lmingw32 -lSDLmain -lSDL -lSDL_ttf
+#LDFLAGS=-D__WIN32__ -L. -LSDL-1.2.15/lib/ -lmingw32 -lSDLmain -lSDL -lSDL_ttf -static-libgcc -static-libstdc++ -ggdb
+LDFLAGS=-D__WIN32__ -L. -LSDL_windows/lib -L/home/yoyz/.wine/drive_c/users/yoyz/Temp/DXF/DXSDK/lib/ -lmingw32 -lSDLmain -static-libgcc  -static-libstdc++  -lSDL -lSDL_ttf -ldsound -lole32 -lwinmm  -ggdb
+
+
+
+
+SOURCES=		\
+			MidiOutSystem.cpp	       \
+		        MidiInSystem.cpp	       \
+			AudioDriverSDL.cpp	\
+			SYSTEMWINDOWS.cpp	\
+			RtMidi.cpp	\
+			SysMutex.cpp	       \
+			$(SOURCES_PICOLOOP)     	\
+			$(SOURCES_PICOSYNTH) 		\
+			$(SOURCES_PICOSYNTHUI) 		\
+			$(SOURCES_PICODRUM) 		\
+			$(SOURCES_PICODRUMUI) 		\
+			$(SOURCES_DBOPL) 		\
+			$(SOURCES_DBOPLUI) 		\
+			$(SOURCES_PBSYNTH) 		\
+			$(SOURCES_PBSYNTHUI) 		\
+			$(SOURCES_CURSYNTH) 		\
+			$(SOURCES_CURSYNTHUI) 		\
+			$(SOURCES_OPEN303) 		\
+			$(SOURCES_OPEN303UI) 		\
+			$(SOURCES_TWYTCH) 		\
+			$(SOURCES_TWYTCHUI) 		\
+			$(SOURCES_MIDIOUT) 		\
+			$(SOURCES_MIDIOUTUI) 		\
+			$(SOURCES_MDADRUM) 		\
+			$(SOURCES_MDADRUMUI) 		\
+			$(SOURCES_SIDSYNTH) 		\
+			$(SOURCES_SIDSYNTHUI) 		\
+			$(SOURCES_LGPTSAMPLERSYNTH) 	\
+			$(SOURCES_LGPTSAMPLERSYNTHUI) 
+
+	
+
+
+
+
+
+
+#OBJTOLINK=RtAudio.o
+
+#SOURCES=Machine.cpp  AudioMixer.cpp AudioEngine.cpp PatternElement.cpp Pattern.cpp PatternPlayer.cpp PatternReader.cpp Oscillator.cpp SineOscillator.cpp SawOscillator.cpp  FuzzyPulseOscillator.cpp PulseOscillator.cpp  TriangleOscillator.cpp WaveTableSineOscillator.cpp NoiseOscillator.cpp OneOscillator.cpp MonoMixer.cpp ADSR.cpp SDL_GUI.cpp VCO.cpp Sequencer.cpp InputManager.cpp Biquad.cpp PatternSequencer.cpp  AudioDriverSDL.cpp PicosynthMachine.cpp  PicodrumMachine.cpp dbopl/dbopl.cpp dbopl/hiopl.cpp DboplMachine.cpp Filter.cpp AMSynthLowPassFilter.cpp Effect.cpp EffectDelay.cpp
+OBJECTS=$(SOURCES:.cpp=.o)
+EXECUTABLE=PatternPlayer_SDL.exe
+
+all: $(SOURCES) $(EXECUTABLE)
+
+$(EXECUTABLE): $(OBJECTS)
+	$(CC) $(OBJTOLINK)  $(OBJECTS) -o $@ $(LDFLAGS)
+#	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
+
+.cpp.o:
+	$(CC) $(CFLAGS) $< -o $@
+
+clean:
+	-rm -f $(OBJECTSINOBJDIR)
+	-rm -f $(DEPENDENCYINOBJDIR)
+	-rm -f $(EXECUTABLE)
+	-rm -f $(DEPENDENCY)
