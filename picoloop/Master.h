@@ -522,9 +522,9 @@ enum {
 #define RASPIBOY_BUTTON_R        5
 #define RASPIBOY_BUTTON_SELECT   8    
 #define RASPIBOY_BUTTON_START    9
-#define RASPIBOY_BUTTON_DOWN     10
+#define RASPIBOY_BUTTON_DOWN     12
 #define RASPIBOY_BUTTON_LEFT     11 
-#define RASPIBOY_BUTTON_UP       12
+#define RASPIBOY_BUTTON_UP       10
 #define RASPIBOY_BUTTON_RIGHT    13
 
 

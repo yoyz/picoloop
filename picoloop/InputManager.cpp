@@ -368,7 +368,7 @@ int InputManager::handleKey()
 	DPRINTF("joy new event:%d %d   ",event.type,event.jbutton.button);
 
     }
-  /*
+#ifdef LINUX_RASPIBOY
   if (event.type!=SDL_JOYAXISMOTION && keypressrelease==0)
     {
       this->updateState(BUTTON_UP   ,0);
@@ -377,8 +377,8 @@ int InputManager::handleKey()
       this->updateState(BUTTON_RIGHT,0);
       keypressrelease=1;
     }
-  */
-#endif
+#endif // LINUX_RASPIBOY
+#endif // defined(PSVITA)                                                                                                   
   if (keypressrelease==0) //need to update the state to increment keypress
     {
       this->updateStateNoKeyPress();
