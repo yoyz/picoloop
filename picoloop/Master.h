@@ -1130,11 +1130,11 @@ enum
 
 
 #ifndef DEBUGPRINTF
+extern int opendebugprintf;
+extern FILE * fdebugprintf;
 #define DEBUGPRINTF 0
 #else
 #define DEBUGPRINTF 1
-extern int opendebugprintf;
-extern FILE * fdebugprintf;
 #endif
 /*
 #if defined(PSVITA) && defined(DEBUGPRINTF)
