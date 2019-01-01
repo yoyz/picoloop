@@ -88,7 +88,7 @@ int SDL_GUI::initVideo()
   screen = SDL_SetVideoMode(SCREEN_WIDTH*SCREEN_MULT, 
 			    SCREEN_HEIGHT*SCREEN_MULT, 
 			    SCREEN_DEPTH,			
-			    SDL_SWSURFACE);
+			    SDL_SWSURFACE|SDL_FULLSCREEN);
   SDL_Joystick *joystick = NULL;
   SDL_JoystickEventState(SDL_ENABLE);
   joystick = SDL_JoystickOpen(0);
