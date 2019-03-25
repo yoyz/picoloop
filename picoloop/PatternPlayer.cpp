@@ -1851,7 +1851,7 @@ void display_board_text_global()
 
 
 
-  sprintf(str_line3,    "Div  /%d",stepdiv);
+
 
   if (menu_note==ENABLE &&
       menu_cursor==GLOBALMENU_NOTE)
@@ -1865,6 +1865,7 @@ void display_board_text_global()
     {
       if (menu_sub==MENU_PAGE0_SUB0) sprintf(str_line2,  "BPM %.1f ",bpm_current);
       if (menu_sub==MENU_PAGE0_SUB1) sprintf(str_line2,  "SWING %d",current_swing);
+      if (menu_sub==MENU_PAGE0_SUB1) sprintf(str_line3,  "DIV  /%d",stepdiv);
       if (menu_sub==MENU_PAGE0_SUB2) sprintf(str_line2,  "MIDI DELTA SEND %d",delta_midi_clock);
     }
 
