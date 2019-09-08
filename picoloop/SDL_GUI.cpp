@@ -77,6 +77,14 @@ int SDL_GUI::initVideo()
 			    SCREEN_DEPTH,			
 			    SDL_HWSURFACE|SDL_DOUBLEBUF);
   #endif
+  #ifdef RASPI3_ILI9486
+  //SDL_ShowCursor(SDL_DISABLE);
+  screen = SDL_SetVideoMode(SCREEN_WIDTH*SCREEN_MULT, 
+			    SCREEN_HEIGHT*SCREEN_MULT, 
+			    SCREEN_DEPTH,			
+			    SDL_HWSURFACE|SDL_DOUBLEBUF);
+  #endif
+
 
   #ifdef LINUX_RASPI1
   screen = SDL_SetVideoMode(SCREEN_WIDTH*SCREEN_MULT, 
@@ -166,11 +174,21 @@ int SDL_GUI::initVideo()
     }
   DPRINTF("After SDL_Init");
   DPRINTF("Before SDL_CreateWindow");
+#if defined(RASPI3_ILI9486)
+  SDL_ShowCursor(SDL_DISABLE);
+  window = SDL_CreateWindow("Picoloop",
+                            SDL_WINDOWPOS_UNDEFINED,
+                            SDL_WINDOWPOS_UNDEFINED,
+                            480, 320,
+                            SDL_WINDOW_SHOWN|SDL_WINDOW_FULLSCREEN|SDL_WINDOW_MAXIMIZED);
+#else // all platform debian for example
   window = SDL_CreateWindow("Picoloop",
                             SDL_WINDOWPOS_UNDEFINED,
                             SDL_WINDOWPOS_UNDEFINED,
                             640, 480,
                             SDL_WINDOW_SHOWN);
+#endif
+//SDL_SetWindowFullscreen(window,SDL_WINDOW_FULLSCREEN);
   DPRINTF("After SDL_CreateWindow");
   if (window == NULL) {
     // In the case that the window could not be made...
