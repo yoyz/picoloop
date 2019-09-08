@@ -265,7 +265,7 @@ int drumsynth::load_patch(char *dsfile)
   GetPrivateProfileString(sec,"Version","",ver,sizeof(ver),dsfile);
   ver[9]=0; 
   //if(lstrcmp(ver, "DrumSynth") != 0) {busy=0; return 2;} //input fail
-  printf("%s\n",ver);
+  //printf("%s\n",ver);
   if(strcmp(ver, "DrumSynth") != 0) {busy=0; return 2;} //input fail
   if(ver[11] != '1' && ver[11] != '2') {busy=0; return 1;} //version fail
   
