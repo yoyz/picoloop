@@ -285,13 +285,12 @@ enum {
 #define SCREEN_HEIGHT	240
 #define SCREEN_DEPTH	16
 
-
-
-
-
 #ifndef SCREEN_MULT 
-#define SCREEN_MULT     2
+#define SCREEN_MULT     1
 #endif
+
+
+
 // BEGIN DINGOO A320 SDL use by linux too
 
 //#define DEFAULTSAMPLES   2048
@@ -332,6 +331,52 @@ enum {
 #define KEYRELEASED         SDL_KEYUP
 
 // BEGIN DINGOO A320 SDL
+#endif
+
+#ifdef  RASPI3_ILI9486 
+#define MAX_PATTERN_BY_PROJECT 128
+//#define __VECTORFPU__   0
+#define __RAM512MIB__   1
+#define __RTMIDI__      1
+#define SCREEN_WIDTH	480
+#define SCREEN_HEIGHT	320
+#define SCREEN_DEPTH	16
+#ifndef SCREEN_MULT 
+#define SCREEN_MULT     1
+#endif
+#define MIDI_DELAY_IN_SAMPLE 2048
+#define DEFAULTSAMPLES   512
+
+/* #define MIDI_DELAY_IN_SAMPLE 8192 */
+/* #define DEFAULTSAMPLES   2048 */
+
+
+#define KEY_REPEAT_INTERVAL_SMALLEST  32
+#define KEY_REPEAT_INTERVAL_SMALL     48
+#define KEY_REPEAT_INTERVAL_MIDDLE    64
+#define KEY_REPEAT_INTERVAL_LONG      128
+#define KEY_REPEAT_INTERVAL_LONGEST   192
+
+#define BUTTON_B            SDLK_LALT
+#define BUTTON_A            SDLK_LCTRL
+#define BUTTON_X            SDLK_SPACE
+#define BUTTON_Y            SDLK_LSHIFT
+
+#define BUTTON_UP           SDLK_UP
+#define BUTTON_DOWN         SDLK_DOWN
+#define BUTTON_LEFT         SDLK_LEFT
+#define BUTTON_RIGHT        SDLK_RIGHT
+
+#define BUTTON_SELECT       SDLK_ESCAPE
+#define BUTTON_START        SDLK_RETURN
+
+#define BUTTON_L            SDLK_TAB
+#define BUTTON_R            SDLK_BACKSPACE
+
+#define KEYPRESSED          SDL_KEYDOWN
+#define KEYRELEASED         SDL_KEYUP
+
+
 #endif
 
 
@@ -1159,6 +1204,7 @@ extern FILE * fdebugprintf;
 #endif
 
 #if !defined(PSVITA) && defined(DEBUGPRINTF)
+//#define CLOSE_DPRINTF() do { if (DEBUGPRINTF) {            fclose(fdebugprintf); } } 	while(0)
 #define CLOSE_DPRINTF() do { fclose(fdebugprintf); } while(0)
 #endif
 
