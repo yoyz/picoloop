@@ -765,6 +765,26 @@ enum {
 
 #endif
 
+#define PS4_BUTTON_UP              0
+#define PS4_BUTTON_DOWN            4
+#define PS4_BUTTON_LEFT            2
+#define PS4_BUTTON_RIGHT           6
+#define PS4_BUTTON_UPLEFT          1
+#define PS4_BUTTON_UPRIGHT         7
+#define PS4_BUTTON_DOWNLEFT        3
+#define PS4_BUTTON_DOWNRIGHT       5
+#define PS4_BUTTON_CLICK           18
+#define PS4_BUTTON_A               12
+#define PS4_BUTTON_B               13
+#define PS4_BUTTON_X               14
+#define PS4_BUTTON_Y               15
+#define PS4_BUTTON_L               10
+#define PS4_BUTTON_R               11
+#define PS4_BUTTON_START           8
+#define PS4_BUTTON_SELECT          9
+#define PS4_BUTTON_VOLUP           16
+#define PS4_BUTTON_VOLDOWN         17
+
 
 
 
@@ -1204,8 +1224,9 @@ extern FILE * fdebugprintf;
 #endif
 
 #if !defined(PSVITA) && defined(DEBUGPRINTF)
-//#define CLOSE_DPRINTF() do { if (DEBUGPRINTF) {            fclose(fdebugprintf); } } 	while(0)
+// BUG HERE DEBUGPRINTF always defined
 #define CLOSE_DPRINTF() do { fclose(fdebugprintf); } while(0)
+//#define CLOSE_DPRINTF() do { } while(0)
 #endif
 
 
