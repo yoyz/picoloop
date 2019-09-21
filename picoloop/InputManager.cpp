@@ -189,19 +189,21 @@ void InputManager::clearStateAndRepeat()
       m_key_repeat[it->first]=0;
 }
 #endif
+
+
 /*
   int handleKey()
   return 
     0 if nothing happen   => most of the time ( non blocking function )
     1 if something happen => sometime
  */
+#if defined(PSVITA)
 int InputManager::handleKey()
 {
   int keypressrelease=0;
   int key=0;
   int joy=0;
   SDL_Event event;
-#if defined(PSVITA)
   SceCtrlData     pad;
   int keydown=-1;
   int keypadtotest=0;
@@ -297,7 +299,22 @@ int InputManager::handleKey()
   if (key)
     DPRINTF("event occur on : %d",keypadtotest_valid);
 
-#else  
+  if (keypressrelease==0) //need to update the state to increment keypress
+    {
+      this->updateStateNoKeyPress();
+      this->clearLastKeyEvent();
+    }
+  return keypressrelease;
+}
+#else // Generic platform after here, we are not using PSVITA here, so debian and other
+
+int InputManager::handleKey()
+{
+  int keypressrelease=0;
+  int key=0;
+  int joy=0;
+  SDL_Event event;
+
   if (SDL_PollEvent(&event))
     {     
       switch (event.type)
@@ -378,7 +395,6 @@ int InputManager::handleKey()
       keypressrelease=1;
     }
 #endif // LINUX_RASPIBOY
-#endif // defined(PSVITA)                                                                                                   
   if (keypressrelease==0) //need to update the state to increment keypress
     {
       this->updateStateNoKeyPress();
@@ -386,3 +402,4 @@ int InputManager::handleKey()
     }
   return keypressrelease;
 }
+#endif // Generic platform we are not using PSVITA here, so debian and other
