@@ -17,8 +17,10 @@ CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINU
 CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINUX_RASPI1 -ggdb -DFIXED                         -fpermissive -D__VOLCASYNC__
 CFLAGS= -c -std=c++11 -O3 -D__SDL20__ -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINUX_RASPI1 -ggdb -DFIXED                         -fpermissive -DDEBUGPRINTF
 CFLAGS= -c -std=c++11 -O3 -D__SDL20__ -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINUX_RASPI1 -ggdb -DFIXED                         -fpermissive -DDEBUGPRINTF  -D__LINUX_PULSE__ ${SYNTH}
-
 #CFLAGS= -c -std=c++11 -O3 -D__SDL20__ -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINUX_RASPI1 -ggdb -DFIXED                         -fpermissive                -D__LINUX_PULSE__
+CFLAGS= -c -std=c++11 -O3 -D__SDL20__ -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINUX_RASPI1 -ggdb -DFIXED                         -fpermissive -DDEBUGPRINTF  -DDEBUGPRINTF_STDOUT                  ${SYNTH}
+CFLAGS= -c -std=c++11 -O3 -D__SDL20__ -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINUX_RASPI1 -ggdb -DFIXED                         -fpermissive -DDEBUGPRINTF  -DDEBUGPRINTF_STDOUT -D__LINUX_PULSE__                 ${SYNTH}
+
 LDFLAGS=-Lraspian/lib/ -lasound -lSDL2 -lSDL2_ttf -lpthread -lpulse -lpulse-simple 
 
 
