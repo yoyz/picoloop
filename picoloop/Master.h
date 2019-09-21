@@ -1211,7 +1211,7 @@ extern FILE * fdebugprintf;
   } while (0)
 #endif
 */
-#if defined(PSVITA) && defined(DEBUGPRINTF)
+#if defined(PSVITA) && DEBUGPRINTF==1
 #define DPRINTF(FMT, ARGS...) do { \
     char strdebug[512];							\
     sprintf(strdebug,"%.40s:%.8d [" FMT "]\n", __FUNCTION__, __LINE__, ## ARGS); \
@@ -1219,18 +1219,18 @@ extern FILE * fdebugprintf;
   } while (0)
 #endif
 
-#if defined(PSVITA) && defined(DEBUGPRINTF)
+#if defined(PSVITA)
 #define CLOSE_DPRINTF() do { } while(0)
 #endif
 
-#if !defined(PSVITA) && defined(DEBUGPRINTF)
+#if !defined(PSVITA)
 // BUG HERE DEBUGPRINTF always defined
-#define CLOSE_DPRINTF() do { fclose(fdebugprintf); } while(0)
-//#define CLOSE_DPRINTF() do { } while(0)
+//#define CLOSE_DPRINTF() do { fclose(fdebugprintf); } while(0)
+#define CLOSE_DPRINTF() do { } while(0)
 #endif
 
 
-#if !defined(PSVITA) && defined(DEBUGPRINTF) 
+#if !defined(PSVITA) && DEBUGPRINTF==1
 #define DPRINTF(FMT, ARGS...) do {					\
     if (DEBUGPRINTF)							\
       if (opendebugprintf==0)						\
@@ -1243,7 +1243,7 @@ extern FILE * fdebugprintf;
 #endif
 //	fprintf(stderr, "%.40s:%.8d [" FMT "]\n", __FUNCTION__, __LINE__, ## ARGS); \
 
-#if !defined(DEBUGPRINTF)
+#if DEBUGPRINTF==0
 #define DPRINTF(FMT, ARGS...) do { } while(0)
 #endif
 
