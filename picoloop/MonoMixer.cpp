@@ -53,40 +53,62 @@ void MonoMixer::init()
   machine_type=3;
 #endif
 
-  
+#ifdef      ENABLE_SYNTH_PBSYNTH
   PBS   = new PBSynthMachine();
   PBS->init();
+#endif
+
   
-#if !defined(__PBSYNTHONLY__)
+#ifdef ENABLE_SYNTH_PICOSYNTH
   PS   = new PicosynthMachine();
-  PD   = new PicodrumMachine();
-  OPLM = new dboplMachine();
-  
   PS->init();
+#endif
+
+#ifdef ENABLE_SYNTH_PICODRUM
+  PD   = new PicodrumMachine();
   PD->init(); 
+#endif
+
+#ifdef ENABLE_SYNTH_OPL2
+  OPLM = new dboplMachine();
   OPLM->init();
 #endif
 
-#if defined(__RAM512MIB__)
+  
+#ifdef ENABLE_SYNTH_LGPTSAMPLER
   LGPTSMPL = new LgptsamplerMachine();
   LGPTSMPL->init();
 #endif
 
-#if defined(__VECTORFPU__)
+#ifdef ENABLE_SYNTH_CURSYNTH
   CS     = new CursynthMachine();
-  O303   = new Open303Machine();
-  TW     = new TwytchsynthMachine();
-  MD     = new MDADrumMachine();
-  SS     = new SIDSynthMachine();
-  
   CS->init();
+#endif
+
+#ifdef ENABLE_SYNTH_OPEN303
+  O303   = new Open303Machine();
   O303->init();
+#endif
+
+#ifdef ENABLE_SYNTH_TWYTCHSYNTH
+  TW     = new TwytchsynthMachine();
   TW->init();
+#endif
+
+#ifdef ENABLE_SYNTH_MDADRUM
+  MD     = new MDADrumMachine();
   MD->init();
+#endif
+
+#ifdef ENABLE_SYNTH_SIDSYNTH
+  SS     = new SIDSynthMachine();
   SS->init();
 #endif
 
-#if defined(__RTMIDI__)
+
+
+
+#ifdef ENABLE_SYNTH_MIDIOUT
   MIDIOUTM = new MidiOutMachine();
   MIDIOUTM->init();
 #endif
@@ -140,49 +162,68 @@ void MonoMixer::setMachineType(int type)
 
   switch (type)
     {      
-    case SYNTH_PBSYNTH:
+
+#ifdef ENABLE_SYNTH_PBSYNTH
+    case      SYNTH_PBSYNTH:
       M=PBS;
       break;
+#endif
 
-#if !defined(__PBSYNTHONLY__)
-    case SYNTH_PICOSYNTH:
+#ifdef ENABLE_SYNTH_PICOSYNTH
+    case      SYNTH_PICOSYNTH:
       M=PS;
       break;
+#endif
 
-    case SYNTH_OPL2:
+#ifdef ENABLE_SYNTH_OPL2
+    case      SYNTH_OPL2:
       M=OPLM;
       break;
+#endif
 
-    case SYNTH_PICODRUM:
+#ifdef ENABLE_SYNTH_PICODRUM
+    case      SYNTH_PICODRUM:
       M=PD;
       break;
 #endif
 
-#if defined(__RAM512MIB__)     
-    case SYNTH_LGPTSAMPLER:
+#ifdef ENABLE_SYNTH_LGPTSAMPLER   
+    case      SYNTH_LGPTSAMPLER:
       M=LGPTSMPL;
       break;
 #endif      
-#if defined(__VECTORFPU__)
-    case SYNTH_CURSYNTH:
+
+#ifdef ENABLE_SYNTH_CURSYNTH
+    case      SYNTH_CURSYNTH:
       M=CS;
       break;
-    case SYNTH_OPEN303:
+#endif
+
+#ifdef ENABLE_SYNTH_OPEN303
+    case      SYNTH_OPEN303:
       M=O303;
       break;
-    case SYNTH_TWYTCHSYNTH:
+#endif
+
+#ifdef ENABLE_SYNTH_TWYTCHSYNTH
+    case      SYNTH_TWYTCHSYNTH:
       M=TW;
       break;
-    case SYNTH_MDADRUM:
+#endif
+
+#ifdef ENABLE_SYNTH_MDADRUM
+    case      SYNTH_MDADRUM:
       M=MD;
       break;
-    case SYNTH_SIDSYNTH:
+#endif
+#ifdef ENABLE_SYNTH_SIDSYNTH
+    case      SYNTH_SIDSYNTH:
       M=SS;
       break;
 #endif
 
-#if defined(__RTMIDI__)
-    case SYNTH_MIDIOUT:
+#ifdef ENABLE_SYNTH_MIDIOUT
+    case      SYNTH_MIDIOUT:
       M=MIDIOUTM;
       break;      
 #endif

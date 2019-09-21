@@ -8,7 +8,12 @@ CC=g++
 
 #CFLAGS=-c -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP
 
-
+SYNTH=
+SYNTH+= -DENABLE_SYNTH_PICOSYNTH
+SYNTH+= -DENABLE_SYNTH_PICODRUM
+SYNTH+= -DENABLE_SYNTH_OPL2
+SYNTH+= -DENABLE_SYNTH_PBSYNTH
+SYNTH+= -DENABLE_SYNTH_CURSYNTH
 
 CFLAGS=-c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb -ffast-math
 CFLAGS=-c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb  -pg
@@ -21,12 +26,12 @@ CFLAGS= -c -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINUX_DESKTOP -
 CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -D __RTMIDI__ -DLINUX_DESKTOP -ggdb   -DDUMP_AUDIO=1  -fpermissive
 CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -D __RTMIDI__ -DLINUX_DESKTOP -ggdb   -DDUMP_AUDIO=1  -DDEBUGPRINTF -fpermissive
 CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -D __RTMIDI__ -DPC_DESKTOP -ggdb                   -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive
-CFLAGS= -c -std=c++11 -O3 -D__LINUX__         -I. -LSDL/lib -D__RTAUDIO__ -D __RTMIDI__ -DPC_DESKTOP -ggdb                   -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive
+CFLAGS= -c -std=c++11 -O3 -D__LINUX__         -I. -LSDL/lib -D__RTAUDIO__ -D __RTMIDI__ -DPC_DESKTOP -ggdb                   -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive 
 
 
 CFLAGS_SDLVERS=-D__SDL20__
 CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -D __RTMIDI__ -DPC_DESKTOP -ggdb  ${CFLAGS_SDLVERS}                 -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive
-CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -D__LINUX_PULSE__ -I. -LSDL/lib -D__RTAUDIO__ -D __RTMIDI__ -DPC_DESKTOP -ggdb  ${CFLAGS_SDLVERS}                 -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive
+CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -D__LINUX_PULSE__ -I. -LSDL/lib -D__RTAUDIO__ -D __RTMIDI__ -DPC_DESKTOP -ggdb  ${CFLAGS_SDLVERS}                 -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive ${SYNTH}
 
 LDFLAGS=-lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread -pg
 LDFLAGS=-lasound -lSDL           -lSDL_ttf -lpthread -pg
@@ -65,7 +70,8 @@ SOURCES=	\
 			$(SOURCES_PBSYNTH) \
 			$(SOURCES_PBSYNTHUI) \
 			$(SOURCES_CURSYNTH) \
-			$(SOURCES_CURSYNTHUI) \
+			$(SOURCES_CURSYNTHUI) 
+BLA=\
 			$(SOURCES_OPEN303) \
 			$(SOURCES_OPEN303UI) \
 			$(SOURCES_TWYTCH) \
@@ -80,6 +86,7 @@ SOURCES=	\
 			$(SOURCES_LGPTSAMPLERSYNTHUI) 
 
 
+BLA=\
 
 
 

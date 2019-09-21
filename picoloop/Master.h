@@ -278,8 +278,7 @@ enum {
 
 #ifdef PC_DESKTOP
 #define MAX_PATTERN_BY_PROJECT 128
-#define __VECTORFPU__   1
-#define __RAM512MIB__   1
+
 #define __RTMIDI__      1
 #define SCREEN_WIDTH	320
 #define SCREEN_HEIGHT	240
@@ -335,9 +334,6 @@ enum {
 
 #ifdef  RASPI3_ILI9486 
 #define MAX_PATTERN_BY_PROJECT 128
-//#define __VECTORFPU__   0
-#define __RAM512MIB__   1
-#define __RTMIDI__      1
 #define SCREEN_WIDTH	480
 #define SCREEN_HEIGHT	320
 #define SCREEN_DEPTH	16
@@ -381,10 +377,12 @@ enum {
 
 
 #ifdef LINUX_RASPI1
-//#define __FPU__         1
-#define __RAM512MIB__   1
-//#define __RTMIDI__      1
-
+/*
+#define ENABLE_SYNTH_PICOSYNTH
+#define ENABLE_SYNTH_OPL2
+#define ENABLE_SYNTH_PICODRUM
+#define ENABLE_SYNTH_PBSYNTH
+*/
 #define MAX_PATTERN_BY_PROJECT 128
 
 #define SCREEN_WIDTH	320
@@ -438,7 +436,8 @@ enum {
 //#define __FPU__         1
 //#define __RAM512MIB__   0
 //#define __RTMIDI__      1
-#define  __PBSYNTHONLY__ 1
+#define ENABLE_SYNTH_PBSYNTH
+#define            __PBSYNTHONLY__ 1
 //int machine_tab[PORTED_MACHINE]={0,0,0};
 #define MAX_PATTERN_BY_PROJECT 128
 

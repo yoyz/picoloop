@@ -4,12 +4,21 @@ include Makefile_sources
 
 CC=/usr/bin/arm-linux-gnueabi-g++-5 
 CC=g++
+
+SYNTH=
+SYNTH+= -DENABLE_SYNTH_PICOSYNTH
+SYNTH+= -DENABLE_SYNTH_PICODRUM
+SYNTH+= -DENABLE_SYNTH_OPL2
+SYNTH+= -DENABLE_SYNTH_PBSYNTH
+
+
 CFLAGS_SDLVERS=-D__SDL20__
 CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINUX_RASPI1 -ggdb                   -DDEBUGPRINTF -fpermissive
 CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINUX_RASPI1 -ggdb -DFIXED                         -fpermissive -D__VOLCASYNC__
 CFLAGS= -c -std=c++11 -O3 -D__SDL20__ -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINUX_RASPI1 -ggdb -DFIXED                         -fpermissive -DDEBUGPRINTF
-CFLAGS= -c -std=c++11 -O3 -D__SDL20__ -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINUX_RASPI1 -ggdb -DFIXED                         -fpermissive -DDEBUGPRINTF  -D__LINUX_PULSE__
-CFLAGS= -c -std=c++11 -O3 -D__SDL20__ -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINUX_RASPI1 -ggdb -DFIXED                         -fpermissive                -D__LINUX_PULSE__
+CFLAGS= -c -std=c++11 -O3 -D__SDL20__ -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINUX_RASPI1 -ggdb -DFIXED                         -fpermissive -DDEBUGPRINTF  -D__LINUX_PULSE__ ${SYNTH}
+
+#CFLAGS= -c -std=c++11 -O3 -D__SDL20__ -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINUX_RASPI1 -ggdb -DFIXED                         -fpermissive                -D__LINUX_PULSE__
 LDFLAGS=-Lraspian/lib/ -lasound -lSDL2 -lSDL2_ttf -lpthread -lpulse -lpulse-simple 
 
 

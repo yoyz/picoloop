@@ -29,37 +29,58 @@ using namespace std;
 #include "TweakableKnob.h"
 #include "MachineCheck.h"
 #include "UserInterface.h"
-#if !defined(__PBSYNTHONLY__)
+
+#ifdef ENABLE_SYNTH_PICOSYNTH
 #include "Machine/Picosynth/PicosynthUserInterface.h"
-#include "Machine/Picodrum/PicodrumUserInterface.h"
-#include "Machine/Dbopl/DboplUserInterface.h"
-#endif
-#include "Machine/PBSynth/PBSynthUserInterface.h"
-#ifdef __RAM512MIB__
-#include "Machine/Lgptsampler/LgptsamplerUserInterface.h"
 #endif
 
-#if defined(__VECTORFPU__)
+#ifdef ENABLE_SYNTH_PICODRUM
+#include "Machine/Picodrum/PicodrumUserInterface.h"
+#endif
+#ifdef ENABLE_SYNTH_OPL2
+#include "Machine/Dbopl/DboplUserInterface.h"
+#endif
+
+#ifdef ENABLE_SYNTH_PBSYNTH
+#include "Machine/PBSynth/PBSynthUserInterface.h"
+#endif
+
+#ifdef ENABLE_SYNTH_LGPTSAMPLER
+#include "Machine/Lgptsampler/LgptsamplerUserInterface.h"
+#include "Machine/Lgptsampler/DEBSystem.h"
+#endif
+
+#ifdef ENABLE_SYNTH_CURSYNTH
 #include "Machine/Cursynth/CursynthUserInterface.h"
+#endif
+
+#ifdef ENABLE_SYNTH_OPEN303
 #include "Machine/Open303/Open303UserInterface.h"
+#endif
+
+#ifdef ENABLE_SYNTH_TWYTCHSYNTH
 #include "Machine/Twytch/TwytchsynthUserInterface.h"
+#endif
+
+#ifdef ENABLE_SYNTH_MDADRUM
 #include "Machine/MDADrum/MDADrumUserInterface.h"
+#endif
+
+#ifdef ENABLE_SYNTH_SIDSYNTH
 #include "Machine/SIDSynth/SIDSynthUserInterface.h"
 #endif
 
+#ifdef ENABLE_SYNTH_MIDIOUT
+#include "Machine/MidiOutSystem/MidiOutUserInterface.h"
+#endif
 
-#if defined(__RTMIDI__)
+#ifdef __RTMIDI__
 #include "MidiOutSystem.h"
 #include "MidiInSystem.h"
-#include "Machine/MidiOutSystem/MidiOutUserInterface.h"
 #endif
 
 #include "SYSTEM.h"
 
-#ifdef __RAM512MIB__
-// Define the header used by LGPT Sampler
-#include "Machine/Lgptsampler/DEBSystem.h"
-#endif
 
 #ifdef PSVITA
 #include <psp2/kernel/processmgr.h>
@@ -161,30 +182,51 @@ public:
 
 
 UserInterface * UI;
-#if !defined(__PBSYNTHONLY__)
+#ifdef ENABLE_SYNTH_PICOSYNTH
 PicosynthUserInterface   PSUI;
+#endif
+
+#ifdef ENABLE_SYNTH_PICODRUM
 PicodrumUserInterface    PDUI;
+#endif
+
+#ifdef ENABLE_SYNTH_OPL2
 DboplUserInterface       DBUI;
 #endif
-PBSynthUserInterface     PBUI;
 
-#if defined(__RAM512MIB__)
+#ifdef ENABLE_SYNTH_PBSYNTH
+PBSynthUserInterface     PBUI;
+#endif
+
+#ifdef ENABLE_SYNTH_LGPTSAMPLER
 LgptsamplerUserInterface LGUI;
 #endif
 
-#ifdef __VECTORFPU__
+#ifdef ENABLE_SYNTH_CURSYNTH
 CursynthUserInterface    CSUI;
+#endif
+
+#ifdef ENABLE_SYNTH_OPEN303
 Open303UserInterface     O303UI;
+#endif
+
+#ifdef ENABLE_SYNTH_TWYTCHSYNTH
 TwytchsynthUserInterface TWUI;
+#endif
+
+#ifdef ENABLE_SYNTH_MDADRUM
 MDADrumUserInterface     MDUI;
+#endif
+
+#ifdef ENABLE_SYNTH_SIDSYNTH
 SIDSynthUserInterface    SSUI;
 #endif
 
-#ifdef __RTMIDI__
+#ifdef ENABLE_SYNTH_MIDIOUT
 MidiOutUserInterface MIDIUI;
 #endif
 
-#ifdef __RAM512MIB__
+#ifdef ENABLE_SYNTH_LGPTSAMPLER
 // Begin used only by LGPT Sampler
 DEBSystem DEB;
 int argc;
@@ -3008,29 +3050,54 @@ void refresh_pecursor_ui(int i)
     }
   
   DPRINTF("refresh_pecursor_ui(%d),machine_type=%d",i,machine_type);
-#if !defined(__PBSYNTHONLY__)
+#ifdef       ENABLE_SYNTH_PICOSYNTH
   if (machine_type==SYNTH_PICOSYNTH)    { UI=&PSUI; return ;   }
+#endif
+
+#ifdef       ENABLE_SYNTH_PICODRUM
   if (machine_type==SYNTH_PICODRUM)     { UI=&PDUI; return ;   }
+#endif
+
+#ifdef       ENABLE_SYNTH_OPL2
   if (machine_type==SYNTH_OPL2    )     { UI=&DBUI; return ;   }
 #endif  
+
+#ifdef       ENABLE_SYNTH_PBSYNTH
   if (machine_type==SYNTH_PBSYNTH)      { UI=&PBUI; return ;   }
-#ifdef __RAM512MIB__
+#endif
+
+#ifdef       ENABLE_SYNTH_LGPTSAMPLER
   if (machine_type==SYNTH_LGPTSAMPLER)  { UI=&LGUI; return ;   }
 #endif
-#ifdef __VECTORFPU__
+
+#ifdef       ENABLE_SYNTH_CURSYNTH
   if (machine_type==SYNTH_CURSYNTH)     { UI=&CSUI;   return ; }
+#endif
+
+#ifdef       ENABLE_SYNTH_OPEN303
   if (machine_type==SYNTH_OPEN303)      { UI=&O303UI; return ; }
+#endif
+
+#ifdef       ENABLE_SYNTH_TWYTCHSYNTH
   if (machine_type==SYNTH_TWYTCHSYNTH)  { UI=&TWUI;   return ; }
+#endif
+
+#ifdef       ENABLE_SYNTH_MDADRUM
   if (machine_type==SYNTH_MDADRUM)      { UI=&MDUI;   return ; }
+#endif
+
+#ifdef       ENABLE_SYNTH_SIDSYNTH
   if (machine_type==SYNTH_SIDSYNTH)     { UI=&SSUI;   return ; }
 #endif
-#ifdef __RTMIDI__
+
+#ifdef       ENABLE_SYNTH_MIDIOUT
   if (machine_type==SYNTH_MIDIOUT)      { UI=&MIDIUI; return ; }
 #endif
+
   
   //DPRINTF("refresh_pecursor_ui(%d)\nmachine_type=%d\nexit(%d)\nNO UI found\n",i,machine_type,exit_code);
   //fprintf(stderr,"refresh_pecursor_ui(%d)\nmachine_type=%d\nexit(%d)\nNO UI found\n",i,machine_type,exit_code);
-  DPRINTF("refresh_pecursor_ui(%d) machine_type=%d exit(%d) : !!!!! NO UI found !!!!!",i,machine_type,exit_code);
+  printf("refresh_pecursor_ui(%d) machine_type=%d exit(%d) : !!!!! NO UI found !!!!!",i,machine_type,exit_code);
   CLOSE_DPRINTF();
   exit(8);
 }
