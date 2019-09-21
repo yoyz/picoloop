@@ -47,12 +47,12 @@ void InputManager::printState()
 {
   int symbol;
   
-  symbol=SDLK_ESCAPE;  DPRINTF("%d[%d %d]",symbol,m_key_state[symbol],m_key_repeat[symbol]);
-  symbol=SDLK_RETURN;  DPRINTF("%d[%d %d]",symbol,m_key_state[symbol],m_key_repeat[symbol]);
-  symbol=SDLK_LEFT;    DPRINTF("%d[%d %d]",symbol,m_key_state[symbol],m_key_repeat[symbol]);
-  symbol=SDLK_RIGHT;   DPRINTF("%d[%d %d]",symbol,m_key_state[symbol],m_key_repeat[symbol]);
-  symbol=SDLK_UP;      DPRINTF("%d[%d %d]",symbol,m_key_state[symbol],m_key_repeat[symbol]);
-  symbol=SDLK_DOWN;    DPRINTF("%d[%d %d]",symbol,m_key_state[symbol],m_key_repeat[symbol]);
+  symbol=BUTTON_SELECT;  DPRINTF("%d[%d %d]",symbol,m_key_state[symbol],m_key_repeat[symbol]);
+  symbol=BUTTON_START;   DPRINTF("%d[%d %d]",symbol,m_key_state[symbol],m_key_repeat[symbol]);
+  symbol=BUTTON_LEFT;    DPRINTF("%d[%d %d]",symbol,m_key_state[symbol],m_key_repeat[symbol]);
+  symbol=BUTTON_RIGHT;   DPRINTF("%d[%d %d]",symbol,m_key_state[symbol],m_key_repeat[symbol]);
+  symbol=BUTTON_UP;      DPRINTF("%d[%d %d]",symbol,m_key_state[symbol],m_key_repeat[symbol]);
+  symbol=BUTTON_DOWN;    DPRINTF("%d[%d %d]",symbol,m_key_state[symbol],m_key_repeat[symbol]);
 
 }
 
@@ -400,6 +400,7 @@ int InputManager::handleKey()
       this->updateStateNoKeyPress();
       this->clearLastKeyEvent();
     }
+  //this->printState();
   return keypressrelease;
 }
 #endif // Generic platform we are not using PSVITA here, so debian and other

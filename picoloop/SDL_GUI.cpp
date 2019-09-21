@@ -153,7 +153,7 @@ int SDL_GUI::initVideo()
 }
 #endif // __SDL12__
 
-#ifdef __SDL20__
+/*
 
 int SDL_GUI::initVideo()
 {
@@ -167,7 +167,7 @@ int SDL_GUI::initVideo()
       exit(1);  
 #endif
 #if !defined(PSVITA)  
-  if ( SDL_Init(SDL_INIT_VIDEO)<0)
+  if ( SDL_Init(SDL_INIT_VIDEO|SDL_INIT_JOYSTICK)<0)
     {
       DPRINTF("Couldn't initialize SDL: %s", SDL_GetError());
       return -1;
@@ -200,6 +200,93 @@ int SDL_GUI::initVideo()
   return 0;
 }
 
+#endif
+
+ */
+
+#if defined(__SDL20__) && !defined(PSVITA)
+int SDL_GUI::initVideo()
+{
+  DPRINTF("before SDL_Init");
+
+  if ( SDL_Init(SDL_INIT_VIDEO|SDL_INIT_JOYSTICK)<0)
+    {
+      DPRINTF("Couldn't initialize SDL: %s", SDL_GetError());
+      return -1;
+    }
+  DPRINTF("After SDL_Init");
+  DPRINTF("Before SDL_CreateWindow");
+#if defined(RASPI3_ILI9486)
+  SDL_ShowCursor(SDL_DISABLE);
+  window = SDL_CreateWindow("Picoloop",
+                            SDL_WINDOWPOS_UNDEFINED,
+                            SDL_WINDOWPOS_UNDEFINED,
+                            480, 320,
+                            SDL_WINDOW_SHOWN|SDL_WINDOW_FULLSCREEN|SDL_WINDOW_MAXIMIZED);
+#else // all platform debian for example
+  window = SDL_CreateWindow("Picoloop",
+                            SDL_WINDOWPOS_UNDEFINED,
+                            SDL_WINDOWPOS_UNDEFINED,
+                            640, 480,
+                            SDL_WINDOW_SHOWN);
+#endif
+
+//SDL_SetWindowFullscreen(window,SDL_WINDOW_FULLSCREEN);
+  DPRINTF("After SDL_CreateWindow");
+  if (window == NULL) {
+    // In the case that the window could not be made...
+    DPRINTF("After SDL_CreateWindow %s",SDL_GetError());
+    return -1;
+  }
+  screen=SDL_GetWindowSurface( window );
+
+  if( SDL_NumJoysticks() < 1 )
+    { 
+      printf( "joystick not connected!\n" );
+    }
+  else
+    {
+      printf( "joystick connected!\n" );
+      SDL_JoystickEventState(SDL_ENABLE);
+      gGameController = SDL_JoystickOpen( 0 );
+      gControllerHaptic = SDL_HapticOpenFromJoystick( gGameController );
+    }
+  
+
+
+  return 0;
+}
+
+#endif
+
+
+
+#if defined(__SDL20__) && defined(PSVITA)
+int SDL_GUI::initVideo()
+{
+  DPRINTF("before SDL_Init");
+
+  if( SDL_Init( SDL_INIT_VIDEO | SDL_INIT_AUDIO)<0)
+    return -1;
+  
+  if ((window = SDL_CreateWindow( "GreenRectangle", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN)) == NULL)
+    exit(1);  
+  
+  window = SDL_CreateWindow("Picoloop",
+                            SDL_WINDOWPOS_UNDEFINED,
+                            SDL_WINDOWPOS_UNDEFINED,
+                            640, 480,
+                            SDL_WINDOW_SHOWN);
+  
+  DPRINTF("After SDL_CreateWindow");
+  if (window == NULL) {
+    // In the case that the window could not be made...
+    DPRINTF("After SDL_CreateWindow %s",SDL_GetError());
+    return -1;
+  }
+  screen=SDL_GetWindowSurface( window );
+  return 0;
+}
 #endif
 
 

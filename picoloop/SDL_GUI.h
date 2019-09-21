@@ -16,8 +16,9 @@
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_video.h>
 typedef struct SDL_Window SDL_Window;
-#endif // __SDL20__
 
+
+#endif // __SDL20__
 
 
 #include "Master.h"
@@ -86,6 +87,8 @@ class SDL_GUI
 
 #ifdef __SDL20__
   SDL_Window * window;
+  SDL_Joystick* gGameController = NULL;
+  SDL_Haptic* gControllerHaptic = NULL;
 #endif
   SDL_Surface * screen;
 

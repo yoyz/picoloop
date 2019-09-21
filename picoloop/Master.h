@@ -428,6 +428,28 @@ enum {
 #define KEYPRESSED          SDL_KEYDOWN
 #define KEYRELEASED         SDL_KEYUP
 
+
+/*
+#define BUTTON_B            PS3_BUTTON_X
+#define BUTTON_A            PS3_BUTTON_O
+#define BUTTON_X            PS3_BUTTON_SQUARE
+#define BUTTON_Y            PS3_BUTTON_TRIANGLE
+
+#define BUTTON_UP           PS3_BUTTON_UP
+#define BUTTON_DOWN         PS3_BUTTON_DOWN
+#define BUTTON_LEFT         PS3_BUTTON_LEFT
+#define BUTTON_RIGHT        PS3_BUTTON_RIGHT
+
+#define BUTTON_SELECT       PS3_BUTTON_SELECT
+#define BUTTON_START        PS3_BUTTON_START
+
+#define BUTTON_L            PS3_BUTTON_L1
+#define BUTTON_R            PS3_BUTTON_R1
+
+#define KEYPRESSED          SDL_JOYBUTTONDOWN
+#define KEYRELEASED         SDL_JOYBUTTONUP
+*/
+
 // BEGIN DINGOO A320 SDL
 #endif
 
@@ -783,6 +805,26 @@ enum {
 #define PS4_BUTTON_SELECT          9
 #define PS4_BUTTON_VOLUP           16
 #define PS4_BUTTON_VOLDOWN         17
+
+
+#define PS3_BUTTON_UP              4
+#define PS3_BUTTON_DOWN            6
+#define PS3_BUTTON_LEFT            7
+#define PS3_BUTTON_RIGHT           5
+#define PS3_BUTTON_CLICKL          1
+#define PS3_BUTTON_CLICKR          2
+#define PS3_BUTTON_X               14
+#define PS3_BUTTON_O               13
+#define PS3_BUTTON_SQUARE          15
+#define PS3_BUTTON_TRIANGLE        12
+#define PS3_BUTTON_L1              10
+#define PS3_BUTTON_R1              11
+#define PS3_BUTTON_L2              8
+#define PS3_BUTTON_R2              9
+#define PS3_BUTTON_START           3
+#define PS3_BUTTON_SELECT          0
+#define PS3_BUTTON_VOLUP           16
+#define PS3_BUTTON_VOLDOWN         17
 
 
 
@@ -1229,7 +1271,7 @@ extern FILE * fdebugprintf;
 #endif
 
 
-#if !defined(PSVITA) && DEBUGPRINTF==1
+#if !defined(PSVITA) && DEBUGPRINTF==1 && !defined(DEBUGPRINTF_STDOUT)
 #define DPRINTF(FMT, ARGS...) do {					\
     if (DEBUGPRINTF)							\
       if (opendebugprintf==0)						\
@@ -1240,6 +1282,16 @@ extern FILE * fdebugprintf;
       }									\
   } while (0)
 #endif
+
+#if !defined(PSVITA) && DEBUGPRINTF==1 && defined(DEBUGPRINTF_STDOUT)
+#define DPRINTF(FMT, ARGS...) do {					\
+    if (DEBUGPRINTF)							\
+      {									\
+	printf("%.40s:%.8d [" FMT "]\n", __FUNCTION__, __LINE__, ## ARGS); \
+      }									\
+  } while (0)
+#endif
+
 //	fprintf(stderr, "%.40s:%.8d [" FMT "]\n", __FUNCTION__, __LINE__, ## ARGS); \
 
 #if DEBUGPRINTF==0
