@@ -348,7 +348,8 @@ int counter_delta_midi_clock=0;
 int delta_midi_clock=0;
 
 int mmc_stop=0;                     // we have received a mmc stop
-int mmc_start=1;                    // we have received a mmc stop
+int mmc_start=1;                    // we have received a mmc stop 
+int mmc_continue=0;                 // if mmc_continue=1 we resume playing
 int sequencer_playing=1;            // the sequencer is currently playing,
                                     //  so we move from step 0 to 1, 1 to 2 ...
 
@@ -3512,10 +3513,10 @@ void seq_update_multiple_time_by_step()
     {
       mmc_stop=0;
       sequencer_playing=0;     // we stop the sequencer
-      for(i=0;i<TRACK_MAX;i++)
-	{
-	  SEQ.getPatternSequencer(i).setStep(0);
-	}
+      //      for(i=0;i<TRACK_MAX;i++)
+      //{
+	  //SEQ.getPatternSequencer(i).setStep(0);
+      //}
     }
   if (mmc_start>0)
     {
@@ -3527,7 +3528,12 @@ void seq_update_multiple_time_by_step()
 	  seq_update_track(i);
 	}
     }
-  
+    if (mmc_continue>0)
+    {
+      mmc_continue=0;
+      sequencer_playing=1;     // we stop the sequencer
+    }
+
 }
 
 

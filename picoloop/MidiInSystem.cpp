@@ -12,6 +12,134 @@ MidiInSystem::~MidiInSystem()
 }
 
 
+void midi_botoomhalf(unsigned char msg)
+{
+  static unsigned char msg0;
+  static unsigned char msg1;
+  static unsigned char msg2;
+  static unsigned char msg3;
+  static unsigned char msg4;
+  static unsigned char msg5;
+  static unsigned char msg6;
+  static unsigned char clock;
+  //  printf("botoom %d\n",msg);
+
+  // CLOCK 0xF8	Timing Clock (Sys Realtime)
+  if (msg==248 && msg0==0)
+    {
+      counter_recv_midi_clock++;
+      if (counter_recv_midi_clock>5)
+	{
+	  counter_recv_midi_clock_six++;
+	  counter_recv_midi_clock=0;
+	  DPRINTF("*****MIDICLOCK 6 *****");
+	}
+      else
+	{
+	  DPRINTF("*****MIDICLOCK   *****");
+	}
+      msg0=0; msg1=0; msg2=0; msg3=0; msg4=0; msg5=0; msg6=0;
+      return;
+    }
+  // STOP 0xFC	Stop (Sys Realtime)
+  if (msg==252 && msg0==0)
+    {
+      printf("Receiving MIDI sys Stop\n");
+      mmc_stop=1;
+      msg0=0; msg1=0; msg2=0; msg3=0; msg4=0; msg5=0; msg6=0;
+      return;
+    }
+  // START 0xFA	Start (Sys Realtime)
+  if (msg==250 && msg0==0)
+    {
+      printf("Receiving MIDI sys Start\n");
+      mmc_start=1;
+      msg0=0; msg1=0; msg2=0; msg3=0; msg4=0; msg5=0; msg6=0;
+      return;
+    }
+  // PAUSE 0xFA	Start (Sys Realtime)
+  if (msg==251 && msg0==0)
+    {
+      printf("Receiving MIDI sys continue\n");
+      mmc_continue=1;
+      msg0=0; msg1=0; msg2=0; msg3=0; msg4=0; msg5=0; msg6=0;
+      return;
+    }
+
+
+
+
+  if (msg==0 &&                                                          msg==240 )
+    { msg0=240; return; }
+  else if (msg0==240 &&                                                  msg==127 ) 
+    { msg1=127; return; }
+  else if (msg0==240 && msg1==127 &&                                     msg==127 ) 
+    { msg2=127; return; }
+  else if (msg0==240 && msg1==127 && msg2==127 &&                        msg==6 ) 
+    { msg3=6; return; }
+  else if (msg0==240 && msg1==127 && msg2==127 && msg3==6 &&              msg>0)
+    { msg4=msg; return; }
+  else if (msg0==240 && msg1==127 && msg2==127 && msg3==6 &&  msg4>0 &&   msg==127)
+    { msg5=msg; } // We have found our MMC but we do not have managed it
+  else
+    {   msg0=0; msg1=0; msg2=0; msg3=0;msg4=0;msg5=0;msg6=0; }
+
+  // MMC STOP
+    if (msg0==240  && 
+      msg1==127  && 
+      msg2==127  &&
+      msg3==6    &&
+      msg4==1    && // STOP
+      msg5==247)
+    {
+      printf("Receiving MIDI MMC Stop\n");
+      mmc_stop=1;
+      counter_recv_midi_clock=0;
+      counter_recv_midi_clock_six=0;
+      msg0=0; msg1=0; msg2=0; msg3=0;msg4=0;msg5=0;msg6=0;
+    }
+  
+  // MMC PLAY
+  if (msg0==240  && 
+      msg1==127  && 
+      msg2==127  &&
+      msg3==6    &&
+      msg4==2    && // PLAY
+      msg5==247)
+    {
+      printf("Receiving MIDI MMC Start\n");
+      mmc_start=1;
+      counter_recv_midi_clock=0;
+      counter_recv_midi_clock_six=0;
+      msg0=0; msg1=0; msg2=0; msg3=0;msg4=0;msg5=0;msg6=0;
+    }
+
+}
+
+void midiincallback( double deltatime, std::vector< unsigned char > *message, void *userData )
+{
+  unsigned char msg;
+  unsigned char msg0;
+  unsigned char msg1;
+  unsigned char msg2;
+  unsigned char msg3;
+  unsigned char msg4;
+  unsigned char msg5;
+  unsigned int nBytes = message->size();
+
+  //exit(0);
+  //printf("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n");
+
+  for ( unsigned int i=0; i<nBytes; i++ )
+    {
+      //std::cout << "Byte " << i << " = " << (int)message->at(i) << ", ";
+      printf("Byte:%d=%d %2x\n",i,(unsigned char)message->at(i),(unsigned char)message->at(i));
+      msg=(unsigned char)message->at(i);
+      midi_botoomhalf(msg);
+    }
+}
+
+/*
 void midiincallback( double deltatime, std::vector< unsigned char > *message, void *userData )
 {
   int msg;
@@ -39,18 +167,18 @@ void midiincallback( double deltatime, std::vector< unsigned char > *message, vo
       if (i==5) msg5=(int)message->at(i);
     }
 
-  /*
-     MMC are sysex commands
-     ( from http://www.rncbc.org/drupal/node/92 ) 
-     F0 7F xx 06 01 F7 = MMC STOP
-     F0 7F xx 06 02 F7 = MMC PLAY
-     F0 7F xx 06 04 F7 = MMC FFWD
-     F0 7F xx 06 05 F7 = MMC REW
-     F0 7F xx 06 06 F7 = MMC REC STROBE
-     F0 7F xx 06 07 F7 = MMC REC STOP
-     F0 7F xx 06 08 F7 = MMC REC PAUSE
-     F0 7F xx 06 09 F7 = MMC PAUSE
-   */
+  
+  //   MMC are sysex commands
+  //   ( from http://www.rncbc.org/drupal/node/92 ) 
+  //   F0 7F xx 06 01 F7 = MMC STOP
+  //   F0 7F xx 06 02 F7 = MMC PLAY
+  //   F0 7F xx 06 04 F7 = MMC FFWD
+  //   F0 7F xx 06 05 F7 = MMC REW
+  //   F0 7F xx 06 06 F7 = MMC REC STROBE
+  //   F0 7F xx 06 07 F7 = MMC REC STOP
+  //   F0 7F xx 06 08 F7 = MMC REC PAUSE
+  //   F0 7F xx 06 09 F7 = MMC PAUSE
+ 
   
   // MMC STOP
   if (msg0==240  && 
@@ -60,6 +188,7 @@ void midiincallback( double deltatime, std::vector< unsigned char > *message, vo
       msg4==1    && // STOP
       msg5==247)
     {
+      printf("Receiving MIDI MMC Stop\n");
       mmc_stop=1;
       counter_recv_midi_clock=0;
       counter_recv_midi_clock_six=0;
@@ -73,6 +202,7 @@ void midiincallback( double deltatime, std::vector< unsigned char > *message, vo
       msg4==2    && // PLAY
       msg5==247)
     {
+      printf("Receiving MIDI MMC Start\n");
       mmc_start=1;
       counter_recv_midi_clock=0;
       counter_recv_midi_clock_six=0;
@@ -101,7 +231,7 @@ void midiincallback( double deltatime, std::vector< unsigned char > *message, vo
   //printf("        %d         \n\n",msg);
   // if ((i)
 }
-
+*/
 
 
 MidiInSystem & MidiInSystem::getInstance()
