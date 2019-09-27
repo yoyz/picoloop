@@ -436,7 +436,7 @@ V0.76abc
 - c : introduce a SELECT+RIGHT|LEFT to speed up reduce the tempo on the main menu a little like elektron box
 
 V0.75abcdef: 
-
+- introduce mmc start message there was only the mmc_stop handled
 - remove a lot of duplicate code in XXXUserInterface, because it was really needed
 - a add the resid engine 
 - b export DUMP_AUDIO=1 now export a wav file
