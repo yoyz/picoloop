@@ -44,7 +44,7 @@ void midi_botoomhalf(unsigned char msg)
   // STOP 0xFC	Stop (Sys Realtime)
   if (msg==252 && msg0==0)
     {
-      printf("Receiving MIDI sys Stop\n");
+      DPRINTF("Receiving MIDI sys Stop\n");
       mmc_stop=1;
       msg0=0; msg1=0; msg2=0; msg3=0; msg4=0; msg5=0; msg6=0;
       return;
@@ -52,7 +52,7 @@ void midi_botoomhalf(unsigned char msg)
   // START 0xFA	Start (Sys Realtime)
   if (msg==250 && msg0==0)
     {
-      printf("Receiving MIDI sys Start\n");
+      DPRINTF("Receiving MIDI sys Start\n");
       mmc_start=1;
       msg0=0; msg1=0; msg2=0; msg3=0; msg4=0; msg5=0; msg6=0;
       return;
@@ -60,7 +60,7 @@ void midi_botoomhalf(unsigned char msg)
   // PAUSE 0xFA	Start (Sys Realtime)
   if (msg==251 && msg0==0)
     {
-      printf("Receiving MIDI sys continue\n");
+      DPRINTF("Receiving MIDI sys continue\n");
       mmc_continue=1;
       msg0=0; msg1=0; msg2=0; msg3=0; msg4=0; msg5=0; msg6=0;
       return;
@@ -92,7 +92,7 @@ void midi_botoomhalf(unsigned char msg)
       msg4==1    && // STOP
       msg5==247)
     {
-      printf("Receiving MIDI MMC Stop\n");
+      DPRINTF("Receiving MIDI MMC Stop\n");
       mmc_stop=1;
       counter_recv_midi_clock=0;
       counter_recv_midi_clock_six=0;
@@ -107,7 +107,7 @@ void midi_botoomhalf(unsigned char msg)
       msg4==2    && // PLAY
       msg5==247)
     {
-      printf("Receiving MIDI MMC Start\n");
+      DPRINTF("Receiving MIDI MMC Start\n");
       mmc_start=1;
       counter_recv_midi_clock=0;
       counter_recv_midi_clock_six=0;
@@ -133,7 +133,7 @@ void midiincallback( double deltatime, std::vector< unsigned char > *message, vo
   for ( unsigned int i=0; i<nBytes; i++ )
     {
       //std::cout << "Byte " << i << " = " << (int)message->at(i) << ", ";
-      printf("Byte:%d=%d %2x\n",i,(unsigned char)message->at(i),(unsigned char)message->at(i));
+      DPRINTF("Byte:%d=%d %2x\n",i,(unsigned char)message->at(i),(unsigned char)message->at(i));
       msg=(unsigned char)message->at(i);
       midi_botoomhalf(msg);
     }
