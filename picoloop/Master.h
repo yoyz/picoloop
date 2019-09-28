@@ -45,7 +45,7 @@
 #define TRACK_MAX 4
 #define MAX_STEP_PER_TRACK 128
 
-#define BUFFER_FRAME DEFAULTSAMPLES
+//#define BUFFER_FRAME DEFAULTSAMPLES
 //#define DEFAULT_FREQ 44100
 
 #define DEFAULT_VOLUME   64
@@ -341,18 +341,18 @@ enum {
 #define SCREEN_MULT     1
 #endif
 #define MIDI_DELAY_IN_SAMPLE 2048
-#define DEFAULTSAMPLES   512
+#define DEFAULTSAMPLES        128
 
 /* #define MIDI_DELAY_IN_SAMPLE 8192 */
 /* #define DEFAULTSAMPLES   2048 */
 
 
-#define KEY_REPEAT_INTERVAL_SMALLEST  32
-#define KEY_REPEAT_INTERVAL_SMALL     48
-#define KEY_REPEAT_INTERVAL_MIDDLE    64
+#define KEY_REPEAT_INTERVAL_SMALLEST  16
+#define KEY_REPEAT_INTERVAL_SMALL     30
+#define KEY_REPEAT_INTERVAL_MIDDLE    48
 #define KEY_REPEAT_INTERVAL_LONG      128
 #define KEY_REPEAT_INTERVAL_LONGEST   192
-
+/*
 #define BUTTON_B            SDLK_LALT
 #define BUTTON_A            SDLK_LCTRL
 #define BUTTON_X            SDLK_SPACE
@@ -371,7 +371,25 @@ enum {
 
 #define KEYPRESSED          SDL_KEYDOWN
 #define KEYRELEASED         SDL_KEYUP
+*/
+#define BUTTON_B            PS3_BUTTON_X
+#define BUTTON_A            PS3_BUTTON_O
+#define BUTTON_X            PS3_BUTTON_SQUARE
+#define BUTTON_Y            PS3_BUTTON_TRIANGLE
 
+#define BUTTON_UP           PS3_BUTTON_UP
+#define BUTTON_DOWN         PS3_BUTTON_DOWN
+#define BUTTON_LEFT         PS3_BUTTON_LEFT
+#define BUTTON_RIGHT        PS3_BUTTON_RIGHT
+
+#define BUTTON_SELECT       PS3_BUTTON_SELECT
+#define BUTTON_START        PS3_BUTTON_START
+
+#define BUTTON_L            PS3_BUTTON_L1
+#define BUTTON_R            PS3_BUTTON_R1
+
+#define KEYPRESSED          SDL_JOYBUTTONDOWN
+#define KEYRELEASED         SDL_JOYBUTTONUP
 
 #endif
 
@@ -806,7 +824,8 @@ enum {
 #define PS4_BUTTON_VOLUP           16
 #define PS4_BUTTON_VOLDOWN         17
 
-
+/*
+// PC DESKTOP
 #define PS3_BUTTON_UP              4
 #define PS3_BUTTON_DOWN            6
 #define PS3_BUTTON_LEFT            7
@@ -825,8 +844,26 @@ enum {
 #define PS3_BUTTON_SELECT          0
 #define PS3_BUTTON_VOLUP           16
 #define PS3_BUTTON_VOLDOWN         17
+*/
 
-
+#define PS3_BUTTON_UP              13
+#define PS3_BUTTON_DOWN            14
+#define PS3_BUTTON_LEFT            15
+#define PS3_BUTTON_RIGHT           16
+#define PS3_BUTTON_CLICKL          11
+#define PS3_BUTTON_CLICKR          12
+#define PS3_BUTTON_X               0
+#define PS3_BUTTON_O               1
+#define PS3_BUTTON_SQUARE          3
+#define PS3_BUTTON_TRIANGLE        2
+#define PS3_BUTTON_L1              4
+#define PS3_BUTTON_R1              5
+#define PS3_BUTTON_L2              6
+#define PS3_BUTTON_R2              7
+#define PS3_BUTTON_START           9
+#define PS3_BUTTON_SELECT          8
+#define PS3_BUTTON_VOLUP           16
+#define PS3_BUTTON_VOLDOWN         17
 
 
 
@@ -1243,6 +1280,12 @@ extern FILE * fdebugprintf;
 #else
 #define DEBUGPRINTF 1
 #endif
+#ifndef DEBUGPRINTF_STDOUT
+#define DEBUGPRINTF_STDOUT 0
+#else
+#define DEBUGPRINTF_STDOUT 1
+#endif
+
 /*
 #if defined(PSVITA) && defined(DEBUGPRINTF)
 #define DPRINTF(FMT, ARGS...) do { \
@@ -1271,7 +1314,7 @@ extern FILE * fdebugprintf;
 #endif
 
 
-#if !defined(PSVITA) && DEBUGPRINTF==1 && !defined(DEBUGPRINTF_STDOUT)
+#if !defined(PSVITA) && DEBUGPRINTF==1 && DEBUGPRINTF_STDOUT==0
 #define DPRINTF(FMT, ARGS...) do {					\
     if (DEBUGPRINTF)							\
       if (opendebugprintf==0)						\
@@ -1283,7 +1326,7 @@ extern FILE * fdebugprintf;
   } while (0)
 #endif
 
-#if !defined(PSVITA) && DEBUGPRINTF==1 && defined(DEBUGPRINTF_STDOUT)
+#if !defined(PSVITA) && DEBUGPRINTF==1 && DEBUGPRINTF_STDOUT==1
 #define DPRINTF(FMT, ARGS...) do {					\
     if (DEBUGPRINTF)							\
       {									\
