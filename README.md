@@ -408,7 +408,27 @@ You can also push the eboot.bin binary directly in the good location with this c
 
 psp2shell> put eboot.bin ux0:/app/PICOLOOP1/
 
+# raspi3 ILI9486
 
+This screen is really cheap and allow to use a raspberry pi3 with a 15$ screen.
+https://github.com/juj/fbcp-ili9341
+You need to build it with this : 
+
+cmake .. -DWAVESHARE35B_ILI9486=ON -DSPI_BUS_CLOCK_DIVISOR=20 -DDISPLAY_ROTATE_180_DEGREES=ON -DDISPLAY_BREAK_ASPECT_RATIO_WHEN_SCALING=ON -DSTATISTICS=0
+
+My build was done 2019 april 30 10:55 from the master branch
+Just need to put on /etc/rc.local this line 
+/opt/fbcp-ili9341/fbcp-ili9341 &
+
+This on /boot/config.txt
+# Enable audio (loads snd_bcm2835)
+dtparam=audio=on
+# better audio
+audio_pwm_mode=2
+
+Recompile the lastest SDL2 because the shipped one on raspi3 is not good.
+So please install SDL2 as usual, then before launching picoloop source this on your shell with the right path to the "new" SDL2 library
+export LD_LIBRARY_PATH=/home/pi/SDL2/lib/
 
 Changelog
 =========
@@ -423,6 +443,7 @@ V0.77abcd
 - d : avoid an insidious graphic bug on vita on display_graphic_loadsave()
 - d : avoid a  weird behaviour in lgpt on vita with resonance which crash the app when it is tweaked
 - d : this version work on opendingux, psvita, windows, fail on psp
+- e : lots of changed here, mostly on raspi3_ILI9486_RtAudio_sdl20 basically, this screen and raspi3 works on midi on this version, the tag is for this one
 
 
 V0.76abc
