@@ -4,6 +4,7 @@
 #define __AUDIOENGINE____
 #include "Master.h"
 #include "PulseSync.h"
+#include <mutex>
 
 #ifdef   __SDL12__               
 #include <SDL/SDL.h>             
@@ -44,6 +45,7 @@ extern int counter_recv_midi_clock_six; // send n clock and decrement the counte
 extern int counter_delta_midi_clock;    // delta in sample between picoloop(master) and midi slave
 //extern int   menu_config_midiClockMode;  // 0 internal, 1 midi sync out, 2 midi sync in 
 extern float bpm_current;
+extern std::mutex lock_audiocallback;
                                     // define in PatternPlayer.cpp
 
 /*

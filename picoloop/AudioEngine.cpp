@@ -143,7 +143,8 @@ void AudioEngine::setupSequencerCallback(void (*ptrfunc)(void))
 // process BUFFER_FRAME sample and call the callback when needed
 void AudioEngine::processBuffer(int len)
 {
-  //for (int i=0;i<BUFFER_FRAME;i++)
+  lock_audiocallback.lock(); 
+ //for (int i=0;i<BUFFER_FRAME;i++)
   for (int i=0;i<len;i++)
     {
       nb_tick++;
@@ -216,6 +217,8 @@ void AudioEngine::processBuffer(int len)
 	    }	  
         }
     }
+
+  lock_audiocallback.unlock(); 
   bufferGenerated=0;
 }
 
