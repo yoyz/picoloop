@@ -29,7 +29,9 @@ using namespace std;
 #include "TweakableKnob.h"
 #include "MachineCheck.h"
 #include "UserInterface.h"
-
+#ifdef __LINUX__
+#include <sched.h>
+#endif
 #ifdef ENABLE_SYNTH_PICOSYNTH
 #include "Machine/Picosynth/PicosynthUserInterface.h"
 #endif
@@ -4118,12 +4120,17 @@ int seq()
 #else
       handle_key();
 #endif
-      // We give the processor to other thread to avoid spinning
-      SDL_Delay(delay);  
       
       seq_update_multiple_time_by_step();
 
-      
+      // We give the processor to other thread to avoid spinning
+      //SDL_Delay(delay);  
+#ifdef __LINUX__
+      //sched_yield();
+      SDL_Delay(1);
+#else
+      SDL_Delay(1); 
+#endif
 #ifdef PSP
       running = isRunning();
 #endif
