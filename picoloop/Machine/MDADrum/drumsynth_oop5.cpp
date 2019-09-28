@@ -67,7 +67,11 @@ void drumsynth::init()
   /*   free(wave); */
   /* wave=NULL; */
 
-
+  for (i=0;i<DD_DF_phi_SIZE;i++)
+    DD[i]=0;
+  for (i=0;i<DD_DF_phi_SIZE;i++)
+    DD[i]=0;
+  clippoint = 32700;
 
 }
 
@@ -422,7 +426,7 @@ int drumsynth::load_patch(char *dsfile)
 
   /* if(wave!=NULL) free(wave); */
   /* wave = (short *)malloc(2 * Length + 1280); //wave memory buffer */
-  if(wave==NULL) {busy=0; return 1;}
+  //if(wave==NULL) {busy=0; return 1;}
   wavewords = 0;
   prepare=1;
   return 0;
