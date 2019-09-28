@@ -6,7 +6,7 @@ using namespace std;
 #include <string.h>
 #include <time.h>
 #include <sys/time.h>
-
+#include <mutex>
 
 #include "Master.h"
 //#include "Note.h"
@@ -234,6 +234,8 @@ char ** argv;
 // End used only by LGPT Sampler
 #endif
 
+std::mutex lock_audiocallback;
+
 //UI.handle_key(1,1);
 //UI.a=1;
 //UI=PUI;
@@ -348,8 +350,8 @@ int counter_delta_midi_clock=0;
 int delta_midi_clock=0;
 
 int mmc_stop=0;                     // we have received a mmc stop
-int mmc_start=1;                    // we have received a mmc stop 
-int mmc_continue=0;                 // if mmc_continue=1 we resume playing
+int mmc_start=0;                    // we have received a mmc stop
+int mmc_continue=0;                 // we have received a mmc stop
 int sequencer_playing=1;            // the sequencer is currently playing,
                                     //  so we move from step 0 to 1, 1 to 2 ...
 
@@ -2156,6 +2158,8 @@ void handle_key_stop_start_sequencer()
       playing_with_mmc=1;
       DPRINTF("MMC-STOP:%d MMC_START:%d",mmc_stop,mmc_start);
     }
+   
+
 
 }
 
@@ -3520,13 +3524,17 @@ void seq_update_multiple_time_by_step()
     }
   if (mmc_start>0)
     {
+      lock_audiocallback.lock();
       mmc_start=0;
-      sequencer_playing=1;     // we start the sequencer
+      counter_recv_midi_clock=0;    
+      counter_recv_midi_clock_six=0;
+      sequencer_playing=1;     // we start the sequencer from the beginning
       for(i=0;i<TRACK_MAX;i++)
 	{
 	  SEQ.getPatternSequencer(i).setStep(0);
 	  seq_update_track(i);
 	}
+      lock_audiocallback.unlock();
     }
     if (mmc_continue>0)
     {
