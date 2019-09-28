@@ -4,13 +4,18 @@
 
 AudioDriver::AudioDriver()
 {
-  bufferFrames = BUFFER_FRAME;
+  //bufferFrames = BUFFER_FRAME;
+  bufferFrames = DEFAULTSAMPLES;
+  //bufferFrames = 32;
 
   // this could be override because now it is chooseable  by
   rtAudioOutputParams.deviceId=dac.getDefaultOutputDevice();
   rtAudioOutputParams.firstChannel=0;
   rtAudioOutputParams.nChannels=2;
 
+//  rtAudioStreamOptions.flags  = RTAUDIO_MINIMIZE_LATENCY | RTAUDIO_SCHEDULE_REALTIME ;
+  //rtAudioStreamOptions.flags  | = RTAUDIO_SCHEDULE_REALTIME;
+ 
   //rtAudioStreamOptions.flags  = RTAUDIO_HOG_DEVICE;
   //rtAudioStreamOptions.flags |= RTAUDIO_SCHEDULE_REALTIME;
 }

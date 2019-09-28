@@ -1,65 +1,420 @@
-<h1>PICOLOOP 0.77 README</h1>
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.13.1: http://docutils.sourceforge.net/" />
+<title></title>
+<style type="text/css">
 
-<p>Manual and tutorial for PC/PSP/PSVita/Pocketchip can be fetch here : https://github.com/farvardin/picoloop-manual</p>
+/*
+:Author: David Goodger (goodger@python.org)
+:Id: $Id: html4css1.css 7952 2016-07-26 18:15:59Z milde $
+:Copyright: This stylesheet has been placed in the public domain.
 
-<h2>Overview</h2>
+Default cascading style sheet for the HTML output of Docutils.
 
+See http://docutils.sf.net/docs/howto/html-stylesheets.html for how to
+customize this style sheet.
+*/
+
+/* used to remove borders from tables and images */
+.borderless, table.borderless td, table.borderless th {
+  border: 0 }
+
+table.borderless td, table.borderless th {
+  /* Override padding for "table.docutils td" with "! important".
+     The right padding separates the table cells. */
+  padding: 0 0.5em 0 0 ! important }
+
+.first {
+  /* Override more specific margin styles with "! important". */
+  margin-top: 0 ! important }
+
+.last, .with-subtitle {
+  margin-bottom: 0 ! important }
+
+.hidden {
+  display: none }
+
+.subscript {
+  vertical-align: sub;
+  font-size: smaller }
+
+.superscript {
+  vertical-align: super;
+  font-size: smaller }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+blockquote.epigraph {
+  margin: 2em 5em ; }
+
+dl.docutils dd {
+  margin-bottom: 0.5em }
+
+object[type="image/svg+xml"], object[type="application/x-shockwave-flash"] {
+  overflow: hidden;
+}
+
+/* Uncomment (and remove this text!) to get bold-faced definition list terms
+dl.docutils dt {
+  font-weight: bold }
+*/
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.admonition, div.attention, div.caution, div.danger, div.error,
+div.hint, div.important, div.note, div.tip, div.warning {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.admonition p.admonition-title, div.hint p.admonition-title,
+div.important p.admonition-title, div.note p.admonition-title,
+div.tip p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title, .code .error {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+/* Uncomment (and remove this text!) to get reduced vertical space in
+   compound paragraphs.
+div.compound .compound-first, div.compound .compound-middle {
+  margin-bottom: 0.5em }
+
+div.compound .compound-last, div.compound .compound-middle {
+  margin-top: 0.5em }
+*/
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+div.footer, div.header {
+  clear: both;
+  font-size: smaller }
+
+div.line-block {
+  display: block ;
+  margin-top: 1em ;
+  margin-bottom: 1em }
+
+div.line-block div.line-block {
+  margin-top: 0 ;
+  margin-bottom: 0 ;
+  margin-left: 1.5em }
+
+div.sidebar {
+  margin: 0 0 0.5em 1em ;
+  border: medium outset ;
+  padding: 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.section-subtitle, h2.section-subtitle, h3.section-subtitle,
+h4.section-subtitle, h5.section-subtitle, h6.section-subtitle {
+  margin-top: 0.4em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+hr.docutils {
+  width: 75% }
+
+img.align-left, .figure.align-left, object.align-left, table.align-left {
+  clear: left ;
+  float: left ;
+  margin-right: 1em }
+
+img.align-right, .figure.align-right, object.align-right, table.align-right {
+  clear: right ;
+  float: right ;
+  margin-left: 1em }
+
+img.align-center, .figure.align-center, object.align-center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+table.align-center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.align-left {
+  text-align: left }
+
+.align-center {
+  clear: both ;
+  text-align: center }
+
+.align-right {
+  text-align: right }
+
+/* reset inner alignment in figures */
+div.align-right {
+  text-align: inherit }
+
+/* div.align-center * { */
+/*   text-align: left } */
+
+.align-top    {
+  vertical-align: top }
+
+.align-middle {
+  vertical-align: middle }
+
+.align-bottom {
+  vertical-align: bottom }
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font: inherit }
+
+pre.literal-block, pre.doctest-block, pre.math, pre.code {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+pre.code .ln { color: grey; } /* line numbers */
+pre.code, code { background-color: #eeeeee }
+pre.code .comment, code .comment { color: #5C6576 }
+pre.code .keyword, code .keyword { color: #3B0D06; font-weight: bold }
+pre.code .literal.string, code .literal.string { color: #0C5404 }
+pre.code .name.builtin, code .name.builtin { color: #352B84 }
+pre.code .deleted, code .deleted { background-color: #DEB0A1}
+pre.code .inserted, code .inserted { background-color: #A3D289}
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+span.section-subtitle {
+  /* font-size relative to parent (h1..h6 element) */
+  font-size: 80% }
+
+table.citation {
+  border-left: solid 1px gray;
+  margin-left: 1px }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.docutils {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.footnote {
+  border-left: solid 1px black;
+  margin-left: 1px }
+
+table.docutils td, table.docutils th,
+table.docinfo td, table.docinfo th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+table.docutils th.field-name, table.docinfo th.docinfo-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap ;
+  padding-left: 0 }
+
+/* "booktabs" style (no vertical lines) */
+table.docutils.booktabs {
+  border: 0px;
+  border-top: 2px solid;
+  border-bottom: 2px solid;
+  border-collapse: collapse;
+}
+table.docutils.booktabs * {
+  border: 0px;
+}
+table.docutils.booktabs th {
+  border-bottom: thin solid;
+  text-align: left;
+}
+
+h1 tt.docutils, h2 tt.docutils, h3 tt.docutils,
+h4 tt.docutils, h5 tt.docutils, h6 tt.docutils {
+  font-size: 100% }
+
+ul.auto-toc {
+  list-style-type: none }
+
+</style>
+</head>
+<body>
+<div class="document">
+
+
+<p># PICOLOOP 0.77 README #</p>
+<p>Manual and tutorial for PC/PSP/PSVita/Pocketchip can be fetch here : <a class="reference external" href="https://github.com/farvardin/picoloop-manual">https://github.com/farvardin/picoloop-manual</a></p>
+<p>## Overview ##</p>
 <p>Picoloop is a synth and a stepsequencer (a clone of the famous nanoloop).
 The step sequencer play 4 tracks simultaneously, by default each track are 16 steps long, you can set the track to be up to 128 steps.
 Each track has a synthengine which can be a Virtual Analog, a Drum Synth, a FM synth.
 Each of the step can be edited on the 4 tracks.
 So for example, you can set a C4 note on step 0, nothing on step 1 and 2, then a D+5 on step 3 until the step 15.</p>
-
-<p>A pattern of 16 steps is played repeatedly while these notes can be edited in various respects like volume, pitch, filter, lfo etc. 
+<p>A pattern of 16 steps is played repeatedly while these notes can be edited in various respects like volume, pitch, filter, lfo etc.
 All parameters are set step-wise, so you can make huge variation of sound on the same pattern.
-Each channel's patterns can be saved to file slots and are then available for new combinations. 
+Each channel's patterns can be saved to file slots and are then available for new combinations.
 Finally, saved patterns can be arranged in a song structure.</p>
-
-<p>Besides the song editor and manual loading of patterns, there are 3 different ways to modify each channel's patterns so that they form longer structures:                                       </p>
-
-<ul>
-<li>1/2, 1/4 or 1/8 speed                                                               </li>
+<p>Besides the song editor and manual loading of patterns, there are 3 different ways to modify each channel's patterns so that they form longer structures:</p>
+<ul class="simple">
+<li>1/2, 1/4 or 1/8 speed</li>
 <li>Different pattern lengths by track</li>
 </ul>
-
 <p>Picoloop is targeted for linux/SDL compatible system.
 It uses SDL     to render graphics.
 It uses RtAudio or SDL to render audio out.
 It uses RtMidi  to send and receive midi message, today only clock</p>
-
-<h2>How it works</h2>
-
-<p>There is two pane :
- - the 16 steps ;
- - the menu which is above the 16 steps ;</p>
-
+<p>## How it works ##</p>
+<dl class="docutils">
+<dt>There is two pane :</dt>
+<dd><ul class="first last simple">
+<li>the 16 steps ;</li>
+<li>the menu which is above the 16 steps ;</li>
+</ul>
+</dd>
+</dl>
 <p>On the 16 boxes, there is a moving cursor which displays the current played step.
 And another cursor which displays the current selected step.
 There is a text menu, which allows you to select channel and edit parameter.
 All notes in the sequencer can be edited simultaneously.</p>
-
-<h3>The menu mode</h3>
-
+<p>### The menu mode ###</p>
 <p>The menu mode changes the selected textual menu at the bottom of the screen.
 This allows you to choose what kind of parameter you want to change, for example, the NOTE, the OSC, the Filter...
 In menu mode, when you press left/right, it changes the textual menu in the bottom of the screen</p>
-
-<pre><code>&lt;/&gt;             move backward/forward in the menu
+<blockquote>
+&lt;/&gt;             move backward/forward in the menu
 ^/v             select the track from 0 to track 3
 B               do nothing
 A + &lt;/&gt;/^/v,    edit all steps at once
 A               enter the edit mode
 L               go to the next     16 steps on the same track
 R               go to the previous 16 steps on the same track
-SELECT          call menu2 or menu1 ( it cycle between the two menu )
-</code></pre>
-
-<h3>The edit mode</h3>
-
+SELECT          call menu2 or menu1 ( it cycle between the two menu )</blockquote>
+<p>### The edit mode ###</p>
 <p>The edit mode changes the current step on the 16 steps display.
 In edit mode, when you press left/right, it changes the current step in the sequencer.</p>
-
-<pre><code>&lt;/&gt;             select next step
+<blockquote>
+&lt;/&gt;             select next step
 ^/v             select step+4, step-4
 B               enter a note in a step, it works as a cut/paste
 A + &lt;/&gt;/^/v,    edit the current step
@@ -67,17 +422,12 @@ A               do nothing
 L               go to the next     16 step on the same track
 R               go to the previous 16 step on the same track
 SELECT          call menu2 or menu1 ( it cycle between the two menu )
-START           cycle between the different parameter
-</code></pre>
-
-<h4>menu1</h4>
-
+START           cycle between the different parameter</blockquote>
+<p>#### menu1 ####</p>
 <p>The menu 1 is the first menu. It allows to modify the parameter of the synthengine of the current track.
 Each synth engine has different kind of parameter.</p>
-
 <p>You can:</p>
-
-<ol>
+<ol class="arabic simple">
 <li>A/R  : the enveloppe of the synth</li>
 <li>Note : the value of the note trigged</li>
 <li>OSC  : the oscillator of the synth</li>
@@ -85,64 +435,89 @@ Each synth engine has different kind of parameter.</p>
 <li>LFO  : the lfo parameter</li>
 <li>FLTR : the filter parameter.</li>
 </ol>
-
 <p>Here is the global overview of the most common parameters you will find by synth engine.</p>
-
-<ul>
-<li><p>A/R : </p>
-
-<ul>
-<li>Amp Enveloppe 
-<ul>
-<li>Attack/Release     Amp /  FM operator1   </li>
-<li>Decay/Sustain      Amp /  FM operator1   </li>
-</ul></li>
-<li>Filter Enveloppe <br />
-<ul>
-<li>Attack/Release Filter  /  FM Operator2       </li>
-<li>Decay/Sustain  Filter  /  FM Operator2       </li>
-</ul></li>
-<li>Trig/Amplification
-<ul>
-<li>trig time/Volume                                                                    </li>
-</ul></li>
-</ul></li>
-<li><p>Note : </p>
-
-<ul>
-<li>Choose note with "C3" "C4" "D2"                                                          </li>
-<li>Choose note with "dot"                                                                   </li>
-</ul></li>
-<li><p>OSC : </p>
-
-<ul>
-<li>Choose the two OSC shape of the synth, the drumsynth, the FM synth                             </li>
-</ul></li>
-<li><p>VCO : </p>
-
-<ul>
-<li>VCO mix in synth mode, OP1mult/OP2mult in FM mode                                        </li>
-<li>OP1amp/OP2amp in FM mode                                                                 </li>
-</ul></li>
-<li><p>LFO : </p>
-
-<ul>
-<li>depth/speed in psynth and drumsynth mode </li>
-<li>pitchbenddepth/pitchbendspeed in psynth mode </li>
-</ul></li>
-<li><p>FLTR : </p>
-
-<ul>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>A/R :</dt>
+<dd><ul class="first last">
+<li><dl class="first docutils">
+<dt>Amp Enveloppe</dt>
+<dd><ul class="first last">
+<li>Attack/Release     Amp /  FM operator1</li>
+<li>Decay/Sustain      Amp /  FM operator1</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Filter Enveloppe</dt>
+<dd><ul class="first last">
+<li>Attack/Release Filter  /  FM Operator2</li>
+<li>Decay/Sustain  Filter  /  FM Operator2</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Trig/Amplification</dt>
+<dd><ul class="first last">
+<li>trig time/Volume</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Note :</dt>
+<dd><ul class="first last">
+<li>Choose note with &quot;C3&quot; &quot;C4&quot; &quot;D2&quot;</li>
+<li>Choose note with &quot;dot&quot;</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>OSC :</dt>
+<dd><ul class="first last">
+<li>Choose the two OSC shape of the synth, the drumsynth, the FM synth</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>VCO :</dt>
+<dd><ul class="first last">
+<li>VCO mix in synth mode, OP1mult/OP2mult in FM mode</li>
+<li>OP1amp/OP2amp in FM mode</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>LFO :</dt>
+<dd><ul class="first last">
+<li>depth/speed in psynth and drumsynth mode</li>
+<li>pitchbenddepth/pitchbendspeed in psynth mode</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>FLTR :</dt>
+<dd><ul class="first last">
 <li>Cutoff/Resonance</li>
 <li>algo/mode ( lp/bp/hp )</li>
-</ul></li>
 </ul>
-
-<h4>menu 2</h4>
-
+</dd>
+</dl>
+</li>
+</ul>
+<p>#### menu 2 ####</p>
 <p>The menu 2 is a more general menu. You can:</p>
-
-<ol>
+<ol class="arabic simple">
 <li>L/S   load and save a pattern  track or the 4 pattern track ;</li>
 <li>BANK  change the current bank which allow you to have more pattern.</li>
 <li>PSH   shift left or right the pattern of a track and add bunch of 16 step ;</li>
@@ -150,266 +525,227 @@ Each synth engine has different kind of parameter.</p>
 <li>FX    apply fx on the current track delay</li>
 <li>BPM   change the BPM and swing of the 4 track and the step diviser of the current track</li>
 </ol>
-
-<h5>L/S menu</h5>
-
-<p>The top menu shows the tracks and patterns. 
+<p>##### L/S menu</p>
+<p>The top menu shows the tracks and patterns.
 - Save your current track by selecting an empty slow, then B+down.
 - Save your current pattern (group of 4 tracks) by selecting a column, then A+down.
 - Load a track with A+up (it will replace your current working track).
 - Load a pattern with B+up (il will replace the 4 current working tracks).</p>
-
 <p>You can clone a track by loading it into memory, then saving it to another track.</p>
-
-<p>The menu below (song position) allows you to order your tracks. You can enter it with Start key. 
+<p>The menu below (song position) allows you to order your tracks. You can enter it with Start key.
 - Define Loop start position with A+up
 - Define Loop end position with A+down
 - Change the values with B+up and B+down.</p>
-
-<h5>PSH menu</h5>
-
-<ul>
+<p>##### PSH menu</p>
+<ul class="simple">
 <li>Increase the track size (16 steps block) with A+UP</li>
 <li>Decrease the track size (16 steps block) with A+DOWN</li>
 <li>Increase the track size (1 step) with A+RIGHT</li>
 <li>Decrease the track size (1 step) with A+LEFT</li>
 <li>Navigate into the new steps (move the position by -16 or +16) with the LEFT and RIGHT SHOULDER (or TAB and BACKSPACE on PC)</li>
 </ul>
-
-<h2>What you need to know</h2>
-
+<p>## What you need to know ##</p>
 <p>Every pattern is stored in the bank/bankXXX/file so if you backup this directory you should be fine.</p>
-
 <p>You can write pattern on OpenDingux and push it on your laptop, unfortunately, it could sound little different.
 The OpenDingux a320 lack FPU so every thing is done in fixed point.
 On PC and PSP it's done in floating point...</p>
-
 <p>You won't be able to push pattern from PC to PSP/Opendingux, it could work but it depend if the Machine is available on the PSP.
 Today ( picoloop 0.75c ) only Picosynth, Picodrum, DBopl and PBSynth are available on slower platform : PSP, opendingux.</p>
-
 <p>The combo Select+UP, Select+Down allow you to raise or decrease the internal volume of the apps</p>
-
 <p>If you plug on Windows/Linux a midi cable you can use it with midi sync in or midi sync out.
-The MMC message ( "play", "stop" ) are received by picoloop, but it doesn't transmit this kind of message.
-It understand the "stop" and "play" MMC message. </p>
-
+The MMC message ( &quot;play&quot;, &quot;stop&quot; ) are received by picoloop, but it doesn't transmit this kind of message.
+It understand the &quot;stop&quot; and &quot;play&quot; MMC message.</p>
 <p>You can use midi delay to fine tune the sync between midi hardware and picoloop software.</p>
-
-<p>The MDA Drum synth works with file patch ".ds" file.
+<p>The MDA Drum synth works with file patch &quot;.ds&quot; file.
 So if you have a laptop with a harddrive which is not an ssd, you should work with a PSU and not the battery to
 avoid disk spinning down. The automatic disk shutdown will block audio for 10ms and it became really audible.
 Will be fixed in a latter version.</p>
-
-<h3>Package dependency, build from source</h3>
-
+<p>### Package dependency, build from source ###</p>
 <p>This section describes the dependency for building picoloop.
 On most platform in 2016, you will need this kind of package.</p>
-
-<pre><code> - libsdl*      =&gt; version 1.2 with the "ttf" and "gfx"
- - libasound2*  =&gt; alsa
- - libpthread*  =&gt; pthread for multiple thread
- - g++          =&gt; I use the g++ 4.7.2  
- - make         =&gt; I use the make 3.81
- - libjack-dev  =&gt; I use jack 2.0, and the jack dependency is needed today
-</code></pre>
-
-<h4>LASTEST SOURCE</h4>
-
+<blockquote>
+<ul class="simple">
+<li>libsdl*      =&gt; version 1.2 with the &quot;ttf&quot; and &quot;gfx&quot;</li>
+<li>libasound2*  =&gt; alsa</li>
+<li>libpthread*  =&gt; pthread for multiple thread</li>
+<li>g++          =&gt; I use the g++ 4.7.2</li>
+<li>make         =&gt; I use the make 3.81</li>
+<li>libjack-dev  =&gt; I use jack 2.0, and the jack dependency is needed today</li>
+</ul>
+</blockquote>
+<p>#### LASTEST SOURCE ####</p>
 <p>You can always update to the lastest source.
 But, you should then switch to a tag.</p>
-
-<p><tt> # git clone https://github.com/yoyz/audio.git </tt> </br>
-<tt> # git tag </tt> </br>
-<tt> # git checkout picoloop-0.75b </tt> </br></p>
-
+<p>&lt;tt&gt; # git clone <a class="reference external" href="https://github.com/yoyz/audio.git">https://github.com/yoyz/audio.git</a> &lt;/tt&gt; &lt;/br&gt;
+&lt;tt&gt; # git tag &lt;/tt&gt; &lt;/br&gt;
+&lt;tt&gt; # git checkout picoloop-0.75b &lt;/tt&gt; &lt;/br&gt;</p>
 <p>Tag are safier.
 And today, there is a known issue, the build of PatternPlayer need two build.
-The issue come from the "mkdir" which is launch after the other command, so every thing seem to fail on the first make...
+The issue come from the &quot;mkdir&quot; which is launch after the other command, so every thing seem to fail on the first make...
 Unfortunately I have not fixed this issue because you fall into this issue only when cloning the software from the repo.</p>
-
-<h4>COMPILATION FOR DEBIAN</h4>
-
-<pre><code> # cd      picoloop
- # make -f Makefile.PatternPlayer_debian_RtAudio clean
- # make -f Makefile.PatternPlayer_debian_RtAudio
-</code></pre>
-
-<h4>COMPILATION FOR POCKETCHIP</h4>
-
+<p>#### COMPILATION FOR DEBIAN ####</p>
+<blockquote>
+# cd      picoloop
+# make -f Makefile.PatternPlayer_debian_RtAudio clean
+# make -f Makefile.PatternPlayer_debian_RtAudio</blockquote>
+<p>#### COMPILATION FOR POCKETCHIP ####</p>
 <p>You have to build it on the pocketchip.</p>
-
-<pre><code> # cd      picoloop
- # make -f Makefile.PatternPlayer_pocketchip_RtAudio clean
- # make -f Makefile.PatternPlayer_pocketchip_RtAudio
-</code></pre>
-
-<h4>COMPILATION FOR RASPBERRYPI1</h4>
-
+<blockquote>
+# cd      picoloop
+# make -f Makefile.PatternPlayer_pocketchip_RtAudio clean
+# make -f Makefile.PatternPlayer_pocketchip_RtAudio</blockquote>
+<p>#### COMPILATION FOR RASPBERRYPI1 ####</p>
 <p>You have to build it directly on the raspberry.
-If you have a raspberry 2 or 3, you should go to the "debian" section.
+If you have a raspberry 2 or 3, you should go to the &quot;debian&quot; section.
 This build type is a light version like the opendingux one.</p>
-
-<pre><code> # cd      picoloop
- # make -f Makefile.PatternPlayer_raspi1_RtAudio    clean
- # make -f Makefile.PatternPlayer_raspi1_RtAudio
-</code></pre>
-
-<h4>COMPILATION FOR OPENDINGUX</h4>
-
+<blockquote>
+# cd      picoloop
+# make -f Makefile.PatternPlayer_raspi1_RtAudio    clean
+# make -f Makefile.PatternPlayer_raspi1_RtAudio</blockquote>
+<p>#### COMPILATION FOR OPENDINGUX ####</p>
 <p>On debian you need the /opt/opendingux-toolchain/ directory.
-you can fetch fetch it there : http://www.treewalker.org/opendingux/</p>
-
-<pre><code> # cd      picoloop
- # make -j 64 -f Makefile.RtAudio_opendingux               clean
- # make -j 64 -f Makefile.PatternPlayer_opendingux_RtAudio clean
-
- # make -j 64 -f Makefile.RtAudio_opendingux
- # make -j 64 -f Makefile.PatternPlayer_opendingux_RtAudio
- # make -j 64 -f Makefile.PatternPlayer_opendingux_RtAudio
-</code></pre>
-
-<h4>COMPILATION FOR GP2X</h4>
-
+you can fetch fetch it there : <a class="reference external" href="http://www.treewalker.org/opendingux/">http://www.treewalker.org/opendingux/</a></p>
+<blockquote>
+<p># cd      picoloop
+# make -j 64 -f Makefile.RtAudio_opendingux               clean
+# make -j 64 -f Makefile.PatternPlayer_opendingux_RtAudio clean</p>
+<p># make -j 64 -f Makefile.RtAudio_opendingux
+# make -j 64 -f Makefile.PatternPlayer_opendingux_RtAudio
+# make -j 64 -f Makefile.PatternPlayer_opendingux_RtAudio</p>
+</blockquote>
+<p>#### COMPILATION FOR GP2X ####</p>
 <p>On debian you need the /opt/open2x/ directory.
-you can fetch it there : http://wiki.gp2x.org/articles/i/n/s/Installing<em>the</em>Open2x_toolchain.html
+you can fetch it there : <a class="reference external" href="http://wiki.gp2x.org/articles/i/n/s/Installing_the_Open2x_toolchain.html">http://wiki.gp2x.org/articles/i/n/s/Installing_the_Open2x_toolchain.html</a>
 I don't have build it month ago, so at your own risk.</p>
-
-<pre><code> # cd      picoloop
- # make -j 64 -f Makefile.RtAudio_opendingux               clean
- # make -j 64 -f Makefile.PatternPlayer_opendingux_RtAudio clean
-
- # make -j 64 -f Makefile.RtAudio_opendingux
- # make -j 64 -f Makefile.PatternPlayer_opendingux_RtAudio
- # make -j 64 -f Makefile.PatternPlayer_opendingux_RtAudio
-</code></pre>
-
-<h4>COMPILATION FOR WINDOWS WITH MINGW32</h4>
-
+<blockquote>
+<p># cd      picoloop
+# make -j 64 -f Makefile.RtAudio_opendingux               clean
+# make -j 64 -f Makefile.PatternPlayer_opendingux_RtAudio clean</p>
+<p># make -j 64 -f Makefile.RtAudio_opendingux
+# make -j 64 -f Makefile.PatternPlayer_opendingux_RtAudio
+# make -j 64 -f Makefile.PatternPlayer_opendingux_RtAudio</p>
+</blockquote>
+<p>#### COMPILATION FOR WINDOWS WITH MINGW32 ####</p>
 <p>On debian, you need the mingw32 package.
 Picoloop provide the header and binary for SDL 1.2 on windows.
-So here it is a "cross build" you build on linux for windows.</p>
-
-<pre><code> # cd         picoloop
- # make       -f Makefile.PatternPlayer_windows_mingw_RtAudio          clean
- # make       -f Makefile.PatternPlayer_windows_mingw_RtAudio
-</code></pre>
-
-<h4>COMPILATION FOR PSP</h4>
-
+So here it is a &quot;cross build&quot; you build on linux for windows.</p>
+<blockquote>
+# cd         picoloop
+# make       -f Makefile.PatternPlayer_windows_mingw_RtAudio          clean
+# make       -f Makefile.PatternPlayer_windows_mingw_RtAudio</blockquote>
+<p>#### COMPILATION FOR PSP ####</p>
 <p>you need to have the sdk, the toolchain and the external lib.
-All can be fetched here : https://github.com/pspdev</p>
-
-<pre><code> # cd      picoloop
- # source ~/local/pspdev/env_build
- # make -f Makefile.PatternPlayer_psp_SDL        clean
- # make -f Makefile.PatternPlayer_psp_SDL
-</code></pre>
-
-<h1>LAUNCHING</h1>
-
-<p><tt> # ./PatternPlayer              </tt> <br></p>
-
-<h1>KEYS</h1>
-
-<h2>Debian/Windows</h2>
-
-<pre><code>- ESC               : Select key : go back to the global menu/switch menu
-- ENTER             : Start  key : change sub menu
-- L-CTRL            : A      key : insert note/delete node/copy note
-- L-ALT             : B      key : change the value on the screen of the selected step
-- ESC+ENTER         : quit
-- TAB               : LEFT Shoulder
-- BACKSPACE         : RIGHT Shoulder
-</code></pre>
-
+All can be fetched here : <a class="reference external" href="https://github.com/pspdev">https://github.com/pspdev</a></p>
+<blockquote>
+# cd      picoloop
+# source ~/local/pspdev/env_build
+# make -f Makefile.PatternPlayer_psp_SDL        clean
+# make -f Makefile.PatternPlayer_psp_SDL</blockquote>
+<p># LAUNCHING</p>
+<p>&lt;tt&gt; # ./PatternPlayer                          &lt;/tt&gt; &lt;br&gt;</p>
+<p># KEYS</p>
+<p>## Debian/Windows</p>
+<blockquote>
+<ul class="simple">
+<li>ESC               : Select key : go back to the global menu/switch menu</li>
+<li>ENTER             : Start  key : change sub menu</li>
+<li>L-CTRL            : A      key : insert note/delete node/copy note</li>
+<li>L-ALT             : B      key : change the value on the screen of the selected step</li>
+<li>ESC+ENTER         : quit</li>
+<li>TAB               : LEFT Shoulder</li>
+<li>BACKSPACE         : RIGHT Shoulder</li>
+</ul>
+</blockquote>
 <p>Depending on the current menu selected : A/R, OSC, VCO, BPM, LS, etc.</p>
-
-<pre><code>- L-ALT + up        : change value up
-- L-ALT + down      : change value down
-- L-ALT + left      : change value left
-- L-ALT + right     : change value right
-</code></pre>
-
-<h2>OpenDingux/PSP/GP2X</h2>
-
-<pre><code>- SELECT            : enter menu and move between menu
-- ENTER             : Start key/enter a menu
-- A key             : insert note/delete node/copy note
-- ESC+ENTER         : quit
-</code></pre>
-
+<blockquote>
+<ul class="simple">
+<li>L-ALT + up        : change value up</li>
+<li>L-ALT + down      : change value down</li>
+<li>L-ALT + left      : change value left</li>
+<li>L-ALT + right     : change value right</li>
+</ul>
+</blockquote>
+<p>## OpenDingux/PSP/GP2X</p>
+<blockquote>
+<ul class="simple">
+<li>SELECT            : enter menu and move between menu</li>
+<li>ENTER             : Start key/enter a menu</li>
+<li>A key             : insert note/delete node/copy note</li>
+<li>ESC+ENTER         : quit</li>
+</ul>
+</blockquote>
 <p>Depending on the current menu selected : A/R, OSC, VCO, BPM, LS, etc.</p>
-
-<pre><code>- B key + up        : change value up
-- B key + down      : change value down
-- B key + left      : change value left 
-- B key + right     : change value right
-</code></pre>
-
-<h1>USAGE</h1>
-
-<p>file named dataP&lt;%d>T&lt;%d>.pic store information about saved pattern.
-This file will be created when you store file in the "L/S" menu.</p>
-
-<h1>DEBUG</h1>
-
+<blockquote>
+<ul class="simple">
+<li>B key + up        : change value up</li>
+<li>B key + down      : change value down</li>
+<li>B key + left      : change value left</li>
+<li>B key + right     : change value right</li>
+</ul>
+</blockquote>
+<p># USAGE</p>
+<p>file named dataP&lt;%d&gt;T&lt;%d&gt;.pic store information about saved pattern.
+This file will be created when you store file in the &quot;L/S&quot; menu.</p>
+<p># DEBUG</p>
 <p>You need two file font.bmp and font.ttf which are located next to the source.</p>
-
-<h1>DEBUG PSP</h1>
-
+<p># DEBUG PSP</p>
 <p>You need your psp gcc compiler, the library and psplinkusb.</p>
-
-<p>1) Launch psplink on the psp this is an EBOOT.PBP.
-2) as root, launch usbhostfs<em>pc ( you need to be root to access the psp by usb and you need to be in the somewhere/psplinkusb/usbhostfs</em>pc/ folder ).
+<ol class="arabic simple">
+<li>Launch psplink on the psp this is an EBOOT.PBP.</li>
+</ol>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">&lt;stdin&gt;</tt>, line 363)</p>
+Enumerated list ends without a blank line; unexpected unindent.</div>
+<p>2) as root, launch usbhostfs_pc ( you need to be root to access the psp by usb and you need to be in the somewhere/psplinkusb/usbhostfs_pc/ folder ).
 You should see it is connected.</p>
-
 <p>3) In another terminal launch pspsh.  Try to 'ls -l', to see if all is ok.
 Copy the prx file in the usbhostfs_pc directory, you should see it with 'ls -l'</p>
-
 <p>If you want to launch PatternPlayer.prx, launch it with pspsh : ./PatternPlayer.prx
 In this case, you need the prx file ( not an elf or EBOOT.PBP ).</p>
-
 <p>If you want to debug it with psp-gdb, you can do it by this command in two different window.</p>
-
-<pre><code>     host0:/&gt; debug PatternPlayer.prx
-</code></pre>
-
-<p>In another window : </p>
-
-<pre><code>     $ psp-gdb ./PatternPlayer.elf
- (gdb) target remote localhost:10001
-     Remote debugging using localhost:10001
-</code></pre>
-
+<blockquote>
+host0:/&gt; debug PatternPlayer.prx</blockquote>
+<p>In another window :</p>
+<blockquote>
+$ psp-gdb ./PatternPlayer.elf
+(gdb) target remote localhost:10001
+Remote debugging using localhost:10001</blockquote>
 <p>In this case you need a prx and an elf file.</p>
-
-<h1>DEBUG PS VITA</h1>
-
-<p>read https://tai.henkaku.xyz/ you need to go to this website, then use the vita exploit on your ps vita at this url http://henkaku.xyz/go/
-Here your ps vita should have the "beta exploit".
-You need to have psp2shell compiled from https://github.com/yoyz/psp2shell
-it's a from from https://github.com/Cpasjuste/psp2shell but it should be at the right commit level.
+<p># DEBUG PS VITA</p>
+<p>read <a class="reference external" href="https://tai.henkaku.xyz/">https://tai.henkaku.xyz/</a> you need to go to this website, then use the vita exploit on your ps vita at this url <a class="reference external" href="http://henkaku.xyz/go/">http://henkaku.xyz/go/</a>
+Here your ps vita should have the &quot;beta exploit&quot;.
+You need to have psp2shell compiled from <a class="reference external" href="https://github.com/yoyz/psp2shell">https://github.com/yoyz/psp2shell</a>
+it's a from from <a class="reference external" href="https://github.com/Cpasjuste/psp2shell">https://github.com/Cpasjuste/psp2shell</a> but it should be at the right commit level.
 Compiled psp2shell so you have a psp2shell binary
 Compiled the kernel and user module and put it on your ps vita in ux0:/tai
 Then build picoloop for your psvita with -DDEBUG_PRINTF, it should work</p>
-
 <p>grab your core file in the ux0:/data directory, the last core</p>
-
-<p>use vita parse core from here : https://github.com/xyzz/vita-parse-core
-install it as root using the pip as root :</p>
-
-<h1>pip install -r requirements.txt</h1>
-
-<p>then 
-$ zcat psp2core-1510435186-0x0000092601-eboot.bin.psp2dmp > psp
+<p>use vita parse core from here : <a class="reference external" href="https://github.com/xyzz/vita-parse-core">https://github.com/xyzz/vita-parse-core</a>
+install it as root using the pip as root :
+# pip install -r requirements.txt
+then
+$ zcat psp2core-1510435186-0x0000092601-eboot.bin.psp2dmp &gt; psp
 $ python /home/peyrardj/build/vita-parse-core/main.py psp picoloop_vita.elf</p>
-
-<p>You can also push the eboot.bin binary directly in the good location with this command </p>
-
-<p>psp2shell> put eboot.bin ux0:/app/PICOLOOP1/</p>
-
+<p>You can also push the eboot.bin binary directly in the good location with this command</p>
+<p>psp2shell&gt; put eboot.bin ux0:/app/PICOLOOP1/</p>
+<p># raspi3 ILI9486</p>
+<p>This screen is really cheap and allow to use a raspberry pi3 with a 15$ screen.
+<a class="reference external" href="https://github.com/juj/fbcp-ili9341">https://github.com/juj/fbcp-ili9341</a>
+You need to build it with this :</p>
+<p>cmake .. -DWAVESHARE35B_ILI9486=ON -DSPI_BUS_CLOCK_DIVISOR=20 -DDISPLAY_ROTATE_180_DEGREES=ON -DDISPLAY_BREAK_ASPECT_RATIO_WHEN_SCALING=ON -DSTATISTICS=0</p>
+<p>My build was done 2019 april 30 10:55 from the master branch
+Just need to put on /etc/rc.local this line
+/opt/fbcp-ili9341/fbcp-ili9341 &amp;</p>
+<p>This on /boot/config.txt
+# Enable audio (loads snd_bcm2835)
+dtparam=audio=on
+# better audio
+audio_pwm_mode=2</p>
+<p>Recompile the lastest SDL2 because the shipped one on raspi3 is not good.
+So please install SDL2 as usual, then before launching picoloop source this on your shell with the right path to the &quot;new&quot; SDL2 library
+export LD_LIBRARY_PATH=/home/pi/SDL2/lib/</p>
+<div class="section" id="changelog">
 <h1>Changelog</h1>
-
 <p>V0.77abcd
 - a : introduce lgptsampler for vita and raspberry pi
 - b : introduce lgptsampler for windows, stuck on psp
@@ -417,65 +753,56 @@ $ python /home/peyrardj/build/vita-parse-core/main.py psp picoloop_vita.elf</p>
 - c : lots of valgrind
 - c : move to RtAudio 4.1.2 to 5.0
 - c : update to lastest psp2shell on vita
-- d : avoid an insidious graphic bug on vita on display<em>graphic</em>loadsave()
+- d : avoid an insidious graphic bug on vita on display_graphic_loadsave()
 - d : avoid a  weird behaviour in lgpt on vita with resonance which crash the app when it is tweaked
-- d : this version work on opendingux, psvita, windows, fail on psp</p>
-
+- d : this version work on opendingux, psvita, windows, fail on psp
+- e : lots of changed here, mostly on raspi3_ILI9486_RtAudio_sdl20 basically, this screen and raspi3 works on midi on this version, the tag is for this one</p>
 <p>V0.76abc
 - a : first port on psvita thanks to #henkaku team
-- b : re add polyrithmic in PSH, 
+- b : re add polyrithmic in PSH,
 - b : fix bpm speed ( slightly higher )
 - b : STOP the sequencer with A+B in BPM and START the sequencer wih A+START in BPM
 - b : fix ps vita LTRIGGER and RTRIGGER
 - b : fix the SELECT+UP/Down to change volume, but not change the track
-- b : MAX<em>PATTERN</em>BY_PROJECT update to 128 for all platform, but not PSP, opendingux, gp2x
+- b : MAX_PATTERN_BY_PROJECT update to 128 for all platform, but not PSP, opendingux, gp2x
 - c : introduce a SELECT+RIGHT|LEFT to speed up reduce the tempo on the main menu a little like elektron box</p>
-
-<p>V0.75abcdef: </p>
-
-<ul>
-<li>remove a lot of duplicate code in XXXUserInterface, because it was really needed</li>
-<li>a add the resid engine </li>
-<li>b export DUMP_AUDIO=1 now export a wav file</li>
-<li>c add SDL2.0 compatibility and keep SDL1.2 as default because it works</li>
-</ul>
-
+<p>V0.75abcdef:
+- introduce mmc start message there was only the mmc_stop handled
+- remove a lot of duplicate code in XXXUserInterface, because it was really needed
+- a add the resid engine
+- b export DUMP_AUDIO=1 now export a wav file
+- c add SDL2.0 compatibility and keep SDL1.2 as default because it works</p>
 <p>V0.74acd:</p>
-
-<ul>
-<li>add pocketchip platform, which is a "kind of variant" of raspberry pi 1, thank to garvalf from chipmusic.org</li>
-<li>fix a PatternElement.cpp issue related to a value not initialized </li>
-<li>shift track to the left and to the write in the song "orderlist"</li>
+<ul class="simple">
+<li>add pocketchip platform, which is a &quot;kind of variant&quot; of raspberry pi 1, thank to garvalf from chipmusic.org</li>
+<li>fix a PatternElement.cpp issue related to a value not initialized</li>
+<li>shift track to the left and to the write in the song &quot;orderlist&quot;</li>
 <li>fix a bug with the note tuning which appear from 0.71 to 0.74</li>
 </ul>
-
 <p>V0.73 :</p>
-
-<ul>
-<li>add a midi delta option in the [BPM] menu to move the sync signal in time, it is a kind of "midi delay" but doesn't work exactly the same way</li>
+<ul class="simple">
+<li>add a midi delta option in the [BPM] menu to move the sync signal in time, it is a kind of &quot;midi delay&quot; but doesn't work exactly the same way</li>
 <li>add a 'osc scale' which allow to change oscillator one or oscillator two pitch to make basic chord with two note</li>
 <li>rework a bit BPSynth on opendingoo to allow to remove some bad FixedPoint behaviour</li>
 <li>fix first buffer audio generation of pbsynth which lead to an audio glitch</li>
 </ul>
-
 <p>V0.71 :</p>
-
-<ul>
+<ul class="simple">
 <li>improve realtime of mda drum synth, now quite useable, but need to be improved</li>
 </ul>
-
 <p>V0.70 :</p>
-
-<ul>
+<ul class="simple">
 <li>add a readme.html in the repo</li>
 <li>fix some glitch on the screen from 320x240 to 640x480</li>
 </ul>
-
 <p>V0.69 :</p>
-
-<ul>
+<ul class="simple">
 <li>add midi in  sync on linux/windows</li>
 <li>add midi out sync on linux/windows</li>
 <li>midi on windows add issue with latency</li>
 <li>windows can run MDADrumSynth, still with issue with the latency</li>
 </ul>
+</div>
+</div>
+</body>
+</html>

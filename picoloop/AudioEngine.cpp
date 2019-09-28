@@ -39,8 +39,9 @@ AudioEngine::AudioEngine() :
   tick_right=0;
 
   FORMAT=RTAUDIO_SINT16;
-  bufferFrames = 512;          // Weird ?
-  bufferFrames = BUFFER_FRAME; // Weird ?
+  //bufferFrames = 512;          // Weird ?
+  //bufferFrames = BUFFER_FRAME; // Weird ?
+  bufferFrames = DEFAULTSAMPLES; // in the ifdef of platform RASPI3_ILI9486 PC_DESKTOP, PSP, etc.
   nbCallback=0;
 
 
@@ -144,6 +145,7 @@ void AudioEngine::setupSequencerCallback(void (*ptrfunc)(void))
 void AudioEngine::processBuffer(int len)
 {
   lock_audiocallback.lock(); 
+  //printf("len: %d ",len);
  //for (int i=0;i<BUFFER_FRAME;i++)
   for (int i=0;i<len;i++)
     {
