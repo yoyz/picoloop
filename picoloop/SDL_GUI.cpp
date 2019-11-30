@@ -596,6 +596,7 @@ SDL_Surface * SDL_GUI::loadBMP(const char *fn)
 SDL_Surface * SDL_GUI::loadBMP(const char *fn)
 {
   // To be implemented, today loadBMP is not used
+  return NULL;
 }
 #endif
 
