@@ -61,11 +61,14 @@ int InputManager::updateStateNoKeyPress()
 {
   for(mapii::iterator it = m_key_state.begin(); it != m_key_state.end(); ++it) 
     {
+	    //printf("%d\n",it->first);
+      //if (it->first)
       if (m_key_state[it->first])
 	{
 	  m_key_repeat[it->first]=m_key_repeat[it->first]+1;
 	}
     }  
+  return 0;
 }
 #endif
 #ifdef __SDL12__
@@ -84,6 +87,7 @@ int InputManager::updateState(int symbol,int state)
 {
   int i;
 
+	    printf("updateState %d %d\n",symbol,state);
   m_key_state[symbol]=state;
 
   if (state==0)
@@ -99,6 +103,7 @@ int InputManager::updateState(int symbol,int state)
 	    m_key_repeat[it->first]=m_key_repeat[it->first]+1;
 	  }
       }
+  return 0;
 }
 #endif //__SDL20__
 
@@ -314,6 +319,7 @@ int InputManager::handleKey()
   int key=0;
   int joy=0;
   SDL_Event event;
+  //printf("polling\n");
 
   if (SDL_PollEvent(&event))
     {     

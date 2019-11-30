@@ -334,11 +334,13 @@ enum {
 
 #ifdef  RASPI3_ILI9486 
 #define MAX_PATTERN_BY_PROJECT 128
-#define SCREEN_WIDTH	480
-#define SCREEN_HEIGHT	320
+//#define SCREEN_WIDTH	480
+//#define SCREEN_HEIGHT	320
+#define SCREEN_WIDTH	640 
+#define SCREEN_HEIGHT	480
 #define SCREEN_DEPTH	16
 #ifndef SCREEN_MULT 
-#define SCREEN_MULT     1
+#define SCREEN_MULT     2
 #endif
 #define MIDI_DELAY_IN_SAMPLE 2048
 #define DEFAULTSAMPLES        128
