@@ -54,7 +54,7 @@ void BiquadFilter::setBandwidth(double newBandwidth)
 
 void BiquadFilter::calcCoeffs()
 {
-  double w = 2*PI*frequency/sampleRate;
+  double w = 2*OPEN303_PI*frequency/sampleRate;
   double s, c;
   switch(mode)
   {

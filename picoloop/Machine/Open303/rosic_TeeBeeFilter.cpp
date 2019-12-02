@@ -13,7 +13,7 @@ TeeBeeFilter::TeeBeeFilter()
   resonanceSkewed     =     0.0;
   g                   =     1.0;
   sampleRate          = 44100.0;
-  twoPiOverSampleRate = 2.0*PI/sampleRate;
+  twoPiOverSampleRate = 2.0*OPEN303_PI/sampleRate;
 
   feedbackHighpass.setMode(OnePoleFilter::HIGHPASS);
   feedbackHighpass.setCutoff(150.0);
@@ -36,7 +36,7 @@ void TeeBeeFilter::setSampleRate(double newSampleRate)
 {
   if( newSampleRate > 0.0 )
     sampleRate = newSampleRate;
-  twoPiOverSampleRate = 2.0*PI/sampleRate;
+  twoPiOverSampleRate = 2.0*OPEN303_PI/sampleRate;
   feedbackHighpass.setSampleRate(newSampleRate);
   calculateCoefficientsExact();
 }

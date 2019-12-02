@@ -112,11 +112,11 @@ namespace rosic
 
   INLINE double sawWave(double x)
   {
-    double tmp = fmod(x, 2*PI);
-    if( tmp < PI )
-      return tmp/PI;
+    double tmp = fmod(x, 2*OPEN303_PI);
+    if( tmp < OPEN303_PI )
+      return tmp/OPEN303_PI;
     else
-      return (tmp/PI)-2.0;
+      return (tmp/OPEN303_PI)-2.0;
   }
 
   INLINE void sinCos(double x, double* sinResult, double* cosResult)
@@ -140,39 +140,39 @@ namespace rosic
     static const double c = 0.70710678118654752440;
 
     // restrict input x to the range 0.0...2*PI:
-    while( x > 2.0*PI )
-      x -= 2*PI;
+    while( x > 2.0*OPEN303_PI )
+      x -= 2*OPEN303_PI;
     while( x < 0.0 )
-      x += 2*PI;
+      x += 2*OPEN303_PI;
 
-    if( x < PI/2 )
+    if( x < OPEN303_PI/2 )
     {
       double tmp1 = x;
-      double tmp2 = (2/PI) * tmp1 - 0.5;
+      double tmp2 = (2/OPEN303_PI) * tmp1 - 0.5;
       double tmp3 = (2-4*c)*tmp2*tmp2 + c;
       *sinResult  = tmp3 + tmp2;
       *cosResult  = tmp3 - tmp2;
     }
-    else if( x < PI )
+    else if( x < OPEN303_PI )
     {
-      double tmp1 = (x-PI/2);
-      double tmp2 = 0.5 - (2/PI) * tmp1;
+      double tmp1 = (x-OPEN303_PI/2);
+      double tmp2 = 0.5 - (2/OPEN303_PI) * tmp1;
       double tmp3 = (2-4*c)*tmp2*tmp2 + c;
       *sinResult  = tmp2 + tmp3;
       *cosResult  = tmp2 - tmp3;
     }
-    else if( x < 1.5*PI )
+    else if( x < 1.5*OPEN303_PI )
     {
-      double tmp1 = (x-PI);
-      double tmp2 = (2/PI) * tmp1 - 0.5;
+      double tmp1 = (x-OPEN303_PI);
+      double tmp2 = (2/OPEN303_PI) * tmp1 - 0.5;
       double tmp3 = (4*c-2)*tmp2*tmp2 - c;
       *sinResult  = tmp3 - tmp2;
       *cosResult  = tmp3 + tmp2;
     }
     else
     {
-      double tmp1 = (x-1.5*PI);
-      double tmp2 = (2/PI) * tmp1 - 0.5;
+      double tmp1 = (x-1.5*OPEN303_PI);
+      double tmp2 = (2/OPEN303_PI) * tmp1 - 0.5;
       double tmp3 = (2-4*c)*tmp2*tmp2 + c;
       *sinResult  = tmp2 - tmp3;
       *cosResult  = tmp2 + tmp3;
@@ -181,8 +181,8 @@ namespace rosic
 
   INLINE double sqrWave(double x)
   {
-    double tmp = fmod(x, 2*PI);
-    if( tmp < PI )
+    double tmp = fmod(x, 2*OPEN303_PI);
+    if( tmp < OPEN303_PI )
       return 1.0;
     else
       return -1.0;
@@ -197,13 +197,13 @@ namespace rosic
 
   INLINE double triWave(double x)
   {
-    double tmp = fmod(x, 2*PI);
-    if( tmp < 0.5*PI )
-      return tmp/(0.5*PI);
-    else if( tmp < 1.5*PI )
-      return 1.0 - ((tmp-0.5*PI)/(0.5*PI));
+    double tmp = fmod(x, 2*OPEN303_PI);
+    if( tmp < 0.5*OPEN303_PI )
+      return tmp/(0.5*OPEN303_PI);
+    else if( tmp < 1.5*OPEN303_PI )
+      return 1.0 - ((tmp-0.5*OPEN303_PI)/(0.5*OPEN303_PI));
     else
-      return -1.0 + ((tmp-1.5*PI)/(0.5*PI));
+      return -1.0 + ((tmp-1.5*OPEN303_PI)/(0.5*OPEN303_PI));
   }
 
 } // end namespace rosic

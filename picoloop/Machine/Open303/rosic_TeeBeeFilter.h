@@ -177,7 +177,7 @@ namespace rosic
     double wc = twoPiOverSampleRate * cutoff;
     double s, c;
     sinCos(wc, &s, &c);             // c = cos(wc); s = sin(wc);
-    double t  = tan(0.25*(wc-PI));
+    double t  = tan(0.25*(wc-OPEN303_PI));
     double r  = resonanceSkewed;
 
     // calculate filter a1-coefficient tuned such the resonance frequency is just right:
@@ -255,7 +255,7 @@ namespace rosic
 
     if( mode == TB_303 )
     {
-      double fx = wc * ONE_OVER_SQRT2/(2*PI); 
+      double fx = wc * ONE_OVER_SQRT2/(2*OPEN303_PI); 
       b0 = (0.00045522346 + 6.1922189 * fx) / (1.0 + 12.358354 * fx + 4.4156345 * (fx * fx)); 
       k  = fx*(fx*(fx*(fx*(fx*(fx+7198.6997)-5837.7917)-476.47308)+614.95611)+213.87126)+16.998792; 
       g  = k * 0.058823529411764705882352941176471; // 17 reciprocal 

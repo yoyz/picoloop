@@ -212,7 +212,7 @@ INLINE double dB2amp(double dB)
 
 INLINE double degreeToRadiant(double degrees)
 {
-  return (PI/180.0)*degrees;
+  return (OPEN303_PI/180.0)*degrees;
 }
 
 /*
@@ -395,7 +395,7 @@ INLINE double pitchToFreq(double pitch, double masterTuneA4)
 
 INLINE double radiantToDegree(double radiant)
 {
-  return (180.0/PI)*radiant;
+  return (180.0/OPEN303_PI)*radiant;
 }
 
 INLINE double randomUniform(double min, double max, int seed)

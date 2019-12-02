@@ -82,7 +82,7 @@ void OnePoleFilter::calcCoeffs()
   case LOWPASS: 
     {
       // formula from dspguide:
-      double x = exp( -2.0 * PI * cutoff * sampleRateRec); 
+      double x = exp( -2.0 * OPEN303_PI * cutoff * sampleRateRec); 
       b0 = 1-x;
       b1 = 0.0;
       a1 = x;
@@ -91,7 +91,7 @@ void OnePoleFilter::calcCoeffs()
   case HIGHPASS:  
     {
       // formula from dspguide:
-      double x = exp( -2.0 * PI * cutoff * sampleRateRec);
+      double x = exp( -2.0 * OPEN303_PI * cutoff * sampleRateRec);
       b0 =  0.5*(1+x);
       b1 = -0.5*(1+x);
       a1 = x;
@@ -101,7 +101,7 @@ void OnePoleFilter::calcCoeffs()
     {
       // formula from DAFX:
       double c = 0.5*(shelvingGain-1.0);
-      double t = tan(PI*cutoff*sampleRateRec);
+      double t = tan(OPEN303_PI*cutoff*sampleRateRec);
       double a;
       if( shelvingGain >= 1.0 )
         a = (t-1.0)/(t+1.0);
@@ -117,7 +117,7 @@ void OnePoleFilter::calcCoeffs()
     {
       // formula from DAFX:
       double c = 0.5*(shelvingGain-1.0);
-      double t = tan(PI*cutoff*sampleRateRec);
+      double t = tan(OPEN303_PI*cutoff*sampleRateRec);
       double a;
       if( shelvingGain >= 1.0 )
         a = (t-1.0)/(t+1.0);
@@ -133,7 +133,7 @@ void OnePoleFilter::calcCoeffs()
   case ALLPASS:  
     {
       // formula from DAFX:
-      double t = tan(PI*cutoff*sampleRateRec);
+      double t = tan(OPEN303_PI*cutoff*sampleRateRec);
       double x = (t-1.0) / (t+1.0);
 
       b0 = x;
