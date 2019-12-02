@@ -1,0 +1,57 @@
+#!/bin/bash
+set -x 
+g++ -std=c++11 -g -c helm_common.cpp -o helm_common.o
+g++ -std=c++11 -g -c alias.cpp -o alias.o
+g++ -std=c++11 -g -c arpeggiator.cpp -o arpeggiator.o
+g++ -std=c++11 -g -c biquad_filter.cpp -o biquad_filter.o
+g++ -std=c++11 -g -c bit_crush.cpp -o bit_crush.o
+g++ -std=c++11 -g -c bypass_router.cpp -o bypass_router.o
+g++ -std=c++11 -g -c dc_filter.cpp -o dc_filter.o
+g++ -std=c++11 -g -c delay.cpp -o delay.o
+g++ -std=c++11 -g -c detune_lookup.cpp -o detune_lookup.o
+g++ -std=c++11 -g -c distortion.cpp -o distortion.o
+g++ -std=c++11 -g -c envelope.cpp -o envelope.o
+g++ -std=c++11 -g -c feedback.cpp -o feedback.o
+g++ -std=c++11 -g -c fixed_point_oscillator.cpp -o fixed_point_oscillator.o
+g++ -std=c++11 -g -c fixed_point_wave.cpp -o fixed_point_wave.o
+g++ -std=c++11 -g -c formant_manager.cpp -o formant_manager.o
+g++ -std=c++11 -g -c gate.cpp -o gate.o
+g++ -std=c++11 -g -c helm_engine.cpp -o helm_engine.o
+g++ -std=c++11 -g -c helm_lfo.cpp -o helm_lfo.o
+g++ -std=c++11 -g -c helm_module.cpp -o helm_module.o
+g++ -std=c++11 -g -c helm_oscillators.cpp -o helm_oscillators.o
+g++ -std=c++11 -g -c helm_voice_handler.cpp -o helm_voice_handler.o
+g++ -std=c++11 -g -c ladder_filter.cpp -o ladder_filter.o
+g++ -std=c++11 -g -c linear_slope.cpp -o linear_slope.o
+g++ -std=c++11 -g -c magnitude_lookup.cpp -o magnitude_lookup.o
+g++ -std=c++11 -g -c memory.cpp -o memory.o
+g++ -std=c++11 -g -c midi_lookup.cpp -o midi_lookup.o
+g++ -std=c++11 -g -c mono_panner.cpp -o mono_panner.o
+g++ -std=c++11 -g -c noise_oscillator.cpp -o noise_oscillator.o
+g++ -std=c++11 -g -c operators.cpp -o operators.o
+g++ -std=c++11 -g -c oscillator.cpp -o oscillator.o
+g++ -std=c++11 -g -c peak_meter.cpp -o peak_meter.o
+g++ -std=c++11 -g -c portamento_slope.cpp -o portamento_slope.o
+g++ -std=c++11 -g -c processor.cpp -o processor.o
+g++ -std=c++11 -g -c processor_router.cpp -o processor_router.o
+g++ -std=c++11 -g -c resonance_cancel.cpp -o resonance_cancel.o
+g++ -std=c++11 -g -c resonance_lookup.cpp -o resonance_lookup.o
+g++ -std=c++11 -g -c reverb.cpp -o reverb.o
+g++ -std=c++11 -g -c reverb_all_pass.cpp -o reverb_all_pass.o
+g++ -std=c++11 -g -c reverb_comb.cpp -o reverb_comb.o
+g++ -std=c++11 -g -c sample_decay_lookup.cpp -o sample_decay_lookup.o
+g++ -std=c++11 -g -c simple_delay.cpp -o simple_delay.o
+g++ -std=c++11 -g -c smooth_filter.cpp -o smooth_filter.o
+g++ -std=c++11 -g -c smooth_value.cpp -o smooth_value.o
+g++ -std=c++11 -g -c state_variable_filter.cpp -o state_variable_filter.o
+g++ -std=c++11 -g -c step_generator.cpp -o step_generator.o
+g++ -std=c++11 -g -c stutter.cpp -o stutter.o
+g++ -std=c++11 -g -c trigger_operators.cpp -o trigger_operators.o
+g++ -std=c++11 -g -c trigger_random.cpp -o trigger_random.o
+g++ -std=c++11 -g -c value.cpp -o value.o
+g++ -std=c++11 -g -c value_switch.cpp -o value_switch.o
+g++ -std=c++11 -g -c voice_handler.cpp -o voice_handler.o
+
+g++  -std=c++11 -g  -c main.cpp    -o      main.o
+
+g++ -std=c++11 -g   alias.o          dc_filter.o      feedback.o                helm_common.o       helm_voice_handler.o  midi_lookup.o       peak_meter.o        resonance_lookup.o     simple_delay.o           stutter.o            voice_handler.o arpeggiator.o    delay.o          fixed_point_oscillator.o  helm_engine.o       ladder_filter.o       mono_panner.o       portamento_slope.o  reverb.o               smooth_filter.o          trigger_operators.o biquad_filter.o  detune_lookup.o  fixed_point_wave.o        helm_lfo.o          linear_slope.o        noise_oscillator.o  processor.o         reverb_all_pass.o      smooth_value.o           trigger_random.o bit_crush.o      distortion.o     formant_manager.o         helm_module.o       magnitude_lookup.o    operators.o         processor_router.o  reverb_comb.o          state_variable_filter.o  value.o bypass_router.o  envelope.o       gate.o                    helm_oscillators.o  memory.o              oscillator.o        resonance_cancel.o  sample_decay_lookup.o  step_generator.o         value_switch.o main.o -o      main
