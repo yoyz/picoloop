@@ -77,9 +77,9 @@ void TwytchsynthMachine::init()
   if (buffer_i==0 ||
       buffer_f==0)
     {
-      TWE=new mopotwytchsynth::HelmEngine();
+      TWE=new twytchhelmmopo::HelmEngine();
       buffer_i = (Sint16*)malloc(sizeof(Sint16)*SAM);
-      buffer_f = (mopotwytchsynth::mopo_float*)malloc(sizeof(mopotwytchsynth::mopo_float)*SAM);
+      buffer_f = (twytchhelmmopo::mopo_float*)malloc(sizeof(twytchhelmmopo::mopo_float)*SAM);
 
       TWE->setBufferSize(SAM);
       //TWE->setSampleRate(44100);
@@ -92,7 +92,8 @@ void TwytchsynthMachine::init()
     buffer_f[i]=0.0;
 
   TWE->getControls().at("polyphony")->set(1);
-  TWE->getControls().at("filter_type")->set(0);
+  //TWE->getControls().at("filter_type")->set(1);
+  TWE->getControls().at("filter_on")->set(1);
   TWE->getControls().at("beats_per_minute")->set(120);
   TWE->getControls().at("legato")->set(0);
   TWE->getControls().at("arp_on")->set(0);
@@ -106,7 +107,9 @@ void TwytchsynthMachine::init()
   TWE->getControls().at("volume")->set(0.5);
   TWE->getControls().at("delay_on")->set(0);
   TWE->getControls().at("delay_sync")->set(1);
-  TWE->getControls().at("filter_saturation")->set(0);
+  //TWE->getControls().at("filter_saturation")->set(1.0);
+  TWE->getControls().at("distortion_on")->set(1.0);
+  TWE->getControls().at("filter_drive")->set(0.0);
   TWE->getControls().at("portamento_type")->set(0);
   TWE->getControls().at("portamento")->set(-9);
   TWE->getControls().at("reverb_on")->set(0);
@@ -356,10 +359,11 @@ void TwytchsynthMachine::setI(int what,int val)
    if (what==OSC2_UNISONDT &&osc2_unisondt!=val)      { osc2_unisondt=val; TWE->getControls().at("osc_2_unison_detune")->set(f_val*100); }
 
 
-   if (what==FILTER1_TYPE && filter1_type!=val)             { filter1_type=val; TWE->getControls().at("filter_type")->set(f_val*128); }
+   //   if (what==FILTER1_TYPE && filter1_type!=val)             { filter1_type=val; TWE->getControls().at("filter_type")->set(f_val*128); }
 
-   if (what==FILTER1_SATURATION && filter1_saturation!=val) { filter1_saturation=val; TWE->getControls().at("filter_saturation")->set(((f_val*2)-1)*20); }
-   if (what==FILTER1_FEEDBACK   && filter1_feedback!=val)   { filter1_feedback=val; TWE->getControls().at("osc_feedback_amount")->set(((f_val*2)-1)*1); }
+   //      if (what==FILTER1_SATURATION && filter1_saturation!=val) { filter1_saturation=val; TWE->getControls().at("filter_saturation")->set(((f_val*2)-1)*20); }
+   if (what==FILTER1_SATURATION && filter1_saturation!=val) { filter1_saturation=val; TWE->getControls().at("filter_drive")->set(((f_val*2)-1)*20); }
+   if (what==FILTER1_FEEDBACK   && filter1_feedback!=val)   { filter1_feedback=val; TWE->getControls().at("distortion_drive")->set(((f_val*2)-1)*30); }
 
 
    if (what==LFO1_ENV_AMOUNT && lfo1_env_amount!=val)
@@ -377,18 +381,18 @@ void TwytchsynthMachine::setI(int what,int val)
 
 	// clearModulations disapear from 0.4 to 0.6
         // TWE->clearModulations();
-       mopotwytchsynth::ModulationConnection * connection1;
-       mopotwytchsynth::ModulationConnection * connection2;
+       twytchhelmmopo::ModulationConnection * connection1;
+       twytchhelmmopo::ModulationConnection * connection2;
 
        connection1 =
-	 new mopotwytchsynth::ModulationConnection("mono_lfo_1","keytrack");
+	 new twytchhelmmopo::ModulationConnection("mono_lfo_1","keytrack");
 
        connection1->amount.set(f_env1_amount);
        TWE->connectModulation(connection1);
 
        //mopotwytchsynth::ModulationConnection * connection; 
        connection2 =
-	 new mopotwytchsynth::ModulationConnection("mono_lfo_2","osc_1_waveform");
+	 new twytchhelmmopo::ModulationConnection("mono_lfo_2","osc_1_waveform");
 
        connection2->amount.set(f_env2_amount);
        TWE->connectModulation(connection2);

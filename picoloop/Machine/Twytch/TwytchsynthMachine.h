@@ -1,7 +1,8 @@
 using namespace std;
 
 #include "Machine.h"
-#include "twytch_helm_engine.h"
+#include "twytchhelm_common.h"
+#include "twytchhelm_helm_engine.h"
 #include "NoteFreq.h"
 #ifndef __TWITCHSYNTHMACHINE____
 #define __TWITCHSYNTHMACHINE____
@@ -25,13 +26,13 @@ class TwytchsynthMachine : public Machine
 
  protected:
 
-  mopotwytchsynth::HelmEngine * TWE;
+  twytchhelmmopo::HelmEngine * TWE;
 
   int                   cutoff;
   int                   resonance;
 
   Sint16              * buffer_i;
-  mopotwytchsynth::mopo_float    * buffer_f;
+  twytchhelmmopo::mopo_float    * buffer_f;
 
   Sint32                sample_num;
   Sint32                index;
