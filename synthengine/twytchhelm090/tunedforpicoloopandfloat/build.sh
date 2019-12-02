@@ -1,0 +1,59 @@
+#!/bin/bash
+set -x 
+set -e 
+# for i in *.cpp ; do printf "g++ -std=c++11 -g  -c %s\t-o\t%s\n" $i $i ; done | sed -e 's@cpp$@o@g'
+
+g++ -std=c++11 -g  -c twytchhelm_alias.cpp      -o      twytchhelm_alias.o
+g++ -std=c++11 -g  -c twytchhelm_arpeggiator.cpp        -o      twytchhelm_arpeggiator.o
+g++ -std=c++11 -g  -c twytchhelm_biquad_filter.cpp      -o      twytchhelm_biquad_filter.o
+g++ -std=c++11 -g  -c twytchhelm_bit_crush.cpp  -o      twytchhelm_bit_crush.o
+g++ -std=c++11 -g  -c twytchhelm_bypass_router.cpp      -o      twytchhelm_bypass_router.o
+g++ -std=c++11 -g  -c twytchhelm_dc_filter.cpp  -o      twytchhelm_dc_filter.o
+g++ -std=c++11 -g  -c twytchhelm_delay.cpp      -o      twytchhelm_delay.o
+g++ -std=c++11 -g  -c twytchhelm_detune_lookup.cpp      -o      twytchhelm_detune_lookup.o
+g++ -std=c++11 -g  -c twytchhelm_distortion.cpp -o      twytchhelm_distortion.o
+g++ -std=c++11 -g  -c twytchhelm_envelope.cpp   -o      twytchhelm_envelope.o
+g++ -std=c++11 -g  -c twytchhelm_feedback.cpp   -o      twytchhelm_feedback.o
+g++ -std=c++11 -g  -c twytchhelm_fixed_point_oscillator.cpp     -o      twytchhelm_fixed_point_oscillator.o
+g++ -std=c++11 -g  -c twytchhelm_fixed_point_wave.cpp   -o      twytchhelm_fixed_point_wave.o
+g++ -std=c++11 -g  -c twytchhelm_formant_manager.cpp    -o      twytchhelm_formant_manager.o
+g++ -std=c++11 -g  -c twytchhelm_gate.cpp       -o      twytchhelm_gate.o
+g++ -std=c++11 -g  -c twytchhelm_helm_common.cpp        -o      twytchhelm_helm_common.o
+g++ -std=c++11 -g  -c twytchhelm_helm_engine.cpp        -o      twytchhelm_helm_engine.o
+g++ -std=c++11 -g  -c twytchhelm_helm_lfo.cpp   -o      twytchhelm_helm_lfo.o
+g++ -std=c++11 -g  -c twytchhelm_helm_module.cpp        -o      twytchhelm_helm_module.o
+g++ -std=c++11 -g  -c twytchhelm_helm_oscillators.cpp   -o      twytchhelm_helm_oscillators.o
+g++ -std=c++11 -g  -c twytchhelm_helm_voice_handler.cpp -o      twytchhelm_helm_voice_handler.o
+g++ -std=c++11 -g  -c twytchhelm_ladder_filter.cpp      -o      twytchhelm_ladder_filter.o
+g++ -std=c++11 -g  -c twytchhelm_linear_slope.cpp       -o      twytchhelm_linear_slope.o
+g++ -std=c++11 -g  -c twytchhelm_magnitude_lookup.cpp   -o      twytchhelm_magnitude_lookup.o
+g++ -std=c++11 -g  -c twytchhelm_memory.cpp     -o      twytchhelm_memory.o
+g++ -std=c++11 -g  -c twytchhelm_midi_lookup.cpp        -o      twytchhelm_midi_lookup.o
+g++ -std=c++11 -g  -c twytchhelm_mono_panner.cpp        -o      twytchhelm_mono_panner.o
+g++ -std=c++11 -g  -c twytchhelm_noise_oscillator.cpp   -o      twytchhelm_noise_oscillator.o
+g++ -std=c++11 -g  -c twytchhelm_operators.cpp  -o      twytchhelm_operators.o
+g++ -std=c++11 -g  -c twytchhelm_oscillator.cpp -o      twytchhelm_oscillator.o
+g++ -std=c++11 -g  -c twytchhelm_peak_meter.cpp -o      twytchhelm_peak_meter.o
+g++ -std=c++11 -g  -c twytchhelm_portamento_slope.cpp   -o      twytchhelm_portamento_slope.o
+g++ -std=c++11 -g  -c twytchhelm_processor.cpp  -o      twytchhelm_processor.o
+g++ -std=c++11 -g  -c twytchhelm_processor_router.cpp   -o      twytchhelm_processor_router.o
+g++ -std=c++11 -g  -c twytchhelm_resonance_cancel.cpp   -o      twytchhelm_resonance_cancel.o
+g++ -std=c++11 -g  -c twytchhelm_resonance_lookup.cpp   -o      twytchhelm_resonance_lookup.o
+g++ -std=c++11 -g  -c twytchhelm_reverb.cpp     -o      twytchhelm_reverb.o
+g++ -std=c++11 -g  -c twytchhelm_reverb_all_pass.cpp    -o      twytchhelm_reverb_all_pass.o
+g++ -std=c++11 -g  -c twytchhelm_reverb_comb.cpp        -o      twytchhelm_reverb_comb.o
+g++ -std=c++11 -g  -c twytchhelm_sample_decay_lookup.cpp        -o      twytchhelm_sample_decay_lookup.o
+g++ -std=c++11 -g  -c twytchhelm_simple_delay.cpp       -o      twytchhelm_simple_delay.o
+g++ -std=c++11 -g  -c twytchhelm_smooth_filter.cpp      -o      twytchhelm_smooth_filter.o
+g++ -std=c++11 -g  -c twytchhelm_smooth_value.cpp       -o      twytchhelm_smooth_value.o
+g++ -std=c++11 -g  -c twytchhelm_state_variable_filter.cpp      -o      twytchhelm_state_variable_filter.o
+g++ -std=c++11 -g  -c twytchhelm_step_generator.cpp     -o      twytchhelm_step_generator.o
+g++ -std=c++11 -g  -c twytchhelm_stutter.cpp    -o      twytchhelm_stutter.o
+g++ -std=c++11 -g  -c twytchhelm_trigger_operators.cpp  -o      twytchhelm_trigger_operators.o
+g++ -std=c++11 -g  -c twytchhelm_trigger_random.cpp     -o      twytchhelm_trigger_random.o
+g++ -std=c++11 -g  -c twytchhelm_value.cpp      -o      twytchhelm_value.o
+g++ -std=c++11 -g  -c twytchhelm_value_switch.cpp       -o      twytchhelm_value_switch.o
+g++ -std=c++11 -g  -c twytchhelm_voice_handler.cpp      -o      twytchhelm_voice_handler.o
+g++  -std=c++11 -g  -c main.cpp    -o      main.o
+
+g++ -std=c++11 -g   main.o twytchhelm_alias.o twytchhelm_arpeggiator.o twytchhelm_biquad_filter.o twytchhelm_bit_crush.o twytchhelm_bypass_router.o twytchhelm_dc_filter.o twytchhelm_delay.o twytchhelm_detune_lookup.o twytchhelm_distortion.o twytchhelm_envelope.o twytchhelm_feedback.o twytchhelm_fixed_point_oscillator.o twytchhelm_fixed_point_wave.o twytchhelm_formant_manager.o twytchhelm_gate.o twytchhelm_helm_common.o twytchhelm_helm_engine.o twytchhelm_helm_lfo.o twytchhelm_helm_module.o twytchhelm_helm_oscillators.o twytchhelm_helm_voice_handler.o twytchhelm_ladder_filter.o twytchhelm_linear_slope.o twytchhelm_magnitude_lookup.o twytchhelm_memory.o twytchhelm_midi_lookup.o twytchhelm_mono_panner.o twytchhelm_noise_oscillator.o twytchhelm_operators.o twytchhelm_oscillator.o twytchhelm_peak_meter.o twytchhelm_portamento_slope.o twytchhelm_processor.o twytchhelm_processor_router.o twytchhelm_resonance_cancel.o twytchhelm_resonance_lookup.o twytchhelm_reverb.o twytchhelm_reverb_all_pass.o twytchhelm_reverb_comb.o twytchhelm_sample_decay_lookup.o twytchhelm_simple_delay.o twytchhelm_smooth_filter.o twytchhelm_smooth_value.o twytchhelm_state_variable_filter.o twytchhelm_step_generator.o twytchhelm_stutter.o twytchhelm_trigger_operators.o twytchhelm_trigger_random.o twytchhelm_value.o twytchhelm_value_switch.o twytchhelm_voice_handler.o -o main
