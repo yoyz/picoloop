@@ -13,13 +13,17 @@ using namespace std;
 #include "WaveTableManager.h"
 #include "WaveTable.h"
 #include "PatternElement.h"
-
+#include "MachineCheck.h"
 #include "NoteFreq.h"
 
+
+MachineCheck   MC;
 SDL_GUI        SG;          // used to  initialize video
 AudioEngine    AE;          // used to  init alsa/rtaudio
 AudioMixer   * AM;
 InputManager   IE;          // used to  fetch key
+
+std::mutex lock_audiocallback;
 
 vector <Machine   *>        M(TRACK_MAX);
 vector <MonoMixer *>        MM(TRACK_MAX);
@@ -45,7 +49,7 @@ int delta_midi_clock=0;
 
 int mmc_start=1;                    // we have received a mmc stop
 int mmc_stop=0;
-
+int mmc_continue=0;                 // we have received a mmc stop
 
 int32_t pal0[MAXCOLOR]={0x0,      0xC8A0A8, 0x59AADA, 0xFFA11C, 0x39CE90, 0x36B82B, 0x3E789A, 0xFFFFFF, 0x0 };
 int32_t * pal=pal0;
@@ -266,9 +270,10 @@ void handle_key()
 
       )
     {
-      current_machine=current_machine-1;
-      if (current_machine<0)
-	current_machine=SYNTH_SIZE-1;
+      // current_machine=current_machine-1;
+      // if (current_machine<0)
+      // 	current_machine=SYNTH_SIZE-1;
+      current_machine=MC.getPrevious(current_machine);
       printf("current_machine:%d\n",current_machine);
       redraw=true;
 
@@ -281,9 +286,10 @@ void handle_key()
 
       )
     {
-      current_machine=current_machine+1;
-      if (current_machine>SYNTH_SIZE)
-	current_machine=0;
+      // current_machine=current_machine+1;
+      // if (current_machine>SYNTH_SIZE)
+      // 	current_machine=0;
+      current_machine=MC.getNext(current_machine);
       printf("current_machine:%d\n",current_machine);
       redraw=true;
 

@@ -13,6 +13,20 @@ CFLAGS_SDLVERS=-D__SDL12__
 CFLAGS_SDLVERS=-D__SDL20__    
 CFLAGS_SDLVERS=-D__SDL12__    
 
+SYNTH=
+SYNTH+= -DENABLE_SYNTH_PICOSYNTH
+SYNTH+= -DENABLE_SYNTH_PICODRUM
+SYNTH+= -DENABLE_SYNTH_OPL2
+SYNTH+= -DENABLE_SYNTH_PBSYNTH
+SYNTH+= -DENABLE_SYNTH_LGPTSAMPLER
+SYNTH+= -DENABLE_SYNTH_CURSYNTH
+SYNTH+= -DENABLE_SYNTH_OPEN303
+SYNTH+= -DENABLE_SYNTH_TWYTCHSYNTH
+SYNTH+= -DENABLE_SYNTH_MDADRUM
+SYNTH+= -DENABLE_SYNTH_SIDSYNTH
+SYNTH+= -DENABLE_SYNTH_MIDIOUT
+
+
 CFLAGS_HELPER=-I/home/yoyz/local/SDL2-clang/include/
 LDFLAGS_HELPER=-L/home/yoyz/local/SDL2-clang/lib
 CFLAGS_HELPER=
@@ -29,7 +43,7 @@ CFLAGS= -c -std=c++11 -O1 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__SDL_AUDIO__  -DL
 CFLAGS= -c -std=c++11 -O1 -D__LINUX__ -DLINUX -D__LINUX_PULSE__ -I. -LSDL/lib -D__RTAUDIO__  -DLINUX_RASPI1 -ggdb  ${CFLAGS_SDLVERS}                 -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive -DNDEBUG
 CFLAGS= -c -std=c++11 -O1 -D__LINUX__ -DLINUX -D__LINUX_PULSE__ -I. ${CFLAGS_HELPER} ${LDFLAGS_HELPER}  -D__RTAUDIO__  -DLINUX_RASPI1 -ggdb  ${CFLAGS_SDLVERS}                 -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive -DNDEBUG
 CFLAGS= -c -std=c++11 -O1 -D__LINUX__ -DLINUX -D__LINUX_PULSE__ -I. ${CFLAGS_HELPER} ${LDFLAGS_HELPER}  -D__RTAUDIO__  -DLINUX_RASPI1 -ggdb  ${CFLAGS_SDLVERS}                 -DDEBUGPRINTF -DSCREEN_MULT=2  -DNDEBUG -Werror=return-type
-CFLAGS= -c -std=c++11 -O1 -D__LINUX__ -DLINUX -D__LINUX_PULSE__ -I. ${CFLAGS_HELPER} ${LDFLAGS_HELPER}  -D__RTAUDIO__  -DPC_DESKTOP   -ggdb  ${CFLAGS_SDLVERS}                 -DDEBUGPRINTF -DSCREEN_MULT=2  -DNDEBUG -Werror=return-type
+CFLAGS= -c -std=c++11 -O1 -D__LINUX__ -DLINUX -D__LINUX_PULSE__ -I. ${CFLAGS_HELPER} ${LDFLAGS_HELPER}  -D__RTAUDIO__  -DPC_DESKTOP   -ggdb  ${CFLAGS_SDLVERS}                 -DDEBUGPRINTF -DSCREEN_MULT=2  -DNDEBUG -Werror=return-type ${SYNTH}
 
 LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf -lasound -lpthread -lpulse -lpulse-simple -ljack
 LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf -lasound -lpthread -lpulse -lpulse-simple 
@@ -114,7 +128,7 @@ $(EXECUTABLE): $(DEPENDENCYINOBJDIR) $(OBJECTSINOBJDIR)
 # the .d file contain the dependency
 $(OBJDIR)/%.d : %.cpp %.h
 	@[ -d `dirname $@` ] || mkdir -p `dirname $@`
-	$(CC) $(CFLAGS_SDLVERS) $(CFLAGS_HELPER) -I. -MM $< -o $@
+	$(CC) -std=c++11 $(CFLAGS_SDLVERS) $(CFLAGS_HELPER) -I. -MM $< -o $@
 
 $(OBJDIR)/%.o : %.cpp 
 	@[ -d `dirname $@` ] || mkdir -p `dirname $@`
@@ -129,12 +143,12 @@ $(OBJDIR)/%.o : %.cpp
 # SYSTEMLINUX.d does have a .h which is SYSTEM.h, so it need a tweaks
 $(OBJDIR)/SYSTEMLINUX.d:SYSTEMLINUX.cpp 
 	@[ -d `dirname $@` ] || mkdir -p `dirname $@`
-	$(CC) -I. -MM $< -o $@ 
+	$(CC) -std=c++11 -I. -MM $< -o $@ 
 
 # PatternPlayer.d does have a .h which is system.h
 $(OBJDIR)/WaveSynth.d:WaveSynth.cpp
 	@[ -d `dirname $@` ] || mkdir -p `dirname $@`
-	$(CC) $(CFLAGS_SDLVERS) $(CFLAGS_HELPER)  -std=c++11 -I. -MM $< -o $@ 
+	$(CC)  $(CFLAGS_SDLVERS) $(CFLAGS_HELPER)  -std=c++11 -I. -MM $< -o $@ 
 
 
 clean:
