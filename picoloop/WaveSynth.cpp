@@ -53,14 +53,13 @@ int mmc_continue=0;                 // we have received a mmc stop
 
 int32_t pal0[MAXCOLOR]={0x0,      0xC8A0A8, 0x59AADA, 0xFFA11C, 0x39CE90, 0x36B82B, 0x3E789A, 0xFFFFFF, 0x0 };
 int32_t * pal=pal0;
-
 /* end external dependency not used in waveSynth */
 
 #define SCREEN_DEPTH	16
 #define NCOEF	(32)
 
 int y_m=SCREEN_HEIGHT/2;
-int divide=128;
+float divide=16;
 bool redraw=true;
 int loop=0;
 int offset=0;
@@ -716,6 +715,23 @@ void handle_key()
       redraw=true;
       printf("key pgdown %f\n",zoom);
     }
+
+  if(lastKey==SDLK_HOME)
+    {
+      divide=divide/1.1;
+      if (divide<0.01) divide=0.01;
+      redraw=true;
+      printf("key home %f\n",divide);
+    }
+  if(lastKey==SDLK_END)
+    {
+      divide=divide*1.1;
+      if (divide>128) divide=128;
+      redraw=true;
+      printf("key end %f\n",divide);
+    }
+
+
   if (lastEvent ==  SDL_KEYDOWN)
     {
       if (lastKey==SDLK_q) { printf("key q\n"); noteValue=0+octave;  noteon=1; }
@@ -841,15 +857,16 @@ void draw_screen()
       else
 	{
 	  rect.y=((SCREEN_HEIGHT/2));
-	  rect.h=vector_buffer[i]*-1;	  
+	  rect.h=vector_buffer[i]*-1;
 	}
       
       // Create a vertical colored line
       color=vector_buffer[i];
+      //color=512;
       SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, color, 0, 128));      
     }
   
-  //SDL_Flip(screen);
+  SDL_Flip(screen);
   SG.refresh();
   SDL_Delay(1);
   redraw=false;  
