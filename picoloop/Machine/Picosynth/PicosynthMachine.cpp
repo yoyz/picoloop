@@ -18,6 +18,8 @@ PicosynthMachine::PicosynthMachine()
   trig_time_duration=0;
   trig_time_duration_sample=0;
   buffer=0;
+  osc1_scale=0;
+  osc2_scale=0;
 }
 
 
@@ -211,7 +213,6 @@ void PicosynthMachine::setI(int what,int val)
   //if (what==OSC2_AMP)            //HO->SetAttenuation(1,2,32-(val/4));
   if (what==OSC1_SCALE)    osc1_scale=val;
   if (what==OSC2_SCALE)    osc2_scale=val;
-
 
 
   if (what==ADSR_ENV0_ATTACK)    adsr_amp->setAttack(val);
