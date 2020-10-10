@@ -2,11 +2,6 @@ include Makefile_sources
 
 #CC=g++-4.4
 CC=g++
-#CFLAGS=-c -DLINUX -I. -LSDL/lib -ggdb -pg
-#LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf -lpthread  RtAudio.o  -pg
-#LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf -lpthread  RtAudio.o 
-
-#CFLAGS=-c -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP
 
 SYNTH=
 SYNTH+= -DENABLE_SYNTH_PICOSYNTH
@@ -21,42 +16,41 @@ SYNTH+= -DENABLE_SYNTH_MDADRUM
 SYNTH+= -DENABLE_SYNTH_SIDSYNTH
 SYNTH+= -DENABLE_SYNTH_MIDIOUT
 
-CFLAGS=-c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb -ffast-math
-CFLAGS=-c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb  -pg
-CFLAGS=-Wall -c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb 
-CFLAGS= -c -O3 -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINUX_DESKTOP -ggdb  -fpermissive -pg
-CFLAGS= -c -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINUX_DESKTOP -ggdb  -fpermissive -pg -DDUMP_AUDIO=0
-CFLAGS= -c -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINUX_DESKTOP -ggdb  -fpermissive 
-CFLAGS= -c -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINUX_DESKTOP -ggdb   -DDUMP_AUDIO=1
-CFLAGS= -c -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINUX_DESKTOP -ggdb   -DDUMP_AUDIO=1 -DFIXED
-CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -D __RTMIDI__ -DLINUX_DESKTOP -ggdb   -DDUMP_AUDIO=1  -fpermissive
-CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -D __RTMIDI__ -DLINUX_DESKTOP -ggdb   -DDUMP_AUDIO=1  -DDEBUGPRINTF -fpermissive
-CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -D __RTMIDI__ -DPC_DESKTOP -ggdb                   -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive
-CFLAGS= -c -std=c++11 -O3 -D__LINUX__         -I. -LSDL/lib -D__RTAUDIO__ -D __RTMIDI__ -DPC_DESKTOP -ggdb                   -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive 
-
 
 CFLAGS_SDLVERS=-D__SDL20__
-CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -D __RTMIDI__ -DPC_DESKTOP -ggdb  ${CFLAGS_SDLVERS}                 -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive
-CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -D__LINUX_PULSE__ -I. -LSDL/lib -D__RTAUDIO__ -D __RTMIDI__ -DPC_DESKTOP -ggdb  ${CFLAGS_SDLVERS}                 -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive ${SYNTH}
+CFLAGS=
+CFLAGS+= -c -std=c++11 -O3
+CFLAGS+= -I. -LSDL/lib
+#CFLAGS+= -ggdb
+#CFLAGS+= -pg
+CFLAGS+= ${CFLAGS_SDLVERS}
+CFLAGS+= -fpermissive
+CFLAGS+= ${SYNTH}
 
-LDFLAGS=-lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread -pg
-LDFLAGS=-lasound -lSDL           -lSDL_ttf -lpthread -pg
-LDFLAGS=-lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread
-LDFLAGS=-lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread -lpulse -lpulse-simple -ljack
-LDFLAGS=-lasound -lSDL2 -lSDL2_ttf -lpthread -lpulse -lpulse-simple -ljack
+CFLAGS+= -D__LINUX__  
+CFLAGS+= -DLINUX
+CFLAGS+= -DDUMP_AUDIO=0
+CFLAGS+= -D__LINUX_PULSE__
+CFLAGS+= -D__RTAUDIO__
+CFLAGS+= -D__RTMIDI__
+CFLAGS+= -DPC_DESKTOP
+CFLAGS+= -DDEBUGPRINTF
+CFLAGS+= -DSCREEN_MULT=2
+CFLAGS+= -D__VECTORFPU__
 
+
+LDGLAGS=
+LDFLAGS+=-lSDL2
+LDFLAGS+=-lSDL2_ttf
+LDFLAGS+=-lpthread
+LDFLAGS+=-lpulse
+LDFLAGS+=-lpulse-simple
+LDFLAGS+=-ljack
 
 OBJTOLINK=RtAudio.o
 OBJTOLINK=RtAudio.o RtMidi.o
 OBJTOLINK=
 
-SOURCES=Machine.cpp  AudioMixer.cpp AudioEngine.cpp PatternElement.cpp Pattern.cpp PatternPlayer.cpp PatternReader.cpp Oscillator.cpp OneOscillator.cpp MonoMixer.cpp ADSR.cpp SDL_GUI.cpp VCO.cpp Sequencer.cpp InputManager.cpp Biquad.cpp PatternSequencer.cpp AudioDriverRTAudio.cpp PicosynthMachine.cpp  PicodrumMachine.cpp dbopl/dbopl.cpp dbopl/hiopl.cpp DboplMachine.cpp Filter.cpp AMSynthLowPassFilter.cpp Effect.cpp EffectDelay.cpp SongSequencer.cpp WaveTableManager.cpp WaveTable.cpp Generator.cpp 
-
-
-#Machine.cpp  AudioMixer.cpp AudioEngine.cpp PatternElement.cpp Pattern.cpp PatternPlayer.cpp PatternReader.cpp Oscillator.cpp OneOscillator.cpp MonoMixer.cpp ADSR.cpp SDL_GUI.cpp VCO.cpp Sequencer.cpp InputManager.cpp Biquad.cpp PatternSequencer.cpp AudioDriverRTAudio.cpp PicosynthMachine.cpp  PicodrumMachine.cpp dbopl/dbopl.cpp dbopl/hiopl.cpp DboplMachine.cpp Filter.cpp AMSynthLowPassFilter.cpp Effect.cpp EffectDelay.cpp SongSequencer.cpp WaveTableManager.cpp WaveTable.cpp Generator.cpp 
-
-# 		      Synth.cpp                \
-#		      Instrument.cpp           \
 
 SOURCES=	\
 			RtAudio.cpp		\

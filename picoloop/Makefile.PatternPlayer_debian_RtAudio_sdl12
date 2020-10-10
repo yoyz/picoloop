@@ -3,28 +3,44 @@ CC=g++
 CC=clang++
 CC=g++
 
-CFLAGS=-c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb -ffast-math
-CFLAGS=-c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb  -pg
-CFLAGS=-Wall -c -O3 -DLINUX -I. -LSDL/lib -DLINUX_DESKTOP -ggdb 
-CFLAGS= -c -O3 -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINUX_DESKTOP -ggdb  -fpermissive -pg
-CFLAGS= -c -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINUX_DESKTOP -ggdb  -fpermissive -pg -DDUMP_AUDIO=0
-CFLAGS= -c -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINUX_DESKTOP -ggdb  -fpermissive 
-CFLAGS= -c -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINUX_DESKTOP -ggdb   -DDUMP_AUDIO=1
-CFLAGS= -c -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -DLINUX_DESKTOP -ggdb   -DDUMP_AUDIO=1 -DFIXED
-CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -D __RTMIDI__ -DLINUX_DESKTOP -ggdb   -DDUMP_AUDIO=1  -fpermissive
-CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__RTAUDIO__ -D __RTMIDI__ -DLINUX_DESKTOP -ggdb   -DDUMP_AUDIO=1  -DDEBUGPRINTF -fpermissive
-CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__LINUX_ALSA__ -D__RTAUDIO__ -D __RTMIDI__ -DPC_DESKTOP -ggdb                   -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive
-CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__LINUX_ALSA__ -D__RTAUDIO__ -D __RTMIDI__ -DPC_DESKTOP -ggdb                   -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive 
-CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -I. -LSDL/lib -D__LINUX_ALSA__ -D__RTAUDIO__ -D __RTMIDI__ -DPC_DESKTOP -ggdb                   -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive
-
+SYNTH=
+SYNTH+= -DENABLE_SYNTH_PICOSYNTH
+SYNTH+= -DENABLE_SYNTH_PICODRUM
+SYNTH+= -DENABLE_SYNTH_OPL2
+SYNTH+= -DENABLE_SYNTH_PBSYNTH
+SYNTH+= -DENABLE_SYNTH_LGPTSAMPLER
+SYNTH+= -DENABLE_SYNTH_CURSYNTH
+SYNTH+= -DENABLE_SYNTH_OPEN303
+SYNTH+= -DENABLE_SYNTH_TWYTCHSYNTH
+SYNTH+= -DENABLE_SYNTH_MDADRUM
+SYNTH+= -DENABLE_SYNTH_SIDSYNTH
+SYNTH+= -DENABLE_SYNTH_MIDIOUT
 
 CFLAGS_SDLVERS=-D__SDL12__
-CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -D__LINUX_ALSA__ -I. -LSDL/lib -D__RTAUDIO__ -D __RTMIDI__ -DPC_DESKTOP -ggdb  ${CFLAGS_SDLVERS}                 -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive 
-CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -D__LINUX_ALSA__ -I. -LSDL/lib -D__RTAUDIO__ -D __RTMIDI__ -DPC_DESKTOP -ggdb  ${CFLAGS_SDLVERS}                 -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive -DLGPTTEMPO
-CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -D__LINUX_ALSA__ -I. -LSDL/lib -D__RTAUDIO__ -D __RTMIDI__ -DPC_DESKTOP -ggdb  ${CFLAGS_SDLVERS}                 -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive
-CFLAGS= -c -std=c++11 -O3 -D__LINUX__ -DLINUX -D__LINUX_PULSE__ -I. -LSDL/lib -D__RTAUDIO__ -D __RTMIDI__ -DPC_DESKTOP -ggdb  ${CFLAGS_SDLVERS}                 -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive -Werror=return-type
-CFLAGS= -c -std=c++11 -O3 -D__LINUX__         -D__LINUX_PULSE__ -I. -LSDL/lib -D__RTAUDIO__ -D __RTMIDI__ -DPC_DESKTOP -ggdb  ${CFLAGS_SDLVERS}                 -DDEBUGPRINTF -DSCREEN_MULT=2  -fpermissive -Werror=return-type
-CFLAGS= -c -std=c++11 -O3 -D__LINUX__         -D__LINUX_PULSE__ -I. -LSDL/lib -D__RTAUDIO__ -D __RTMIDI__ -DPC_DESKTOP -ggdb  ${CFLAGS_SDLVERS}                 -DDEBUGPRINTF -DSCREEN_MULT=2               -Werror=return-type
+
+CFLAGS=
+CFLAGS+= -c -std=c++11 -O3
+CFLAGS+= -ggdb
+CFLAGS+= -Werror=return-type
+CFLAGS+= ${CFLAGS_SDLVERS}
+CFLAGS+= ${SYNTH}
+#CFLAGS+= -fpermissive
+#CFLAGS+= -pg
+#CFLAGS+= -gdb 
+#CFLAGS+= -ffast-math
+CFLAGS+= -I. -LSDL/lib
+CFLAGS+= -D__LINUX__
+CFLAGS+= -D__LINUX_PULSE__
+CFLAGS+= -D__RTAUDIO__
+CFLAGS+= -D __RTMIDI__
+CFLAGS+= -DPC_DESKTOP
+
+CFLAGS+=-DDEBUGPRINTF
+CFLAGS+=-DSCREEN_MULT=2
+
+
+
+
 
 LDFLAGS=-lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread -pg
 LDFLAGS=-lasound -lSDL           -lSDL_ttf -lpthread -pg
