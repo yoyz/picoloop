@@ -39,15 +39,16 @@ CFLAGS+=-DDEBUGPRINTF
 CFLAGS+=-DSCREEN_MULT=2
 
 
+LDFLAGS=
+LDFLAGS+= -lasound
+LDFLAGS+= -lSDL
+LDFLAGS+= -lSDL_gfx 
+LDFLAGS+= -lSDL_ttf
+LDFLAGS+= -lpthread
+LDFLAGS+= -lpulse
+LDFLAGS+= -lpulse-simple
+#LDFLAGS+= -ljack
 
-
-
-LDFLAGS=-lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread -pg
-LDFLAGS=-lasound -lSDL           -lSDL_ttf -lpthread -pg
-LDFLAGS=-lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread
-LDFLAGS=-lasound -lSDL2 -lSDL2_ttf -lpthread -lpulse -lpulse-simple -ljack
-LDFLAGS=-lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread -lpulse -lpulse-simple -ljack
-LDFLAGS=-lasound -lSDL -lSDL_gfx -lSDL_ttf -lpthread -lpulse -lpulse-simple 
 
 
 OBJTOLINK=RtAudio.o
