@@ -65,7 +65,7 @@ void drumsynth::init()
   commentLen=0;
   /* if (wave) */
   /*   free(wave); */
-  /* wave=NULL; */
+  wave=NULL;
 
 
 
@@ -405,6 +405,7 @@ void drumsynth::load_patch(char *dsfile)
 
 int drumsynth::generate(short * buffer,int len)
 {
+  printf("generate\n");
   //MessageBox(NULL, dsfile, "DrumSynth", MB_OK); //////////////////
 
   //input file
