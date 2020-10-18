@@ -1,6 +1,8 @@
 //Make a .WAV file from a .DS file
 
 //#include <windows.h>  //for APIENTRY
+#ifndef  __DRUMSYNTH_OOP5__
+#define  __DRUMSYNTH_OOP5__
 
 
 /* int APIENTRY ds2wav(char *dsfile, char *wavfile, HWND hWnd); */
@@ -57,12 +59,12 @@ Declare Function ds2buf Lib "ds2wav.dll" (ByVal samples As Long, buffer As Integ
 
 #define Fs      44100
 #define TwoPi   6.2831853f
-#define MAX     0
+#define MDA_MAX     0
 #define ENV     1
 #define PNT     2 
 #define dENV    3
 #define NEXTT   4
-
+#define DD_DF_phi_SIZE 1200
 
 struct WAVEHEADER 
 {  
@@ -99,7 +101,10 @@ class drumsynth
   drumsynth();
   ~drumsynth();
   void init();
-  void load_patch(char *dsfile);
+  void set_tune(float t);
+  void set_time(float t);
+    
+  int load_patch(char *dsfile);
   int LongestEnv(void);
   float LoudestEnv(void);
   void UpdateEnv(int e, long t);
@@ -118,9 +123,9 @@ class drumsynth
   float envData[8][6];       //envelope running status
   int   chkOn[8], sliLev[8]; //section on/off and level
   float timestretch;         //overall time scaling
-  short DD[1200], clippoint;
-  float DF[1200];
-  float phi[1200];
+  short DD[DD_DF_phi_SIZE], clippoint;
+  float DF[DD_DF_phi_SIZE];
+  float phi[DD_DF_phi_SIZE];
   
   short *wave; //for waveform generation in memory buffer
   long  wavewords;
@@ -167,3 +172,4 @@ class drumsynth
 };
 
 
+#endif
