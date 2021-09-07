@@ -469,38 +469,30 @@ int drumsynth::generate(short * buffer,int len)
   //while(tpos<Length)
   //{
     tplus = tpos + len-1;
-    if (tplus>DD_DF_phi_SIZE) tplus=DD_DF_phi_SIZE;
 
     if(NON==1) //noise
     {
       for(t=tpos; t<=tplus; t++)
       {
-	//printf("t:%d tpos:%d tplus:%d \n",t,tpos,tplus);
-	//printf("envData[2][%d]\n",envData[2][ENV] + envData[2][dENV]);
         if(t < envData[2][NEXTT]) envData[2][ENV] = envData[2][ENV] + envData[2][dENV];
         else UpdateEnv(2, t);
         x[2] = x[1];
         x[1] = x[0];
         x[0] = (randmax2 * (float)rand()) - 1.f; 
         TT = a * x[0] + b * x[1] + c * x[2] + d * TT;
-	DF[t - tpos] = TT * g * envData[2][ENV];
-	
+        DF[t - tpos] = TT * g * envData[2][ENV];
       }
       if(t>=envData[2][MDA_MAX]) NON=0;
     }
-    //else for(j=0; j<len; j++) DF[j]=0.f;
-    else for(j=0; j<tplus; j++) DF[j]=0.f;
-    //printf("t:%d tpos:%d tplus:%d\n",t,tpos,tplus);
+    else for(j=0; j<len; j++) DF[j]=0.f;
+    
     if(TON==1) //tone
     {
       TphiStart = Tphi;
       if(TDroop==1)
       {
         for(t=tpos; t<=tplus; t++)
-	  {
-	    //printf("t:%d tpos:%d tplus:%d\n",t,tpos,tplus);
-	    phi[t - tpos] = F2 + (ddF * (float)exp(t * TDroopRate));
-	  }
+          phi[t - tpos] = F2 + (ddF * (float)exp(t * TDroopRate));
       }          
       else
       {
