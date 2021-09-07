@@ -11,7 +11,7 @@ int main(int argc,char ** argv)
   std::string arg3;
   FILE    * fp;
   int16_t * buffer;
-  int       len=1024;
+  int       len=64;
   int       i=0;
 
   drumsynth dsoop;
@@ -44,7 +44,12 @@ int main(int argc,char ** argv)
       fwrite(buffer,sizeof(int16_t),len,fp);
     }
     */
-  dsoop.generate(buffer,len);
-  fwrite(buffer,sizeof(int16_t),len,fp);
+  i=0;
+  while (i>=0)
+    {
+      i=dsoop.generate(buffer,len);
+      //      printf("i:%d\n",i);
+      fwrite(buffer,sizeof(int16_t),len,fp);
+    }
   fclose(fp);
 }
