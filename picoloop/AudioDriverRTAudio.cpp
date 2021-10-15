@@ -31,6 +31,7 @@ void AudioDriver::setAudioOutput(int deviceNumber)
 
 int AudioDriver::startAudio()
 {
+  printf("AudioDriver::startAudio\n");
   dac.startStream();
   return 0;
 }

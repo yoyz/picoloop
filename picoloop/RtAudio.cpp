@@ -436,7 +436,7 @@ void RtApi :: setStreamTime( double time )
 unsigned int RtApi :: getStreamSampleRate( void )
 {
  verifyStream();
-
+ printf("getStreamSampleRate\n");
  return stream_.sampleRate;
 }
 

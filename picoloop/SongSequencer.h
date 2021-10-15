@@ -21,7 +21,9 @@ public:
   int  getPatternNumber(int cp,int trackNumber);
   int  getPatternNumberAtCursorPosition(int trackNumber);
   void setPatternNumber(int cursorPosition,int trackNumber,int patternNumber);
-
+  int m_master_loop=0;
+  int m_inc = 0;
+  int m_song_step=0;
   //vector <vector <unsigned int> > getSongVector();
 
   std::vector <std::vector <unsigned int> > songVector;

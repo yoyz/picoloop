@@ -472,6 +472,45 @@ FILE * fdebugprintf=NULL;
 
 
 void seq_update_track(int t);
+void write_to_file(std::vector<std::vector<int> >& vij, std::string fname);
+void read_from_file(std::vector<std::vector<int> >& vij, std::string fname);
+
+void read_from_file(std::vector<std::vector<int> >& vij, std::string fname){
+  FILE* fp = fopen(fname.c_str(), "r");
+  int dim1, dim2;
+  fscanf(fp, "%d,%d\n", &dim1, &dim2);
+  //printf("dims: %d %d\n", dim1, dim2);
+  if(dim1 != (int)vij.size()){
+    vij.resize(dim1);
+  }
+  for(int i = 0; i < dim1; ++i){
+    if(dim2 != (int)vij[i].size()){
+      vij[i].resize(dim2);
+    }
+    for(int j = 0; j < dim2 - 1; ++j){
+      fscanf(fp,"%d,", &vij[i][j]);
+    }
+    fscanf(fp,"%d\n", &vij[i][dim2-1]);
+  }
+  fclose(fp);
+}
+void write_to_file(std::vector<std::vector<int> >& vij, std::string fname){
+  FILE* fp = fopen(fname.c_str(), "w");
+  int dim1 = vij.size();
+  int dim2 = 0;
+  if(dim1>0){
+    dim2 = vij[0].size();  
+  }
+  fprintf(fp, "%d,%d\n",dim1, dim2);
+  for(int i=0; i < dim1; ++i){
+    for(int j =0; j < dim2-1; ++j){
+      fprintf(fp, "%d,", vij[i][j]);
+    }
+    fprintf(fp, "%d\n", vij[i][dim2-1]);
+    //fprintf(fp, "\n");
+  }
+  fclose(fp);
+}
 int handle_key_two_button(int buttonPressed,int buttonKeyRepeat,int repeatInterval,int machineParam,int paramValue,int all);
 
 
@@ -3249,6 +3288,7 @@ void seq_update_tweakable_knob_all(int machineParam)
 void seq_update_multiple_time_by_step()
 {
   //AudioMixer & am=AE.getAudioMixer();
+  // printf("seq_update_multiple_time_by_step()\n");
   int          cty=SEQ.getCurrentTrackY();
   int          ctx=SEQ.getCurrentTrackX();
   int          step=SEQ.getPatternSequencer(cty).getStep();
@@ -3531,9 +3571,11 @@ void seq_update_multiple_time_by_step()
       counter_recv_midi_clock=0;    
       counter_recv_midi_clock_six=0;
       sequencer_playing=1;     // we start the sequencer from the beginning
+      //printf("mmc start >0\n");
       for(i=0;i<TRACK_MAX;i++)
 	{
 	  SEQ.getPatternSequencer(i).setStep(0);
+          //printf("seq update track\n");
 	  seq_update_track(i);
 	}
       lock_audiocallback.unlock();
@@ -3556,10 +3598,10 @@ int seq_update_by_step()
   int  t;
 
   //SEQ.getPatternSequencer(0).setStepDivider(4);
-
+  //printf("seq update by step(func) TRACK_MAX%d %d %d %d\n", TRACK_MAX, cty, ctx, step);
   if (pattern_song_inc!=0)
     {
-
+      printf("pattern song inc %d %d %d\n", song_cursor.x, song_cursor.y, pattern_song_inc);
       SEQ.getSongSequencer().setPatternNumber(song_cursor.x,
 					      song_cursor.y,
 					      SEQ.getSongSequencer().getPatternNumber(song_cursor.x,
@@ -3579,6 +3621,7 @@ int seq_update_by_step()
 	{
 	  if (PR.PatternDataExist(SEQ.getSongSequencer().getPatternNumber(song_cursor.x,t),t))
 	    {
+              printf("reading pattern data %d %d \n", song_cursor.x, t);
 	      PR.readPatternData(SEQ.getSongSequencer().getPatternNumber(song_cursor.x,t),t,P[t]);
 	      //SEQ.getPatternSequencer(t).setBPMDivider(P[t].getBPMDivider());
 	    }
@@ -3599,7 +3642,7 @@ int seq_update_by_step()
 
   if (pattern_song_loop!=0)
     {
-
+      //printf("song mode active\n");
       SEQ.getSongSequencer().setLoopPoint(song_cursor.x);
       pattern_song_loop=0;
       SEQ.setSongMode(1);
@@ -3767,47 +3810,146 @@ int seq_update_by_step()
 }
 
 
+//static std::vector<int> OSC_ARRAY(16) = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+static int OSC_ARRAY[] = {0,0,0,0,0,25,0,0,0,0,0,0,0,0,0,0};
+static int loop=0;
+static int seedsong=0;
+std::vector<std::vector<int> > master_array; // bars/thread -> pattern index
+std::vector<std::vector<int> > note_array; // pattern/step -> note
 
-
+//static int master_loop=0;
+static int patternt[4][16]
+{
+  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+    {0,0,0,0,0,0,31,0,31,0,0,0,31,0,35,0},
+      {0,0,0,0,25,24,25,0,0,25,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
+};
 void seq_update_track(int t)
 {
+  int master_loop = SEQ.getSongSequencer().m_master_loop;  
+  if (master_loop == 0){
+    //master_array.resize(bars); // number of bars
+    //master_array[0].resize(4); // threads
+    
+    osc_array.resize(11);
+    for(int i=0; i<11; ++i){
+      osc_array[i].resize(10);
+      for(int j = 0; j < 10; ++j){
+        osc_array[i][j].resize(16);
+        for(int k = 0; k < 16; ++k){
+          osc_array[i][j][k].resize(4);
+          for(int l=0; l < 4; ++l){
+            osc_array[i][j][k][l] = 0;
+          }
+        }
+      }
+    }
+  }
   //int  cty=SEQ.getCurrentTrackY();
   //int  ctx=SEQ.getCurrentTrackX();
   //int  step=SEQ.getPatternSequencer(cty).getStep();
   int machine_type;
   int  step=SEQ.getPatternSequencer(t).getStep();
+  int bar = SEQ.getSongSequencer().getStep(); //jke song position 0 = start of song, loops may be from e.g. 2-4
 
+  int pn = SEQ.getSongSequencer().getPatternNumberAtCursorPosition(t);
+  int  xx = SEQ.getCurrentTrackX();
+  int  cty=SEQ.getCurrentTrackY();
+   
+  // here t is in 0,1,2,3, it's the bank within the bank
+  // song_step is the position in the main grid
+  // pn is the bank number
+  // step is the index (0-15)
+  // t is the sub bank (0-3)
+  // nn is the note flag
+  // note1 is the actual note
+  //int  step=SEQ.getPatternSequencer(cty).getStep();
+  //printf("xx: %d, cty: %d t:%d \n", xx, cty, t);
   // Handle only modification of on next step value 
   // for each Machine 
   // of each track 
   //for (t=0;t<TRACK_MAX;t++)
   //{
-  if (P[t].getPatternElement(step).get(NOTE_ON)!=0)
-	{
-	  machine_type=P[t].getPatternElement(step).get(MACHINE_TYPE);
+  int nn = P[t].getPatternElement(step).get(NOTE_ON);
+  //nn = osc_array[song_step][pn][step][(int)t]; // read in from array
+  //nn = patternt[t][master_loop * 6 * 16 + step];
+  FILE* pf2 = fopen("tstep.txt", "a");
+  //P[t].print();
+  int f_pn = master_array[t][bar]; // bars/thread -> pattern index
+  nn = note_array[f_pn][step]; // // pattern/step -> note
+  int note1 = nn;
+  //printf("n:%d,%d,%d,%d\n", f_pn, step, t, nn);
+  if (nn==0){
+    //fprintf(pf2, "%d,%d,%d,%d,%d,%d\n", pn, step, t, nn, 0);
+    osc_array[bar][pn][step][(int)t] = nn;
+    fclose(pf2);
+  }
+  if (nn!=0) //(t==0) and (step == 0))// nn!=0) // 1 jke    
+    {
+      //printf("seq update track for %d %d %d %d\n", pn, step, t, NOTE_ON);
+      
+      
+      
+      machine_type=P[t].getPatternElement(step).get(MACHINE_TYPE);
+          // printf
 	  if (!MC.machineExist(machine_type))
 	    {
 	      machine_type=MC.getNext(machine_type);
 	      P[t].getPatternElement(step).set(MACHINE_TYPE,machine_type);
 	    }
-	  MM[t]->setAmplitude(P[t].getPatternElement(step).get(AMP));
+          int amp = P[t].getPatternElement(step).get(AMP);;
+	  MM[t]->setAmplitude(amp);
 	  MM[t]->setMachineType(P[t].getPatternElement(step).get(MACHINE_TYPE));
 	  M[t]  = MM[t]->getInput();
 	  FX[t] = MM[t]->getEffect();
 
-
-	  FX[t]->setDepth(P[t].getPatternElement(step).get(FX1_DEPTH));
-	  FX[t]->setSpeed(P[t].getPatternElement(step).get(FX1_SPEED));
+          int depth = P[t].getPatternElement(step).get(FX1_DEPTH);
+          int speed = P[t].getPatternElement(step).get(FX1_SPEED);
+	  FX[t]->setDepth(depth);
+	  FX[t]->setSpeed(speed);
 
 	  //printf("[Freq:%d]\n",i);
 	  //M[t]->set(OSC1_FREQ,i);
 	  M[t]->reset();
 	  //M[t]->setF(OSC1_FREQ,f);
-	  M[t]->setI(OSC1_SCALE,P[t].getPatternElement(step).get(OSC1_SCALE));
-	  M[t]->setI(OSC2_SCALE,P[t].getPatternElement(step).get(OSC2_SCALE));
-	  M[t]->setI(OSC3_SCALE,P[t].getPatternElement(step).get(OSC3_SCALE));
-	  M[t]->setI(OSC4_SCALE,P[t].getPatternElement(step).get(OSC4_SCALE));
-	  M[t]->setI(NOTE1,P[t].getPatternElement(step).get(NOTE1));
+
+          int osc1 = P[t].getPatternElement(step).get(OSC1_SCALE);
+          int osc2 = P[t].getPatternElement(step).get(OSC2_SCALE);
+          int osc3 = P[t].getPatternElement(step).get(OSC3_SCALE);
+          int osc4 = P[t].getPatternElement(step).get(OSC4_SCALE);
+          //osc1 = OSC_ARRAY[step];
+          //note1 = P[t].getPatternElement(step).get(NOTE1);
+          
+          //note1 = nn;
+          ////if(step == 5)
+          //            note1=25;
+          fprintf(pf2, "%d,%d,%d,%d,%d,%d\n", bar, pn, step, t, nn, note1);
+          char buff[100];
+          //int master_loop = SEQ.getSongSequencer().m_master_loop;
+          sprintf(buff,"pfileout_notes_%d.txt", master_loop);
+          FILE* pf1 = fopen(buff, "a");  
+          fprintf(pf1,  "%d,%d,%d,%d,%d,%d\n", master_loop,bar, pn, step, t, note1);
+          fclose(pf1);
+          
+          osc_array[bar][pn][step][(int)t] = note1;
+          //write out osc_array to file
+          //fprintf(pf2, "%d,%d,%d,%d,%d,%d\n", loop,song_step,t,step,nn,note1);
+          fclose(pf2);
+          int trig_time_dur = P[t].getPatternElement(step).get(TRIG_TIME_DURATION);
+          int fm_type = P[t].getPatternElement(step).get(FM_TYPE);
+          //printf("amp %d %d %d\n", amp, depth, speed);
+          FILE* pf = fopen("pfileout.txt", "a");
+          fprintf(pf, "step: %d,%d,amp:%d,depth:%d,speed:%d\n", step, NOTE_ON, amp, depth, speed);
+          fclose(pf);
+
+          //printf("osc1 note1 %d %d %d %d %d %d bpm:%d fm_type:%d\n", osc1, osc2, osc3, osc4, note1, trig_time_dur, (int)bpm_current, fm_type);
+          // osc1 note1 0 0 0 0 25 1 bpm:120 fm_type:0
+	  M[t]->setI(OSC1_SCALE,osc1);
+	  M[t]->setI(OSC2_SCALE,osc2);
+	  M[t]->setI(OSC3_SCALE,osc3);
+	  M[t]->setI(OSC4_SCALE,osc4);
+	  M[t]->setI(NOTE1,note1);
 
 	  /*
 	  noteOffTrigger[t]=
@@ -3819,13 +3961,17 @@ void seq_update_track(int t)
 
 	  // Let the Machine handle NoteOn/NoteOff with a trig time duration
 	  M[t]->setI(TRIG_TIME_MODE,1);
-	  M[t]->setI(TRIG_TIME_DURATION,P[t].getPatternElement(step).get(TRIG_TIME_DURATION));
+	  M[t]->setI(TRIG_TIME_DURATION,trig_time_dur);
 	  M[t]->setI(BPM,bpm_current);
 
-	  M[t]->setI(FM_TYPE,P[t].getPatternElement(step).get(FM_TYPE));
+	  M[t]->setI(FM_TYPE,fm_type);
+          int adsr1 = P[t].getPatternElement(step).get(ADSR_AMP_ATTACK);
 
-	  M[t]->setI(ADSR_ENV0_ATTACK,  P[t].getPatternElement(step).get(ADSR_AMP_ATTACK));
-	  M[t]->setI(ADSR_ENV0_DECAY,   P[t].getPatternElement(step).get(ADSR_AMP_DECAY));
+          int adsrdecay = P[t].getPatternElement(step).get(ADSR_AMP_DECAY);
+          adsrdecay = 110;
+          //printf("adsr1 %d %d\n", adsr1, adsrdecay);
+	  M[t]->setI(ADSR_ENV0_ATTACK,  adsr1);
+	  M[t]->setI(ADSR_ENV0_DECAY,   adsrdecay);
 	  M[t]->setI(ADSR_ENV0_SUSTAIN, P[t].getPatternElement(step).get(ADSR_AMP_SUSTAIN));
 	  M[t]->setI(ADSR_ENV0_RELEASE, P[t].getPatternElement(step).get(ADSR_AMP_RELEASE));
 
@@ -3929,7 +4075,28 @@ void seq_update_track(int t)
       */
 }
 
-
+void write_out_osc_array(){
+  char buff[100];
+  sprintf(buff,"pfileout_master_%d.txt", SEQ.getSongSequencer().m_master_loop);
+  printf("buff %s\n", buff);
+  FILE* pf = fopen(buff, "w");
+  fprintf(pf,"bar,beat,pattern_index,ch1,ch2,ch3,ch4\n"); // to play a song only requires bar, beat. 
+  for(int i = 0; i < 11; ++i){     // song step in the musical bars
+    for(int k = 0; k < 16; ++k){   // step in the 16th song seq
+      for(int j = 0; j < 10; ++j){ // pattern number (each can be its own generative cell)
+        int val1 = osc_array[i][j][k][0];
+        int val2 = osc_array[i][j][k][1];
+        int val3 = osc_array[i][j][k][2];
+        int val4 = osc_array[i][j][k][3];        
+        if ((val1 > 0) or (val2 > 0) or (val3 > 0) or (val4 > 0))
+          {
+            fprintf(pf, "%d,%d,%d,%d,%d,%d,%d\n", i, k, j, osc_array[i][j][k][0], osc_array[i][j][k][1], osc_array[i][j][k][2], osc_array[i][j][k][3]);
+          }
+      }
+    }
+  }
+  fclose(pf);
+}
 
 // This callback run in a really high priority thread
 // No IO or syscall is allowed to prevent audio drifting/garbage
@@ -3940,14 +4107,25 @@ void seq_callback_update_step()
   int i;
   int oldstep;
   int songSequencerHasInc=0;
-
+  
   if (sequencer_playing==0) // we don't have something to do the sequencer is not playing
     return;
   //for ( i=0;i<10;i++)
   //  {
   //SEQ.getSongSequencer().setPatternNumberAtCursorPosition(i,0,i);
   //}
-
+  // write out osc
+  //
+  //master_loop += 1;
+  int pn = SEQ.getPatternSequencer(0).m_step;
+  int bar = SEQ.getSongSequencer().m_song_step;
+  printf("master loop song:%d bar:%d quarter note:%d seed:%d\n", SEQ.getSongSequencer().m_master_loop, bar, pn, seedsong);
+  if(SEQ.getSongSequencer().m_inc == 1 && pn==15 && bar==6){
+    printf("write out osc array\n");
+    write_out_osc_array();
+  }
+  read_from_file(master_array, "bars_threads.csv"); //[thread][bars] -> pattern
+  read_from_file(note_array, "note_array.csv"); //[pattern][step] -> note 
   for(i=0;i<TRACK_MAX;i++)
     {
       oldstep=0;
@@ -3970,7 +4148,12 @@ void seq_callback_update_step()
 	      if (SEQ.getSongMode()   == 1)		
 		if (PR.PatternDataExist(SEQ.getSongSequencer().getPatternNumberAtCursorPosition(i),i))
 		  {
-		    PR.readPatternData(SEQ.getSongSequencer().getPatternNumberAtCursorPosition(i),i,P[i]);
+                    //JKE this is where the new P[i] is set.
+                    //int pattern = master_array[i][bar];
+                    //int* notes = pattern_array[pattern];
+                    int pn= SEQ.getSongSequencer().getPatternNumberAtCursorPosition(i); //pattern number 
+                    //printf("setting P[i] %d\n", pn);
+		    PR.readPatternData(pn,i,P[i]);
 		    SEQ.getPatternSequencer(i).setBPMDivider(P[i].getBPMDivider());
 		  }
 		else
@@ -3989,6 +4172,7 @@ void seq_callback_update_step()
 	    }
 	  
 	  // Update the Machine for the new step
+          //printf("seq update trackloop\n");
 	  seq_update_track(i);	  
 	}
     }
@@ -4100,6 +4284,7 @@ int seq()
   int          nbcb;        // current nb audio callback 
   int          last_nbcb;   // number of occurence of AudioEngine callback before changing step
 
+  printf("currentTrackY %d currentTrackX %d\n", cty, ctx);
   dirty_graphic=1;
   refresh_pecursor();
 
@@ -4107,10 +4292,23 @@ int seq()
   DPRINTF("openAudio start streaming");
   AE.startAudio();
 
+  // JKE this is where the loop point is set
+  SEQ.getSongSequencer().setLoopPoint(5);
+  pattern_song_loop = 0;
+  SEQ.setSongMode(1);
+  // end jke, this starts up a loop between position 0 and 6 automatically
+  // so that we can dump audio directly
+
+  // this is where we could load in from a file
+  // set pattern
   seq_update_by_step_next=1;
-  seq_update_by_step();  
+  seq_update_by_step();
+  
   while (quit!=1 || running==1)
     {
+
+      //read_from_file(note_array, "note_array.csv"); //[pattern][step] -> note
+      
       cty=SEQ.getCurrentTrackY();
       ctx=SEQ.getCurrentTrackX();
 #ifdef __SDL_AUDIO__
@@ -4120,7 +4318,7 @@ int seq()
 #else
       handle_key();
 #endif
-      
+      //printf("main while loop \n");
       seq_update_multiple_time_by_step();
 
       // We give the processor to other thread to avoid spinning
@@ -4136,11 +4334,16 @@ int seq()
 #endif
 
 #if defined(__RTMIDI__)
+      // printf("midi out\n");
       MidiOutSystem & MOS=MidiOutSystem::getInstance();
       if (MOS.msgSize())
        	MOS.flushMsg();
 #endif
 
+      if (SEQ.getSongSequencer().m_master_loop == 1){
+        printf("completed a loop\n");
+        return(0);
+      }
       // if user want to quit via handle_key
       if (quit ||
 	  running<=0)
@@ -4151,8 +4354,9 @@ int seq()
 
       // Number of audio callback, it is related to performance
       nbcb=AE.getNbCallback();
-      if (nbcb>last_nbcb)
+      if (nbcb>last_nbcb){
 	last_nbcb=nbcb;
+      }
 
       if (dirty_graphic)
 	{
@@ -4163,6 +4367,7 @@ int seq()
 	  SG.refresh();
 	  SDL_UnlockAudio();
 #else
+          //printf("SG.refresh();\n");
 	  SG.refresh();
 #endif
 	  dirty_graphic=0;
@@ -4183,6 +4388,7 @@ int seq()
 	  seq_update_by_step();
 	  seq_update_by_step_next=0;
 	}
+      //printf("while loop\n");
     }
   return 0;
 }
@@ -4388,6 +4594,13 @@ void init_lgpt_samplepool()
 
 int main(int argc,char **argv)
 {
+  char* p;
+  if(argc == 2){
+
+    seedsong = strtol(argv[1], &p,10);
+    printf("loading %d\n", seedsong);
+  }
+  printf("load pattern1");
   int i;
   loadsave_cursor.x=0;
   loadsave_cursor.y=0;
@@ -4426,28 +4639,34 @@ int main(int argc,char **argv)
   SG.loadingScreen();
   SDL_Delay(1000);
 
-  init_and_load_config();
+  //init_and_load_config(); jke uncomment to restore the check in screen
       
   PR.init();         // Init the     storage bank
   PR.setBank(bank);  // The current  storage bank will be the value of bank the directory/file are here PWD/bank/bank%d/
                      // menu_config_bank allow to choose it at startup
 
+  printf("load pattern");
   load_pattern();    // load the pattern of the bank 
   
+  read_from_file(master_array, "bars_threads.csv"); //[thread][bars] -> pattern
+  read_from_file(note_array, "note_array.csv"); //[pattern][step] -> note
 
   DPRINTF("after load pattern");
-
+  printf("refresh bbm");
   refresh_bpm();
   AE.setupSequencerCallback(seq_callback_update_step);
-
+  printf("refresh openAudio");
   DPRINTF("openAudio output");
   AE.openAudio();
-
+  printf("init_audiomixer");
   init_audiomixer_and_audioengine();
+  printf("init_midi");
   init_and_setup_midi();
   
   DPRINTF("before seq");
+  printf("before seq-2");
   seq();        // Launch the sequencer which will stream audio
+  printf("after seq-2");
   DPRINTF("after seq");
 
   DPRINTF("closeAudio output");

@@ -145,7 +145,7 @@ void AudioEngine::setupSequencerCallback(void (*ptrfunc)(void))
 void AudioEngine::processBuffer(int len)
 {
   lock_audiocallback.lock(); 
-  //printf("len: %d ",len);
+  //printf("audioengine process buffer len: %d ",len);
  //for (int i=0;i<BUFFER_FRAME;i++)
   for (int i=0;i<len;i++)
     {
@@ -288,7 +288,6 @@ void AudioEngine::callback(void *unused, Uint8 *stream, int len)
   //  printf("AudioEngine::calback() begin nBufferFrame=%d nbCallback=%d\n",nBufferFrames,nbCallback);
   //DPRINTF("AudioEngine::callback() AE:0x%08.8X ", this);
   int     buffer_size=0;
-
   //Workaround a linux sdl 1.2 audio bug 
   //                   sdl seem to have a bug on this...
   #ifdef __PSVITA_AUDIO__
@@ -320,6 +319,7 @@ void AudioEngine::callback(void *unused, Uint8 *stream, int len)
 
   if (dump_audio)
     {
+      //printf("dump audio\n");
       WFW.fillBuffer(buffer_out_right,buffer_size);
     }
 
@@ -332,7 +332,7 @@ void AudioEngine::callback(void *unused, Uint8 *stream, int len)
       tick_right=buffer_out_right[i];
       buffer[(2*i)]=    tick_left;
       buffer[(2*i)+1]=  tick_right;
-
+      //printf("ticks %d\n", tick_left);
     }
     callback_called++;
 }
@@ -411,7 +411,7 @@ int rtcallback(
 	       RtAudioStreamStatus status, 
 	       void *user_data )
 {
-  //printf("callback\n");
+  //printf("rt callback\n");
   ((AudioEngine*)user_data)->callback(user_data,
 				      (Uint8*)outputBuffer,
 				      nBufferFrames);

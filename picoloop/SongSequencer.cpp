@@ -3,6 +3,7 @@
 SongSequencer::SongSequencer() : songVector(MAX_SONG_LENGHT_BY_PROJECT,std::vector <unsigned int>(TRACK_MAX))
 {
   int x,y;
+  printf("SongSequencer %d %d\n", MAX_SONG_LENGHT_BY_PROJECT, TRACK_MAX);
   for (x=0;x<MAX_SONG_LENGHT_BY_PROJECT;x++)
     for (y=0;y<TRACK_MAX-1;y++)
       {
@@ -40,9 +41,17 @@ void SongSequencer::shiftTrackRight(int x, int y)
 
 int SongSequencer::incStep()
 {
+  //printf("incStep %d\n", step);  
   step++;
-  if (step>loopStepB)
+  this->m_inc = 0;
+  this->m_song_step = step;
+  if (step>loopStepB){
     step=loopStepA;
+    printf("SongSequencer.cpp: loop back\n");
+    this->m_master_loop += 1;
+    this->m_inc = 1;
+  }
+  
   return 0;
 }
 

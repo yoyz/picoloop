@@ -2,10 +2,12 @@ using namespace std;
 
 #include "PatternElement.h"
 #include "Pattern.h"
-
+static int count=0;
 
 Pattern::Pattern() : pevector(MAX_STEP_PER_TRACK,PatternElement())
 {
+  printf("count %d\n", count);
+  count++;
   size=16;
   bpmDivider=1;
   bpm=120;

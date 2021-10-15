@@ -7,6 +7,7 @@ using namespace std;
 Sequencer::Sequencer() : psvector(TRACK_MAX,PatternSequencer()),
 			 SS()
 {
+  printf("Sequencer init!!!\n");
   song_mode=0;
   tempo=120;
   current_track_x=0;

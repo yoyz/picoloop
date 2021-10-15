@@ -86,6 +86,7 @@ int PatternReader::saveSong(SongSequencer & SS)
 
 int PatternReader::loadSong(SongSequencer & SS)
 {
+  printf("loadSong\n");
   char  filename[1024];
   unsigned char line[MAX_SONG_LENGHT_BY_PROJECT]={0};
   int i;

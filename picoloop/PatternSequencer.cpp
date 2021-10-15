@@ -67,7 +67,11 @@ int PatternSequencer::getStepWithoutDivider()
 
 void PatternSequencer::incStep()
 {
+  //printf("patternSeq step %d\n", step);
+  //if ((step > 0) && (step % 16 == 0) && (
+  //this->m_inc_step = step % 16;
   step++;
+  this->m_step = step % 16;  
   if (step>=128)
     step=step%PatternLength;
     //step=0;

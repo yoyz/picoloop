@@ -11,9 +11,9 @@ unsigned int sampleFrequency = 0;
 unsigned int audioBufferSize = 0;
 unsigned int outputAudioBufferSize = 0;
 
-unsigned int freq1 = 1000;
+unsigned int freq1 = 10;
 unsigned int fase1 = 0;
-unsigned int freq2 = 5000;
+unsigned int freq2 = 50;
 unsigned int fase2 = 0;
 
 void example_mixaudio(void *unused, Uint8 *stream, int len) {

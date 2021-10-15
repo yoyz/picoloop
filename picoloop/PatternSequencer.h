@@ -20,7 +20,8 @@ class PatternSequencer
   int  getPatternLength();
 
   void incStep();
-
+  //int m_inc_step=0;
+  int m_step=0;
  protected:
   int BPMDivider;
   int step;
