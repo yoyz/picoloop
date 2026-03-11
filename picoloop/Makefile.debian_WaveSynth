@@ -9,9 +9,10 @@ CC=clang++
 CC=g++
 CC=clang++
 CC=g++
-CFLAGS_SDLVERS=-D__SDL12__    
-CFLAGS_SDLVERS=-D__SDL20__    
-CFLAGS_SDLVERS=-D__SDL12__    
+CFLAGS_SDLVERS=-D__SDL12__
+CFLAGS_SDLVERS=-D__SDL20__
+CFLAGS_SDLVERS=-D__SDL12__
+CFLAGS_SDLVERS=-D__SDL20__
 
 SYNTH=
 SYNTH+= -DENABLE_SYNTH_PICOSYNTH
@@ -49,6 +50,7 @@ LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf -lasound -lpthread -lpulse -lpulse-simple -lja
 LDFLAGS=-lSDL -lSDL_gfx -lSDL_ttf -lasound -lpthread -lpulse -lpulse-simple 
 LDFLAGS=${LDFLAGS_HELPER} -lSDL2 -lSDL2_ttf -lasound -lpthread -lpulse -lpulse-simple 
 LDFLAGS=${LDFLAGS_HELPER} -lSDL -lSDL_ttf -lasound -lpthread -lpulse -lpulse-simple 
+LDFLAGS=${LDFLAGS_HELPER} -lSDL2 -lSDL2_ttf -lpthread -lpulse -lpulse-simple 
 
 
 OBJTOLINK=RtAudio.o RtMidi.o
