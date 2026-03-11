@@ -45,7 +45,7 @@ LDFLAGS+=-lSDL2_ttf
 LDFLAGS+=-lpthread
 LDFLAGS+=-lpulse
 LDFLAGS+=-lpulse-simple
-LDFLAGS+=-ljack
+#LDFLAGS+=-ljack
 
 OBJTOLINK=RtAudio.o
 OBJTOLINK=RtAudio.o RtMidi.o
