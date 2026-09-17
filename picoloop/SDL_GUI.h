@@ -12,7 +12,6 @@
 #ifdef  __SDL20__
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_audio.h>
-#include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_video.h>
 typedef struct SDL_Window SDL_Window;
@@ -91,6 +90,15 @@ class SDL_GUI
   SDL_Haptic* gControllerHaptic = NULL;
 #endif
   SDL_Surface * screen;
+#ifdef __ANDROID__
+  // On Android the real window always matches the device's native
+  // resolution (SDL ignores the size requested at SDL_CreateWindow time),
+  // which almost never matches SCREEN_WIDTH*SCREEN_MULT. So `screen` here
+  // is an offscreen surface at the game's fixed logical resolution that all
+  // drawing code targets as usual; refresh() scales it onto windowSurface,
+  // the real window backbuffer, every frame.
+  SDL_Surface * windowSurface;
+#endif
 
 
  private:  

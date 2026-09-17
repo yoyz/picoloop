@@ -204,7 +204,7 @@ int SDL_GUI::initVideo()
 
  */
 
-#if defined(__SDL20__) && !defined(PSVITA)
+#if defined(__SDL20__) && !defined(PSVITA) && !defined(__ANDROID__)
 int SDL_GUI::initVideo()
 {
   DPRINTF("before SDL_Init");
@@ -259,6 +259,60 @@ int SDL_GUI::initVideo()
 
 #endif
 
+#if defined(__SDL20__) && defined(__ANDROID__)
+int SDL_GUI::initVideo()
+{
+  DPRINTF("before SDL_Init");
+
+  if ( SDL_Init(SDL_INIT_VIDEO|SDL_INIT_JOYSTICK)<0)
+    {
+      DPRINTF("Couldn't initialize SDL: %s", SDL_GetError());
+      return -1;
+    }
+  DPRINTF("After SDL_Init");
+
+  // The size requested here is irrelevant on Android: SDL always hands back
+  // a fullscreen window matching the device's native resolution.
+  window = SDL_CreateWindow("Picoloop",
+                            SDL_WINDOWPOS_UNDEFINED,
+                            SDL_WINDOWPOS_UNDEFINED,
+                            SCREEN_WIDTH*SCREEN_MULT, SCREEN_HEIGHT*SCREEN_MULT,
+                            SDL_WINDOW_SHOWN|SDL_WINDOW_FULLSCREEN);
+  DPRINTF("After SDL_CreateWindow");
+  if (window == NULL) {
+    DPRINTF("After SDL_CreateWindow %s",SDL_GetError());
+    return -1;
+  }
+  windowSurface = SDL_GetWindowSurface( window );
+  DPRINTF("windowSurface %dx%d",windowSurface->w,windowSurface->h);
+
+  // All drawing code targets this fixed-size offscreen surface instead;
+  // refresh() scales it onto windowSurface every frame (see below).
+  screen = SDL_CreateRGBSurfaceWithFormat(0,
+                            SCREEN_WIDTH*SCREEN_MULT, SCREEN_HEIGHT*SCREEN_MULT,
+                            32, windowSurface->format->format);
+  if (screen == NULL) {
+    DPRINTF("SDL_CreateRGBSurfaceWithFormat failed %s",SDL_GetError());
+    return -1;
+  }
+
+  if( SDL_NumJoysticks() < 1 )
+    {
+      printf( "joystick not connected!\n" );
+    }
+  else
+    {
+      printf( "joystick connected!\n" );
+      SDL_JoystickEventState(SDL_ENABLE);
+      gGameController = SDL_JoystickOpen( 0 );
+      gControllerHaptic = SDL_HapticOpenFromJoystick( gGameController );
+    }
+
+  return 0;
+}
+
+#endif
+
 
 
 #if defined(__SDL20__) && defined(PSVITA)
@@ -301,13 +355,62 @@ void SDL_GUI::refresh()
 }
 #endif
 
-#ifdef __SDL20__
+#if defined(__SDL20__) && !defined(__ANDROID__)
 void SDL_GUI::refresh()
 {
   DPRINTF("SDL_GUI::refresh()");
   SDL_UpdateWindowSurface( window );
 }
 #endif // __SDL20__
+
+#if defined(__SDL20__) && defined(__ANDROID__)
+#include <jni.h>
+
+// Set from Kotlin (PicoloopActivity.nativeSetScreenOffset(), called from the
+// options screen's "move screen" edit mode) as a fraction of the window's
+// width/height. Only meaningful along whichever axis is letterboxed - the
+// clamp below pins it to 0 on the axis that already exactly fills the
+// window, so there's nothing to accidentally push off-screen.
+static float g_screenOffsetXFrac = 0.0f;
+static float g_screenOffsetYFrac = 0.0f;
+
+extern "C" JNIEXPORT void JNICALL
+Java_org_picoloop_android_PicoloopActivity_nativeSetScreenOffset(JNIEnv * env, jobject thiz, jfloat x, jfloat y)
+{
+  g_screenOffsetXFrac = x;
+  g_screenOffsetYFrac = y;
+}
+
+void SDL_GUI::refresh()
+{
+  // Re-fetch every frame rather than trusting the pointer/size captured
+  // once in initVideo(): a rotation (or the orientation preference forcing
+  // one shortly after launch) resizes the underlying surface without
+  // recreating the window, and a stale windowSurface silently scales/blits
+  // into a canvas that no longer matches what's on screen.
+  windowSurface = SDL_GetWindowSurface(window);
+
+  // Scale the fixed-size `screen` we drew into onto the real window surface,
+  // letterboxed to preserve the aspect ratio (the device's native resolution
+  // is essentially never SCREEN_WIDTH*SCREEN_MULT : SCREEN_HEIGHT*SCREEN_MULT).
+  SDL_Rect dst;
+  float scale = SDL_min(
+      (float)windowSurface->w / (float)screen->w,
+      (float)windowSurface->h / (float)screen->h);
+  dst.w = (int)(screen->w * scale);
+  dst.h = (int)(screen->h * scale);
+  dst.x = (windowSurface->w - dst.w) / 2 + (int)(g_screenOffsetXFrac * windowSurface->w);
+  dst.y = (windowSurface->h - dst.h) / 2 + (int)(g_screenOffsetYFrac * windowSurface->h);
+  if (dst.x < 0) dst.x = 0;
+  if (dst.x > windowSurface->w - dst.w) dst.x = windowSurface->w - dst.w;
+  if (dst.y < 0) dst.y = 0;
+  if (dst.y > windowSurface->h - dst.h) dst.y = windowSurface->h - dst.h;
+
+  SDL_FillRect(windowSurface, NULL, SDL_MapRGB(windowSurface->format, 0, 0, 0));
+  SDL_BlitScaled(screen, NULL, windowSurface, &dst);
+  SDL_UpdateWindowSurface( window );
+}
+#endif
 
 
 #ifdef __SDL12__

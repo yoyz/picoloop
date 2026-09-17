@@ -1,0 +1,20 @@
+/build
+.gradle
+*.iml
+local.properties
+
+# Generated / downloaded native build artifacts
+src/main/jniLibs/
+build/sdl-download/
+build/sdl-extracted/
+build_android_*/
+*.o
+*.so
+
+# Android Studio
+.idea/
+captures/
+*.apk
+*.aab
+*.ap_
+*.dex

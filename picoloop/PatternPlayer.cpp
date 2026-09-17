@@ -76,7 +76,7 @@ using namespace std;
 #include "Machine/MidiOutSystem/MidiOutUserInterface.h"
 #endif
 
-#ifdef __RTMIDI__
+#if defined(__RTMIDI__) || defined(__ANDROID__)
 #include "MidiOutSystem.h"
 #include "MidiInSystem.h"
 #endif
@@ -143,7 +143,7 @@ PSP_HEAP_SIZE_KB(-2048) ;
 #define MENU_CONFIG_Y_MIDISYNCINOUT      6
 
 
-#if defined(__RTMIDI__)
+#if defined(__RTMIDI__) || defined(__ANDROID__)
 #define MENU_CONFIG_Y_MAX           6
 #else
 #define MENU_CONFIG_Y_MAX           3
@@ -415,8 +415,20 @@ int playing_with_mmc=0;       // Used to restart the sequencer in [BPM] menu
  */
 int   menu_config_bank=0;           // will choose the bank to load at startup
 int   menu_config_audioOutput=0;    // audioOutputNumber define in the config menu
+#ifdef __ANDROID__
+// -1: no device auto-selected at boot. menu_config_midiClockMode defaults to
+// SYNCINTERNAL (0), but init_and_setup_midi() starts the MIDI-in poll
+// thread for SYNCINTERNAL too - so with a default of 0 here, every launch
+// would silently open a connection to whatever MIDI device (or virtual
+// service owned by some *other* installed app) happens to enumerate first,
+// with no user action. -1 fails chooseMidiPortDeviceNumber()'s bounds check
+// so nothing opens until the user actually picks a device from this menu.
+int   menu_config_midiOutput=-1;
+int   menu_config_midiInput=-1;
+#else
 int   menu_config_midiOutput=0;     //  midiOutputNumber define in the config menu
 int   menu_config_midiInput=0;      //  midiInputNumber  define in the config menu
+#endif
 int   menu_config_midiClockMode=0;  // 0 internal, 1 midi sync out, 2 midi sync in 
 int   menu_config_audiopulseclock_out=0; // 0 no sync, 1 sync left, 2 sync right
 int   menu_config_y=0;              // current selected item in menu_config
@@ -537,7 +549,7 @@ long difftime(struct timeval & a0, struct timeval & a1)
 
 }
 
-#ifdef __RTMIDI__
+#if defined(__RTMIDI__) || defined(__ANDROID__)
 void seq_send_midiclock()
 {
 
@@ -597,7 +609,7 @@ void seq_send_midiclock_old()
 
   if ((difftime(timev_now,timev_lastclock)+clock_delta)*1000>clock_interval)
     {
-#ifdef __RTMIDI__
+#if defined(__RTMIDI__) || defined(__ANDROID__)
       DPRINTF("*****MIDICLOCK   *****");
 
       MidiOutSystem & MOS=MidiOutSystem::getInstance();
@@ -1258,7 +1270,7 @@ void display_config()
   
   
   
-#ifdef __RTMIDI__
+#if defined(__RTMIDI__) || defined(__ANDROID__)
   MidiOutSystem & MOS=MidiOutSystem::getInstance();
   MidiInSystem  & MIS=MidiInSystem::getInstance();
 #endif
@@ -1267,12 +1279,12 @@ void display_config()
     {
       audioOutputDeviceName=AE.getAudioOutputName(menu_config_audioOutput);
       audioOutputDevice=AE.getNumberOfAudioOutputDevice();
-#ifdef __RTMIDI__
+#if defined(__RTMIDI__) || defined(__ANDROID__)
       midiOutputDeviceName=MOS.getMidiOutputName(menu_config_midiOutput);
-      midiOutputDevice=MOS.getNumberOfMidiOutputDevice();      
+      midiOutputDevice=MOS.getNumberOfMidiOutputDevice();
 
       midiInputDeviceName=MIS.getMidiInputName(menu_config_midiInput);
-      midiInputDevice=MIS.getNumberOfMidiInputDevice();      
+      midiInputDevice=MIS.getNumberOfMidiInputDevice();
 
 #endif
       config_key_pressed=0;
@@ -1284,19 +1296,19 @@ void display_config()
   sprintf(str_bank          ,"%c Current Bank       : %d "       ,cursor_line[1],menu_config_bank);
   sprintf(str_pulsesyncout  ,"%c AudioOut PulseSync : %s "       ,cursor_line[2],str_audio_pulse_clock[menu_config_audiopulseclock_out]);
   sprintf(str_audiooutput   ,"%c AudioOutput        : %d/%d : %s",cursor_line[3],menu_config_audioOutput,audioOutputDevice,audioOutputDeviceName);
-#ifdef __RTMIDI__
+#if defined(__RTMIDI__) || defined(__ANDROID__)
   sprintf(str_midioutput    ,"%c MidiOutput         : %d/%d : %s",cursor_line[4],menu_config_midiOutput,midiOutputDevice,midiOutputDeviceName);
   sprintf(str_midiinput     ,"%c MidiInput          : %d/%d : %s",cursor_line[5],menu_config_midiInput,midiInputDevice,midiInputDeviceName);
   sprintf(str_midiclockmode ,"%c MidiClockMode      : %s"        ,cursor_line[6],str_midi_clock_mode[menu_config_midiClockMode]); 
 
 #endif
-  SG.clearScreen();  
+  SG.clearScreen();
   SG.guiTTFText(COLLUMN03,LINE00,  str_palette);
   SG.guiTTFText(COLLUMN03,LINE01,  str_bank);
   SG.guiTTFText(COLLUMN03,LINE02,  str_pulsesyncout);
   SG.guiTTFText(COLLUMN03,LINE03,  str_audiooutput);
 
-#ifdef __RTMIDI__
+#if defined(__RTMIDI__) || defined(__ANDROID__)
   SG.guiTTFText(COLLUMN03,LINE04,  str_midioutput);
   SG.guiTTFText(COLLUMN03,LINE05,  str_midiinput);
   SG.guiTTFText(COLLUMN03,LINE06, str_midiclockmode);
@@ -1313,7 +1325,7 @@ void handle_key_config()
   int    lastEvent=IE.lastEvent();
   int    lastKey=IE.lastKey();
 
-#ifdef __RTMIDI__
+#if defined(__RTMIDI__) || defined(__ANDROID__)
   MidiOutSystem & MOS=MidiOutSystem::getInstance();
   MidiInSystem  & MIS=MidiInSystem::getInstance();
 #endif 
@@ -1372,7 +1384,7 @@ void handle_key_config()
 	  if (menu_config_audioOutput > AE.getNumberOfAudioOutputDevice())
 	    menu_config_audioOutput=0;
 	}
-#ifdef __RTMIDI__
+#if defined(__RTMIDI__) || defined(__ANDROID__)
       // midi output
       if (menu_config_y==MENU_CONFIG_Y_MIDIOUTPUT)
 	{
@@ -1435,7 +1447,7 @@ void handle_key_config()
 	  if (menu_config_audioOutput < 0) 
 	    menu_config_audioOutput=AE.getNumberOfAudioOutputDevice();
 	}
-#ifdef __RTMIDI__
+#if defined(__RTMIDI__) || defined(__ANDROID__)
       // midi output
       if (menu_config_y==MENU_CONFIG_Y_MIDIOUTPUT)
 	{
@@ -1480,7 +1492,7 @@ void handle_key_config()
 
   if (IE.shouldExit())
     {
-#ifdef __RTMIDI__
+#if defined(__RTMIDI__) || defined(__ANDROID__)
       MidiOutSystem & MOS=MidiOutSystem::getInstance();
       MidiInSystem & MIS=MidiInSystem::getInstance();
       MOS.closePort();
@@ -1498,7 +1510,7 @@ void handle_config()
   if (config_first_time || config_key_pressed)
     {
       DPRINTF("config_key_pressed:%d",config_key_pressed);
-#ifdef __RTMIDI__
+#if defined(__RTMIDI__) || defined(__ANDROID__)
       /*
       MidiOutSystem & MOS=MidiOutSystem::getInstance();
       MOS.chooseMidiPortDeviceNumber(menu_config_midiOutput);
@@ -3900,7 +3912,7 @@ void seq_update_track(int t)
 
 
 	  M[t]->setI(NOTE_ON,1);
-#ifdef __RTMIDI__
+#if defined(__RTMIDI__) || defined(__ANDROID__)
 	  //SDL_LockAudio();
 	  MidiOutSystem & MOS=MidiOutSystem::getInstance();
 	  //MOS.flushMsg();
@@ -4040,7 +4052,7 @@ void init_monomixer_and_machine()
 void init_and_setup_midi()
 {
 
-#ifdef __RTMIDI__
+#if defined(__RTMIDI__) || defined(__ANDROID__)
 
   // Open output Port
   MidiOutSystem & MOS=MidiOutSystem::getInstance();
@@ -4135,7 +4147,7 @@ int seq()
       running = isRunning();
 #endif
 
-#if defined(__RTMIDI__)
+#if defined(__RTMIDI__) || defined(__ANDROID__)
       MidiOutSystem & MOS=MidiOutSystem::getInstance();
       if (MOS.msgSize())
        	MOS.flushMsg();
@@ -4341,7 +4353,7 @@ void finish_vita()
 
 void init_midi()
 {
-#ifdef __RTMIDI__
+#if defined(__RTMIDI__) || defined(__ANDROID__)
   MidiOutSystem & MOS=MidiOutSystem::getInstance();
   MidiInSystem  & MIS=MidiInSystem::getInstance();
   MOS.init();

@@ -332,7 +332,49 @@ enum {
 // BEGIN DINGOO A320 SDL
 #endif
 
-#ifdef  RASPI3_ILI9486 
+#ifdef __ANDROID__
+// Touch overlay dispatches Android KeyEvents that SDL's Android backend
+// turns into these same SDLK_* codes, so the on-screen buttons need no
+// dedicated keycodes of their own - see android/ONSCREEN_BUTTONS mapping.
+#define MAX_PATTERN_BY_PROJECT 128
+#define SCREEN_WIDTH	320
+#define SCREEN_HEIGHT	240
+#define SCREEN_DEPTH	16
+
+#ifndef SCREEN_MULT
+#define SCREEN_MULT     2
+#endif
+
+#define MIDI_DELAY_IN_SAMPLE 2048
+#define DEFAULTSAMPLES   512
+
+#define KEY_REPEAT_INTERVAL_SMALLEST  4
+#define KEY_REPEAT_INTERVAL_SMALL     8
+#define KEY_REPEAT_INTERVAL_MIDDLE    32
+#define KEY_REPEAT_INTERVAL_LONG      64
+#define KEY_REPEAT_INTERVAL_LONGEST   128
+
+#define BUTTON_B            SDLK_LALT
+#define BUTTON_A            SDLK_LCTRL
+#define BUTTON_X            SDLK_SPACE
+#define BUTTON_Y            SDLK_LSHIFT
+
+#define BUTTON_UP           SDLK_UP
+#define BUTTON_DOWN         SDLK_DOWN
+#define BUTTON_LEFT         SDLK_LEFT
+#define BUTTON_RIGHT        SDLK_RIGHT
+
+#define BUTTON_SELECT       SDLK_ESCAPE
+#define BUTTON_START        SDLK_RETURN
+
+#define BUTTON_L            SDLK_TAB
+#define BUTTON_R            SDLK_BACKSPACE
+
+#define KEYPRESSED          SDL_KEYDOWN
+#define KEYRELEASED         SDL_KEYUP
+#endif
+
+#ifdef  RASPI3_ILI9486
 #define MAX_PATTERN_BY_PROJECT 128
 //#define SCREEN_WIDTH	480
 //#define SCREEN_HEIGHT	320
@@ -1305,6 +1347,16 @@ extern FILE * fdebugprintf;
   } while (0)
 #endif
 
+#if defined(__ANDROID__) && DEBUGPRINTF==1
+// stdout/stderr aren't captured by logcat on Android and the relative-path
+// fopen("picoloop.log") below isn't reliably writable from a native
+// activity's cwd, so route through the logcat API directly instead.
+#include <android/log.h>
+#define DPRINTF(FMT, ARGS...) do {					\
+    __android_log_print(ANDROID_LOG_DEBUG, "picoloop", "%.40s:%.8d [" FMT "]", __FUNCTION__, __LINE__, ## ARGS); \
+  } while (0)
+#endif
+
 #if defined(PSVITA)
 #define CLOSE_DPRINTF() do { } while(0)
 #endif
@@ -1316,7 +1368,7 @@ extern FILE * fdebugprintf;
 #endif
 
 
-#if !defined(PSVITA) && DEBUGPRINTF==1 && DEBUGPRINTF_STDOUT==0
+#if !defined(PSVITA) && !defined(__ANDROID__) && DEBUGPRINTF==1 && DEBUGPRINTF_STDOUT==0
 #define DPRINTF(FMT, ARGS...) do {					\
     if (DEBUGPRINTF)							\
       if (opendebugprintf==0)						\
@@ -1328,7 +1380,7 @@ extern FILE * fdebugprintf;
   } while (0)
 #endif
 
-#if !defined(PSVITA) && DEBUGPRINTF==1 && DEBUGPRINTF_STDOUT==1
+#if !defined(PSVITA) && !defined(__ANDROID__) && DEBUGPRINTF==1 && DEBUGPRINTF_STDOUT==1
 #define DPRINTF(FMT, ARGS...) do {					\
     if (DEBUGPRINTF)							\
       {									\
