@@ -658,19 +658,17 @@ int SDL_GUI::guiTTFText(int x,int y,const char *txt)
   //textColor.r=pal[7]&0x0000FF;
   //textColor.g=(pal[7]&0x00FF00)>>8;
   //textColor.b=(pal[7]&0xFF0000)>>16;
-  SDL_Color colorme = {255, 255, 255};
   textColor.r=(pal[7]&0xFF0000)>>16;
   textColor.g=(pal[7]&0x00FF00)>>8;
   textColor.b=(pal[7]&0x0000FF);
-	
+
 
   //printf("textcolor : %d %d %d\n",textColor.r, textColor.g, textColor.b);
 
   if (message!=NULL)
     SDL_FreeSurface(message);
 	#if   !defined(__VECTORFPU__)
-  message=TTF_RenderText_Solid( ttf_font, txt, colorme );
-  //message=TTF_RenderText_Solid( ttf_font, txt, textColor );
+  message=TTF_RenderText_Solid( ttf_font, txt, textColor );
 	#endif
 
 	#if   defined(__VECTORFPU__) 

@@ -12,3 +12,7 @@ android/*.iml
 # picoloop native Android cross-build intermediates
 picoloop/build_android_*/
 picoloop/libmain_*.so
+
+# picoloop desktop build intermediates/binaries
+picoloop/debian_*/
+picoloop/PatternPlayer_debian_*

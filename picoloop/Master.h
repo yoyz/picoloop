@@ -302,11 +302,14 @@ enum {
 /* #define DEFAULTSAMPLES   2048 */
 
 
-#define KEY_REPEAT_INTERVAL_SMALLEST  4
-#define KEY_REPEAT_INTERVAL_SMALL     8
-#define KEY_REPEAT_INTERVAL_MIDDLE    32
-#define KEY_REPEAT_INTERVAL_LONG      64
-#define KEY_REPEAT_INTERVAL_LONGEST   128
+// Slowed down from the original 4/8/32/64/128 (felt too fast on both
+// desktop and Android, which both run the same SDL_Delay(1) main loop) -
+// see the __ANDROID__ block below, kept at the same values.
+#define KEY_REPEAT_INTERVAL_SMALLEST  8
+#define KEY_REPEAT_INTERVAL_SMALL     16
+#define KEY_REPEAT_INTERVAL_MIDDLE    64
+#define KEY_REPEAT_INTERVAL_LONG      128
+#define KEY_REPEAT_INTERVAL_LONGEST   256
 
 
 
@@ -348,11 +351,12 @@ enum {
 #define MIDI_DELAY_IN_SAMPLE 2048
 #define DEFAULTSAMPLES   512
 
-#define KEY_REPEAT_INTERVAL_SMALLEST  4
-#define KEY_REPEAT_INTERVAL_SMALL     8
-#define KEY_REPEAT_INTERVAL_MIDDLE    32
-#define KEY_REPEAT_INTERVAL_LONG      64
-#define KEY_REPEAT_INTERVAL_LONGEST   128
+// Same slowed-down values as PC_DESKTOP above (see its comment).
+#define KEY_REPEAT_INTERVAL_SMALLEST  8
+#define KEY_REPEAT_INTERVAL_SMALL     16
+#define KEY_REPEAT_INTERVAL_MIDDLE    64
+#define KEY_REPEAT_INTERVAL_LONG      128
+#define KEY_REPEAT_INTERVAL_LONGEST   256
 
 #define BUTTON_B            SDLK_LALT
 #define BUTTON_A            SDLK_LCTRL

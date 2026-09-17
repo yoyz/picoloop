@@ -313,8 +313,25 @@ class OnScreenButtonOverlay(context: Context) : View(context) {
                 for (i in 0 until event.pointerCount) {
                     val id = event.getPointerId(i)
                     val old = touchMap[id] ?: continue
-                    val now = buttons.find { it.bounds.contains(event.getX(i), event.getY(i)) }
-                    if (now != old) {
+                    val x = event.getX(i)
+                    val y = event.getY(i)
+                    // Hysteresis: don't drop "old" just because the touch
+                    // left its exact bounds. Finger jitter right on a
+                    // button's edge (small adjacent d-pad buttons are the
+                    // worst case) was flipping contains() in and out on
+                    // every sample, causing an UP+DOWN pair per flicker -
+                    // each one a fresh press edge, so a single tap could
+                    // register as 2 (or more) engine steps. Only release
+                    // once the touch is clearly outside a padded rect.
+                    if (!old.bounds.contains(x, y)) {
+                        val marginX = old.bounds.width() * 0.35f
+                        val marginY = old.bounds.height() * 0.35f
+                        val padded = RectF(
+                            old.bounds.left - marginX, old.bounds.top - marginY,
+                            old.bounds.right + marginX, old.bounds.bottom + marginY
+                        )
+                        if (padded.contains(x, y)) continue
+                        val now = buttons.find { it.bounds.contains(x, y) }
                         old.isPressed = false
                         dispatch(KeyEvent.ACTION_UP, old)
                         if (now != null) {
