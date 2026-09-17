@@ -238,6 +238,16 @@ int SDL_GUI::initVideo()
     DPRINTF("After SDL_CreateWindow %s",SDL_GetError());
     return -1;
   }
+
+  // Window/taskbar icon. Plain SDL_LoadBMP (not SDL_image) so this build
+  // doesn't gain a libpng/SDL_image dependency just for one icon.
+  SDL_Surface * icon = SDL_LoadBMP("picoloop-logo.bmp");
+  if (icon != NULL)
+    {
+      SDL_SetWindowIcon(window, icon);
+      SDL_FreeSurface(icon);
+    }
+
   screen=SDL_GetWindowSurface( window );
 
   if( SDL_NumJoysticks() < 1 )
