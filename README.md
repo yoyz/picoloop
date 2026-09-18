@@ -1,4 +1,4 @@
-# PICOLOOP 0.77 README #
+# PICOLOOP 0.78 README #
 
 Manual and tutorial for PC/PSP/PSVita/Pocketchip can be fetch here : https://github.com/farvardin/picoloop-manual
 
@@ -432,6 +432,13 @@ export LD_LIBRARY_PATH=/home/pi/SDL2/lib/
 
 Changelog
 =========
+
+V0.78a
+- a : new android port
+- a : debian_RtAudio_sdl20 binary renamed to picoloop_debian_RtAudio_sdl20, font and window icon now embedded in it (no more font.ttf/picoloop-logo.bmp needed next to it)
+- a : optional picoloop.ini next to the binary (see picoloop.ini.example) to override, without recompiling: key-repeat speed (smallest/small/middle/long/longest, or their default values 8/16/64/128/256 as aliases), the font (font=path.ttf), and the default theme (theme=0-5)
+- a : fixed touch d-pad occasionally registering 2 steps instead of 1, key-repeat slowed down on desktop and Android
+
 
 V0.77abcd
 - a : introduce lgptsampler for vita and raspberry pi

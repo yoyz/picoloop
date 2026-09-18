@@ -1,0 +1,19 @@
+# Copy to picoloop.ini next to the binary. Any missing/invalid key keeps
+# its default.
+
+[key_repeat]
+# Ticks between repeats while a key is held (bigger = slower). Any positive
+# int works. Each also accepts its default value as an alias (128=200 same
+# as long=200). Avoid 1 on longest.
+smallest=8
+small=16
+middle=64
+long=128
+longest=256
+
+[display]
+# .ttf to use instead of the embedded font (relative to cwd).
+#font=myfont.ttf
+
+# Default palette, 0-5.
+#theme=0

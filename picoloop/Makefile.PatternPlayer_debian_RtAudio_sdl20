@@ -60,6 +60,8 @@ SOURCES=	\
 			SysMutex.cpp	       \
 			MidiOutSystem.cpp	       \
 			MidiInSystem.cpp	       \
+			PicoloopIni.cpp	       \
+			EmbeddedAssets.cpp	       \
 			$(SOURCES_PICOLOOP)     \
 			$(SOURCES_PICOSYNTH) \
 			$(SOURCES_PICOSYNTHUI) \

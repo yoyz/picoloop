@@ -1,5 +1,8 @@
 #include "SDL_GUI.h"
 #include <assert.h>     /* assert */
+#if defined(PC_DESKTOP)
+#include "EmbeddedAssets.h"
+#endif
 
 SDL_GUI::SDL_GUI()
 {
@@ -241,7 +244,14 @@ int SDL_GUI::initVideo()
 
   // Window/taskbar icon. Plain SDL_LoadBMP (not SDL_image) so this build
   // doesn't gain a libpng/SDL_image dependency just for one icon.
+#if defined(PC_DESKTOP)
+  // Embedded (see EmbeddedAssets.cpp) so the binary doesn't need
+  // picoloop-logo.bmp next to it to show its icon.
+  SDL_RWops * iconRW = SDL_RWFromConstMem(g_embedded_logo_bmp, g_embedded_logo_bmp_len);
+  SDL_Surface * icon = (iconRW != NULL) ? SDL_LoadBMP_RW(iconRW, 1) : NULL;
+#else
   SDL_Surface * icon = SDL_LoadBMP("picoloop-logo.bmp");
+#endif
   if (icon != NULL)
     {
       SDL_SetWindowIcon(window, icon);
@@ -622,6 +632,17 @@ int SDL_GUI::openTTFFont()
   //ttf_font = TTF_OpenFont("umd0:/font.ttf", 8*SCREEN_MULT ); <= fix issue on PSP
 #if defined(PSVITA)
   ttf_font = TTF_OpenFont("ux0:/app/PICOLOOP1/font.ttf", 12);
+#elif defined(PC_DESKTOP)
+  // font= in picoloop.ini overrides the embedded default; falls back to
+  // embedded if unset or if it fails to load.
+  ttf_font = NULL;
+  if (g_ini_font_path[0] != '\0')
+    ttf_font = TTF_OpenFont(g_ini_font_path, FONTSIZE*SCREEN_MULT);
+  if (ttf_font == NULL)
+    {
+      SDL_RWops * fontRW = SDL_RWFromConstMem(g_embedded_font_ttf, g_embedded_font_ttf_len);
+      ttf_font = (fontRW != NULL) ? TTF_OpenFontRW(fontRW, 1, FONTSIZE*SCREEN_MULT) : NULL;
+    }
 #else
   ttf_font = TTF_OpenFont("font.ttf", FONTSIZE*SCREEN_MULT );
 #endif

@@ -4405,6 +4405,11 @@ int main(int argc,char **argv)
   loadsave_cursor.y=0;
   song_cursor.x=0;
   song_cursor.y=0;
+#if defined(PC_DESKTOP)
+  loadPicoloopIni("picoloop.ini"); // optional, keeps defaults if absent
+  if (g_ini_default_theme >= 0)
+    menu_config_palette = g_ini_default_theme;
+#endif
 #if defined(__LINUX__) && !defined(OPENDINGUX)
   signal(SIGSEGV, handler);   // install our handler
   signal(SIGABRT, handler);

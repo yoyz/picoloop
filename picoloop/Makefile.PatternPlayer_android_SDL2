@@ -53,6 +53,7 @@ DEFINES := \
 	-D__SDL_AUDIO__ \
 	-D__ANDROID__ \
 	-DDEBUGPRINTF \
+	-D__VECTORFPU__ \
 	$(SYNTH)
 
 SDL_INCLUDE ?= /path/to/SDL2/include
