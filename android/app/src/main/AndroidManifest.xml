@@ -46,12 +46,13 @@
         <activity
             android:name=".SettingsActivity"
             android:exported="false"
-            android:label="Options" />
+            android:theme="@style/Theme.Picoloop.Settings"
+            android:label="Settings" />
 
         <activity
             android:name=".ManualActivity"
             android:exported="false"
-            android:label="Manuel picoloop" />
+            android:label="picoloop manual" />
 
     </application>
 

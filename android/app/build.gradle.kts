@@ -220,4 +220,8 @@ tasks.named("preBuild") {
 dependencies {
     // ActivityCompat/ContextCompat for the storage-permission flow in MainActivity.
     implementation("androidx.core:core-ktx:1.13.1")
+    // Material 3 components for the Settings screen (cards, filled/outlined
+    // buttons, text fields, dialogs) - PicoloopActivity/MainActivity keep
+    // their plain system themes untouched, this is Settings-only.
+    implementation("com.google.android.material:material:1.12.0")
 }

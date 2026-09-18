@@ -1,5 +1,9 @@
-// PC_DESKTOP only: optional picoloop.ini next to the binary, overriding
-// key-repeat speed, font, and default theme. See picoloop.ini.example.
+// PC_DESKTOP and __ANDROID__: optional picoloop.ini overriding key-repeat
+// speed, font, and default theme. See picoloop.ini.example. The storage
+// folder itself is NOT in here (Android only) - see SYSTEMANDROID.cpp,
+// it's an app setting (Settings screen), not an ini key, since the ini
+// lives inside that same folder and bootstrapping it from itself would be
+// confusing.
 
 #include "Master.h"
 #include <cstdio>

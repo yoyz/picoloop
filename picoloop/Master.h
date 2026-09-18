@@ -276,6 +276,24 @@ enum {
 // BEGIN DINGOO A320 SDL
 #endif
 
+#if defined(PC_DESKTOP) || defined(__ANDROID__)
+// Slowed down from the original 4/8/32/64/128 (felt too fast on both
+// desktop and Android, which both run the same SDL_Delay(1) main loop).
+//
+// Plain variables (not #define), overridable at startup by
+// loadPicoloopIni() (PicoloopIni.cpp) from an optional picoloop.ini.
+extern int KEY_REPEAT_INTERVAL_SMALLEST;
+extern int KEY_REPEAT_INTERVAL_SMALL;
+extern int KEY_REPEAT_INTERVAL_MIDDLE;
+extern int KEY_REPEAT_INTERVAL_LONG;
+extern int KEY_REPEAT_INTERVAL_LONGEST;
+
+extern char g_ini_font_path[256]; // font= override, empty = default font
+extern int g_ini_default_theme;   // theme= override, -1 = engine default
+
+void loadPicoloopIni(const char *path);
+#endif
+
 #ifdef PC_DESKTOP
 #define MAX_PATTERN_BY_PROJECT 128
 
@@ -300,25 +318,6 @@ enum {
 
 /* #define MIDI_DELAY_IN_SAMPLE 8192 */
 /* #define DEFAULTSAMPLES   2048 */
-
-
-// Slowed down from the original 4/8/32/64/128 (felt too fast on both
-// desktop and Android, which both run the same SDL_Delay(1) main loop) -
-// see the __ANDROID__ block below, kept at the same values.
-//
-// Plain variables (not #define) on PC_DESKTOP only, overridable at startup
-// by loadPicoloopIni() (PicoloopIni.cpp) from an optional picoloop.ini.
-extern int KEY_REPEAT_INTERVAL_SMALLEST;
-extern int KEY_REPEAT_INTERVAL_SMALL;
-extern int KEY_REPEAT_INTERVAL_MIDDLE;
-extern int KEY_REPEAT_INTERVAL_LONG;
-extern int KEY_REPEAT_INTERVAL_LONGEST;
-
-extern char g_ini_font_path[256]; // font= override, empty = embedded font
-extern int g_ini_default_theme;   // theme= override, -1 = engine default
-
-void loadPicoloopIni(const char *path);
-
 
 
 #define BUTTON_B            SDLK_LALT
@@ -359,12 +358,9 @@ void loadPicoloopIni(const char *path);
 #define MIDI_DELAY_IN_SAMPLE 2048
 #define DEFAULTSAMPLES   512
 
-// Same slowed-down values as PC_DESKTOP above (see its comment).
-#define KEY_REPEAT_INTERVAL_SMALLEST  8
-#define KEY_REPEAT_INTERVAL_SMALL     16
-#define KEY_REPEAT_INTERVAL_MIDDLE    64
-#define KEY_REPEAT_INTERVAL_LONG      128
-#define KEY_REPEAT_INTERVAL_LONGEST   256
+// KEY_REPEAT_INTERVAL_* (same slowed-down values as PC_DESKTOP) are now
+// extern variables, not #define here - see the shared PC_DESKTOP/__ANDROID__
+// block below.
 
 #define BUTTON_B            SDLK_LALT
 #define BUTTON_A            SDLK_LCTRL

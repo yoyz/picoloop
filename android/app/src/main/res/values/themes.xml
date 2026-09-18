@@ -1,0 +1,16 @@
+<resources>
+    <!-- Settings screen only - PicoloopActivity/MainActivity keep their
+         plain system themes (they're SDL surfaces / a translucent
+         permission hop, not Material UI). -->
+    <style name="Theme.Picoloop.Settings" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/picoloop_primary</item>
+        <item name="colorPrimaryContainer">@color/picoloop_primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/picoloop_on_primary_container</item>
+        <item name="colorSurface">@color/picoloop_surface</item>
+        <item name="colorSurfaceVariant">@color/picoloop_surface_variant</item>
+        <item name="colorOnSurface">@color/picoloop_on_surface</item>
+        <item name="colorOnSurfaceVariant">@color/picoloop_on_surface_variant</item>
+        <item name="colorError">@color/picoloop_error</item>
+        <item name="android:windowBackground">@color/picoloop_surface</item>
+    </style>
+</resources>

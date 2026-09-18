@@ -34,6 +34,7 @@ class MainActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Strings.init(this)
         requestStoragePermissionThenStart()
     }
 
@@ -78,7 +79,7 @@ class MainActivity : Activity() {
                 if (created) {
                     Toast.makeText(
                         this,
-                        "Dossier cree : ${publicFolder.absolutePath}\n(les banques picoloop y seront sauvegardees)",
+                        "${Strings.t("public_folder_created")} ${publicFolder.absolutePath}\n${Strings.t("public_folder_created_suffix")}",
                         Toast.LENGTH_LONG
                     ).show()
                 }

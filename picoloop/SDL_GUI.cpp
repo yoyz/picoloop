@@ -643,6 +643,14 @@ int SDL_GUI::openTTFFont()
       SDL_RWops * fontRW = SDL_RWFromConstMem(g_embedded_font_ttf, g_embedded_font_ttf_len);
       ttf_font = (fontRW != NULL) ? TTF_OpenFontRW(fontRW, 1, FONTSIZE*SCREEN_MULT) : NULL;
     }
+#elif defined(__ANDROID__)
+  // font= in picoloop.ini overrides the bundled APK asset; falls back to
+  // it if unset or if it fails to load.
+  ttf_font = NULL;
+  if (g_ini_font_path[0] != '\0')
+    ttf_font = TTF_OpenFont(g_ini_font_path, FONTSIZE*SCREEN_MULT);
+  if (ttf_font == NULL)
+    ttf_font = TTF_OpenFont("font.ttf", FONTSIZE*SCREEN_MULT );
 #else
   ttf_font = TTF_OpenFont("font.ttf", FONTSIZE*SCREEN_MULT );
 #endif

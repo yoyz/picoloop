@@ -25,6 +25,13 @@ class PatternReader
   void setBank(int b);
   int  getBank();
 
+  // Redirects saveSong/loadSong/writePattern/readPatternData to read/write
+  // directly in `root` instead of GETPICOLOOPUSERSTORAGE()/bank/bank<N> -
+  // used for the Android session snapshot, which must live outside the
+  // numbered bank tree (see PatternPlayer.cpp's autosaveCurrentState()).
+  // Pass "" to go back to the normal bank/bank<N> path.
+  void setCustomRoot(const char * root);
+
   int  saveSong(SongSequencer & SS);
   int  loadSong(SongSequencer & SS);
 
@@ -40,7 +47,10 @@ class PatternReader
 
 
  private:
+  void bankPath(char * out, size_t outSize);
+
   int    bank;
+  char   customRoot[512];
   FILE * fd;
   std::string fn;
   std::vector < std::vector < Pattern > > twoDPVector;

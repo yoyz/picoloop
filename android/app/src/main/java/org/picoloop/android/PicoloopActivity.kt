@@ -42,6 +42,7 @@ class PicoloopActivity : SDLActivity() {
         // windowSurface stays stale at the old (wrong) size, so content
         // gets scaled/positioned for a canvas that no longer matches what's
         // on screen - the app looks like it's rendering nothing.
+        Strings.init(this)
         prefs = getSharedPreferences("picoloop_prefs", MODE_PRIVATE)
         applyOrientationPreference()
 
@@ -84,6 +85,15 @@ class PicoloopActivity : SDLActivity() {
             setupGearButton()
             overlaySetupDone = true
         }
+    }
+
+    // Autosave the 4 live tracks before SDLActivity suspends the native
+    // thread (pauseNativeThread(), called from super.onPause()) - a flag
+    // set after that point could race and not be noticed until the app is
+    // resumed again, too late if Android kills the app while backgrounded.
+    override fun onPause() {
+        NativeBridge.triggerAutosave()
+        super.onPause()
     }
 
     override fun onResume() {
@@ -147,10 +157,10 @@ class PicoloopActivity : SDLActivity() {
     private fun enterButtonEditMode() {
         buttonOverlay?.editMode = true
         showEditBar(
-            "-" to { buttonOverlay?.let { it.setScale(it.scale - 0.1f) } },
-            "+" to { buttonOverlay?.let { it.setScale(it.scale + 0.1f) } },
-            "Reinitialiser" to { buttonOverlay?.resetLayout() },
-            "Termine" to { exitButtonEditMode() }
+            Strings.t("editbar_minus") to { buttonOverlay?.let { it.setScale(it.scale - 0.1f) } },
+            Strings.t("editbar_plus") to { buttonOverlay?.let { it.setScale(it.scale + 0.1f) } },
+            Strings.t("editbar_reset") to { buttonOverlay?.resetLayout() },
+            Strings.t("editbar_done") to { exitButtonEditMode() }
         )
     }
 
@@ -163,8 +173,8 @@ class PicoloopActivity : SDLActivity() {
     private fun enterScreenEditMode() {
         buttonOverlay?.screenEditMode = true
         showEditBar(
-            "Reinitialiser" to { buttonOverlay?.resetScreenOffset() },
-            "Termine" to { exitScreenEditMode() }
+            Strings.t("editbar_reset") to { buttonOverlay?.resetScreenOffset() },
+            Strings.t("editbar_done") to { exitScreenEditMode() }
         )
     }
 

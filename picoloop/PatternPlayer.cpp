@@ -4223,6 +4223,100 @@ void load_pattern()
       }
 }
 
+#if defined(__ANDROID__)
+// Android can kill the app at any time (backgrounding, memory pressure),
+// unlike desktop where the process only exits when asked to. The 4 live
+// tracks in P[] aren't tied to a saved bank slot until the user explicitly
+// saves via the L/S menu, so that's what's actually at risk. This snapshots
+// the complete in-memory state - all 4 tracks (notes, BPM, swing, size,
+// volumes - the same per-track file format as a normal bank save) plus the
+// song arrangement - into its own "snapshot" folder, kept OUTSIDE bank/
+// entirely (PatternReader::setCustomRoot(), see PatternReader.cpp/.h): not
+// a numbered bank, so it's never reachable through the bank UI and a
+// bank/ backup/restore (SettingsActivity.kt) never touches it either way.
+// Called from AndroidLifecycle.cpp's JNI entry points.
+
+static void snapshotPath(char *out, size_t outSize)
+{
+  snprintf(out, outSize, "%s/snapshot", GETPICOLOOPUSERSTORAGE());
+}
+
+void autosaveCurrentState()
+{
+  int t;
+  int realBank=PR.getBank();
+  char snapDir[1024];
+  char markerPath[1024];
+
+  snapshotPath(snapDir, sizeof(snapDir));
+  PR.setCustomRoot(snapDir);
+  // Tracks first: writePattern() is what actually creates snapDir (mkdir),
+  // saveSong() below assumes it already exists.
+  for (t=0;t<TRACK_MAX;t++)
+    PR.writePattern(0,t,P[t]);
+  PR.saveSong(SEQ.getSongSequencer());
+  PR.setCustomRoot("");
+
+  sprintf(markerPath,"%s/bank.txt",snapDir);
+  FILE *f=fopen(markerPath,"w");
+  if (f)
+    {
+      fprintf(f,"%d\n",realBank);
+      fclose(f);
+    }
+}
+
+// Reads just the marker file (no PatternReader involvement, safe to call
+// before PR.init()) - used at the very top of main() to pre-fill the
+// startup screen's bank number.
+bool peekAutosaveBank(int *outBank)
+{
+  int b=0;
+  char snapDir[1024];
+  char markerPath[1024];
+
+  snapshotPath(snapDir, sizeof(snapDir));
+  sprintf(markerPath,"%s/bank.txt",snapDir);
+  FILE *f=fopen(markerPath,"r");
+  if (!f)
+    return false;
+  if (fscanf(f,"%d",&b)!=1)
+    b=0;
+  fclose(f);
+  *outBank=b;
+  return true;
+}
+
+// Restores P[] and the song arrangement from the snapshot folder - call
+// after PR.init()/PR.setBank(bank)/load_pattern() so PatternReader is
+// fully set up. load_pattern() already correctly loaded the real bank's
+// song via the normal path; only overwrite it with the snapshot's copy if
+// one actually exists (an old snapshot saved before this covered the song
+// too would otherwise get loadSong() to zero out what load_pattern() just
+// loaded, since a missing file is indistinguishable from an empty song).
+void restoreAutosaveTracks()
+{
+  int t;
+  char snapDir[1024];
+  char songPath[1024];
+  FILE *songCheck;
+
+  snapshotPath(snapDir, sizeof(snapDir));
+  PR.setCustomRoot(snapDir);
+  for (t=0;t<TRACK_MAX;t++)
+    PR.readPatternData(0,t,P[t]);
+
+  sprintf(songPath,"%s/song.pic",snapDir);
+  songCheck=fopen(songPath,"r");
+  if (songCheck)
+    {
+      fclose(songCheck);
+      PR.loadSong(SEQ.getSongSequencer());
+    }
+  PR.setCustomRoot("");
+}
+#endif
+
 
 void wtg()
 {
@@ -4361,6 +4455,55 @@ void init_midi()
 #endif
 }
 
+#if defined(__ANDROID__)
+// "Snapshot found: Resume session / Start fresh" - shown once at boot,
+// only if a snapshot exists (see main()), right before the normal startup
+// config screen. Picking "Resume" skips that config screen entirely and
+// restores straight into the editor; "Start fresh" falls through to it
+// exactly as if there were no snapshot. A tiny standalone screen/loop
+// rather than folded into display_config()'s own menu, so the choice is
+// explicit and can't be tabbed past by accident.
+bool showAndroidResumePrompt()
+{
+  int  selected = 0; // 0 = Resume, 1 = Start fresh
+  bool decided  = false;
+  bool result   = false;
+  char titleLine[64];
+  char resumeLine[64];
+  char freshLine[64];
+
+  while (!decided)
+    {
+      IE.handleKey();
+      int lastEvent = IE.lastEvent();
+      int lastKey   = IE.lastKey();
+
+      if (lastKey == BUTTON_UP && lastEvent == KEYRELEASED)
+        selected = 0;
+      if (lastKey == BUTTON_DOWN && lastEvent == KEYRELEASED)
+        selected = 1;
+      if (lastKey == BUTTON_A && lastEvent == KEYPRESSED)
+        {
+          result  = (selected == 0);
+          decided = true;
+        }
+
+      sprintf(titleLine,  "  Snapshot found");
+      sprintf(resumeLine, "%c Resume session", selected==0 ? '>' : ' ');
+      sprintf(freshLine,  "%c Start fresh",    selected==1 ? '>' : ' ');
+
+      SG.clearScreen();
+      SG.guiTTFText(COLLUMN03, LINE00, titleLine);
+      SG.guiTTFText(COLLUMN03, LINE01, resumeLine);
+      SG.guiTTFText(COLLUMN03, LINE02, freshLine);
+      display_refresh();
+      SDL_Delay(1);
+      IE.clearLastKeyEvent();
+    }
+  return result;
+}
+#endif
+
 void init_and_load_config()
 {
   config_loaded=0;
@@ -4410,6 +4553,16 @@ int main(int argc,char **argv)
   if (g_ini_default_theme >= 0)
     menu_config_palette = g_ini_default_theme;
 #endif
+#if defined(__ANDROID__)
+  bool androidHasAutosave;
+  int  androidAutosaveBank=-1;
+  GETPICOLOOPUSERSTORAGE(); // forces picoloop.ini to be read as a side effect
+  if (g_ini_default_theme >= 0)
+    menu_config_palette = g_ini_default_theme;
+  androidHasAutosave = peekAutosaveBank(&androidAutosaveBank);
+  if (androidHasAutosave)
+    menu_config_bank = androidAutosaveBank; // pre-fill the startup screen
+#endif
 #if defined(__LINUX__) && !defined(OPENDINGUX)
   signal(SIGSEGV, handler);   // install our handler
   signal(SIGABRT, handler);
@@ -4443,14 +4596,29 @@ int main(int argc,char **argv)
   SG.loadingScreen();
   SDL_Delay(1000);
 
+#if defined(__ANDROID__)
+  bool androidResume = false;
+  if (androidHasAutosave)
+    androidResume = showAndroidResumePrompt();
+
+  if (androidResume)
+    // Skipping init_and_load_config()'s interactive loop entirely, but its
+    // first tick normally applies menu_config_bank/menu_config_palette/
+    // menu_config_audioOutput to bank/pal/AE (see handle_config()) - do
+    // that one step by hand so `bank` (already pre-filled to the snapshot's
+    // bank further up) actually takes effect below.
+    handle_config();
+  else
+    init_and_load_config();
+#else
   init_and_load_config();
-      
+#endif
+
   PR.init();         // Init the     storage bank
   PR.setBank(bank);  // The current  storage bank will be the value of bank the directory/file are here PWD/bank/bank%d/
                      // menu_config_bank allow to choose it at startup
 
-  load_pattern();    // load the pattern of the bank 
-  
+  load_pattern();    // load the pattern of the bank
 
   DPRINTF("after load pattern");
 
@@ -4460,7 +4628,22 @@ int main(int argc,char **argv)
   DPRINTF("openAudio output");
   AE.openAudio();
 
-  init_audiomixer_and_audioengine();
+  init_audiomixer_and_audioengine(); // init_monomixer_and_machine() inside this
+                                      // unconditionally resets P[0..3] via P[t].init() -
+                                      // restoreAutosaveTracks() must run AFTER this or
+                                      // it gets silently wiped right back out.
+#if defined(__ANDROID__)
+  if (androidHasAutosave && androidResume)
+    {
+      restoreAutosaveTracks();
+      // init_audiomixer_and_audioengine() just primed each Machine's
+      // current-step parameters from the (empty, pre-restore) P[] above -
+      // resync now that P[] holds the restored data instead.
+      for (i=0;i<TRACK_MAX;i++)
+        seq_update_track(i);
+    }
+#endif
+
   init_and_setup_midi();
   
   DPRINTF("before seq");

@@ -21,13 +21,14 @@ import android.widget.TextView
 class ManualActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Strings.init(this)
 
         val mode = intent.getStringExtra(EXTRA_MODE) ?: "psp"
         val assetName = if (mode == "pc") "picoloop_manual_pc.md" else "picoloop_manual_psp.md"
         val raw = try {
             assets.open(assetName).bufferedReader().use { it.readText() }
         } catch (e: Exception) {
-            "Manuel indisponible (${e.message})."
+            "${Strings.t("manual_unavailable")} (${e.message})."
         }
 
         val density = resources.displayMetrics.density

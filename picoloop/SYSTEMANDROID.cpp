@@ -17,8 +17,20 @@
 // If that folder isn't there or isn't writable (permission denied, or an
 // odd device layout), fall back to the app's private internal storage
 // (SDL_AndroidGetInternalStoragePath()) so picoloop still works either way.
+//
+// The Settings screen (SettingsActivity.kt) can redirect storage elsewhere
+// (e.g. a synced folder for auto-backup) - deliberately an app setting, not
+// an ini key: the ini lives inside the storage folder itself, so having the
+// ini redirect the very folder it lives in was confusing. The setting is
+// stored as a plain text file in the app's private internal storage
+// (STORAGE_OVERRIDE_MARKER below, same path Kotlin writes to via
+// context.filesDir) so native code can read it with a normal fopen(), no
+// JNI/SharedPreferences round trip needed. picoloop.ini itself is then read
+// from wherever storage ends up (override or default) - see the bottom of
+// computeUserStorage().
 
 static const char * PUBLIC_STORAGE = "/storage/emulated/0/picoloop";
+static const char * STORAGE_OVERRIDE_MARKER_NAME = "storage_folder.txt";
 
 static int isWritableDir(const char * path)
 {
@@ -32,6 +44,29 @@ static int isWritableDir(const char * path)
   return 1;
 }
 
+// Reads the override written by SettingsActivity.kt, if any. Returns an
+// empty string if there's none (or the internal storage path is unknown).
+static void readStorageOverride(char * out, size_t outSize)
+{
+  out[0] = '\0';
+  const char * internalBase = SDL_AndroidGetInternalStoragePath();
+  if (!internalBase)
+    return;
+
+  char markerPath[MAXHOMEPATH];
+  snprintf(markerPath, MAXHOMEPATH, "%s/%s", internalBase, STORAGE_OVERRIDE_MARKER_NAME);
+  FILE * f = fopen(markerPath, "r");
+  if (!f)
+    return;
+  if (fgets(out, (int)outSize, f) != NULL)
+    {
+      size_t len = strlen(out);
+      while (len > 0 && (out[len-1] == '\n' || out[len-1] == '\r'))
+        out[--len] = '\0';
+    }
+  fclose(f);
+}
+
 static const char * computeUserStorage()
 {
   static char storage[MAXHOMEPATH];
@@ -40,20 +75,37 @@ static const char * computeUserStorage()
     return storage;
   computed = 1;
 
-  struct stat st;
-  int havePublicDir = (stat(PUBLIC_STORAGE, &st) == 0 && S_ISDIR(st.st_mode));
-  if (!havePublicDir)
-    havePublicDir = (mkdir(PUBLIC_STORAGE, 0755) == 0);
+  char overridePath[MAXHOMEPATH];
+  readStorageOverride(overridePath, MAXHOMEPATH);
+  if (overridePath[0] != '\0')
+    {
+      mkdir(overridePath, 0755);
+      if (isWritableDir(overridePath))
+        snprintf(storage, MAXHOMEPATH, "%s", overridePath);
+    }
 
-  if (havePublicDir && isWritableDir(PUBLIC_STORAGE))
+  if (storage[0] == '\0')
     {
-      snprintf(storage, MAXHOMEPATH, "%s", PUBLIC_STORAGE);
+      struct stat st;
+      int havePublicDir = (stat(PUBLIC_STORAGE, &st) == 0 && S_ISDIR(st.st_mode));
+      if (!havePublicDir)
+        havePublicDir = (mkdir(PUBLIC_STORAGE, 0755) == 0);
+
+      if (havePublicDir && isWritableDir(PUBLIC_STORAGE))
+        {
+          snprintf(storage, MAXHOMEPATH, "%s", PUBLIC_STORAGE);
+        }
+      else
+        {
+          const char * base = SDL_AndroidGetInternalStoragePath();
+          snprintf(storage, MAXHOMEPATH, "%s", base ? base : ".");
+        }
     }
-  else
-    {
-      const char * base = SDL_AndroidGetInternalStoragePath();
-      snprintf(storage, MAXHOMEPATH, "%s", base ? base : ".");
-    }
+
+  char iniPath[MAXHOMEPATH];
+  snprintf(iniPath, MAXHOMEPATH, "%s/picoloop.ini", storage);
+  loadPicoloopIni(iniPath);
+
   return storage;
 }
 

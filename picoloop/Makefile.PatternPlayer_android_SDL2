@@ -80,8 +80,10 @@ SOURCES := \
 	SysMutex.cpp \
 	AndroidJNIUtils.cpp \
 	AndroidMidiBridge.cpp \
+	AndroidLifecycle.cpp \
 	MidiOutSystem.cpp \
 	MidiInSystem.cpp \
+	PicoloopIni.cpp \
 	$(SOURCES_PICOLOOP) \
 	$(SOURCES_PICOSYNTH) \
 	$(SOURCES_PICOSYNTHUI) \
