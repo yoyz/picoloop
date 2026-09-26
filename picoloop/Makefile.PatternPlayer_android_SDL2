@@ -1,0 +1,131 @@
+include Makefile_sources
+
+#---------------------------------------------------------------------------------
+# Android build of picoloop, producing libmain_$(ABI).so for the SDLActivity
+# based app under android/. Cross-compiles with the NDK's clang toolchain
+# directly (no ndk-build/CMake), same spirit as the other Makefile.PatternPlayer_*
+# variants in this tree.
+#
+# Invoked by the Gradle build (android/app/build.gradle.kts) with:
+#   make -f Makefile.PatternPlayer_android_SDL2 ABI=arm64-v8a \
+#        ANDROID_NDK_HOME=... SDL_INCLUDE=... SDL_LIB=...
+# but can also be run by hand for a single ABI as long as those three
+# variables are set.
+#---------------------------------------------------------------------------------
+
+ABI ?= arm64-v8a
+NDK_PATH ?= $(ANDROID_NDK_HOME)
+ANDROID_API ?= 29
+# 29: lowest API level with the native MIDI API (<amidi/AMidi.h> /
+# libamidi.so) used by MidiInSystem.cpp/MidiOutSystem.cpp's __ANDROID__ path.
+
+ifeq ($(ABI),armeabi-v7a)
+    TOOLCHAIN_PREFIX := armv7a-linux-androideabi
+    ARCH_FLAGS := -march=armv7-a -mfloat-abi=softfp -mfpu=neon
+else ifeq ($(ABI),arm64-v8a)
+    TOOLCHAIN_PREFIX := aarch64-linux-android
+    ARCH_FLAGS := -march=armv8-a
+else
+    $(error Unsupported ABI: $(ABI))
+endif
+
+TOOLCHAIN := $(NDK_PATH)/toolchains/llvm/prebuilt/linux-x86_64
+CXX := $(TOOLCHAIN)/bin/$(TOOLCHAIN_PREFIX)$(ANDROID_API)-clang++
+STRIP := $(TOOLCHAIN)/bin/llvm-strip
+
+BUILD := build_android_$(ABI)
+
+SYNTH :=
+SYNTH += -DENABLE_SYNTH_PICOSYNTH
+SYNTH += -DENABLE_SYNTH_PICODRUM
+SYNTH += -DENABLE_SYNTH_OPL2
+SYNTH += -DENABLE_SYNTH_PBSYNTH
+SYNTH += -DENABLE_SYNTH_LGPTSAMPLER
+SYNTH += -DENABLE_SYNTH_CURSYNTH
+SYNTH += -DENABLE_SYNTH_OPEN303
+SYNTH += -DENABLE_SYNTH_TWYTCHSYNTH
+SYNTH += -DENABLE_SYNTH_MDADRUM
+SYNTH += -DENABLE_SYNTH_SIDSYNTH
+SYNTH += -DENABLE_SYNTH_MIDIOUT
+
+DEFINES := \
+	-D__SDL20__ \
+	-D__SDL_AUDIO__ \
+	-D__ANDROID__ \
+	-DDEBUGPRINTF \
+	-D__VECTORFPU__ \
+	$(SYNTH)
+
+SDL_INCLUDE ?= /path/to/SDL2/include
+SDL_TTF_INCLUDE ?= $(SDL_INCLUDE)
+SDL_LIB ?= /path/to/SDL2/libs/$(ABI)
+
+INCLUDES := -I. -I$(SDL_INCLUDE) -I$(SDL_TTF_INCLUDE)
+
+CXXFLAGS := -std=c++11 -O2 -fPIC -fpermissive -fexceptions -frtti \
+	-ffunction-sections -fdata-sections \
+	-Wno-unused-variable \
+	-Wno-c++11-narrowing \
+	$(ARCH_FLAGS) $(DEFINES) $(INCLUDES)
+
+# --no-undefined: Android happily produces a .so with unresolved symbols
+# (they'd only blow up as a dlopen() failure on-device at run time) unless
+# told otherwise - fail the build instead, same as a normal executable link.
+LDFLAGS := -shared $(ARCH_FLAGS) -Wl,--gc-sections -Wl,-z,max-page-size=16384 -Wl,--no-undefined -L$(SDL_LIB)
+LIBS := -lSDL2 -lSDL2_ttf -llog -landroid -lamidi
+
+SOURCES := \
+	SYSTEMANDROID.cpp \
+	AudioDriverSDL.cpp \
+	SysMutex.cpp \
+	AndroidJNIUtils.cpp \
+	AndroidMidiBridge.cpp \
+	AndroidLifecycle.cpp \
+	MidiOutSystem.cpp \
+	MidiInSystem.cpp \
+	PicoloopIni.cpp \
+	$(SOURCES_PICOLOOP) \
+	$(SOURCES_PICOSYNTH) \
+	$(SOURCES_PICOSYNTHUI) \
+	$(SOURCES_PICODRUM) \
+	$(SOURCES_PICODRUMUI) \
+	$(SOURCES_DBOPL) \
+	$(SOURCES_DBOPLUI) \
+	$(SOURCES_PBSYNTH) \
+	$(SOURCES_PBSYNTHUI) \
+	$(SOURCES_LGPTSAMPLERSYNTH) \
+	$(SOURCES_LGPTSAMPLERSYNTHUI) \
+	$(SOURCES_CURSYNTH) \
+	$(SOURCES_CURSYNTHUI) \
+	$(SOURCES_OPEN303) \
+	$(SOURCES_OPEN303UI) \
+	$(SOURCES_TWYTCH) \
+	$(SOURCES_TWYTCHUI) \
+	$(SOURCES_MIDIOUT) \
+	$(SOURCES_MIDIOUTUI) \
+	$(SOURCES_MDADRUM) \
+	$(SOURCES_MDADRUMUI) \
+	$(SOURCES_SIDSYNTH) \
+	$(SOURCES_SIDSYNTHUI)
+
+OBJDIRS := $(sort $(addprefix $(BUILD)/,$(dir $(SOURCES))))
+OBJECTS := $(addprefix $(BUILD)/,$(SOURCES:.cpp=.o))
+
+OUTPUT := libmain_$(ABI).so
+
+.PHONY: all clean
+
+all: $(OUTPUT)
+
+$(OUTPUT): $(OBJECTS)
+	$(CXX) $(LDFLAGS) -o $@ $(OBJECTS) $(LIBS)
+	$(STRIP) --strip-unneeded $@
+
+$(OBJDIRS):
+	mkdir -p $@
+
+$(BUILD)/%.o: %.cpp | $(OBJDIRS)
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+clean:
+	rm -rf $(BUILD) $(OUTPUT)

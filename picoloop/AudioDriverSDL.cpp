@@ -12,7 +12,7 @@ AudioDriver::AudioDriver()
   sdlAudioSpecWanted->freq = DEFAULTFREQ;
   sdlAudioSpecWanted->format = AUDIO_S16SYS;
   sdlAudioSpecWanted->channels = 2;    /* 1 = mono, 2 = stereo */
-  sdlAudioSpecWanted->samples = BUFFER_FRAME;  /* Good low-latency value for callback */
+  sdlAudioSpecWanted->samples = DEFAULTSAMPLES;  /* Good low-latency value for callback */
   //sdlAudioSpecWanted->callback = fakesdlcallback;
   //sdlAudioSpecWanted->userdata = this;
 }

@@ -1,0 +1,12 @@
+<resources>
+    <!-- A cool blue/teal accent, distinct from picoloop's own in-game
+         palettes (grey/blue/autumn/...) so the two don't visually clash. -->
+    <color name="picoloop_primary">#3B6FE0</color>
+    <color name="picoloop_primary_container">#DCE6FF</color>
+    <color name="picoloop_on_primary_container">#001947</color>
+    <color name="picoloop_surface">#FBFAFD</color>
+    <color name="picoloop_surface_variant">#E2E1EC</color>
+    <color name="picoloop_on_surface">#1B1B1F</color>
+    <color name="picoloop_on_surface_variant">#45464F</color>
+    <color name="picoloop_error">#BA1A1A</color>
+</resources>

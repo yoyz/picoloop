@@ -1,14 +1,27 @@
 #include "MidiInSystem.h"
+#ifdef __ANDROID__
+#include "AndroidJNIUtils.h"
+#endif
 
 MidiInSystem::MidiInSystem()
 {
   iamOpen=0;
   lastOpenPortNumber=0;
-
+#ifdef __ANDROID__
+  androidDevice=0;
+  androidMidiDevice=0;
+  androidOutputPort=0;
+  androidPollThread=0;
+  androidPollRunning=0;
+  androidCallbackArmed=false;
+#endif
 }
 
 MidiInSystem::~MidiInSystem()
 {
+#ifdef __ANDROID__
+  this->closePort();
+#endif
 }
 
 
@@ -242,6 +255,7 @@ MidiInSystem & MidiInSystem::getInstance()
 
 
 
+#ifndef __ANDROID__
 bool MidiInSystem::init()
 {
   try {
@@ -260,6 +274,7 @@ bool MidiInSystem::setupcallback()
   rtmidiin->setCallback( &midiincallback );
   return false;
 }
+#endif // !__ANDROID__
 
 
 bool MidiInSystem::checkChannel(int channel)
@@ -274,6 +289,7 @@ bool MidiInSystem::checkChannel(int channel)
 }
 
 
+#ifndef __ANDROID__
 int MidiInSystem::getNumberOfMidiInputDevice()
 {
  int nPorts = rtmidiin->getPortCount();
@@ -380,3 +396,167 @@ bool MidiInSystem::closePort()
     }
   return false;
 }
+#endif // !__ANDROID__
+
+
+#ifdef __ANDROID__
+
+// AMidiOutputPort_receive() is a poll-only API - there is no OS-level
+// callback - so a dedicated thread polls it at a short, fixed interval and
+// feeds each byte straight into midi_botoomhalf(), same as what RtMidi's
+// callback (midiincallback(), above) does on desktop builds.
+int androidMidiInPollThreadFunc(void * data)
+{
+  MidiInSystem * self = (MidiInSystem*)data;
+  uint8_t buffer[3];
+  int32_t opcode;
+  size_t numBytes;
+  int64_t timestamp;
+
+  while (self->androidPollRunning)
+    {
+      if (self->androidOutputPort)
+	{
+	  ssize_t numMessages = AMidiOutputPort_receive(self->androidOutputPort, &opcode,
+							 buffer, sizeof(buffer), &numBytes, &timestamp);
+	  if (numMessages>0 && opcode==AMIDI_OPCODE_DATA)
+	    {
+	      for (size_t i=0;i<numBytes;i++)
+		midi_botoomhalf(buffer[i]);
+	    }
+	}
+      SDL_Delay(2);
+    }
+  return 0;
+}
+
+int MidiInSystem::getNumberOfMidiInputDevice()
+{
+  androidInputPorts.clear();
+  std::vector<AndroidMidiPortInfo> ports = AndroidMidi_ListPorts();
+  for (size_t i=0;i<ports.size();i++)
+    if (!ports[i].isInput) // a device's OUT port is where WE receive from it -> input
+      androidInputPorts.push_back(ports[i]);
+  return (int)androidInputPorts.size();
+}
+
+char * MidiInSystem::getMidiInputName(int deviceNumber)
+{
+  static char midiInputName[128];
+  midiInputName[0]=0;
+  if (deviceNumber>=0 && deviceNumber<(int)androidInputPorts.size())
+    strncpy(midiInputName, androidInputPorts[deviceNumber].name.c_str(), 127);
+  return midiInputName;
+}
+
+bool MidiInSystem::chooseMidiPortDeviceNumber(int deviceNumber)
+{
+  if (deviceNumber<0 || deviceNumber>=(int)androidInputPorts.size())
+    return false;
+
+  if (iamOpen)
+    this->closePort();
+
+  const AndroidMidiPortInfo & port = androidInputPorts[deviceNumber];
+
+  jobject device = AndroidMidi_OpenDevice(port.deviceId);
+  if (!device)
+    return false;
+
+  bool didAttach=false;
+  JNIEnv * env = AcquireJNIEnv(&didAttach);
+  if (!env)
+    {
+      AndroidMidi_CloseDevice(device);
+      return false;
+    }
+  media_status_t status = AMidiDevice_fromJava(env, device, &androidMidiDevice);
+  ReleaseJNIEnv(didAttach);
+
+  if (status!=AMEDIA_OK)
+    {
+      AndroidMidi_CloseDevice(device);
+      androidMidiDevice=0;
+      return false;
+    }
+
+  status = AMidiOutputPort_open(androidMidiDevice, port.portIndex, &androidOutputPort);
+  if (status!=AMEDIA_OK)
+    {
+      AMidiDevice_release(androidMidiDevice);
+      androidMidiDevice=0;
+      AndroidMidi_CloseDevice(device);
+      return false;
+    }
+
+  androidDevice=device;
+  lastOpenPortNumber=deviceNumber;
+  iamOpen=1;
+
+  if (androidCallbackArmed)
+    this->setupcallback();
+
+  return true;
+}
+
+bool MidiInSystem::chooseMidiPort(std::string portName)
+{
+  this->getNumberOfMidiInputDevice();
+  for (size_t i=0;i<androidInputPorts.size();i++)
+    if (androidInputPorts[i].name==portName)
+      return this->chooseMidiPortDeviceNumber((int)i);
+  return false;
+}
+
+bool MidiInSystem::init()
+{
+  iamOpen=0;
+  return false;
+}
+
+// Starts the polling thread (see androidMidiInPollThreadFunc above). Unlike
+// RtMidi's setCallback(), this needs a port already open to have anything
+// to poll - if chooseMidiPortDeviceNumber() hasn't run yet, just remember
+// the request and start polling once it does.
+bool MidiInSystem::setupcallback()
+{
+  androidCallbackArmed=true;
+  if (!iamOpen || androidPollThread)
+    return false;
+
+  androidPollRunning=1;
+  androidPollThread = SDL_CreateThread(androidMidiInPollThreadFunc, "picoloopmidiin", this);
+  return false;
+}
+
+bool MidiInSystem::closePort()
+{
+  if (!iamOpen)
+    return false;
+
+  if (androidPollThread)
+    {
+      androidPollRunning=0;
+      SDL_WaitThread((SDL_Thread*)androidPollThread, NULL);
+      androidPollThread=0;
+    }
+  if (androidOutputPort)
+    {
+      AMidiOutputPort_close(androidOutputPort);
+      androidOutputPort=0;
+    }
+  if (androidMidiDevice)
+    {
+      AMidiDevice_release(androidMidiDevice);
+      androidMidiDevice=0;
+    }
+  if (androidDevice)
+    {
+      AndroidMidi_CloseDevice(androidDevice);
+      androidDevice=0;
+    }
+  iamOpen=0;
+  return true;
+}
+
+#endif // __ANDROID__

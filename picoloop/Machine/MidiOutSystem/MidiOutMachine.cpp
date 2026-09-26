@@ -154,7 +154,7 @@ void MidiOutMachine::setI(int what,int val)
   float f_val_resonance;
 
 
-#ifdef __RTMIDI__
+#if defined(__RTMIDI__) || defined(__ANDROID__)
   MidiOutSystem & MOS=MidiOutSystem::getInstance();
 
   if (what==TRIG_TIME_MODE)     {  trig_time_mode=val; }
@@ -335,7 +335,7 @@ Sint32 MidiOutMachine::tick()
 
 
   //num=1024;
-#ifdef __RTMIDI__
+#if defined(__RTMIDI__) || defined(__ANDROID__)
   MidiOutSystem & MOS=MidiOutSystem::getInstance();  
 
   // if (need_to_noteOn==1 && 

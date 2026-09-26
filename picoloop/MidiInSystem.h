@@ -1,14 +1,22 @@
 #ifndef __MIDIINSYSTEM__
 #define __MIDIINSYSTEM__
+#ifndef __ANDROID__
 #include "RtMidi.h"
+#endif
 #include <iostream>
 #include <cstdlib>
 #include <stdio.h>
 #include "Master.h"
 #include "SysMutex.h" // nostromo lgpt class for mutex
 
+#ifdef __ANDROID__
+#include <amidi/AMidi.h>
+#include <jni.h>
+#include "AndroidMidiBridge.h"
+#endif
+
 /*
-  Purpose : 
+  Purpose :
   Open the midi interface
    One for read  midiin
    One for write midiout
@@ -20,34 +28,34 @@
     144 0x90 Note-on 2 key veolcity
     160 0xA0 Aftertouch 2 key touch
     176 0xB0 Continuous controller 2 controller # controller value MIDI-CC
-    192 0xC0 Patch change 2 instrument # 
+    192 0xC0 Patch change 2 instrument #
     208 0xD0 Channel Pressure 1 pressure
     224 0xE0 Pitch bend 2 lsb (7 bits) msb (7 bits)
 
 
-    0xF0 (non-musical commands) 
+    0xF0 (non-musical commands)
     240 0xF0 start of system exclusive message variable
     241 0xF1 MIDI Time Code Quarter Frame (Sys Common)
     242 0xF2 Song Position Pointer (Sys Common)
-    243 0xF3 Song Select (Sys Common) 
-    244 0xF4 ??? 
-    245 0xF5 ??? 
-    246 0xF6 Tune Request (Sys Common) 
+    243 0xF3 Song Select (Sys Common)
+    244 0xF4 ???
+    245 0xF5 ???
+    246 0xF6 Tune Request (Sys Common)
     247 0xF7 end of system exclusive message 0
-    248 0xF8 Timing Clock (Sys Realtime) 
-    249 0xFA Start (Sys Realtime) 
-    250 0xFB Continue (Sys Realtime) 
-    251 0xFC Stop (Sys Realtime) 
-    252 0xFD ??? 
-    253 0xFE Active Sensing (Sys Realtime) 
-    254 0xFF System Reset (Sys Realtime) 
-  
-  implement the main callback which produce the stream 
+    248 0xF8 Timing Clock (Sys Realtime)
+    249 0xFA Start (Sys Realtime)
+    250 0xFB Continue (Sys Realtime)
+    251 0xFC Stop (Sys Realtime)
+    252 0xFD ???
+    253 0xFE Active Sensing (Sys Realtime)
+    254 0xFF System Reset (Sys Realtime)
+
+  implement the main callback which produce the stream
  */
 extern int counter_recv_midi_clock;     // send n clock and decrement the counter each time
 extern int counter_recv_midi_clock_six; // send n clock and decrement the counter each tim
 extern int mmc_stop;                    // reset the step sequencer to step 0
-extern int mmc_start;                   // we have received a mmc stop 
+extern int mmc_start;                   // we have received a mmc stop
 extern int mmc_continue;                // if mmc_continue=1 we resume playing
 
 class MidiInSystem
@@ -67,7 +75,9 @@ class MidiInSystem
   private:
   MidiInSystem();
   ~MidiInSystem();
+#ifndef __ANDROID__
   RtMidiIn *rtmidiin;
+#endif
   std::vector<unsigned char> message;
 
   SysMutex mtx;
@@ -75,7 +85,17 @@ class MidiInSystem
   int lastOpenPortNumber;
   int iamOpen;
 
+#ifdef __ANDROID__
+  std::vector<AndroidMidiPortInfo> androidInputPorts;
+  jobject       androidDevice;
+  AMidiDevice * androidMidiDevice;
+  AMidiOutputPort * androidOutputPort; // "output" from the device's point of view = where we receive FROM
+  void * androidPollThread; // SDL_Thread*, opaque here to avoid pulling SDL headers into this header
+  volatile int androidPollRunning;
+  bool androidCallbackArmed;
 
+  friend int androidMidiInPollThreadFunc(void * data);
+#endif
 };
 
 #endif

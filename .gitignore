@@ -1,0 +1,21 @@
+# Android build (android/) - generated/downloaded artifacts
+android/local.properties
+android/.gradle/
+android/build/
+android/*/build/
+android/app/src/main/jniLibs/
+android/app/build/sdl-download/
+android/app/build/sdl-extracted/
+android/.idea/
+android/*.iml
+
+# picoloop native Android cross-build intermediates
+picoloop/build_android_*/
+picoloop/libmain_*.so
+
+# picoloop desktop build intermediates/binaries
+picoloop/debian_*/
+picoloop/PatternPlayer_debian_*
+picoloop/picoloop_debian_*
+picoloop/picoloop.log
+picoloop/picoloop.ini

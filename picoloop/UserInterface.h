@@ -45,6 +45,13 @@ extern int menu_ad;
 extern int cursor;
 extern int pattern_display_offset[TRACK_MAX];
 
+#if defined(__ANDROID__)
+// See PatternPlayer.cpp.
+void autosaveCurrentState();          // called from AndroidLifecycle.cpp's JNI entry points
+bool peekAutosaveBank(int *outBank);  // called from main(), before PR.init()
+void restoreAutosaveTracks();         // called from main(), after load_pattern()
+#endif
+
 
 class UserInterface
 {

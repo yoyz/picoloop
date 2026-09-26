@@ -1,0 +1,25 @@
+# Desktop: copy to picoloop.ini next to the binary.
+# Android: same keys, but edit them from the app's Settings screen instead -
+# it reads/writes the picoloop.ini in the active storage folder for you.
+# The storage folder itself is an Android Settings option, not an ini key.
+# Any missing/invalid key keeps its default.
+
+[key_repeat]
+# A "tick" is one iteration of the main loop (~1ms, see the SDL_Delay(1) in
+# PatternPlayer.cpp's seq()), not a strict millisecond. Ticks between
+# repeats while a key is held (bigger = slower). Any positive int works.
+# Each also accepts its default value as an alias (128=200 same as
+# long=200). Avoid 1 on longest.
+smallest=8
+small=16
+middle=64
+long=128
+longest=256
+
+[display]
+# .ttf to use instead of the default font (relative to cwd on desktop,
+# absolute path recommended on Android).
+#font=myfont.ttf
+
+# Default palette, 0-5.
+#theme=0

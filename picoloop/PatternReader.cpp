@@ -25,6 +25,7 @@ PatternReader::PatternReader() : twoDPVector(MAX_PATTERN_BY_PROJECT,vector <Patt
 {
   DPRINTF("PatternReader::PatternReader()");
   bank=0;
+  customRoot[0]='\0';
 }
 
 PatternReader::~PatternReader()
@@ -53,6 +54,19 @@ void PatternReader::setBank(int b)
     bank=b;
 }
 
+void PatternReader::setCustomRoot(const char * root)
+{
+  snprintf(customRoot, sizeof(customRoot), "%s", root ? root : "");
+}
+
+void PatternReader::bankPath(char * out, size_t outSize)
+{
+  if (customRoot[0] != '\0')
+    snprintf(out, outSize, "%s", customRoot);
+  else
+    snprintf(out, outSize, "%s/bank/bank%d", GETPICOLOOPUSERSTORAGE(), bank);
+}
+
 int PatternReader::getBank()
 {
   return bank;
@@ -62,11 +76,12 @@ int PatternReader::getBank()
 int PatternReader::saveSong(SongSequencer & SS)
 {
   char filename[1024];
+  char bp[1024];
   unsigned char line[MAX_SONG_LENGHT_BY_PROJECT];
   int i;
   int j;
-  //sprintf(filename,"bank/bank%d/song.pic",bank);
-  sprintf(filename,"%s/bank/bank%d/song.pic",GETPICOLOOPUSERSTORAGE(),bank);
+  bankPath(bp,sizeof(bp));
+  sprintf(filename,"%s/song.pic",bp);
   fd=fopen(filename,"w");
   if (fd==0)
     {
@@ -87,10 +102,12 @@ int PatternReader::saveSong(SongSequencer & SS)
 int PatternReader::loadSong(SongSequencer & SS)
 {
   char  filename[1024];
+  char  bp[1024];
   unsigned char line[MAX_SONG_LENGHT_BY_PROJECT]={0};
   int i;
   int j;
-  sprintf(filename,"%s/bank/bank%d/song.pic",GETPICOLOOPUSERSTORAGE(),bank);
+  bankPath(bp,sizeof(bp));
+  sprintf(filename,"%s/song.pic",bp);
   fd=fopen(filename,"r");
   if (fd==0)
     {
@@ -296,14 +313,21 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
 
   int sizeoflinemax=1024;
 
-  if (loadedData[PatternNumber][TrackNumber]==DATA_LOADED_FROM_STORAGE)
+  // The (PatternNumber,TrackNumber) cache below is only meaningful for the
+  // normal bank/bank<N> path - bypass it entirely under a custom root (the
+  // Android session snapshot reuses pattern/track numbers that may already
+  // be cached from the real bank, and must not pollute that cache either).
+  if (customRoot[0] == '\0' && loadedData[PatternNumber][TrackNumber]==DATA_LOADED_FROM_STORAGE)
     {
       P=twoDPVector[PatternNumber][TrackNumber];
       return true;
     }
 
-  //sprintf(filename,"bank/bank%d/dataP%dT%d.pic",bank,PatternNumber,TrackNumber);
-  sprintf(filename,"%s/bank/bank%d/dataP%dT%d.pic",GETPICOLOOPUSERSTORAGE(),bank,PatternNumber,TrackNumber);
+  {
+    char bp[1024];
+    bankPath(bp,sizeof(bp));
+    sprintf(filename,"%s/dataP%dT%d.pic",bp,PatternNumber,TrackNumber);
+  }
 
 
   //check if file name can be open
@@ -312,10 +336,12 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
   if (fd==0)
     {
       DPRINTF("[data file %s not found]",fn.c_str());
-      loadedData[PatternNumber][TrackNumber]=DATA_DOES_NOT_EXIST_ON_STORAGE;
-      //twoDPVector[PatternNumber][TrackNumber].init();
       P.init();
-      twoDPVector[PatternNumber][TrackNumber]=P;
+      if (customRoot[0] == '\0')
+        {
+          loadedData[PatternNumber][TrackNumber]=DATA_DOES_NOT_EXIST_ON_STORAGE;
+          twoDPVector[PatternNumber][TrackNumber]=P;
+        }
       return false;
     }
   
@@ -682,12 +708,12 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
 
-  if (retcode==true)
+  if (retcode==true && customRoot[0] == '\0')
     {
       loadedData[PatternNumber][TrackNumber]=DATA_LOADED_FROM_STORAGE;
       twoDPVector[PatternNumber][TrackNumber]=P;
     }
-  
+
   //free(line);
   fclose(fd);
   return retcode;
@@ -722,14 +748,17 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
   // Without any check...
   sprintf(path,    GETPICOLOOPUSERSTORAGE());
   MKDIR(path);
-  
-  sprintf(path,    "%s/%s",GETPICOLOOPUSERSTORAGE(),"bank");
+
+  if (customRoot[0] == '\0')
+    {
+      sprintf(path, "%s/%s",GETPICOLOOPUSERSTORAGE(),"bank");
+      MKDIR(path);
+    }
+
+  bankPath(path,sizeof(path));
   MKDIR(path);
 
-  sprintf(path,    "%s/bank/bank%d",GETPICOLOOPUSERSTORAGE(),bank);
-  MKDIR(path);
-
-  sprintf(filename,"%s/bank/bank%d/dataP%dT%d.pic",GETPICOLOOPUSERSTORAGE(),bank,PatternNumber,TrackNumber);
+  sprintf(filename,"%s/dataP%dT%d.pic",path,PatternNumber,TrackNumber);
   //return 0;
   //  printf("SIZE:%d\n",P.getSize());
   //  exit(1);
@@ -1081,11 +1110,14 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
   //loadedData[PatternNumber][TrackNumber]=DATA_EXIST_ON_STORAGE;
   //twoDPVector[PatternNumber][TrackNumber]=P;
 
-  //if (retcode==true)
-  //{
-  loadedData[PatternNumber][TrackNumber]=DATA_LOADED_FROM_STORAGE;
-  twoDPVector[PatternNumber][TrackNumber]=P;
-      ///}
+  // See readPatternData()'s customRoot guard - same cache-pollution risk
+  // the other way around (writing a snapshot under pattern/track numbers
+  // that also identify real, differently-cached bank data).
+  if (customRoot[0] == '\0')
+    {
+      loadedData[PatternNumber][TrackNumber]=DATA_LOADED_FROM_STORAGE;
+      twoDPVector[PatternNumber][TrackNumber]=P;
+    }
   return false;
 }
 

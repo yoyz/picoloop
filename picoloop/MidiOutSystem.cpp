@@ -1,6 +1,8 @@
 #include "Master.h"
 #include "MidiOutSystem.h"
-
+#ifdef __ANDROID__
+#include "AndroidJNIUtils.h"
+#endif
 
 
 
@@ -8,6 +10,11 @@ MidiOutSystem::MidiOutSystem()
 {
   iamOpen=0;
   lastOpenPortNumber=0;
+#ifdef __ANDROID__
+  androidDevice=0;
+  androidMidiDevice=0;
+  androidInputPort=0;
+#endif
 }
 
 
@@ -27,6 +34,7 @@ MidiOutSystem & MidiOutSystem::getInstance()
   return instance;
 }
 
+#ifndef __ANDROID__
 bool MidiOutSystem::init()
 {
   try {
@@ -39,6 +47,15 @@ bool MidiOutSystem::init()
   iamOpen=0;
   return false; // I will need to "double check" this return type...
 }
+#endif
+
+#ifdef __ANDROID__
+bool MidiOutSystem::init()
+{
+  iamOpen=0;
+  return false;
+}
+#endif
 
 bool MidiOutSystem::checkChannel(int channel)
 {
@@ -51,15 +68,29 @@ bool MidiOutSystem::checkChannel(int channel)
   return true;
 }
 
+#ifndef __ANDROID__
 void MidiOutSystem::clock()
 {
   mtx.Lock();
 
   message.push_back(0xF8);
   rtmidiout->sendMessage(&message);
-  message.clear();  
+  message.clear();
   mtx.Unlock();
 }
+#endif
+
+#ifdef __ANDROID__
+void MidiOutSystem::clock()
+{
+  mtx.Lock();
+  message.push_back(0xF8);
+  if (iamOpen && androidInputPort)
+    AMidiInputPort_send(androidInputPort, message.data(), message.size());
+  message.clear();
+  mtx.Unlock();
+}
+#endif
 
 
 void MidiOutSystem::noteOn( int midiChan,int note,int velocity )
@@ -73,7 +104,7 @@ void MidiOutSystem::noteOn( int midiChan,int note,int velocity )
       message.push_back(0x7c);
 
       mtx.Unlock();
-      
+
     }
 }
 
@@ -82,7 +113,7 @@ void MidiOutSystem::noteOff( int midiChan,int note)
 {
   if (this->checkChannel(midiChan))
     {
-      mtx.Lock();      
+      mtx.Lock();
       message.push_back(0x80+midiChan);
       message.push_back(note);
       message.push_back(0x0);
@@ -106,9 +137,10 @@ void MidiOutSystem::cc( int midiChan,int cc,int value )
 
 int MidiOutSystem::msgSize()
 {
-  return message.size(); 
+  return message.size();
 }
 
+#ifndef __ANDROID__
 void MidiOutSystem::flushMsg()
 {
   DPRINTF("FLUSH:%lu",message.size());
@@ -120,7 +152,23 @@ void MidiOutSystem::flushMsg()
     }
   mtx.Unlock();
 }
+#endif
 
+#ifdef __ANDROID__
+void MidiOutSystem::flushMsg()
+{
+  DPRINTF("FLUSH:%lu",message.size());
+  mtx.Lock();
+  if (message.size() && iamOpen && androidInputPort)
+    {
+      AMidiInputPort_send(androidInputPort, message.data(), message.size());
+    }
+  message.clear();
+  mtx.Unlock();
+}
+#endif
+
+#ifndef __ANDROID__
 int MidiOutSystem::getNumberOfMidiOutputDevice()
 {
  int nPorts = rtmidiout->getPortCount()-1;
@@ -165,7 +213,7 @@ bool MidiOutSystem::chooseMidiPort( std::string portName )
   //std::cout << "MidiOutSystem::chooseMidiPort(\""<< portName <<"\")\n";
 
   unsigned int i = 0, nPorts = rtmidiout->getPortCount();
-  if ( nPorts == 0 ) 
+  if ( nPorts == 0 )
     {
       //std::cout << "No output ports available!" << std::endl;
       DPRINTF("No output ports available!");
@@ -174,7 +222,7 @@ bool MidiOutSystem::chooseMidiPort( std::string portName )
 
   //std::cout << "Displaying All Midi Port\n";
   DPRINTF("Displaying All Midi Port");
-  for ( i=0; i<nPorts; i++ ) 
+  for ( i=0; i<nPorts; i++ )
     {
       tmpPortName = rtmidiout->getPortName(i);
       DPRINTF("Output port %d %s",i,tmpPortName.c_str());
@@ -216,3 +264,107 @@ bool MidiOutSystem::closePort()
     }
   return false;
 }
+#endif // !__ANDROID__
+
+
+#ifdef __ANDROID__
+
+int MidiOutSystem::getNumberOfMidiOutputDevice()
+{
+  androidOutputPorts.clear();
+  std::vector<AndroidMidiPortInfo> ports = AndroidMidi_ListPorts();
+  for (size_t i=0;i<ports.size();i++)
+    if (ports[i].isInput) // a device's IN port is where WE send to it -> output
+      androidOutputPorts.push_back(ports[i]);
+  return (int)androidOutputPorts.size();
+}
+
+char * MidiOutSystem::getMidiOutputName(int deviceNumber)
+{
+  static char midiOutputName[128];
+  midiOutputName[0]=0;
+  if (deviceNumber>=0 && deviceNumber<(int)androidOutputPorts.size())
+    strncpy(midiOutputName, androidOutputPorts[deviceNumber].name.c_str(), 127);
+  return midiOutputName;
+}
+
+bool MidiOutSystem::chooseMidiPortDeviceNumber(int deviceNumber)
+{
+  if (deviceNumber<0 || deviceNumber>=(int)androidOutputPorts.size())
+    return false;
+
+  if (iamOpen)
+    this->closePort();
+
+  const AndroidMidiPortInfo & port = androidOutputPorts[deviceNumber];
+
+  jobject device = AndroidMidi_OpenDevice(port.deviceId);
+  if (!device)
+    return false;
+
+  bool didAttach=false;
+  JNIEnv * env = AcquireJNIEnv(&didAttach);
+  if (!env)
+    {
+      AndroidMidi_CloseDevice(device);
+      return false;
+    }
+  media_status_t status = AMidiDevice_fromJava(env, device, &androidMidiDevice);
+  ReleaseJNIEnv(didAttach);
+
+  if (status!=AMEDIA_OK)
+    {
+      AndroidMidi_CloseDevice(device);
+      androidMidiDevice=0;
+      return false;
+    }
+
+  status = AMidiInputPort_open(androidMidiDevice, port.portIndex, &androidInputPort);
+  if (status!=AMEDIA_OK)
+    {
+      AMidiDevice_release(androidMidiDevice);
+      androidMidiDevice=0;
+      AndroidMidi_CloseDevice(device);
+      return false;
+    }
+
+  androidDevice=device;
+  lastOpenPortNumber=deviceNumber;
+  iamOpen=1;
+  return true;
+}
+
+bool MidiOutSystem::chooseMidiPort(std::string portName)
+{
+  this->getNumberOfMidiOutputDevice();
+  for (size_t i=0;i<androidOutputPorts.size();i++)
+    if (androidOutputPorts[i].name==portName)
+      return this->chooseMidiPortDeviceNumber((int)i);
+  return false;
+}
+
+bool MidiOutSystem::closePort()
+{
+  if (!iamOpen)
+    return false;
+
+  if (androidInputPort)
+    {
+      AMidiInputPort_close(androidInputPort);
+      androidInputPort=0;
+    }
+  if (androidMidiDevice)
+    {
+      AMidiDevice_release(androidMidiDevice);
+      androidMidiDevice=0;
+    }
+  if (androidDevice)
+    {
+      AndroidMidi_CloseDevice(androidDevice);
+      androidDevice=0;
+    }
+  iamOpen=0;
+  return true;
+}
+
+#endif // __ANDROID__
