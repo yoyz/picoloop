@@ -1,5 +1,9 @@
 include Makefile_sources
 
+# Targets below are command names, not files - always run them even if a
+# stray file with the same name exists in the tree.
+.PHONY: all clean
+
 #CC=g++-4.4
 CC=g++
 

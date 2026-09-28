@@ -30,6 +30,11 @@ public:
   void   init();
   int    handleKey();
   int    shouldExit();
+#ifdef RG35XXSP
+  // SDL does not surface the physical volume rocker (evdev KEY_VOLUMEUP/DOWN
+  // on /dev/input/event1), so poll it directly.
+  int    readVolumeKeys(int & volDelta);
+#endif
   int    updateState(int symbol,int state);
   int    updateStateNoKeyPress();
   void   clearStateAndRepeat();

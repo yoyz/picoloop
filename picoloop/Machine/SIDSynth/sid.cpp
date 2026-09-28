@@ -83,6 +83,17 @@ void SIDCHIP::reset()
 
 
 // ----------------------------------------------------------------------------
+// Zero the envelope counters (does not touch the gate state).
+// ----------------------------------------------------------------------------
+void SIDCHIP::reset_envelopes()
+{
+  for (int i = 0; i < 3; i++) {
+    voice[i].envelope.envelope_counter = 0;
+  }
+}
+
+
+// ----------------------------------------------------------------------------
 // Write 16-bit sample to audio input.
 // NB! The caller is responsible for keeping the value within 16 bits.
 // Note that to mix in an external audio signal, the signal should be

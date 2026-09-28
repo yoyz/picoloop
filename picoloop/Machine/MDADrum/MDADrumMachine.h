@@ -79,6 +79,9 @@ class MDADrumMachine : public Machine
   int                   osc1_type;
   int                   osc2_type;
 
+  char                  last_patch[1024];
+  drumsynth             dsoop_cached;   // pristine copy after load_patch
+
   drumsynth             dsoop;
 
 };

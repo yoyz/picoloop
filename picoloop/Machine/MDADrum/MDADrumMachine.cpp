@@ -81,6 +81,7 @@ MDADrumMachine::MDADrumMachine() : filter(), dsoop()
   need_note_on=0;
   buffer_size=0;
   note_on=0;
+  last_patch[0]=0;
 }
 
 
@@ -2241,12 +2242,28 @@ Sint32 MDADrumMachine::tick()
       index=0;
       DPRINTF("MDA buffer_size: %d buffer:0x%08.8X",buffer_size,buffer);
       DPRINTF("MDA path: %s",path.c_str());
-      dsoop.init();
-      dsoop.set_tune(1.0+(float)freq/6.8);
-      dsoop.set_time(param_time);
       strncpy(patch_cstr,path.c_str(),1024); // CLANG
-      //dsoop.load_patch(path.c_str());
-      dsoop.load_patch(patch_cstr);
+      // Only load the .ds patch file when the patch path changed. The file
+      // read must NOT happen inside the real-time audio callback on every
+      // note (it stalls the ALSA stream). Instead, cache a pristine copy of
+      // the loaded drumsynth and restore it on each note retrigger so the
+      // sound is correct without re-reading the file.
+      if (strcmp(patch_cstr, last_patch) != 0)
+	{
+	  dsoop.init();
+	  dsoop.set_tune(1.0+(float)freq/6.8);
+	  dsoop.set_time(param_time);
+	  dsoop.load_patch(patch_cstr);
+	  dsoop_cached = dsoop;
+	  strncpy(last_patch, patch_cstr, 1024);
+	  last_patch[1023]=0;
+	}
+      else
+	{
+	  dsoop = dsoop_cached;
+	  dsoop.set_tune(1.0+(float)freq/6.8);
+	  dsoop.set_time(param_time);
+	}
       
       need_note_on=0;
       note_on=1;

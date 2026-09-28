@@ -80,6 +80,9 @@ private:
   int oscThreeType;
 
   int phaseOsc1;
+  int phaseOsc2;
+  int phaseOsc3;
+  int phaseOsc4;
 
   int adsr_note;       //NOT USED ANYMORE NEED TO BE REMOVED
 

@@ -13,7 +13,7 @@
 #endif
 
 
-#define PICOLOOP_VERSION "0.78a"
+#define PICOLOOP_VERSION "0.79"
 //#define INTERNAL_BUFFER_SIZE 128*1024   
 #define INTERNAL_BUFFER_SIZE 16*1024   
 //#define DEFAULTFREQ      44100
@@ -380,6 +380,56 @@ void loadPicoloopIni(const char *path);
 
 #define KEYPRESSED          SDL_KEYDOWN
 #define KEYRELEASED         SDL_KEYUP
+#endif
+
+#ifdef RG35XXSP
+// Anbernic RG35XX SP: buttons arrive as raw SDL joystick events.
+// Mapping from the device SDL_GAMECONTROLLERCONFIG:
+//   b:b3  a:b4  x:b5  y:b6  L1:b7  R1:b8  SELECT:b9  START:b10  MENU:b11
+//   L2:b12  R2:b13  D-pad = SDL_JOYHATMOTION (hat 0: 1=up 2=right 4=down 8=left)
+// NOTE: the SDL controller strings map SDL's *Xbox-style* A/B; on this
+// Nintendo-layout pad the physical A button is the right (east) button and
+// physical B is the bottom (south) button, which correspond to raw buttons
+// 3 and 4 respectively. picoloop's BUTTON_A (confirm) = physical A = 3 and
+// BUTTON_B (back) = physical B = 4.
+// D-pad uses a separate value range (>=200) to avoid colliding with
+// the joystick button indices used above. This block overrides the
+// PC_DESKTOP button defines above.
+#define MAX_PATTERN_BY_PROJECT 128
+#define SCREEN_WIDTH	320
+#define SCREEN_HEIGHT	240
+#define SCREEN_DEPTH	16
+#define SCREEN_MULT     2
+
+#define MIDI_DELAY_IN_SAMPLE 2048
+#define DEFAULTSAMPLES   2048
+
+#define BUTTON_B            4
+#define BUTTON_A            3
+#define BUTTON_X            5
+#define BUTTON_Y            6
+
+#define BUTTON_UP           201
+#define BUTTON_DOWN         204
+#define BUTTON_LEFT         208
+#define BUTTON_RIGHT        202
+
+#define BUTTON_SELECT       9
+#define BUTTON_START        10
+
+#define BUTTON_L            7
+#define BUTTON_R            8
+
+#define BUTTON_POWER        SDLK_POWER
+#define BUTTON_PAUSE        SDLK_PAUSE
+
+#define KEYPRESSED          SDL_JOYBUTTONDOWN
+#define KEYRELEASED         SDL_JOYBUTTONUP
+
+// Physical volume rocker arrives as SDL keyboard events (evdev keys
+// KEY_VOLUMEUP/KEY_VOLUMEDOWN mapped to SDL scancodes).
+#define BUTTON_VOLUP        SDLK_VOLUMEUP
+#define BUTTON_VOLDOWN      SDLK_VOLUMEDOWN
 #endif
 
 #ifdef  RASPI3_ILI9486

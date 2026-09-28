@@ -117,6 +117,9 @@ void PatternElement::init()
 
   keytrack=64;
   phaseOsc1=0;
+  phaseOsc2=0;
+  phaseOsc3=0;
+  phaseOsc4=0;
 }
 
 void PatternElement::inc(int what)
@@ -306,6 +309,18 @@ void PatternElement::set(int what,int val)
 
     case OSC1_PHASE:
       phaseOsc1=checkSevenBitBoundarie(val);
+      break;
+
+    case OSC2_PHASE:
+      phaseOsc2=checkSevenBitBoundarie(val);
+      break;
+
+    case OSC3_PHASE:
+      phaseOsc3=checkSevenBitBoundarie(val);
+      break;
+
+    case OSC4_PHASE:
+      phaseOsc4=checkSevenBitBoundarie(val);
       break;
 
     case TRIG_TIME_DURATION:
@@ -575,6 +590,18 @@ int PatternElement::get(int what)
 
     case OSC1_PHASE:
       return phaseOsc1;
+      break;
+
+    case OSC2_PHASE:
+      return phaseOsc2;
+      break;
+
+    case OSC3_PHASE:
+      return phaseOsc3;
+      break;
+
+    case OSC4_PHASE:
+      return phaseOsc4;
       break;
 
     case TRIG_TIME_DURATION:

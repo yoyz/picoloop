@@ -3150,6 +3150,26 @@ void handle_key_change_volume()
   mapii keyState=IE.keyState();
   mapii keyRepeat=IE.keyRepeat();
 
+#ifdef RG35XXSP
+  // Physical volume rocker read directly from evdev (SDL drops these keys).
+  {
+    int volDelta = 0;
+    IE.readVolumeKeys(volDelta);
+    if (volDelta > 0)
+      {
+	AM->setAudioVolume(AM->getAudioVolume()+1);
+	IE.clearLastKeyEvent();
+	return;
+      }
+    if (volDelta < 0)
+      {
+	AM->setAudioVolume(AM->getAudioVolume()-1);
+	IE.clearLastKeyEvent();
+	return;
+      }
+  }
+#endif
+
   if (keyState[BUTTON_SELECT] && keyState[BUTTON_DOWN])
     if (keyRepeat[BUTTON_DOWN]==1 || keyRepeat[BUTTON_DOWN]%KEY_REPEAT_INTERVAL_SMALLEST==0)
       {
@@ -3841,7 +3861,7 @@ void seq_update_track(int t)
 	  M[t]->setI(ADSR_ENV0_SUSTAIN, P[t].getPatternElement(step).get(ADSR_AMP_SUSTAIN));
 	  M[t]->setI(ADSR_ENV0_RELEASE, P[t].getPatternElement(step).get(ADSR_AMP_RELEASE));
 
-	  M[t]->setI(ADSR_ENV1_ATTACK,  P[t].getPatternElement(step).get(ADSR_FLTR_RELEASE));
+	  M[t]->setI(ADSR_ENV1_ATTACK,  P[t].getPatternElement(step).get(ADSR_FLTR_ATTACK));
 	  M[t]->setI(ADSR_ENV1_DECAY ,  P[t].getPatternElement(step).get(ADSR_FLTR_DECAY));
 	  M[t]->setI(ADSR_ENV1_SUSTAIN, P[t].getPatternElement(step).get(ADSR_FLTR_SUSTAIN));
 	  M[t]->setI(ADSR_ENV1_RELEASE, P[t].getPatternElement(step).get(ADSR_FLTR_RELEASE));
@@ -3850,6 +3870,9 @@ void seq_update_track(int t)
 
 	  M[t]->setI(OSC12_MIX,P[t].getPatternElement(step).get(VCO_MIX));
 	  M[t]->setI(OSC1_PHASE,P[t].getPatternElement(step).get(OSC1_PHASE));
+	  M[t]->setI(OSC2_PHASE,P[t].getPatternElement(step).get(OSC2_PHASE));
+	  M[t]->setI(OSC3_PHASE,P[t].getPatternElement(step).get(OSC3_PHASE));
+	  M[t]->setI(OSC4_PHASE,P[t].getPatternElement(step).get(OSC4_PHASE));
 
 	  M[t]->setI(LFO1_DEPTH,     P[t].getPatternElement(step).get(LFO1_DEPTH));
 	  M[t]->setI(LFO1_ENV_AMOUNT,P[t].getPatternElement(step).get(LFO1_ENV_AMOUNT));

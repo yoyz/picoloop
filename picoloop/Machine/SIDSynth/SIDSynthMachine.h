@@ -58,6 +58,18 @@ class SIDSynthMachine : public Machine
 
   float lfo_speed;
 
+  // Software LFO -> pitch bend/vibrato. LFO1 bends osc1, LFO2 bends osc2.
+  int    lfo1_depth;   // 0..127 -> depth in semitones (0..24)
+  float  lfo1_freq;    // 0..1   -> LFO rate in Hz (0..20)
+  double lfo1_phase;
+  int    lfo2_depth;
+  float  lfo2_freq;
+  double lfo2_phase;
+  // Unmodulated SID FREQ register values computed at NOTE_ON; the LFO
+  // writes pitch-shifted versions of these every buffer in tick().
+  int    base_reg1;
+  int    base_reg2;
+
   int note;
 
   int                   trig_time_mode;
@@ -77,12 +89,24 @@ class SIDSynthMachine : public Machine
   int                   osc1_mod; // Pulse wave voice 1 here
   int                   osc2_mod; // Pulse wave voice 2 here
 
+  // SID hard sync / ring modulation on voice 2 (osc2), which syncs/rings to
+  // osc1 (voice 0 is the sync/ring source for voice 1 in reSID).
+  // Driven by OSC1_PHASE (sync) and OSC2_PHASE (ring) pattern params.
+  int                   osc2_sync;
+  int                   osc2_ring;
+
   cycle_count           delta_t;
 
   int                   attack;
   int                   decay;
   int                   sustain;
   int                   release;
+  // Second envelope generator: drives voice 2 (oscillator 2). The SID chip
+  // has one ADSR per voice.
+  int                   attack2;
+  int                   decay2;
+  int                   sustain2;
+  int                   release2;
   double   *            sid_note_frqs;
 };
 

@@ -67,8 +67,9 @@ static int read_section (FILE *fp, char *section)
 	slen = strlen (t_section);
 	/*  Move through file 1 line at a time until a section is matched or EOF */
 	do {
+		if (feof(fp)) return 0;   /* guard against EOF spin */
 		n = read_line(fp, buff, MAX_LINE_LENGTH); 
-		if (n == -1)   
+		if (n == -1 || feof(fp))
 			return 0;
 	} while (strncmp (buff,t_section, slen));
 	return 1;
@@ -79,8 +80,9 @@ static int read_entry (FILE *fp, char *entry, char *buff, int size)
 	int n, elen = strlen (entry);
 
 	do {
+		if (feof(fp)) return 0;   /* guard against EOF spin */
 		n = read_line(fp, buff, size); 
-		if (n == -1) 
+		if (n == -1)
 			return 0;
 		else if (*buff == '[')
 			return 0;	

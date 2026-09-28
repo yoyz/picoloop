@@ -70,6 +70,29 @@ int freq_high[96]={
 0x8b,0x93,0x9c,0xa5,0xaf,0xb9,0xc4,0xd0,0xdd,0xea,0xf8,0xff};
 
 
+// Map a 0..127 cutoff knob value to the 11-bit SID filter cutoff register
+// (FC, 0..2047). The MOS8580 filter frequency is roughly linear in FC
+// (~30Hz at FC 0 to ~12.5kHz at FC 2047), so writing the knob value straight
+// to FC_HI yields a linear-in-frequency sweep that crams the low octaves into
+// the first few knob steps. Use an exponential (per-octave) curve instead so
+// every knob step moves through the octaves evenly.
+static int sid_cutoff_to_fc(int cutoff)
+{
+  const double f_lo    = 30.0;     // Hz, lowest usable cutoff (FC ~0)
+  const double f_hi    = 12500.0;  // Hz, cutoff at FC 2047
+  const double octaves = log(f_hi / f_lo) / log(2.0);  // ~8.7 octaves
+
+  if (cutoff < 0)   cutoff = 0;
+  if (cutoff > 127) cutoff = 127;
+
+  double f = f_lo * pow(2.0, octaves * cutoff / 127.0);
+  int fc = (int)(f * 2047.0 / f_hi + 0.5);
+  if (fc < 0)    fc = 0;
+  if (fc > 2047) fc = 2047;
+  return fc;
+}
+
+
 SIDSynthMachine::SIDSynthMachine()
 {
   DPRINTF("SIDSynthMachine::SIDSynthMachine()");  
@@ -78,10 +101,29 @@ SIDSynthMachine::SIDSynthMachine()
   cutoff=125;
   resonance=10;
   index=0;
+  sid=0;   // allocated in init(); keep it deterministic so a use before
+           // init() hits a clean NULL deref instead of garbage memory
 
   lfo_depth=0;
   lfo_depth_shift=20;
   lfo_speed=0;
+  lfo1_depth=0;
+  lfo1_freq=0.0f;
+  lfo1_phase=0.0;
+  lfo2_depth=0;
+  lfo2_freq=0.0f;
+  lfo2_phase=0.0;
+  base_reg1=0;
+  base_reg2=0;
+
+  attack=64;
+  decay=64;
+  sustain=64;
+  release=64;
+  attack2=64;
+  decay2=64;
+  sustain2=64;
+  release2=64;
 
   trig_time_mode=0;
   trig_time_duration=0;
@@ -107,10 +149,12 @@ void SIDSynthMachine::init()
   int i;
 
   //HO(44100);
-  if (buffer_f==0)
+  if (sid==0)
     {
       sid=new SIDCHIP();
-      //SE=new SynthEngine(SAM,100);
+    }
+  if (buffer_f==0)
+    {
       buffer_f = (float*)malloc(sizeof(float)*SAM);
     }
   if (buffer_i==0)
@@ -214,6 +258,11 @@ const char * SIDSynthMachine::getMachineParamCharStar(int machineParam,int param
     case FM_TYPE:
       return str_fm_type[paramValue];
 
+    case OSC1_PHASE:
+      return (paramValue>0) ? "  ON" : " OFF";
+    case OSC2_PHASE:
+      return (paramValue>0) ? "  ON" : " OFF";
+
     }
   return str_sidsynth_null;
 }
@@ -260,6 +309,15 @@ int SIDSynthMachine::checkI(int what,int val)
       return val;
       break;
 
+    // SID hard sync / ring mod are single-bit toggles: clamp 0/1 so the
+    // knob behaves as on/off instead of an unbounded 0-127 value.
+    case OSC1_PHASE:
+      return (val>0) ? 1 : 0;
+      break;
+    case OSC2_PHASE:
+      return (val>0) ? 1 : 0;
+      break;
+
 
     default:
       if (val<0)   return 0;
@@ -282,13 +340,9 @@ void SIDSynthMachine::setF(int what,float val)
   float f_val=val;
   f_val=f_val/128;
 
-  //if (what==OSC1_FREQ)           { freq=val; }
-  //  if (what==LFO1_FREQ)           { lfo_speed=val/4.0; sineLfoOsc1.setFreq(lfo_speed); }
-
-  /*
-  if (what==LFO1_FREQ)           SE->getLFO(0)->setRate(f_val);
-  if (what==LFO2_FREQ)           SE->getLFO(1)->setRate(f_val);
-  */
+  // Software LFO rate (0..1 -> 0..20Hz). LFO1 bends osc1, LFO2 bends osc2.
+  if (what==LFO1_FREQ)  lfo1_freq=f_val;
+  if (what==LFO2_FREQ)  lfo2_freq=f_val;
 }
 
 
@@ -303,9 +357,6 @@ void SIDSynthMachine::setI(int what,int val)
   int          high1=0;
   int          low2=0;
   int          high2=0;
-  int          low3=0;
-  int          high3=0;
-
   int          tmp;
   
   f_val=val;
@@ -320,7 +371,14 @@ void SIDSynthMachine::setI(int what,int val)
 
       //sid->write(0x04,0x40);    // CONTROL
       sid->write(CONTROL_REGISTER_VOICE_1,osc1_type*16);    // CONTROL
-      sid->write(CONTROL_REGISTER_VOICE_2,osc2_type*16);    // CONTROL
+      sid->write(CONTROL_REGISTER_VOICE_2,osc2_type*16
+		 + (osc2_sync?0x02:0)    // hard sync to osc1
+		 + (osc2_ring?0x04:0));  // ring modulation by osc1
+
+      // Retrigger from silence: zero the envelope counters so the gate-on
+      // below attacks from 0 even if the previous note's envelope was still
+      // in release/sustain.
+      sid->reset_envelopes();
 
       sid->write(PULSE_WAVE_DUTY_CYCLE_VOICE_1_HIGH_BYTE,(255-osc1_mod*2));    // PWM voice 1
       sid->write(PULSE_WAVE_DUTY_CYCLE_VOICE_2_HIGH_BYTE,(255-osc2_mod*2));    // PWM voice 2
@@ -340,24 +398,36 @@ void SIDSynthMachine::setI(int what,int val)
       sid->write(FREQUENCY_VOICE_1_HIGH_BYTE,tmp/12);    // v1 freq hi voice 1
       sid->write(FREQUENCY_VOICE_2_HIGH_BYTE,tmp/12);    // v1 freq hi voice 2
       */
-      if (note>=0-noteShift && note < FREQ_TABLE_SIZE-noteShift)
-	{
-	  if (note+noteShift+osc1_scale<FREQ_TABLE_SIZE)
-	    {
-	      low1=freq_low[note+noteShift+osc1_scale];
-	      high1=freq_high[note+noteShift+osc1_scale];
-	    }
-	  if (note+noteShift+osc2_scale<FREQ_TABLE_SIZE)
-	    {
-	      low2=freq_low[note+noteShift+osc2_scale];
-	      high2=freq_high[note+noteShift+osc2_scale];
-	    }
+      // Oscillator 1 and 2 pitch: MIDI note + per-oscillator scale
+      // (OSC1_SCALE / OSC2_SCALE, in semitones), looked up in the
+      // freq_low/freq_high tables. The table is indexed by
+      // note+noteShift+scale; the index is clamped so scale never pushes
+      // the lookup out of range (which used to zero the frequency and
+      // silence/crack the voice).
+      {
+	int idx1 = note + noteShift + osc1_scale;
+	int idx2 = note + noteShift + osc2_scale;
+	if (idx1 < 0)            idx1 = 0;
+	if (idx1 > FREQ_TABLE_SIZE-1) idx1 = FREQ_TABLE_SIZE-1;
+	if (idx2 < 0)            idx2 = 0;
+	if (idx2 > FREQ_TABLE_SIZE-1) idx2 = FREQ_TABLE_SIZE-1;
+	low1=freq_low[idx1];
+	high1=freq_high[idx1];
+	low2=freq_low[idx2];
+	high2=freq_high[idx2];
 
-	  sid->write(FREQUENCY_VOICE_1_HIGH_BYTE,high1);    // v1 freq hi voice 1
-	  sid->write(FREQUENCY_VOICE_2_HIGH_BYTE,high2);    // v1 freq hi voice 2
-	  sid->write(FREQUENCY_VOICE_1_LOW_BYTE,low1);      // v1 freq lo voice 1
-	  sid->write(FREQUENCY_VOICE_2_LOW_BYTE,low2);      // v1 freq lo voice 2
-	}
+	// Save the unmodulated FREQ registers so the LFO pitch bend can
+	// shift them in tick(); restart the LFO phase at the note center.
+	base_reg1=(high1<<8)|low1;
+	base_reg2=(high2<<8)|low2;
+	lfo1_phase=0.0;
+	lfo2_phase=0.0;
+
+	sid->write(FREQUENCY_VOICE_1_HIGH_BYTE,high1);    // v1 freq hi voice 1
+	sid->write(FREQUENCY_VOICE_2_HIGH_BYTE,high2);    // v1 freq hi voice 2
+	sid->write(FREQUENCY_VOICE_1_LOW_BYTE,low1);      // v1 freq lo voice 1
+	sid->write(FREQUENCY_VOICE_2_LOW_BYTE,low2);      // v1 freq lo voice 2
+      }
 
       //printf("*********************************************************************************** %d\n",tmp);
       //printf("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ %d\n",note);
@@ -386,11 +456,12 @@ void SIDSynthMachine::setI(int what,int val)
 
 
 
+      // Oscillator 1 (voice 1) envelope: ADSR_ENV0
       sid->write(AD_VOICE1,((attack/8)*16)+(decay/8));     // ATK/DCY voice 1
       sid->write(SR_VOICE1,((sustain/8)*16)+release/8);    // STN/RLS voice 1
-
-      sid->write(AD_VOICE1,((attack/8)*16)+(decay/8));     // ATK/DCY voice 1
-      sid->write(SR_VOICE2,((sustain/8)*16)+release/8);    // STN/RLS voice 1
+      // Oscillator 2 (voice 2) envelope: ADSR_ENV1
+      sid->write(AD_VOICE2,((attack2/8)*16)+(decay2/8));   // ATK/DCY voice 2
+      sid->write(SR_VOICE2,((sustain2/8)*16)+release2/8);  // STN/RLS voice 2
 
 
       //sid->write(0x13,((attack/8)*16)+(decay/8));     // ATK/DCY voice 2
@@ -400,7 +471,9 @@ void SIDSynthMachine::setI(int what,int val)
 
       //sid->write(0x10,0x3F);    // PULSEWIDTH
       sid->write(CONTROL_REGISTER_VOICE_1,osc1_type*16+1);    // CONTROL voice 1 + GateOn
-      sid->write(CONTROL_REGISTER_VOICE_2,osc2_type*16+1);    // CONTROL voice 2 + GateOn
+      sid->write(CONTROL_REGISTER_VOICE_2,osc2_type*16+1
+		 + (osc2_sync?0x02:0)    // hard sync to osc1
+		 + (osc2_ring?0x04:0));  // ring modulation by osc1
       //sid->write(0x12,0x41);    // CONTROL voice 2
       
       //sid->write(0x16,j--);    // Cutoff
@@ -408,7 +481,12 @@ void SIDSynthMachine::setI(int what,int val)
       //sid->write(0x17,0x07);    // filter
       sid->write(RES_ROUTE,((resonance/8)*16)+7);    // filter
       //sid->write(0x16,0xFF);    // Cutoff
-      sid->write(CUTOFF_HIGH,cutoff);    // Cutoff
+      {
+	// Per-octave cutoff curve (see sid_cutoff_to_fc above).
+	int fc = sid_cutoff_to_fc(cutoff);
+	sid->write(CUTOFF_LOW,  fc & 0x07);          // 3 low bits
+	sid->write(CUTOFF_HIGH, (fc >> 3) & 0xFF);   // 8 high bits
+      }
       //sid->write(0x16,cutoff);    // Cutoff
 
       
@@ -456,11 +534,25 @@ void SIDSynthMachine::setI(int what,int val)
     if (what==OSC1_MOD)      osc1_mod=val;
     if (what==OSC2_MOD)      osc2_mod=val;
 
+    // Software LFO depth for pitch bend/vibrato.
+    if (what==LFO1_DEPTH)    lfo1_depth=val;
+    if (what==LFO2_DEPTH)    lfo2_depth=val;
+
+    // SID hard sync (OSC1_PHASE) and ring mod (OSC2_PHASE) for osc2.
+    if (what==OSC1_PHASE)    osc2_sync=(val>0)?1:0;
+    if (what==OSC2_PHASE)    osc2_ring=(val>0)?1:0;
+
 
     if (what==ADSR_ENV0_ATTACK)    attack=val;
     if (what==ADSR_ENV0_DECAY)     decay=val;
     if (what==ADSR_ENV0_SUSTAIN)   sustain=val;
     if (what==ADSR_ENV0_RELEASE)   release=val;
+
+    // Second SID envelope generator -> oscillator 2 (voice 2).
+    if (what==ADSR_ENV1_ATTACK)    attack2=val;
+    if (what==ADSR_ENV1_DECAY)     decay2=val;
+    if (what==ADSR_ENV1_SUSTAIN)   sustain2=val;
+    if (what==ADSR_ENV1_RELEASE)   release2=val;
 
     if (what==NOTE1)                note=val;
 
@@ -487,6 +579,34 @@ Sint32 SIDSynthMachine::tick()
     {
       delta_t=SID_CLOCKFREQ / (SID_SAMPLERATE / SAM);
       //nbsample=mysid.clock(delta_t,out_buffer_i,SAM);
+
+      // Software LFO -> pitch bend/vibrato. Every buffer (SAM samples) the
+      // frequency registers are rewritten pitch-shifted from base_reg1/2.
+      // Depth 0..127 -> 0..24 semitones, rate 0..1 -> 0..20Hz.
+      {
+	const double two_pi  = 6.2831853071795865;
+	const double samples_per_buf = (double)SAM;
+	double phase_inc1 = lfo1_freq * two_pi * samples_per_buf / 44100.0;
+	double phase_inc2 = lfo2_freq * two_pi * samples_per_buf / 44100.0;
+	lfo1_phase += phase_inc1;
+	lfo2_phase += phase_inc2;
+	if (lfo1_phase > two_pi) lfo1_phase -= two_pi;
+	if (lfo2_phase > two_pi) lfo2_phase -= two_pi;
+
+	double semis1 = sin(lfo1_phase) * (lfo1_depth/127.0) * 24.0;
+	double semis2 = sin(lfo2_phase) * (lfo2_depth/127.0) * 24.0;
+	int r1 = (int)(base_reg1 * pow(2.0, semis1/12.0));
+	int r2 = (int)(base_reg2 * pow(2.0, semis2/12.0));
+	if (r1 < 0) r1 = 0;
+	if (r1 > 65535) r1 = 65535;
+	if (r2 < 0) r2 = 0;
+	if (r2 > 65535) r2 = 65535;
+	sid->write(FREQUENCY_VOICE_1_HIGH_BYTE,(r1>>8)&0xFF);
+	sid->write(FREQUENCY_VOICE_1_LOW_BYTE, r1&0xFF);
+	sid->write(FREQUENCY_VOICE_2_HIGH_BYTE,(r2>>8)&0xFF);
+	sid->write(FREQUENCY_VOICE_2_LOW_BYTE, r2&0xFF);
+      }
+
       sid->clock(delta_t,buffer_i,SAM);      
       //SE->process(buffer_f,SAM);
       //for(i=0;i<SAM;i++)

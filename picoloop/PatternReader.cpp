@@ -707,6 +707,18 @@ bool PatternReader::readPatternData(int PatternNumber,int TrackNumber, Pattern &
   fgets(line,sizeoflinemax,fd);
   this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
 
+  machineParam=OSC2_PHASE;
+  fgets(line,sizeoflinemax,fd);
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
+
+  machineParam=OSC3_PHASE;
+  fgets(line,sizeoflinemax,fd);
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
+
+  machineParam=OSC4_PHASE;
+  fgets(line,sizeoflinemax,fd);
+  this->readPatternDataLine(PatternNumber,TrackNumber,P,line,machineParam);
+
 
   if (retcode==true && customRoot[0] == '\0')
     {
@@ -1080,6 +1092,15 @@ bool PatternReader::writePattern(int PatternNumber, int TrackNumber, Pattern & P
   this->writePatternDataLine(PatternNumber,TrackNumber,P,line,OSC2_MOD);
   data.insert(data.end(),line);
 
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,OSC2_PHASE);
+  data.insert(data.end(),line);
+
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,OSC3_PHASE);
+  data.insert(data.end(),line);
+
+  this->writePatternDataLine(PatternNumber,TrackNumber,P,line,OSC4_PHASE);
+  data.insert(data.end(),line);
+
 
   sprintf(line,"\n");
   data.insert(data.end(),line);
@@ -1152,6 +1173,9 @@ const char * PatternReader::getParameterCharStar(int param)
 
   
   static const char * osc1_phase="PhaseOsc1";      
+  static const char * osc2_phase="PhaseOsc2";      
+  static const char * osc3_phase="PhaseOsc3";      
+  static const char * osc4_phase="PhaseOsc4";      
   
   static const char * adsr_env1_attack="AttackFltr";     
   static const char * adsr_env1_decay="DecayFltr";      
@@ -1252,6 +1276,9 @@ const char * PatternReader::getParameterCharStar(int param)
     case FILTER1_FEEDBACK:   return filter1_feedback;        break;
     
     case OSC1_PHASE:         return osc1_phase;               break;
+    case OSC2_PHASE:         return osc2_phase;               break;
+    case OSC3_PHASE:         return osc3_phase;               break;
+    case OSC4_PHASE:         return osc4_phase;               break;
     
     case ADSR_ENV1_ATTACK:   return adsr_env1_attack;         break;
     case ADSR_ENV1_DECAY:    return adsr_env1_decay;          break;

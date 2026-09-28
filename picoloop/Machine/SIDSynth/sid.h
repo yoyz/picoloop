@@ -47,6 +47,11 @@ public:
   void clock(cycle_count delta_t);
   int clock(cycle_count& delta_t, short* buf, int n, int interleave = 1);
   void reset();
+
+  // Zero all envelope counters. The next gate-on then attacks from silence,
+  // so retriggering a note restarts the amplitude envelope immediately
+  // instead of continuing from the previous note's release/sustain level.
+  void reset_envelopes();
   
   // Read/write registers.
   reg8 read(reg8 offset);

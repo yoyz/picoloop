@@ -1,6 +1,16 @@
 #include "InputManager.h"
 #include "Master.h"
 
+#ifdef RG35XXSP
+#include <fcntl.h>
+#include <unistd.h>
+#include <linux/input.h>
+#include <sys/select.h>
+static int g_evdev_fd = -1;
+static int volHold = 0;
+static int volTick = 0;
+#endif
+
 #ifdef __SDL12__
 InputManager::InputManager() 
 //: m_key_state(new  int[MAX_KEY]),
@@ -31,6 +41,10 @@ void InputManager::init()
   last_event=0;
   quit=0;
   escape=0;
+#ifdef RG35XXSP
+  g_evdev_fd = open("/dev/input/event1", O_RDONLY | O_NONBLOCK);
+  DPRINTF("evdev event1 fd:%d", g_evdev_fd);
+#endif
 #ifdef __SDL12__
   m_key_state=(mapii)malloc(sizeof(int)*MAX_KEY);
   m_key_repeat=(mapii)malloc(sizeof(int)*MAX_KEY);
@@ -351,9 +365,15 @@ int InputManager::handleKey()
 	case SDL_JOYBUTTONUP:
 	  keypressrelease=1;
 	  joy=1;
+#ifdef RG35XXSP
 	  last_key=event.jbutton.button;
 	  last_event=event.type;
 	  this->updateState(event.jbutton.button,0);
+#else
+	  last_key=event.jbutton.button;
+	  last_event=event.type;
+	  this->updateState(event.jbutton.button,0);
+#endif
 	  break;	 
 
 	case SDL_JOYBUTTONDOWN:
@@ -364,8 +384,29 @@ int InputManager::handleKey()
 	  this->updateState(event.jbutton.button,1);
 	  break;
 
-	
-        case SDL_JOYAXISMOTION:  /* Handle Joystick Motion */
+#ifdef RG35XXSP
+	case SDL_JOYHATMOTION:
+	  keypressrelease=1;
+	  joy=1;
+	  {
+	    const int hat_dir[4]    = { SDL_HAT_UP, SDL_HAT_DOWN, SDL_HAT_LEFT, SDL_HAT_RIGHT };
+	    const int hat_button[4] = { BUTTON_UP,  BUTTON_DOWN,  BUTTON_LEFT,  BUTTON_RIGHT };
+	    int hat = event.jhat.value;
+	    for (int i=0;i<4;i++)
+	      {
+		int newstate = (hat & hat_dir[i]) ? 1 : 0;
+		if (m_key_state[hat_button[i]] != newstate)
+		  {
+		    this->updateState(hat_button[i], newstate);
+		    last_key   = hat_button[i];
+		    last_event = newstate ? KEYPRESSED : KEYRELEASED;
+		  }
+	      }
+	  }
+	  break;
+#endif
+
+	case SDL_JOYAXISMOTION:  /* Handle Joystick Motion */
 	  if ( ( event.jaxis.value < -3200 ) || (event.jaxis.value > 3200 ) ) 
 	    {
 	      if( event.jaxis.axis == 0) 
@@ -410,3 +451,50 @@ int InputManager::handleKey()
   return keypressrelease;
 }
 #endif // Generic platform we are not using PSVITA here, so debian and other
+
+#ifdef RG35XXSP
+// Poll the physical volume rocker directly from evdev. SDL does not
+// surface KEY_VOLUMEUP/KEY_VOLUMEDOWN on this device. Handles press
+// (value=1) and kernel auto-repeat (value=2); held key keeps repeating
+// via volRepeat/volHold even if the kernel repeat rate is disabled.
+int InputManager::readVolumeKeys(int & volDelta)
+{
+  volDelta = 0;
+  if (g_evdev_fd < 0) return 0;
+
+  struct input_event ev;
+  int pressed = 0;
+  while (read(g_evdev_fd, &ev, sizeof(ev)) == (ssize_t)sizeof(ev)) {
+    if (ev.type == EV_KEY) {
+      if (ev.code == KEY_VOLUMEUP && ev.value == 1)
+        { volHold = 1; volTick = 0; pressed = 1; }
+      if (ev.code == KEY_VOLUMEDOWN && ev.value == 1)
+        { volHold = -1; volTick = 0; pressed = 1; }
+      if (ev.code == KEY_VOLUMEUP && ev.value == 0)
+        { if (volHold == 1) volHold = 0; }
+      if (ev.code == KEY_VOLUMEDOWN && ev.value == 0)
+        { if (volHold == -1) volHold = 0; }
+      // kernel auto-repeat (value=2)
+      if (ev.code == KEY_VOLUMEUP && ev.value == 2)
+        { volHold = 1; volTick = 0; pressed = 1; }
+      if (ev.code == KEY_VOLUMEDOWN && ev.value == 2)
+        { volHold = -1; volTick = 0; pressed = 1; }
+    }
+  }
+
+  if (pressed) {
+    volDelta = volHold;
+    return volDelta;
+  }
+
+  // Held key: keep repeating every ~40ms (main loop runs ~1ms).
+  if (volHold != 0) {
+    volTick++;
+    if (volTick >= 40) {
+      volTick = 0;
+      volDelta = volHold;
+    }
+  }
+  return volDelta;
+}
+#endif

@@ -1,0 +1,121 @@
+# Picoloop cross-build for RG35XX SP (aarch64 / KNULLI)
+# SDL2 + SDL_ttf (on device), RtAudio with ALSA backend, RtMidi for MIDI clock.
+
+include Makefile_sources
+
+CROSS  := aarch64-linux-gnu-
+CC     := $(CROSS)g++-14
+
+SDL_INC := /tmp/opencode/SDL-release-2.0.22/include
+TTF_INC := /home/ollama/doc/rg35xxsp/hello
+SDL_LIB := /home/ollama/doc/rg35xxsp/hello/sysroot/usr/lib
+ALSA_INC := /usr/include
+
+SYNTH= -DENABLE_SYNTH_PICOSYNTH
+SYNTH+= -DENABLE_SYNTH_PICODRUM
+SYNTH+= -DENABLE_SYNTH_OPL2
+SYNTH+= -DENABLE_SYNTH_PBSYNTH
+SYNTH+= -DENABLE_SYNTH_LGPTSAMPLER
+SYNTH+= -DENABLE_SYNTH_CURSYNTH
+SYNTH+= -DENABLE_SYNTH_OPEN303
+SYNTH+= -DENABLE_SYNTH_TWYTCHSYNTH
+SYNTH+= -DENABLE_SYNTH_MDADRUM
+SYNTH+= -DENABLE_SYNTH_SIDSYNTH
+SYNTH+= -DENABLE_SYNTH_MIDIOUT
+
+CFLAGS_SDLVERS=-D__SDL20__
+CFLAGS= -c -std=c++11 -O2 -include cstdio -include cstdlib -include cstring -include string -include cmath
+CFLAGS+= -I. -I$(SDL_INC) -I$(TTF_INC) -I$(ALSA_INC)
+CFLAGS+= -D__LINUX__ -DLINUX -DPC_DESKTOP -DRG35XXSP
+CFLAGS+= -D__RTAUDIO__
+CFLAGS+= -D__RTMIDI__
+CFLAGS+= -D__LINUX_ALSA__
+CFLAGS+= -DSCREEN_MULT=2
+CFLAGS+= -DDEBUGPRINTF
+CFLAGS+= -fpermissive
+CFLAGS+= ${CFLAGS_SDLVERS}
+CFLAGS+= ${SYNTH}
+
+LDFLAGS= -L$(SDL_LIB) -Wl,-rpath-link,$(SDL_LIB)
+LDFLAGS+= -lSDL2_ttf -lSDL2 -lfreetype -lharfbuzz -lpng16 -lbz2 -lz -lasound -lpthread -lm
+# Device libstdc++ (6.0.32) only exports CXXABI_1.3.14; gcc-14 emits
+# CXXABI_1.3.15. Link libstdc++/libgcc statically to avoid the version gap.
+LDFLAGS+= -static-libstdc++ -static-libgcc
+
+SOURCES= \
+			RtAudio.cpp              \
+			RtMidi.cpp               \
+			AudioDriverRTAudio.cpp   \
+			SYSTEMLINUX.cpp          \
+			SysMutex.cpp             \
+			PicoloopIni.cpp          \
+			MidiOutSystem.cpp        \
+			MidiInSystem.cpp         \
+			EmbeddedAssets.cpp       \
+			$(SOURCES_PICOLOOP)      \
+			$(SOURCES_PICOSYNTH) \
+			$(SOURCES_PICOSYNTHUI) \
+			$(SOURCES_PICODRUM) \
+			$(SOURCES_PICODRUMUI) \
+			$(SOURCES_DBOPL) \
+			$(SOURCES_DBOPLUI) \
+			$(SOURCES_PBSYNTH) \
+			$(SOURCES_PBSYNTHUI) \
+			$(SOURCES_CURSYNTH) \
+			$(SOURCES_CURSYNTHUI) \
+			$(SOURCES_OPEN303) \
+			$(SOURCES_OPEN303UI) \
+			$(SOURCES_TWYTCH) \
+			$(SOURCES_TWYTCHUI) \
+			$(SOURCES_MIDIOUT) \
+			$(SOURCES_MIDIOUTUI) \
+			$(SOURCES_MDADRUM) \
+			$(SOURCES_MDADRUMUI) \
+			$(SOURCES_SIDSYNTH) \
+			$(SOURCES_SIDSYNTHUI) \
+			$(SOURCES_LGPTSAMPLERSYNTH) \
+			$(SOURCES_LGPTSAMPLERSYNTHUI)
+
+OBJDIR             =     rg35xxsp
+OBJECTS            =   $(SOURCES:.cpp=.o)
+DEPENDENCY         =   $(SOURCES:.cpp=.d)
+
+DEPENDENCYINOBJDIR = $(addprefix $(OBJDIR)/,$(DEPENDENCY))
+OBJECTSINOBJDIR    = $(addprefix $(OBJDIR)/,$(OBJECTS))
+
+EXECUTABLE=picoloop_rg35xxsp
+
+all: $(DEPENDENCYINOBJDIR) $(SOURCES) $(EXECUTABLE)
+
+$(EXECUTABLE): $(OBJECTSINOBJDIR)
+	$(CC) $(OBJECTSINOBJDIR) -o $@ $(LDFLAGS)
+
+$(OBJDIR)/%.d : %.cpp %.h
+	@[ -d `dirname $@` ] || mkdir -p `dirname $@`
+	$(CC) $(CFLAGS_SDLVERS) -std=c++11 -I. $(SDL_INC:%=-I%) $(ALSA_INC:%=-I%) -MM $< -o $@
+
+$(OBJDIR)/%.o : %.cpp
+	@[ -d `dirname $@` ] || mkdir -p `dirname $@`
+	$(CC) $(CFLAGS) $< -o $@
+
+-include $(DEPENDENCYINOBJDIR)
+
+$(OBJDIR)/SYSTEMLINUX.d:SYSTEMLINUX.cpp
+	@[ -d `dirname $@` ] || mkdir -p `dirname $@`
+	$(CC) $(CFLAGS_SDLVERS) -std=c++11 -I. $(SDL_INC:%=-I%) $(ALSA_INC:%=-I%) -MM $< -o $@
+
+PatternPlayer.d:PatternPlayer.cpp
+	@[ -d `dirname $@` ] || mkdir -p `dirname $@`
+	$(CC) $(CFLAGS_SDLVERS) -std=c++11 -I. $(SDL_INC:%=-I%) $(ALSA_INC:%=-I%) -MM $< -o $@
+
+clean:
+	-rm -f $(OBJECTSINOBJDIR)
+	-rm -f $(DEPENDENCYINOBJDIR)
+	-rm -f $(EXECUTABLE)
+	-rm -f $(DEPENDENCY)
+
+push: $(EXECUTABLE)
+	adb push $(EXECUTABLE) /userdata/roms/ports/picoloop/picoloop
+
+run: push
+	adb shell "chmod +x /userdata/roms/ports/picoloop/picoloop && /userdata/roms/ports/picoloop/picoloop"

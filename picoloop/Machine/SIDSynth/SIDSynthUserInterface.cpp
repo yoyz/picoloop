@@ -118,9 +118,10 @@ void SIDSynthUserInterface::handle_key_vco()
   // GLOBALMENU_VCO
   // VCO Menu
   // Change Value
+  // SYNC/RING: osc2 hard sync to osc1 (OSC1_PHASE) and ring mod by osc1 (OSC2_PHASE).
   helper_handle_key_two_button(GLOBALMENU_VCO, MENU_PAGE0_SUB0, KEY_REPEAT_INTERVAL_SMALLEST,
-			       VCO_MIX,
-			       OSC1_DETUNE,
+			       OSC1_PHASE,
+			       OSC2_PHASE,
 			       1,1);
 
   helper_handle_key_two_button(GLOBALMENU_VCO, MENU_PAGE0_SUB1, KEY_REPEAT_INTERVAL_SMALLEST,
@@ -201,10 +202,12 @@ void SIDSynthUserInterface::display_board_text()
   // ENV
   if (menu_cursor==GLOBALMENU_AD)
     {
-      if (menu_sub==MENU_PAGE0_SUB0)     sprintf(str_line2,"AMP  A/R");
-      if (menu_sub==MENU_PAGE0_SUB1)     sprintf(str_line2,"AMP  S/D");
-      if (menu_sub==MENU_PAGE0_SUB2)     sprintf(str_line2,"FLT  A/R");
-      if (menu_sub==MENU_PAGE0_SUB3)     sprintf(str_line2,"FLT  S/D");
+      // Two independent SID envelope generators: OSC1 (ADSR_AMP_*) and
+      // OSC2 (ADSR_FLTR_*).
+      if (menu_sub==MENU_PAGE0_SUB0)     sprintf(str_line2,"OSC1 A/R");
+      if (menu_sub==MENU_PAGE0_SUB1)     sprintf(str_line2,"OSC1 S/D");
+      if (menu_sub==MENU_PAGE0_SUB2)     sprintf(str_line2,"OSC2 A/R");
+      if (menu_sub==MENU_PAGE0_SUB3)     sprintf(str_line2,"OSC2 S/D");
       if (menu_sub==MENU_PAGE0_SUB4)     sprintf(str_line2,"AMP  T/N");	    
     }
   //FLTR
@@ -216,13 +219,13 @@ void SIDSynthUserInterface::display_board_text()
   //VCO
     if (menu_cursor==GLOBALMENU_VCO)
     {
-      if (menu_sub==MENU_PAGE0_SUB0)      sprintf(str_line2,"DETUNE/VCOMIX");
+      if (menu_sub==MENU_PAGE0_SUB0)      sprintf(str_line2,"SYNC/RING");
       if (menu_sub==MENU_PAGE0_SUB1)      sprintf(str_line2,"PWM1/PWM2");
     }
   if (menu_cursor==GLOBALMENU_LFO)
     {
-      if (menu_sub==MENU_PAGE0_SUB0)      sprintf(str_line2,"LFO1 Depth/Speed");
-      if (menu_sub==MENU_PAGE0_SUB1)      sprintf(str_line2,"LFO2 Depth/Speed");
+      if (menu_sub==MENU_PAGE0_SUB0)      sprintf(str_line2,"LFO1 PITCH/SPD");
+      if (menu_sub==MENU_PAGE0_SUB1)      sprintf(str_line2,"LFO2 PITCH/SPD");
     }
   if (menu_cursor==GLOBALMENU_OSC)
     {
@@ -351,7 +354,7 @@ void SIDSynthUserInterface::display_board_vco()
       if (menu_sub>MENU_PAGE0_SUB2)
 	{ menu_sub=MENU_PAGE0_SUB0; }
 
-      if (menu_sub    == MENU_PAGE0_SUB0) display_board_two_param(VCO_MIX,OSC1_DETUNE);
+      if (menu_sub    == MENU_PAGE0_SUB0) display_board_two_param_text(OSC1_PHASE,OSC2_PHASE);
       if (menu_sub    == MENU_PAGE0_SUB1) display_board_two_param(OSC1_MOD,OSC2_MOD);
     }  
 }
