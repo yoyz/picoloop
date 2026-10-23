@@ -21,6 +21,10 @@
 #include "Machine/Lgptsampler/LgptsamplerMachine.h"
 #endif
 
+#ifdef ENABLE_SYNTH_ER1
+#include "Machine/ER1/ER1Machine.h"
+#endif
+
 
 #ifdef ENABLE_SYNTH_CURSYNTH
 #include "Machine/Cursynth/CursynthMachine.h"
@@ -93,6 +97,10 @@ class MonoMixer
   
 #if defined ENABLE_SYNTH_LGPTSAMPLER
   LgptsamplerMachine   * LGPTSMPL;
+#endif
+
+#if defined ENABLE_SYNTH_ER1
+  ER1Machine           * ER1;
 #endif
 
 #if defined ENABLE_SYNTH_CURSYNTH

@@ -40,6 +40,9 @@ int MachineCheck::machineExist(int machineType)
 #ifdef      ENABLE_SYNTH_LGPTSAMPLER
   if (machineType==SYNTH_LGPTSAMPLER) return 1;
 #endif
+#ifdef      ENABLE_SYNTH_ER1
+  if (machineType==SYNTH_ER1)         return 1;
+#endif
 #ifdef      ENABLE_SYNTH_MIDIOUT
   if (machineType==SYNTH_MIDIOUT)     return 1;
 #endif

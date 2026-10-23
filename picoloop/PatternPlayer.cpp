@@ -52,6 +52,10 @@ using namespace std;
 #include "Machine/Lgptsampler/DEBSystem.h"
 #endif
 
+#ifdef ENABLE_SYNTH_ER1
+#include "Machine/ER1/ER1UserInterface.h"
+#endif
+
 #ifdef ENABLE_SYNTH_CURSYNTH
 #include "Machine/Cursynth/CursynthUserInterface.h"
 #endif
@@ -204,6 +208,10 @@ PBSynthUserInterface     PBUI;
 LgptsamplerUserInterface LGUI;
 #endif
 
+#ifdef ENABLE_SYNTH_ER1
+ER1UserInterface         ER1UI;
+#endif
+
 #ifdef ENABLE_SYNTH_CURSYNTH
 CursynthUserInterface    CSUI;
 #endif
@@ -342,13 +350,13 @@ const char * str_midi_clock_mode[]   = {"Internal","SyncOut","SyncIn"};
 const char * str_audio_pulse_clock[] = {"NoPulse","LeftChannel","RightChannel"};
 
 
-int counter_send_midi_clock=0;      // send n clock and decrement the counter each time 
-int counter_send_midi_clock_six=0;  // send n clock and decrement the counter each time
+t_midi_clock_counter counter_send_midi_clock(0);      // send n clock and decrement the counter each time 
+t_midi_clock_counter counter_send_midi_clock_six(0);  // send n clock and decrement the counter each time
 
-int counter_recv_midi_clock=0;      // recv n clock and decrement the counter each time 
-int counter_recv_midi_clock_six=0;  // recv n clock and decrement the counter each time
+t_midi_clock_counter counter_recv_midi_clock(0);      // recv n clock and decrement the counter each time 
+t_midi_clock_counter counter_recv_midi_clock_six(0);  // recv n clock and decrement the counter each time
 
-int counter_delta_midi_clock=0;
+t_midi_clock_counter counter_delta_midi_clock(0);
 int delta_midi_clock=0;
 
 int mmc_stop=0;                     // we have received a mmc stop
@@ -517,11 +525,14 @@ void processBuffer_updateMidiSendClockCounter()
        {
          counter_send_midi_clock_six++;
 
-         // This trick allow to transpose the send of the midi clock
-         // it can be used on a system which buffer too much audio
-         // it is linked to the BPM menu
-         nb_tick_midi_send_clock=-counter_delta_midi_clock*50;
-         nb_tick_midi_send_clock_mulsix=-counter_delta_midi_clock*50;
+         // Shift the whole outgoing clock stream by the user offset
+         // ("MIDI DELTA SEND" in the [BPM] menu, in milliseconds).
+         // Positive delays the stream (slave later), negative advances it
+         // (slave earlier). It is a one-shot phase shift applied at this
+         // step boundary and then kept, so the entire 24-PPQN stream moves
+         // together instead of only one pulse.
+         nb_tick_midi_send_clock=-counter_delta_midi_clock;
+         nb_tick_midi_send_clock_mulsix=-counter_delta_midi_clock;
 
          midi_tick_number=0;
          counter_delta_midi_clock=0;   
@@ -550,6 +561,16 @@ long difftime(struct timeval & a0, struct timeval & a1)
 }
 
 #if defined(__RTMIDI__) || defined(__ANDROID__)
+
+#if defined(__LINUX__) || defined(__ANDROID__)
+#include <sys/timerfd.h>
+#include <sys/resource.h>
+#include <poll.h>
+#include <pthread.h>
+#include <sched.h>
+#include <errno.h>
+#endif
+
 void seq_send_midiclock()
 {
 
@@ -558,7 +579,7 @@ void seq_send_midiclock()
     {
       MOS.clock();
       counter_send_midi_clock--;
-      DPRINTF("*****MIDICLOCK   *****");
+      DEBUG_MIDI_CLOCK_MESSAGE("*****MIDICLOCK   *****");
     }
 
 }
@@ -570,12 +591,168 @@ void seq_send_midiclock_six()
     {
       MOS.clock();
       counter_send_midi_clock_six--;
-      DPRINTF("*****MIDICLOCK_6 *****");
+      DEBUG_MIDI_CLOCK_MESSAGE("*****MIDICLOCK_6 *****");
     }
+}
+
+// Send exactly one pending clock, preferring the "six" one so the step
+// boundary keeps its meaning. Used by the deadline pacer below.
+#if defined(__LINUX__) || defined(__ANDROID__)
+static void seq_send_one_midiclock()
+{
+  MidiOutSystem & MOS=MidiOutSystem::getInstance();
+  if (counter_send_midi_clock_six)
+    {
+      MOS.clock();
+      counter_send_midi_clock_six--;
+      DEBUG_MIDI_CLOCK_MESSAGE("*****MIDICLOCK_6 *****");
+    }
+  else if (counter_send_midi_clock)
+    {
+      MOS.clock();
+      counter_send_midi_clock--;
+      DEBUG_MIDI_CLOCK_MESSAGE("*****MIDICLOCK   *****");
+    }
+}
+
+// Nominal 24-PPQN clock interval in nanoseconds. Prefer the value the audio
+// callback itself uses (samples per step / 6) so the sender stays locked to
+// the audio timeline; fall back to bpm_current while that is not ready.
+static long long midi_clock_interval_ns()
+{
+  int samples_per_step=nb_tick_before_six_midi_send_clock;
+  long long ns=0;
+  if (samples_per_step>0)
+    ns=(long long)samples_per_step*1000000000LL/(6LL*DEFAULTFREQ);
+  if (ns<=0)
+    {
+      double bpm=bpm_current;
+      if (bpm<20.0)  bpm=20.0;
+      if (bpm>500.0) bpm=500.0;
+      ns=(long long)(60000000000.0/(bpm*24.0));
+    }
+  return ns;
+}
+#endif
+
+// Ask for a better scheduling class so the clock thread is not delayed by
+// the UI / other normal threads. The result goes to picoloop.log so a real
+// run tells us whether the privilege was available. SCHED_FIFO normally
+// needs CAP_SYS_NICE (root or RLIMIT_RTPRIO), so failure is not fatal.
+static void midi_clock_thread_bump_priority()
+{
+#if defined(__LINUX__) || defined(__ANDROID__)
+  pthread_t self=pthread_self();
+  struct sched_param param;
+  memset(&param,0,sizeof(param));
+  param.sched_priority=10;
+  int r=pthread_setschedparam(self,SCHED_FIFO,&param);
+  if (r==0)
+    {
+      int policy=-1;
+      struct sched_param got;
+      memset(&got,0,sizeof(got));
+      pthread_getschedparam(self,&policy,&got);
+      DPRINTF("MIDI clock thread: SCHED_FIFO priority %d acquired",got.sched_priority);
+      return;
+    }
+  DPRINTF("MIDI clock thread: pthread_setschedparam(SCHED_FIFO,10) failed: %s (%d)",
+	  strerror(r),r);
+
+  // No rt privilege: at least try to be nicer than the default.
+  errno=0;
+  int n=setpriority(PRIO_PROCESS,0,-10);
+  if (n==0)
+    DPRINTF("MIDI clock thread: setpriority(-10) ok");
+  else
+    DPRINTF("MIDI clock thread: setpriority(-10) failed: %s (%d)",strerror(errno),errno);
+#else
+  DPRINTF("MIDI clock thread: scheduling priority tuning unsupported here");
+#endif
 }
 
 int thread_seq_send_midiclock( void * data)
 {
+  midi_clock_thread_bump_priority();
+
+#if defined(__LINUX__) || defined(__ANDROID__)
+  int tfd=timerfd_create(CLOCK_MONOTONIC,TFD_CLOEXEC);
+  if (tfd<0)
+    {
+      DPRINTF("MIDI clock thread: timerfd_create failed: %s (%d), using SDL_Delay",
+	      strerror(errno),errno);
+    }
+  else
+    {
+      DPRINTF("MIDI clock thread: timerfd pacing active");
+
+      struct timespec next;
+      clock_gettime(CLOCK_MONOTONIC,&next);
+
+      while(IE.shouldExit()!=1)
+	{
+	  // Arm the timer to an ABSOLUTE deadline so it cannot drift.
+	  struct itimerspec its;
+	  memset(&its,0,sizeof(its));
+	  its.it_value=next;
+	  if (timerfd_settime(tfd,TFD_TIMER_ABSTIME,&its,NULL)!=0)
+	    {
+	      DPRINTF("MIDI clock thread: timerfd_settime failed: %s (%d)",strerror(errno),errno);
+	      SDL_Delay(1);
+	      continue;
+	    }
+
+	  struct pollfd pfd;
+	  pfd.fd=tfd;
+	  pfd.events=POLLIN;
+	  pfd.revents=0;
+	  int pr=poll(&pfd,1,200);
+	  if (pr<0)
+	    {
+	      if (errno==EINTR)
+		continue;
+	      DPRINTF("MIDI clock thread: poll failed: %s (%d)",strerror(errno),errno);
+	      SDL_Delay(1);
+	      continue;
+	    }
+	  if (pr==0)
+	    continue;
+
+	  uint64_t expirations=0;
+	  if (read(tfd,&expirations,sizeof(expirations))<0)
+	    {
+	      if (errno!=EAGAIN)
+		DPRINTF("MIDI clock thread: read failed: %s (%d)",strerror(errno),errno);
+	      continue;
+	    }
+
+	  // One clock per slot: a late wake-up must never compress several
+	  // clocks into a burst, and clocks must never be dropped either (the
+	  // slave counts them: 6 clocks = one step).
+	  seq_send_one_midiclock();
+
+	  // Advance the absolute deadline; if we already missed it, re-anchor
+	  // to "now" (a constant phase shift) instead of trying to catch up.
+	  long long interval=midi_clock_interval_ns();
+	  next.tv_sec += interval/1000000000LL;
+	  next.tv_nsec+= interval%1000000000LL;
+	  if (next.tv_nsec>=1000000000L)
+	    {
+	      next.tv_sec +=1;
+	      next.tv_nsec-=1000000000L;
+	    }
+	  struct timespec now;
+	  clock_gettime(CLOCK_MONOTONIC,&now);
+	  if (next.tv_sec<now.tv_sec ||
+	      (next.tv_sec==now.tv_sec && next.tv_nsec<=now.tv_nsec))
+	    next=now;
+	}
+      close(tfd);
+      return 0;
+    }
+#endif
+
+  // Fallback (or timerfd_create failure): keep the old polling behaviour.
   while(IE.shouldExit()!=1)
     {
       seq_send_midiclock();
@@ -610,7 +787,7 @@ void seq_send_midiclock_old()
   if ((difftime(timev_now,timev_lastclock)+clock_delta)*1000>clock_interval)
     {
 #if defined(__RTMIDI__) || defined(__ANDROID__)
-      DPRINTF("*****MIDICLOCK   *****");
+      DEBUG_MIDI_CLOCK_MESSAGE("*****MIDICLOCK   *****");
 
       MidiOutSystem & MOS=MidiOutSystem::getInstance();
       MOS.clock();
@@ -881,8 +1058,9 @@ void display_board_two_param_text(int machineParam1,int machineParam2)
 	  strcpy(line2,space);	  
 	  update_SAMM(cty,i+pattern_display_offset[cty]);
 	  strcpy(line1,space);
-	  line1_to_process=SAM->getMachineParamCharStar(machineParam1,P[cty].getPatternElement(i+pattern_display_offset[cty]).get(machineParam1));
-	  line2_to_process=SAM->getMachineParamCharStar(machineParam2,P[cty].getPatternElement(i+pattern_display_offset[cty]).get(machineParam2));
+	  // Strict Y/X display: first line = Y (param2), second line = X (param1).
+	  line1_to_process=SAM->getMachineParamCharStar(machineParam2,P[cty].getPatternElement(i+pattern_display_offset[cty]).get(machineParam2));
+	  line2_to_process=SAM->getMachineParamCharStar(machineParam1,P[cty].getPatternElement(i+pattern_display_offset[cty]).get(machineParam1));
 	  
 	  line1_size=strlen(line1_to_process);
 	  line2_size=strlen(line2_to_process);
@@ -939,8 +1117,9 @@ void display_board_two_param_number(int machineParam1,int machineParam2)
 	  param2=P[cty].getPatternElement(i+pattern_display_offset[cty]).get(machineParam2);
 
 	  
-	  sprintf(line1,"  %d",param1);
-	  sprintf(line2,"  %d",param2);
+	  // Strict Y/X display: first line = Y (param2), second line = X (param1).
+	  sprintf(line1,"  %d",param2);
+	  sprintf(line2,"  %d",param1);
 
 	  SG.drawTTFTextNumberFirstLine( i,line1);	  
 	  SG.drawTTFTextNumberSecondLine(i,line2);
@@ -1052,17 +1231,18 @@ void display_board_one_and_two_param_text(int machineParam1,int machineParam2)
 	  else
 	    strcpy(line2,line2_to_process);
 
-	  SG.drawTTFTextNumberFirstLine( i,line1);	  
-	  SG.drawTTFTextNumberSecondLine(i,line2);
+	  // Strict Y/X display: first line = Y (param2), second line = X (param1).
+	  SG.drawTTFTextNumberFirstLine( i,line2);	  
+	  SG.drawTTFTextNumberSecondLine(i,line1);
 
 	  // display two additional line of text in the right of the screen
 	  // the display is "cursor position" dependant
 	  if (cursor==i)
 	    {
 	      SG.guiTTFText(right_x_display_offset,
-			    right_y_display_offset_line7,line1_to_process);
+			    right_y_display_offset_line7,line2_to_process);
 	      SG.guiTTFText(right_x_display_offset,
-			    right_y_display_offset_line8,line2_to_process);
+			    right_y_display_offset_line8,line1_to_process);
 	    }
 	  
 	}
@@ -1925,7 +2105,7 @@ void display_board_text_global()
       if (menu_sub==MENU_PAGE0_SUB0) sprintf(str_line2,  "BPM %.1f ",bpm_current);
       if (menu_sub==MENU_PAGE0_SUB1) sprintf(str_line2,  "SWING %d",current_swing);
       if (menu_sub==MENU_PAGE0_SUB1) sprintf(str_line3,  "DIV  /%d",stepdiv);
-      if (menu_sub==MENU_PAGE0_SUB2) sprintf(str_line2,  "MIDI DELTA SEND %d",delta_midi_clock);
+      if (menu_sub==MENU_PAGE0_SUB2) sprintf(str_line2,  "MIDI DELTA SEND %dms",delta_midi_clock);
     }
 
     if (menu_cursor==GLOBALMENU_PSH)
@@ -2156,6 +2336,14 @@ void handle_key_stop_start_sequencer()
       IE.clearStateAndRepeat();
       mmc_stop=1;
       playing_with_mmc=1;
+#if defined(__RTMIDI__) || defined(__ANDROID__)
+      // Act as a transport master: tell the slaves to stop too.
+      if (menu_config_midiClockMode==MENU_CONFIG_Y_MIDICLOCK_SYNCOUT)
+	{
+	  MidiOutSystem & MOS=MidiOutSystem::getInstance();
+	  MOS.stop();
+	}
+#endif
       DPRINTF("MMC-STOP:%d MMC_START:%d",mmc_stop,mmc_start);
     }
 
@@ -2170,6 +2358,14 @@ void handle_key_stop_start_sequencer()
       IE.clearLastKeyEvent();
       mmc_start=1;
       playing_with_mmc=1;
+#if defined(__RTMIDI__) || defined(__ANDROID__)
+      // Act as a transport master: tell the slaves to start from the top.
+      if (menu_config_midiClockMode==MENU_CONFIG_Y_MIDICLOCK_SYNCOUT)
+	{
+	  MidiOutSystem & MOS=MidiOutSystem::getInstance();
+	  MOS.start();
+	}
+#endif
       DPRINTF("MMC-STOP:%d MMC_START:%d",mmc_stop,mmc_start);
     }
    
@@ -3113,6 +3309,10 @@ void refresh_pecursor_ui(int i)
   if (machine_type==SYNTH_MIDIOUT)      { UI=&MIDIUI; return ; }
 #endif
 
+#ifdef       ENABLE_SYNTH_ER1
+  if (machine_type==SYNTH_ER1)          { UI=&ER1UI;  return ; }
+#endif
+
   
   //DPRINTF("refresh_pecursor_ui(%d)\nmachine_type=%d\nexit(%d)\nNO UI found\n",i,machine_type,exit_code);
   //fprintf(stderr,"refresh_pecursor_ui(%d)\nmachine_type=%d\nexit(%d)\nNO UI found\n",i,machine_type,exit_code);
@@ -3462,8 +3662,11 @@ void seq_update_multiple_time_by_step()
 
   if (TK.get(MIDI_SEND_DELTA)!=0)
     {
-      counter_delta_midi_clock += TK.get(MIDI_SEND_DELTA);
-      delta_midi_clock         += TK.get(MIDI_SEND_DELTA);
+      // The knob is expressed in milliseconds; the clock generation works
+      // in audio samples. Not stored/persistent on purpose.
+      int delta_ms=TK.get(MIDI_SEND_DELTA);
+      counter_delta_midi_clock += (delta_ms*DEFAULTFREQ)/1000;
+      delta_midi_clock         += delta_ms;
       TK.set(MIDI_SEND_DELTA,0);
     }
 
@@ -3549,12 +3752,18 @@ void seq_update_multiple_time_by_step()
   //  - on second A+B : start the sequencer
   if (mmc_stop>0)
     {
+      lock_audiocallback.lock();
       mmc_stop=0;
       sequencer_playing=0;     // we stop the sequencer
-      //      for(i=0;i<TRACK_MAX;i++)
-      //{
-	  //SEQ.getPatternSequencer(i).setStep(0);
-      //}
+      // A stop is not a pause: rewind every track to step 0 and drop any
+      // partially received 6-clock group so the next start begins cleanly.
+      // No seq_update_track() here: a sound must only be triggered by a
+      // start message in midi slave mode.
+      counter_recv_midi_clock=0;
+      counter_recv_midi_clock_six=0;
+      for(i=0;i<TRACK_MAX;i++)
+	SEQ.getPatternSequencer(i).setStep(0);
+      lock_audiocallback.unlock();
     }
   if (mmc_start>0)
     {

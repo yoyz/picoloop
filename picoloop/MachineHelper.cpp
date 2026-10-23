@@ -14,6 +14,7 @@ const char * getMachineTypeCharStar(int machine_type)
   static const char * str_mdadrum     = "MDRUM";
   static const char * str_sidsynth    = "SID    ";
   static const char * str_lgptsampler = "LGPT   ";
+  static const char * str_er1         = "ER1    ";
 
   switch (machine_type)
     {
@@ -28,6 +29,7 @@ const char * getMachineTypeCharStar(int machine_type)
     case SYNTH_MDADRUM:    return str_mdadrum;     break;
     case SYNTH_SIDSYNTH:   return str_sidsynth;    break;
     case SYNTH_LGPTSAMPLER: return str_lgptsampler; break; 
+    case SYNTH_ER1:        return str_er1;         break;
     }
   return str_null;
 }

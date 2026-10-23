@@ -180,17 +180,17 @@ void LgptsamplerUserInterface::display_board_text()
   if (menu_cursor==GLOBALMENU_FLTR)
     {
       if (menu_sub==MENU_PAGE0_SUB0)     sprintf(str_line2,"CUTOFF/RES"); 
-      if (menu_sub==MENU_PAGE0_SUB1)     sprintf(str_line2,"ALGO/TYPE"); 
+      if (menu_sub==MENU_PAGE0_SUB1)     sprintf(str_line2,"TYPE/ALGO"); 
     }
   if (menu_cursor==GLOBALMENU_VCO)
     {
-      if (menu_sub==MENU_PAGE0_SUB0)      sprintf(str_line2,"DETUNE/VCOMIX");
+      if (menu_sub==MENU_PAGE0_SUB0)      sprintf(str_line2,"PHASE/VCOMIX");
     }
 
   if (menu_cursor==GLOBALMENU_LFO)
     {
-      if (menu_sub==MENU_PAGE0_SUB0)      sprintf(str_line2,"LFOPitch Depth/Speed");
-      if (menu_sub==MENU_PAGE0_SUB1)      sprintf(str_line2,"PitchBend Depth/Speed");
+      if (menu_sub==MENU_PAGE0_SUB0)      sprintf(str_line2,"LFOPitch Speed/Depth");
+      if (menu_sub==MENU_PAGE0_SUB1)      sprintf(str_line2,"PitchBend Speed/Depth");
     }
   if (menu_cursor==GLOBALMENU_OSC)
     {

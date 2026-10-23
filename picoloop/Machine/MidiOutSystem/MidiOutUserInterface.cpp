@@ -180,12 +180,12 @@ void MidiOutUserInterface::display_board_text()
     }
   if (menu_cursor==GLOBALMENU_VCO)
     {
-      if (menu_sub==MENU_PAGE0_SUB0)      sprintf(str_line2,"Velocity/VCOMIX");
+      if (menu_sub==MENU_PAGE0_SUB0)      sprintf(str_line2,"DETUNE/VCOMIX");
     }
   if (menu_cursor==GLOBALMENU_LFO)
     {
-      if (menu_sub==MENU_PAGE0_SUB0)      sprintf(str_line2,"LFO1 Depth/Speed");
-      if (menu_sub==MENU_PAGE0_SUB1)      sprintf(str_line2,"LFO2 Depth/Speed");
+      if (menu_sub==MENU_PAGE0_SUB0)      sprintf(str_line2,"LFO1 Speed/Depth");
+      if (menu_sub==MENU_PAGE0_SUB1)      sprintf(str_line2,"PitchBend Speed/Depth");
     }
   if (menu_cursor==GLOBALMENU_OSC)
     {

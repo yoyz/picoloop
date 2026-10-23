@@ -118,7 +118,7 @@ void SIDSynthUserInterface::handle_key_vco()
   // GLOBALMENU_VCO
   // VCO Menu
   // Change Value
-  // SYNC/RING: osc2 hard sync to osc1 (OSC1_PHASE) and ring mod by osc1 (OSC2_PHASE).
+  // RING/SYNC: osc2 hard sync to osc1 (OSC1_PHASE) and ring mod by osc1 (OSC2_PHASE).
   helper_handle_key_two_button(GLOBALMENU_VCO, MENU_PAGE0_SUB0, KEY_REPEAT_INTERVAL_SMALLEST,
 			       OSC1_PHASE,
 			       OSC2_PHASE,
@@ -219,13 +219,13 @@ void SIDSynthUserInterface::display_board_text()
   //VCO
     if (menu_cursor==GLOBALMENU_VCO)
     {
-      if (menu_sub==MENU_PAGE0_SUB0)      sprintf(str_line2,"SYNC/RING");
-      if (menu_sub==MENU_PAGE0_SUB1)      sprintf(str_line2,"PWM1/PWM2");
+      if (menu_sub==MENU_PAGE0_SUB0)      sprintf(str_line2,"RING/SYNC");
+      if (menu_sub==MENU_PAGE0_SUB1)      sprintf(str_line2,"PWM2/PWM1");
     }
   if (menu_cursor==GLOBALMENU_LFO)
     {
-      if (menu_sub==MENU_PAGE0_SUB0)      sprintf(str_line2,"LFO1 PITCH/SPD");
-      if (menu_sub==MENU_PAGE0_SUB1)      sprintf(str_line2,"LFO2 PITCH/SPD");
+      if (menu_sub==MENU_PAGE0_SUB0)      sprintf(str_line2,"LFO1 SPD/PITCH");
+      if (menu_sub==MENU_PAGE0_SUB1)      sprintf(str_line2,"LFO2 SPD/PITCH");
     }
   if (menu_cursor==GLOBALMENU_OSC)
     {

@@ -52,8 +52,14 @@
 
   implement the main callback which produce the stream
  */
-extern int counter_recv_midi_clock;     // send n clock and decrement the counter each time
-extern int counter_recv_midi_clock_six; // send n clock and decrement the counter each tim
+#if defined(__RTMIDI__) || defined(__ANDROID__)
+#include <atomic>
+typedef std::atomic<int> t_midi_clock_counter;
+#else
+typedef int t_midi_clock_counter;
+#endif
+extern t_midi_clock_counter counter_recv_midi_clock;     // recv n clock and decrement the counter each time
+extern t_midi_clock_counter counter_recv_midi_clock_six; // recv n clock and decrement the counter each tim
 extern int mmc_stop;                    // reset the step sequencer to step 0
 extern int mmc_start;                   // we have received a mmc stop
 extern int mmc_continue;                // if mmc_continue=1 we resume playing

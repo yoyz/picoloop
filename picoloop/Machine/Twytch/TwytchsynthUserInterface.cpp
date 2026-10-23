@@ -255,20 +255,20 @@ void TwytchsynthUserInterface::display_board_text()
   if (menu_cursor==GLOBALMENU_FLTR)
     {
       if (menu_sub==MENU_PAGE0_SUB0)     sprintf(str_line2,"CUTOFF/RES"); 
-      if (menu_sub==MENU_PAGE0_SUB1)     sprintf(str_line2,"ALGO/TYPE");
-      if (menu_sub==MENU_PAGE0_SUB2)     sprintf(str_line2,"FLTR DIST/FDBK"); 
+      if (menu_sub==MENU_PAGE0_SUB1)     sprintf(str_line2,"TYPE/ALGO");
+      if (menu_sub==MENU_PAGE0_SUB2)     sprintf(str_line2,"FLTR FDBK/DIST"); 
     }
   if (menu_cursor==GLOBALMENU_VCO)
     {
       if (menu_sub==MENU_PAGE0_SUB0)      sprintf(str_line2,"Velocity/VCOMIX");
       if (menu_sub==MENU_PAGE0_SUB1)      sprintf(str_line2,"envdepth/keytrack");
-      if (menu_sub==MENU_PAGE0_SUB2)      sprintf(str_line2,"Detune/CrossMod");
-      if (menu_sub==MENU_PAGE0_SUB3)      sprintf(str_line2,"Sub/Noise");
+      if (menu_sub==MENU_PAGE0_SUB2)      sprintf(str_line2,"CrossMod/Detune");
+      if (menu_sub==MENU_PAGE0_SUB3)      sprintf(str_line2,"Noise/Sub");
     }
     if (menu_cursor==GLOBALMENU_LFO)
     {
-      if (menu_sub==MENU_PAGE0_SUB0)      sprintf(str_line2,"LFO1 Depth/Speed");
-      if (menu_sub==MENU_PAGE0_SUB1)      sprintf(str_line2,"LFO2 Depth/Speed");
+      if (menu_sub==MENU_PAGE0_SUB0)      sprintf(str_line2,"LFO1 Speed/Depth");
+      if (menu_sub==MENU_PAGE0_SUB1)      sprintf(str_line2,"LFO2 Speed/Depth");
       if (menu_sub==MENU_PAGE0_SUB2)      sprintf(str_line2,"LFO  Type");
     }
     if (menu_cursor==GLOBALMENU_OSC)

@@ -220,8 +220,8 @@ void PBSynthUserInterface::display_board_text()
     }
   if (menu_cursor==GLOBALMENU_LFO)
     {
-      if (menu_sub==MENU_PAGE0_SUB0)      sprintf(str_line2,"LFO AMP Depth/Speed");
-      if (menu_sub==MENU_PAGE0_SUB1)      sprintf(str_line2,"LFO FLT Depth/Speed");
+      if (menu_sub==MENU_PAGE0_SUB0)      sprintf(str_line2,"LFO AMP Speed/Depth");
+      if (menu_sub==MENU_PAGE0_SUB1)      sprintf(str_line2,"LFO FLT Speed/Depth");
     }
 
     if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_AD)    sprintf(str_menu,"[ENV] Note  OSC   VCO   LFO   FLTR   ");

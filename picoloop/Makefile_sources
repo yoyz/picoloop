@@ -224,3 +224,7 @@ SOURCES_LGPTSAMPLERSYNTH := 	Machine/Lgptsampler/SampleInstrument.cpp	\
 
 				#//Machine/Lgptsampler/FileSystem.cpp		\
 				#//Machine/Lgptsampler/UnixFileSystem.cpp		\
+
+SOURCES_ER1UI := Machine/ER1/ER1UserInterface.cpp
+SOURCES_ER1 := Machine/ER1/ER1Machine.cpp \
+	       Machine/ER1/er1_voice.cpp

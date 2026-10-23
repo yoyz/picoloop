@@ -13,13 +13,13 @@ int   menu_config_midiClockMode=0;  // 0 internal, 1 midi sync out, 2 midi sync 
 int   menu_config_audiopulseclock_out=0; // 0 no sync, 1 sync left, 2 sync right
 int   menu_config_y=0;              // current selected item in menu_config
 
-int counter_send_midi_clock=0;      // send n clock and decrement the counter each time 
-int counter_send_midi_clock_six=0;  // send n clock and decrement the counter each time
+t_midi_clock_counter counter_send_midi_clock(0);      // send n clock and decrement the counter each time 
+t_midi_clock_counter counter_send_midi_clock_six(0);  // send n clock and decrement the counter each time
 
-int counter_recv_midi_clock=0;      // recv n clock and decrement the counter each time 
-int counter_recv_midi_clock_six=0;  // recv n clock and decrement the counter each time
+t_midi_clock_counter counter_recv_midi_clock(0);      // recv n clock and decrement the counter each time 
+t_midi_clock_counter counter_recv_midi_clock_six(0);  // recv n clock and decrement the counter each time
 
-int counter_delta_midi_clock=0;
+t_midi_clock_counter counter_delta_midi_clock(0);
 int delta_midi_clock=0;
 
 int mmc_start=1;                    // we have received a mmc stop

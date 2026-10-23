@@ -145,6 +145,19 @@ void AudioEngine::setupSequencerCallback(void (*ptrfunc)(void))
 void AudioEngine::processBuffer(int len)
 {
   lock_audiocallback.lock(); 
+
+  // Receiver side of MIDI clock sync ------------------------------------
+  // Latch at most ONE step change per audio buffer. Incoming 0xF8 clocks
+  // run on the MIDI thread and bump counter_recv_midi_clock_six every 6th
+  // clock; if the master delivers them as a burst the old per-sample test
+  // below advanced the sequencer once per sample -> a BPM spike on the
+  // receiver. Taking one step per buffer only paces the catch-up: the
+  // counter is never clamped or cleared, so no step/clock is ever lost
+  // (a dropped MIDI clock would delay the slave forever).
+  bool syncinStepChange=false;
+  if (midiClockMode==MENU_CONFIG_Y_MIDICLOCK_SYNCIN)
+    syncinStepChange=(counter_recv_midi_clock_six>0);
+
   //printf("len: %d ",len);
  //for (int i=0;i<BUFFER_FRAME;i++)
   for (int i=0;i<len;i++)
@@ -156,7 +169,7 @@ void AudioEngine::processBuffer(int len)
 	   midiClockMode!=MENU_CONFIG_Y_MIDICLOCK_SYNCIN
 	   )
 	  ||
-	  (counter_recv_midi_clock_six==0 && 
+	  (!syncinStepChange && 
 	   midiClockMode==MENU_CONFIG_Y_MIDICLOCK_SYNCIN))
 	{
 	  //buffer_out_left[i]=AM.tick();
@@ -191,11 +204,12 @@ void AudioEngine::processBuffer(int len)
 	  (nb_tick>=nb_tick_before_step_change &&
 	   midiClockMode!=MENU_CONFIG_Y_MIDICLOCK_SYNCIN) 
 	  ||
-	  (counter_recv_midi_clock_six && 
+	  (syncinStepChange && 
 	   midiClockMode==MENU_CONFIG_Y_MIDICLOCK_SYNCIN))
         {
 	  (*seqCallback)();	 
           nb_tick=0;
+	  syncinStepChange=false;	// only one step change per audio buffer
 	  if (counter_recv_midi_clock_six>0)
 	      counter_recv_midi_clock_six--;	  
 

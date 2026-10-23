@@ -45,11 +45,11 @@ void midi_botoomhalf(unsigned char msg)
 	{
 	  counter_recv_midi_clock_six++;
 	  counter_recv_midi_clock=0;
-	  DPRINTF("*****MIDICLOCK 6 *****");
+	  DEBUG_MIDI_CLOCK_MESSAGE("*****MIDICLOCK 6 *****");
 	}
       else
 	{
-	  DPRINTF("*****MIDICLOCK   *****");
+	  DEBUG_MIDI_CLOCK_MESSAGE("*****MIDICLOCK   *****");
 	}
       msg0=0; msg1=0; msg2=0; msg3=0; msg4=0; msg5=0; msg6=0;
       return;
@@ -146,7 +146,7 @@ void midiincallback( double deltatime, std::vector< unsigned char > *message, vo
   for ( unsigned int i=0; i<nBytes; i++ )
     {
       //std::cout << "Byte " << i << " = " << (int)message->at(i) << ", ";
-      DPRINTF("Byte:%d=%d %2x\n",i,(unsigned char)message->at(i),(unsigned char)message->at(i));
+      DEBUG_MIDI_CLOCK_MESSAGE("Byte:%d=%d %2x\n",i,(unsigned char)message->at(i),(unsigned char)message->at(i));
       msg=(unsigned char)message->at(i);
       midi_botoomhalf(msg);
     }

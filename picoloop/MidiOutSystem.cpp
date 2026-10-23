@@ -368,3 +368,33 @@ bool MidiOutSystem::closePort()
 }
 
 #endif // __ANDROID__
+
+
+// Single System Realtime byte (Start/Stop) sent immediately, not mixed with
+// the queued note/cc `message` buffer. Used for transport sync in SyncOut.
+void MidiOutSystem::sendRealtime(unsigned char b)
+{
+  mtx.Lock();
+#ifndef __ANDROID__
+  if (iamOpen)
+    {
+      std::vector<unsigned char> m;
+      m.push_back(b);
+      rtmidiout->sendMessage(&m);
+    }
+#else
+  if (iamOpen && androidInputPort)
+    AMidiInputPort_send(androidInputPort, &b, 1);
+#endif
+  mtx.Unlock();
+}
+
+void MidiOutSystem::start()
+{
+  this->sendRealtime(0xFA);
+}
+
+void MidiOutSystem::stop()
+{
+  this->sendRealtime(0xFC);
+}

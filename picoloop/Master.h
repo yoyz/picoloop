@@ -987,6 +987,7 @@ enum
 #define SYNTH_MDADRUM      8
 #define SYNTH_SIDSYNTH     9
 #define SYNTH_LGPTSAMPLER  10
+#define SYNTH_ER1          11
 
 
 
@@ -1451,6 +1452,17 @@ extern FILE * fdebugprintf;
 
 #if DEBUGPRINTF==0
 #define DPRINTF(FMT, ARGS...) do { } while(0)
+#endif
+
+// Highly verbose per-MIDI-clock / per-byte tracing. It is compiled out
+// unless DEBUG_MIDI_CLOCK is defined (the Makefiles do not define it):
+// MIDI clock is 24 pulses per quarter note, so these messages would be
+// written continuously to the SD card and would stall the realtime MIDI
+// threads. Define DEBUG_MIDI_CLOCK when you actually need to trace clocks.
+#ifdef DEBUG_MIDI_CLOCK
+#define DEBUG_MIDI_CLOCK_MESSAGE(FMT, ARGS...) DPRINTF(FMT, ## ARGS)
+#else
+#define DEBUG_MIDI_CLOCK_MESSAGE(FMT, ARGS...) do { } while(0)
 #endif
 
 

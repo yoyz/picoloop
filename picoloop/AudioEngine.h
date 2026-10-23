@@ -38,11 +38,24 @@
 
 
 void processBuffer_updateMidiSendClockCounter();
-extern int counter_send_midi_clock;     // send n clock and decrement the counter each time
-extern int counter_send_midi_clock_six; // send n clock and decrement the counter each time
-extern int counter_recv_midi_clock;     // send n clock and decrement the counter each time
-extern int counter_recv_midi_clock_six; // send n clock and decrement the counter each time
-extern int counter_delta_midi_clock;    // delta in sample between picoloop(master) and midi slave
+
+// The MIDI clock counters are the only globals shared between the audio
+// callback, the MIDI-in thread and the MIDI-clock send thread. On builds
+// that actually have those threads make them std::atomic (plain int was a
+// data race / UB); every other build keeps plain int and does not need
+// <atomic>, which is not guaranteed on all platform toolchains.
+#if defined(__RTMIDI__) || defined(__ANDROID__)
+#include <atomic>
+typedef std::atomic<int> t_midi_clock_counter;
+#else
+typedef int t_midi_clock_counter;
+#endif
+
+extern t_midi_clock_counter counter_send_midi_clock;     // send n clock and decrement the counter each time
+extern t_midi_clock_counter counter_send_midi_clock_six; // send n clock and decrement the counter each time
+extern t_midi_clock_counter counter_recv_midi_clock;     // recv n clock and decrement the counter each time
+extern t_midi_clock_counter counter_recv_midi_clock_six; // recv n clock and decrement the counter each time
+extern t_midi_clock_counter counter_delta_midi_clock;    // delta in sample between picoloop(master) and midi slave
 //extern int   menu_config_midiClockMode;  // 0 internal, 1 midi sync out, 2 midi sync in 
 extern float bpm_current;
 extern std::mutex lock_audiocallback;

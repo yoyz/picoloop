@@ -80,6 +80,11 @@ void MonoMixer::init()
   LGPTSMPL->init();
 #endif
 
+#ifdef ENABLE_SYNTH_ER1
+  ER1 = new ER1Machine();
+  ER1->init();
+#endif
+
 #ifdef ENABLE_SYNTH_CURSYNTH
   CS     = new CursynthMachine();
   CS->init();
@@ -192,6 +197,12 @@ void MonoMixer::setMachineType(int type)
       M=LGPTSMPL;
       break;
 #endif      
+
+#ifdef ENABLE_SYNTH_ER1
+    case      SYNTH_ER1:
+      M=ER1;
+      break;
+#endif
 
 #ifdef ENABLE_SYNTH_CURSYNTH
     case      SYNTH_CURSYNTH:

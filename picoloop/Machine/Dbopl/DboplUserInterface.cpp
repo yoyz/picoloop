@@ -196,12 +196,12 @@ void DboplUserInterface::display_board_text()
   if (menu_cursor==GLOBALMENU_FLTR)
     {
       if (menu_sub==MENU_PAGE0_SUB0)     sprintf(str_line2,"CUTOFF/RES"); 
-      if (menu_sub==MENU_PAGE0_SUB1)     sprintf(str_line2,"ALGO/TYPE"); 
+      if (menu_sub==MENU_PAGE0_SUB1)     sprintf(str_line2,"TYPE/ALGO"); 
     }
   if (menu_cursor==GLOBALMENU_VCO)
     {
-      if (menu_sub==MENU_PAGE0_SUB0)     sprintf(str_line2,"OP1Frq/OP2Frq");
-      if (menu_sub==MENU_PAGE0_SUB1)     sprintf(str_line2,"OP1Amp/AP2Amp"); 
+      if (menu_sub==MENU_PAGE0_SUB0)     sprintf(str_line2,"OP2Frq/OP1Frq");
+      if (menu_sub==MENU_PAGE0_SUB1)     sprintf(str_line2,"OP2Amp/OP1Amp"); 
       if (menu_sub==MENU_PAGE0_SUB2)     sprintf(str_line2,"FMType"); 
     }
     if (menu_cursor==GLOBALMENU_LFO)

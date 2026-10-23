@@ -26,6 +26,8 @@ class MidiOutSystem
   char * getMidiOutputName(int deviceNumber);
   bool checkChannel(int midiChan);
   void clock();
+  void start();          // MIDI Start    0xFA (transport)
+  void stop();           // MIDI Stop     0xFC (transport)
   void noteOn(int midiChan,int note,int velocity);
   void noteOff(int midiChan,int note);
   void cc(int midiChan,int cc,int value);
@@ -47,6 +49,10 @@ class MidiOutSystem
   //std::mutex lock_a;
 
   SysMutex mtx;
+
+  // Send a single System Realtime byte (Start/Stop) immediately, without
+  // going through the shared note/cc `message` buffer.
+  void sendRealtime(unsigned char b);
 
   int lastOpenPortNumber;
   int iamOpen;

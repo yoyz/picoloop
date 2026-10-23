@@ -167,13 +167,13 @@ void Open303UserInterface::display_board_text()
   if (menu_cursor==GLOBALMENU_FLTR)
     {
       if (menu_sub==MENU_PAGE0_SUB0)     sprintf(str_line2,"CUTOFF/RES"); 
-      if (menu_sub==MENU_PAGE0_SUB1)     sprintf(str_line2,"ALGO/TYPE"); 
+      if (menu_sub==MENU_PAGE0_SUB1)     sprintf(str_line2,"TYPE/ALGO"); 
     }
     if (menu_cursor==GLOBALMENU_VCO)
     {
-      if (menu_sub==MENU_PAGE0_SUB0)      sprintf(str_line2,"Velocity/Accent");
-      if (menu_sub==MENU_PAGE0_SUB1)      sprintf(str_line2,"envAmount/VCOMix");
-      //if (menu_sub==MENU_PAGE0_SUB2)      sprintf(str_line2,"Detune/CrossMod");
+      if (menu_sub==MENU_PAGE0_SUB0)      sprintf(str_line2,"ENVDEPTH/VCOMIX");
+      if (menu_sub==MENU_PAGE0_SUB1)      sprintf(str_line2,"ACCENT/VELOCITY");
+      //if (menu_sub==MENU_PAGE0_SUB2)      sprintf(str_line2,"CrossMod/Detune");
     }
   if (menu_cursor==GLOBALMENU_LFO)
     {
