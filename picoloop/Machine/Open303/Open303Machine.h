@@ -61,6 +61,7 @@ class Open303Machine : public Machine
 
   int                   velocity;
   int                   old_note;
+  int                   playing_note;   // note actually sent to rosic (for note-off)
 
 };
 

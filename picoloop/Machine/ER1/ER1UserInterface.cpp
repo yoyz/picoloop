@@ -4,6 +4,7 @@
 
 // Defined in PatternPlayer.cpp, shared by every machine UI.
 void display_board_two_param(int machineParam1,int machineParam2);
+void display_board_one_param_dot(int machineParam1);
 void display_board_one_param_text(int machineParam1);
 void display_board_two_param_text(int machineParam1,int machineParam2);
 void display_board_two_param_number(int machineParam1,int machineParam2);
@@ -47,11 +48,7 @@ void ER1UserInterface::handle_key_env()
   helper_handle_key_two_button(GLOBALMENU_AD,MENU_PAGE0_SUB1,ER1_KEY_REPEAT,
                                OSC4_AMP,OSC3_AMP,1,1);
 
-  // Bit Depth / Wave Warp
-  helper_handle_key_two_button(GLOBALMENU_AD,MENU_PAGE0_SUB2,ER1_KEY_REPEAT,
-                               OSC1_UNISON,ENV1_DEPTH,1,1);
-
-  helper_change_sub_menu(MENU_PAGE0_SUB2);
+  helper_change_sub_menu(MENU_PAGE0_SUB1);
 }
 
 void ER1UserInterface::handle_key_note()
@@ -66,16 +63,20 @@ void ER1UserInterface::handle_key_note()
 
 void ER1UserInterface::handle_key_osc()
 {
-  // Wave (discrete: same slow repeat as the other machine type selectors)
+  // Wave (discrete: slow repeat like the other machine type selectors)
   helper_handle_key_one_button(GLOBALMENU_OSC,MENU_PAGE0_SUB0,
                                KEY_REPEAT_INTERVAL_LONG,
                                OSC1_TYPE,1);
 
-  // Modulation span
-  helper_handle_key_one_button(GLOBALMENU_OSC,MENU_PAGE0_SUB1,ER1_KEY_REPEAT,
-                               OSC2_PHASE,1);
+  // Mod span (X) / Wave warp (Y)
+  helper_handle_key_two_button(GLOBALMENU_OSC,MENU_PAGE0_SUB1,ER1_KEY_REPEAT,
+                               OSC2_PHASE,ENV1_DEPTH,1,1);
 
-  helper_change_sub_menu(MENU_PAGE0_SUB1);
+  // Detune
+  helper_handle_key_one_button(GLOBALMENU_OSC,MENU_PAGE0_SUB2,ER1_KEY_REPEAT,
+                               OSC1_DETUNE,1);
+
+  helper_change_sub_menu(MENU_PAGE0_SUB2);
 }
 
 void ER1UserInterface::handle_key_vco()
@@ -120,7 +121,11 @@ void ER1UserInterface::handle_key_fltr()
   helper_handle_key_two_button(GLOBALMENU_FLTR,MENU_PAGE0_SUB2,ER1_KEY_REPEAT,
                                VCO_MIX,FILTER1_SATURATION,1,1);
 
-  helper_change_sub_menu(MENU_PAGE0_SUB2);
+  // Bit depth (X only): far left = no crush, far right = maximum crush
+  helper_handle_key_one_button(GLOBALMENU_FLTR,MENU_PAGE0_SUB3,ER1_KEY_REPEAT,
+                               OSC1_UNISON,1);
+
+  helper_change_sub_menu(MENU_PAGE0_SUB3);
 }
 
 void ER1UserInterface::display_board(int menu)
@@ -135,11 +140,10 @@ void ER1UserInterface::display_board(int menu)
 
 void ER1UserInterface::display_board_env()
 {
-  if (menu_sub>MENU_PAGE0_SUB2) menu_sub=MENU_PAGE0_SUB0;
+  if (menu_sub>MENU_PAGE0_SUB1) menu_sub=MENU_PAGE0_SUB0;
 
   if (menu_sub==MENU_PAGE0_SUB0) display_board_two_param(ADSR_AMP_DECAY,OSC1_AMP);
   if (menu_sub==MENU_PAGE0_SUB1) display_board_two_param(OSC4_AMP,OSC3_AMP);
-  if (menu_sub==MENU_PAGE0_SUB2) display_board_two_param(OSC1_UNISON,ENV1_DEPTH);
 }
 
 void ER1UserInterface::display_board_note()
@@ -151,10 +155,11 @@ void ER1UserInterface::display_board_note()
 
 void ER1UserInterface::display_board_osc()
 {
-  if (menu_sub>MENU_PAGE0_SUB1) menu_sub=MENU_PAGE0_SUB0;
+  if (menu_sub>MENU_PAGE0_SUB2) menu_sub=MENU_PAGE0_SUB0;
 
   if (menu_sub==MENU_PAGE0_SUB0) display_board_one_param_text(OSC1_TYPE);
-  if (menu_sub==MENU_PAGE0_SUB1) display_board_one_param_number(OSC2_PHASE);
+  if (menu_sub==MENU_PAGE0_SUB1) display_board_two_param(OSC2_PHASE,ENV1_DEPTH);
+  if (menu_sub==MENU_PAGE0_SUB2) display_board_one_param_dot(OSC1_DETUNE);
 }
 
 void ER1UserInterface::display_board_vco()
@@ -175,11 +180,12 @@ void ER1UserInterface::display_board_lfo()
 
 void ER1UserInterface::display_board_fltr()
 {
-  if (menu_sub>MENU_PAGE0_SUB2) menu_sub=MENU_PAGE0_SUB0;
+  if (menu_sub>MENU_PAGE0_SUB3) menu_sub=MENU_PAGE0_SUB0;
 
   if (menu_sub==MENU_PAGE0_SUB0) display_board_two_param(FILTER1_RESONANCE,FILTER1_CUTOFF);
   if (menu_sub==MENU_PAGE0_SUB1) display_board_two_param_text(FILTER1_TYPE,FILTER1_ALGO);
   if (menu_sub==MENU_PAGE0_SUB2) display_board_two_param(VCO_MIX,FILTER1_SATURATION);
+  if (menu_sub==MENU_PAGE0_SUB3) display_board_one_param_dot(OSC1_UNISON);
 }
 
 void ER1UserInterface::display_board_text()
@@ -196,7 +202,6 @@ void ER1UserInterface::display_board_text()
     {
       if (menu_sub==MENU_PAGE0_SUB0) sprintf(str_line2,"LEVEL/DECAY");
       if (menu_sub==MENU_PAGE0_SUB1) sprintf(str_line2,"NOISE/NDECAY");
-      if (menu_sub==MENU_PAGE0_SUB2) sprintf(str_line2,"WARP/BIT");
     }
   if (menu_cursor==GLOBALMENU_NOTE)
     {
@@ -205,7 +210,8 @@ void ER1UserInterface::display_board_text()
   if (menu_cursor==GLOBALMENU_OSC)
     {
       if (menu_sub==MENU_PAGE0_SUB0) sprintf(str_line2,"WAVE");
-      if (menu_sub==MENU_PAGE0_SUB1) sprintf(str_line2,"SPAN");
+      if (menu_sub==MENU_PAGE0_SUB1) sprintf(str_line2,"WARP/SPAN");
+      if (menu_sub==MENU_PAGE0_SUB2) sprintf(str_line2,"DETUNE");
     }
   if (menu_cursor==GLOBALMENU_VCO)
     {
@@ -222,6 +228,7 @@ void ER1UserInterface::display_board_text()
       if (menu_sub==MENU_PAGE0_SUB0) sprintf(str_line2,"CUTOFF/RES");
       if (menu_sub==MENU_PAGE0_SUB1) sprintf(str_line2,"POS/TYPE");
       if (menu_sub==MENU_PAGE0_SUB2) sprintf(str_line2,"KEYTRACK/BOOST");
+      if (menu_sub==MENU_PAGE0_SUB3) sprintf(str_line2,"BIT");
     }
 
   if (menu==MENU_ON_PAGE1 && menu_cursor==GLOBALMENU_AD)    sprintf(str_menu,"[ENV]  Note  OSC   VCO   LFO   FLTR");

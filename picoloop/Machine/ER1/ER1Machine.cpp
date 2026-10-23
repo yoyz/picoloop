@@ -18,7 +18,7 @@
   Phase              OSC1_PHASE                  0..127 -> 0..360 deg
   Span               OSC2_PHASE                  0 -> 360 deg
   Wave Warp          ENV1_DEPTH                  64 = 0  (default 64!)
-  Bit Depth          OSC1_UNISON                 0 = full/17 bit
+  Bit Depth          OSC1_UNISON                 0 = full/17 bit, 127 = 1 bit
   Decay              ADSR_AMP_DECAY              127 = infinite
   Noise              OSC3_AMP                    default 0 = off
   Noise Decay        OSC4_AMP
@@ -69,6 +69,24 @@ static inline double er1From64(int v)
 {
   if (v<=64) return 0.0;
   return double(er1Clamp(v,64,127)-64) * 100.0 / 63.0;
+}
+
+// Bit depth curve for the BIT knob (OSC1_UNISON, 0..127).
+//
+//   0 ..  25 (20 % of the travel) : 17 .. 6 bit  (subtle, barely audible)
+//  25 .. 127 (80 % of the travel) :  6 .. 1 bit  (the useful bitcrush range)
+//
+// 0 is "no crush" (17 bit) so the PatternElement default sounds clean, and
+// 127 is the maximum crush (1 bit). Fractional depths are supported by the
+// voice (quantisation step = 2^(1-bits)), so the sweep is continuous.
+static inline double er1BitDepth(int v)
+{
+  const int split=25;
+
+  v=er1Clamp(v,0,127);
+  if (v<=split)
+    return 17.0 - 11.0 * double(v) / double(split);
+  return 6.0 - 5.0 * double(v-split) / double(127-split);
 }
 
 ER1Machine::ER1Machine()
@@ -201,8 +219,8 @@ void ER1Machine::setI(int what,int val)
       break;
 
     case OSC1_UNISON:
-      // 0 is the PatternElement default -> full resolution
-      voice.setParam(P_BITDEPTH,(v==0)?17.0:double(er1Clamp(v,1,17)));
+      // BIT knob: 0 = no crush (17 bit), 127 = maximum crush (1 bit).
+      voice.setParam(P_BITDEPTH,er1BitDepth(v));
       break;
 
     case ADSR_AMP_DECAY:
@@ -284,7 +302,6 @@ int ER1Machine::checkI(int what,int val)
     case LFO1_WAVEFORM:     return er1Clamp(val,0,7);
     case FILTER1_ALGO:      return er1Clamp(val,0,2);
     case FILTER1_TYPE:      return er1Clamp(val,0,3);
-    case OSC1_UNISON:       return er1Clamp(val,0,17);
     case ADSR_AMP_DECAY:    return er1Clamp(val,0,127);
     default:
       return er1Clamp(val,0,127);
@@ -304,6 +321,12 @@ const char * ER1Machine::getMachineParamCharStar(int machineParam,int paramValue
   static const char * str_pos[3] = { "PRE  ","POST ","CRSH " };
   static const char * str_flt[4] = { "OFF  ","LP   ","BP   ","HP   " };
 
+  // Indexed by rounded bit depth, 0 = "no crush".
+  static const char * str_bits[18] =
+    { "FULL ",
+      " 1bit"," 2bit"," 3bit"," 4bit"," 5bit"," 6bit"," 7bit"," 8bit"," 9bit",
+      "10bit","11bit","12bit","13bit","14bit","15bit","16bit","17bit" };
+
   switch (machineParam)
     {
     case OSC1_TYPE:
@@ -319,8 +342,13 @@ const char * ER1Machine::getMachineParamCharStar(int machineParam,int paramValue
       return str_flt[this->checkI(FILTER1_TYPE,paramValue)];
 
     case OSC1_UNISON:
-      if (paramValue==0) return "FULL ";
-      return str_null;
+      {
+        if (paramValue<=0) return str_bits[0];
+        int b=(int)(er1BitDepth(paramValue)+0.5);
+        if (b<1)  b=1;
+        if (b>17) b=17;
+        return str_bits[b];
+      }
 
     case LFO1_ENV_AMOUNT:
       if (paramValue==0) return "FREE ";

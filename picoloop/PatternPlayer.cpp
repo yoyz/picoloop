@@ -988,6 +988,25 @@ void display_board_two_param(int machineParam1,int machineParam2)
 }
 
 
+// One-parameter page: draw only the X (horizontal) dot, on the bottom edge of
+// the step box, exactly like the param1 dot of display_board_two_param().
+void display_board_one_param_dot(int machineParam1)
+{
+  int  i;
+  int  cty=SEQ.getCurrentTrackY();
+
+  display_board_trig();
+
+  for (i=0;i<pattern_cursor_max_pos[cty]+1;i++)
+    {
+      if (P[cty].getPatternElement(i+pattern_display_offset[cty]).get(NOTE_ON))
+	{
+	  SG.smallBoxNumber(i,P[cty].getPatternElement(i+pattern_display_offset[cty]).get(machineParam1),128,pal[SMALLBOX_COLOR]);
+	}
+    }
+}
+
+
 void display_board_one_param_text(int machineParam1)
 {
   int  i;

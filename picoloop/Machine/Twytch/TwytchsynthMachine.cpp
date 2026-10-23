@@ -16,6 +16,10 @@ TwytchsynthMachine::TwytchsynthMachine()
   pole=0;
   need_note_on=0;
 
+  note=0;
+  playing_note=0;
+  detune=0;
+
   bpm=-1;
   osc1_type=-1;
   osc2_type=-1;
@@ -139,6 +143,7 @@ void TwytchsynthMachine::init()
   sample_num=0;
 
   note=0;
+  playing_note=0;
   detune=0;
 
   trig_time_mode=0;
@@ -268,33 +273,26 @@ void TwytchsynthMachine::setI(int what,int val)
 
   if (what==NOTE_ON && val==1) 
     { 
-      note_on=1;
+      // Release the note that is actually sounding before triggering the new
+      // one. A note change while the previous gate is still open then gets a
+      // fresh note-on, and no two voices overlap if polyphony is raised above
+      // the current value of 1.
+      if (note_on)
+	TWE->noteOff(playing_note-1+noteShift);
 
-      if (old_note!=note)
-	{
-	  TWE->noteOn(note-1+noteShift);
-	  TWE->noteOff(old_note-1+noteShift);
-	  //need_note_on=1;
-	}
-      else
-	{
-	  if (note_on==0)
-	    {
-	      TWE->noteOn(note-1+noteShift);
-	    }
-	  else
-	    {
-	      TWE->noteOn(note-1+noteShift);
-	    }
-	}
+      TWE->noteOn(note-1+noteShift);
+      playing_note=note;
+      note_on=1;
     }
   if (what==NOTE_ON && val==0) 
     { 
+      if (note_on)
+	TWE->noteOff(playing_note-1+noteShift);
+
       note_on=0;
-      TWE->noteOff(note-1+noteShift);
     }
 
-  if (what==NOTE1)                                    {  old_note=note; note=val; }
+  if (what==NOTE1)                                    {  note=val; }
 
   if (what==BPM && bpm!=val)                              { bpm=val; TWE->getControls().at("beats_per_minute")->set(val);     }
 

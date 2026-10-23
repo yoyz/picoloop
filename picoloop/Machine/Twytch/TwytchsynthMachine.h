@@ -41,7 +41,7 @@ class TwytchsynthMachine : public Machine
   Sint16              * tanh_table;
 
   int                   note;
-  int                   old_note;
+  int                   playing_note;   // note actually sent to the engine
   int                   note_on;
   int                   detune;
 

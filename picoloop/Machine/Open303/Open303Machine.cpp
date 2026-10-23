@@ -1,6 +1,24 @@
 #include "Master.h"
 #include "Open303Machine.h"
 
+/*
+  Open303 adapter notes
+  ---------------------
+  - noteShift = 11 converts picoloop note numbers (NoteFreq: 1 = C-1) to MIDI
+    note numbers for rosic::Open303.
+  - TeeBeeFilter::setResonance() and Open303::setEnvMod() take PERCENT (0..100).
+    The 0..127 pattern values are mapped; passing them raw (and especially a
+    negative EnvMod) pushes the filter out of its stable range.
+  - All member state is initialised in the constructor. The cutoff / resonance
+    / env-depth servos (current_*) and index used to start from uninitialised
+    memory, so the filter could remain stuck far away from the UI value.
+  - NOTE_ON=1 releases the note that is actually sounding (playing_note) and
+    then triggers the new one, so a note change always retriggers the amp
+    envelope instead of sliding into it.
+  - tick() clamps before the Sint16 conversion; the resonant filter can exceed
+    1.0 and the old narrowing wrapped around.
+*/
+
 //#define SAM 256
 #define SAM 64
 
@@ -10,8 +28,46 @@ Open303Machine::Open303Machine()
   int   i;
   DPRINTF("Open303Machine::Open303Machine()");  
   note_on=0;
-  velocity=5;
+  velocity=32;
   parameter_portamento=32;
+
+  // Everything below used to be uninitialised: the portamento servos
+  // (current_*) started at whatever the allocator left there and the filter
+  // could stay stuck far away from the UI value ("going too far and never
+  // coming back"). Keep the initial state consistent with the PatternElement
+  // defaults pushed by seq_update_track().
+  note=60;
+  old_note=note;
+  playing_note=note;
+
+  cutoff=112;
+  resonance=16;
+  env_depth=0;
+
+  old_cutoff=cutoff;
+  old_resonance=resonance;
+  old_envdepth=env_depth;
+
+  current_cuttoff=cutoff;
+  current_resonance=resonance;
+  current_envdepth=env_depth;
+
+  index=parameter_portamento+1;   // apply the parameters on the first tick
+
+  sample_num=0;
+  last_sample=0;
+  detune=0;
+
+  trig_time_mode=0;
+  trig_time_duration=0;
+  trig_time_duration_sample=0;
+
+  osc1_type=0;
+  osc2_type=0;
+
+  buffer_i=NULL;
+  tanh_table=NULL;
+
   //buffer_i=0;
   //buffer_f=0;
 
@@ -35,6 +91,13 @@ void Open303Machine::init()
   O303E=new rosic::Open303();
   //O303E->setSampleRate(44100);
   O303E->setSampleRate(DEFAULTFREQ);
+
+  // Make the engine agree with the (now initialised) adapter state before the
+  // first tick, instead of waiting for the first portamento update.
+  O303E->setCutoff(100+current_cuttoff*17);
+  O303E->setResonance(resonance*100.0/127.0);
+  O303E->setEnvMod(env_depth*100.0/127.0);
+
   //  O303E->setAccent(127);
 
   // O303E->noteOn(1,velocity,0.0);
@@ -130,24 +193,27 @@ void Open303Machine::setI(int what,int val)
 
   if (what==NOTE_ON && val==1) 
     { 
-       note_on=1;
+       // Release whatever is currently sounding before triggering the new
+       // note. The old code sent note-on first and note-off second, so when a
+       // new note arrived while the previous one was still gated the engine
+       // slid to it instead of retriggering the amp envelope - which sounds
+       // like a much quieter (or missing) note.
+       if (note_on)
+         O303E->noteOn(playing_note+noteShift,0,0.0);
 
-       if (old_note!=note)
-	 {
-	   O303E->noteOn(note+noteShift,velocity,0.0);
-	   O303E->noteOn(old_note+noteShift,0,0.0);
-	 }
-       else
-	 {
-	   O303E->noteOn(old_note+noteShift,0,0.0);
-	   O303E->noteOn(note+noteShift,velocity,0.0);		   
-	 }
-      
+       O303E->noteOn(note+noteShift,velocity,0.0);
+       playing_note=note;
+       note_on=1;
     }
   if (what==NOTE_ON && val==0) 
     { 
+       // Release the note that was actually triggered. NOTE1 may already have
+       // been changed for the next step, so using note here would release the
+       // wrong key and leave the previous one hanging.
+       if (note_on)
+         O303E->noteOn(playing_note+noteShift,0,0.0);
+
        note_on=0;
-       O303E->noteOn(note+noteShift,0,0.0);
        //CSE->noteOff(note);
        //O303E->releaseNote(note);
        //O303E->allNotesOff();
@@ -373,15 +439,21 @@ Sint32 Open303Machine::tick()
 	 current_resonance++;
        if (current_resonance>resonance)
 	   current_resonance--;
-       f_val=current_resonance;
-       f_val/128.0;
+       // TeeBeeFilter::setResonance() expects percent (100 % = self
+       // oscillation). The 0..127 knob has to be mapped, otherwise 101..127
+       // pushes the filter past self-oscillation and it can stay stuck.
+       f_val=(double)current_resonance*100.0/127.0;
+       if (f_val>100.0) f_val=100.0;
        O303E->setResonance(f_val);
 
        if (current_envdepth<env_depth)
 	 current_envdepth++;
        if (current_envdepth>env_depth)
 	 current_envdepth--;
-       O303E->setEnvMod(1.5-((float)current_envdepth/128.0)*192);
+       // Open303::setEnvMod() also expects percent (0..100). The previous
+       // formula produced 1.5 at 0 and -189 at 127, i.e. negative cutoff
+       // modulation at the top of the range.
+       O303E->setEnvMod((double)current_envdepth*100.0/127.0);
        //O303E->setResonance(current_resonance*128);
 
 
@@ -391,7 +463,16 @@ Sint32 Open303Machine::tick()
       
    
    f_in=O303E->getSample();
-   s_out=f_in*2048;
+
+   // Clamp before the Sint16 conversion: a resonant filter can overshoot 1.0
+   // and the old implicit double->Sint16 narrowing wrapped around, which
+   // turned a loud note into full-scale noise of the wrong sign.
+   double d_out=f_in*2048.0;
+   if (d_out!=d_out)   d_out=0.0;          // NaN guard
+   if (d_out> 32767.0) d_out= 32767.0;
+   if (d_out<-32768.0) d_out=-32768.0;
+   s_out=(Sint16)d_out;
+
    sample_num++;
    index++;
   return s_out;

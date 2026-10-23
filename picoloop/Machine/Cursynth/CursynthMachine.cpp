@@ -13,6 +13,10 @@ CursynthMachine::CursynthMachine()
   buffer_i=0;
   buffer_f=0;
   index=0;
+
+  note=0;
+  playing_note=0;
+  velocity=0;
 }
 
 
@@ -88,6 +92,7 @@ void CursynthMachine::init()
 
 
   note=0;
+  playing_note=0;
   //detune=64;
   detune=0;
 
@@ -176,24 +181,14 @@ void CursynthMachine::setI(int what,int val)
 
   if (what==NOTE_ON && val==1) 
     { 
-      //NoteFreq & NF = NoteFreq::getInstance(); 
-      note_on=1;
+      // Release the sounding note before triggering the new one: note changes
+      // retrigger cleanly and voices do not overlap if polyphony is raised.
+      if (note_on)
+	CSE->noteOff(playing_note+noteShift);
 
-      if (old_note!=note)
-	{
-	  CSE->noteOn(note+noteShift,velocity/32);
-	  CSE->noteOff(old_note+noteShift);
-	}
-      else
-	{
-	  if (note_on==0)
-	    CSE->noteOn(note+noteShift,velocity/32);
-	  else
-	    {
-	      CSE->noteOff(old_note+noteShift);	  
-	      CSE->noteOn(note+noteShift,velocity/32);
-	    }
-	}
+      CSE->noteOn(note+noteShift,velocity/32);
+      playing_note=note;
+      note_on=1;
 
       //CS->noteOn(NF.getINoteFreq(note),1.0);
       //CSE->noteOn(note+11,0.8);
@@ -204,12 +199,14 @@ void CursynthMachine::setI(int what,int val)
     }
   if (what==NOTE_ON && val==0) 
     { 
+      if (note_on)
+	CSE->noteOff(playing_note+noteShift);
+
       note_on=0;
-      CSE->noteOff(note+noteShift);
     }
 
   //if (what==OSC1_NOTE)           { if (note_on) { this->setI(NOTE_ON,0); note=val; } }
-  if (what==NOTE1)              {  old_note=note; note=val; }
+  if (what==NOTE1)              {  note=val; }
 
   //if (what==ADSR_ENV0_ATTACK)    CSE->getControls().at("amp attack")->set(val);
   //delay time"

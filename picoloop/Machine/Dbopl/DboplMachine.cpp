@@ -12,10 +12,18 @@
 dboplMachine::dboplMachine() : filter(), 	     sineLfoOsc1()
 {
   DPRINTF("dboplMachine::dboplMachine()");  
+  HO=0;
   buffer=0;
   cutoff=125;
   resonance=10;
   index=0;
+
+  sample_num=0;
+  freq=110.0;
+  keyon=0;
+  note=0;
+  last_sample=0;
+  tanh_table=NULL;
 
   lfo_depth=0;
   lfo_depth_shift=20;
@@ -192,7 +200,16 @@ void dboplMachine::reset()
 {
  sample_num=0;
  freq=110.0;
+
+ // The OPL only retriggers on a 0 -> 1 transition of the key-on bit. Clearing
+ // keyon alone is not enough: when the previous step's gate is still open the
+ // bit stays set and the next NOTE_ON just changes the pitch without
+ // restarting the envelope. Release the channel here so every triggered step
+ // gets a fresh key-on edge.
+ if (HO)
+   HO->KeyOff(1);
  keyon=0;
+
  sineLfoOsc1.reset();
 
  trig_time_mode=0;
@@ -292,6 +309,12 @@ void dboplMachine::setI(int what,int val)
 
     if (what==NOTE_ON && val==1) 
     { 
+      // Defensive: if NOTE_ON=1 arrives twice without a NOTE_ON=0 (long gate),
+      // release first so tick()'s SetFrequency(...,true) creates a new
+      // key-on edge instead of just retuning the sounding voice.
+      if (keyon && HO)
+        HO->KeyOff(1);
+
       keyon=1;
       sineLfoOsc1.reset();
       NoteFreq & NF = NoteFreq::getInstance();
@@ -303,7 +326,8 @@ void dboplMachine::setI(int what,int val)
     if (what==NOTE_ON && val==0) 
     { 
       keyon=0;
-      HO->KeyOff(1);
+      if (HO)
+        HO->KeyOff(1);
     }
 
     if (what==OSC1_TYPE)           
