@@ -19,3 +19,12 @@ picoloop/PatternPlayer_debian_*
 picoloop/picoloop_debian_*
 picoloop/picoloop.log
 picoloop/picoloop.ini
+
+# RG35XX SP cross build: object trees (container default, device-lib opt-in)
+# and the generated cross SDK (only used with USE_DEVICE_LIBS=1)
+picoloop/rg35xxsp/
+picoloop/rg35xxsp-device/
+picoloop/rg35xxsp-sdk/
+
+# RG35XX SP container build outputs
+picoloop/picoloop_sp_docker
