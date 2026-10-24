@@ -101,7 +101,10 @@ int InputManager::updateState(int symbol,int state)
 {
   int i;
 
-	    printf("updateState %d %d\n",symbol,state);
+  // Key trace for debugging input handling: uncomment when a key press or
+  // release needs to be followed through the state/repeat machinery. It fires
+  // for EVERY key event, so it must stay off in normal use.
+  //printf("updateState %d %d\n",symbol,state);
   m_key_state[symbol]=state;
 
   if (state==0)
