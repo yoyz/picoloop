@@ -47,25 +47,24 @@
 # The base is fully qualified (docker.io/...) so that podman, which does not
 # expand short names by default, builds it as-is too.
 #
-# Use (the generated SDK is not involved; the cross compiler finds the arm64
-# multiarch directories /usr/lib/aarch64-linux-gnu and /usr/include by itself):
+# Use (this is the DEFAULT picoloop build for the SP - the makefile needs no
+# overrides: SDL2/SDL2_ttf/alsa come from the image's arm64 multiarch packages,
+# which the cross compiler finds on its default search paths):
 #   docker run --rm -u "$(id -u):$(id -g)" -v "$PWD":/src -w /src picoloop-sp \
-#       make -f Makefile.PatternPlayer_rg35xxsp \
-#            CC=aarch64-linux-gnu-g++ \
-#            SDK=/nonexistent SDK_STAMP=/bin/sh \
-#            OBJDIR=rg35xxsp_docker EXECUTABLE=picoloop_sp_docker \
-#            -j"$(nproc)"
+#       make -f Makefile.PatternPlayer_rg35xxsp -j"$(nproc)"
 #
-# `SDK=/nonexistent SDK_STAMP=/bin/sh` neutralises the generated-SDK variables
-# of the makefile: -I/-L on missing directories are ignored by the compiler
-# and linker, and /bin/sh exists, so the SDK build rule is not triggered.
-# A separate OBJDIR keeps host objects (built with different headers) apart.
+# Rootless podman: replace `-u "$(id -u):$(id -g)"` with `--userns=keep-id`
+# (otherwise container uids map to subuids and the bind mount is not writable):
+#   podman run --rm --userns=keep-id -v "$PWD":/src:z -w /src picoloop-sp \
+#       make -f Makefile.PatternPlayer_rg35xxsp -j"$(nproc)"
 #
-# Rootless podman: replace `-u "$(id -u):$(id -g)"` with `--userns=keep-id`,
-# otherwise container uids map to subuids and the bind mount is not writable.
+# The device-matched alternative (SDL/glibc at the device's exact versions,
+# built on the host by platform/rg35xxsp/build_sdk.sh) is opt-in:
+#   make -f Makefile.PatternPlayer_rg35xxsp USE_DEVICE_LIBS=1 \
+#        CC=aarch64-linux-gnu-g++-14 -j"$(nproc)"
 #
 # Verify the result (must be <= the device glibc, 2.40):
-#   aarch64-linux-gnu-objdump -T picoloop_sp_docker \
+#   aarch64-linux-gnu-objdump -T picoloop_rg35xxsp \
 #       | grep -o 'GLIBC_2\.[0-9]*' | sort -V -u | tail -1
 
 FROM docker.io/library/ubuntu:24.04

@@ -5,14 +5,25 @@
 # runs ./picoloop from the port directory.
 
 # --- DEBUGGING ------------------------------------------------------------
-# Set DEBUG_GDB to 1 to run the binary under gdb and dump a full backtrace on
-# crash to /userdata/roms/ports/picoloop/gdb.log. Set back to 0 for normal runs.
+# DEBUG_GDB=0 (default, native): fastest startup, normal ASLR, and a crash
+#   report is written to picoloop.err by the in-app handler (signal, si_code,
+#   fault address, pc, backtrace). Pull it with
+#     adb pull /userdata/roms/ports/picoloop/picoloop.err .
+# DEBUG_GDB=1: run under gdb and dump a full backtrace (all threads, registers)
+#   to gdb.log on crash. Slower startup, extra memory, ASLR disabled.
 DEBUG_GDB=0
 # --------------------------------------------------------------------------
 
-# Stop broken PipeWire that may hold the ALSA device
-if fuser /dev/snd/pcmC0D0p 2>/dev/null | grep -q pipewire; then
+# Free the ALSA playback device before RtAudio tries to open it.
+# NOTE: `fuser` writes only the PIDs to stdout (the "pid/command" listing goes
+# to stderr), so grepping its output for "pipewire" never matched and PipeWire
+# kept pcmC0D0p open - RtAudio then failed with
+#   "pcm device (hw:0,0) won't open for output ... Device or resource busy"
+# and picoloop quit. Test for any holder instead.
+if [ -n "$(fuser /dev/snd/pcmC0D0p 2>/dev/null)" ]; then
   /etc/init.d/S06audio stop >/dev/null 2>&1
+  STOPPED_AUDIO=1
+  sleep 1            # let ALSA release the device
 fi
 # Force codec speaker path + full output volume
 amixer -c 0 -q cset numid=2 63
@@ -24,12 +35,13 @@ amixer -c 0 -q cset numid=8 on
 amixer -c 0 -q cset numid=9 on
 amixer -c 0 -q cset numid=4 on
 cd /userdata/roms/ports/picoloop
+STOPPED_AUDIO=${STOPPED_AUDIO:-0}
 
 if [ "$DEBUG_GDB" = "1" ]; then
   GDB_LOG=/userdata/roms/ports/picoloop/gdb.log
   rm -f "$GDB_LOG"
 
-  exec gdb -batch \
+  gdb -batch \
     -ex "set pagination off" \
     -ex "set confirm off" \
     -ex "handle SIGPIPE nostop noprint pass" \
@@ -46,5 +58,14 @@ if [ "$DEBUG_GDB" = "1" ]; then
     -ex "info registers" \
     ./picoloop 2>&1 | tee "$GDB_LOG"
 else
-  exec ./picoloop
+  # Native run (default). stdout is discarded to avoid writing to the SD card
+  # during playback, but stderr is kept: the crash handler in PatternPlayer.cpp
+  # prints signal, si_code, fault address, pc and a backtrace there.
+  # Retrieve it with: adb pull /userdata/roms/ports/picoloop/picoloop.err .
+  ./picoloop >/dev/null 2>picoloop.err
+fi
+
+# Hand the audio device back to EmulationStation if we took it away.
+if [ "$STOPPED_AUDIO" = "1" ]; then
+  /etc/init.d/S06audio start >/dev/null 2>&1
 fi
