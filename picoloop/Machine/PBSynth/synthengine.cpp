@@ -13,6 +13,19 @@ SynthEngine::SynthEngine(int samplesPerTick, long max_delaylen) {
 
   base = 3;
 
+  // Every DSP object stays NULL until init() allocates it. The destructor and
+  // init() both rely on that: without it they would delete/re-read
+  // uninitialised pointers when init() was never called (or called twice).
+  oscillators[0] = NULL;
+  oscillators[1] = NULL;
+  envelopes[0]   = NULL;
+  envelopes[1]   = NULL;
+  filters[0]     = NULL;
+  filters[1]     = NULL;
+  lfos[0]        = NULL;
+  lfos[1]        = NULL;
+  echo           = NULL;
+
   //granu_counter = samplesPerTick;
   //this->samplesPerTick = samplesPerTick;
   /*
@@ -33,15 +46,16 @@ SynthEngine::SynthEngine(int samplesPerTick, long max_delaylen) {
 
 SynthEngine::~SynthEngine() {
 
-  delete lfos[0];
-  delete lfos[1];
-  delete envelopes[0];
-  delete envelopes[1];
-  delete oscillators[0];
-  delete oscillators[1];
-  delete filters[0];
-  delete filters[1];
-  delete echo;
+  // Safe on NULL: every pointer is NULL until init() allocates it.
+  if (lfos[0])        delete lfos[0];
+  if (lfos[1])        delete lfos[1];
+  if (envelopes[0])   delete envelopes[0];
+  if (envelopes[1])   delete envelopes[1];
+  if (oscillators[0]) delete oscillators[0];
+  if (oscillators[1]) delete oscillators[1];
+  if (filters[0])     delete filters[0];
+  if (filters[1])     delete filters[1];
+  if (echo)           delete echo;
 }
 
 void SynthEngine::init()
@@ -50,6 +64,18 @@ void SynthEngine::init()
   
   granu_counter = samplesPerTick;
   //this->samplesPerTick = samplesPerTick;
+
+  // init() can run more than once (PBSynthMachine::init() always calls it), so
+  // release what a previous call allocated before allocating again.
+  if (echo)           { delete echo;           echo           = NULL; }
+  if (lfos[0])        { delete lfos[0];        lfos[0]        = NULL; }
+  if (lfos[1])        { delete lfos[1];        lfos[1]        = NULL; }
+  if (envelopes[0])   { delete envelopes[0];   envelopes[0]   = NULL; }
+  if (envelopes[1])   { delete envelopes[1];   envelopes[1]   = NULL; }
+  if (oscillators[0]) { delete oscillators[0]; oscillators[0] = NULL; }
+  if (oscillators[1]) { delete oscillators[1]; oscillators[1] = NULL; }
+  if (filters[0])     { delete filters[0];     filters[0]     = NULL; }
+  if (filters[1])     { delete filters[1];     filters[1]     = NULL; }
 
   echo = new Echo(mdl);
   lfos[0] = new LFO(samplesPerTick);

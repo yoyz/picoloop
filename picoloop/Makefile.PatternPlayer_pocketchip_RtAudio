@@ -42,7 +42,6 @@ SOURCES=	$(SOURCES_PICOLOOP)	\
 		      AMSynthLowPassFilter.cpp \
 		      Effect.cpp               \
 		      EffectDelay.cpp          \
-		      EffectDisabled.cpp       \
 		      WaveTableManager.cpp     \
 		      WaveTable.cpp            \
 		      Generator.cpp            \

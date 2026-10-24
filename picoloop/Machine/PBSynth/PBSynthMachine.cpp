@@ -30,7 +30,8 @@ PBSynthMachine::~PBSynthMachine()
   DPRINTF("PBSynthMachine::~PBSynthMachine()");  
   if (buffer_f)    free(buffer_f);
   if (buffer_i)    free(buffer_i);
-
+  if (buffer_fix)  free(buffer_fix);
+  if (SE)          delete SE;
 }
 
 
