@@ -30,14 +30,25 @@ android {
     namespace = "org.picoloop.android"
     compileSdk = 36
 
+    // The build containers export ANDROID_NDK_HOME, but AGP resolves the NDK as
+    // <sdk>/ndk/<ndkVersion> and otherwise falls back to its own default
+    // version, which may not be installed ("NDK is not installed"). Both
+    // images lay the NDK out as <sdk>/ndk/<version>, so take the version from
+    // the directory ANDROID_NDK_HOME points at (the "latest" symlink is
+    // resolved first). Fallback matches doc/android/Dockerfile.
+    val ndkFromEnv = System.getenv("ANDROID_NDK_HOME")
+        ?.let { file(it).canonicalFile }
+        ?.takeIf { it.isDirectory }
+    ndkVersion = ndkFromEnv?.name ?: "27.2.12479018"
+
     defaultConfig {
         applicationId = "org.picoloop.android"
         // 29: required by the native MIDI API (<amidi/AMidi.h>) used for
         // MIDI support - see MidiInSystem.cpp / MidiOutSystem.cpp.
         minSdk = 29
         targetSdk = 36
-        versionCode = 1
-        versionName = "0.77d"
+        versionCode = 2
+        versionName = "0.80a"
 
         ndk {
             abiFilters += abiList

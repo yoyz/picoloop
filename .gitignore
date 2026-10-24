@@ -1,5 +1,7 @@
 # Android build (android/) - generated/downloaded artifacts
 android/local.properties
+android/.android/
+android/.kotlin/
 android/.gradle/
 android/build/
 android/*/build/
