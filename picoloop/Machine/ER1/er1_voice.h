@@ -4,6 +4,12 @@
 #include <cstdint>
 #include <string>
 
+// M_PI is not exposed by MinGW's math.h under -std=c++11 (__STRICT_ANSI__),
+// same guard as Biquad.h.
+#ifndef M_PI
+#define M_PI 3.1415926535897932384626433832795
+#endif
+
 // Sample rate the voice model runs at. Also used by the PortAudio frontend.
 static constexpr double ER1_SAMPLE_RATE = 48000.0;
 

@@ -1376,6 +1376,7 @@ enum
 
 // Define this variable to be able to open the picoloop.log file,
 // This variable are defined in the same file as main()
+#include <stdio.h>   // FILE/fopen/fprintf are used by the DEBUGPRINTF macros
 extern int opendebugprintf;
 extern FILE * fdebugprintf;
 #ifndef DEBUGPRINTF

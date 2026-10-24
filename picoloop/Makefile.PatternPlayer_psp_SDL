@@ -1,106 +1,76 @@
-TARGET		= PatternPlayer
-EXTRA_TARGETS	= EBOOT.PBP
-#EXTRA_TARGETS	= PatternPlayer.prx
-#PSP_EBOOT_TITLE= hello_sdl
+include Makefile_sources
 
-#OBJS		= PatternPlayer.o psp_callback.o SYSTEMLINUX.o Machine.o PatternSequencer.o Effect.o WaveTable.o AudioDriverSDL.o EffectDelay.o AMSynthLowPassFilter.o InputManager.o Generator.o PitchBend.o NoteFreq.o WaveTableManager.o Sequencer.o Oscillator.o OneOscillator.o SongSequencer.o Filter.o Synth.o Biquad.o Track.o Pattern.o MonoMixer.o SDL_GUI.o AudioEngine.o PatternElement.o AudioMixer.o Instrument.o PatternReader.o Wave.o Machine/Picodrum/PicodrumADSR.o  Machine/Picodrum/PicodrumMachine.o  Machine/Picodrum/PicodrumVCO.o Machine/Picosynth/PicosynthADSR.o  Machine/Picosynth/PicosynthMachine.o  Machine/Picosynth/PicosynthVCO.o Machine/Dbopl/DboplMachine.o  Machine/Dbopl/dbopl.o  Machine/Dbopl/hiopl.o
+# PSP (pspdev toolchain) target. pspdev's $(PSPSDK)/lib/build.mak supplies the
+# compile/link rules; this file only has to provide OBJS/CFLAGS/LIBS and the
+# EBOOT settings, in the same shape as the other Makefile.PatternPlayer_* files.
+TARGET          = picoloop
+EXTRA_TARGETS   = EBOOT.PBP
+PSP_EBOOT_TITLE = picoloop
 
-#		      Instrument.o           \
-#		      Synth.o                \
-
-
-OBJS=PatternPlayer.o \
-		      SDL_GUI.o              \
-		      SYSTEMLINUX.o	     \
-		      AudioEngine.o          \
-		      AudioDriverSDL.o       \
-		      Oscillator.o           \
-		      OneOscillator.o        \
-		      Biquad.o               \
-		      AudioMixer.o           \
-		      Wave.o \
-		      Machine.o              \
-		      MonoMixer.o            \
-		      InputManager.o         \
-		      Filter.o               \
-		      AMSynthLowPassFilter.o \
-		      Effect.o               \
-		      EffectDelay.o          \
-		      EffectDisabled.o       \
-		      WaveTableManager.o     \
-		      WaveTable.o            \
-		      Generator.o            \
-		      PatternElement.o       \
-		      Pattern.o              \
-		      PatternReader.o        \
-		      Sequencer.o            \
-		      PatternSequencer.o     \
-		      SongSequencer.o        \
-		      NoteFreq.o             \
-		      PitchBend.o            \
-		      TweakableKnob.o	       \
-		      UserInterface.o	       \
-		      MachineCheck.o	       \
-		      WaveFileWriter.o         \
-		      PulseSync.o	       \
-		      MachineHelper.o	       \
-		      Machine/Picosynth/PicosynthUserInterface.o \
-		      Machine/Picosynth/PicosynthADSR.o        \
-		      Machine/Picosynth/PicosynthVCO.o         \
-		      Machine/Picosynth/PicosynthMachine.o     \
-		      Machine/Picodrum/PicodrumUserInterface.o \
-		      Machine/Picodrum/PicodrumVCO.o           \
-		      Machine/Picodrum/PicodrumADSR.o          \
-		      Machine/Picodrum/PicodrumMachine.o       \
-		      Machine/Dbopl/DboplUserInterface.o       \
-		      Machine/Dbopl/dbopl.o                    \
-		      Machine/Dbopl/hiopl.o                    \
-		      Machine/Dbopl/DboplMachine.o             \
-		      Machine/PBSynth/PBSynthUserInterface.o   \
-		      Machine/PBSynth/synthengine.o            \
-		      Machine/PBSynth/osc.o                    \
-		      Machine/PBSynth/lfo.o                    \
-		      Machine/PBSynth/filter.o                 \
-		      Machine/PBSynth/env.o                    \
-		      Machine/PBSynth/echo.o                   \
-		      Machine/PBSynth/osctab.o                 \
-		      Machine/PBSynth/lfotab.o                 \
-		      Machine/PBSynth/envtab.o                 \
-		      Machine/PBSynth/coeff.o                  \
-		      Machine/PBSynth/PBSynthMachine.o         \
-					      psp_callback.o                           
+BUILD_PRX       = 1
+PSP_FW_VERSION  = 500
 
 
+# 32 MB of RAM: each MonoMixer allocates one instance of every enabled
+# machine and there are four MonoMixers, so only the four light engines are
+# enabled here. Keep this list in sync with SOURCES below.
+SYNTH=
+SYNTH+= -DENABLE_SYNTH_PICOSYNTH
+SYNTH+= -DENABLE_SYNTH_PICODRUM
+SYNTH+= -DENABLE_SYNTH_OPL2
+SYNTH+= -DENABLE_SYNTH_PBSYNTH
 
 
-BUILD_PRX=1
+CFLAGS_SDLVERS=-D__SDL12__
 
-PSP_FW_VERSION = 500
+CFLAGS=
+CFLAGS+= -std=c++11
+CFLAGS+= -O3 -G0 -Wall
+CFLAGS+= -I${PSPDEV}/psp/include
+CFLAGS+= -L${PSPDEV}/psp/lib
+CFLAGS+= ${CFLAGS_SDLVERS}
+CFLAGS+= -fpermissive
+CFLAGS+= ${SYNTH}
+CFLAGS+= -DPSP
+CFLAGS+= -D__SDL_AUDIO__
+CFLAGS+= -DDEBUGPRINTF
 
-INCDIR		=
-CFLAGS		= -O3  -G0 -Wall  -I${PSPDEV}/psp/include/ -L${PSPDEV}/psp/lib -D__SDL_AUDIO__ -DPSP -DFIXED -g -ggdb 
-CFLAGS		= -O3  -G0 -Wall  -I${PSPDEV}/psp/include/ -L${PSPDEV}/psp/lib -D__SDL_AUDIO__ -D__SDL12__ -DPSP  -g -ggdb -DLGPT_TEMPO -fpermissive
-CFLAGS		= -O3  -G0 -Wall  -I${PSPDEV}/psp/include/ -L${PSPDEV}/psp/lib -D__SDL_AUDIO__ -D__SDL12__ -DPSP  -g -ggdb              -fpermissive  -DDEBUGPRINTF
-CFLAGS		= -O3  -G0 -Wall  -I${PSPDEV}/psp/include/ -L${PSPDEV}/psp/lib -D__SDL_AUDIO__ -D__SDL12__ -DPSP  -g -ggdb -DLGPT_TEMPO -fpermissive
-CXXFLAGS	= $(CFLAGS) -fno-exceptions -fno-rtti
-ASFLAGS	        = $(CFLAGS)
-
-#LIBDIR		=
-#LDFLAGS	=
-#LIBS		= -lm -lSDL -lSDLmain
-#LIBS		= -lm -lSDL -lSDLmain  -lGL -lGLU -lglut -lpspvfpu -lm -lpspdebug -lpspgu -lpspctrl -lpspge -lpspdisplay -lpsphprm -lpspsdk -lpsprtc -lpspaudio -lc -lpspuser -lpsputility -lpspkernel -lpspnet_inet -ljpeg -lpspirkeyb -lpsppower
-
-#LIBS		= -lm  -lc -lSDL_image -lpng -lz -lstdc++ -lSDL -lSDLmain -lGL -lGLU -lglut -lpspvfpu -lm -lpspdebug -lpspgu -lpspctrl -lpspge -lpspdisplay -lpsphprm -lpspsdk -lpsprtc -lpspaudio -lc -lpspuser -lpsputility -lpspkernel -lpspnet_inet -ljpeg -lpspirkeyb -lpsppower
-
-#LIBS            = -lSDL -lSDLmain -lGL -lGLU -lglut -lpspvfpu -lm -lpspdebug -lpspgu -lpspctrl -lpspge -lpspdisplay -lpsphprm -lpspsdk -lpsprtc -lpspaudio -lc -lpspuser -lpsputility -lpspkernel -lpspnet_inet -ljpeg -lpspirkeyb -lpsppower  -lm  -lc -lSDL_image -lpng -lz -lstdc++  
-
-LIBS             = -lGLU -lGL  -ljpeg -lstdc++ -lm -lc -lpspvfpu  
-LIBS            += ${shell ${PSPDEV}/psp/bin/sdl-config --libs } -lSDL_ttf -lfreetype -lm
+CXXFLAGS= $(CFLAGS)
+ASFLAGS= $(CFLAGS)
 
 
-#LINK.c = psp-g++
+# PatternPlayer.cpp provides its own main() and PSP_MODULE_INFO(), so libSDLmain
+# must not be linked: it would add a second module_info and rename main to
+# SDL_main. Hence sdl-config --libs minus -lSDLmain (and no -Dmain=SDL_main).
+LIBS=
+LIBS+= -lSDL_ttf
+LIBS+= -lfreetype
+LIBS+= -lpng
+LIBS+= -lz
+LIBS+= -lbz2
+LIBS+= -lpspvfpu
+LIBS+= -lstdc++
+LIBS+= -lm
+LIBS+= $(filter-out -lSDLmain,$(shell ${PSPDEV}/psp/bin/sdl-config --libs))
 
 
+SOURCES=	\
+			psp_callback.cpp	\
+			AudioDriverSDL.cpp       \
+			SYSTEMLINUX.cpp	       \
+			$(SOURCES_PICOLOOP)     \
+			$(SOURCES_PICOSYNTH) \
+			$(SOURCES_PICOSYNTHUI) \
+			$(SOURCES_PICODRUM) \
+			$(SOURCES_PICODRUMUI) \
+			$(SOURCES_DBOPL) \
+			$(SOURCES_DBOPLUI) \
+			$(SOURCES_PBSYNTH) \
+			$(SOURCES_PBSYNTHUI)
 
-PSPSDK	= $(shell psp-config --pspsdk-path)
+
+OBJS= $(SOURCES:.cpp=.o)
+
+
+PSPSDK = $(shell psp-config --pspsdk-path)
 include $(PSPSDK)/lib/build.mak

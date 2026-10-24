@@ -1,6 +1,9 @@
 include Makefile_sources
-CC=g++
-CC=clang++
+
+# Targets below are command names, not files - always run them even if a
+# stray file with the same name exists in the tree.
+.PHONY: all clean
+
 CC=g++
 
 SYNTH=
@@ -17,54 +20,52 @@ SYNTH+= -DENABLE_SYNTH_SIDSYNTH
 SYNTH+= -DENABLE_SYNTH_MIDIOUT
 SYNTH+= -DENABLE_SYNTH_ER1
 
+
 CFLAGS_SDLVERS=-D__SDL12__
 
 CFLAGS=
 CFLAGS+= -c -std=c++11 -O3
-CFLAGS+= -ggdb
-CFLAGS+= -Werror=return-type
+CFLAGS+= -I. -LSDL/lib
 CFLAGS+= ${CFLAGS_SDLVERS}
 CFLAGS+= ${SYNTH}
-#CFLAGS+= -fpermissive
-#CFLAGS+= -pg
-#CFLAGS+= -gdb 
-#CFLAGS+= -ffast-math
-CFLAGS+= -I. -LSDL/lib
+CFLAGS+= -ggdb
+
 CFLAGS+= -D__LINUX__
-CFLAGS+= -D__LINUX_PULSE__
+CFLAGS+= -DLINUX
 CFLAGS+= -D__RTAUDIO__
-CFLAGS+= -D __RTMIDI__
+CFLAGS+= -D__RTMIDI__
+CFLAGS+= -D__LINUX_PULSE__
 CFLAGS+= -DPC_DESKTOP
-
-CFLAGS+=-DDEBUGPRINTF
-CFLAGS+=-DSCREEN_MULT=2
-
-
-LDFLAGS=
-LDFLAGS+= -lasound
-LDFLAGS+= -lSDL
-LDFLAGS+= -lSDL_gfx 
-LDFLAGS+= -lSDL_ttf
-LDFLAGS+= -lpthread
-LDFLAGS+= -lpulse
-LDFLAGS+= -lpulse-simple
-#LDFLAGS+= -ljack
+CFLAGS+= -DDEBUGPRINTF
+CFLAGS+= -DSCREEN_MULT=2
+CFLAGS+= -Werror=return-type
 
 
+LDGLAGS=
+LDFLAGS+=-lasound
+LDFLAGS+=-lSDL
+LDFLAGS+=-lSDL_ttf
+LDFLAGS+=-lpthread
+LDFLAGS+=-lpulse
+LDFLAGS+=-lpulse-simple
+#LDFLAGS+=-ljack
 
+OBJTOLINK=
 OBJTOLINK=RtAudio.o
 OBJTOLINK=RtAudio.o RtMidi.o
 OBJTOLINK=
 
 
-SOURCES=					\
-		      	RtAudio.cpp		\
+SOURCES=	\
+			RtAudio.cpp		\
 		      	RtMidi.cpp		\
 			AudioDriverRTAudio.cpp   \
 			SYSTEMLINUX.cpp	       \
 			SysMutex.cpp	       \
 			MidiOutSystem.cpp	       \
 			MidiInSystem.cpp	       \
+			PicoloopIni.cpp	       \
+			EmbeddedAssets.cpp	       \
 			$(SOURCES_PICOLOOP)     \
 			$(SOURCES_PICOSYNTH) \
 			$(SOURCES_PICOSYNTHUI) \
@@ -92,9 +93,6 @@ SOURCES=					\
 			$(SOURCES_ER1UI) 
 
 
-
-
-
 OBJDIR             =     debian_RtAudio_sdl12
 OBJECTS            =   $(SOURCES:.cpp=.o)
 DEPENDENCY         =   $(SOURCES:.cpp=.d)
@@ -103,23 +101,9 @@ DEPENDENCYINOBJDIR = $(addprefix $(OBJDIR)/,$(DEPENDENCY))
 OBJECTSINOBJDIR    = $(addprefix $(OBJDIR)/,$(OBJECTS))
 OBJTOLINKINOBJDIR  = $(addprefix $(OBJDIR)/,$(OBJTOLINK))
 
-EXECUTABLE=PatternPlayer_${OBJDIR}
+EXECUTABLE=picoloop_${OBJDIR}
 
-all: DIRTOCREATE $(DEPENDENCYINOBJDIR) $(SOURCES) $(EXECUTABLE) 
-DIRTOCREATE:
-	-mkdir -p $(OBJDIR)/Machine
-	-mkdir -p $(OBJDIR)/Machine/Picosynth
-	-mkdir -p $(OBJDIR)/Machine/Picodrum
-	-mkdir -p $(OBJDIR)/Machine/Dbopl	
-	-mkdir -p $(OBJDIR)/Machine/PBSynth
-	-mkdir -p $(OBJDIR)/Machine/Cursynth
-	-mkdir -p $(OBJDIR)/Machine/Open303
-	-mkdir -p $(OBJDIR)/Machine/Twytch
-	-mkdir -p $(OBJDIR)/Machine/MidiOutSystem
-	-mkdir -p $(OBJDIR)/Machine/MDADrum
-	-mkdir -p $(OBJDIR)/Machine/SIDSynth
-
-
+all: $(DEPENDENCYINOBJDIR) $(SOURCES) $(EXECUTABLE)
 
 $(EXECUTABLE): $(DEPENDENCYINOBJDIR) $(OBJECTSINOBJDIR)
 	$(CC) $(OBJTOLINKINOBJDIR)  $(OBJECTSINOBJDIR) -o $@ $(LDFLAGS)
@@ -127,9 +111,9 @@ $(EXECUTABLE): $(DEPENDENCYINOBJDIR) $(OBJECTSINOBJDIR)
 # the .d file contain the dependency
 $(OBJDIR)/%.d : %.cpp %.h
 	@[ -d `dirname $@` ] || mkdir -p `dirname $@`
-	$(CC) $(CFLAGS_SDLVERS) -I. -MM $< -o $@
+	$(CC) $(CFLAGS_SDLVERS) -std=c++11 -I. -MM $< -o $@
 
-$(OBJDIR)/%.o : %.cpp 
+$(OBJDIR)/%.o : %.cpp
 	@[ -d `dirname $@` ] || mkdir -p `dirname $@`
 	$(CC) $(CFLAGS) $< -o $@
 
@@ -140,14 +124,14 @@ $(OBJDIR)/%.o : %.cpp
 
 
 # SYSTEMLINUX.d does have a .h which is SYSTEM.h, so it need a tweaks
-$(OBJDIR)/SYSTEMLINUX.d:SYSTEMLINUX.cpp 
+$(OBJDIR)/SYSTEMLINUX.d:SYSTEMLINUX.cpp
 	@[ -d `dirname $@` ] || mkdir -p `dirname $@`
-	$(CC) $(CFLAGS_SDLVERS) -I. -MM $< -o $@ 
+	$(CC) $(CFLAGS_SDLVERS) -std=c++11 -I. -MM $< -o $@
 
 # PatternPlayer.d does have a .h which is system.h
-PatternPlayer.d:PatternPlayer.cpp
+$(OBJDIR)/PatternPlayer.d:PatternPlayer.cpp
 	@[ -d `dirname $@` ] || mkdir -p `dirname $@`
-	$(CC) $(CFLAGS_SDLVERS) -std=c++11 -I. -MM $< -o $@ 
+	$(CC) $(CFLAGS_SDLVERS) -std=c++11 -I. -MM $< -o $@
 
 
 clean:
@@ -155,6 +139,3 @@ clean:
 	-rm -f $(DEPENDENCYINOBJDIR)
 	-rm -f $(EXECUTABLE)
 	-rm -f $(DEPENDENCY)
-
-
-

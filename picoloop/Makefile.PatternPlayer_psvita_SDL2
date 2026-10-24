@@ -1,123 +1,128 @@
 include Makefile_sources
-PHONY := all package clean
-rwildcard=$(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
 
-CC := arm-vita-eabi-gcc
-CXX := arm-vita-eabi-g++
+# PSVita target. Builds inside the vitasdk container
+# (docker.io/vitasdk/vitasdk) - see doc/psvita/build.md. Same shape as the other
+# Makefile.PatternPlayer_* files; the VPK packaging needs the vita-toolchain
+# binaries, which the image provides ($VITASDK).
+.PHONY: all package clean
+
+CC    := arm-vita-eabi-g++
 STRIP := arm-vita-eabi-strip
 
 PROJECT_TITLE   := PicoloopPSVita
 PROJECT_TITLEID := PICOLOOP1
-
-PROJECT := picoloop_vita
-CFLAGS   += -I.
-#CXXFLAGS += -DDEBUG_PRINTF -D__SDL20__ -DPSVITA -D__SDL_AUDIO__ -fpermissive -std=c++11 -I. -I$(VITASDK)/arm-vita-eabi/include/ -L$(VITASDK)/arm-vita-eabi/lib -lSDL2 
-#CXXFLAGS +=                -D__SDL20__ -DPSVITA -D__SDL_AUDIO__ -fpermissive -std=c++11 -I. -I$(VITASDK)/arm-vita-eabi/include/ -L$(VITASDK)/arm-vita-eabi/lib -lSDL2 
-#CXXFLAGS += -DDEBUG_PRINTF -D__SDL20__ -DPSVITA -D__SDL_AUDIO__ -fpermissive -std=c++11 -I. -I$(VITASDK)/arm-vita-eabi/include/ -L$(VITASDK)/arm-vita-eabi/lib -lSDL2
-#CXXFLAGS += -DDEBUG_PRINTF -D__SDL20__ -DPSVITA -D__PSVITA_AUDIO__ -fpermissive -std=c++11 -I. -I$(VITASDK)/arm-vita-eabi/include/ -L$(VITASDK)/arm-vita-eabi/lib -lSDL2 -Wpointer-arith
-#CXXFLAGS += -O2 -D__SDL20__ -DPSVITA -D__PSVITA_AUDIO__ -fpermissive -std=c++11 -I. -I$(VITASDK)/arm-vita-eabi/include/ -L$(VITASDK)/arm-vita-eabi/lib -lSDL2 -Wpointer-arith
-#CXXFLAGS += -O2 -DDEBUG_PRINTF -D__SDL20__ -DPSVITA -D__PSVITA_AUDIO__ -fpermissive -std=c++11 -I. -I$(VITASDK)/arm-vita-eabi/include/ -L$(VITASDK)/arm-vita-eabi/lib -lSDL2 -Wpointer-arith
-CXXFLAGS += -std=c++98 -O2 -D__SDL20__ -DPSVITA -D__PSVITA_AUDIO__ -fpermissive -std=c++11 -I. -I$(VITASDK)/arm-vita-eabi/include/ -L$(VITASDK)/arm-vita-eabi/lib -lSDL2 -Wpointer-arith 
-CXXFLAGS += -std=c++98 -O2 -D__SDL20__ -DPSVITA -D__PSVITA_AUDIO__ -fpermissive -std=c++11 -I. -I$(VITASDK)/arm-vita-eabi/include/ -L$(VITASDK)/arm-vita-eabi/lib -lSDL2 -Wpointer-arith -DDEBUG_PRINTF
-CXXFLAGS += -std=c++98 -O2 -D__SDL20__ -DPSVITA -D__PSVITA_AUDIO__ -fpermissive -std=c++11 -I. -I$(VITASDK)/arm-vita-eabi/include/ -L$(VITASDK)/arm-vita-eabi/lib -lSDL2 -Wpointer-arith 
-CXXFLAGS += -std=c++11 -O2 -D__SDL20__ -DPSVITA -D__PSVITA_AUDIO__ -fpermissive            -I. -I$(VITASDK)/arm-vita-eabi/include/ -L$(VITASDK)/arm-vita-eabi/lib -lSDL2 -Wpointer-arith 
-
-#SRC_C :=$(call rwildcard, src/, *.c)
-#SRC_CPP :=$(call rwildcard, src/, *.cpp)
-#SRC_CPP :=$(call rwildcard, src/, *.cpp)
-SRC_CPP := \
-		      SYSTEMPSVITA.cpp	       \
-		      AudioDriverPSVita.cpp   \
-		$(SOURCES_PICOLOOP)	\
-		$(SOURCES_PICOSYNTH) 	\
-		$(SOURCES_PICOSYNTHUI) 	\
-		$(SOURCES_PICODRUM) 	\
-		$(SOURCES_PICODRUMUI) 	\
-		$(SOURCES_DBOPL) 	\
-		$(SOURCES_DBOPLUI) 	\
-		$(SOURCES_PBSYNTH)	\
-		$(SOURCES_PBSYNTHUI)	\
-		$(SOURCES_LGPTSAMPLERSYNTH) \
-		$(SOURCES_LGPTSAMPLERSYNTHUI) 
+PROJECT         := picoloop_vita
 
 
+# Same five engines the Vita target has always enabled. The LGPT sampler is
+# PSVITA-only in practice: Master.h sets __RAM512MIB__ for PSVITA, which makes
+# main() call init_lgpt_samplepool().
+SYNTH=
+SYNTH+= -DENABLE_SYNTH_PICOSYNTH
+SYNTH+= -DENABLE_SYNTH_PICODRUM
+SYNTH+= -DENABLE_SYNTH_OPL2
+SYNTH+= -DENABLE_SYNTH_PBSYNTH
+SYNTH+= -DENABLE_SYNTH_LGPTSAMPLER
 
 
-#OBJ_DIRS := $(addprefix out/, $(dir $(SRC_C:src/%.c=%.o))) $(addprefix out/, $(dir $(SRC_CPP:src/%.cpp=%.o)))
-#OBJ_DIRS := $(addprefix out/, $(dir $(SRC_C:./%.c=%.o))) $(addprefix out/, $(dir $(SRC_CPP:./%.cpp=%.o)))
-#OBJ_DIRS := $(addprefix out/, $(dir $(SRC_CPP:./%.cpp=%.o)))
-OBJ_DIRS := out/ out/Machine/Picosynth/ out/Machine/Picodrum out/Machine/Dbopl/ out/Machine/PBSynth out/Machine/Lgptsampler
+CFLAGS_SDLVERS=-D__SDL20__
 
-#OBJS := $(addprefix out/, $(SRC_C:src/%.c=%.o)) $(addprefix out/, $(SRC_CPP:src/%.cpp=%.o))
-#OBJS := $(addprefix out/, $(SRC_C:./%.c=%.o)) $(addprefix out/, $(SRC_CPP:./%.cpp=%.o))
-OBJS := $(addprefix out/, $(SRC_CPP:%.cpp=%.o))
+CFLAGS=
+CFLAGS+= -std=c++11 -O2
+CFLAGS+= -I. -I$(VITASDK)/arm-vita-eabi/include
+CFLAGS+= ${CFLAGS_SDLVERS}
+CFLAGS+= -fpermissive
+CFLAGS+= -Wpointer-arith
+CFLAGS+= ${SYNTH}
 
-#LIBS := -lSceDisplay_stub -lSceCtrl_stub  -lSceAudio_stub -lSDL2  -lSceSysmodule_stub -lSceGxm_stub -lvita2d
-LIBS := -L. -lSDL2_ttf -lfreetype -lpng -lz -lSDL2 -lSceAudio_stub -lvita2d -lSceGxm_stub -lSceDisplay_stub -lSceCtrl_stub -lSceSysmodule_stub -lSceCommonDialog_stub -lpsp2shell -lSceNet_stub -lSceNetCtl_stub -lSceLibKernel_stub -lScePower_stub -lSceAppMgr_stub -lSceSysmodule_stub -lSceTouch_stub -lSceHid_stub
+CFLAGS+= -DPSVITA
+CFLAGS+= -D__PSVITA_AUDIO__
+# DPRINTF is only defined for PSVITA when DEBUGPRINTF==1 (it routes to
+# sceClibPrintf); without it every DPRINTF() use fails to compile.
+CFLAGS+= -DDEBUGPRINTF=1
+
+CXXFLAGS= $(CFLAGS)
 
 
-all: package
+LIBS=
+LIBS+= -L. -L$(VITASDK)/arm-vita-eabi/lib
+LIBS+= -lSDL2_ttf
+LIBS+= -lfreetype
+LIBS+= -lpng
+LIBS+= -lz
+LIBS+= -lbz2
+LIBS+= -lSDL2
+LIBS+= -lvitaGL
+LIBS+= -lvitashark
+LIBS+= -lmathneon
+LIBS+= -lSceShaccCgExt
+LIBS+= -ltaihen_stub
+LIBS+= -lSceShaccCg_stub
+LIBS+= -lSceKernelDmacMgr_stub
+LIBS+= -lSceAudio_stub
+LIBS+= -lSceAudioIn_stub
+LIBS+= -lSceMotion_stub
+LIBS+= -lSceIme_stub
+LIBS+= -lvita2d
+LIBS+= -lvita2d_vgl
+LIBS+= -lSceGxm_stub
+LIBS+= -lSceDisplay_stub
+LIBS+= -lSceCtrl_stub
+LIBS+= -lSceSysmodule_stub
+LIBS+= -lSceCommonDialog_stub
+LIBS+= -lpsp2shell
+LIBS+= -lSceNet_stub
+LIBS+= -lSceNetCtl_stub
+LIBS+= -lSceLibKernel_stub
+LIBS+= -lScePower_stub
+LIBS+= -lSceAppMgr_stub
+LIBS+= -lSceTouch_stub
+LIBS+= -lSceHid_stub
 
-package: $(PROJECT).vpk
 
-$(PROJECT).vpk: eboot.bin param.sfo
+SOURCES=	\
+			SYSTEMPSVITA.cpp	\
+			AudioDriverPSVita.cpp   \
+			$(SOURCES_PICOLOOP)     \
+			$(SOURCES_PICOSYNTH) \
+			$(SOURCES_PICOSYNTHUI) \
+			$(SOURCES_PICODRUM) \
+			$(SOURCES_PICODRUMUI) \
+			$(SOURCES_DBOPL) \
+			$(SOURCES_DBOPLUI) \
+			$(SOURCES_PBSYNTH) \
+			$(SOURCES_PBSYNTHUI) \
+			$(SOURCES_LGPTSAMPLERSYNTH) \
+			$(SOURCES_LGPTSAMPLERSYNTHUI)
+
+
+OBJDIR             =     out
+OBJECTS            =   $(SOURCES:.cpp=.o)
+OBJECTSINOBJDIR    = $(addprefix $(OBJDIR)/,$(OBJECTS))
+
+EXECUTABLE=$(PROJECT).vpk
+
+# samples/*.wav are optional: init_lgpt_samplepool() loads them from
+# ux0:/app/PICOLOOP1/samples/ at runtime, but SamplePool::loadSample() just
+# logs and skips missing files, so a build without them still works.
+SAMPLE_FILES := $(wildcard samples/*.wav)
+VPK_SAMPLES  := $(foreach f,$(SAMPLE_FILES),--add $(f)=$(f))
+
+
+all: $(EXECUTABLE)
+
+
+package: $(EXECUTABLE)
+
+$(EXECUTABLE): eboot.bin param.sfo
 	vita-pack-vpk -s param.sfo -b eboot.bin \
-		--add font.ttf=font.ttf  \
-		--add samples/0.wav=samples/0.wav \
-		--add samples/1.wav=samples/1.wav \
-		--add samples/2.wav=samples/2.wav \
-		--add samples/3.wav=samples/3.wav \
-		--add samples/4.wav=samples/4.wav \
-		--add samples/5.wav=samples/5.wav \
-		--add samples/6.wav=samples/6.wav \
-		--add samples/7.wav=samples/7.wav \
-		--add samples/8.wav=samples/8.wav \
-		--add samples/9.wav=samples/9.wav \
-		--add samples/10.wav=samples/10.wav \
-		--add samples/11.wav=samples/11.wav \
-		--add samples/12.wav=samples/12.wav \
-		--add samples/13.wav=samples/13.wav \
-		--add samples/14.wav=samples/14.wav \
-		--add samples/15.wav=samples/15.wav \
-		--add samples/16.wav=samples/16.wav \
-		--add samples/17.wav=samples/17.wav \
-		--add samples/18.wav=samples/18.wav \
-		--add samples/19.wav=samples/19.wav \
-		--add samples/20.wav=samples/20.wav \
-		--add samples/21.wav=samples/21.wav \
-		--add samples/22.wav=samples/22.wav \
-		--add samples/23.wav=samples/23.wav \
-		--add samples/24.wav=samples/24.wav \
-		--add samples/25.wav=samples/25.wav \
-		--add samples/26.wav=samples/26.wav \
-		--add samples/27.wav=samples/27.wav \
-		--add samples/28.wav=samples/28.wav \
-		--add samples/29.wav=samples/29.wav \
-		--add samples/30.wav=samples/30.wav \
-		--add samples/31.wav=samples/31.wav \
-		--add samples/32.wav=samples/32.wav \
-		--add samples/33.wav=samples/33.wav \
-		--add samples/34.wav=samples/34.wav \
-		--add samples/35.wav=samples/35.wav \
-		--add samples/36.wav=samples/36.wav \
-		--add samples/37.wav=samples/37.wav \
-		--add samples/38.wav=samples/38.wav \
-		--add samples/39.wav=samples/39.wav \
-		--add samples/40.wav=samples/40.wav \
-		--add samples/41.wav=samples/41.wav \
-		--add samples/42.wav=samples/42.wav \
-		--add samples/43.wav=samples/43.wav \
-		--add samples/45.wav=samples/45.wav \
-		--add samples/46.wav=samples/46.wav \
-		--add samples/47.wav=samples/47.wav \
-		--add samples/48.wav=samples/48.wav \
-		--add samples/49.wav=samples/49.wav \
-		--add samples/44.wav=samples/44.wav \
+		--add font.ttf=font.ttf \
+		$(VPK_SAMPLES) \
 		--add sce_sys/icon0.png=sce_sys/icon0.png \
 		--add sce_sys/livearea/contents/bg.png=sce_sys/livearea/contents/bg.png \
 		--add sce_sys/livearea/contents/startup.png=sce_sys/livearea/contents/startup.png \
 		--add sce_sys/livearea/contents/template.xml=sce_sys/livearea/contents/template.xml \
-	$(PROJECT).vpk
+		$(EXECUTABLE)
 
 eboot.bin: $(PROJECT).velf
 	vita-make-fself $(PROJECT).velf eboot.bin
@@ -129,28 +134,15 @@ $(PROJECT).velf: $(PROJECT).elf
 	$(STRIP) -g $<
 	vita-elf-create $< $@
 
-$(PROJECT).elf: $(OBJS)
-	$(CXX) -Wl,-q -o $@ $^ $(LIBS) 
+$(PROJECT).elf: $(OBJECTSINOBJDIR)
+	$(CC) -Wl,-q -o $@ $^ $(LIBS)
 
-$(OBJ_DIRS):
-	mkdir -p $@
+$(OBJDIR)/%.o : %.cpp
+	@[ -d `dirname $@` ] || mkdir -p `dirname $@`
+	$(CC) -c $(CXXFLAGS) -o $@ $<
 
-#out/%.o : src/%.cpp | $(OBJ_DIRS)
-out/%.o : %.cpp | $(OBJ_DIRS)
-	arm-vita-eabi-g++ -c $(CXXFLAGS) -o $@ $<
-
-#out/%.o : src/%.c | $(OBJ_DIRS)
-out/%.o : %.c | $(OBJ_DIRS)
-	arm-vita-eabi-g++ -c $(CFLAGS) -o $@ $<
 
 clean:
-	rm -f $(PROJECT).velf $(PROJECT).elf $(PROJECT).vpk param.sfo eboot.bin $(OBJS)
-	rm -r $(abspath $(OBJ_DIRS))
-
-vpksend: $(PROJECT).vpk
-	curl -T $(PROJECT).vpk ftp://$(PSVITAIP):1337/ux0:/Vpk/
-	@echo "Sent."
-
-send: eboot.bin
-	curl -T eboot.bin      ftp://$(PSVITAIP):1337/ux0:/app/$(PROJECT_TITLEID)/
-	@echo "Sent."
+	-rm -f $(PROJECT).velf $(PROJECT).elf $(EXECUTABLE) param.sfo eboot.bin
+	-rm -f $(OBJECTSINOBJDIR)
+	-rm -rf $(OBJDIR)

@@ -5,7 +5,6 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_video.h>
 #include <SDL/SDL_audio.h>
-#include "SDL/SDL_image.h"
 #include "SDL/SDL_ttf.h"
 #endif // __SDL12__
 
