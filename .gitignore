@@ -17,6 +17,33 @@ picoloop/libmain_*.so
 picoloop/debian_*/
 picoloop/PatternPlayer_debian_*
 picoloop/picoloop_debian_*
+picoloop/windows_*/
+picoloop/picoloop_windows_*
+
+# Windows SDL2 dev files fetched by platform/windows/fetch_sdl2.sh
+picoloop/SDL2_windows/
+
+# OpenDingux / GCW Zero cross build (toolchain container, see doc/opendingux/build.md)
+picoloop/opendingux/
+picoloop/opendingux_sdl/
+picoloop/*.dge
+
+# PSVita cross build (vitasdk container, see Makefile.PatternPlayer_psvita_SDL2)
+picoloop/psvita/
+picoloop/out/
+picoloop/*.vpk
+picoloop/*.velf
+picoloop/eboot.bin
+picoloop/param.sfo
+picoloop/picoloop_vita.*
+
+# PSP cross build (pspdev container, see Makefile.PatternPlayer_psp_SDL)
+picoloop/psp/
+picoloop/EBOOT.PBP
+picoloop/PARAM.SFO
+picoloop/picoloop.elf
+picoloop/picoloop.prx
+picoloop/picoloop_strip.elf
 picoloop/picoloop.log
 picoloop/picoloop.ini
 
