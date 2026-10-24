@@ -1,0 +1,150 @@
+include Makefile_sources
+
+# Windows / MinGW / SDL2, 32-bit (i686). SDL2 build of the Windows target; the
+# SDL 1.2 ones are Makefile.PatternPlayer_windows_mingw_{SDL,RtAudio}_32bit.
+#
+# Needs SDL2 for MinGW, which is not in the tree (only SDL 1.2 is, in
+# SDL_windows/). Fetch it once with:
+#
+#     platform/windows/fetch_sdl2.sh
+#     make -f Makefile.PatternPlayer_windows_mingw_SDL2_32bit
+#
+# SDL2_DIR can point at any directory with include/SDL2 + lib32 + lib64.
+.PHONY: all clean
+
+SDL2_DIR ?= SDL2_windows
+
+CC=i686-w64-mingw32-g++
+
+SYNTH=
+SYNTH+= -DENABLE_SYNTH_PICOSYNTH
+SYNTH+= -DENABLE_SYNTH_PICODRUM
+SYNTH+= -DENABLE_SYNTH_OPL2
+SYNTH+= -DENABLE_SYNTH_PBSYNTH
+SYNTH+= -DENABLE_SYNTH_LGPTSAMPLER
+SYNTH+= -DENABLE_SYNTH_CURSYNTH
+SYNTH+= -DENABLE_SYNTH_OPEN303
+SYNTH+= -DENABLE_SYNTH_TWYTCHSYNTH
+SYNTH+= -DENABLE_SYNTH_MDADRUM
+SYNTH+= -DENABLE_SYNTH_SIDSYNTH
+SYNTH+= -DENABLE_SYNTH_MIDIOUT
+SYNTH+= -DENABLE_SYNTH_ER1
+
+
+CFLAGS_SDLVERS=-D__SDL20__
+
+CFLAGS=
+CFLAGS+= -c -std=c++11 -O3
+CFLAGS+= -I. -I$(SDL2_DIR)/include
+CFLAGS+= ${CFLAGS_SDLVERS}
+CFLAGS+= -fpermissive
+CFLAGS+= ${SYNTH}
+
+CFLAGS+= -DWIN32
+CFLAGS+= -D__WIN32__
+# mingw defaults to _WIN32_WINNT_WS03 (0x0502); libstdc++'s win32 thread shim
+# then hides the Vista+ condition variable that <mutex> needs as soon as SDL2
+# has pulled in <windows.h> ("__gthread_cond_t does not name a type").
+CFLAGS+= -D_WIN32_WINNT=0x0600
+CFLAGS+= -DWINVER=0x0600
+CFLAGS+= -D__SDL_AUDIO__
+CFLAGS+= -DPC_DESKTOP
+CFLAGS+= -DDEBUGPRINTF
+CFLAGS+= -DSCREEN_MULT=2
+CFLAGS+= -DDUMP_AUDIO=0
+
+
+LDGLAGS=
+LDFLAGS+=-L$(SDL2_DIR)/lib32
+LDFLAGS+=-lmingw32 -lSDL2main
+LDFLAGS+=-lSDL2_ttf
+LDFLAGS+=-lSDL2
+LDFLAGS+=-lwinmm -limm32 -lversion -lsetupapi
+LDFLAGS+=-static-libgcc -static-libstdc++
+
+
+OBJTOLINK=
+
+
+SOURCES=	\
+			AudioDriverSDL.cpp	\
+			SYSTEMWINDOWS.cpp	\
+			RtMidi.cpp	\
+			SysMutex.cpp	       \
+			MidiOutSystem.cpp	       \
+			MidiInSystem.cpp	       \
+			PicoloopIni.cpp	       \
+			EmbeddedAssets.cpp	       \
+			$(SOURCES_PICOLOOP)     \
+			$(SOURCES_PICOSYNTH) \
+			$(SOURCES_PICOSYNTHUI) \
+			$(SOURCES_PICODRUM) \
+			$(SOURCES_PICODRUMUI) \
+			$(SOURCES_DBOPL) \
+			$(SOURCES_DBOPLUI) \
+			$(SOURCES_PBSYNTH) \
+			$(SOURCES_PBSYNTHUI) \
+			$(SOURCES_CURSYNTH) \
+			$(SOURCES_CURSYNTHUI) \
+			$(SOURCES_OPEN303) \
+			$(SOURCES_OPEN303UI) \
+			$(SOURCES_TWYTCH) \
+			$(SOURCES_TWYTCHUI) \
+			$(SOURCES_MIDIOUT) \
+			$(SOURCES_MIDIOUTUI) \
+			$(SOURCES_MDADRUM) \
+			$(SOURCES_MDADRUMUI) \
+			$(SOURCES_SIDSYNTH) \
+			$(SOURCES_SIDSYNTHUI) \
+			$(SOURCES_LGPTSAMPLERSYNTH) \
+			$(SOURCES_LGPTSAMPLERSYNTHUI) \
+			$(SOURCES_ER1) \
+			$(SOURCES_ER1UI)
+
+
+OBJDIR             =     windows_mingw_SDL2_32bit
+OBJECTS            =   $(SOURCES:.cpp=.o)
+DEPENDENCY         =   $(SOURCES:.cpp=.d)
+
+DEPENDENCYINOBJDIR = $(addprefix $(OBJDIR)/,$(DEPENDENCY))
+OBJECTSINOBJDIR    = $(addprefix $(OBJDIR)/,$(OBJECTS))
+OBJTOLINKINOBJDIR  = $(addprefix $(OBJDIR)/,$(OBJTOLINK))
+
+EXECUTABLE=picoloop_${OBJDIR}.exe
+
+all: $(DEPENDENCYINOBJDIR) $(SOURCES) $(EXECUTABLE)
+
+$(EXECUTABLE): $(DEPENDENCYINOBJDIR) $(OBJECTSINOBJDIR)
+	$(CC) $(OBJTOLINKINOBJDIR)  $(OBJECTSINOBJDIR) -o $@ $(LDFLAGS)
+
+# the .d file contain the dependency
+$(OBJDIR)/%.d : %.cpp %.h
+	@[ -d `dirname $@` ] || mkdir -p `dirname $@`
+	$(CC) $(CFLAGS_SDLVERS) -std=c++11 -I. -I$(SDL2_DIR)/include -MM $< -o $@
+
+$(OBJDIR)/%.o : %.cpp
+	@[ -d `dirname $@` ] || mkdir -p `dirname $@`
+	$(CC) $(CFLAGS) $< -o $@
+
+
+# include all the dependency .d file into the makefile 
+# it allow to match change in .h file
+-include $(DEPENDENCYINOBJDIR)
+
+
+# SYSTEMWINDOWS.d does have a .h which is SYSTEM.h, so it need a tweaks
+$(OBJDIR)/SYSTEMWINDOWS.d:SYSTEMWINDOWS.cpp
+	@[ -d `dirname $@` ] || mkdir -p `dirname $@`
+	$(CC) $(CFLAGS_SDLVERS) -std=c++11 -I. -I$(SDL2_DIR)/include -MM $< -o $@
+
+# PatternPlayer.d does have a .h which is system.h
+$(OBJDIR)/PatternPlayer.d:PatternPlayer.cpp
+	@[ -d `dirname $@` ] || mkdir -p `dirname $@`
+	$(CC) $(CFLAGS_SDLVERS) -std=c++11 -I. -I$(SDL2_DIR)/include -MM $< -o $@
+
+
+clean:
+	-rm -f $(OBJECTSINOBJDIR)
+	-rm -f $(DEPENDENCYINOBJDIR)
+	-rm -f $(EXECUTABLE)
+	-rm -f $(DEPENDENCY)
