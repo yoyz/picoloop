@@ -74,7 +74,7 @@ $(EXECUTABLE): $(DEPENDENCYINOBJDIR) $(OBJECTSINOBJDIR)
 # the .d file contain the dependency
 $(OBJDIR)/%.d : %.cpp %.h
 	@[ -d `dirname $@` ] || mkdir -p `dirname $@`
-	$(CC) $(CFLAGS_SDLVERS) -std=c++11 -I. -MM $< -o $@
+	$(CC) $(CFLAGS_SDLVERS) -std=c++11 -I. -MM -MT '$(OBJDIR)/$*.o' $< -o $@
 
 $(OBJDIR)/%.o : %.cpp
 	@[ -d `dirname $@` ] || mkdir -p `dirname $@`
@@ -89,12 +89,12 @@ $(OBJDIR)/%.o : %.cpp
 # SYSTEMLINUX.d does have a .h which is SYSTEM.h, so it need a tweaks
 $(OBJDIR)/SYSTEMLINUX.d:SYSTEMLINUX.cpp
 	@[ -d `dirname $@` ] || mkdir -p `dirname $@`
-	$(CC) $(CFLAGS_SDLVERS) -std=c++11 -I. -MM $< -o $@
+	$(CC) $(CFLAGS_SDLVERS) -std=c++11 -I. -MM -MT '$(OBJDIR)/SYSTEMLINUX.o' $< -o $@
 
 # PatternPlayer.d does have a .h which is system.h
 $(OBJDIR)/PatternPlayer.d:PatternPlayer.cpp
 	@[ -d `dirname $@` ] || mkdir -p `dirname $@`
-	$(CC) $(CFLAGS_SDLVERS) -std=c++11 -I. -MM $< -o $@
+	$(CC) $(CFLAGS_SDLVERS) -std=c++11 -I. -MM -MT '$(OBJDIR)/PatternPlayer.o' $< -o $@
 
 
 clean:

@@ -164,7 +164,7 @@ $(EXECUTABLE): $(OBJECTSINOBJDIR) $(SDK_DEP)
 
 $(OBJDIR)/%.d : %.cpp %.h
 	@[ -d `dirname $@` ] || mkdir -p `dirname $@`
-	$(CC) $(CFLAGS_SDLVERS) -std=c++11 -I. $(SDL_INC:%=-I%) $(ALSA_INC:%=-I%) -MM $< -o $@
+	$(CC) $(CFLAGS_SDLVERS) -std=c++11 -I. $(SDL_INC:%=-I%) $(ALSA_INC:%=-I%) -MM -MT '$(OBJDIR)/$*.o' $< -o $@
 
 $(OBJDIR)/%.o : %.cpp
 	@[ -d `dirname $@` ] || mkdir -p `dirname $@`
@@ -174,11 +174,11 @@ $(OBJDIR)/%.o : %.cpp
 
 $(OBJDIR)/SYSTEMLINUX.d:SYSTEMLINUX.cpp
 	@[ -d `dirname $@` ] || mkdir -p `dirname $@`
-	$(CC) $(CFLAGS_SDLVERS) -std=c++11 -I. $(SDL_INC:%=-I%) $(ALSA_INC:%=-I%) -MM $< -o $@
+	$(CC) $(CFLAGS_SDLVERS) -std=c++11 -I. $(SDL_INC:%=-I%) $(ALSA_INC:%=-I%) -MM -MT '$(OBJDIR)/SYSTEMLINUX.o' $< -o $@
 
 PatternPlayer.d:PatternPlayer.cpp
 	@[ -d `dirname $@` ] || mkdir -p `dirname $@`
-	$(CC) $(CFLAGS_SDLVERS) -std=c++11 -I. $(SDL_INC:%=-I%) $(ALSA_INC:%=-I%) -MM $< -o $@
+	$(CC) $(CFLAGS_SDLVERS) -std=c++11 -I. $(SDL_INC:%=-I%) $(ALSA_INC:%=-I%) -MM -MT '$(OBJDIR)/PatternPlayer.o' $< -o $@
 
 clean:
 	-rm -f $(OBJECTSINOBJDIR)

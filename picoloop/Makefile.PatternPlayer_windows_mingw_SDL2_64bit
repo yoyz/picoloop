@@ -120,7 +120,7 @@ $(EXECUTABLE): $(DEPENDENCYINOBJDIR) $(OBJECTSINOBJDIR)
 # the .d file contain the dependency
 $(OBJDIR)/%.d : %.cpp %.h
 	@[ -d `dirname $@` ] || mkdir -p `dirname $@`
-	$(CC) $(CFLAGS_SDLVERS) -std=c++11 -I. -I$(SDL2_DIR)/include -MM $< -o $@
+	$(CC) $(CFLAGS_SDLVERS) -std=c++11 -I. -I$(SDL2_DIR)/include -MM -MT '$(OBJDIR)/$*.o' $< -o $@
 
 $(OBJDIR)/%.o : %.cpp
 	@[ -d `dirname $@` ] || mkdir -p `dirname $@`
@@ -135,12 +135,12 @@ $(OBJDIR)/%.o : %.cpp
 # SYSTEMWINDOWS.d does have a .h which is SYSTEM.h, so it need a tweaks
 $(OBJDIR)/SYSTEMWINDOWS.d:SYSTEMWINDOWS.cpp
 	@[ -d `dirname $@` ] || mkdir -p `dirname $@`
-	$(CC) $(CFLAGS_SDLVERS) -std=c++11 -I. -I$(SDL2_DIR)/include -MM $< -o $@
+	$(CC) $(CFLAGS_SDLVERS) -std=c++11 -I. -I$(SDL2_DIR)/include -MM -MT '$(OBJDIR)/SYSTEMWINDOWS.o' $< -o $@
 
 # PatternPlayer.d does have a .h which is system.h
 $(OBJDIR)/PatternPlayer.d:PatternPlayer.cpp
 	@[ -d `dirname $@` ] || mkdir -p `dirname $@`
-	$(CC) $(CFLAGS_SDLVERS) -std=c++11 -I. -I$(SDL2_DIR)/include -MM $< -o $@
+	$(CC) $(CFLAGS_SDLVERS) -std=c++11 -I. -I$(SDL2_DIR)/include -MM -MT '$(OBJDIR)/PatternPlayer.o' $< -o $@
 
 
 clean:
