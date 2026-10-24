@@ -50,12 +50,12 @@
 #define MDA_BANK_MAGNETBOY_SIZE     27
 #define MDA_BANK_MISC_CLAPS_SIZE    12
 #define MDA_BANK_MISC_BASS_SIZE     18
-#define MDA_BANK_MISC_SIZE         201
-#define MDA_BANK_MISC_ELECTRO_SIZE  60
+#define MDA_BANK_MISC_SIZE         202
+#define MDA_BANK_MISC_ELECTRO_SIZE  61
 #define MDA_BANK_MISC_FX_SIZE       83
 #define MDA_BANK_MISC_PERC_SIZE     62
 #define MDA_BANK_MISC_HATS_SIZE     72
-#define MDA_BANK_TR77_SIZE           7
+#define MDA_BANK_TR77_SIZE           8
 #define MDA_BANK_TR606_SIZE          7
 #define MDA_BANK_R_B_SIZE           15
 #define MDA_BANK_MISC_SYNTH_SIZE    25
@@ -1747,7 +1747,7 @@ static const char * bank_R_B_x_backwd                             = "x_backwd";
  bank_tr909_array[12] = bank_tr909_TR909_Kick;         
 
 
-  static const char * bank_Effects_array[MDA_BANK_EFFECTS];
+  static const char * bank_Effects_array[MDA_BANK_EFFECTS_SIZE];
 
   static const char * bank_Effects_Bubble                           = "Bubble";                      
   static const char * bank_Effects_Cicada                           = "Cicada";                      
