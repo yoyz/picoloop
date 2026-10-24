@@ -79,6 +79,7 @@ class AudioEngine
 {
  public:
   AudioEngine();
+  ~AudioEngine();
   void setDefault();
   void setEngineFreq(int frequency);
 

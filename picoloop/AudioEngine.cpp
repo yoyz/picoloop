@@ -101,6 +101,18 @@ AudioEngine::AudioEngine() :
   midiClockMode=0;
 }
 
+AudioEngine::~AudioEngine()
+{
+  // The two output buffers are the only things this class allocates itself;
+  // AD / PS / WFW are by-value members that clean up after themselves. The
+  // AudioMixer is owned by PatternPlayer (see AM in PatternPlayer.cpp).
+  DPRINTF("AudioEngine::~AudioEngine()");
+  delete [] buffer_out_left;
+  delete [] buffer_out_right;
+  buffer_out_left=NULL;
+  buffer_out_right=NULL;
+}
+
 void AudioEngine::setMidiClockMode(int clockMode)
 {
   midiClockMode=clockMode;

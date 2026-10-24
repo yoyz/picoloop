@@ -5043,6 +5043,15 @@ int main(int argc,char **argv)
   DPRINTF("closeAudio output");
   AE.stopAudio();
   AE.closeAudio();
+
+  // The AudioMixer owns the four MonoMixers, which own the machine engines and
+  // the delay effect (the audio thread is stopped above, so nothing can be
+  // using them now). AE keeps a pointer to it but does not own it.
+  if (AM)
+    {
+      delete AM;
+      AM=NULL;
+    }
   
   DPRINTF("closeVideo output");
   SG.closeVideo();

@@ -37,13 +37,6 @@ void Effect::setSpeed(int val)
 
 }
 
-int32_t Effect::process_one_sample(int32_t in)
-{  
-  //return FXDelay.process(in);
-  return 0;
-}
-
-void Effect::process(int32_t  * in,int nbsample)
-{
-
-}
+// process_one_sample() and process() are pure virtual in Effect.h: every
+// derived effect must implement them. The base versions used to return 0 /
+// do nothing, so an effect that forgot to override them muted the track.

@@ -52,7 +52,6 @@
 
 //#include "Effect.h"
 #include "EffectDelay.h"
-#include "EffectDisabled.h"
 //#include <SDL/SDL_types.h>
 
 #ifndef __MONOMIXER____
@@ -128,9 +127,8 @@ class MonoMixer
   MidiOutMachine       * MIDIOUTM;
 #endif
 
-  Effect                * FX;
-  EffectDelay           * FXDelay;
-  EffectDisabled        * FXDisabled;
+  Effect                * FX;     // always FXDelay today: there is no effect
+  EffectDelay           * FXDelay; // selection, and depth 0 is a pass-through
 
   Sint16                amplitude;
   Fixed                 amplitudeFixed;
